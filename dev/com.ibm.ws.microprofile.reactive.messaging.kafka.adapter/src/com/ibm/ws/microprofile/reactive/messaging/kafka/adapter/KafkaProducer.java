@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,12 @@ import java.time.Duration;
 public interface KafkaProducer<K, V> extends KafkaAdapter {
 
     /**
-     * @param record
+     * @param topic
+     * @param channelName
+     * @param value
      * @param callback
      */
-    void send(String topic, V value, Callback callback);
+    void send(String topic, String channelName, V value, Callback callback);
 
     void close(Duration timeout);
 

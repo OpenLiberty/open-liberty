@@ -46,18 +46,17 @@ public class ExtendedKafkaWriter<K, V> implements AutoCloseable {
     }
 
     public RecordMetadata sendMessage(K key, V message, Duration timeout) {
-        try {
-            ProducerRecord<K, V> record = new ProducerRecord<>(topic, key, message);
-            Future<RecordMetadata> ack = kafkaProducer.send(record);
-            return ack.get(timeout.toMillis(), MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new RuntimeException("Error sending Kafka message", e);
-        }
+        ProducerRecord<K, V> record = new ProducerRecord<>(topic, key, message);
+        return sendMessage(record, timeout);
     }
 
     public RecordMetadata sendMessage(K key, V message, int partition, Duration timeout) {
+        ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, key, message);
+        return sendMessage(record, timeout);
+    }
+
+    public RecordMetadata sendMessage(ProducerRecord<K, V> record, Duration timeout) {
         try {
-            ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, key, message);
             Future<RecordMetadata> ack = kafkaProducer.send(record);
             return ack.get(timeout.toMillis(), MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {

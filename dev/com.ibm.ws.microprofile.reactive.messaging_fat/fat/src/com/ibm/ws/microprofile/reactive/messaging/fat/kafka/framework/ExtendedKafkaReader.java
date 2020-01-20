@@ -50,6 +50,10 @@ public class ExtendedKafkaReader<K, V> implements AutoCloseable {
      * @return the list of records received
      */
     public List<ConsumerRecord<K, V>> waitForRecords(int count, Duration timeout) {
+        return waitForRecords(count, timeout, true);
+    }
+
+    public List<ConsumerRecord<K, V>> waitForRecords(int count, Duration timeout, boolean assertNumberOfRecords) {
         ArrayList<ConsumerRecord<K, V>> result = new ArrayList<>();
         Duration remaining = timeout;
         long startTime = System.nanoTime();
@@ -60,7 +64,9 @@ public class ExtendedKafkaReader<K, V> implements AutoCloseable {
             Duration elapsed = Duration.ofNanos(System.nanoTime() - startTime);
             remaining = timeout.minus(elapsed);
         }
-        assertThat("Wrong number of records fetched from kafka", result, hasSize(count));
+        if (assertNumberOfRecords) {
+            assertThat("Wrong number of records fetched from kafka", result, hasSize(count));
+        }
         return result;
     }
 

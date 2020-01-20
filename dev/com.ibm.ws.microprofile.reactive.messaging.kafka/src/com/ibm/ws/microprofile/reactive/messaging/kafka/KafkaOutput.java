@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,12 @@ public class KafkaOutput<K, V> {
     private final KafkaProducer<K, V> kafkaProducer;
     private final String topic;
     private volatile boolean running = true;
+    private final String channelName;
 
-    public KafkaOutput(String topic, KafkaProducer<K, V> kafkaProducer) {
+    public KafkaOutput(String topic, String channelName, KafkaProducer<K, V> kafkaProducer) {
         this.topic = topic;
         this.kafkaProducer = kafkaProducer;
+        this.channelName = channelName;
     }
 
     public SubscriberBuilder<Message<V>, Void> getSubscriber() {
@@ -43,7 +45,7 @@ public class KafkaOutput<K, V> {
 
     private void sendMessage(Message<V> message) {
         try {
-            this.kafkaProducer.send(this.topic, message.getPayload(), (r, e) -> {
+            this.kafkaProducer.send(this.topic, this.channelName, message.getPayload(), (r, e) -> {
                 if (e == null) {
                     message.ack();
                 } else {
