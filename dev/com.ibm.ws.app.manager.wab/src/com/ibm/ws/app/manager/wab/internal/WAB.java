@@ -64,8 +64,8 @@ class WAB implements BundleTrackerCustomizer<WAB> {
     private static final TraceComponent tc = Tr.register(WAB.class);
 
     static final String OSGI_WEB_EVENT_TOPIC_PREFIX = "org/osgi/service/web/";
-    private static final String OPS_VIRTUAL_HOST = "ops_host";
-    private static final String ADMIN_VIRTUAL_HOST = "admin_host";
+    private static final String OPS_VIRTUAL_HOST = "liberty_ops_host";
+    private static final String ADMIN_VIRTUAL_HOST = "liberty_admin_host";
     private static final String EARLY_ACCESS = "EARLY_ACCESS";
 
     private static final Bundle extenderBundle;

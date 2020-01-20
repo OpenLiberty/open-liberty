@@ -22,14 +22,14 @@
 
     <httpEndpoint id="adminHttpEndpoint" httpPort="9082" httpsPort="9445" host="localhost" />
 
-    <virtualHost id="admin_host"> 
+    <virtualHost id="liberty_admin_host"> 
         <hostAlias>localhost:9082</hostAlias>
         <hostAlias>localhost:9445</hostAlias>
     </virtualHost>
 
     <httpEndpoint id="opsHttpEndpoint" httpPort="9083" httpsPort="9446" host="localhost" />
 
-    <virtualHost id="ops_host"> 
+    <virtualHost id="liberty_ops_host"> 
         <hostAlias>localhost:9083</hostAlias>
         <hostAlias>localhost:9446</hostAlias>
     </virtualHost>
