@@ -94,9 +94,9 @@ public interface ExecutorBuilder<R> {
     public <W> Executor<W> buildAsync(Class<?> asyncResultWrapperType);
 
     /**
-     * Set a request context bean so that the request context can be activated and deactivated during execution.
+     * Set an AsyncRequestContextController so that the request context can be activated and deactivated during execution.
      *
-     * @param asyncRequestContext an injected instance of the application scoped AsyncRequestContextControllerImpl class (the bean).
+     * @param asyncRequestContext an implementation of the {@link AsyncRequestContextController} Interface.
      */
     public void setRequestContextController(AsyncRequestContextController asyncRequestContext);
 

@@ -252,7 +252,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                     if (asyncRequestContext != null) {
                         requestContext = asyncRequestContext.activateContext();
                     }
-                    
+
                     try {
                         W result = executionContext.getCallable().call();
                         methodResult = MethodResult.success(result);
@@ -269,6 +269,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             } catch (IllegalStateException e) {
                 // The application or module has gone away, we can no longer run things for this app
                 // Mark this as an internal failure as we don't want any retries or further processing to occur
+                // Note: If the method execution threw an IllegalStateException it would have been caught by the 'catch(Throwable e)' above
                 methodResult = MethodResult.internalFailure(createAppStoppedException(e, attemptContext.getExecutionContext()));
             }
 
