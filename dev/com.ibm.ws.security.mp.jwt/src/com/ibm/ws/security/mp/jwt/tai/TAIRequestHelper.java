@@ -186,7 +186,7 @@ public class TAIRequestHelper {
         if (hdrValue.contains(" ")) {
             String result = hdrValue.substring(hdrValue.indexOf(" ") + 1);
             System.out.println("*** for header value of: " + hdrValue + " returning token: " + result);
-            return hdrValue.substring(hdrValue.indexOf(" "));
+            return result;
 
         }
         // todo: why is this here?  instrumented trace not working?
