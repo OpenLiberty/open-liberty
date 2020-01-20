@@ -52,7 +52,7 @@ CWWKC1505.mtt.timeout.rollback.explanation=The task took too long to run, so the
 CWWKC1505.mtt.timeout.rollback.useraction=A larger missedTaskThreshold might be needed, or the task might need to be made shorter.
 
 CWWKC1506.marked.rollback.only=CWWKC1506E: Transaction is marked to roll back.
-CWWKC1506.marked.rollback.only.explanation=The application might have marked the transaction to roll back using setRollbackOnly, or it could be due to an error or timeout.
+CWWKC1506.marked.rollback.only.explanation=The application marked the transaction to roll back with setRollbackOnly, or an error or timeout caused the rollback.
 CWWKC1506.marked.rollback.only.useraction=If the rollback is unexpected, check the logs and the application.
 
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Persistent executor {0} aborted task {1} because it rolled back or failed {2} consecutive times.
