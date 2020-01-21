@@ -126,7 +126,7 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=If the message contains another er
 
 # 0=User API response string
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: The token introspection request failed because the token that is included in the request is not valid. The full response is {0}.
-INTROSPECT_USER_API_INACTIVE.explanation=Either the authorization server did not issue the token, the resource owner revoked the token, the token is expired, or another error occurred.
+INTROSPECT_USER_API_INACTIVE.explanation=The authorization server did not issue the token, the resource owner revoked the token, the token is expired, or another error occurred.
 INTROSPECT_USER_API_INACTIVE.useraction=Check the response that is included in the message. Verify that the correct token introspection endpoint is used. Verify that the token is valid and that the token can be introspected.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
