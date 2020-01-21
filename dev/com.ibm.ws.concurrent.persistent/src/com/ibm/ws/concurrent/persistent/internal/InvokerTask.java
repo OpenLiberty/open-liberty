@@ -235,6 +235,7 @@ public class InvokerTask implements Runnable, Synchronization {
     /**
      * Executes the task on a thread from the common Liberty thread pool.
      */
+    @FFDCIgnore(RollbackException.class)
     @Override
     public void run() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -497,7 +498,7 @@ public class InvokerTask implements Runnable, Synchronization {
             if (tranMgr.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
                 // discontinue if already marked to roll back
                 long durationMS = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tranBeginNS);
-                if (durationMS >= timeout * 1000l) {
+                if (timeout > 0 && durationMS >= timeout * 1000l) {
                     // The transaction was probably marked for roll back due to the the transaction timing out,
                     // although it could have been marked to roll back even prior to that.
                     String elapsedTime = NumberFormat.getInstance().format(durationMS / 1000.0);
@@ -611,6 +612,9 @@ public class InvokerTask implements Runnable, Synchronization {
                     }
                 }
             }
+        } catch (RollbackException x) {
+            if (failure == null)
+                failure = x;
         } catch (Throwable x) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "marking transaction to roll back in response to error", x);
