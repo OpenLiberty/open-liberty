@@ -244,26 +244,29 @@ public class ConfigTest extends FATServletClient {
         String method = "testConfigChangeAuthData";
         Log.info(c, method, "Executing " + method);
 
-        String originalUserName = testContainer.getUsername();
+        // First use the authData with its current value
+        runTest(basicfat, "testConfigChangeAuthDataOriginalValue");
 
-        // First check that authData matches with what was provided by the TestContainer
-        runTestWithResponse(server, basicfat, "testConfigChangeAuthDataOriginalValue&originalUsername=" + originalUserName);
-
-        // Update the authData's user
+        // Find the derbyAuth1 element
         ServerConfiguration config = server.getServerConfiguration();
         AuthData derbyAuth1 = null;
         for (AuthData authData : config.getAuthDataElements())
             if ("derbyAuth1".equals(authData.getId()))
                 derbyAuth1 = authData;
+        // Fail if we cannot find it
         if (derbyAuth1 == null) {
             System.out.println("Failure during " + method + " with the following config:");
             System.out.println(config);
             fail("Did not find authData with id=derbyAuth1");
         }
+        // Save the original username
+        String originalUserName = derbyAuth1.getUser();
 
+        // Update to a new username
         derbyAuth1.setUser("updatedUserName");
 
         try {
+            // Update and use the authData with its new value
             updateServerConfig(config, EMPTY_EXPR_LIST);
             runTest(basicfat, "testConfigChangeAuthData");
         } catch (Throwable x) {
@@ -276,8 +279,9 @@ public class ConfigTest extends FATServletClient {
         derbyAuth1.setUser(originalUserName);
 
         try {
+            // Update and use the authData with its restored value
             updateServerConfig(config, EMPTY_EXPR_LIST);
-            runTestWithResponse(server, basicfat, "testConfigChangeAuthDataOriginalValue&originalUsername=" + originalUserName);
+            runTest(basicfat, "testConfigChangeAuthDataOriginalValue");
         } catch (Throwable x) {
             System.out.println("Failure during " + method + " with the following config:");
             System.out.println(config);

@@ -51,8 +51,6 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.UserTransaction;
@@ -163,8 +161,10 @@ public class DataSourceTestServlet extends FATServlet {
     @Resource(name = "jdbc/dsfat6ref", lookup = "java:comp/env/jdbc/dsfat6")
     DataSource ds6; // one-phase, Derby only, see @DataSourceDefinition above
 
+    // one-phase, Derby only, see @DataSourceDefinition above
+    // ibm-web-ext.xml overrides isolation to 1, ibm-web-bnd.xml sets authentication-alias to derbyAuth1
     @Resource(name = "jdbc/dsfat6ref1", lookup = "java:comp/env/jdbc/dsfat6")
-    DataSource ds6_1; // one-phase, Derby only, isolation=1, see @DataSourceDefinition above
+    DataSource ds6_1;
 
     @Resource(name = "jdbc/dsfat7ref", lookup = "java:module/env/jdbc/dsfat7")
     DataSource ds7; // one-phase, Derby only
@@ -370,7 +370,7 @@ public class DataSourceTestServlet extends FATServlet {
             DatabaseMetaData metadata = con.getMetaData();
             String user = metadata.getUserName();
             if (!"updatedUserName".equalsIgnoreCase(user))
-                throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected:updatedUserName Instead:" + user);
+                throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected: updatedUserName Instead: " + user);
         } finally {
             con.close();
         }
@@ -379,19 +379,14 @@ public class DataSourceTestServlet extends FATServlet {
     /**
      * Verify that a config change that sets authData derbyAuth1 back its original value.
      */
-    public void testConfigChangeAuthDataOriginalValue(HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        String origUser = request.getParameter("originalUsername");
-
-        if (origUser == null) {
-            throw new Exception("Test suite called test without providing an original username.");
-        }
+    public void testConfigChangeAuthDataOriginalValue() throws Throwable {
 
         Connection con = ds6_1.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
             String user = metadata.getUserName();
-            if (!origUser.equalsIgnoreCase(user))
-                throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected:" + origUser + " Instead:" + user);
+            if (!"dbuser1".equalsIgnoreCase(user))
+                throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected: dbuser1 Instead: " + user);
         } finally {
             con.close();
         }
