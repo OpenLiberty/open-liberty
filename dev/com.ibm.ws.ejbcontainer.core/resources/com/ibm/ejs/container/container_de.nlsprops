@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1542,9 +1542,16 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=In Versionsmodulen deklarierte Entity
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Entfernen Sie Verwendung der nicht unterst\u00fctzten Entity-Bean aus der Anwendung oder packen Sie die Bean in eine Anwendung der Version 6 oder fr\u00fcher.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Die Schnittstelle {0} der Bean {1} im Modul {2} der Anwendung {3} kann nicht an die Namensposition {4} gebunden werden. Die Schnittstelle {5} der Bean {6} im Modul {7} der Anwendung {8} ist bereits an die Namensposition {4} gebunden. Die Namensposition {4} ist nicht zug\u00e4nglich.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Jede Enterprise-Bean-Schnittstelle muss eine eindeutige Bindungsposition angeben.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Korrigieren Sie die Bindungsdatei einer dieser beiden Bean-Schnittstellen so, dass jede Schnittstelle eine eindeutige Bindungsposition hat.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Die Schnittstelle {0} der Bean {1} im Modul {2} der Anwendung {3} kann nicht an die Namensposition {4} gebunden werden. Die Schnittstelle {5} der Bean {6} im Modul {7} der Anwendung {8} ist bereits an die Namensposition {4} gebunden. Die Namensposition {4} ist nicht zug\u00e4nglich.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Jede Enterprise-Bean-Schnittstelle muss eine eindeutige Bindungsposition angeben.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Korrigieren Sie die Bindungsdatei einer dieser beiden Bean-Schnittstellen so, dass jede Schnittstelle eine eindeutige Bindungsposition hat.
 
 
 

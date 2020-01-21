@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1562,9 +1562,16 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=I bean enterprise di entit\u00e0 dich
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Rimuovere l'uso del bean enterprise di entit\u00e0\u00a0 non supportato dall'applicazione o comprimere il bean in un'applicazione della versione 6 o precedente.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Impossibile eseguire il bind dell''interfaccia {0} del bean {1} nel modulo {2} dell''applicazione {3} all''ubicazione del nome {4}. L l''interfaccia {5} del bean {6} nel modulo {7} dell''applicazione {8} \u00e8 gi\u00e0 collegata all''ubicazione del nome {4}. L''ubicazione del nome {4} non \u00e8 accessibile.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Ogni interfaccia bean enterprise deve specificare una ubicazione di bind univoca.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Correggere il file di bind di una di queste due interfacce in modo che ciascuna interfaccia disponga di una ubicazione di bind univoca.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Impossibile eseguire il bind dell''interfaccia {0} del bean {1} nel modulo {2} dell''applicazione {3} all''ubicazione del nome {4}. L l''interfaccia {5} del bean {6} nel modulo {7} dell''applicazione {8} \u00e8 gi\u00e0 collegata all''ubicazione del nome {4}. L''ubicazione del nome {4} non \u00e8 accessibile.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Ogni interfaccia bean enterprise deve specificare una ubicazione di bind univoca.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Correggere il file di bind di una di queste due interfacce in modo che ciascuna interfaccia disponga di una ubicazione di bind univoca.
 
 
 
