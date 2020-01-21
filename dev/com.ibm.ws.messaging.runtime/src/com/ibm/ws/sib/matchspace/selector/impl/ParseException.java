@@ -146,7 +146,7 @@ public class ParseException extends Exception {
   /**
    * The end of line string for this machine.
    */
-  protected String eol = System.getProperty("line.separator", "\n");
+  protected String eol = System.lineSeparator();
  
   private static final long serialVersionUID = 6376297898768898042L;
   /**

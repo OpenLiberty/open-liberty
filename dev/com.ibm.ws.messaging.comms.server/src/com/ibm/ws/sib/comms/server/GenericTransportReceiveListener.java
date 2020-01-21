@@ -100,7 +100,7 @@ public class GenericTransportReceiveListener implements ConversationReceiveListe
         ServerLinkLevelState lls = null;
 
         if (tc.isDebugEnabled()) {
-            String LF = System.getProperty("line.separator");
+            String LF = System.lineSeparator();
             String debugInfo = LF + LF + "-------------------------------------------------------" + LF;
 
             debugInfo += " Segment type  : " + JFapChannelConstants.getSegmentName(segmentType) +

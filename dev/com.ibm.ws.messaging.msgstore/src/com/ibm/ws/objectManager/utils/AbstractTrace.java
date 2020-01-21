@@ -420,7 +420,7 @@ public abstract class AbstractTrace
     /*
      * Byte array formatting methods
      */
-    final static String ls = System.getProperty("line.separator");
+    final static String ls = System.lineSeparator();
     final static String DEAD_CHAR = ".";
 
     private static String pad(String s, int l)

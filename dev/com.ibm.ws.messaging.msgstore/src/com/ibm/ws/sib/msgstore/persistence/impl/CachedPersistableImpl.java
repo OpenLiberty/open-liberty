@@ -28,7 +28,7 @@ import com.ibm.ws.sib.utils.ras.FormattedWriter;
  */
 public abstract class CachedPersistableImpl implements Tuple
 {
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private final Tuple _masterPersistable;
 
