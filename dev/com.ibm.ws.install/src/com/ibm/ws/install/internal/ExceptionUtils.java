@@ -287,18 +287,18 @@ public class ExceptionUtils {
     }
 
     /**
-     * Return a String containing one of more singleton incompatibility exceptions.
+     * Return a String containing one of more singleton incompatibility exceptions if they exist.
      * @param featureChain
      * @return
      */
-    private static String parseFeatureConflicts( Map<String, Collection<com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain>> featureChain){
+    private static String checkForSingletonException(Map<String, Collection<FeatureResolver.Chain>> featureChain){
         StringBuilder sb = new StringBuilder();
 
         List<String> offendingFeatures;
         for(String featureFullName : featureChain.keySet()){
             offendingFeatures = new ArrayList<>();
-            Collection<com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain> chainList = featureChain.get(featureFullName);
-            for(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain chain : chainList){
+            Collection<FeatureResolver.Chain> chainList = featureChain.get(featureFullName);
+            for(FeatureResolver.Chain chain : chainList){
                 for(String candidate: chain.getCandidates()){
                     String shortname = getFeatureShortname(candidate);
                     if(!offendingFeatures.contains(shortname)){
@@ -318,6 +318,50 @@ public class ExceptionUtils {
                 }
                 String lastFeature = offendingFeatures.get(offendingFeatures.size() - 1);
                 sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES_SINGLETON", nMinusOneFeatures.toString(), lastFeature)).append("\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String checkForIncompatibleFeatureException(Map<String, Collection<FeatureResolver.Chain>> featureChain, Set<String> topAssets) {
+        Set<Set<String>> offendingFeaturePairs = new HashSet<>();
+        StringBuilder sb = new StringBuilder();
+
+        // loop through feature conflicts
+        for (String featureFamilyName : featureChain.keySet()) {
+            Set<String> off = new HashSet<>();
+            Collection<FeatureResolver.Chain> chainList = featureChain.get(featureFamilyName);
+            for (FeatureResolver.Chain chain : chainList) {
+                for (String featureName : chain.getChain()) {
+                    String sname = getFeatureShortname(featureName);
+                    if (topAssets.contains(sname)) {
+                        off.add(sname);
+                    }
+                }
+            }
+            if (off.size() > 1) {
+                offendingFeaturePairs.add(off);
+            }
+
+        }
+        if (!!!offendingFeaturePairs.isEmpty()) {
+            // TODO remove subsets?
+            for (Set<String> p : offendingFeaturePairs) {
+                List<String> pair = new ArrayList<>(p);
+
+                // determine which message to use
+                if (pair.size() == 2) {
+                    String f1 = pair.get(0);
+                    String f2 = pair.get(1);
+                    sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES", f1, f2)).append("\n");
+                } else {
+                    StringBuilder nMinusOneFeatures = new StringBuilder();
+                    for (String feature : pair.subList(0, pair.size() - 1)) {
+                        nMinusOneFeatures.append(feature).append(",");
+                    }
+                    String lastFeature = pair.get(pair.size() - 1);
+                    sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES", nMinusOneFeatures.toString(), lastFeature)).append("\n");
+                }
             }
         }
         return sb.toString();
@@ -347,60 +391,24 @@ public class ExceptionUtils {
     static InstallException create(RepositoryResolutionException e, Collection<String> assetNames, File installDir, boolean installingAsset,
                                    boolean isOpenLiberty) {
         Collection<MissingRequirement> allRequirementsNotFound = e.getAllRequirementsResourcesNotFound();
+        // resolveAsSet singleton features exception check
         if(allRequirementsNotFound.isEmpty()){
-            String msg = parseFeatureConflicts(e.getFeatureConflicts());
-            InstallException ie;
-            ie = create(msg, e);
-            ie.setData(assetNames);
-            return ie;
-        }
-
-        if(e.getFeatureConflicts().size()> 0){
-            Set<String> topAssets = new HashSet<>(assetNames);
-            Set<Set<String>> offendingFeaturePairs = new HashSet<>();
-
-            // loop through feature conflicts
-            Map<String, Collection<FeatureResolver.Chain>> featureConflicts = e.getFeatureConflicts();
-            for(String featureFamilyName : featureConflicts.keySet()) {
-                Set<String> off = new HashSet<>();
-                Collection<FeatureResolver.Chain> chainList = featureConflicts.get(featureFamilyName);
-                for(FeatureResolver.Chain chain : chainList){
-                    for(String featureName : chain.getChain()){
-                        String sname = getFeatureShortname(featureName);
-                        if(topAssets.contains(sname)){
-                            off.add(sname);
-                        }
-                    }
-                }
-                if(off.size() > 1){
-                    offendingFeaturePairs.add(off);
-                }
-
-            } // TODO remove subsets?
-            StringBuilder sb = new StringBuilder();
-            for(Set<String> p : offendingFeaturePairs){
-                List<String> pair = new ArrayList<>(p);
-
-                // determine which message to use
-                if(pair.size() == 2){
-                    String f1 = pair.get(0);
-                    String f2 = pair.get(1);
-                    sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES", f1, f2)).append("\n");
-                } else {
-                    StringBuilder nMinusOneFeatures = new StringBuilder();
-                    for(String feature : pair.subList(0, pair.size() - 1)){
-                        nMinusOneFeatures.append(feature).append(",");
-                    }
-                    String lastFeature = pair.get(pair.size() - 1);
-                    sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES", nMinusOneFeatures.toString(), lastFeature)).append("\n");
-                }
+            String msg = checkForSingletonException(e.getFeatureConflicts());
+            if(!msg.isEmpty()){
+                InstallException ie = create(msg, e);
+                ie.setData(assetNames);
+                return ie;
             }
-            InstallException ie;
-            ie = create(sb.toString(), e);
-            ie.setData(assetNames);
-            return ie;
         }
-
+        // incompatible features check (e.g cdi-2.0 jsf-2.2)
+        if(!e.getFeatureConflicts().isEmpty()) {
+            String msg = checkForIncompatibleFeatureException(e.getFeatureConflicts(), new HashSet<String>(assetNames));
+            if (!msg.isEmpty()) {
+                InstallException ie = create(msg, e);
+                ie.setData(assetNames);
+                return ie;
+            }
+        }
 
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
         for (MissingRequirement f : allRequirementsNotFound) {
@@ -543,11 +551,12 @@ public class ExceptionUtils {
                                    boolean isOpenLiberty, boolean isFeatureUtility) {
         Collection<MissingRequirement> allRequirementsNotFound = e.getAllRequirementsResourcesNotFound();
         if(allRequirementsNotFound.isEmpty()){
-            String msg = parseFeatureConflicts(e.getFeatureConflicts());
-            InstallException ie;
-            ie = create(msg, e);
-            ie.setData(assetNames);
-            return ie;
+            String msg = checkForSingletonException(e.getFeatureConflicts());
+            if(!msg.isEmpty()){
+                InstallException ie = create(msg, e);
+                ie.setData(assetNames);
+                return ie;
+            }
         }
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
         for (MissingRequirement f : allRequirementsNotFound) {
