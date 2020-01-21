@@ -63,6 +63,7 @@
             <version>1.0-RC1</version>
             <scope>system</scope>
             <!--  TODO not sure what to do here -->
+            <!--  this needs some help from someone -->
             <systemPath>${com.ibm.websphere.org.eclipse.microprofile.faulttolerance.2.0}</systemPath>
         </dependency>
         <dependency>
@@ -76,6 +77,11 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- This needs to be converted to junit for the LRA tests
+        it looks like the microprofile metrics tck uses junit, so that 
+        might be a good example to build on. This was originally based on fault tolerance
+        e.g. have a look at com.ibm.ws.microprofile.metrics_fat_tck/publish/tckRunner/tck/pom.xml
+         -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
