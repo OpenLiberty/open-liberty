@@ -250,10 +250,12 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 if (methodResult == null) {
                     ActivatedContext requestContext = null;
                     if (asyncRequestContext != null) {
+                        // Activate the @RequestScoped context
                         requestContext = asyncRequestContext.activateContext();
                     }
 
                     try {
+                        // Execute the method, store the result, and catch/store any exceptions for fault tolerance
                         W result = executionContext.getCallable().call();
                         methodResult = MethodResult.success(result);
                     } catch (Throwable e) {

@@ -77,9 +77,6 @@ public class AggregatedFTPolicy {
         return method;
     }
 
-    /**
-     * @return true if asyncResultWrapper is not null
-     */
     public boolean isAsynchronous() {
         return asyncResultWrapper != null;
     }
@@ -93,7 +90,7 @@ public class AggregatedFTPolicy {
     }
 
     /**
-     * @return the timeoutMillis
+     * @return timeoutMillis
      */
     public TimeoutPolicy getTimeoutPolicy() {
         return timeout;
@@ -117,7 +114,7 @@ public class AggregatedFTPolicy {
 
     /**
      * @param rcInstance an instance of the request context controller
-     * @return
+     * @return Executor<Object> built with {@link ExecutorBuilder} if not already set
      */
     @SuppressWarnings("unchecked")
     public Executor<Object> getExecutor() {

@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
 
 import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 
-public class MockAsyncRequestContext implements AsyncRequestContextController {
+public class MockAsyncRequestContextController implements AsyncRequestContextController {
 
     public int activateContextCount = 0;
     public int deactivateContextCount = 0;
