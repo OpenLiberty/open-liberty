@@ -97,7 +97,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         persistentExecutor.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
-        persistentExecutor.setInitialPollDelay("-1");
+        persistentExecutor.setInitialPollDelay("2s");
         persistentExecutor.setMissedTaskThreshold("4s");
         config.getDataSources().getById("SchedDB").getConnectionManagers().get(0).setMaxPoolSize("10");
         server.updateServerConfiguration(config);

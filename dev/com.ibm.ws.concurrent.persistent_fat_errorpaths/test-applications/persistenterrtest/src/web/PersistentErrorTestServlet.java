@@ -863,13 +863,13 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
-     * testRetryIntervalBelowMissedTaskThreshold - attempt to use a persistent executor where the retryInterval value is less than
-     * the missedTaskThreshold. The detailed error message that is logged is tested by the caller of this method.
+     * testRetryIntervalAndMissedTaskThresholdBothEnabled - attempt to use a persistent executor where the retryInterval and
+     * the missedTaskThreshold are both enabled. The detailed error message that is logged is tested by the caller of this method.
      */
-    public void testRetryIntervalBelowMissedTaskThreshold(HttpServletRequest request, PrintWriter out) throws Exception {
+    public void testRetryIntervalAndMissedTaskThresholdBothEnabled(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
-            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/retryIntervalBelowMissedTaskThreshold");
-            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval value is less than the missedTaskThreshold. " + misconfiguredExecutor);
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/retryIntervalAndMissedTaskThresholdBothEnabled");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval and missedTaskThreshold are both enabled. " + misconfiguredExecutor);
         } catch (NamingException x) {
             // expected
         }

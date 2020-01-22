@@ -124,9 +124,8 @@ public class InvokerTask implements Runnable, Synchronization {
      * @param consecutiveFailureCount number of consecutive task failures
      * @param config                  snapshot of persistent executor configuration
      * @param taskName                identity name for the task
-     * @param expectedStart           the expected start time of the task execution
      */
-    private void processRetryableTaskFailure(Throwable failure, ClassLoader loader, short consecutiveFailureCount, Config config, String taskName, long expectedStart) {
+    private void processRetryableTaskFailure(Throwable failure, ClassLoader loader, short consecutiveFailureCount, Config config, String taskName) {
         taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' ' ? String.valueOf(taskId) // empty task name
                         : taskId + " (" + taskName + ")";
         TaskStore taskStore = persistentExecutor.taskStore;
@@ -176,6 +175,8 @@ public class InvokerTask implements Runnable, Synchronization {
                         updates.setConsecutiveFailureCount(consecutiveFailureCount);
                         updates.setResult(persistentExecutor.serialize(taskFailure));
                         updates.setState((short) (TaskState.ENDED.bit | TaskState.FAILURE_LIMIT_REACHED.bit));
+                        if (config.missedTaskThreshold > 0)
+                            updates.setClaimExpiryOrPartition(-1); // immediately allow another server to claim the task
                         TaskRecord expected = new TaskRecord(false);
                         expected.setId(taskId);
                         taskStore.persist(updates, expected);
@@ -183,7 +184,7 @@ public class InvokerTask implements Runnable, Synchronization {
                         // -1 indicates the task is no longer in the persistent store
                         retry = consecutiveFailureCount != -1;
 
-                        if (retry) {
+                        if (retry && config.missedTaskThreshold == -1) {
                             String seconds = consecutiveFailureCount == 1 || config.retryInterval == 0L ? "0" : NumberFormat.getInstance().format(config.retryInterval / 1000.0);
                             if (failure == null)
                                 Tr.warning(tc, "CWWKC1500.task.rollback.retry", persistentExecutor.name, taskName, seconds);
@@ -208,23 +209,17 @@ public class InvokerTask implements Runnable, Synchronization {
             retry = true;
         }
 
-        if (retry == true) {
+        if (retry && config.missedTaskThreshold == -1) {
             // Retry the first failure immediately when fail over is disabled
             if (consecutiveFailureCount == 1 && config.missedTaskThreshold < 0 || config.retryInterval == 0L)
                 persistentExecutor.scheduledExecutor.submit(this);
             else {
                 long delay = config.retryInterval;
-                if (config.missedTaskThreshold > 0) {
-                    // Avoid rescheduling before the current claim runs out
-                    long elapsed = System.currentTimeMillis() - expectedStart;
-                    long remainingClaimed = config.missedTaskThreshold - elapsed;
-                    if (remainingClaimed > delay)
-                        delay = remainingClaimed + 1000;
-                }
                 persistentExecutor.scheduledExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
             }
+        } else {
+            persistentExecutor.inMemoryTaskIds.remove(taskId);
         }
-
     }
 
     /**
@@ -602,7 +597,6 @@ public class InvokerTask implements Runnable, Synchronization {
 
             runningTaskState.remove();
 
-            long expectedStart = expectedExecTime;
             try {
                 tranMgr.setTransactionTimeout(0); // clear the value so we don't impact subsequent transactions on this thread
 
@@ -614,7 +608,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     tranMgr.rollback();
                     if (config == null)
                         config = persistentExecutor.configRef.get();
-                    processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName, expectedStart);
+                    processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName);
                 } else {
                     if (taskIdForPropTable != null)
                         try {
@@ -659,7 +653,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     failure = x;
 
                 // Retry the task if an error occurred
-                processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName, expectedStart);
+                processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName);
             }
         }
 
