@@ -45,7 +45,7 @@ public class TAIUserApiUtils {
                 return getUserApiResponseFromOpenShift(clientConfig, accessToken, sslSocketFactory);
             }
 
-            if(clientConfig.getUserApiType().equals("introspect")) {
+            if("introspect".equals(clientConfig.getUserApiType())) {
                 return getUserApiResponseFromIntrospectEndpoint((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             if (isTokenExpectedToBeServiceAccountToken(clientConfig)) {
