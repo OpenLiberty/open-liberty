@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
-@WebServlet("/AsyncTest")
+@WebServlet("/AsyncReturnNullTest")
 public class AsyncReturnNullTestServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;

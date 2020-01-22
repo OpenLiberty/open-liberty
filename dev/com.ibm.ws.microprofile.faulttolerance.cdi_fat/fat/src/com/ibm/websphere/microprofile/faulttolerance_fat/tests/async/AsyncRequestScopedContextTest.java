@@ -30,18 +30,18 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class AsyncReturnNullTest extends FATServletClient {
+public class AsyncRequestScopedContextTest extends FATServletClient {
 
-    private static final String APP_NAME = "ftAsyncReturnNull";
+    private static final String APP_NAME = "ftAsyncRequestScopedContext";
 
     @Server("AsyncFaultTolerance")
-    @TestServlet(contextRoot = APP_NAME, servlet = AsyncReturnNullTestServlet.class)
+    @TestServlet(contextRoot = APP_NAME, servlet = AsyncRequestScopedContextTestServlet.class)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackage(AsyncReturnNullTest.class.getPackage());
+                        .addPackage(AsyncRequestScopedContextTest.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();
     }
@@ -51,7 +51,7 @@ public class AsyncReturnNullTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMFT0003W");
+        server.stopServer();
         server.deleteFileFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
     }
 
