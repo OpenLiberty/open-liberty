@@ -354,8 +354,8 @@ org.glassfish:javax.json:1.0.4
 org.glassfish:javax.json:1.1.3
 org.hamcrest:hamcrest-all:1.3
 org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
-org.hibernate.validator:hibernate-validator-cdi:6.0.13.Final
-org.hibernate.validator:hibernate-validator:6.0.13.Final
+org.hibernate.validator:hibernate-validator-cdi:6.1.1.Final
+org.hibernate.validator:hibernate-validator:6.1.1.Final
 org.hibernate:hibernate-core:5.2.17.Final
 org.hibernate:hibernate-search-engine:5.11.2.Final
 org.jacoco:org.jacoco.agent:0.7.9
