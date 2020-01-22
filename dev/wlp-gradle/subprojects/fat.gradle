@@ -49,6 +49,7 @@ dependencies {
   jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
 		'org.postgresql:postgresql:42.2.5',
 		'com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8',
+		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
 
@@ -85,11 +86,12 @@ task copyJdbcDrivers(type: Copy) {
   shouldRunAfter jar
   from configurations.jdbcDrivers
   into new File(autoFvtDir, 'publish/shared/resources/jdbc')
-  rename 'derby.*.jar', 'derby.jar'
   rename 'jcc.*.jar', 'jcc.jar'
-  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
-  rename 'postgresql.*.jar', 'postgresql.jar'
+  rename 'derby-.*.jar', 'derby.jar'
+  rename 'derbyclient-.*.jar', 'derbyclient.jar'
   rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
+  rename 'postgresql.*.jar', 'postgresql.jar'
+  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
 }
 
 task copyDatabaseRotationDrivers(type: Copy) {

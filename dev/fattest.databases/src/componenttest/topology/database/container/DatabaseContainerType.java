@@ -24,6 +24,7 @@ import com.ibm.websphere.simplicity.log.Log;
 public enum DatabaseContainerType {
     DB2("jcc.jar", "org.testcontainers.containers.", "Db2Container"),
     Derby("derby.jar", "componenttest.topology.database.container.", "DerbyNoopContainer"),
+    DerbyClient("derbyclient.jar", "componenttest.topology.database.container.", "DerbyClientNoopContainer"),
     Oracle("ojdbc8_g.jar", "org.testcontainers.containers.", "OracleContainer"),
     Postgres("postgresql.jar", "org.testcontainers.containers.", "PostgreSQLContainer"),
     SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.", "SQLServerContainer");
