@@ -1,0 +1,20 @@
+<server>
+
+	<sslDefault sslRef="DefaultSSLSettings" />
+	<ssl
+		id="DefaultSSLSettings"
+		keyStoreRef="myKeyStore"
+		trustStoreRef="myTrustStore"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="myKeyStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/commonBasicKeyStore.jks" />
+	<keyStore
+		id="myTrustStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/commonTrustStore.jks" />
+
+</server>        

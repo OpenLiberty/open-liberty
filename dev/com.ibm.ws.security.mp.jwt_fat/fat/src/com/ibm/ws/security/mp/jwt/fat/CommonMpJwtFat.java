@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Startup a Liberty Server with the JWT Builder enabled
-     * 
+     *
      * @param server - the server to startup
      * @param configFile - the config file to use when starting the serever
      * @throws Exception
@@ -60,7 +60,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Startup a Liberty Server with the JWT Builder enabled
-     * 
+     *
      * @param server - the server to startup
      * @param configFile - the config file to use when starting the serever
      * @param jwtEnabled - flag indicating if jwt should be enabled (used to set a bootstrap property that the config will use)
@@ -75,7 +75,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Deploy the basic MicroProfile Application
-     * 
+     *
      * @param server - the server to install the app on
      * @throws Exception
      */
@@ -88,7 +88,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Set good app check expectations - sets checks for good status code and for a message indicating what if any app class was invoked successfully
-     * 
+     *
      * @param theUrl - the url that the test invoked
      * @param appClass - the app class that should have been invoked
      * @return - newly created Expectations
@@ -105,7 +105,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Set bad app check expectations - sets checks for a 401 status code and the expected error message in the server's messages.log
-     * 
+     *
      * @param errorMessage - the error message to search for in the server's messages.log file
      * @return - newly created Expectations
      * @throws Exception
@@ -121,7 +121,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Build the http app url
-     * 
+     *
      * @param theServer - The server where the app is running (used to get the port)
      * @param root - the root context of the app
      * @param app - the specific app to run
@@ -136,7 +136,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Build the https app url
-     * 
+     *
      * @param theServer - The server where the app is running (used to get the port)
      * @param root - the root context of the app
      * @param app - the specific app to run
@@ -153,9 +153,9 @@ public class CommonMpJwtFat extends CommonSecurityFat {
      * Create the expectations for a good/successful test run. The App will log values for multiple data types obtained via different means. The app
      * will compare the values returned by each method to make sure that all of them return the same value for the same object.
      * This method will check to make sure that all of those checks worked.
-     * 
+     *
      * //TODO replace jwtTokenTools
-     * 
+     *
      * @param jwtTokenTools
      * @param theUrl - The test url that was invoked
      * @param testAppClass - the class of the test app invoked
@@ -170,8 +170,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
             expectations.addExpectations(CommonExpectations.successfullyReachedUrl(null, theUrl));
             expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, testAppClass, "Did not invoke the app " + testAppClass + "."));
             expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, testAppClass, "Did not invoke the app " + testAppClass + "."));
-            expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_DOES_NOT_CONTAIN, AppFailedCheckMsg, "Response contained string \"" + AppFailedCheckMsg
-                                                                                                                                  + "\" which indicates that injected claim values obtained via different means did NOT match"));
+            expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_DOES_NOT_CONTAIN, AppFailedCheckMsg, "Response contained string \"" + AppFailedCheckMsg + "\" which indicates that injected claim values obtained via different means did NOT match"));
             expectations.addExpectations(addClaimExpectations(jwtTokenTools, testAppClass));
 
             return expectations;
@@ -185,7 +184,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
      * Adds expectations for specific claims that we'll find in the JWTs that we test with.
      * We check to see that the various forms of injection retrieve the claims properly
      * TODO - replace jwtTokenTools
-     * 
+     *
      * @param jwtTokenTools
      * @param testAppClass - the test class invoked
      * @return - returns the expectations for specific claims
@@ -198,11 +197,9 @@ public class CommonMpJwtFat extends CommonSecurityFat {
                 expectations.addExpectation(addApiOutputExpectation("getRawToken", MpJwtFatConstants.MP_JWT_TOKEN, null, jwtTokenTools.getJwtTokenString()));
                 expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getIssuer", MpJwtFatConstants.JWT_BUILDER_ISSUER, PayloadConstants.ISSUER));
                 expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getSubject", MpJwtFatConstants.JWT_BUILDER_SUBJECT, PayloadConstants.SUBJECT));
-                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getTokenID", MpJwtFatConstants.JWT_BUILDER_JWTID, PayloadConstants.JWTID));
-                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getExpirationTime", MpJwtFatConstants.JWT_BUILDER_EXPIRATION,
-                                                                     PayloadConstants.EXPIRATION_TIME_IN_SECS));
-                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getIssuedAtTime", MpJwtFatConstants.JWT_BUILDER_ISSUED_AT,
-                                                                     PayloadConstants.ISSUED_AT_TIME_IN_SECS));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getTokenID", MpJwtFatConstants.JWT_BUILDER_JWTID, PayloadConstants.JWT_ID));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getExpirationTime", MpJwtFatConstants.JWT_BUILDER_EXPIRATION, PayloadConstants.EXPIRATION_TIME));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getIssuedAtTime", MpJwtFatConstants.JWT_BUILDER_ISSUED_AT, PayloadConstants.ISSUED_AT));
                 expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getAudience", MpJwtFatConstants.JWT_BUILDER_AUDIENCE, PayloadConstants.AUDIENCE));
                 expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getGroups", MpJwtFatConstants.PAYLOAD_GROUPS, "groups"));
                 // we won't have a list of claims to check for ClaimInjection, we don't use the api to retrieve the claims and there is no injected claim that lists all claims...
@@ -223,9 +220,9 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     /**
      * Adds the appropriate claim expectation for the requested claim.
      * Some claims will have a key:value and others will have key:<multivalue> and we'll need to build the
-     * expectation properly. In some cases, we just want to check for the existance of the claim.
+     * expectation properly. In some cases, we just want to check for the existence of the claim.
      * TODO - replace jwtTokenTools
-     * 
+     *
      * @param jwtTokenTools
      * @param jsonWebTokenApi -the jsonWebToken api (the runtime api method that returned the claim value)
      * @param claimIdentifier - the descriptive identifier for the claim
@@ -244,6 +241,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 //        Log.info(thisClass, "addApiOutputExpectations", "list of values is: " + values);
         if (!values.isEmpty()) {
             for (String value : values) {
+//                Log.info(thisClass, "addApiOutputExpectations", "value: " + value);
                 expectations.addExpectation(addApiOutputExpectation(jsonWebTokenApi, claimIdentifier, passKeyName, value));
             }
         } else {
@@ -255,7 +253,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Create a response expectation for the key/value being checked
-     * 
+     *
      * @param api - The api that was used to retrieve the claim
      * @param claimIdentifier - A more descriptive identifier for the claim
      * @param key - the claim's key
@@ -271,7 +269,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     /**
      * Build the string to search for (the test app should have logged this string if everything is working as it should)
-     * 
+     *
      * @param claimIdentifier - an identifier logged by the test app - could be the method used to obtain the key
      * @param key - the key to validate
      * @param value - the value to validate
@@ -284,9 +282,9 @@ public class CommonMpJwtFat extends CommonSecurityFat {
             builtString = builtString + ":";
         }
         if (key != null) {
-            builtString = builtString + " key: " + key + " value:.*" + value;
+            builtString = builtString + " key: " + key + " value:.*" + value.replace("\"", "");
         } else {
-            builtString = builtString + " " + value.replace("[", "\\[").replace("]", "\\]");
+            builtString = builtString + " " + value.replace("[", "\\[").replace("]", "\\]").replace("\"", "");
         }
 
         return builtString;
