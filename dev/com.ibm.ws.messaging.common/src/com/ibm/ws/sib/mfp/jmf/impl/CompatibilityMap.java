@@ -507,7 +507,7 @@ public final class CompatibilityMap implements HashedArray.Element {
 //  StringBuffer str = new StringBuffer(indices.length * 20);
 //  String i1 = "indices[";
 //  String i2 = "] = ";
-//  String linesep = System.getProperty("line.separator");
+//  String linesep = System.lineSeparator();
 //  str.append(linesep);
 //
 //  for (int i = 0; i < indices.length; i++) {

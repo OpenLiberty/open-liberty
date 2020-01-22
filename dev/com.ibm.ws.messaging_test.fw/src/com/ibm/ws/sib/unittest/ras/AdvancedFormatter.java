@@ -31,7 +31,7 @@ import java.util.logging.LogRecord;
 public class AdvancedFormatter extends Formatter
 {
   /** A cache of the line separator. */
-  public static final String lineSeparator = System.getProperty("line.separator");
+  public static final String lineSeparator = System.lineSeparator();
   
   /** Today - assumes trace will NOT across a day boundary - only used to determine DST anyway! */
   private static final Date TODAY = new Date();

@@ -142,7 +142,7 @@ public class ServerTransportReceiveListener extends CommonServerReceiveListener 
         buffer.reset(data);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            String LF = System.getProperty("line.separator");
+            String LF = System.lineSeparator();
             String debugInfo = LF + LF + "-------------------------------------------------------" + LF;
 
             debugInfo += " Segment type  : " + JFapChannelConstants.getSegmentName(segmentType) +
