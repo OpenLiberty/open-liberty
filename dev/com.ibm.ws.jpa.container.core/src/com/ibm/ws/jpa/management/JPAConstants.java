@@ -20,7 +20,7 @@ import com.ibm.ejs.util.dopriv.SystemGetPropertyPrivileged;
 public final class JPAConstants {
     // ********** JPA general, trace and bundling constants
     public static final String JPA_TRACE_GROUP = "JPA";
-    public static final String JPATRANSFORMER_TRACE_GROUP = "JavaPersistenceClassTransformation";
+    public static final String JPABYTECODE_TRACE_GROUP = "JavaPersistenceByteCode";
 
     public static final String JPA_RESOURCE_BUNDLE_NAME = "com.ibm.ws.jpa.jpa";
 
