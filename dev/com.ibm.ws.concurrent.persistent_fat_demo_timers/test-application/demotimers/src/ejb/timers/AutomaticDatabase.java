@@ -45,7 +45,7 @@ public class AutomaticDatabase {
 
     private int count = -1; //Incremented with each execution of timer
 
-    private boolean isTableCreated = false;
+    private static final String name = "DatabaseTimer";
 
     /**
      * Cancels timer execution
@@ -64,16 +64,31 @@ public class AutomaticDatabase {
 
     @PostConstruct
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void initTable() {
+    public void initTableAndRow() {
+        try {
+            initTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+        }
+
+        try {
+            initRow();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail(c.getName() + " caught exception when creating table row: " + e.getMessage());
+        }
+    }
+
+    private void initTable() throws SQLException {
         final String createTable = "CREATE TABLE AUTOMATICDATABASE (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
 
         try (Connection conn = ds.getConnection()) {
-            //See if table was created by another server
+            //See if table was already created
             DatabaseMetaData md = conn.getMetaData();
             ResultSet rs = md.getTables(null, null, "AUTOMATICDATABASE", null);
             while (rs.next()) {
-                isTableCreated = rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE");
-                if (isTableCreated)
+                if (rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE"))
                     return;
             }
 
@@ -81,11 +96,21 @@ public class AutomaticDatabase {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(createTable);
             }
+        }
+    }
 
-            isTableCreated = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+    private void initRow() throws SQLException {
+        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
+
+        //create count
+        count = 0;
+
+        try (Connection conn = ds.getConnection()) {
+            try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
+                pstmt.setString(1, name);
+                pstmt.setInt(2, count);
+                pstmt.executeUpdate();
+            }
         }
     }
 
@@ -94,40 +119,13 @@ public class AutomaticDatabase {
      */
     @Schedule(info = "Performing Database Operations", hour = "*", minute = "*", second = "*/30", persistent = true)
     public void run(Timer timer) {
-        if (!isTableCreated)
-            initTable();
-
         System.out.println("Running execution " + incrementCount(timer) + " of timer " + timer.getInfo());
-    }
-
-    private void initCounter(Timer timer) {
-        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
-
-        //create count
-        count = 1;
-
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
-                pstmt.setString(1, timer.getInfo().toString());
-                pstmt.setInt(2, count);
-                pstmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            count = -1;
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when creating table row: " + e.getMessage());
-        }
     }
 
     /**
      * Increment count.
      */
     private int incrementCount(Timer timer) {
-        if (count == -1) {
-            this.initCounter(timer);
-            return count;
-        }
-
         final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = ? WHERE name = ?";
 
         count++;
@@ -135,7 +133,7 @@ public class AutomaticDatabase {
         try (Connection conn = ds.getConnection()) {
             try (PreparedStatement pstmt = conn.prepareStatement(modifyRow)) {
                 pstmt.setInt(1, count);
-                pstmt.setString(2, timer.getInfo().toString());
+                pstmt.setString(2, name);
                 pstmt.executeUpdate();
             }
         } catch (SQLException e) {
