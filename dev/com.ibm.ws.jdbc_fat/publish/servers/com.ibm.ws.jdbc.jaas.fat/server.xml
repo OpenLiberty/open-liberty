@@ -242,5 +242,14 @@
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
     
+    <!-- Oracle JDBC test requirement -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    
+    <!-- Postgres JDBC test requirement -->
+    <javaPermission className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    
+    <!-- SQLServer JDBC test requirement -->
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+    
     <variable name="onError" value="FAIL"/>
 </server>
