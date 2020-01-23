@@ -1,0 +1,240 @@
+
+<server>
+
+	<featureManager>
+		<feature>timedexit-1.0</feature>
+		<feature>jwt-1.0</feature>
+		<feature>jaxrs-2.0</feature>
+	</featureManager>
+
+	<include location="${shared.config.dir}/fatTestPorts.xml" />
+
+	<include location="${shared.config.dir}/jwtConsumerClientApplication.xml" />
+
+	<jwtConsumer
+		id="defaultJwtConsumer"
+		issuer="client03"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer id="emptyConfig" />
+
+	<jwtConsumer
+		id="blankIssuer"
+		issuer=""
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="omittedIssuer"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sharedKeyBlank_HS256"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey=""
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sharedKeyBlank_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		sharedKey=""
+		trustStoreRef="rsa_trust"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sharedKeyOmitted_HS256"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sharedKeyOmitted_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="rsa_trust"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sharedKeyXor_HS256"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="{xor}MiYMNz4tOjsUOiYRMCgXPiwLMB06EzAxODotDCstMDE4Oi0eMTsSMC06DDo8Ki06"
+		audiences="http://localhost:${bvt.prop.security_1_HTTP_default}/jwtconsumerclient/JwtConsumerClient, https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwtconsumerclient/JwtConsumerClient"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sharedKeyBadXor_HS256"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="{xor}PT47DDc+LTo7FDom"
+		audiences="http://localhost:${bvt.prop.security_1_HTTP_default}/jwtconsumerclient/JwtConsumerClient, https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwtconsumerclient/JwtConsumerClient"
+	>
+	</jwtConsumer>
+
+	<keyStore
+		id="rsa_trust"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/rsa_trust.jks" />
+
+	<keyStore
+		id="multiKeyTrust"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/commonMultiKeyTrustStore.jks" />
+
+	<jwtConsumer
+		id="audienceBlank"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+		audience=""
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="audienceOmitted"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="audienceMultiple"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+		audiences="http://localhost:${bvt.prop.security_1_HTTP_default}/jwtconsumerclient/JwtConsumerClient, https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwtconsumerclient/JwtConsumerClient"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sigAlgOmitted"
+		issuer="client01"
+		trustStoreRef="rsa_trust"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="sigAlgBlank"
+		issuer="client01"
+		signatureAlgorithm=""
+		trustStoreRef="rsa_trust"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRefOmitted_RS256_withTrustedAlias"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRefOmitted_RS256_withoutTrustedAlias"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRefBlank_RS256_withTrustedAlias"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef=""
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRefBlank_RS256_withoutTrustedAlias"
+		issuer="client01"
+		trustStoreRef=""
+		signatureAlgorithm="RS256"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRef_RS256_withoutTrustedAlias_oneCert"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="rsa_trust"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRef_RS256_withoutTrustedAlias_multipleCert"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="multiKeyTrust"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRef_RS256_trustedAliasValid"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="rsa_trust"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRef_RS256_trustedAliasInValid"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="rsa_trust"
+		trustedAlias="badAlias"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="trustStoreRefInvalid_RS256_trustedAliasValid"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="badtrust"
+		trustedAlias="rsacert"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="clockSkew_short"
+		clockSkew="3s"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+		audiences="http://localhost:${bvt.prop.security_1_HTTP_default}/jwtconsumerclient/JwtConsumerClient, https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwtconsumerclient/JwtConsumerClient"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="clockSkew_default"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+		audiences="http://localhost:${bvt.prop.security_1_HTTP_default}/jwtconsumerclient/JwtConsumerClient, https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwtconsumerclient/JwtConsumerClient"
+	>
+	</jwtConsumer>
+
+</server>

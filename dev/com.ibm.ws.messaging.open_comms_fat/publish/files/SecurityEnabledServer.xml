@@ -5,7 +5,7 @@
   <featureManager>
     <feature>servlet-3.1</feature>
     <feature>wasJmsServer-1.0</feature>
-    <feature>testjmsinternals-1.0</feature>
+    <feature>wasJmsSecurity-1.0</feature>
   </featureManager>
 
   <variable name="onError" value="FAIL"/>
@@ -43,7 +43,7 @@
           <action>RECEIVE</action>
           <action>BROWSE</action>
         </queuePermission>
-        <group name="users" />
+        <group name="users"/>
       </role>
     </messagingSecurity>
   </messagingEngine>

@@ -95,10 +95,12 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
             if (server != null)
                 try {
                     if (server.isStarted())
-                    server.stopServer("CWWKC1500W", //Persistent Executor Rollback
-                                      "CWWKC1502W", //Persistent Executor Rollback, retry time unspecified
-                                      "CWWKC1510W", //Persistent Executor Rollback and Failed
-                                      "DSRA0174W"); //Generic Datasource Helper
+                        server.stopServer("CWWKC1500W", //Task rolled back
+                                          "CWWKC1501W", //Task rolled back due to failure ...
+                                          "CWWKC1502W", //Task rolled back, retry time unspecified
+                                          "CWWKC1510W", //Task rolled back and aborted
+                                          "CWWKC1511W", //Task rolled back and aborted. Failure is ...
+                                          "DSRA0174W"); //Generic Datasource Helper
                 } finally {
                     if (originalConfig != null)
                         server.updateServerConfiguration(originalConfig);

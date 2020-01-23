@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0333W", "CWWKC1500W");
+            server.stopServer("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E");
         }
     }
 

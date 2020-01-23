@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -260,6 +260,13 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Execution {0} attempt result: {1}", executionContext.getId(), methodResult);
+            }
+
+            if (!methodResult.isFailure() && (methodResult.getResult() == null)) {
+                String methodName = FTDebug.formatMethod(executionContext.getMethod());
+                Tr.warning(tc, "asynchronous.returned.null.CWMFT0003W", methodName);
+                methodResult = MethodResult.internalFailure(new NullPointerException(Tr.formatMessage(tc, "asynchronous.returned.null.CWMFT0003W", methodName)));
+                // Internal Failure -> Retry and Fallback are not applied
             }
 
             processMethodResult(attemptContext, methodResult, reservation);

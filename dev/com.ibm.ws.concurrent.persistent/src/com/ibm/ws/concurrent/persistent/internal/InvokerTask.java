@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.concurrent.LastExecution;
 import javax.enterprise.concurrent.Trigger;
+import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.Transaction;
@@ -190,10 +191,12 @@ public class InvokerTask implements Runnable, Synchronization {
                                 Tr.warning(tc, "CWWKC1500.task.rollback.retry", persistentExecutor.name, taskName, seconds);
                             else
                                 Tr.warning(tc, "CWWKC1501.task.failure.retry", persistentExecutor.name, taskName, failure, seconds);
-                        } else if (failure == null)
-                            Tr.warning(tc, "CWWKC1502.task.rollback", persistentExecutor.name, taskName);
-                        else
-                            Tr.warning(tc, "CWWKC1503.task.failure", persistentExecutor.name, taskName, failure);
+                        } else {
+                            if (failure == null)
+                                Tr.warning(tc, "CWWKC1502.task.rollback", persistentExecutor.name, taskName);
+                            else
+                                Tr.warning(tc, "CWWKC1503.task.failure", persistentExecutor.name, taskName, failure);
+                        }
                     }
                 } catch (Throwable x) {
                     failed = x;
@@ -225,6 +228,7 @@ public class InvokerTask implements Runnable, Synchronization {
     /**
      * Executes the task on a thread from the common Liberty thread pool.
      */
+    @FFDCIgnore(RollbackException.class)
     @Override
     public void run() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -284,6 +288,7 @@ public class InvokerTask implements Runnable, Synchronization {
             }
 
             tranMgr.begin();
+            long tranBeginNS = System.nanoTime();
             TaskRecord taskRecord;
 
             // Execution property TRANSACTION=SUSPEND indicates the task should not run in the persistent executor transaction.
@@ -483,7 +488,25 @@ public class InvokerTask implements Runnable, Synchronization {
 
             short autoPurgeBit = failure == null ? TaskRecord.Flags.AUTO_PURGE_ON_SUCCESS.bit : TaskRecord.Flags.AUTO_PURGE_ALWAYS.bit;
 
-            if ((nextExecTime == null || !skipped && nextFailureCount > 0) && (binaryFlags & autoPurgeBit) != 0) {
+            if (tranMgr.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
+                // discontinue if already marked to roll back
+                long durationMS = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tranBeginNS);
+                if (timeout > 0 && durationMS >= timeout * 1000l) {
+                    // The transaction was probably marked for roll back due to the the transaction timing out,
+                    // although it could have been marked to roll back even prior to that.
+                    String elapsedTime = NumberFormat.getInstance().format(durationMS / 1000.0);
+                    if (config.missedTaskThreshold == timeout)
+                        throw new RollbackException(Tr.formatMessage(tc, "CWWKC1505.mtt.timeout.rollback", elapsedTime, timeout));
+                    else
+                        throw new RollbackException(Tr.formatMessage(tc, "CWWKC1504.tx.timeout.rollback", elapsedTime, timeout));
+                } else {
+                    // The transaction timeout detection above is approximate.
+                    // When this code block is reached, it usually means that the transaction was marked to roll back
+                    // independently of the transaction timing out. But due to the imprecision, this code path might
+                    // some times be reached on the transaction timeout path as well.
+                    throw new RollbackException(Tr.formatMessage(tc, "CWWKC1506.marked.rollback.only"));
+                }
+            } else if ((nextExecTime == null || !skipped && nextFailureCount > 0) && (binaryFlags & autoPurgeBit) != 0) {
                 // Autopurge the completed task unless it is known that the task removed/canceled itself during execution
                 if (runningTaskRemovalState[1] != InvokerTask.REMOVED_BY_SELF) {
                     taskStore.remove(taskId, null, false);
@@ -582,6 +605,9 @@ public class InvokerTask implements Runnable, Synchronization {
                     }
                 }
             }
+        } catch (RollbackException x) {
+            if (failure == null)
+                failure = x;
         } catch (Throwable x) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "marking transaction to roll back in response to error", x);

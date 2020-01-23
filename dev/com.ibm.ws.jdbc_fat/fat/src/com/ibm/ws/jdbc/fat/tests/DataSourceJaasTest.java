@@ -82,7 +82,7 @@ public class DataSourceJaasTest extends FATServletClient {
                           "CWWKE0701E"); //TODO investigate why this warning is being logged
     }
 
-    //@Test TODO why does this test fail?
+    @Test
     public void testDataSourceMappingConfigAlias() throws Exception {
         runTest(server, basicfat, testName);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,6 +137,13 @@ public class RepeatFaultTolerance {
                         .andWith(mp20Features(server))
                         .andWith(ft20metrics11Features(server))
                         .andWith(mp30Features(server));
+    }
+
+    public static RepeatTests repeat20AndAbove(String server) {
+        return RepeatTests.with(ft20metrics11Features(server).fullFATOnly())
+                        .andWith(mp30Features(server).fullFATOnly())
+                        .andWith(mp32Features(server).fullFATOnly())
+                        .andWith(mp33Features(server));
     }
 
 }

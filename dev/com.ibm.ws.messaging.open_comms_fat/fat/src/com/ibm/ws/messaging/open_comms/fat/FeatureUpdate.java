@@ -64,6 +64,7 @@ public class FeatureUpdate extends FATBase {
 
   @AllowedFFDC({"com.ibm.websphere.sib.exception.SIResourceException"
                ,"com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException"
+               ,"com.ibm.ws.sib.jfapchannel.JFapHeartbeatTimeoutException"
                ,"javax.resource.ResourceException"
                ,"javax.resource.spi.ResourceAllocationException"
                })

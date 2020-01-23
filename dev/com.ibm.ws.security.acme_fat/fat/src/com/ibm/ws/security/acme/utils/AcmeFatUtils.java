@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
 package com.ibm.ws.security.acme.utils;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -32,33 +31,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.acme.FATSuite;
-import com.ibm.ws.security.acme.docker.PebbleContainer;
 
 /**
  * A collection of utility method for the ACME FAT component.
  */
 public class AcmeFatUtils {
-
-	/**
-	 * Retrieves the Docker host's IP address that is reachable from the
-	 * container.
-	 * 
-	 * @return The Docker host's IP address that is reachable from the
-	 *         container.
-	 * @throws IOException
-	 */
-	public static String getDockerHostIP() {
-		// TODO Works for local Docker containers, not remote ones.
-
-		for (String extraHost : FATSuite.pebble.getExtraHosts()) {
-			if (extraHost.startsWith("host.testcontainers.internal:")) {
-				return extraHost.replace("host.testcontainers.internal:", "");
-			}
-		}
-
-		return null; // TODO Should probably fail.
-	}
 
 	/**
 	 * Get an X.509 certificate from a PEM certificate.
@@ -118,9 +95,10 @@ public class AcmeFatUtils {
 	 * @param response
 	 *            The response that was received.
 	 */
-	public static void logHttpResponse(Class<?> clazz, String methodName, HttpRequestBase request, CloseableHttpResponse response) {
+	public static void logHttpResponse(Class<?> clazz, String methodName, HttpRequestBase request,
+			CloseableHttpResponse response) {
 		StatusLine statusLine = response.getStatusLine();
-		Log.info(clazz, methodName, request.getMethod() + " " + request.getURI() + " ---> "
-				+ statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
+		Log.info(clazz, methodName, request.getMethod() + " " + request.getURI() + " ---> " + statusLine.getStatusCode()
+				+ " " + statusLine.getReasonPhrase());
 	}
 }

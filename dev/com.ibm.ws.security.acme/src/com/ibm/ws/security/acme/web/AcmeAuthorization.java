@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class AuthorizationServlet
  */
-//@WebServlet("/acme-challenge/AcmeAuthorization")
+@WebServlet("/acme-challenge/AcmeAuthorization")
 public class AcmeAuthorization extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
