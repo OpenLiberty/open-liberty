@@ -74,7 +74,7 @@
         	id="hostNameExcludeList" required="false" type="String" default="" />
         	
         <AD name="%tcp.portOpenRetries" description="%tcp.portOpenRetries.desc" 
-        	id="portOpenRetries" required="false" type="Integer" default="0" />
+        	id="portOpenRetries" required="false" type="Integer" default="0" min="0" max="100000" />
         	
         <AD name="%tcp.acceptThread" description="%tcp.acceptThread.desc"
         	id="acceptThread" required="false" type="Boolean" default="false" />
