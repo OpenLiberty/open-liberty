@@ -21,4 +21,8 @@
   <module>
     <connector>enterpriseRA.rar</connector>
   </module>
+  <module>
+    <connector>loginModRA.rar</connector>
+  </module>
+
 </application>

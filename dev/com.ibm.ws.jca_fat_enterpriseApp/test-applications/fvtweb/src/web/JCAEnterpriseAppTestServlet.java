@@ -27,6 +27,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
+import javax.resource.cci.ConnectionFactory;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,6 +38,9 @@ import javax.sql.DataSource;
 @WebServlet(urlPatterns = "/JCAEnterpriseAppTestServlet")
 public class JCAEnterpriseAppTestServlet extends HttpServlet {
     private static final long serialVersionUID = 2803499654909072856L;
+
+    @Resource(name = "eis/cf1")
+    ConnectionFactory cf1;
 
     @Resource(name = "eis/ds1")
     DataSource ds1;
@@ -95,6 +99,21 @@ public class JCAEnterpriseAppTestServlet extends HttpServlet {
                 throw new Exception("Unexpected value: " + entry.getValue());
         } finally {
             map.clear();
+        }
+    }
+
+    /**
+     * testConnectionFactoryUsesLoginModule - Verify that a connection factory that is obtained from the loginModRA resource adapter has the
+     * user name that is assigned by its login module.
+     */
+    public void testConnectionFactoryUsesLoginModule(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        javax.resource.cci.Connection con = cf1.getConnection();
+        try {
+            String userPwd = con.getMetaData().getUserName();
+            if (!"lmuser/lmpwd".equals(userPwd))
+                throw new Exception("Unexpected user/password " + userPwd + " found on connection. Was the login module used?");
+        } finally {
+            con.close();
         }
     }
 
