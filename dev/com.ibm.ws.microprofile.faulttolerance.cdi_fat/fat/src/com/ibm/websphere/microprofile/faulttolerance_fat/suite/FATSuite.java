@@ -32,6 +32,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.FallbackMethodTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryReorderedTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncRequestScopedContextTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncReturnNullTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.completionstage.CDICompletionStageTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.ejb.AsyncEJBTest;
@@ -61,7 +62,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
                 CDICompletionStageTest.class,
                 InterceptorTest.class,
                 JaxRsTest.class,
-                AsyncReturnNullTest.class
+                AsyncReturnNullTest.class,
+                AsyncRequestScopedContextTest.class
 })
 
 public class FATSuite {
