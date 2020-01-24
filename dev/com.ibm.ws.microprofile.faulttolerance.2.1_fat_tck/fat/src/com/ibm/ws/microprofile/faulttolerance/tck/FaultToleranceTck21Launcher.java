@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
@@ -36,7 +35,6 @@ import componenttest.topology.utils.MvnUtils;
  * tests as if they were running as simplicity junit FAT tests in the standard
  * location.
  */
-@Mode(TestMode.EXPERIMENTAL)
 @RunWith(FATRunner.class)
 public class FaultToleranceTck21Launcher {
 
