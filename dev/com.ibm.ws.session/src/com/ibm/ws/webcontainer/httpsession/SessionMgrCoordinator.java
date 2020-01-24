@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -51,7 +52,7 @@ public class SessionMgrCoordinator {
 
     private ConfigurationAdmin configAdmin = null;
     private WsLocationAdmin wsLocationAdmin = null;
-    private ApplicationRecycleCoordinator appRecycleService= null;
+    private ServiceReference<ApplicationRecycleCoordinator> appRecycleService= null;
     private SessionStoreService sessionStoreService = null;
     private ScheduledExecutorService scheduledExecutorService = null;
     
@@ -188,7 +189,10 @@ public class SessionMgrCoordinator {
                 LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "registerSessionManager", "Stopping applications because the SessionManager has been initialized");
             }
             try {
-                this.appRecycleService.recycleApplications(null);
+                ApplicationRecycleCoordinator arc = context.getBundleContext().getService(appRecycleService);
+                if ( arc != null ) {
+                    arc.recycleApplications(null);
+                }
             } catch(Throwable thrown) {
                FFDCFilter.processException(thrown, getClass().getName(), "153", this);
             }
@@ -347,7 +351,7 @@ public class SessionMgrCoordinator {
     /**
      * @param appRecycleService the service used to restart applications in response to session config changes
      */
-    protected void setAppRecycleService(ApplicationRecycleCoordinator appRecycleService) {
+    protected void setAppRecycleService(ServiceReference<ApplicationRecycleCoordinator> appRecycleService) {
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.entering(CLASS_NAME, "setAppRecycleService", appRecycleService);
         }
@@ -360,7 +364,7 @@ public class SessionMgrCoordinator {
     /**
      * @param appRecycleService the previous service used to restart applications in response to session config changes
      */
-    protected void unsetAppRecycleService(ApplicationRecycleCoordinator appRecycleService) {
+    protected void unsetAppRecycleService(ServiceReference<ApplicationRecycleCoordinator> appRecycleService) {
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.entering(CLASS_NAME, "unsetAppRecycleService", appRecycleService);
         }
