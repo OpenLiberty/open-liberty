@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1547,9 +1547,16 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=\u5f53\u4efb\u4f55\u7248\u672c\u7684\
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=\u4ece\u5e94\u7528\u7a0b\u5e8f\u4e2d\u53d6\u6d88\u4f7f\u7528\u4e0d\u53d7\u652f\u6301\u7684\u5b9e\u4f53\u4f01\u4e1a Bean\uff0c\u6216\u8005\u5c06\u8be5 Bean \u5c01\u88c5\u5728 V6 \u6216\u66f4\u4f4e\u7248\u672c\u7684\u5e94\u7528\u7a0b\u5e8f\u4e2d\u3002
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: \u65e0\u6cd5\u5c06\u5e94\u7528\u7a0b\u5e8f {3} \u7684\u6a21\u5757 {2} \u4e2d Bean {1} \u7684\u63a5\u53e3 {0} \u7ed1\u5b9a\u81f3\u540d\u79f0\u4f4d\u7f6e {4}\u3002\u5e94\u7528\u7a0b\u5e8f {8} \u7684\u6a21\u5757 {7} \u4e2d Bean {6} \u7684\u63a5\u53e3 {5} \u5df2\u7ed1\u5b9a\u81f3\u540d\u79f0\u4f4d\u7f6e {4}\u3002\u540d\u79f0\u4f4d\u7f6e {4} \u4e0d\u53ef\u8bbf\u95ee\u3002
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=\u6bcf\u4e2a\u4f01\u4e1a bean \u63a5\u53e3\u90fd\u5fc5\u987b\u6307\u5b9a\u552f\u4e00\u7684\u7ed1\u5b9a\u4f4d\u7f6e\u3002
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=\u8bf7\u66f4\u6b63\u5176\u4e2d\u4e00\u4e2a Bean \u63a5\u53e3\u7684\u7ed1\u5b9a\u6587\u4ef6\uff0c\u4ee5\u4f7f\u6bcf\u4e2a\u63a5\u53e3\u90fd\u5177\u6709\u552f\u4e00\u7684\u7ed1\u5b9a\u4f4d\u7f6e\u3002
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: \u65e0\u6cd5\u5c06\u5e94\u7528\u7a0b\u5e8f {3} \u7684\u6a21\u5757 {2} \u4e2d Bean {1} \u7684\u63a5\u53e3 {0} \u7ed1\u5b9a\u81f3\u540d\u79f0\u4f4d\u7f6e {4}\u3002\u5e94\u7528\u7a0b\u5e8f {8} \u7684\u6a21\u5757 {7} \u4e2d Bean {6} \u7684\u63a5\u53e3 {5} \u5df2\u7ed1\u5b9a\u81f3\u540d\u79f0\u4f4d\u7f6e {4}\u3002\u540d\u79f0\u4f4d\u7f6e {4} \u4e0d\u53ef\u8bbf\u95ee\u3002
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=\u6bcf\u4e2a\u4f01\u4e1a bean \u63a5\u53e3\u90fd\u5fc5\u987b\u6307\u5b9a\u552f\u4e00\u7684\u7ed1\u5b9a\u4f4d\u7f6e\u3002
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=\u8bf7\u66f4\u6b63\u5176\u4e2d\u4e00\u4e2a Bean \u63a5\u53e3\u7684\u7ed1\u5b9a\u6587\u4ef6\uff0c\u4ee5\u4f7f\u6bcf\u4e2a\u63a5\u53e3\u90fd\u5177\u6709\u552f\u4e00\u7684\u7ed1\u5b9a\u4f4d\u7f6e\u3002
 
 
 
