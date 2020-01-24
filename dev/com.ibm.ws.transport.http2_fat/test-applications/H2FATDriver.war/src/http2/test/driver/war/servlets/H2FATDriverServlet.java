@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3336,14 +3336,14 @@ public class H2FATDriverServlet extends FATServlet {
 
     }
 
-    public void testTwoWindowUpdateFrameAboveMaxSize(HttpServletRequest request,
-                                                     HttpServletResponse response) throws InterruptedException, Exception {
+    public void testWindowUpdateFrameAboveMaxSize(HttpServletRequest request,
+                                                  HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testTwoWindowUpdateFrameAboveMaxSize", "Started!");
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testTwoWindowUpdateFrameAboveMaxSize",
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testWindowUpdateFrameAboveMaxSize", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testWindowUpdateFrameAboveMaxSize",
                         "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
         }
-        String testName = "testTwoWindowUpdateFrameAboveMaxSize";
+        String testName = "testWindowUpdateFrameAboveMaxSize";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
@@ -3358,9 +3358,6 @@ public class H2FATDriverServlet extends FATServlet {
 
         FrameWindowUpdate windowUpdateA = new FrameWindowUpdate(0, 2147483647, false);
         h2Client.sendFrame(windowUpdateA);
-
-        FrameWindowUpdate windowUpdateB = new FrameWindowUpdate(0, 2147483647, false);
-        h2Client.sendFrame(windowUpdateB);
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
