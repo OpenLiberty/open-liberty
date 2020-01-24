@@ -98,6 +98,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
                         server.stopServer("CWWKC1500W", //Task rolled back
                                           "CWWKC1501W", //Task rolled back due to failure ...
                                           "CWWKC1502W", //Task rolled back, retry time unspecified
+                                          "CWWKC1503W", //Task rolled back due to failure ..., retry time unspecified
                                           "CWWKC1510W", //Task rolled back and aborted
                                           "CWWKC1511W", //Task rolled back and aborted. Failure is ...
                                           "DSRA0174W"); //Generic Datasource Helper
