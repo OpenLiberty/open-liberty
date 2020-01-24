@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.acme;
+package com.ibm.ws.security.acme.fat;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,9 +30,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.shredzone.acme4j.exception.AcmeException;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.docker.PebbleContainer;
 import com.ibm.ws.security.acme.internal.AcmeCertificate;
 import com.ibm.ws.security.acme.internal.AcmeClient;
@@ -260,9 +260,10 @@ public class AcmeClientTest {
 		 * Without accepting the terms of service, fetchCertificate is going to
 		 * fail. Expect the following exception and message.
 		 */
-		expectedException.expect(AcmeException.class);
+		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage(
-				"The account must accept the terms of service. The terms of service can be found at the following URI: data:text/plain,Do%20what%20thou%20wilt");
+				"The account must accept the terms of service by setting the ACME CA configuration to have a value of \"true\" for 'acceptTermsOfService' "
+						+ "in the server.xml. The terms of service can be found at the following URI: data:text/plain,Do%20what%20thou%20wilt");
 
 		/*
 		 * Create an AcmeService to test.

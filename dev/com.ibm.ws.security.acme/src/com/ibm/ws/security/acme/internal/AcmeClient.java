@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,9 @@ import java.net.URI;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.shredzone.acme4j.Account;
 import org.shredzone.acme4j.AccountBuilder;
@@ -43,6 +43,8 @@ import org.shredzone.acme4j.util.KeyPairUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.acme.AcmeCaException;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 
 /**
  * The {@link AcmeClient} class is the gateway for all interactions with the
@@ -60,14 +62,9 @@ public class AcmeClient {
 	private static final TraceComponent tc = Tr.register(AcmeClient.class);
 
 	/**
-	 * RSA key size of generated key pairs.
-	 */
-	private static final int KEY_SIZE = 2048;
-
-	/**
 	 * A collection of account contacts.
 	 */
-	private Set<String> accountContact;
+	private Collection<String> accountContacts;
 
 	/**
 	 * File name of the account key pair.
@@ -88,7 +85,7 @@ public class AcmeClient {
 	/**
 	 * The URI of ACME CA server's directory.
 	 */
-	private String directoryURI;
+	private String directoryURI = null;
 
 	/**
 	 * File name of the domain key pair.
@@ -124,18 +121,24 @@ public class AcmeClient {
 	 * Create a new {@link AcmeClient} instance.
 	 * 
 	 * @param directoryURI
-	 *            The URI of the ACME CA's directory service.
+	 *            The URI of the ACME CA's directory service. Must be non-null
+	 *            and non-empty.
 	 * @param accountKeyFilePath
 	 *            The path to the account account key file. This path must be
 	 *            readable if it exists and writable if it does not exist.
-	 * @param accountContact
+	 * @param domainKeyFilePath
+	 *            The path to the account domain key file. This path must be
+	 *            readable if it exists and writable if it does not exist.
+	 * @param accountContacts
 	 *            A collection of account contacts.
+	 * @throws AcmeCaException
+	 *             if the parameters passed in were invalid.
 	 */
 	public AcmeClient(String directoryURI, String accountKeyFilePath, String domainKeyFilePath,
-			Set<String> accountContact) {
+			Collection<String> accountContacts) throws AcmeCaException {
 
 		if (directoryURI == null || directoryURI.trim().isEmpty()) {
-			throw new IllegalArgumentException("The ACME CA's directory URI must be a valid URI.");
+			throw new AcmeCaException("The ACME CA's directory URI must be a valid URI.");
 		}
 		validateKeyFilePath(accountKeyFilePath, "account");
 		validateKeyFilePath(domainKeyFilePath, "domain");
@@ -143,7 +146,7 @@ public class AcmeClient {
 		this.directoryURI = directoryURI;
 		this.accountKeyFilePath = accountKeyFilePath;
 		this.domainKeyFilePath = domainKeyFilePath;
-		this.accountContact = accountContact;
+		this.accountContacts = accountContacts;
 	}
 
 	/**
@@ -152,10 +155,10 @@ public class AcmeClient {
 	 *
 	 * @param authorization
 	 *            {@link Authorization} to perform
-	 * @throws AcmeException
-	 * @throws IOException
+	 * @throws AcmeCaException
+	 *             if there was an issue authorizing the domain.
 	 */
-	private void authorize(Authorization authorization) throws AcmeException, IOException {
+	private void authorize(Authorization authorization) throws AcmeCaException {
 		/*
 		 * The authorization is already valid. No need to process a challenge.
 		 */
@@ -180,7 +183,11 @@ public class AcmeClient {
 			/*
 			 * Now trigger the challenge.
 			 */
-			challenge.trigger();
+			try {
+				challenge.trigger();
+			} catch (AcmeException e) {
+				throw new AcmeCaException("Error triggering challenge to ACME server.", e);
+			}
 
 			/*
 			 * Poll for the challenge to complete.
@@ -193,7 +200,7 @@ public class AcmeClient {
 							+ authorization.getIdentifier().getDomain() + "' with status " + Status.INVALID.toString()
 							+ ".";
 					Tr.error(tc, msg);
-					throw new AcmeException(msg);
+					throw new AcmeCaException(msg);
 				}
 
 				/*
@@ -210,6 +217,8 @@ public class AcmeClient {
 					// TODO Wait until the moment defined in the returned
 					// Instant.
 					// Instant when = e.getRetryAfter();
+				} catch (AcmeException e) {
+					throw new AcmeCaException("Error updating challenge status from ACME server.", e);
 				}
 			}
 
@@ -222,7 +231,7 @@ public class AcmeClient {
 						+ authorization.getIdentifier().getDomain() + "'. Status is "
 						+ challenge.getStatus().toString();
 				Tr.error(tc, msg);
-				throw new AcmeException(msg);
+				throw new AcmeCaException(msg);
 			}
 
 		} finally {
@@ -243,8 +252,10 @@ public class AcmeClient {
 	 *            The certificate signing request options.
 	 * @return The {@link X509Certificate} returned from the certificate
 	 *         authority.
+	 * @throws AcmeCaException
+	 *             if there was an issue fetching the certificate.
 	 */
-	public AcmeCertificate fetchCertificate(CSROptions csrOptions) throws IOException, AcmeException {
+	public AcmeCertificate fetchCertificate(CSROptions csrOptions) throws AcmeCaException {
 
 		/*
 		 * Load the account key file. If there is no key file, create a new one.
@@ -274,7 +285,12 @@ public class AcmeClient {
 		if (csrOptions.getValidForMs() != null && csrOptions.getValidForMs() > 0) {
 			orderBuilder.notAfter(Instant.now().plusMillis(csrOptions.getValidForMs()));
 		}
-		Order order = orderBuilder.create();
+		Order order;
+		try {
+			order = orderBuilder.create();
+		} catch (AcmeException e) {
+			throw new AcmeCaException("Error creating order for ACME server.", e);
+		}
 
 		/*
 		 * Perform all required authorizations
@@ -312,13 +328,23 @@ public class AcmeClient {
 		/*
 		 * Sign the certificate signing request.
 		 */
-		csrb.sign(domainKeyPair);
+		try {
+			csrb.sign(domainKeyPair);
+		} catch (IOException e) {
+			throw new AcmeCaException("Error signing the certificate signing request.", e);
+		}
 		Tr.debug(tc, "Certificate Signing Request: " + csrb.toString());
 
 		/*
 		 * Order the certificate
 		 */
-		order.execute(csrb.getEncoded());
+		try {
+			order.execute(csrb.getEncoded());
+		} catch (AcmeException e) {
+			throw new AcmeCaException("Error ordering the certificate.", e);
+		} catch (IOException e) {
+			throw new AcmeCaException("Error getting the encoded certificate signing request.", e);
+		}
 
 		/*
 		 * Wait for the order to complete
@@ -332,7 +358,7 @@ public class AcmeClient {
 				String msg = "ACME CA responded that the challenge failed for domains " + csrOptions.getDomains()
 						+ " with status " + Status.INVALID.toString() + ".";
 				Tr.error(tc, msg);
-				throw new AcmeException(msg);
+				throw new AcmeCaException(msg);
 			}
 
 			/*
@@ -348,6 +374,8 @@ public class AcmeClient {
 			} catch (AcmeRetryAfterException e) {
 				// TODO Wait until the moment defined in the returned Instant.
 				// Instant when = e.getRetryAfter();
+			} catch (AcmeException e) {
+				throw new AcmeCaException("Error updating the order status from the ACME server.", e);
 			}
 		}
 
@@ -358,7 +386,7 @@ public class AcmeClient {
 			String msg = "Timed out waiting for successful order for domains " + csrOptions.getDomains()
 					+ ". Status is " + order.getStatus().toString();
 			Tr.error(tc, msg);
-			throw new AcmeException(msg);
+			throw new AcmeCaException(msg);
 		}
 
 		/*
@@ -370,20 +398,23 @@ public class AcmeClient {
 	}
 
 	/**
-	 * Find an existing account.
+	 * Find an existing account on the ACME CA server.
 	 * 
 	 * @param session
 	 *            Session with the ACME CA server.
 	 * @param accountKey
 	 *            The account key to lookup the account for.
 	 * @return The account or null if it was not found.
-	 * @throws AcmeException
+	 * @throws AcmeCaException
+	 *             if there was an issue requesting an existing account.
 	 */
-	private Account findExistingAccount(Session session, KeyPair accountKey) throws AcmeException {
+	private Account findExistingAccount(Session session, KeyPair accountKey) throws AcmeCaException {
 		try {
 			return new AccountBuilder().useKeyPair(accountKey).onlyExisting().create(session);
 		} catch (AcmeServerException e) {
 			return null;
+		} catch (AcmeException e) {
+			throw new AcmeCaException("Error requesting an existing account from ACME server.", e);
 		}
 	}
 
@@ -395,8 +426,10 @@ public class AcmeClient {
 	 * @param session
 	 *            {@link Session} to bind with
 	 * @return {@link Login} that is connected to your account
+	 * @throws AcmeCaException
+	 *             if there was an issue finding or registering an account.
 	 */
-	private Account findOrRegisterAccount(Session session, KeyPair accountKey) throws AcmeException {
+	private Account findOrRegisterAccount(Session session, KeyPair accountKey) throws AcmeCaException {
 
 		/*
 		 * Find an existing account.
@@ -408,19 +441,25 @@ public class AcmeClient {
 		 */
 		if (account == null) {
 			/*
+			 * Get the terms of service from the ACME server.
+			 */
+			URI tosURI = null;
+			try {
+				tosURI = session.getMetadata().getTermsOfService();
+			} catch (AcmeException e) {
+				throw new AcmeCaException("Error retrieving the terms of service from the ACME server.", e);
+			}
+
+			/*
 			 * If the server provides terms of service, the account must accept
 			 * them.
 			 */
-			URI tosURI = session.getMetadata().getTermsOfService();
 			if (tosURI != null && !termsOfServiceAgreed) {
-				/*
-				 * TODO Update the message to include the configuration
-				 * attribute?
-				 */
-				String msg = "The account must accept the terms of service. The terms of service can be found at the following URI: "
-						+ tosURI;
+				String msg = "The account must accept the terms of service by setting the ACME CA configuration to have a value of \"true\" for '"
+						+ AcmeConstants.ACCEPT_TERMS
+						+ "' in the server.xml. The terms of service can be found at the following URI: " + tosURI;
 				Tr.error(tc, msg);
-				throw new AcmeException(msg);
+				throw new AcmeCaException(msg);
 			} else if (tosURI != null) {
 				/*
 				 * Log that we are accepting the terms of the CA on behalf of
@@ -439,8 +478,8 @@ public class AcmeClient {
 			/*
 			 * Add any account contacts.
 			 */
-			if (accountContact != null && !accountContact.isEmpty()) {
-				for (String contact : accountContact) {
+			if (accountContacts != null && !accountContacts.isEmpty()) {
+				for (String contact : accountContacts) {
 					accountBuilder.addContact(contact);
 				}
 			}
@@ -448,7 +487,11 @@ public class AcmeClient {
 			/*
 			 * Finally, create the account.
 			 */
-			account = accountBuilder.create(session);
+			try {
+				account = accountBuilder.create(session);
+			} catch (AcmeException e) {
+				throw new AcmeCaException("Error creating account on ACME server.", e);
+			}
 		}
 
 		Tr.info(tc, "Fetched account from ACME CA. URL: " + account.getLocation());
@@ -472,8 +515,10 @@ public class AcmeClient {
 	 * Loads a account key pair from the account key file.
 	 *
 	 * @return Account's {@link KeyPair} or null if it does not exist.
+	 * @throws AcmeCaException
+	 *             if there was an issue loading the account key pair.
 	 */
-	private KeyPair loadAccountKeyPair() throws IOException {
+	private KeyPair loadAccountKeyPair() throws AcmeCaException {
 
 		File accountKeyFile = null;
 		if (accountKeyFilePath != null) {
@@ -486,8 +531,9 @@ public class AcmeClient {
 			 */
 			try (FileReader fr = new FileReader(accountKeyFile)) {
 				return KeyPairUtils.readKeyPair(fr);
+			} catch (IOException e) {
+				throw new AcmeCaException("Error reading domain key file.", e);
 			}
-
 		}
 
 		return null;
@@ -497,8 +543,10 @@ public class AcmeClient {
 	 * Loads a domain key pair from the domain key file.
 	 *
 	 * @return Domain's {@link KeyPair} or null if it does not exist.
+	 * @throws AcmeCaException
+	 *             if there was an issue loading the domain key pair.
 	 */
-	private KeyPair loadDomainKeyPair() throws IOException {
+	private KeyPair loadDomainKeyPair() throws AcmeCaException {
 
 		File domainKeyFile = null;
 		if (domainKeyFilePath != null) {
@@ -511,6 +559,8 @@ public class AcmeClient {
 			 */
 			try (FileReader fr = new FileReader(domainKeyFile)) {
 				return KeyPairUtils.readKeyPair(fr);
+			} catch (IOException e) {
+				throw new AcmeCaException("Error reading domain key pair file.", e);
 			}
 		}
 
@@ -525,8 +575,11 @@ public class AcmeClient {
 	 * not be able to access your account again if you should lose the key pair.
 	 *
 	 * @return Account's {@link KeyPair}.
+	 * @throws AcmeCaException
+	 *             if there was an error reading or writing the account key pair
+	 *             file.
 	 */
-	private KeyPair loadOrCreateAccountKeyPair() throws IOException {
+	private KeyPair loadOrCreateAccountKeyPair() throws AcmeCaException {
 
 		/*
 		 * See if we have an account KeyPair already.
@@ -540,15 +593,18 @@ public class AcmeClient {
 			/*
 			 * If there is none, create a new key pair and save it
 			 */
-			accountKeyPair = KeyPairUtils.createKeyPair(KEY_SIZE);
+			accountKeyPair = KeyPairUtils.createKeyPair(AcmeConstants.KEY_SIZE);
 
 			File accountKeyFile = null;
 			if (accountKeyFilePath != null) {
 				accountKeyFile = new File(accountKeyFilePath);
 			}
 			if (accountKeyFile != null) {
-				FileWriter fw = new FileWriter(accountKeyFile);
-				KeyPairUtils.writeKeyPair(accountKeyPair, fw);
+				try (FileWriter fw = new FileWriter(accountKeyFile)) {
+					KeyPairUtils.writeKeyPair(accountKeyPair, fw);
+				} catch (IOException e) {
+					throw new AcmeCaException("Error writing account key pair file.", e);
+				}
 			}
 		}
 
@@ -563,8 +619,11 @@ public class AcmeClient {
 	 * not be able to access your account again if you should lose the key pair.
 	 *
 	 * @return Account's {@link KeyPair}.
+	 * @throws AcmeCaException
+	 *             if there was an error reading or writing the account key pair
+	 *             file.
 	 */
-	private KeyPair loadOrCreateDomainKeyPair() throws IOException {
+	private KeyPair loadOrCreateDomainKeyPair() throws AcmeCaException {
 
 		/*
 		 * See if we have an domain KeyPair already.
@@ -578,15 +637,18 @@ public class AcmeClient {
 			/*
 			 * If there is none, create a new key pair and save it
 			 */
-			domainKeyPair = KeyPairUtils.createKeyPair(KEY_SIZE);
+			domainKeyPair = KeyPairUtils.createKeyPair(AcmeConstants.KEY_SIZE);
 
 			File domainKeyFile = null;
 			if (domainKeyFilePath != null) {
 				domainKeyFile = new File(domainKeyFilePath);
 			}
 			if (domainKeyFile != null) {
-				FileWriter fw = new FileWriter(domainKeyFile);
-				KeyPairUtils.writeKeyPair(domainKeyPair, fw);
+				try (FileWriter fw = new FileWriter(domainKeyFile)) {
+					KeyPairUtils.writeKeyPair(domainKeyPair, fw);
+				} catch (IOException e) {
+					throw new AcmeCaException("Error writing account key pair file.", e);
+				}
 			}
 		}
 
@@ -594,7 +656,7 @@ public class AcmeClient {
 	}
 
 	/**
-	 * Prepares an HTTP challenge.
+	 * Prepares an HTTP-01 challenge.
 	 * <p>
 	 * The verification of this challenge expects a file with a certain content
 	 * to be reachable at a given path under the domain to be tested.
@@ -607,9 +669,10 @@ public class AcmeClient {
 	 * @param auth
 	 *            {@link Authorization} to find the challenge in
 	 * @return {@link Challenge} to verify
-	 * @throws IOException
+	 * @throws AcmeCaException
+	 *             if there was an error preparing the HTTP-01 challenge.
 	 */
-	public Challenge prepareHttpChallenge(Authorization auth) throws AcmeException, IOException {
+	public Challenge prepareHttpChallenge(Authorization auth) throws AcmeCaException {
 		/*
 		 * Find a single http-01 challenge
 		 */
@@ -617,7 +680,7 @@ public class AcmeClient {
 		if (challenge == null) {
 			String msg = "Didn't find a " + Http01Challenge.TYPE + " challenge type.";
 			Tr.error(tc, msg);
-			throw new AcmeException(msg);
+			throw new AcmeCaException(msg);
 		}
 
 		/*
@@ -636,17 +699,18 @@ public class AcmeClient {
 	 * 
 	 * @param certificate
 	 *            The certificate to revoke.
-	 * @throws AcmeException
-	 * @throws IOException
+	 * @throws AcmeCaException
+	 *             if there was an issue revoking the certificate.
 	 */
-	public void revoke(X509Certificate certificate) throws AcmeException, IOException {
+	public void revoke(X509Certificate certificate) throws AcmeCaException {
 
 		/*
 		 * Load the account key file.
 		 */
 		KeyPair accountKeyPair = loadAccountKeyPair();
 		if (accountKeyPair == null) {
-			throw new AcmeException("Could not load account KeyPair.");
+			throw new AcmeCaException(
+					"Could not load account KeyPair. Revoking a certificate requires a valid account key pair.");
 		}
 
 		/*
@@ -664,9 +728,14 @@ public class AcmeClient {
 			 * Login and revoke the certificate.
 			 */
 			Login login = new Login(acct.getLocation(), accountKeyPair, session);
-			Certificate.revoke(login, certificate, RevocationReason.UNSPECIFIED);
+			try {
+				Certificate.revoke(login, certificate, RevocationReason.UNSPECIFIED);
+			} catch (AcmeException e) {
+				throw new AcmeCaException("Error revoking certificate.", e);
+			}
 		} else {
-			throw new AcmeException("Unable to find account to revoke certificate.");
+			throw new AcmeCaException(
+					"Unable to find account to revoke certificate.  Revoking a certificate requires a valid account.");
 		}
 	}
 
@@ -677,8 +746,10 @@ public class AcmeClient {
 	 * @param acceptTos
 	 *            Whether to accept any terms of service issued by the ACME CA.
 	 */
-	public void setAcceptTos(boolean acceptTos) {
-		this.termsOfServiceAgreed = acceptTos;
+	public void setAcceptTos(Boolean acceptTos) {
+		if (acceptTos != null) {
+			this.termsOfServiceAgreed = acceptTos;
+		}
 	}
 
 	/**
@@ -687,8 +758,8 @@ public class AcmeClient {
 	 * @param retries
 	 *            The number of time to try to update a challenge.
 	 */
-	public void setChallengeRetries(int retries) {
-		if (retries >= 0) {
+	public void setChallengeRetries(Integer retries) {
+		if (retries != null && retries >= 0) {
 			this.challengeRetries = retries;
 		}
 	}
@@ -700,8 +771,8 @@ public class AcmeClient {
 	 * @param retryWaitMs
 	 *            The time to wait before re-trying to update a challenge.
 	 */
-	public void setChallengeRetryWait(long retryWaitMs) {
-		if (retryWaitMs >= 0) {
+	public void setChallengeRetryWait(Long retryWaitMs) {
+		if (retryWaitMs != null && retryWaitMs >= 0) {
 			this.challengeRetryWaitMs = retryWaitMs;
 		}
 	}
@@ -712,8 +783,8 @@ public class AcmeClient {
 	 * @param retries
 	 *            The number of time to try to update an order.
 	 */
-	public void setOrderRetries(int retries) {
-		if (retries >= 0) {
+	public void setOrderRetries(Integer retries) {
+		if (retries != null && retries >= 0) {
 			this.orderRetries = retries;
 		}
 	}
@@ -725,8 +796,8 @@ public class AcmeClient {
 	 * @param retryWaitMs
 	 *            The time to wait before re-trying to update an order.
 	 */
-	public void setOrderRetryWait(long retryWaitMs) {
-		if (retryWaitMs >= 0) {
+	public void setOrderRetryWait(Long retryWaitMs) {
+		if (retryWaitMs != null && retryWaitMs >= 0) {
 			this.orderRetryWaitMs = retryWaitMs;
 		}
 	}
@@ -753,19 +824,24 @@ public class AcmeClient {
 	 * Validate the key file path is usable.
 	 * 
 	 * @param path
-	 *            The path to verify.
+	 *            The file path to verify.
+	 * @param type
+	 *            The key file type (account or domain). For logging only.
+	 * @throws AcmeCaException
+	 *             if the file path exists and is not readable or if the file
+	 *             path does not exist and is not writable.
 	 */
-	private static void validateKeyFilePath(String path, String type) {
+	private static void validateKeyFilePath(String path, String type) throws AcmeCaException {
 		if (path == null || path.trim().isEmpty()) {
-			throw new IllegalArgumentException("The " + type + " key file path must be valid.");
+			throw new AcmeCaException("The " + type + " key file path must be valid.");
 		}
 
 		File file = new File(path);
 		if (file.exists() && !file.canRead()) {
-			throw new IllegalArgumentException("Cannot read existing " + type + " key file.");
+			throw new AcmeCaException("Cannot read existing " + type + " key file.");
 		}
 		if (file.exists() && !file.canWrite()) {
-			throw new IllegalArgumentException("Cannot write to specified " + type + " key file location.");
+			throw new AcmeCaException("Cannot write to specified " + type + " key file location.");
 		}
 	}
 }

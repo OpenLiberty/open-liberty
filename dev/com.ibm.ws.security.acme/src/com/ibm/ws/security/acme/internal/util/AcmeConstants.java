@@ -9,11 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.acme.util;
+package com.ibm.ws.security.acme.internal.util;
 
 public class AcmeConstants {
 
-	public static final String ACME_PID = "com.ibm.ws.security.acme.config";
+	public static final String ACME_CONFIG_PID = "com.ibm.ws.security.acme.config";
 
 	/*
 	 * Constants that match the metatype fields
@@ -43,6 +43,8 @@ public class AcmeConstants {
 	 * End constants that match the metatype fields
 	 */
 
-	// RSA key size of generated key pairs
-	private static final int KEY_SIZE = 2048;
+	/**
+	 * Key size for generated domain and account key pairs.
+	 */
+	public static final int KEY_SIZE = 2048;
 }
