@@ -21,19 +21,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.InstallKernelFactory;
+import com.ibm.ws.install.InstallKernelInteractive;
+import com.ibm.ws.install.InstallLicense;
 import com.ibm.ws.install.internal.ExceptionUtils;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
@@ -41,6 +35,7 @@ import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import wlp.lib.extract.SelfExtract;
 //import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
@@ -52,8 +47,8 @@ public class FeatureUtility {
     private File fromDir;
     private final File esaFile;
     private final Boolean noCache;
-    private Boolean isDownload;
-    private Boolean isBasicInit;
+    private boolean acceptLicense;
+    private Set<InstallLicense> featureLicenses;
     private final List<String> featuresToInstall;
     private static String openLibertyVersion;
     private final Logger logger;
@@ -80,6 +75,7 @@ public class FeatureUtility {
 
         this.esaFile = builder.esaFile;
         this.noCache = builder.noCache;
+        this.acceptLicense = builder.acceptLicense;
 
 
         map = new InstallKernelMap();
@@ -282,6 +278,7 @@ public class FeatureUtility {
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         // fine("resolved features: " + resolvedFeatures);
         checkResolvedFeatures(resolvedFeatures);
+        checkForLicenses(featuresToInstall, acceptLicense);
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
@@ -296,7 +293,7 @@ public class FeatureUtility {
             for (File esaFile : artifacts) {
                 fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
                                                                     extractFeature(esaFile.getName())));
-                map.put("license.accept", true);
+                map.put("license.accept", acceptLicense);
                 map.put("action.install", esaFile);
                 Integer ac = (Integer) map.get("action.result");
 //                fine("action.result:" + ac);
@@ -349,6 +346,74 @@ public class FeatureUtility {
             }
         }
     }
+
+    public boolean checkForLicenses(Collection<String> features, boolean acceptedLicenseAlready) throws InstallException {
+        if(acceptedLicenseAlready){
+            return true;
+        }
+
+        InstallKernelInteractive installKernel = InstallKernelFactory.getInteractiveInstance();
+        installKernel.resolve(features, false);
+        featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
+
+//        InstallKernelImpl in = new InstallKernelInteractive();
+        for(InstallLicense license : featureLicenses){
+//            logger.info("Licenses for " + license.getProgramName());
+            handleLicenseAcceptance(license);
+        }
+
+        return true;
+    }
+
+    private boolean handleLicenseAcceptance(InstallLicense licenseToAccept) {
+        //
+        // Display license requirement
+        //
+        SelfExtract.wordWrappedOut(SelfExtract.format("licenseStatement", new Object[] { licenseToAccept.getProgramName(), licenseToAccept.getName() }));
+        System.out.println();
+
+        if (!obtainLicenseAgreement(licenseToAccept)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean obtainLicenseAgreement(InstallLicense license) {
+        // Prompt for word-wrapped display of license agreement & information
+        boolean view;
+
+        if (featureLicenses.size() > 1) {
+            SelfExtract.wordWrappedOut(SelfExtract.format("showAgreement", "--viewLicenseAgreement"));
+            view = SelfExtract.getResponse(SelfExtract.format("promptAgreement"), "", "xX");
+            if (view) {
+                System.out.println(license.getAgreement());
+                System.out.println();
+            }
+
+            SelfExtract.wordWrappedOut(SelfExtract.format("showInformation", "--viewLicenseInfo"));
+            view = SelfExtract.getResponse(SelfExtract.format("promptInfo"), "", "xX");
+            if (view) {
+                System.out.println(license.getInformation());
+                System.out.println();
+            }
+
+        } else {
+            System.out.println();
+            System.out.println(license.getAgreement());
+            System.out.println();
+        }
+
+        System.out.println();
+        SelfExtract.wordWrappedOut(SelfExtract.format("licenseOptionDescription"));
+        System.out.println();
+
+        boolean accept = SelfExtract.getResponse(SelfExtract.format("licensePrompt", new Object[] { "[1]", "[2]" }),
+                "1", "2");
+        System.out.println();
+        return accept;
+    }
+
 
     private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
         map.put("from.repo", fromDir.toString());
@@ -489,28 +554,28 @@ public class FeatureUtility {
         return !file.exists();
     }
 
-    private File getM2Cache() { // check for maven_home specified mirror stuff
-        // File m2Folder = getM2Path().toFile();
 
-        return Paths.get(System.getProperty("user.home"), ".m2", "repository", "").toFile();
-
-    }
+//    private void showFeaturesForLicenseAcceptance(Set<InstallLicense> licenseToAccept) {
+//        Set<String> featuresToAccept = new HashSet<String>();
+//        StringBuffer buf = new StringBuffer();
+//        for (InstallLicense license : licenseToAccept) {
+//            String featureToMatch = getFeaturesForLicense(license);
+//            if (!featureToMatch.isEmpty()) {
+//                featuresToAccept.add(featureToMatch);
+//                buf.append(featureToMatch);
+//            }
+//        }
+//        String featuresToAcceptMsg = buf.toString().trim();
+////        logger.info(CmdUtils.getMessage("MSG_ACCEPT_LICENSE_REQUIRED", featuresToAcceptMsg));
+//    }
 
     private void updateProgress(double increment) {
         progressBar.updateProgress(increment);
 
     }
 
-    // log message types
     private void info(String msg) {
-//        if (isWindows) {
-//            logger.info(msg);
-//        } else {
-//            progressBar.clearProgress(); // Erase line content
-            logger.info(msg);
-//            progressBar.display();
-//        }
-
+        logger.info(msg);
     }
 
     private void fine(String msg) {
@@ -526,6 +591,7 @@ public class FeatureUtility {
         Collection<String> featuresToInstall;
         File esaFile;
         boolean noCache;
+        boolean acceptLicense;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
@@ -542,6 +608,11 @@ public class FeatureUtility {
             return this;
         }
 
+        public FeatureUtilityBuilder setAcceptLicense(Boolean acceptLicense) {
+            this.acceptLicense = acceptLicense;
+            return this;
+        }
+
         public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
             this.featuresToInstall = featuresToInstall;
             return this;
@@ -552,47 +623,5 @@ public class FeatureUtility {
         }
 
     }
-
-    public static List<String> getMissingArtifactsFromFolder(List<String> artifacts, String location, boolean isShortName) throws IOException, InstallException{
-        List<String> result = new ArrayList<String>();
-
-        for (String id: artifacts) {
-            Path featurePath;
-            if (isShortName) {
-                String groupId = OPEN_LIBERTY_PRODUCT_ID + ".features";
-                File groupDir = new File(location, groupId.replace(".", "/"));
-                if (!groupDir.exists()) {
-                    result.add(id);
-                    continue;
-                }
-                String featureEsa = id + "-" + openLibertyVersion + ".esa";
-                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), id, openLibertyVersion, featureEsa);
-            } else {
-                String groupId = id.split(":")[0];
-                String featureName = id.split(":")[1];
-                File groupDir = new File(location, groupId.replace(".", "/"));
-                if (!groupDir.exists()) {
-                    result.add(id);
-                    continue;
-                }
-                String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
-                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
-            }
-            if (!Files.isRegularFile(featurePath)) {
-                result.add(id);
-            }
-        }
-        return result;
-    }
-
-    public List<String> getMavenCoords(List<String> artifactShortNames) {
-        List<String> result = new ArrayList<String>();
-        for (String shortName: artifactShortNames) {
-            result.add(OPEN_LIBERTY_PRODUCT_ID + ".feature:" + shortName + ":" + openLibertyVersion);
-        }
-        return result;
-    }
-    
-
 
 }

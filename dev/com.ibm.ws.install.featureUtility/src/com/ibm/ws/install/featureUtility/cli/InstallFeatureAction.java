@@ -51,6 +51,7 @@ public class InstallFeatureAction implements ActionHandler {
         private String fromDir;
         private String toDir;
         private Boolean noCache;
+        private boolean acceptLicense;
         private ProgressBar progressBar;
 
         @Override 
@@ -81,8 +82,8 @@ public class InstallFeatureAction implements ActionHandler {
                 if ((rc = validateFromDir(this.fromDir)) != ReturnCode.OK) {
                         return rc;
                 }
+                this.acceptLicense = args.getOption("acceptLicense") != null;
                 this.noCache = args.getOption("noCache") != null;
-
                 this.progressBar = ProgressBar.getInstance();
 
                 HashMap<String, Double> methodMap = new HashMap<>();
