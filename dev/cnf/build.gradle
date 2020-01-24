@@ -44,45 +44,16 @@ task copyMavenLibs(type: Copy) {
     into project.file('mavenlibs')
 }
 
-def pluginsProject = project(':wlp-bndPlugins')
-
-task updatePluginClasses(type: Copy) {
-    dependsOn ':wlp-bndPlugins:jar'
-    from zipTree(bnd('build.bnd.plugins.jar'))
-    into project.file('bndplugins/classes')
-    doLast {
-        println 'Refresh bnd Projects after building bnd plugins in ' + project.name
-        bnd.project.refresh()
-        bnd.project.clear()
-        parent.subprojects {
-            if (project != pluginsProject) {
-                bnd.project.refresh()
-                bnd.project.clear()
-            }
-        }
-    }
-}
-
-task cleanRepos(type: Delete) {
-    doLast {
-        project.delete('release')
-        delete 'release.mvn'
-        project.delete('local')
-        delete 'local.mvn'
-        delete fileTree('mavenlibs')
-    }
-}
-
 task dependabotGenerate() {
   inputs.file('oss_dependencies.maven')
-  outputs.file('cnf/dependabot/pom.xml')
+  outputs.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
   doLast {
     def xmlParser = new XmlSlurper()
     int totalArtifacts = 0
     int possibleUpdates = 0
     
     // Generate pom.xml
-    File pom = rootProject.file('cnf/dependabot/pom.xml')
+    File pom = rootProject.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
     pom.delete()
       
     // First generate header content
@@ -113,11 +84,40 @@ task dependabotGenerate() {
   }
 }
 
+def pluginsProject = project(':wlp-bndPlugins')
+
+task updatePluginClasses(type: Copy) {
+    dependsOn ':wlp-bndPlugins:jar'
+    dependsOn dependabotGenerate
+    from zipTree(bnd('build.bnd.plugins.jar'))
+    into project.file('bndplugins/classes')
+    doLast {
+        println 'Refresh bnd Projects after building bnd plugins in ' + project.name
+        bnd.project.refresh()
+        bnd.project.clear()
+        parent.subprojects {
+            if (project != pluginsProject) {
+                bnd.project.refresh()
+                bnd.project.clear()
+            }
+        }
+    }
+}
+
+task cleanRepos(type: Delete) {
+    doLast {
+        project.delete('release')
+        delete 'release.mvn'
+        project.delete('local')
+        delete 'local.mvn'
+        delete fileTree('mavenlibs')
+    }
+}
+
 task initialize {
     dependsOn cleanRepos
     dependsOn copyMavenLibs
     dependsOn updatePluginClasses
-    dependsOn dependabotGenerate
     doLast {
         println "Gradle Initialized"
     }
