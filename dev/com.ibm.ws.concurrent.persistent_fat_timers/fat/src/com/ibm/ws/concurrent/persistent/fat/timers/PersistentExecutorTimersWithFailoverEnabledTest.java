@@ -64,8 +64,9 @@ public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletC
 
         PersistentExecutor defaultEJBPersistentTimerExecutor = new PersistentExecutor();
         defaultEJBPersistentTimerExecutor.setId("defaultEJBPersistentTimerExecutor");
-        defaultEJBPersistentTimerExecutor.setPollInterval("5h"); // polling should not be required by the test, but the fail over capability needs it enabled
-        defaultEJBPersistentTimerExecutor.setExtraAttribute("missedTaskThreshold2", "4s"); // TODO rename if the code path being tested is chosen
+        defaultEJBPersistentTimerExecutor.setPollInterval("15s");
+        defaultEJBPersistentTimerExecutor.setExtraAttribute("missedTaskThreshold", "4s");
+        defaultEJBPersistentTimerExecutor.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         config.getPersistentExecutors().add(defaultEJBPersistentTimerExecutor);
 
         server.updateServerConfiguration(config);

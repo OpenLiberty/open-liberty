@@ -110,10 +110,10 @@ class Config {
         }
         pollInterval = pollIntrvl;
 
-        // Default the retry interval to match the poll interval (or lacking that, the missed task threshold) when fail over is enabled.
+        // Default the retry interval to disabled when fail over is enabled.
         if (retryIntrvl == null) {
             if (missedTaskThreshold > 0) {
-                retryInterval = enableTaskExecution && pollInterval > 0 ? pollInterval : TimeUnit.SECONDS.toMillis(missedTaskThreshold);
+                retryInterval = -1; // disabled
             } else {
                 retryInterval = TimeUnit.MINUTES.toMillis(1); // the old default for single-server, which cannot be changed
             }
@@ -130,12 +130,13 @@ class Config {
         if (pollInterval < -1 || missedTaskThreshold > 0 && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
                                                                 toString(pollInterval, TimeUnit.MILLISECONDS), "pollInterval", "100s", "2h30m"));
-        if (retryInterval < 0)
+        if (retryInterval < 0 && missedTaskThreshold == -1)
             throw new IllegalArgumentException("retryInterval: " + retryInterval + "ms");
-        else if (missedTaskThreshold > 0 && retryIntrvl != null && retryLimit != 0 && !ignoreMin && retryIntrvl < missedTaskThreshold * 1000)
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1521.less.than.min",
-                                                                toString(retryInterval, TimeUnit.MILLISECONDS), "retryInterval",
-                                                                "missedTaskThreshold", toString(missedTaskThreshold, TimeUnit.SECONDS)));
+        else if (retryInterval >= 0 && missedTaskThreshold > 0) {
+            // Allow the configuration of the built-in EJB persistent timers executor, but otherwise reject enablement of retryInterval when fail over is enabled.
+            if (!(retryInterval == TimeUnit.SECONDS.toMillis(300) && "defaultEJBPersistentTimerExecutor".equals(id)))
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1521.not.compatible", "retryInterval", "missedTaskThreshold"));
+        }
     }
 
     @Override

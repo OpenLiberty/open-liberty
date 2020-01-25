@@ -73,8 +73,8 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("2h30m"); // the test case does not expect polling, so set a large value that will never be reached
-        myScheduler.setRetryInterval("6s");
+        myScheduler.setInitialPollDelay("2s");
+        myScheduler.setPollInterval("2s500ms"); // a couple of tests require polling in order to perform retries
         myScheduler.setMissedTaskThreshold("6s");
         myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
@@ -97,6 +97,8 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
                     if (server.isStarted())
                         server.stopServer("CWWKC1500W", //Task rolled back
                                           "CWWKC1501W", //Task rolled back due to failure ...
+                                          "CWWKC1502W", //Task rolled back, retry time unspecified
+                                          "CWWKC1503W", //Task rolled back due to failure ..., retry time unspecified
                                           "CWWKC1510W", //Task rolled back and aborted
                                           "CWWKC1511W", //Task rolled back and aborted. Failure is ...
                                           "DSRA0174W"); //Generic Datasource Helper
