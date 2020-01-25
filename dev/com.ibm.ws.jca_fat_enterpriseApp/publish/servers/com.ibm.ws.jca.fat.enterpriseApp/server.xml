@@ -10,6 +10,7 @@
  -->
 <server>
     <featureManager>
+      <feature>appSecurity-2.0</feature>
       <feature>servlet-4.0</feature>
       <feature>localConnector-1.0</feature>
       <feature>jdbc-4.2</feature>
@@ -23,11 +24,23 @@
     <variable name="onError" value="FAIL"/>
     
     <enterpriseApplication type="ear" id="enterpriseApp" name="enterpriseApp" location="enterpriseApp.ear" >
-		<resourceAdapter id="enterpriseRA"  >
-	    	<properties.enterpriseApp.enterpriseRA />
-	    </resourceAdapter>
+      <resourceAdapter id="enterpriseRA">
+        <properties.enterpriseApp.enterpriseRA />
+      </resourceAdapter>
     </enterpriseApplication>
-    
+
+    <connectionFactory jndiName="eis/cf1">
+      <properties.enterpriseApp.loginModRA />
+      <jaasLoginContextEntry name="cf1login">
+        <loginModule className="com.ibm.test.jca.loginmodra.LMLoginModule" libraryRef="temp"/> <!-- TODO replace with classProviderRef once implemented -->
+      </jaasLoginContextEntry>
+    </connectionFactory>
+
+    <library id="temp">
+      <file name="${server.config.dir}/tempLoginModule.jar"/>
+    </library>
+    <javaPermission codebase="${server.config.dir}/tempLoginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+
     <connectionFactory jndiName="eis/ds1">
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.enterpriseApp.enterpriseRA />
@@ -48,7 +61,7 @@
     <adminObject jndiName="eis/queue1">
       <properties.enterpriseApp.enterpriseRA.Queue tableName="QUEUE1" />
     </adminObject>
-    
+
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.jdbc.odbc"/>
     <javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>

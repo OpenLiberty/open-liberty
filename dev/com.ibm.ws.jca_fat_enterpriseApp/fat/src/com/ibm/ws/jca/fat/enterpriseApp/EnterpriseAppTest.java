@@ -68,13 +68,20 @@ public class EnterpriseAppTest extends FATServletClient {
         rar.addAsManifestResource(new File("test-resourceadapters/enterpriseAppRA/resources/META-INF/wlp-ra.xml"));
         rar.addAsLibrary(new File("publish/shared/resources/derby/derby.jar"));
 
+        ResourceAdapterArchive lmrar = ShrinkWrap.create(ResourceAdapterArchive.class, "loginModRA.rar");
+        lmrar.as(JavaArchive.class).addPackage("com.ibm.test.jca.loginmodra");
+
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, appName + ".ear");
         ear.addAsModule(war);
         ear.addAsModule(rar);
+        ear.addAsModule(lmrar);
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/enterpriseApp");
         ShrinkHelper.exportToServer(server, "apps", ear);
 
-        // RAR
+        // TODO remove this
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "tempLoginModule.jar");
+        jar.addPackage("com.ibm.test.jca.loginmodra");
+        ShrinkHelper.exportToServer(server, "/", jar);
 
         server.addInstalledAppForValidation(appName);
         server.startServer();
@@ -158,6 +165,11 @@ public class EnterpriseAppTest extends FATServletClient {
 
     @Test
     public void testAdminObjectLookup() throws Exception {
+        runInServlet(testName.getMethodName());
+    }
+
+    @Test
+    public void testConnectionFactoryUsesLoginModule() throws Exception {
         runInServlet(testName.getMethodName());
     }
 
