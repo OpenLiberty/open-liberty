@@ -72,7 +72,7 @@ public class JSF22InputFileTests {
     /**
      * inputFile defect - This test copies a file to the ServerRoot (so we have a full path) and then
      * sets the file to be uploaded. It then attempts to upload the file, if it works, the word 'SUCCESS'
-     * will be present in the subsquently loaded page.
+     * will be present in the subsequently loaded page.
      *
      * Note: Even though we are copying the file to 'ServerRoot' that is just so we can figure out/know where
      * it is. This lets us create the path to it so it can be selected later on.
@@ -81,8 +81,6 @@ public class JSF22InputFileTests {
      */
     @Test
     public void testInputFile() throws Exception {
-        String projectRoot = System.getProperty("user.dir");
-
         jsfTestServer2.copyFileToLibertyServerRoot("JSF22InputFileCONTENT.txt");
 
         Log.info(c, name.getMethodName(), jsfTestServer2.getServerRoot());
