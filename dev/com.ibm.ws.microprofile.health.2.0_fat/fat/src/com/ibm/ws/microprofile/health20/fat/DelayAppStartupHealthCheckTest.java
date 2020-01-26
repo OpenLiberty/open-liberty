@@ -12,7 +12,6 @@ package com.ibm.ws.microprofile.health20.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -102,26 +101,32 @@ public class DelayAppStartupHealthCheckTest {
         // We expect a connection refused as the ports are not open until server is fully started
         try {
             log("testReadinessEndpointOnServerStart", "Testing the /health/ready endpoint as the server is still starting up.");
-            HttpURLConnection conReady;
+            HttpURLConnection conReady = null;
             String responseCode = null;
+            boolean connectionExceptionEncountered = false;
+
             try {
                 conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
                 responseCode = conReady.getURL().toString();
-            } catch (ConnectException exception) {
-                conReady = null;
+            } catch (ConnectException e) {
+                log("testReadinessEndpointOnServerStart", e.getMessage()); /// REMOVE THIS AFTER
+                if (e.getMessage().contains("Connection refused")) {
+                    connectionExceptionEncountered = true;
+                }
             }
-            responseCode = null;
+
+            startServerThread.join();
+
             String failure_message = "The connection was not refused as required, but instead completed with response code: " + responseCode +
                                      " This is likely due to a rare timing issue where the server starts faster than we can hit the readiness endpoint."
                                      + "In that case there are no issues with the feature and this failure may be disregarded.";
-            assertNull(failure_message, conReady);
+            assertTrue(failure_message, conReady == null && connectionExceptionEncountered);
         } catch (Exception e) {
             startServerThread.join();
             fail("Encountered an error while Testing the /health/ready endpoint as the server is still starting up. Error: " + e);
         }
 
-        // Wait until the server and application is fully started
-        startServerThread.join();
+        // Wait until the application is fully started
         String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
         assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
         log("testReadinessEndpointOnServerStart", "Application Started message found: " + line);
