@@ -46,7 +46,6 @@ public class EALoginModule implements LoginModule {
 
             Map<?, ?> properties = mpropsCallback.getProperties();
             final String loginName = (String) properties.get("loginName");
-            System.out.println("### LOGINMODULE PROP " + loginName);
 
             AccessController.doPrivileged(new PrivilegedAction<Void>() {
                 @Override
