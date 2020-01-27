@@ -28,15 +28,14 @@ import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallKernelFactory;
 import com.ibm.ws.install.InstallKernelInteractive;
 import com.ibm.ws.install.InstallLicense;
-import com.ibm.ws.install.internal.ExceptionUtils;
-import com.ibm.ws.install.internal.InstallKernelMap;
-import com.ibm.ws.install.internal.InstallLogUtils;
-import com.ibm.ws.install.internal.ProgressBar;
+import com.ibm.ws.install.internal.*;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import wlp.lib.extract.SelfExtract;
-//import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
  *
@@ -347,19 +346,32 @@ public class FeatureUtility {
         }
     }
 
-    public boolean checkForLicenses(Collection<String> features, boolean acceptedLicenseAlready) throws InstallException {
-        if(acceptedLicenseAlready){
+    public boolean checkForLicenses(Collection<String> features, boolean acceptedLicenseAlready) {
+        if(acceptedLicenseAlready){ // TODO or if not installing websphere features
             return true;
         }
 
-        InstallKernelInteractive installKernel = InstallKernelFactory.getInteractiveInstance();
-        installKernel.resolve(features, false);
-        featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
+        try {
+            InstallKernelInteractive installKernel = InstallKernelFactory.getInteractiveInstance();
+            installKernel.resolve(features, false);
+            featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
+            logger.info("size: " +featureLicenses.size());
+            Set<InstallLicense> licenseToAccept = InstallUtils.getLicenseToAccept(featureLicenses);
 
-//        InstallKernelImpl in = new InstallKernelInteractive();
-        for(InstallLicense license : featureLicenses){
-//            logger.info("Licenses for " + license.getProgramName());
-            handleLicenseAcceptance(license);
+            logger.info("size 2: " + licenseToAccept);
+            for(InstallLicense license : licenseToAccept){
+                if(!!!handleLicenseAcceptance(license)){
+                    return false;
+                }
+            }
+        } catch (InstallException e) {
+            e.printStackTrace();
+        } catch (ProductInfoParseException e) {
+            e.printStackTrace();
+        } catch (DuplicateProductInfoException e) {
+            e.printStackTrace();
+        } catch (ProductInfoReplaceException e) {
+            e.printStackTrace();
         }
 
         return true;
