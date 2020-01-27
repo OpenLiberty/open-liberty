@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -33,7 +33,7 @@ import javax.sql.DataSource;
  * This class uses the @Schedule annotation.
  * Using this annotation will start the timer immediately on start and will run every 30 seconds.
  */
-@Singleton //Ensure only one instance of this Timer is ever created.
+@Stateless
 public class AutomaticDatabase {
     private static final Class<AutomaticDatabase> c = AutomaticDatabase.class;
 
@@ -43,7 +43,7 @@ public class AutomaticDatabase {
     @Resource(shareable = false)
     private DataSource ds;
 
-    private int count = -1; //Incremented with each execution of timer
+    private int count = 0; //Incremented with each execution of timer
 
     private static final String name = "DatabaseTimer";
 
@@ -64,23 +64,7 @@ public class AutomaticDatabase {
 
     @PostConstruct
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void initTableAndRow() {
-        try {
-            initTable();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
-        }
-
-        try {
-            initRow();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when creating table row: " + e.getMessage());
-        }
-    }
-
-    private void initTable() throws SQLException {
+    public void initTable() throws SQLException {
         final String createTable = "CREATE TABLE AUTOMATICDATABASE (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
 
         try (Connection conn = ds.getConnection()) {
@@ -97,45 +81,13 @@ public class AutomaticDatabase {
             //If not, create it.
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(createTable);
-            } //Let initTableAndRow catch error
+            } catch (SQLException e) {
+                e.printStackTrace();
+                fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+            }
 
             System.out.println("Created table AUTOMATICDATABASE");
         }
-    }
-
-    private void initRow() throws SQLException {
-        final String checkRow = "SELECT COUNT(*) FROM AUTOMATICDATABASE WHERE name = ?";
-        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
-
-        //create count
-        count = 0;
-
-        try (Connection conn = ds.getConnection()) {
-            //See if row already exists
-            try (PreparedStatement pstmt = conn.prepareStatement(checkRow)) {
-                pstmt.setString(1, name);
-                ResultSet rs = pstmt.executeQuery();
-                //If the count of rows is more than 0 then set this true.
-                //Otherwise, set to false when row is not found, or 0 is returned as a result.
-                boolean exists = rs.next() ? rs.getInt(1) > 0 : false;
-                if (exists) {
-                    System.out.println("Found row identified by " + name + " in table AUTOMATICDATABASE.  Skipping creation.");
-                    return;
-                }
-            } catch (SQLException sqle) {
-                System.out.println("Caught exception attempting to find row identified by " + name + " in table AUTOMATICDATABASE."
-                                   + " Continuing on to attempt to create row.");
-            }
-
-            try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
-                pstmt.setString(1, name);
-                pstmt.setInt(2, count);
-                pstmt.executeUpdate();
-            } //Let initTableAndRow catch error
-
-            System.out.println("Created row identified by " + name + " in table AUTOMATICDATABASE");
-        }
-
     }
 
     /**
@@ -150,18 +102,34 @@ public class AutomaticDatabase {
      * Increment count.
      */
     private int incrementCount(Timer timer) {
-        final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = ? WHERE name = ?";
-
+        final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = count+1 WHERE name = ?";
+        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
+        boolean updated = false;
         count++;
 
+        //Get connection
         try (Connection conn = ds.getConnection()) {
             try (PreparedStatement pstmt = conn.prepareStatement(modifyRow)) {
-                pstmt.setInt(1, count);
-                pstmt.setString(2, name);
+                pstmt.setString(1, name);
                 pstmt.executeUpdate();
+                updated = true;
+            } catch (SQLException e) {
+                updated = false;
+            }
+
+            if (!updated) {
+                //Create row
+                try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
+                    pstmt.setString(1, name);
+                    pstmt.setInt(2, count);
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    fail(c.getName() + " caught exception when creating row identified by " + name + " in table AUTOMATICDATABASE: " + e.getMessage());
+                }
+
+                System.out.println("Created row identified by " + name + " in table AUTOMATICDATABASE");
             }
         } catch (SQLException e) {
-            count--;
             e.printStackTrace();
             fail(c.getName() + " caught exception when incrementing count: " + e.getMessage());
         }
