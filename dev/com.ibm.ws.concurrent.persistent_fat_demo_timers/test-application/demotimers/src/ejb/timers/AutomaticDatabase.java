@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.ejb.Timer;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -33,7 +33,7 @@ import javax.sql.DataSource;
  * This class uses the @Schedule annotation.
  * Using this annotation will start the timer immediately on start and will run every 30 seconds.
  */
-@Stateless
+@Singleton //Ensure only one instance of this Timer is ever created.
 public class AutomaticDatabase {
     private static final Class<AutomaticDatabase> c = AutomaticDatabase.class;
 
@@ -88,30 +88,54 @@ public class AutomaticDatabase {
             DatabaseMetaData md = conn.getMetaData();
             ResultSet rs = md.getTables(null, null, "AUTOMATICDATABASE", null);
             while (rs.next()) {
-                if (rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE"))
+                if (rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE")) {
+                    System.out.println("Found table AUTOMATICDATABASE. Skipping creation.");
                     return;
+                }
             }
 
             //If not, create it.
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(createTable);
-            }
+            } //Let initTableAndRow catch error
+
+            System.out.println("Created table AUTOMATICDATABASE");
         }
     }
 
     private void initRow() throws SQLException {
+        final String checkRow = "SELECT COUNT(*) FROM AUTOMATICDATABASE WHERE name = ?";
         final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
 
         //create count
         count = 0;
 
         try (Connection conn = ds.getConnection()) {
+            //See if row already exists
+            try (PreparedStatement pstmt = conn.prepareStatement(checkRow)) {
+                pstmt.setString(1, name);
+                ResultSet rs = pstmt.executeQuery();
+                //If the count of rows is more than 0 then set this true.
+                //Otherwise, set to false when row is not found, or 0 is returned as a result.
+                boolean exists = rs.next() ? rs.getInt(1) > 0 : false;
+                if (exists) {
+                    System.out.println("Found row identified by " + name + " in table AUTOMATICDATABASE.  Skipping creation.");
+                    return;
+                }
+            } catch (SQLException sqle) {
+                System.out.println("Caught exception attempting to find row identified by " + name + " in table AUTOMATICDATABASE."
+                                   + " Continuing on to attempt to create row.");
+            }
+
             try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
                 pstmt.setString(1, name);
                 pstmt.setInt(2, count);
                 pstmt.executeUpdate();
-            }
+            } //Let initTableAndRow catch error
+
+            System.out.println("Created row identified by " + name + " in table AUTOMATICDATABASE");
         }
+
     }
 
     /**
