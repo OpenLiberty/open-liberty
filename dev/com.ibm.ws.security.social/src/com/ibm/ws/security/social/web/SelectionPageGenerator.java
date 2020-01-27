@@ -13,10 +13,13 @@ package com.ibm.ws.security.social.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -248,7 +251,7 @@ public class SelectionPageGenerator {
         }
         return "";
     }
-
+//NOT SURE IF EN-US IS CAUSING AN ERROR BECAUSE IT MIGHT NOT EXIST
     String createHtmlHead() {
         StringBuilder html = new StringBuilder();
         html.append("<head>\n");
@@ -276,9 +279,25 @@ public class SelectionPageGenerator {
     }
 
     String getHtmlTitle() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_TITLE");
+        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_TITLE");
     }
 
+    public static Locale getLocale(final Enumeration<Locale> locales) {
+        while (locales.hasMoreElements()) {
+            final Locale requestedLocale = locales.nextElement();
+            // If its English, we're done. Just exit with that because we support all English.
+//            if (requestedLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
+//                return requestedLocale;
+//            }
+            final Locale loadedLocale = ResourceBundle.getBundle(TraceConstants.MESSAGE_BUNDLE, requestedLocale).getLocale();
+            if (!loadedLocale.toString().isEmpty() && requestedLocale.toString().startsWith(loadedLocale.toString())) {
+                return loadedLocale;
+            }
+        }
+
+        return Locale.getDefault();
+    }
+    
     String createHtmlBody() {
         StringBuilder html = new StringBuilder();
         html.append("<body>\n");
@@ -326,7 +345,7 @@ public class SelectionPageGenerator {
     }
 
     String getPageHeader() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_HEADER");
+        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_HEADER");
     }
 
     String createHtmlFormWithButtons() {
@@ -391,7 +410,7 @@ public class SelectionPageGenerator {
     }
 
     String getMiddleSectionText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_ALTERNATE_TEXT");
+        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_ALTERNATE_TEXT");
     }
 
     String createHtmlForCredentials() {
@@ -445,7 +464,7 @@ public class SelectionPageGenerator {
     }
 
     String getUsernamePlaceholderText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_USERNAME");
+        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_USERNAME");
     }
 
     String createPasswordInputHtml() {
@@ -456,7 +475,7 @@ public class SelectionPageGenerator {
     }
 
     String getPasswordPlaceholderText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_PASSWORD");
+        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_PASSWORD");
     }
 
     String createFormSubmitButtonHtml() {
@@ -466,7 +485,7 @@ public class SelectionPageGenerator {
     }
 
     String getSubmitButtonText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_SUBMIT");
+        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_SUBMIT");
     }
 
     /**
