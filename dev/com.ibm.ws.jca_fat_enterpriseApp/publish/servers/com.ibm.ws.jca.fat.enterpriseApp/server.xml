@@ -45,7 +45,11 @@
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.enterpriseApp.enterpriseRA />
     </connectionFactory>
-    
+
+    <jaasLoginContextEntry id="ds1LoginContextEntry" name="ds1login">
+      <loginModule className="com.ibm.test.jca.enterprisera.EALoginModule" libraryRef="temp"/> <!-- TODO replace with classProviderRef once implemented -->
+    </jaasLoginContextEntry>
+
     <activationSpec id="enterpriseApp/fvtweb/JCAEnterpriseAppMDB">
       <properties.enterpriseApp.enterpriseRA />
     </activationSpec>

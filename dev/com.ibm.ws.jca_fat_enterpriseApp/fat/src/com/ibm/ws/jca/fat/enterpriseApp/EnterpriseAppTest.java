@@ -61,6 +61,7 @@ public class EnterpriseAppTest extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, warFile + ".war");
         war.addPackage("web");
         war.addPackage("web.mdb");
+        war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-web-bnd.xml")); // includes login properties
 
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "enterpriseRA.rar");
         rar.as(JavaArchive.class).addPackage("com.ibm.test.jca.enterprisera");
@@ -80,6 +81,7 @@ public class EnterpriseAppTest extends FATServletClient {
 
         // TODO remove this
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "tempLoginModule.jar");
+        jar.addPackage("com.ibm.test.jca.enterprisera");
         jar.addPackage("com.ibm.test.jca.loginmodra");
         ShrinkHelper.exportToServer(server, "/", jar);
 
@@ -180,6 +182,11 @@ public class EnterpriseAppTest extends FATServletClient {
 
     @Test
     public void testDataSourceLookup() throws Exception {
+        runInServlet(testName.getMethodName());
+    }
+
+    @Test
+    public void testDataSourceUsingLoginModule() throws Exception {
         runInServlet(testName.getMethodName());
     }
 
