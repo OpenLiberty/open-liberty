@@ -11,9 +11,14 @@
 package com.ibm.ws.ejbcontainer.osgi.internal;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.naming.NamingException;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.container.BindingsHelper;
@@ -31,30 +36,36 @@ import com.ibm.ws.ejbcontainer.osgi.EJBRemoteRuntime;
 import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBBinding;
 import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper;
 import com.ibm.ws.ejbcontainer.runtime.NameSpaceBinder;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * Adds EJB names to the name space for java:global, java:app, and
  * java:module.
  */
 public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
-
     private static TraceComponent tc = Tr.register(NameSpaceBinderImpl.class, "EJBContainer", "com.ibm.ejs.container.container");
+    private static final String JNDI_SERVICENAME = "osgi.jndi.service.name";
+
     protected final EJBModuleMetaDataImpl moduleMetaData;
     private final EJBJavaColonNamingHelper ejbJavaColonHelper;
     private final EJBLocalNamingHelper<EJBBinding> ejbLocalNamingHelper;
     private final LocalColonEJBNamingHelper<EJBBinding> localColonNamingHelper;
+    private final AtomicServiceReference<EJBRemoteRuntime> ejbRemoteRuntimeServiceRef;
     private final EJBRemoteRuntime remoteRuntime;
+
+    private final List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
 
     NameSpaceBinderImpl(EJBModuleMetaDataImpl mmd,
                         EJBJavaColonNamingHelper jcnh,
                         EJBLocalNamingHelper<EJBBinding> ejblocal,
                         LocalColonEJBNamingHelper<EJBBinding> localColon,
-                        EJBRemoteRuntime remoteRuntime) {
+                        AtomicServiceReference<EJBRemoteRuntime> remoteRuntimeRef) {
         moduleMetaData = mmd;
         ejbJavaColonHelper = jcnh;
         ejbLocalNamingHelper = ejblocal;
         localColonNamingHelper = localColon;
-        this.remoteRuntime = remoteRuntime;
+        this.ejbRemoteRuntimeServiceRef = remoteRuntimeRef;
+        this.remoteRuntime = remoteRuntimeRef.getService();
     }
 
     @Override
@@ -95,7 +106,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Adds the EJB reference for later lookup in the java:global
      * name space.
      *
-     * @param name The lookup name.
+     * @param name          The lookup name.
      * @param bindingObject The binding information.
      */
     @Override
@@ -107,7 +118,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
     /**
      * Adds the EJB application binding to the java:app name space.
      *
-     * @param name The lookup name.
+     * @param name          The lookup name.
      * @param bindingObject The EJB binding information.
      */
     @Override
@@ -119,7 +130,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
     /**
      * Adds the module binding to the java:module name space.
      *
-     * @param name The lookup name.
+     * @param name          The lookup name.
      * @param bindingObject The EJB binding information.
      */
     @Override
@@ -131,7 +142,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Adds the default ejblocal: bindings to the ejblocal: name space
      *
      * @param bindingObject the EJB Binding information
-     * @param hr the HomeRecord of the EJB
+     * @param hr            the HomeRecord of the EJB
      */
     @Override
     public void bindDefaultEJBLocal(EJBBinding bindingObject, HomeRecord hr) {
@@ -162,14 +173,36 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
 
     }
 
+    public void bindDefaultEJBRemote(EJBBinding bindingObject, HomeRecord hr) {
+        HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
+        BundleContext bc = this.ejbRemoteRuntimeServiceRef.getReference().getBundle().getBundleContext();
+        if (hrImpl.bindToContextRoot()) {
+            BeanMetaData bmd = hr.getBeanMetaData();
+            J2EEName eeName = hrImpl.getJ2EEName();
+            // ejb/<app>/<module.jar>/<bean>#<interface>
+            String bindingName = "ejb/" + eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+
+            Dictionary<String, Object> properties = new Hashtable<String, Object>(1);
+            properties.put(JNDI_SERVICENAME, bindingName);
+
+            ServiceRegistration<?> registration = bc.registerService(EJBBinding.class, bindingObject, properties);
+
+            BindingsHelper bh = BindingsHelper.getRemoteHelper(hr);
+            bh.ivRemoteBindings.add(bindingName);
+
+            sendBindingMessage(bindingObject.interfaceName, bindingName, bmd);
+            registrations.add(registration);
+        }
+    }
+
     /**
      * Binds the simpleBindingName custom binding
      *
      * Caller should ensure the simpleBindingName exists
      *
      * @param bindingObject - the EJBBinding
-     * @param hr - the bean home record
-     * @param local - is local bean
+     * @param hr            - the bean home record
+     * @param local         - is local bean
      */
     @Override
     public void bindSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, boolean local) {
@@ -188,8 +221,8 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Binds the local bean into local: and ejblocal: namespaces
      *
      * @param bindingObject - the EJBBinding
-     * @param hr - the bean home record
-     * @param bindingName - the parsed simpleBindingName
+     * @param hr            - the bean home record
+     * @param bindingName   - the parsed simpleBindingName
      */
     private void bindLocalSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, String bindingName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -325,6 +358,10 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
 
                 if (local) {
                     bindDefaultEJBLocal(bindingObject, hr);
+                } else {
+                    if (remoteRuntime != null) {
+                        bindDefaultEJBRemote(bindingObject, hr);
+                    }
                 }
             }
         }
@@ -359,7 +396,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Unbind the names from the java:app name space.
      *
      * @param names List of names to remove from the
-     *            application name space.
+     *                  application name space.
      */
     @Override
     public void unbindJavaApp(List<String> names) {
@@ -378,6 +415,9 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             if (hrImpl.remoteBindingData != null) {
                 remoteRuntime.unbindAll(hrImpl.remoteBindingData);
             }
+
+            BindingsHelper remoteBH = BindingsHelper.getRemoteHelper(hr);
+            unbindRemote(remoteBH.ivRemoteBindings);
         }
 
         BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
@@ -431,7 +471,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Unbind the names from the ejblocal: name space.
      *
      * @param names List of names to remove from the
-     *            application name space.
+     *                  application name space.
      */
     @Override
     public void unbindEJBLocal(List<String> names) throws NamingException {
@@ -442,10 +482,20 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Undoes the bindings from local namespace.
      *
      * @param names List of names to remove from the
-     *            application name space.
+     *                  application name space.
      */
     @Override
     public void unbindLocalColonEJB(List<String> names) throws NamingException {
         localColonNamingHelper.removeBindings(names);
+    }
+
+    public void unbindRemote(List<String> names) {
+        for (String name : names) {
+            for (ServiceRegistration<?> registration : registrations) {
+                if (name.equals(registration.getReference().getProperty(JNDI_SERVICENAME))) {
+                    registration.unregister();
+                }
+            }
+        }
     }
 }

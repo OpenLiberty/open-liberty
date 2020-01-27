@@ -121,7 +121,7 @@ public class DefaultBindingsServlet extends FATServlet {
     /**
      * lookup and call remote business interface using component name.
      */
-    //@Test
+    @Test
     public void testRemoteBI() throws Exception {
         RemoteBusiness bean = Helper.lookupDefaultRemote(RemoteBusiness.class, "TestBean");
         assertNotNull("1 ---> RemoteBusiness standard default lookup did not succeed.", bean);
