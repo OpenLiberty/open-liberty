@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ bSymbolicName=com.ibm.ws.security.acme
 
 Bundle-Name: ACME support
 Bundle-SymbolicName: com.ibm.ws.security.acme
-Bundle-Description: ACME; This feature adds support for ACME and LetsEncrypt (and other CA providers). 
+Bundle-Description: This feature adds support for ACME and LetsEncrypt (and other CA providers).
 
 WS-TraceGroup: ACME
 
@@ -32,37 +32,30 @@ Web-ContextPath: /.well-known/acme-challenge
 
 IBM-Web-Extension-Processing-Disabled: false
 
--includeresource: \
-   @${repo;org.shredzone.acme4j:acme4j-client},\
-   @${repo;org.shredzone.acme4j:acme4j-utils},\
-   @${repo;org.bouncycastle:bcprov-jdk15on},\
-   @${repo;org.bouncycastle:bcpkix-jdk15on},\
-   @${repo;org.bitbucket.b_c:jose4j}
-
-Private-Package: com.ibm.ws.security.acme.internal.*, \
-   com.ibm.ws.security.acme.config, \
-   com.ibm.ws.security.acme.web, \
-   com.ibm.ws.security.acme.util
-
-Include-Resource: \
-    WEB-INF=resources/WEB-INF, \
-    OSGI-INF=resources/OSGI-INF
-
 Export-Package: \
- com.ibm.ws.security.acme;version="1.0.23"
+    com.ibm.ws.security.acme;version="1.0.23"
  
-Service-Component: \
-  com.ibm.ws.security.acme.config; \
-    implementation:=com.ibm.ws.security.acme.internal.AcmeProviderServiceImpl; \
-    provide:='com.ibm.ws.security.acme.config.AcmeConfig'
-     
--dsannotations-inherit: true
--dsannotations: \
-    com.ibm.ws.security.acme.web.AcmeAuthorizationServices, \
-    com.ibm.ws.security.acme.internal.AcmeProviderServiceImpl
+Private-Package: \
+    com.ibm.ws.security.acme.internal.*,\
+    org.bouncycastle.*,\
+    org.shredzone.*,\
+    org.jose4j.*
 
-instrument.disabled: true
-    
+# TODO We should determine impact of multiple versions of SLF4J.
+Include-Resource: \
+    WEB-INF=resources/WEB-INF,\
+    OSGI-INF=resources/OSGI-INF,\
+    @${repo;org.shredzone.acme4j:acme4j-client;2.7;EXACT},\
+    @${repo;org.shredzone.acme4j:acme4j-utils;2.7;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT},\
+    @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
+    @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
+    @${repo;org.slf4j:slf4j-api;1.7.26;EXACT}
+
+-dsannotations: \
+    com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServices, \
+    com.ibm.ws.security.acme.internal.AcmeProviderImpl
+
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\

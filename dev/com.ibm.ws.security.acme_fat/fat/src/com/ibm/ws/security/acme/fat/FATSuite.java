@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.acme;
+package com.ibm.ws.security.acme.fat;
 
 import java.net.UnknownHostException;
 
@@ -62,7 +62,7 @@ public class FATSuite {
 	@BeforeClass
 	public static void beforeClass() throws UnknownHostException {
 		final String METHOD_NAME = "beforeClass()";
-		
+
 		String os = System.getProperty("os.name").toLowerCase();
 		Assume.assumeTrue(!os.startsWith("z/os"));
 

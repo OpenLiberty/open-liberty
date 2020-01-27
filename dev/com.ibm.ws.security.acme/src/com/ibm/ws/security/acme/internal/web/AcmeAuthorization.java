@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.acme.web;
+package com.ibm.ws.security.acme.internal.web;
 
 import java.io.FileReader;
 import java.io.IOException;
