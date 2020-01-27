@@ -92,11 +92,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -125,7 +120,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testOrderOfInvocation001(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            cleanupDatabase(jpaCleanupResource);
 
             testPrePersistLifecycle(targetEntityType, jpaResource, listenerProtectionType); // 12 points
             testPostPersistLifecycle(targetEntityType, jpaResource, listenerProtectionType); // 12 points
@@ -795,42 +789,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("CallbackTestLogic.testTemplate(): Begin");
-            cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
-        } finally {
-            System.out.println("CallbackTestLogic.testTemplate(): End");
-        }
-    }
-
     private void resetListeners() {
         // Reset Global Event List
         AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -1235,12 +1193,4 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
 
         return expectedEventList;
     }
-
-    private void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), CallbackEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
-    }
-
 }

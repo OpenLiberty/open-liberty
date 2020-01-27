@@ -18,10 +18,12 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.EntitySupportingDefaultCallbacks;
+import com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.XMLEntitySupportingDefaultCallbacks;
+import com.ibm.ws.jpa.fvt.callback.testlogic.CallbackRuntimeExceptionTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -29,19 +31,14 @@ import componenttest.annotation.ExpectedFFDC;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestCallbackDefaultListenerException_EJB_SFEX_Servlet")
 public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTestVehicleServlet {
-    private final String testLogicClassName = "com.ibm.ws.jpa.fvt.callback.testlogic.CallbackRuntimeExceptionTestLogic";
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
-    private final static String ejbJNDIName = "ejb/CallbackSFExEJB";
 
     @PostConstruct
     private void initFAT() {
+        testClassName = CallbackRuntimeExceptionTestLogic.class.getName();
+        ejbJNDIName = "ejb/CallbackSFExEJB";
+
         jpaPctxMap.put("test-jpa-resource-cmex",
                        new JPAPersistenceContext("test-jpa-resource-cmex", PersistenceContextType.CONTAINER_MANAGED_ES, PersistenceInjectionType.JNDI, "java:comp/env/jpa/Callback-DefaultListener_CMEX"));
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/cleanup"));
-
     }
 
     /*
@@ -61,19 +58,14 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_Ano_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_Ano_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -81,19 +73,14 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Private Protection
@@ -103,19 +90,14 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_PrivateProtection_001_Ano_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PrivateProtection_001_Ano_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -123,19 +105,14 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_PrivateProtection_001_XML_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PrivateProtection_001_XML_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Protected Protection
@@ -145,19 +122,14 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_ProtectedProtection_001_Ano_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_ProtectedProtection_001_Ano_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -165,19 +137,14 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_ProtectedProtection_001_XML_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_ProtectedProtection_001_XML_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Public Protection
@@ -187,19 +154,14 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_Ano_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_Ano_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -207,18 +169,13 @@ public class TestCallbackDefaultListenerException_EJB_SFEX_Servlet extends EJBTe
     public void jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_CMEX_EJB_SF";
         final String testMethod = "testCallbackRuntimeException002";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 }

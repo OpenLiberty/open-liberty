@@ -53,11 +53,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -77,7 +72,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException001(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            cleanupDatabase(jpaCleanupResource);
 
             // Create an instance of CallbackEntity for update and remove lifecycle tests
             jpaResource.getTj().beginTransaction();
@@ -131,11 +125,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -165,7 +154,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException002(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
             resetListeners();
-            cleanupDatabase(jpaCleanupResource);
 
             // Create an instance of CallbackEntity for update and remove lifecycle tests
             jpaResource.getTj().beginTransaction();
@@ -219,11 +207,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -253,7 +236,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException003(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
             resetListeners();
-            cleanupDatabase(jpaCleanupResource);
 
             // Create an instance of CallbackEntity for update and remove lifecycle tests
             jpaResource.getTj().beginTransaction();
@@ -289,13 +271,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException003(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
         }
-    }
-
-    private void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), CallbackEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 
     private AbstractCallbackListener fetchTargetListener(ProtectionType listenerProtectionType) {

@@ -18,10 +18,14 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerMSCEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerMSCEntity;
+import com.ibm.ws.jpa.fvt.callback.testlogic.CallbackRuntimeExceptionTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -29,23 +33,18 @@ import componenttest.annotation.ExpectedFFDC;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestCallbackListenerException_EJB_SF_Servlet")
 public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicleServlet {
-    private final String testLogicClassName = "com.ibm.ws.jpa.fvt.callback.testlogic.CallbackRuntimeExceptionTestLogic";
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
-    private final static String ejbJNDIName = "ejb/CallbackSFEJB";
 
     @PostConstruct
     private void initFAT() {
+        testClassName = CallbackRuntimeExceptionTestLogic.class.getName();
+        ejbJNDIName = "ejb/CallbackSFEJB";
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.JNDI, "java:comp/env/jpa/Callback_AMJTA"));
         jpaPctxMap.put("test-jpa-resource-amrl",
                        new JPAPersistenceContext("test-jpa-resource-amrl", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/Callback_AMRL"));
         jpaPctxMap.put("test-jpa-resource-cmts",
                        new JPAPersistenceContext("test-jpa-resource-cmts", PersistenceContextType.CONTAINER_MANAGED_TS, PersistenceInjectionType.JNDI, "java:comp/env/jpa/Callback_CMTS"));
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/cleanup"));
-
     }
 
     /*
@@ -65,19 +64,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PackageProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PackageProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -85,57 +79,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_PackageProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PackageProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_PackageProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PackageProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -143,19 +122,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PackageProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PackageProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -163,19 +137,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PackageProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PackageProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Private Protection
@@ -185,19 +154,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PrivateProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PrivateProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -205,57 +169,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PrivateProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PrivateProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_PrivateProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PrivateProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_PrivateProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PrivateProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -263,19 +212,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PrivateProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PrivateProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -283,19 +227,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PrivateProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PrivateProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Protected Protection
@@ -305,19 +244,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -325,57 +259,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -383,19 +302,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -403,19 +317,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_ProtectedProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Public Protection
@@ -425,19 +334,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PublicProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PublicProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -445,57 +349,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_PublicProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PublicProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_RuntimeException_PublicProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PublicProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -503,19 +392,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PublicProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PublicProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -523,19 +407,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_RuntimeException_PublicProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_RuntimeException_PublicProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Package Protection
@@ -545,19 +424,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -565,57 +439,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -623,19 +482,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -643,19 +497,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Private Protection
@@ -665,19 +514,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -685,57 +529,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -743,19 +572,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -763,19 +587,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PrivateProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Protected Protection
@@ -785,19 +604,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -805,57 +619,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -863,19 +662,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -883,19 +677,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_ProtectedProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Public Protection
@@ -905,19 +694,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -925,57 +709,42 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -983,19 +752,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -1003,19 +767,14 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
     public void jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PublicProtection_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallbackRuntimeException003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 }

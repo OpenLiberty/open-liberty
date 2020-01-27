@@ -22,11 +22,18 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafPackageEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafPrivateEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafProtectedEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafPublicEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafPackageEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafPrivateEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafProtectedEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafPublicEntity;
 import com.ibm.ws.jpa.fvt.callback.testlogic.CallbackOrderOfInvocationTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
@@ -44,25 +51,16 @@ public class TestCallbackOrderOfInvocationServlet extends JPATestServlet {
     @PersistenceUnit(unitName = "Callback-OrderOfInvocation_RL")
     private EntityManagerFactory amrlEmf;
 
-    // Cleanup
-    @PersistenceUnit(unitName = "Cleanup")
-    private EntityManagerFactory cleanupEmf;
-
-    private final String testLogicClassName = CallbackOrderOfInvocationTestLogic.class.getName();
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
     @PostConstruct
     private void initFAT() {
+        testClassName = CallbackOrderOfInvocationTestLogic.class.getName();
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.FIELD, "amjtaEmf"));
         jpaPctxMap.put("test-jpa-resource-amrl",
                        new JPAPersistenceContext("test-jpa-resource-amrl", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.FIELD, "amrlEmf"));
         jpaPctxMap.put("test-jpa-resource-cmts",
                        new JPAPersistenceContext("test-jpa-resource-cmts", PersistenceContextType.CONTAINER_MANAGED_TS, PersistenceInjectionType.FIELD, "cmtsEm"));
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.FIELD, "cleanupEmf"));
-
     }
 
     /*
@@ -117,114 +115,84 @@ public class TestCallbackOrderOfInvocationServlet extends JPATestServlet {
     public void jpa10_Callback_OrderOfInvocation_PackageProtection_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_Ano_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPackageEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPackageEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PackageProtection_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_Ano_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPackageEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPackageEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PackageProtection_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_Ano_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPackageEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPackageEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Private Protection
@@ -233,114 +201,84 @@ public class TestCallbackOrderOfInvocationServlet extends JPATestServlet {
     public void jpa10_Callback_OrderOfInvocation_PrivateProtection_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PrivateProtection_001_Ano_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPrivateEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PrivateProtection_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PrivateProtection_001_XML_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPrivateEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PrivateProtection_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PrivateProtection_001_Ano_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPrivateEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PrivateProtection_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PrivateProtection_001_XML_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPrivateEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PrivateProtection_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PrivateProtection_001_Ano_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPrivateEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PrivateProtection_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PrivateProtection_001_XML_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPrivateEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Protected Protection
@@ -349,114 +287,84 @@ public class TestCallbackOrderOfInvocationServlet extends JPATestServlet {
     public void jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_Ano_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafProtectedEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_XML_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafProtectedEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_Ano_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafProtectedEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_XML_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafProtectedEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_Ano_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafProtectedEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_ProtectedProtection_001_XML_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafProtectedEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // Public Protection
@@ -465,114 +373,84 @@ public class TestCallbackOrderOfInvocationServlet extends JPATestServlet {
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_Ano_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPublicEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPublicEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_Ano_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPublicEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMRL_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPublicEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_Ano_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoOOILeafPublicEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_CMTS_Web";
         final String testMethod = "testOrderOfInvocation001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLOOILeafPublicEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 }

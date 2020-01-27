@@ -11,8 +11,11 @@
 
 package com.ibm.ws.jpa.fvt.inheritance.entities.msc.xml;
 
+import javax.persistence.MappedSuperclass;
+
 import com.ibm.ws.jpa.fvt.inheritance.entities.msc.IMSC;
 
+@MappedSuperclass
 public abstract class XMLMSC implements IMSC {
     private int id;
     private String name;
