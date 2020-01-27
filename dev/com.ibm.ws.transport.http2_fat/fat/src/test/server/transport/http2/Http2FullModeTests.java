@@ -809,10 +809,10 @@ public class Http2FullModeTests extends FATServletClient {
      *
      * @throws
      */
-    @Test
-    public void testContinuationFrameAfterDataFrame() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    //@Test
+    //public void testContinuationFrameAfterDataFrame() throws Exception {
+    //    runTest(defaultServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Send DATA frame on stream 0
