@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.jboss.weld.manager.api.WeldManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
+import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
@@ -220,6 +221,16 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
 
     @Override
     public final ManagedObject<T> createManagedObject(T instance, ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
+
+        //In order to avoid creating a second proxy object with a broken internal state we simply wrap any weld proxy we are given in a DummyManagedObject.
+        if (CDIUtils.isWeldProxy(getManagedObjectClass())) {
+            if(instance != null) {
+                return new DummyManagedObject<T>(instance);
+            }
+            else {
+                throw new IllegalArgumentException("when calling createManagedObject on a Managed Object Factory for a weld subclass; please provide an instance of the class");
+            }
+        }
 
         // 1.Obtain a BeanManager instance.
         WeldManager beanManager = getBeanManager();
