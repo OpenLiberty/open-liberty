@@ -14,12 +14,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.BndErrorTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.JNDINameTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.NoInterfaceBindingsTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                BndErrorTest.class,
                 DefaultBindingsTest.class,
                 NoInterfaceBindingsTest.class,
                 JNDINameTest.class
