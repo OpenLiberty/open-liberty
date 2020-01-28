@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -220,6 +220,10 @@ public class BaseTraceService implements TrService {
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
 
+    private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
+    private static boolean isServerConfigUpdate = false;
+    private static boolean isServerConfigSetup = true;
+
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
         boolean needsToOutputInternalPackageMarker = false;
@@ -303,7 +307,7 @@ public class BaseTraceService implements TrService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
-        applyJsonFields(trConfig.getjsonFields());
+        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
         logHeader = trConfig.getLogHeader();
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
@@ -392,7 +396,7 @@ public class BaseTraceService implements TrService {
         commonConsoleLogHandlerUpdates();
 
         /*
-         * If messageFormat has been configured to 'basic' OR if consoleFormat is neither basic nor json (default to basic)
+         * If messageFormat has been configured to 'basic' OR if messageFormat is neither basic nor json (default to basic)
          * - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
          */
@@ -464,13 +468,31 @@ public class BaseTraceService implements TrService {
         }
     }
 
-    public static void applyJsonFields(String value) {
-        if (value == null || value == "" || value.isEmpty()) {
+    public static boolean getIsServerConfigUpdate() {
+        return isServerConfigUpdate;
+    }
+
+    public static void applyJsonFields(String value, Boolean omitJsonFields) {
+
+        if (!isServerConfigSetup)
+            isServerConfigUpdate = true;
+        else
+            isServerConfigSetup = false;
+
+        if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
+            AccessLogData.resetJsonLoggingNameAliases();
+            FFDCData.resetJsonLoggingNameAliases();
+            LogTraceData.resetJsonLoggingNameAliasesMessage();
+            LogTraceData.resetJsonLoggingNameAliasesTrace();
+            AuditData.resetJsonLoggingNameAliases();
+
             //if no property is set, return
             return;
         }
+
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         boolean valueFound = false;
+        boolean isInvalidEventType = false;
         Map<String, String> messageMap = new HashMap<>();
         Map<String, String> traceMap = new HashMap<>();
         Map<String, String> ffdcMap = new HashMap<>();
@@ -483,11 +505,15 @@ public class BaseTraceService implements TrService {
         List<String> AuditList = Arrays.asList(AuditData.NAMES1_1);
 
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
-
         for (String pair : keyValuePairs) //iterate over the pairs
         {
+            pair = pair.trim();
+            if (pair.endsWith(":"))
+                pair = pair + OMIT_FIELDS_STRING;
+
             String[] entry = pair.split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
+
             if (entry.length == 2) {//if the mapped value is intended for all event types
                 entry[1] = entry[1].trim();
                 //add properties to all the hashmaps and trim whitespaces
@@ -519,6 +545,7 @@ public class BaseTraceService implements TrService {
                     Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
                 }
                 valueFound = false;//reset valueFound boolean
+
             } else if (entry.length == 3) {
                 entry[1] = entry[1].trim();
                 entry[2] = entry[2].trim();
@@ -549,17 +576,21 @@ public class BaseTraceService implements TrService {
                         valueFound = true;
                     }
                 } else {
+                    isInvalidEventType = true;
                     Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
-                if (!valueFound) {
+                if (!valueFound && !isInvalidEventType) {
                     //if the value does not exist in any of the known keys, give a warning
                     Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
                 }
                 valueFound = false;
+                isInvalidEventType = false;
             } else {
                 Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
             }
+
         }
+
         AccessLogData.newJsonLoggingNameAliases(accessLogMap);
         FFDCData.newJsonLoggingNameAliases(ffdcMap);
         LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
