@@ -96,7 +96,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     protected void handleEndpointRequest(OAuth20Provider provider, HttpServletRequest request, HttpServletResponse response)
             throws OidcServerException, IOException {
         locales = request.getLocales();
-
+        System.out.println(locales);
         if (request.getMethod().equalsIgnoreCase(HTTP_METHOD_GET) || request.getMethod().equalsIgnoreCase(HTTP_METHOD_HEAD)) {
             processHeadOrGet(provider, request, response);
         } else if (request.getMethod().equalsIgnoreCase(HTTP_METHOD_POST)) {
@@ -451,6 +451,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
             // Throw error if client_id already exists
             if (clientProvider.exists(clientId)) {
                 BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS", new Object[] { clientId });
+                errorMsg.setLocales(locales);
                 Tr.error(tc, errorMsg.getServerErrorMessage());
                 throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
             }

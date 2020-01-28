@@ -13,6 +13,7 @@ package com.ibm.ws.security.oauth20.web;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,15 +36,15 @@ public class LogoutPages {
      * @return
      */
     String getDefaultLogoutPage(Enumeration<Locale> locales) {
-        String logoutTitle = Tr.formatMessage(tc, locales, "LOGOUT_PAGE_TITLE");
-        String logoutMessage = Tr.formatMessage(tc, locales, "LOGOUT_PAGE_BODY"); // logout successful
+        String logoutTitle = Tr.formatMessage(tc, getLocale(locales), "LOGOUT_PAGE_TITLE");
+        String logoutMessage = Tr.formatMessage(tc, getLocale(locales), "LOGOUT_PAGE_BODY"); // logout successful
         String logoutString = logoutHtml.replace("#TITLE#", logoutTitle).replace("#BODY#", logoutMessage);
         return logoutString;
     }
 
     String getDefaultLogoutErrorPage(Enumeration<Locale> locales) {
-        String logoutTitle = Tr.formatMessage(tc, locales, "LOGOUT_ERROR_PAGE_TITLE");
-        String logoutMessage = Tr.formatMessage(tc, locales, "LOGOUT_ERROR_PAGE_BODY"); // An exception occurred during logout
+        String logoutTitle = Tr.formatMessage(tc, getLocale(locales), "LOGOUT_ERROR_PAGE_TITLE");
+        String logoutMessage = Tr.formatMessage(tc, getLocale(locales), "LOGOUT_ERROR_PAGE_BODY"); // An exception occurred during logout
         String logoutString = logoutHtml.replace("#TITLE#", logoutTitle).replace("#BODY#", logoutMessage);
         return logoutString;
     }
@@ -65,4 +66,32 @@ public class LogoutPages {
         }
     }
 
+    /**
+     * Determines the preferred Locale of the request, <b>as supported by the Liberty profile</b>.
+     * In other words, if the most-preferred Locale that is requested that is not supported by the
+     * Liberty runtime, then the next most-preferred Locale will be used, finally resulting in the
+     * JVM's default Locale.
+     * <p>
+     * The net effect of this is any French locale (fr, fr_ca, fr_fr, etc) would resolve to just 'fr'.
+     * Any Portugese locale ('pt') other than Brazillian ('pt_br') would resolve to the JVM default
+     * encoding. Portugese Brazillian is tranlated to, so 'pt_br' is returned. Any English locale
+     * is returned as 'en'. Any unrecognized locale resolves to the JVM default.
+     *
+     * @return The Locale for the request. The best match supported by the Liberty runtime is returned, or the defualt Locale.
+     */
+    public static Locale getLocale(final Enumeration<Locale> locales) {
+        while (locales.hasMoreElements()) {
+            final Locale requestedLocale = locales.nextElement();
+            // If its English, we're done. Just exit with that because we support all English.
+            if (requestedLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
+                return requestedLocale;
+            }
+            final Locale loadedLocale = ResourceBundle.getBundle(TraceConstants.MESSAGE_BUNDLE, requestedLocale).getLocale();
+            if (!loadedLocale.toString().isEmpty() && requestedLocale.toString().startsWith(loadedLocale.toString())) {
+                return loadedLocale;
+            }
+        }
+
+        return Locale.getDefault();
+    }
 }
