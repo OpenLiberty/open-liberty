@@ -286,9 +286,9 @@ public class SelectionPageGenerator {
         while (locales.hasMoreElements()) {
             final Locale requestedLocale = locales.nextElement();
             // If its English, we're done. Just exit with that because we support all English.
-//            if (requestedLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
-//                return requestedLocale;
-//            }
+            if (requestedLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
+                return requestedLocale;
+            }
             final Locale loadedLocale = ResourceBundle.getBundle(TraceConstants.MESSAGE_BUNDLE, requestedLocale).getLocale();
             if (!loadedLocale.toString().isEmpty() && requestedLocale.toString().startsWith(loadedLocale.toString())) {
                 return loadedLocale;
