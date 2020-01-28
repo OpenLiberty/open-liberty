@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 import componenttest.app.FATServlet;
 
@@ -50,7 +50,7 @@ public class KafkaAutoAckTestServlet extends FATServlet {
         long offset = kafkaTestClient.getTopicOffset(KafkaAutoAckReceptionBean.CHANNEL_IN, APP_GROUPID);
 
         // Send message directly
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(KafkaAutoAckReceptionBean.CHANNEL_IN);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaAutoAckReceptionBean.CHANNEL_IN);
         writer.sendMessage("test1");
 
         // Assert message received
@@ -85,7 +85,7 @@ public class KafkaAutoAckTestServlet extends FATServlet {
         long offset = kafkaTestClient.getTopicOffset(KafkaAutoAckReceptionBean.CHANNEL_IN, APP_GROUPID);
 
         // Send 30 messages
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(KafkaAutoAckReceptionBean.CHANNEL_IN);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaAutoAckReceptionBean.CHANNEL_IN);
         for (int i = 0; i < 30; i++) {
             writer.sendMessage("test-" + i);
         }

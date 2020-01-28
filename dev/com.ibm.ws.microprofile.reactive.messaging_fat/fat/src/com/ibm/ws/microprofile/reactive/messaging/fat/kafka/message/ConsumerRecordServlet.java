@@ -26,15 +26,15 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 @WebServlet("/consumerRecordTest")
 public class ConsumerRecordServlet extends AbstractKafkaTestServlet {
 
     @Test
     public void testConsumerRecord() throws UnsupportedEncodingException {
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(ConsumerRecordBean.CHANNEL_IN);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(ConsumerRecordBean.CHANNEL_IN);
 
         List<Header> input_headers = new ArrayList<>();
         for (int i = 0; i < ConsumerRecordBean.NUM_HEADERS; i++) {
@@ -45,8 +45,8 @@ public class ConsumerRecordServlet extends AbstractKafkaTestServlet {
         ProducerRecord<String, String> record = new ProducerRecord<String, String>(ConsumerRecordBean.CHANNEL_IN, null, ConsumerRecordBean.TIMESTAMP, ConsumerRecordBean.KEY, ConsumerRecordBean.VALUE, input_headers);
         writer.sendMessage(record, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
-        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(ConsumerRecordBean.CHANNEL_OUT);
-        List<String> msgs = reader.waitForMessages(1, Duration.ofSeconds(2));
+        KafkaReader<String, String> reader = kafkaTestClient.readerFor(ConsumerRecordBean.CHANNEL_OUT);
+        List<String> msgs = reader.assertReadMessages(1, Duration.ofSeconds(2));
 
         assertEquals(1, msgs.size());
 

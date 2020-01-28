@@ -22,8 +22,8 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 @WebServlet("/useConfiguredTopicTest")
 public class UseConfiguredTopicServlet extends AbstractKafkaTestServlet {
@@ -36,15 +36,15 @@ public class UseConfiguredTopicServlet extends AbstractKafkaTestServlet {
         String keyOut = ConfiguredTopicBean.PRODUCER_RECORD_KEY;
         String valueOut = ConfiguredTopicBean.PRODUCER_RECORD_VALUE;
 
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(topicIn);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(topicIn);
         String value = "hello"; //this value doesn't matter
         writer.sendMessage(value);
 
-        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(expectedTopicOut);
-        List<ConsumerRecord<String, String>> expectedRecords = reader.waitForRecords(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, false);
+        KafkaReader<String, String> reader = kafkaTestClient.readerFor(expectedTopicOut);
+        List<ConsumerRecord<String, String>> expectedRecords = reader.readRecords(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         reader = kafkaTestClient.readerFor(unexpectedTopicOut);
-        List<ConsumerRecord<String, String>> unexpectedRecords = reader.waitForRecords(1, KafkaTestConstants.EXPECTED_FAILURE_KAFKA_TIMEOUT, false);
+        List<ConsumerRecord<String, String>> unexpectedRecords = reader.readRecords(1, KafkaTestConstants.EXPECTED_FAILURE_KAFKA_TIMEOUT);
 
         if (expectedRecords.size() == 1) {
             if (unexpectedRecords.size() != 0) {

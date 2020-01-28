@@ -27,8 +27,8 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 /**
  * Test that the kafka connector acknowledges messages and commits partition offsets correctly
@@ -57,8 +57,8 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         CompletableFuture<Void> acknowledged = deliveryBean.sendMessage("test1");
 
         // Assert that message appears on topic
-        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(KafkaDeliveryBean.CHANNEL_NAME);
-        List<String> messages = reader.waitForMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        KafkaReader<String, String> reader = kafkaTestClient.readerFor(KafkaDeliveryBean.CHANNEL_NAME);
+        List<String> messages = reader.assertReadMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         assertThat(messages, contains("test1"));
 
         // Assert that message has been acknowledged
@@ -71,7 +71,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
 
         // Send message directly
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
         writer.sendMessage("test1");
 
         // Assert that message is received
@@ -94,7 +94,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
     public void testOutOfOrderAcknowledgement() throws InterruptedException {
         long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
         // Send three messages directly
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
         writer.sendMessage("test1");
         writer.sendMessage("test2");
         writer.sendMessage("test3");
