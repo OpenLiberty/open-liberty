@@ -47,8 +47,4 @@ public class NameAliases {
         aliases = tempAliases;
     }
 
-    public void resetAliases() {
-        aliases = originalNames.clone();
-    }
-
 }
