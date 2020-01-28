@@ -45,6 +45,9 @@ public class JCAEnterpriseAppTestServlet extends HttpServlet {
     @Resource(name = "eis/ds1")
     DataSource ds1;
 
+    @Resource(name = "java:app/env/eis/ds1refWithLoginModule", lookup = "eis/ds1")
+    DataSource ds1refWithLoginModule;
+
     @Resource(name = "eis/map1")
     Map<String, String> map1;
 
@@ -176,6 +179,21 @@ public class JCAEnterpriseAppTestServlet extends HttpServlet {
         } finally {
             if (conn != null)
                 conn.close();
+        }
+    }
+
+    /**
+     * Verify that the user computed by the login module is used by the JCA data source when the resource reference indicates to use the login module.
+     */
+    public void testDataSourceUsingLoginModule(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Connection conn = ds1refWithLoginModule.getConnection();
+        try {
+            String user = conn.getMetaData().getUserName();
+            if (!"LOGIN1USER".equals(user)) {
+                throw new Exception("Unexpected user name " + user + ". Was the login module used?");
+            }
+        } finally {
+            conn.close();
         }
     }
 
