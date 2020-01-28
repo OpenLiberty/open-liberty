@@ -10,17 +10,58 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.List;
+
 import javax.servlet.annotation.WebServlet;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+
 @WebServlet("/useProducerRecordTopicTest")
-public class UseProducerRecordTopicServlet extends AbstractTopicServlet {
+public class UseProducerRecordTopicServlet extends AbstractKafkaTestServlet {
 
     @Test
     public void testConfiguredTopic() {
-        testTopic(ProducerRecordBean.CHANNEL_IN, ProducerRecordBean.PRODUCER_RECORD_TOPIC, ProducerRecordBean.CONFIGURED_TOPIC, ProducerRecordBean.PRODUCER_RECORD_KEY,
-                  ProducerRecordBean.PRODUCER_RECORD_VALUE);
+        String topicIn = ProducerRecordBean.CHANNEL_IN;
+        String expectedTopicOut = ProducerRecordBean.PRODUCER_RECORD_TOPIC;
+        String unexpectedTopicOut = ProducerRecordBean.CONFIGURED_TOPIC;
+        String keyOut = ProducerRecordBean.PRODUCER_RECORD_KEY;
+        String valueOut = ProducerRecordBean.PRODUCER_RECORD_VALUE;
+
+        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(topicIn);
+        String value = "hello"; //this value doesn't matter
+        writer.sendMessage(value);
+
+        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(expectedTopicOut);
+        List<ConsumerRecord<String, String>> expectedRecords = reader.waitForRecords(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, false);
+
+        reader = kafkaTestClient.readerFor(unexpectedTopicOut);
+        List<ConsumerRecord<String, String>> unexpectedRecords = reader.waitForRecords(1, KafkaTestConstants.EXPECTED_FAILURE_KAFKA_TIMEOUT, false);
+
+        if (expectedRecords.size() == 1) {
+            if (unexpectedRecords.size() != 0) {
+                fail("Message may have been sent to more than one topic???");
+            } else {
+                ConsumerRecord<String, String> record = expectedRecords.get(0);
+                assertEquals(keyOut, record.key());
+                assertEquals(valueOut, record.value());
+                assertEquals(expectedTopicOut, record.topic());
+            }
+        } else {
+            if (unexpectedRecords.size() == 0) {
+                fail("Message not found on any topic");
+            } else {
+                fail("Message was sent to wrong topic: " + unexpectedTopicOut);
+            }
+        }
     }
 
 }

@@ -18,12 +18,10 @@ import java.time.Duration;
 public interface KafkaProducer<K, V> extends KafkaAdapter {
 
     /**
-     * @param topic
-     * @param channelName
-     * @param value
+     * @param producerRecord
      * @param callback
      */
-    void send(String topic, String channelName, V value, Callback callback);
+    void send(ProducerRecord<K, V> producerRecord, Callback callback);
 
     void close(Duration timeout);
 

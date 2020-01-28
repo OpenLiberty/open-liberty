@@ -81,7 +81,7 @@ public class KafkaSubscriberVerification extends SubscriberWhiteboxVerification<
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         KafkaProducer<String, String> kafkaProducer = kafkaAdapterFactory.newKafkaProducer(config);
-        KafkaOutput<String, String> kafkaOutput = new KafkaOutput<>(topicName, "fakeChannelName", kafkaProducer);
+        KafkaOutput<String, String> kafkaOutput = new KafkaOutput<>(kafkaAdapterFactory, topicName, "fakeChannelName", kafkaProducer);
         kafkaOutputs.add(kafkaOutput);
         return new VerificationSubscriber<>(probe, kafkaOutput);
     }

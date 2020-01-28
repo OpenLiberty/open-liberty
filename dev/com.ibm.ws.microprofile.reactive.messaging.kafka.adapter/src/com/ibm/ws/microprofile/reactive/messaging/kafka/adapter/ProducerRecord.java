@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common;
-
-import java.time.Duration;
+package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;
 
 /**
  *
  */
-public class KafkaTestConstants {
-    //timeout where operation is usually expected to pass quickly
-    public static final Duration DEFAULT_KAFKA_TIMEOUT = Duration.ofSeconds(30);
+public interface ProducerRecord<K, V> extends KafkaAdapter {
 
-    //timeout where operation is expected to fail
-    public static final Duration EXPECTED_FAILURE_KAFKA_TIMEOUT = Duration.ofSeconds(2);
 }

@@ -17,33 +17,29 @@ import java.util.logging.Logger;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.Callback;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaProducer;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ProducerRecord;
 
 /**
  *
  */
-public class KafkaProducerImpl<K, V, T> extends AbstractKafkaAdapter<org.apache.kafka.clients.producer.KafkaProducer<K, T>> implements KafkaProducer<K, V> {
+public class KafkaProducerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kafka.clients.producer.KafkaProducer<K, V>> implements KafkaProducer<K, V> {
 
     private static final String CLAZZ = KafkaProducerImpl.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLAZZ);
-    private final boolean allowKafkaProducerRecord;
 
-    public KafkaProducerImpl(Map<String, Object> producerConfig, boolean allowKafkaProducerRecord) {
-        super(new org.apache.kafka.clients.producer.KafkaProducer<K, T>(producerConfig));
-        this.allowKafkaProducerRecord = allowKafkaProducerRecord;//TODO remove beta guard before GA
+    public KafkaProducerImpl(Map<String, Object> producerConfig) {
+        super(new org.apache.kafka.clients.producer.KafkaProducer<K, V>(producerConfig));
     }
 
     /** {@inheritDoc} */
     @Override
-    public void send(String configuredTopic, String channelName, V value, Callback callback) {
+    public void send(ProducerRecord<K, V> producerRecord, Callback callback) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.logp(Level.FINEST, CLAZZ, "send", "Configured Topic: {0}, Channel Name: {1}, Value: {2}",
-                        new String[] { configuredTopic, channelName, value.toString() });
+            LOGGER.logp(Level.FINEST, CLAZZ, "send", "ProducerRecord: {0}",
+                        new String[] { producerRecord.toString() });
         }
 
-        org.apache.kafka.clients.producer.ProducerRecord<K, T> delegateRecord = (org.apache.kafka.clients.producer.ProducerRecord<K, T>) ProducerRecordFactory.newDelegateProducerRecord(configuredTopic,
-                                                                                                                                                                                         channelName,
-                                                                                                                                                                                         value,
-                                                                                                                                                                                         this.allowKafkaProducerRecord);//TODO remove beta guard before GA
+        org.apache.kafka.clients.producer.ProducerRecord<K, V> delegateRecord = (org.apache.kafka.clients.producer.ProducerRecord<K, V>) producerRecord.getDelegate();
 
         org.apache.kafka.clients.producer.Callback delegateCallback = (m, e) -> {
             org.apache.kafka.clients.producer.RecordMetadata delegateRecordMetadata = m;

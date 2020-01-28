@@ -61,9 +61,9 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
         KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
 
         String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
-        String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(null);
+        String configuredTopic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(null);
 
-        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(topic, channelName, kafkaProducer);
+        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(this.kafkaAdapterFactory, configuredTopic, channelName, kafkaProducer);
         this.kafkaOutputs.add(kafkaOutput);
 
         return ReactiveStreams.<Message<Object>> builder().to(kafkaOutput.getSubscriber());

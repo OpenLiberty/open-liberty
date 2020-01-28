@@ -8,17 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common;
+package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl;
 
-import java.time.Duration;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ProducerRecord;
 
 /**
  *
  */
-public class KafkaTestConstants {
-    //timeout where operation is usually expected to pass quickly
-    public static final Duration DEFAULT_KAFKA_TIMEOUT = Duration.ofSeconds(30);
+public class ProducerRecordImpl<K, V> extends AbstractKafkaAdapter<org.apache.kafka.clients.producer.ProducerRecord<K, V>> implements ProducerRecord<K, V> {
 
-    //timeout where operation is expected to fail
-    public static final Duration EXPECTED_FAILURE_KAFKA_TIMEOUT = Duration.ofSeconds(2);
+    public ProducerRecordImpl(String configuredTopic, String channelName, V value) {
+        super(ProducerRecordFactory.newDelegateProducerRecord(configuredTopic, channelName, value));
+    }
+
 }

@@ -18,20 +18,24 @@ import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaProducer;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ProducerRecord;
 
 public class KafkaOutput<K, V> {
 
     private static final TraceComponent tc = Tr.register(KafkaOutput.class);
     private final KafkaProducer<K, V> kafkaProducer;
-    private final String topic;
+    private final String configuredTopic;
     private volatile boolean running = true;
     private final String channelName;
+    private final KafkaAdapterFactory kafkaAdapterFactory;
 
-    public KafkaOutput(String topic, String channelName, KafkaProducer<K, V> kafkaProducer) {
-        this.topic = topic;
+    public KafkaOutput(KafkaAdapterFactory kafkaAdapterFactory, String configuredTopic, String channelName, KafkaProducer<K, V> kafkaProducer) {
+        this.configuredTopic = configuredTopic;
         this.kafkaProducer = kafkaProducer;
         this.channelName = channelName;
+        this.kafkaAdapterFactory = kafkaAdapterFactory;
     }
 
     public SubscriberBuilder<Message<V>, Void> getSubscriber() {
@@ -45,7 +49,9 @@ public class KafkaOutput<K, V> {
 
     private void sendMessage(Message<V> message) {
         try {
-            this.kafkaProducer.send(this.topic, this.channelName, message.getPayload(), (r, e) -> {
+            ProducerRecord<K, V> producerRecord = this.kafkaAdapterFactory.newProducerRecord(configuredTopic, channelName, message.getPayload());
+
+            this.kafkaProducer.send(producerRecord, (r, e) -> {
                 if (e == null) {
                     message.ack();
                 } else {

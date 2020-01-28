@@ -33,7 +33,7 @@ public abstract class KafkaAdapterFactory {
     private static final Class<?>[] KAFKA_CONSUMER_ARG_TYPES = { Map.class };
 
     private static final String KAFKA_PRODUCER_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.KafkaProducerImpl";
-    private static final Class<?>[] KAFKA_PRODUCER_ARG_TYPES = { Map.class, boolean.class }; //TODO remove beta guard before GA
+    private static final Class<?>[] KAFKA_PRODUCER_ARG_TYPES = { Map.class };
 
     private static final String TOPIC_PARTITION_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.TopicPartitionImpl";
     private static final Class<?>[] TOPIC_PARTITION_ARG_TYPES = { String.class, int.class };
@@ -45,7 +45,10 @@ public abstract class KafkaAdapterFactory {
     private static final Class<?>[] COMMIT_FAILED_EXCEPTION_ARG_TYPES = {};
 
     private static final String INCOMING_KAFKA_MESSAGE_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.IncomingKafkaMessage";
-    private static final Class<?>[] INCOMING_KAFKA_MESSAGE_ARG_TYPES = { ConsumerRecord.class, Supplier.class, boolean.class }; //TODO remove beta guard before GA
+    private static final Class<?>[] INCOMING_KAFKA_MESSAGE_ARG_TYPES = { ConsumerRecord.class, Supplier.class };
+
+    private static final String PRODUCER_RECORD_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.ProducerRecordImpl";
+    private static final Class<?>[] PRODUCER_RECORD_ARG_TYPES = { String.class, String.class, Object.class };
 
     /**
      * Class from the Kafka client jar which we use to test whether the client library is present
@@ -57,14 +60,27 @@ public abstract class KafkaAdapterFactory {
     /**
      * @param <K>
      * @param <V>
+     * @param key
+     * @param value
+     * @return
+     */
+    public <K, V> ProducerRecord<K, V> newProducerRecord(String configuredTopic, String channelName, V value) {
+        @SuppressWarnings("unchecked")
+        ProducerRecord<K, V> producerRecord = getInstance(getClassLoader(), ProducerRecord.class, PRODUCER_RECORD_IMPL, PRODUCER_RECORD_ARG_TYPES, configuredTopic, channelName,
+                                                          value);
+        return producerRecord;
+    }
+
+    /**
+     * @param <K>
+     * @param <V>
      * @param consumerRecord
      * @param ack
      * @return
      */
     public <K, V> Message<V> newIncomingKafkaMessage(ConsumerRecord<K, V> consumerRecord, Supplier<CompletionStage<Void>> ack) {
         @SuppressWarnings("unchecked")
-        Message<V> incomingMessage = getInstance(getClassLoader(), Message.class, INCOMING_KAFKA_MESSAGE_IMPL, INCOMING_KAFKA_MESSAGE_ARG_TYPES, consumerRecord, ack,
-                                                 BetaUtils.USE_KAFKA_PRODUCER_RECORD);//TODO remove beta guard before GA
+        Message<V> incomingMessage = getInstance(getClassLoader(), Message.class, INCOMING_KAFKA_MESSAGE_IMPL, INCOMING_KAFKA_MESSAGE_ARG_TYPES, consumerRecord, ack);
         return incomingMessage;
     }
 
@@ -86,8 +102,7 @@ public abstract class KafkaAdapterFactory {
      */
     public <K, V> KafkaProducer<K, V> newKafkaProducer(Map<String, Object> producerConfig) {
         @SuppressWarnings("unchecked")
-        KafkaProducer<K, V> kafkaProducer = getInstance(getClassLoader(), KafkaProducer.class, KAFKA_PRODUCER_IMPL, KAFKA_PRODUCER_ARG_TYPES, producerConfig,
-                                                        BetaUtils.USE_KAFKA_PRODUCER_RECORD);//TODO remove beta guard before GA
+        KafkaProducer<K, V> kafkaProducer = getInstance(getClassLoader(), KafkaProducer.class, KAFKA_PRODUCER_IMPL, KAFKA_PRODUCER_ARG_TYPES, producerConfig);
         return kafkaProducer;
     }
 

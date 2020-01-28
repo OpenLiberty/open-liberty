@@ -13,13 +13,14 @@ package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.BetaUtils;
+
 public class ProducerRecordFactory {
 
     private static final String CLAZZ = ProducerRecordFactory.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLAZZ);
 
-    public static <K, V> org.apache.kafka.clients.producer.ProducerRecord<K, V> newDelegateProducerRecord(String configuredTopic, String channelName, V value,
-                                                                                                          boolean allowKafkaProducerRecord) {//TODO remove beta guard before GA
+    public static <K, V> org.apache.kafka.clients.producer.ProducerRecord<K, V> newDelegateProducerRecord(String configuredTopic, String channelName, V value) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.logp(Level.FINEST, CLAZZ, "newDelegateProducerRecord", "Configured Topic: {0}, Channel Name: {1}, Value: {2}",
                         new String[] { configuredTopic, channelName, value.toString() });
@@ -28,7 +29,7 @@ public class ProducerRecordFactory {
         org.apache.kafka.clients.producer.ProducerRecord<K, V> delegateRecord;
 
         //TODO remove beta guard before GA
-        if (allowKafkaProducerRecord && (value instanceof org.apache.kafka.clients.producer.ProducerRecord)) {
+        if (BetaUtils.USE_KAFKA_PRODUCER_RECORD && (value instanceof org.apache.kafka.clients.producer.ProducerRecord)) {
             org.apache.kafka.clients.producer.ProducerRecord<K, V> userProducerRecord = (org.apache.kafka.clients.producer.ProducerRecord<K, V>) value;
             org.apache.kafka.common.header.Headers headers = userProducerRecord.headers();
             K key = userProducerRecord.key();

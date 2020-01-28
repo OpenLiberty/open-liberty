@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.BetaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecord;
 
 /**
@@ -25,12 +26,10 @@ public class IncomingKafkaMessage<T> implements Message<T> {
 
     private final ConsumerRecord<?, T> consumerRecord;
     private final Supplier<CompletionStage<Void>> ack;
-    private final boolean allowKafkaConsumerRecord;
 
-    public IncomingKafkaMessage(ConsumerRecord<?, T> consumerRecord, Supplier<CompletionStage<Void>> ack, boolean allowKafkaConsumerRecord) {
+    public IncomingKafkaMessage(ConsumerRecord<?, T> consumerRecord, Supplier<CompletionStage<Void>> ack) {
         this.consumerRecord = consumerRecord;
         this.ack = ack;
-        this.allowKafkaConsumerRecord = allowKafkaConsumerRecord;//TODO remove guard before GA
     }
 
     /** {@inheritDoc} */
@@ -54,7 +53,7 @@ public class IncomingKafkaMessage<T> implements Message<T> {
         if (unwrapType == null) {
             throw new IllegalArgumentException("The target class must not be `null`");
         }
-        if (allowKafkaConsumerRecord) { //TODO remove guard before GA
+        if (BetaUtils.USE_KAFKA_PRODUCER_RECORD) { //TODO remove guard before GA
             if (org.apache.kafka.clients.consumer.ConsumerRecord.class.equals(unwrapType)) {
                 return unwrapType.cast(this.consumerRecord.getDelegate());
             }
