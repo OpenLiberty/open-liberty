@@ -1282,10 +1282,6 @@ class ConfigEvaluator {
     @FFDCIgnore(URISyntaxException.class)
     private String processString(String value, ExtendedAttributeDefinition attrDef, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
 
-        // If this is an ID value, don't do any processing
-        if (XMLConfigConstants.CFG_INSTANCE_ID.equalsIgnoreCase(context.getAttributeName()))
-            return value;
-
         if (attrDef == null) {
             return context.resolveString(value, ignoreWarnings);
         }
