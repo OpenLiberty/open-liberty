@@ -98,8 +98,7 @@ Service-Component: \
 -dsannotations: \
   com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl, \
   com.ibm.ws.security.authentication.internal.collective.NullCollectiveAuthenticationPlugin, \
-  com.ibm.ws.security.authentication.internal.jaas.JAASConfigurationImpl, \
-  com.ibm.ws.security.authentication.internal.cache.RevokeAuthCacheUsersImpl
+  com.ibm.ws.security.authentication.internal.jaas.JAASConfigurationImpl
 
 instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resources/*.class
 
@@ -119,13 +118,11 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.kernel.service, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot,\
-	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
-	org.eclipse.osgi,\
-	osgi.core
+	com.ibm.ws.security.mp.jwt.proxy;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
