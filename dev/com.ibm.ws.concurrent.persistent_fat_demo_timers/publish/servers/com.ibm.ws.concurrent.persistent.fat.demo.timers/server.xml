@@ -36,13 +36,13 @@
   <!-- Permission needed for SQLServer driver -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   
+    <!-- Permission needed for Oracle driver -->
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+  
   <!-- File read write permissions -->
   <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
   <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
   <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
   
-  
-  
-
   <variable name="onError" value="FAIL"/>
 </server>
