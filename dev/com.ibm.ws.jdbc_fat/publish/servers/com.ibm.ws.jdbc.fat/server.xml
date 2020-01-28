@@ -261,6 +261,10 @@
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
 	<!-- Postgres and SQLServer permission to make a basic query-->
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+
+	<!-- Postgres permission during commit cycle -->
+	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 	
     <variable name="onError" value="FAIL"/>
 </server>
