@@ -97,7 +97,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     /**
      * Concatenates elements to form a dotted name, eliding any null values or empty strings.
      *
-     * @param name the first element of the name
+     * @param name  the first element of the name
      * @param names the remaining elements of the name
      * @return {@code name} and {@code names} concatenated by periods
      */
@@ -168,9 +168,9 @@ public class MetricRegistryImpl extends MetricRegistry {
     /**
      * Given a {@link Metric}, registers it under the given name.
      *
-     * @param name the name of the metric
+     * @param name   the name of the metric
      * @param metric the metric
-     * @param <T> the type of the metric
+     * @param <T>    the type of the metric
      * @return {@code metric}
      * @throws IllegalArgumentException if the name is already registered
      */
@@ -636,8 +636,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder, Tag... tags) {
-        //refactor this
+    protected <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder, Tag... tags) {
         /*
          * Check if metric with this name already exists or not.
          * If it does exist, checks if is of the same metric type.
@@ -671,7 +670,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     /**
      * Identify if there exists an existing metric with the same metricName, but of different type and throw an exception if so
      *
-     * @param name metric name
+     * @param name    metric name
      * @param builder MetricBuilder
      */
     private <T extends Metric> void validateMetricNameToSingleType(String name, MetricBuilder<T> builder) {
@@ -685,7 +684,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     /**
      * Identify if there exists an existing metric with the same metricName, but of different type and throw an exception if so
      *
-     * @param name metric name
+     * @param name        metric name
      * @param metricClass Class/Type of the metric
      */
     private <T extends Metric> void validateMetricNameToSingleType(String name, Class<T> metricClass) {
@@ -698,7 +697,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Metric> SortedMap<MetricID, T> getMetrics(Class<T> klass, MetricFilter filter) {
+    protected <T extends Metric> SortedMap<MetricID, T> getMetrics(Class<T> klass, MetricFilter filter) {
         final TreeMap<MetricID, T> timers = new TreeMap<MetricID, T>();
         for (Map.Entry<MetricID, Metric> entry : metricsMID.entrySet()) {
             if (klass.isInstance(entry.getValue()) && filter.matches(entry.getKey(),
@@ -724,7 +723,7 @@ public class MetricRegistryImpl extends MetricRegistry {
         return metadata.get(name);
     }
 
-    private <T extends Metric> Class<T> determineMetricClass(T metric) {
+    protected <T extends Metric> Class<T> determineMetricClass(T metric) {
         if (Counter.class.isInstance(metric))
             return (Class<T>) Counter.class;
         if (ConcurrentGauge.class.isInstance(metric))
@@ -743,7 +742,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     /**
      * A quick and easy way of capturing the notion of default metrics.
      */
-    private interface MetricBuilder<T extends Metric> {
+    public interface MetricBuilder<T extends Metric> {
         MetricBuilder<Counter> COUNTERS = new MetricBuilder<Counter>() {
             @Override
             public Counter newMetric() {
