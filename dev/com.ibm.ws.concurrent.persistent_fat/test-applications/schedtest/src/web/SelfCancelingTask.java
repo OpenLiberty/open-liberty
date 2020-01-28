@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,9 @@ public class SelfCancelingTask extends DBIncrementTask {
             Phaser phaser = SchedulerFATServlet.phaserRef.get();
             if (phaser != null) {
                 int phase = phaser.arrive();
-                phaser.awaitAdvance(phase + 1);
+                int nextPhase = phaser.awaitAdvance(phase + 1);
+                if (nextPhase != phase + 2)
+                    throw new Exception("Expected next phase " + (phase + 2) + ". Instead, next phase is: " + nextPhase);
             }
 
             status = persistentExecutor.getStatus(taskId);
