@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)  Comment out temporarily so that build will run this more than once
 public class DelayAppStartupHealthCheckTest {
 
     public static final String APP_NAME = "DelayedHealthCheckApp";
