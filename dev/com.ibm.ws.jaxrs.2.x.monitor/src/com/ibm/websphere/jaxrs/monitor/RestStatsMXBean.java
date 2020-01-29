@@ -14,13 +14,13 @@ import com.ibm.websphere.monitor.jmx.Counter;
 import com.ibm.websphere.monitor.jmx.StatisticsMeter;
 
 /**
- * Management12 interface for MBeans with names of the form "WebSphere:type=RestfulStats,name=*"
+ * Management12 interface for MBeans with names of the form "WebSphere:type=RestStats,name=*"
  * where * is the name of a RESTful resource method within an application under the Liberty profile of the form <appName>.<resourceMethodName>. For example, myApp.DemoResource. One such MBean for each resource method in the system is available
  * from the Liberty profile platform MBean server when the monitor-1.0 feature is enabled. This interface can be used to request a proxy object via the {@link javax.management.JMX#newMMBeanProxy} method.
  * 
  * @ibm-api
  */
-public interface RestfulStatsMXBean {
+public interface RestStatsMXBean {
 
     /**
      * Retrieves the value of the read-only attribute Description, which is a description of the MBean itself.

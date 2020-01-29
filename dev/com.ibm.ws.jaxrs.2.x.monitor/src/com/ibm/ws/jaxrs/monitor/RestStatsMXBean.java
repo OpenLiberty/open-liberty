@@ -17,7 +17,7 @@ import com.ibm.websphere.monitor.meters.StatisticsMeter;
  * RESTful Stats MXBean
  * 
  */
-public interface RestfulStatsMXBean extends com.ibm.websphere.jaxrs.monitor.RestfulStatsMXBean {
+public interface RestStatsMXBean extends com.ibm.websphere.jaxrs.monitor.RestStatsMXBean {
 
     @Override
     public Counter getRequestCountDetails();
