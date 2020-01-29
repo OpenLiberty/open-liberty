@@ -37,6 +37,7 @@ import javax.activation.DataSource;
 
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.common.util.SystemPropertyAction;
 import org.apache.cxf.helpers.HttpHeaderHelper;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CachedOutputStream;
@@ -61,7 +62,8 @@ public class AttachmentDeserializer {
      * The maximum MIME Header Length. The default is 300.
      */
     public static final String ATTACHMENT_MAX_HEADER_SIZE = "attachment-max-header-size";
-    public static final int DEFAULT_MAX_HEADER_SIZE = 300;
+    public static final int DEFAULT_MAX_HEADER_SIZE =
+        SystemPropertyAction.getInteger("org.apache.cxf.attachment-max-header-size", 300);
 
     public static final int THRESHOLD = 1024 * 100; //100K (byte unit)
 
@@ -72,15 +74,16 @@ public class AttachmentDeserializer {
 
     private static final Logger LOG = LogUtils.getL7dLogger(AttachmentDeserializer.class);
 
+    private static final int PUSHBACK_AMOUNT = 2048;
+
     private boolean lazyLoading = true;
 
-    private int pbAmount = 2048;
     private PushbackInputStream stream;
     private int createCount;
     private int closedCount;
     private boolean closed;
 
-    private byte boundary[];
+    private byte[] boundary;
 
     private String contentType;
 
@@ -90,7 +93,7 @@ public class AttachmentDeserializer {
 
     private InputStream body;
 
-    private Set<DelegatingInputStream> loaded = new HashSet<DelegatingInputStream>();
+    private Set<DelegatingInputStream> loaded = new HashSet<>();
     private List<String> supportedTypes;
 
     private int maxHeaderLength = DEFAULT_MAX_HEADER_SIZE;
@@ -150,8 +153,7 @@ public class AttachmentDeserializer {
             }
             boundary = boundaryString.getBytes("utf-8");
 
-            stream = new PushbackInputStream(message.getContent(InputStream.class),
-                                             pbAmount);
+            stream = new PushbackInputStream(message.getContent(InputStream.class), PUSHBACK_AMOUNT);
             if (!readTillFirstBoundary(stream, boundary)) {
                 throw new IOException("Couldn't find MIME boundary: " + boundaryString);
             }
@@ -167,7 +169,7 @@ public class AttachmentDeserializer {
             }
             val = AttachmentUtil.getHeader(ih, "Content-Transfer-Encoding");
 
-            MimeBodyPartInputStream mmps = new MimeBodyPartInputStream(stream, boundary, pbAmount);
+            MimeBodyPartInputStream mmps = new MimeBodyPartInputStream(stream, boundary, PUSHBACK_AMOUNT);
             InputStream ins = AttachmentUtil.decode(mmps, val);
             if (ins != mmps) {
                 ih.remove("Content-Transfer-Encoding");
@@ -232,7 +234,7 @@ public class AttachmentDeserializer {
             cache((DelegatingInputStream) body);
         }
 
-        List<Attachment> atts = new ArrayList<Attachment>(attachments.getLoadedAttachments());
+        List<Attachment> atts = new ArrayList<>(attachments.getLoadedAttachments());
         for (Attachment a : atts) {
             DataSource s = a.getDataHandler().getDataSource();
             if (s instanceof AttachmentDataSource) {
@@ -254,17 +256,11 @@ public class AttachmentDeserializer {
         }
         loaded.add(input);
         InputStream origIn = input.getInputStream();
-        CachedOutputStream out = new CachedOutputStream();
-        try {
-
+        try (CachedOutputStream out = new CachedOutputStream()) {
             AttachmentUtil.setStreamedAttachmentProperties(message, out);
             IOUtils.copy(input, out);
             input.setInputStream(out.getInputStream());
             origIn.close();
-        } finally {
-            if (out != null) {
-                out.close();
-            }
         }
     }
 
@@ -274,7 +270,7 @@ public class AttachmentDeserializer {
      *
      * @param pushbackInStream
      * @param boundary
-     * @throws MessagingException
+     * @throws IOException
      */
     private static boolean readTillFirstBoundary(PushbackInputStream pbs, byte[] bp) throws IOException {
 
@@ -315,7 +311,7 @@ public class AttachmentDeserializer {
      */
     private Attachment createAttachment(Map<String, List<String>> headers) throws IOException {
         InputStream partStream =
-            new DelegatingInputStream(new MimeBodyPartInputStream(stream, boundary, pbAmount),
+            new DelegatingInputStream(new MimeBodyPartInputStream(stream, boundary, PUSHBACK_AMOUNT),
                                       this);
         createCount++;
 
@@ -452,7 +448,7 @@ public class AttachmentDeserializer {
         }
         List<String> v = heads.get(name);
         if (v == null) {
-            v = new ArrayList<String>(1);
+            v = new ArrayList<>(1);
             heads.put(name, v);
         }
         v.add(value);
