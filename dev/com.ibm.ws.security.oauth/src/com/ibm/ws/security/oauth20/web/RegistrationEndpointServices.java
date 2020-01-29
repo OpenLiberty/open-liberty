@@ -96,7 +96,6 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     protected void handleEndpointRequest(OAuth20Provider provider, HttpServletRequest request, HttpServletResponse response)
             throws OidcServerException, IOException {
         locales = request.getLocales();
-        System.out.println(locales);
         if (request.getMethod().equalsIgnoreCase(HTTP_METHOD_GET) || request.getMethod().equalsIgnoreCase(HTTP_METHOD_HEAD)) {
             processHeadOrGet(provider, request, response);
         } else if (request.getMethod().equalsIgnoreCase(HTTP_METHOD_POST)) {
