@@ -38,10 +38,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class RestMetricsTest {
 
@@ -544,7 +546,7 @@ public class RestMetricsTest {
             if (retcode != 200) {
 
                 fail("Bad return Code from Metrics method call. Expected 200: Got"
-                     + retcode);
+                     + retcode + ", URL = " + url.toString());
 
                 return null;
             }
