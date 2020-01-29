@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2017 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.jca.fat.app;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,11 +25,19 @@ import java.util.TreeSet;
 
 import javax.jms.Topic;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.AuthData;
 import com.ibm.websphere.simplicity.config.ConnectionManager;
 import com.ibm.websphere.simplicity.config.ContextService;
@@ -42,12 +51,15 @@ import com.ibm.websphere.simplicity.config.context.ClassloaderContext;
 import com.ibm.websphere.simplicity.config.context.JEEMetadataContext;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests of config update scenarios for JCA.
  */
+@RunWith(FATRunner.class)
 public class DependantApplicationTest {
 
     @Server("com.ibm.ws.jca.fat")
@@ -115,6 +127,35 @@ public class DependantApplicationTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Build jars that will be in the RAR
+        JavaArchive JCAFAT1_jar = ShrinkWrap.create(JavaArchive.class, "JCAFAT1.jar");
+        JCAFAT1_jar.addPackage("fat.jca.resourceadapter.jar1");
+
+        JavaArchive JCAFAT2_jar = ShrinkWrap.create(JavaArchive.class, "JCAFAT2.jar");
+        JCAFAT2_jar.addPackage("fat.jca.resourceadapter.jar2");
+        JCAFAT2_jar.add(JCAFAT1_jar, "/", ZipExporter.class);
+
+        // Build the resource adapter
+        ResourceAdapterArchive JCAFAT1_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "JCAFAT1.rar");
+        JCAFAT1_rar.as(JavaArchive.class).addPackage("fat.jca.resourceadapter");
+        JCAFAT1_rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/ra.xml"));
+        JCAFAT1_rar.addAsLibrary(JCAFAT2_jar);
+        ShrinkHelper.exportToServer(server, "connectors", JCAFAT1_rar);
+
+        // Build the web module and application
+        WebArchive fvtweb_war = ShrinkWrap.create(WebArchive.class, fvtweb + ".war");
+        fvtweb_war.addPackage("web");
+        fvtweb_war.addPackage("web.mdb");
+        fvtweb_war.addPackage("web.mdb.bindings");
+        fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-ejb-jar-bnd.xml"));
+        fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-web-bnd.xml"));
+        fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/web.xml"));
+
+        EnterpriseArchive fvtapp_ear = ShrinkWrap.create(EnterpriseArchive.class, fvtapp + ".ear");
+        fvtapp_ear.addAsModule(fvtweb_war);
+        ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
+        ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+
         originalServerConfig = server.getServerConfiguration().clone();
         server.addInstalledAppForValidation(fvtapp);
         server.startServer();
@@ -308,6 +349,7 @@ public class DependantApplicationTest {
      *
      * @throws Exception if the test fails.
      */
+    @AllowedFFDC("com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException") // test case intentionally runs out of connections to test pool size
     @Test
     public void testUpdateConnectionManager() throws Exception {
         Log.entering(getClass(), "testUpdateConnectionManager");

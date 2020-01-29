@@ -22,7 +22,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                AlwaysPassesTest.class,
-               //DependantApplicationTest.class, // TODO needs updates, then enable
+               DependantApplicationTest.class,
                JCATest.class,
                ConnectionManagerMBeanTest.class
 })

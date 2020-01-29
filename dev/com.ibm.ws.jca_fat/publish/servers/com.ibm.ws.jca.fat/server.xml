@@ -78,5 +78,7 @@
 
     <!-- needed by fake resource adapter -->
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="javax.security.auth.PrivateCredentialPermission"
+                    name="javax.resource.spi.security.PasswordCredential * &quot;*&quot;" actions="read"/>
 
 </server>
