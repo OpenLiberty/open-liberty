@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -41,9 +42,6 @@ import com.ibm.ws.microprofile.faulttolerance.test.util.MockAsyncRequestContextC
 import com.ibm.ws.microprofile.faulttolerance.test.util.TestException;
 import com.ibm.ws.microprofile.faulttolerance.test.util.TestFunction;
 
-/**
- *
- */
 public class AsyncTest extends AbstractFTTest {
 
     private static final int TASKS = 5;
@@ -180,13 +178,13 @@ public class AsyncTest extends AbstractFTTest {
     }
 
     @Test
-    public void testAsyncRequestContextDeactivatedOnInterruption() throws InterruptedException, ExecutionException, TimeoutException, TestException {
+    public void testAsyncRequestContextDeactivatedOnException() throws InterruptedException, ExecutionException, TimeoutException, TestException {
         ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
 
         MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
         builder.setRequestContextController(asyncRequestContextController);
 
-        Executor<Future<String>> executor = builder.buildAsync(CompletionStage.class);
+        Executor<Future<String>> executor = builder.buildAsync(Future.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
 
         // Test an execution which throws an exception
@@ -205,6 +203,46 @@ public class AsyncTest extends AbstractFTTest {
     }
 
     @Test
+    public void testAsyncRequestContextDeactivatedOnInterruption() throws InterruptedException, ExecutionException, TimeoutException, TestException {
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
+
+        MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
+        builder.setRequestContextController(asyncRequestContextController);
+
+        Executor<Future<String>> executor = builder.buildAsync(Future.class);
+        ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
+
+        CountDownLatch startSignal = new CountDownLatch(1); // Prevents the execution from being interrupted until request context is set
+
+        // Test an execution which is cancelled
+        Future<String> result = executor.execute(() -> {
+            assertEquals("Activate request context should be called when request is started", 1, asyncRequestContextController.getActivateContextCount());
+
+            // Allow the execution to be interrupted
+            startSignal.countDown();
+
+            // Wait for up to 10 seconds for the execution to be interrupted
+            Thread.sleep(FUTURE_TIMEOUT);
+
+            return null;
+        }, context);
+
+        // Wait for the execution to have started before interrupting
+        startSignal.await();
+        result.cancel(true);
+
+        try {
+            result.get(5, TimeUnit.SECONDS);
+            fail("CancellationException should be thrown");
+        } catch (CancellationException e) {
+            waitForContext(asyncRequestContextController);
+            assertEquals("Activate request context should only be called once", 1, asyncRequestContextController.getActivateContextCount());
+            assertEquals("Deactivate request context should be called after the execution is interrupted", 1, asyncRequestContextController.getDeactivateContextCount());
+
+        }
+    }
+
+    @Test
     public void testAsyncRequestContextWithRetry() throws InterruptedException, ExecutionException, TimeoutException {
         ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
 
@@ -215,7 +253,7 @@ public class AsyncTest extends AbstractFTTest {
         MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
         builder.setRequestContextController(asyncRequestContextController);
 
-        Executor<Future<String>> executor = builder.buildAsync(CompletionStage.class);
+        Executor<Future<String>> executor = builder.buildAsync(Future.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
 
         Future<String> result = executor.execute(() -> {
@@ -255,6 +293,21 @@ public class AsyncTest extends AbstractFTTest {
         assertEquals("Activate request context should not have been called", 0, asyncRequestContextController.getActivateContextCount());
         assertEquals("Deactivate request context should not have been called", 0, asyncRequestContextController.getDeactivateContextCount());
 
+    }
+
+    private void waitForContext(MockAsyncRequestContextController asyncRequestContextController) throws InterruptedException {
+        long startTime = System.nanoTime();
+        long timeout = TimeUnit.NANOSECONDS.convert(5, TimeUnit.SECONDS);
+
+        // Wait for up to 5 seconds for request context calls
+        while (System.nanoTime() - startTime < timeout) {
+            if (asyncRequestContextController.getActivateContextCount() == 1 &&
+                asyncRequestContextController.getDeactivateContextCount() == 1) {
+                break;
+            } else {
+                Thread.sleep(100);
+            }
+        }
     }
 
     private CompletionStage<String> waitThenReturnCS() throws InterruptedException {
