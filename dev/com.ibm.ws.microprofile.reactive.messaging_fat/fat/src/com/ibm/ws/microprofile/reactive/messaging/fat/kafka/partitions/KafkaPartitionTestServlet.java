@@ -118,7 +118,7 @@ public class KafkaPartitionTestServlet extends AbstractKafkaTestServlet {
 
         // Send a message to the partition not assigned to the test reader and check that the bean receives it and advances the partition offset
         writer.sendMessage("test2", receptionBeanPartitionId, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
-        List<Message<String>> beanMessagesRead = receptionBean.getReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        List<Message<String>> beanMessagesRead = receptionBean.assertReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         List<String> beanMessagePayloads = beanMessagesRead.stream().map(Message::getPayload).collect(Collectors.toList());
         beanMessagesRead.forEach(Message::ack);
         assertThat(beanMessagePayloads, contains("test2"));

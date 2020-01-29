@@ -44,7 +44,7 @@ public class KafkaReader<K, V> implements AutoCloseable {
     /**
      * Poll Kafka until the desired number of messages is received
      * <p>
-     * May throw an error if there are more than the expected number of records on the topic
+     * Will throw an AssertionError if expected number of messages is not available on the topic
      *
      * @param count   the number of records expected
      * @param timeout the amount of time to wait for the expected number of records to be received
@@ -59,7 +59,7 @@ public class KafkaReader<K, V> implements AutoCloseable {
     /**
      * Poll Kafka until the desired number of records is received
      * <p>
-     * May throw an error if there are more than the expected number of records on the topic
+     * Will throw an AssertionError if expected number of records is not available on the topic
      *
      * @param count   the number of records expected
      * @param timeout the amount of time to wait for the expected number of records to be received
@@ -71,6 +71,13 @@ public class KafkaReader<K, V> implements AutoCloseable {
         return records;
     }
 
+    /**
+     * Poll Kafka until either the maximum number of records is received or the timeout is reached
+     *
+     * @param maxRecords the maximum number of records to read
+     * @param timeout    the amount of time to wait for records to be received
+     * @return the list of records received
+     */
     public List<ConsumerRecord<K, V>> readRecords(int maxRecords, Duration timeout) {
         ArrayList<ConsumerRecord<K, V>> result = new ArrayList<>();
         Duration remaining = timeout;

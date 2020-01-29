@@ -75,7 +75,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         writer.sendMessage("test1");
 
         // Assert that message is received
-        List<Message<String>> messages = receptionBean.getReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        List<Message<String>> messages = receptionBean.assertReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         Message<String> message = messages.get(0);
         assertThat(message.getPayload(), is("test1"));
 
@@ -100,7 +100,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         writer.sendMessage("test3");
 
         // Assert messages are received
-        List<Message<String>> messages = receptionBean.getReceivedMessages(3, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        List<Message<String>> messages = receptionBean.assertReceivedMessages(3, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         List<String> payloads = messages.stream().map(Message::getPayload).collect(toList());
         assertThat(payloads, contains("test1", "test2", "test3"));
 

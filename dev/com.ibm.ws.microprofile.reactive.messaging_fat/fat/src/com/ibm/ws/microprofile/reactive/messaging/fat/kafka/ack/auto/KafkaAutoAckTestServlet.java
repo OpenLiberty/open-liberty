@@ -54,7 +54,7 @@ public class KafkaAutoAckTestServlet extends FATServlet {
         writer.sendMessage("test1");
 
         // Assert message received
-        Message<String> message1 = receptionBean.getReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT).get(0);
+        Message<String> message1 = receptionBean.assertReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT).get(0);
         assertThat(message1.getPayload(), is("test1"));
 
         // Assert that the partition offset is committed
@@ -64,7 +64,7 @@ public class KafkaAutoAckTestServlet extends FATServlet {
         writer.sendMessage("test2");
 
         // Assert message received
-        Message<String> message2 = receptionBean.getReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT).get(0);
+        Message<String> message2 = receptionBean.assertReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT).get(0);
         assertThat(message2.getPayload(), is("test2"));
 
         // Assert the partition offset is committed
@@ -91,7 +91,7 @@ public class KafkaAutoAckTestServlet extends FATServlet {
         }
 
         // Assert 10 messages received
-        receptionBean.getReceivedMessages(30, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        receptionBean.assertReceivedMessages(30, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         // Assert that the partition offset is committed
         kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 30, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaAutoAckReceptionBean.CHANNEL_IN, APP_GROUPID);

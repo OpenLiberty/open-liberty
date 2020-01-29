@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class ConsumerRecordServlet extends AbstractKafkaTestServlet {
         writer.sendMessage(record, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         KafkaReader<String, String> reader = kafkaTestClient.readerFor(ConsumerRecordBean.CHANNEL_OUT);
-        List<String> msgs = reader.assertReadMessages(1, Duration.ofSeconds(2));
+        List<String> msgs = reader.assertReadMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         assertEquals(1, msgs.size());
 
