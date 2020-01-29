@@ -15,7 +15,7 @@
     <!-- <classloader commonLibraryRef="InfinispanLib"/> causes Weld to process CDI annotations within Infinispan JARs, which causes failures -->
   </application>
 
-  <httpSessionCache libraryRef="InfinispanLib" uri="file:${shared.resource.dir}/infinispan10/infinispan.xml"/>
+  <httpSessionCache libraryRef="InfinispanLib" uri="file:///${shared.resource.dir}/infinispan10/infinispan.xml"/>
 
   <httpSession hideSessionValues="false"/>
 

@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMGQ
+#COMPONENTNAMEFOR CWMGQ MicroProfile GraphQL API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MP GraphQL Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ERROR_GENERATING_SCHEMA_CWMGQ0001E=CWMGQ0001E: Un error en el m\u00f3dulo web {0} ha impedido que se inicie la aplicaci\u00f3n de MicroProfile GraphQL.
+ERROR_GENERATING_SCHEMA_CWMGQ0001E.explanation=Se ha detectado un error grave al procesar la aplicaci\u00f3n MP GraphQL en el m\u00f3dulo especificado. Este error impide que la aplicaci\u00f3n se inicie correctamente.
+ERROR_GENERATING_SCHEMA_CWMGQ0001E.useraction=Examine los registros para determinar los errores en la aplicaci\u00f3n GraphQL, resu\u00e9lvalos y vuelva a desplegar la aplicaci\u00f3n.
+

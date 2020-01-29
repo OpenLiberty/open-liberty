@@ -28,7 +28,6 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetadataWriter;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetricWriter;
 import com.ibm.ws.microprofile.metrics.writer.OutputWriter;
-import com.ibm.ws.microprofile.metrics.writer.PrometheusMetricWriter;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
@@ -39,6 +38,7 @@ public abstract class BaseMetricsHandler implements RESTHandler {
 
     protected BaseMetrics bm;
     public SharedMetricRegistries sharedMetricRegistry;
+    protected WriterFactory writerFactory;
 
     @Override
     @FFDCIgnore({ EmptyRegistryException.class, NoSuchMetricException.class, NoSuchRegistryException.class, HTTPNotAcceptableException.class, HTTPMethodNotAllowedException.class })
@@ -127,16 +127,16 @@ public abstract class BaseMetricsHandler implements RESTHandler {
             }
 
             if (theAcceptableFormat != null && theAcceptableFormat.getAcceptableFormat().equals(Constants.ACCEPT_HEADER_TEXT)) {
-                return new PrometheusMetricWriter(writer, locale);
+                return writerFactory.getPrometheusMetricsWriter(writer, locale);
             } else if (theAcceptableFormat != null && theAcceptableFormat.getAcceptableFormat().equals(Constants.ACCEPT_HEADER_JSON)) {
-                return new JSONMetricWriter(writer);
+                return writerFactory.getJSONMetricWriter(writer);
             } else {
                 //invalid header
                 throw new HTTPNotAcceptableException();
             }
         } else if (Constants.METHOD_OPTIONS.equals(method)) {
             if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
-                return new JSONMetadataWriter(writer, locale);
+                return writerFactory.getJSONMetadataWriter(writer, locale);
             } else {
                 throw new HTTPNotAcceptableException();
             }

@@ -692,10 +692,6 @@ warning.package.root.invalid.runnable=CWWKE0948W: Una opci\u00f3n --server-root 
 warning.package.root.invalid.runnable.explanation=El usuario ha realizado una solicitud de paquete con una opci\u00f3n --server-root e --include=runnable, pero no es una combinaci\u00f3n permitida. Se utilizar\u00e1 la ra\u00edz del servidor predeterminado wlp.
 warning.package.root.invalid.runnable.useraction=No se requiere ninguna acci\u00f3n.
 
-error.no.serialfilteragent=CWWKE0949E: El archivo jar de agente de filtro serie especificado {0} no existe.
-error.no.serialfilteragent.explanation=El archivo jar de agente de filtro serie especificado no existe o no se puede leer.
-error.no.serialfilteragent.useraction= Aseg\u00farese de que el archivo exista y que el usuario actual lo pueda leer.
-
 error.package.extension=CWWKE0950E: El nombre de archivo del archivo debe finalizar con .jar cuando se utiliza la opci\u00f3n runnable.
 error.package.extension.explanation=La opci\u00f3n --archive debe incluir una extensi\u00f3n de archivo que finalice con .jar cuando se especifica --include=runnable.
 error.package.extension.useraction=Proporcione un nombre de archivo para --archive con una extensi\u00f3n de archivo .jar cuando especifique --include=runnable.

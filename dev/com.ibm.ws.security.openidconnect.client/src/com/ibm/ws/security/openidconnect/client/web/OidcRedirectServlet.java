@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.web;
 
@@ -100,7 +100,7 @@ public class OidcRedirectServlet extends HttpServlet {
             if (!getOidcClient().isValidRedirectUrl(request)) {
                 String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_GET_REQUEST", request.getRequestURL()); // CWWKS1748E
                 Tr.error(tc, errorMsg);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
                 return;
             }
             getTokenFromFragment(request, response); //using javascript, send the browser to the redirect url registered for the client.
@@ -120,10 +120,11 @@ public class OidcRedirectServlet extends HttpServlet {
         if (state == null || state.isEmpty()) {
             String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_STATE", request.getRequestURL()); // CWWKS1749E
             Tr.error(tc, errorMsg);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
             return;
         }
-        //  when base security first redirected the browser, they set this cookie to hold the original URL.
+        //  when OIDCClientAuthenticatorUtil.doClientSideRedirect initially redirected the browser,
+        //  this cookie was set to hold the original URL.
         //  Now it's time to get it back.
         String cookieName = ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
         Cookie[] cookies = request.getCookies();
@@ -136,9 +137,9 @@ public class OidcRedirectServlet extends HttpServlet {
         }
 
         if (requestUrl == null || requestUrl.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1750E
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1520E
             Tr.error(tc, errorMsg);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
             return;
         }
 
@@ -182,7 +183,7 @@ public class OidcRedirectServlet extends HttpServlet {
             postToWASReqURL(request, response, requestUrl, oidcClientId); //  implicit flow???
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "OIDC _SSO RP Servlet redirecting to [" + requestUrl +"]");
+                Tr.debug(tc, "OIDC _SSO RP Servlet redirecting to [" + requestUrl + "]");
             }
             response.sendRedirect(requestUrl); // send back to protected resource
         }

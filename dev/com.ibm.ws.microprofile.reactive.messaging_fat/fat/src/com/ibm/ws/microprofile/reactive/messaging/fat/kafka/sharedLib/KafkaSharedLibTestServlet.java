@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sharedLib;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
-import java.time.Duration;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -21,6 +20,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
@@ -28,8 +28,6 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafk
 @WebServlet("/KafkaSharedLibTestServlet")
 @ApplicationScoped
 public class KafkaSharedLibTestServlet extends AbstractKafkaTestServlet {
-
-    public static final Duration TIMEOUT = Duration.ofSeconds(30);
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +39,7 @@ public class KafkaSharedLibTestServlet extends AbstractKafkaTestServlet {
         writer.sendMessage("123");
         writer.sendMessage("xyz");
 
-        List<String> msgs = reader.waitForMessages(2, TIMEOUT);
+        List<String> msgs = reader.waitForMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         assertThat(msgs, contains("321", "zyx"));
     }

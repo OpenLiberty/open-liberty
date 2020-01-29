@@ -98,6 +98,9 @@ cpu.systemLoadAverage.description=Zobrazuje pr\u016fm\u011brnou z\u00e1t\u011b\u
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Zobrazuje 'posledn\u00ed vyu\u017eit\u00ed procesoru' pro proces prost\u0159ed\u00ed JVM.
 
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Zobrazuje \u010das procesoru pou\u017e\u00edvan\u00fd procesem, na kter\u00e9m b\u011b\u017e\u00ed prost\u0159ed\u00ed JVM.
+
 #Garbage collection count message
 garbageCollectionCount.description=Zobrazuje celkov\u00fd po\u010det kolekc\u00ed, kter\u00e9 se vyskytly. Tento atribut vypisuje -1, pokud po\u010det shroma\u017e\u010fov\u00e1n\u00ed nen\u00ed definov\u00e1n pro tento kolektor.
 

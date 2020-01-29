@@ -90,7 +90,8 @@ public class ConfigEvaluatorTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -793,6 +794,63 @@ public class ConfigEvaluatorTest {
         Assert.assertNull(props.get("unknownChild"));
         Assert.assertNull(props.get("unknownChild2"));
         Assert.assertTrue(result.getReferences().toString(), result.getReferences().isEmpty());
+    }
+
+    @Test
+    public void testVariablesInIDFields() throws Exception {
+        changeLocationSettings("default");
+
+        String loggingPid = "com.ibm.ws.logging";
+        String singletonPid = "com.ibm.ws.singleton";
+        MockObjectClassDefinition loggingOCD = new MockObjectClassDefinition("logging");
+        MockAttributeDefinition logDirectoryAttribute = new MockAttributeDefinition("logDirectory", AttributeDefinition.STRING, 0, null);
+        loggingOCD.addAttributeDefinition(logDirectoryAttribute);
+        loggingOCD.setAlias("logging");
+
+        MockObjectClassDefinition singletonOCD = new MockObjectClassDefinition("someSingleton");
+        MockAttributeDefinition someAttribute = new MockAttributeDefinition("someAttribute", AttributeDefinition.STRING, 0, null);
+        singletonOCD.addAttributeDefinition(someAttribute);
+        singletonOCD.setAlias("singleton");
+
+        MockBundle bundle = new MockBundle();
+        MockMetaTypeInformation metatype = new MockMetaTypeInformation(bundle);
+        metatype.add(loggingPid, true, loggingOCD);
+        metatype.add(singletonPid, false, singletonOCD);
+
+        MetaTypeRegistry registry = new MetaTypeRegistry();
+        assertFalse("The registry should be updated", registry.addMetaType(metatype).isEmpty());
+
+        RegistryEntry loggingRE = registry.getRegistryEntry(loggingPid);
+        RegistryEntry singletonRE = registry.getRegistryEntry(singletonPid);
+        String xml = "<server>" +
+                     "  <logging id=\"${one}\" logDirectory=\"${one}\"/>\n" +
+                     "  <singleton id=\"${one}\" someAttribute=\"${one}\"/>\n" +
+                     "</server>";
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
+        variableRegistryHelper.addVariable("one", "replacedValue");
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
+
+        ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "${one}");
+
+        EvaluationResult result = evaluator.evaluate(entry, loggingRE);
+        Dictionary<String, Object> dictionary = result.getProperties();
+        assertEquals("replacedValue", dictionary.get("id"));
+        assertEquals("replacedValue", dictionary.get("logDirectory"));
+
+        ConfigElement singleton = serverConfig.getSingleton(singletonPid, "singleton");
+        result = evaluator.evaluate(singleton, singletonRE);
+        dictionary = result.getProperties();
+        assertEquals("replacedValue", dictionary.get("id"));
+        assertEquals("replacedValue", dictionary.get("someAttribute"));
+
+        assertTrue("We should get a warning messages about variables in ID fields",
+                   outputMgr.checkForMessages("CWWKG0104W.*\\{one\\}.*logging.*"));
+        assertFalse("We should not get a warning message for variables in a singleton",
+                    outputMgr.checkForMessages("CWWKG0104W.*\\{one\\}.*singleton.*"));
+
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
@@ -39,6 +40,7 @@ public class AuthorizationCodeAuthenticator {
     SSLSocketFactory sslSocketFactory = null;
 
     private Map<String, Object> tokens = new HashMap<String, Object>();
+    @Sensitive
     private String accessToken = null;
     private String userApiResponse = null;
     private JwtToken jwt = null;
@@ -47,6 +49,7 @@ public class AuthorizationCodeAuthenticator {
     OAuthClientUtil clientUtil = new OAuthClientUtil();
     TAIWebUtils taiWebUtils = new TAIWebUtils();
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
+    TAIUserApiUtils userApiUtils = new TAIUserApiUtils();
 
     public AuthorizationCodeAuthenticator(HttpServletRequest req, HttpServletResponse res, String authzCode, SocialLoginConfig socialConfig) {
         this.request = req;
@@ -62,6 +65,14 @@ public class AuthorizationCodeAuthenticator {
         this.accessToken = getAccessTokenFromTokens();
     }
 
+    public AuthorizationCodeAuthenticator(HttpServletRequest req, HttpServletResponse res, SocialLoginConfig socialConfig, @Sensitive String accessToken, boolean openShift) {
+        this.request = req;
+        this.response = res;
+        this.socialConfig = socialConfig;
+        this.tokens.put(ClientConstants.ACCESS_TOKEN, accessToken);
+    }
+
+    @Sensitive
     public Map<String, Object> getTokens() {
         return tokens;
     }
@@ -70,6 +81,7 @@ public class AuthorizationCodeAuthenticator {
         return userApiResponse;
     }
 
+    @Sensitive
     public String getAccessToken() {
         return accessToken;
     }
@@ -85,6 +97,11 @@ public class AuthorizationCodeAuthenticator {
     public void generateJwtAndTokenInformation() throws SocialLoginException {
         createSslSocketFactory();
         getTokensFromTokenEndpoint();
+        createJwtUserApiResponseAndIssuedJwtWithAppropriateToken();
+    }
+
+    public void generateJwtAndTokensFromAccessOrServiceAccountToken() throws SocialLoginException {
+        createSslSocketFactory();
         createJwtUserApiResponseAndIssuedJwtWithAppropriateToken();
     }
 
@@ -140,6 +157,7 @@ public class AuthorizationCodeAuthenticator {
         return (String) tokens.get(ClientConstants.ID_TOKEN);
     }
 
+    @Sensitive
     String getAccessTokenFromTokens() {
         return (String) tokens.get(ClientConstants.ACCESS_TOKEN);
     }
@@ -150,7 +168,7 @@ public class AuthorizationCodeAuthenticator {
     }
 
     void createUserApiResponseFromAccessToken() throws SocialLoginException {
-        userApiResponse = TAIUserApiUtils.getUserApiResponse(clientUtil, socialConfig, accessToken, sslSocketFactory);
+        userApiResponse = userApiUtils.getUserApiResponse(clientUtil, socialConfig, accessToken, sslSocketFactory);
         if (userApiResponse == null || userApiResponse.isEmpty()) {
             throw createExceptionAndLogMessage(null, "USER_API_RESPONSE_NULL_OR_EMPTY", new Object[] { socialConfig.getUniqueId() });
         }

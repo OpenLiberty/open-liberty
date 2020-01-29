@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -446,6 +446,11 @@ JAVA8_REQUIRED.useraction=\u8acb\u5b89\u88dd Java \u7248\u672c 8 \u6216\u66f4\u6
 JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: {0} OpenID Connect \u63d0\u4f9b\u8005\u5c07\u5176 {1} \u914d\u7f6e\u5c6c\u6027\u8a2d\u70ba\u4f7f\u7528 {2} \u6f14\u7b97\u6cd5\uff0c\u9019\u9700\u8981 Java 8 \u6216\u66f4\u65b0\u7248\u672c\u3002\u6307\u5b9a\u7684 OpenID Connect \u63d0\u4f9b\u8005\u6703\u5ffd\u7565 {3} \u8a2d\u5b9a\u3002
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=\u4f7f\u7528\u4e2d\u7684 Java \u7248\u672c\u4e0d\u662f  8 \u6216\u66f4\u65b0\u7248\u672c\u3002
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=\u8acb\u5b89\u88dd Java \u7248\u672c 8 \u6216\u66f4\u65b0\u7248\u672c\u4ee5\u4f7f\u7528\u63d0\u53ca\u7684\u914d\u7f6e\u9078\u9805\u3002
+
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: \u4e0d\u63a5\u53d7\u6388\u6b0a\u985e\u578b\u70ba [{0}] \u7684\u8a18\u865f\u3002\u63a5\u53d7\u7684\u6388\u6b0a\u985e\u578b\u662f {1}\u3002
+WRONG_TOKEN_GRANTTYPE.explanation=\u8a72\u8a18\u865f\u7121\u6548\uff0c\u56e0\u70ba\u4e0d\u63a5\u53d7\u5176\u6388\u6b0a\u985e\u578b\u3002
+WRONG_TOKEN_GRANTTYPE.useraction=\u8acb\u4f7f\u7528\u5177\u6709\u53ef\u63a5\u53d7\u6388\u6b0a\u985e\u578b\u7684\u8a18\u865f\u3002
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=\u767b\u51fa

@@ -51,17 +51,24 @@ public class JaxWsServiceImpl implements JaxWsService {
             properties.put("org.apache.cxf.bus.id", "Default Bus");
             Bus defaultBus = LibertyApplicationBusFactory.getInstance().createBus(null, properties);
             LibertyApplicationBusFactory.setDefaultBus(defaultBus);
+
         } finally {
             THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), orignalClassLoader);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Insecure Stax property is set to: " + System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER));
         }
 
         //Eager initialize the StaxUtils
         try {
             THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), StAXUtils.getStAXProviderClassLoader());
+            if(System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER) == null) {
+                System.setProperty(StaxUtils.ALLOW_INSECURE_PARSER, "true");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Insecure Stax property was null setting it to true.");
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Insecure Stax property is set to: " + System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER));
+            }
+            
             Class.forName("org.apache.cxf.staxutils.StaxUtils");
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);

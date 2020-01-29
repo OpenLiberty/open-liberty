@@ -9,10 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-repositories {
-
-}
-
 configurations {
   //Transitive dependancies that aren't required. Excluding isn't necessary with Artifactory,
   //but would be beneficial with a mavenCentral cache.
@@ -24,7 +20,7 @@ configurations {
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-    requiredLibs 'org.testcontainers:testcontainers:1.12.0',
+    requiredLibs 'org.testcontainers:testcontainers:1.12.3',
                  'org.apache.commons:commons-compress:1.19',
                  'org.rnorth.duct-tape:duct-tape:1.0.7',
                  'org.rnorth.visible-assertions:visible-assertions:2.1.2',

@@ -691,10 +691,6 @@ warning.package.root.invalid.runnable=CWWKE0948W: A --server-root param\u00e9ter
 warning.package.root.invalid.runnable.explanation=A felhaszn\u00e1l\u00f3 csomag k\u00e9r\u00e9st hajtott v\u00e9gre --server-root \u00e9s --include=runnable param\u00e9terrel, ami nem megengedett kombin\u00e1ci\u00f3. A wlp alap\u00e9rtelmezett kiszolg\u00e1l\u00f3gy\u00f6kere ker\u00fcl alkalmaz\u00e1sra.
 warning.package.root.invalid.runnable.useraction=Nincs teend\u0151.
 
-error.no.serialfilteragent=CWWKE0949E: A megadott {0} soros\u00edt\u00e1si sz\u0171r\u0151 \u00fcgyn\u00f6k jar f\u00e1jl nem l\u00e9tezik.
-error.no.serialfilteragent.explanation=A megadott soros\u00edt\u00e1si sz\u0171r\u0151 \u00fcgyn\u00f6k jar f\u00e1jl nem l\u00e9tezik vagy nem olvashat\u00f3.
-error.no.serialfilteragent.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl l\u00e9tezik \u00e9s az aktu\u00e1lis felhaszn\u00e1l\u00f3 \u00e1ltal olvashat\u00f3.
-
 error.package.extension=CWWKE0950E: Az arch\u00edv f\u00e1jln\u00e9vnek a runnable param\u00e9ter haszn\u00e1lata eset\u00e9n .jar kiterjeszt\u00e9sre kell v\u00e9gz\u0151dnie.
 error.package.extension.explanation=Az --archive param\u00e9ternek az --include=runnable param\u00e9ter megad\u00e1sa eset\u00e9n .jar v\u00e9g\u0171 f\u00e1jlkiterjeszt\u00e9st kell tartalmaznia.
 error.package.extension.useraction=Adjon meg .jar f\u00e1jlkiterjeszt\u00e9s\u0171 f\u00e1jlnevet az --archive param\u00e9terben, ha megadja az --include=runnable param\u00e9tert.

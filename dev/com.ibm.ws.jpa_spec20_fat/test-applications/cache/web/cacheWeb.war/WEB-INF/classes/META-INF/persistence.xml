@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0">
+
+    <persistence-unit name="CACHE_JEE_DCTRUE">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <class>com.ibm.ws.jpa.cache.model.Employee</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <shared-cache-mode>ALL</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="true(CacheSize=20, SoftReferenceSize=0)"/>
+            <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+            <property name="disabled.openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+            <property name="eclipselink.cache.size.default" value="20"/>
+            <property name="disabled.eclipselink.ddl-generation" value="drop-and-create-tables"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="CACHE_JEE_DCTRUE_COPY_DROP_AND_CREATE">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <class>com.ibm.ws.jpa.cache.model.CacheEntityCacheable</class>
+        <class>com.ibm.ws.jpa.cache.model.CacheEntityCacheableNot</class>
+        <class>com.ibm.ws.jpa.cache.model.CacheEntityCollection</class>
+        <class>com.ibm.ws.jpa.cache.model.CacheEntitySimple1</class>
+        <class>com.ibm.ws.jpa.cache.model.CacheEntitySimple2</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <shared-cache-mode>ALL</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="true(CacheSize=20, SoftReferenceSize=0)"/>
+            <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+            <property name="disabled.openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+            <property name="eclipselink.cache.size.default" value="20"/>
+            <property name="disabled.eclipselink.ddl-generation" value="drop-and-create-tables"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="CACHE_JEE_DCTRUE_COPY">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <shared-cache-mode>ALL</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="true(CacheSize=20, SoftReferenceSize=0)"/>
+            <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+            <property name="eclipselink.cache.size.default" value="20"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="CACHE_JEE_DCFALSE">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <shared-cache-mode>NONE</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="CACHE_JEE_DCTRUE_SCM_ENASEL">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="true(CacheSize=20, SoftReferenceSize=0)"/>
+            <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+            <property name="eclipselink.cache.size.default" value="20"/>
+        </properties>       
+    </persistence-unit>
+
+    <persistence-unit name="CACHE_JEE_DCTRUE_SCM_ENASEL_COPY">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="true(CacheSize=20, SoftReferenceSize=0)" />
+            <property name="openjpa.RemoteCommitProvider" value="sjvm" />
+            <property name="eclipselink.cache.size.default" value="20" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="CACHE_JEE_DCTRUE_SCM_DISSEL">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="true(CacheSize=20, SoftReferenceSize=0)"/>
+            <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+            <property name="eclipselink.cache.size.default" value="20"/>
+        </properties>       
+    </persistence-unit>
+
+    <persistence-unit name="CACHE_JEE_DCTRUE_SCM_DISSEL_COPY">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <property name="openjpa.DataCache" value="true(CacheSize=20, SoftReferenceSize=0)" />
+            <property name="openjpa.RemoteCommitProvider" value="sjvm" />
+            <property name="eclipselink.cache.size.default" value="20" />
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="CACHE_JEE_DC_TRUE_REFRESH_TEST">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <class>com.ibm.ws.jpa.cache.model.JPA20EMEntityA</class>
+        <class>com.ibm.ws.jpa.cache.model.JPA20EMEntityB</class>
+        <class>com.ibm.ws.jpa.cache.model.JPA20EMEntityC</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <shared-cache-mode>ALL</shared-cache-mode>
+        <properties>
+            <property name="disabled.openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+            <property name="disabled.eclipselink.ddl-generation" value="drop-and-create-tables"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="CACHE_JEE_DC_FALSE_REFRESH_TEST">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source> 
+        <shared-cache-mode>NONE</shared-cache-mode>
+        <properties>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="CACHE_JEE_DC_FALSE_REFRESH_TEST_COPY">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source> 
+        <shared-cache-mode>NONE</shared-cache-mode>
+    </persistence-unit> 
+</persistence>

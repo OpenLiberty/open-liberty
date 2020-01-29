@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
 
-@Component(service = WebSphereCDIExtension.class, immediate = true)
+@Component(service = WebSphereCDIExtension.class, immediate = true, property = { "service.vendor=IBM", "application.bdas.visible=true" })
 public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(FaultToleranceCDIExtension.class);
@@ -113,7 +113,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                         TimeoutConfig timeout = new TimeoutConfig(clazz, (Timeout) annotation);
                         timeout.validate();
                     } else if (annotation.annotationType() == CircuitBreaker.class) {
-                        CircuitBreakerConfig circuitBreaker = new CircuitBreakerConfig(clazz, (CircuitBreaker) annotation);
+                        CircuitBreakerConfig circuitBreaker = annotationConfigFactory.createCircuitBreakerConfig(clazz, (CircuitBreaker) annotation);
                         circuitBreaker.validate();
                     } else if (annotation.annotationType() == Bulkhead.class) {
                         BulkheadConfig bulkhead = new BulkheadConfig(clazz, (Bulkhead) annotation);
@@ -148,8 +148,8 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
     /**
      * Validate a method and return whether it has fault tolerance annotations which require us to add the FT interceptor
      *
-     * @param method the method to process
-     * @param clazz the class which declares the method
+     * @param method          the method to process
+     * @param clazz           the class which declares the method
      * @param classLevelAsync whether the declaring class is annotated with {@code @Asynchronous}
      * @return true if the method requries the FT interceptor, false otherwise
      */
@@ -183,7 +183,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                         AsynchronousConfig asynchronous = annotationConfigFactory.createAsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
                         asynchronous.validate();
                     } else if (annotation.annotationType() == Fallback.class) {
-                        FallbackConfig fallback = new FallbackConfig(javaMethod, clazz, (Fallback) annotation);
+                        FallbackConfig fallback = annotationConfigFactory.createFallbackConfig(javaMethod, clazz, (Fallback) annotation);
                         fallback.validate();
                     } else if (annotation.annotationType() == Retry.class) {
                         RetryConfig retry = new RetryConfig(javaMethod, clazz, (Retry) annotation);
@@ -192,7 +192,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                         TimeoutConfig timeout = new TimeoutConfig(javaMethod, clazz, (Timeout) annotation);
                         timeout.validate();
                     } else if (annotation.annotationType() == CircuitBreaker.class) {
-                        CircuitBreakerConfig circuitBreaker = new CircuitBreakerConfig(javaMethod, clazz, (CircuitBreaker) annotation);
+                        CircuitBreakerConfig circuitBreaker = annotationConfigFactory.createCircuitBreakerConfig(javaMethod, clazz, (CircuitBreaker) annotation);
                         circuitBreaker.validate();
                     } else if (annotation.annotationType() == Bulkhead.class) {
                         BulkheadConfig bulkhead = new BulkheadConfig(javaMethod, clazz, (Bulkhead) annotation);

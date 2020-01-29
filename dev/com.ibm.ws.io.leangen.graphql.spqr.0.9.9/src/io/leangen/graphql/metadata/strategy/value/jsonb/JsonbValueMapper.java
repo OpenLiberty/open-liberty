@@ -13,6 +13,7 @@ package io.leangen.graphql.metadata.strategy.value.jsonb;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -21,6 +22,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +42,7 @@ import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.config.PropertyNamingStrategy;
 
+import io.leangen.geantyref.GenericTypeReflector;
 import io.leangen.graphql.metadata.InputField;
 import io.leangen.graphql.metadata.strategy.value.InputFieldBuilder;
 import io.leangen.graphql.metadata.strategy.value.InputFieldBuilderParams;
@@ -47,6 +52,7 @@ import io.leangen.graphql.util.ClassUtils;
 
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.DefaultValue;
+import org.eclipse.microprofile.graphql.Name;
 
 public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
 
@@ -127,34 +133,46 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
 
         try {
             //NOTE: JSON-B does not currently have an introspection API, so for now, we're manually introspecting...
-            Class<?> declaringClass = (Class<?>) params.getType().getType();
+            AnnotatedType declaringClassType = params.getType();
+            Class<?> declaringClass = (Class<?>) declaringClassType.getType();
             BeanInfo beanInfo = Introspector.getBeanInfo(declaringClass);
             if (LOG.isLoggable(Level.FINEST)) {
                 LOG.log(Level.FINEST, "getInputFields introspecting " + declaringClass + " found " + beanInfo.getPropertyDescriptors().length + " properties");
             }
             for (PropertyDescriptor propDesc : beanInfo.getPropertyDescriptors()) {
                 String propName = propDesc.getName();
+                Method setterMethod = propDesc.getWriteMethod();
                 Field field = getDeclaredField(declaringClass, propName);
-                if (field == null) {
+                if (field == null && setterMethod == null) {
                     continue;
                 }
-                Method setterMethod = propDesc.getWriteMethod();
-                AnnotatedType fieldType = field.getAnnotatedType();
-                if (!params.getEnvironment().inclusionStrategy.includeInputField(declaringClass, setterMethod, fieldType)) {
+
+                AnnotatedType fieldType = field != null ? GenericTypeReflector.getExactFieldType(field, declaringClassType) : 
+                                                          GenericTypeReflector.getExactParameterTypes(setterMethod, declaringClassType)[0];
+
+                // no need to proceed if the field or setter has an @Ignore annotation on it:
+                if ((field != null && !params.getEnvironment().inclusionStrategy.includeInputField(declaringClass, field, fieldType)) ||
+                    (setterMethod != null && !params.getEnvironment().inclusionStrategy.includeInputField(declaringClass, setterMethod, fieldType))) {
                     continue;
                 }
 
                 String fieldName = propName;
-                org.eclipse.microprofile.graphql.InputField inputFieldAnno = setterMethod.getAnnotation(org.eclipse.microprofile.graphql.InputField.class);
-                if (inputFieldAnno == null) {
-                    inputFieldAnno = field.getAnnotation(org.eclipse.microprofile.graphql.InputField.class);
+                Name schemaNameAnno = null;
+                if (setterMethod != null) {
+                    schemaNameAnno = setterMethod.getAnnotation(Name.class);
                 }
-                if (inputFieldAnno != null) {
-                    fieldName = useDefaultIfEmpty(inputFieldAnno.value(), fieldName);
+                if (schemaNameAnno == null && field != null) {
+                    schemaNameAnno = field.getAnnotation(Name.class);
+                }
+                if (schemaNameAnno != null) {
+                    fieldName = useDefaultIfEmpty(schemaNameAnno.value(), fieldName);
                 } else {
                     // try JSON-B annotations
-                    JsonbProperty jsonbPropAnno = setterMethod.getAnnotation(JsonbProperty.class);
-                    if (jsonbPropAnno == null) {
+                    JsonbProperty jsonbPropAnno = null;
+                    if (setterMethod != null) {
+                        jsonbPropAnno = setterMethod.getAnnotation(JsonbProperty.class);
+                    }
+                    if (jsonbPropAnno == null && field != null) {
                         jsonbPropAnno = field.getAnnotation(JsonbProperty.class);
                     }
                     if (jsonbPropAnno != null) {
@@ -163,8 +181,11 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                 }
 
                 String fieldDesc = "";
-                Description descAnno = setterMethod.getAnnotation(Description.class);
-                if (descAnno == null) {
+                Description descAnno = null;
+                if (setterMethod != null) {
+                    descAnno = setterMethod.getAnnotation(Description.class);
+                }
+                if (descAnno == null && field != null) {
                     descAnno = field.getAnnotation(Description.class);
                 }
                 if (descAnno != null) {
@@ -178,7 +199,7 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                         jsonbDateFormatAnno = field.getAnnotation(JsonbDateFormat.class);
                     }
                     if (jsonbDateFormatAnno != null) {
-                        fieldDesc = useDefaultIfEmpty(jsonbDateFormatAnno.value(), "");
+                        fieldDesc = useDefaultIfEmpty(jsonbDateFormatAnno.value(), getDefaultDateDescriptionFor(fieldType));
                     }
                 }
 
@@ -233,6 +254,23 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
         return (s == null || "".equals(s.trim())) ? defaultValue : s;
     }
 
+    public static String getDefaultDateDescriptionFor(AnnotatedType annoType) {
+        Type t = annoType.getType();
+        if (t instanceof Class) {
+            Class<?> cls = (Class<?>) t;
+            if (LocalDate.class.isAssignableFrom(cls)) {
+                return "yyyy-MM-dd";
+            }
+            if (LocalTime.class.isAssignableFrom(cls)) {
+                return "HH:mm:ss";
+            }
+            if (LocalDateTime.class.isAssignableFrom(cls)) {
+                return "yyyy-MM-dd'T'HH:mm:ss'Z'";
+            }
+        }
+        return "";
+    }
+
     private static class InputFieldPropertyNamingStrategy implements PropertyNamingStrategy {
 
         final Map<String, String> propertyMap = new ConcurrentHashMap<>();
@@ -248,21 +286,21 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                        if (LOG.isLoggable(Level.FINEST)) {
                            LOG.finest("<init> checking " + propName);
                        }
-                       if (addMapping(propName, m.getAnnotation(org.eclipse.microprofile.graphql.InputField.class))) {
+                       if (addMapping(propName, m.getAnnotation(Name.class))) {
                            return;
                        }
                        ClassUtils.findFieldBySetter(m).ifPresent(f -> {
-                           addMapping(propName, f.getAnnotation(org.eclipse.microprofile.graphql.InputField.class));
+                           addMapping(propName, f.getAnnotation(Name.class));
                        });
                    });
         }
 
-        private boolean addMapping(String propName, org.eclipse.microprofile.graphql.InputField inputFieldAnno) {
+        private boolean addMapping(String propName, Name schemaNameAnno) {
             if (LOG.isLoggable(Level.FINEST)) {
-                LOG.finest("addMapping " + propName + " -> " + (inputFieldAnno == null ? "null" : inputFieldAnno.value()));
+                LOG.finest("addMapping " + propName + " -> " + (schemaNameAnno == null ? "null" : schemaNameAnno.value()));
             }
-            if (inputFieldAnno != null) {
-                propertyMap.put(propName, inputFieldAnno.value());
+            if (schemaNameAnno != null) {
+                propertyMap.put(propName, schemaNameAnno.value());
                 return true;
             }
             return false;

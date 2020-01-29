@@ -270,14 +270,16 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
 
     @Trivial
     private CircuitBreakerResult getCircuitBreakerResult(MethodResult<?> result) {
-        CircuitBreakerResult cbResult = CircuitBreakerResult.SUCCESS;
+        CircuitBreakerResult cbResult;
 
-        if (result.isFailure()) {
-            for (Class<?> exClazz : policy.getFailOn()) {
-                if (exClazz.isInstance(result.getFailure())) {
-                    cbResult = CircuitBreakerResult.FAILURE;
-                }
-            }
+        if (!result.isFailure()) {
+            cbResult = CircuitBreakerResult.SUCCESS;
+        } else if (isSkipOn(result.getFailure())) {
+            cbResult = CircuitBreakerResult.SUCCESS;
+        } else if (isFailOn(result.getFailure())) {
+            cbResult = CircuitBreakerResult.FAILURE;
+        } else {
+            cbResult = CircuitBreakerResult.SUCCESS;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -285,6 +287,24 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
         }
 
         return cbResult;
+    }
+
+    private boolean isSkipOn(Throwable methodException) {
+        for (Class<?> skipExClazz : policy.getSkipOn()) {
+            if (skipExClazz.isInstance(methodException)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFailOn(Throwable methodException) {
+        for (Class<?> failExClazz : policy.getFailOn()) {
+            if (failExClazz.isInstance(methodException)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public enum CircuitBreakerResult {

@@ -16,7 +16,8 @@ javac.target: 1.8
 
 src: \
   fat/src,\
-  test-applications/jaxrs21security/src
+  test-applications/jaxrs21security/src,\
+  test-applications/jaxrs21uriInfo/src
 
 fat.project: true
 

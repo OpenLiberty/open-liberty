@@ -33,6 +33,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.DataSource;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
@@ -151,8 +153,9 @@ public class FailoverTimersTest extends FATServletClient {
                     "testTimerFailover&timer=Timer_400_1700&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[3]");
         } finally {
             // The server (serverA) upon which the timer failed will initially continue trying to run it.
-            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
-            // on serverA and then no longer rescheduled there.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it,
+            // in which case it should be skipped silently on serverA and then no longer rescheduled there
+            // unless the other member doesn't claim it.
             Thread.sleep(2000);
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -166,7 +169,8 @@ public class FailoverTimersTest extends FATServletClient {
         // to the intentionally failed task.
         serverA.stopServer(
                 "CNTR0020E.*Timer_400_1700", // EJB threw an unexpected (non-declared) exception during invocation of ...
-                "CWWKC1501W.*Timer_400_1700" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                "CWWKC1501W.*Timer_400_1700", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                "CWWKC1503W.*Timer_400_1700" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... due to failure ...
                 );
     }
 
@@ -191,8 +195,9 @@ public class FailoverTimersTest extends FATServletClient {
                     "testTimerFailover&timer=Timer_300_1800&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[3]");
         } finally {
             // The server (serverA) upon which the timer rolled back will initially continue trying to run it.
-            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
-            // on serverA and then no longer rescheduled there.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it,
+            // in which case it should be skipped silently on serverA and then no longer rescheduled there
+            // unless the other member doesn't claim it.
             Thread.sleep(2000);
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -205,7 +210,8 @@ public class FailoverTimersTest extends FATServletClient {
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
         // to the intentionally failed task.
         serverA.stopServer(
-                "CWWKC1500W.*StatelessProgrammaticTimersBean" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
+                "CWWKC1503W.*StatelessProgrammaticTimersBean"  // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
                 );
     }
 
@@ -237,7 +243,8 @@ public class FailoverTimersTest extends FATServletClient {
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.
-            // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it.
+            // It should be skipped silently on the first member without errors.
             Thread.sleep(2000);
 
             runTest(serverB, APP_NAME + "/FailoverTimersTestServlet", "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[3]");
@@ -285,12 +292,19 @@ public class FailoverTimersTest extends FATServletClient {
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.
-            // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it.
+            // It should be skipped silently on the first member without errors.
             Thread.sleep(2000);
 
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
-            serverOnWhichToStopApp.stopServer("CWWKC1556W"); // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+            serverOnWhichToStopApp.stopServer(
+                    "CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+                    "DSRA0230E", // transaction in progress across server stop
+                    "DSRA0302E", // transaction in progress across server stop
+                    "DSRA0304E", // transaction in progress across server stop
+                    "J2CA0027E" // transaction in progress across server stop
+                    );
         }
     }
 

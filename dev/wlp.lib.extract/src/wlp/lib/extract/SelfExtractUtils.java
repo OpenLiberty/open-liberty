@@ -225,7 +225,7 @@ public class SelfExtractUtils {
                     for (int read; (read = in.read(buf)) != -1;) {
                         out.write(buf, 0, read);
                     }
-                } catch (IOException ex) {
+                } catch (IOException | IllegalStateException ex) {
                     ex.printStackTrace();
                 }
             }

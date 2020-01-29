@@ -8,3 +8,4 @@ IBM-Process-Types: server, \
 -jars=com.ibm.websphere.javaee.persistence.2.1; location:=dev/api/spec/; mavenCoordinates="org.eclipse.persistence:javax.persistence:2.1.0"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

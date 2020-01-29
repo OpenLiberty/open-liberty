@@ -15,4 +15,13 @@ public class PropertyOperationNameGenerator extends AnnotatedOperationNameGenera
         }
         return name;
     }
+
+    @Override
+    public String generateMutationName(OperationNameGeneratorParams<Method> params) {
+        String name = super.generateMutationName(params);
+        if (Utils.isEmpty(name) && params.isMethod()) {
+            return ClassUtils.getFieldNameFromSetter((Method) params.getElement());
+        }
+        return name;
+    }
 }

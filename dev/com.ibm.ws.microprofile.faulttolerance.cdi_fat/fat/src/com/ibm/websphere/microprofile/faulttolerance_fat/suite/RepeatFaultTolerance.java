@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,14 @@ public class RepeatFaultTolerance {
     static final Set<String> FT11_METRICS20_FEATURE_SET = new HashSet<>(Arrays.asList(FT11_METRICS20_ARRAY));
     public static final String FT11_METRICS20_ID = "FT11_METRICS20";
 
+    static final String[] MP32_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.2" };
+    static final Set<String> MP32_FEATURE_SET = new HashSet<>(Arrays.asList(MP32_FEATURES_ARRAY));
+    public static final String MP32_FEATURES_ID = "MICROPROFILE32";
+
+    static final String[] MP33_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.1", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.2" };
+    static final Set<String> MP33_FEATURE_SET = new HashSet<>(Arrays.asList(MP33_FEATURES_ARRAY));
+    public static final String MP33_FEATURES_ID = "MICROPROFILE33";
+
     static final Set<String> ALL_FEATURE_SET = new HashSet<>();
     static {
         ALL_FEATURE_SET.addAll(MP13_FEATURE_SET);
@@ -49,6 +57,8 @@ public class RepeatFaultTolerance {
         ALL_FEATURE_SET.addAll(FT20_METRICS11_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP30_FEATURE_SET);
         ALL_FEATURE_SET.addAll(FT11_METRICS20_FEATURE_SET);
+        ALL_FEATURE_SET.addAll(MP32_FEATURE_SET);
+        ALL_FEATURE_SET.addAll(MP33_FEATURE_SET);
     }
 
     public static FeatureReplacementAction mp20Features(String server) {
@@ -86,6 +96,20 @@ public class RepeatFaultTolerance {
                         .forServers(server);
     }
 
+    public static FeatureReplacementAction mp32Features(String server) {
+        return new FeatureReplacementAction(ALL_FEATURE_SET, MP32_FEATURE_SET)
+                        .withID(MP32_FEATURES_ID)
+                        .forceAddFeatures(false)
+                        .forServers(server);
+    }
+
+    public static FeatureReplacementAction mp33Features(String server) {
+        return new FeatureReplacementAction(ALL_FEATURE_SET, MP33_FEATURE_SET)
+                        .withID(MP33_FEATURES_ID)
+                        .forceAddFeatures(false)
+                        .forServers(server);
+    }
+
     /**
      * Return a rule to repeat tests for FT 1.1 and 2.0
      * <p>
@@ -113,6 +137,13 @@ public class RepeatFaultTolerance {
                         .andWith(mp20Features(server))
                         .andWith(ft20metrics11Features(server))
                         .andWith(mp30Features(server));
+    }
+
+    public static RepeatTests repeat20AndAbove(String server) {
+        return RepeatTests.with(ft20metrics11Features(server).fullFATOnly())
+                        .andWith(mp30Features(server).fullFATOnly())
+                        .andWith(mp32Features(server).fullFATOnly())
+                        .andWith(mp33Features(server));
     }
 
 }

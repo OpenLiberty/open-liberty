@@ -124,7 +124,7 @@
             required="false" type="Boolean" default="false" />
             
         <AD id="trustDefaultCerts" name="%repertoire.trustDefaultCerts" description="%repertoire.trustDefaultCerts.desc" 
-            required="false" type="Boolean" default="false" ibm:beta="true" />
+            required="false" type="Boolean" default="false" />
             
     </OCD>
 

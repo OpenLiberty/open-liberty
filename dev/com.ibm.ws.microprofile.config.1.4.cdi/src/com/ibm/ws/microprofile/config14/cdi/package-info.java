@@ -13,7 +13,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "APPCONFIG")
+@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config.cdi.resources.ConfigCDI")
 package com.ibm.ws.microprofile.config14.cdi;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

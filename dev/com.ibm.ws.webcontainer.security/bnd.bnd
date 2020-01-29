@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2018, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -23,7 +23,10 @@ Export-Package: \
   com.ibm.ws.webcontainer.security.context, \
   com.ibm.ws.webcontainer.security.internal, \
   com.ibm.ws.webcontainer.security.metadata, \
-  com.ibm.ws.webcontainer.security.util
+  com.ibm.ws.webcontainer.security.util, \
+  com.ibm.ws.webcontainer.security.oauth20, \
+  com.ibm.ws.webcontainer.security.openid20, \
+  com.ibm.ws.webcontainer.security.openidconnect
 
 Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, *
 
@@ -47,7 +50,13 @@ Service-Component: \
     activate:=activate;\
     deactivate:=deactivate;\
     tokenManager=com.ibm.ws.security.token.TokenManager;\
-    dynamic:='tokenService';\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
+    implementation:=com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
+    configuration-policy:=ignore;\
+    activate:=activate;\
+    deactivate:=deactivate;\
+    tokenManager=com.ibm.ws.security.token.TokenManager;\
     properties:="service.vendor=IBM"
 
 -dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl
@@ -86,7 +95,6 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.security.audit.utils;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest
-	
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -150,7 +150,9 @@ sslCert.option-desc.keyType=\tOp\u0163ional. Implicit, va fi generat un depozit 
 sslCert.option-key.ext=\ \ \ \ --extInfo=informa\u0163ii extensii certificat
 sslCert.option-desc.ext=\tInforma\u0163iile de extensii certificat de ad\u0103ugat la certificat.\n\
 \tExtensia implicit\u0103 este o intrare Subject Alternative Name care utilizeaz\u0103 \n\
-\tnumele de gazd\u0103.
+\tnumele de gazd\u0103. Acest stegule\u0163 urmeaz\u0103 aceea\u015fi sintax\u0103 ca \u015fi stegule\u0163ul -ext\n\
+al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comanda\n\
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

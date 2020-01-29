@@ -23,9 +23,11 @@ import javax.xml.ws.spi.ServiceDelegate;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.jaxws22.spi.ProviderImpl;
+import org.apache.cxf.staxutils.StaxUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 import com.ibm.ws.jaxws.metadata.JaxWsClientMetaData;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
@@ -53,13 +55,31 @@ public class LibertyProviderImpl extends ProviderImpl {
     @Override
     public ServiceDelegate createServiceDelegate(URL url, QName qname,
                                                  @SuppressWarnings("rawtypes") Class cls) {
+        
+        //Eager initialize the StaxUtils
+        try {
+            if(System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER) == null) {
+                System.setProperty(StaxUtils.ALLOW_INSECURE_PARSER, "true");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Insecure Stax property was null setting it to true on the Client.");
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Client-Side Insecure Stax property is set to: " + System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER));
+            }
+            
+            Class.forName("org.apache.cxf.staxutils.StaxUtils");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        
         Bus bus = null;
         JaxWsClientMetaData clientMetaData = JaxWsMetaDataManager.getJaxWsClientMetaData();
         if (clientMetaData != null) {
             bus = clientMetaData.getClientBus();
         }
         if (bus == null) {
-            bus = BusFactory.getThreadDefaultBus();
+            bus = LibertyApplicationBusFactory.getThreadDefaultBus();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No client  bus is found, the thread context default bus " + bus.getId() + " is used");
             }

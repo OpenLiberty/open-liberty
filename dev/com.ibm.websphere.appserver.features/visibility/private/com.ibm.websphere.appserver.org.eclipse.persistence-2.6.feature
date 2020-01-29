@@ -8,3 +8,4 @@ IBM-Process-Types: server, \
 kind=ga
 edition=core
 
+WLP-Activation-Type: parallel

@@ -246,9 +246,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         //end temp fix
         Map<Class<?>, ManagedObject<?>> newContext = (Map<Class<?>, ManagedObject<?>>) (context);
 
-        ManagedObject<?> newServiceObject = null;
-
-        newServiceObject = getClassFromManagedObject(clazz);
+        ManagedObject<T> newServiceObject = (ManagedObject<T>) getClassFromServiceObject(clazz, serviceObject);
         if (newServiceObject != null) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -271,6 +269,34 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             Tr.debug(tc, "Get instance from CDI is null , use from rs for " + clazz.getName());
         }
         return serviceObject;
+    }
+
+    /**
+     * @param clazz
+     * @return
+     */
+    @FFDCIgnore(value = { Exception.class })
+    private <T> ManagedObject<T> getClassFromServiceObject(Class<T> clazz, Object serviceObject) {
+
+        if (! clazz.equals(serviceObject.getClass())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + "because the serviceObject and class had different types");
+            }
+            return null;
+        }
+
+        ManagedObjectFactory<T> managedObjectFactory = (ManagedObjectFactory<T>) getManagedObjectFactory(clazz);
+
+        ManagedObject<T> bean = null;
+        try {
+            bean = managedObjectFactory.createManagedObject((T) serviceObject, null);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + ", but ignore the FFDC: ", e);
+            }
+        }
+
+        return bean;
     }
 
     /**
@@ -499,7 +525,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             }
 
         }
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Map of Managed Objects " + resourcesManagedbyCDI);
+        }
         context.setContextObject(resourcesManagedbyCDI);
 
     }
@@ -827,11 +855,6 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
     @Trivial
     private void logProviderMismatch(Class<?> clazz, String scopeName, String lifecycleMgr) {
-        if (platformVersion.getMajor() > 7) {
-            Tr.debug(tc, "CWWKW1002W: The CDI scope of JAXRS-2.0 Provider " + clazz.getSimpleName() + " is " +
-                         scopeName + ". Liberty gets the provider instance from " + lifecycleMgr + ".");
-        } else {
-            Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
-        }
+        Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
     }
 }

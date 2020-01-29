@@ -1925,10 +1925,15 @@ public final class JAXRSUtils {
     // copy the input stream so that it is not inadvertently closed
     private static InputStream copyAndGetEntityStream(Message m) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        InputStream origInputStream = m.getContent(InputStream.class);
         try {
-            IOUtils.copy(m.getContent(InputStream.class), baos);
+            IOUtils.copy(origInputStream, baos);
         } catch (IOException e) {
             throw ExceptionUtils.toInternalServerErrorException(e, null);
+        } finally {
+            try {
+                origInputStream.close();
+            } catch (Throwable t) { /* AutoFFDC */ }
         }
         final byte[] copiedBytes = baos.toByteArray();
         m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));

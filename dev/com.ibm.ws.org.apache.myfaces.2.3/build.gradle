@@ -17,7 +17,7 @@ configurations {
 }
 
 dependencies {
-    sourceJar 'org.apache.myfaces.core:myfaces-impl:2.3.4:sources'
+    sourceJar 'org.apache.myfaces.core:myfaces-impl:2.3.6:sources'
 }
 
 task copySource(type: Copy) {
@@ -38,8 +38,4 @@ task deleteJars(type:Delete) {
 
 clean {
     dependsOn deleteJars
-}
-
-audit {
-    failOnError = false
 }

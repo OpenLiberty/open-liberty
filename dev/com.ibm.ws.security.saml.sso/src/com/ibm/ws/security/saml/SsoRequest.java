@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /*
  * Store the data for a httpServletRequest session
- * 
- * Initialize when a session starts and 
+ *
+ * Initialize when a session starts and
  * discard after it ends
  */
 public class SsoRequest {
@@ -52,7 +52,7 @@ public class SsoRequest {
     protected SsoSamlService ssoSamlService;
     protected SsoConfig ssoConfig;
     protected UserData userData = null;
-    protected AtomicServiceReference<WsLocationAdmin> locationAdminRef; // in use for the SpCookie name 
+    protected AtomicServiceReference<WsLocationAdmin> locationAdminRef; // in use for the SpCookie name
     @Sensitive
     protected String spCookieValue = null; // in use for the SpCookie
 
@@ -173,10 +173,8 @@ public class SsoRequest {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SamlRequest [provider:").append(this.providerName).append(" type:")
-                        .append(this.type).append(" request:").append(this.request).append("]")
-                        .append(" userData=" + (userData != null)
-                        );
+        sb.append("SamlRequest [provider:").append(this.providerName).append(" type:").append(this.type).append(" request:").append(this.request).append("]").append(" userData="
+                                                                                                                                                                     + (userData != null));
         return sb.toString();
     }
 

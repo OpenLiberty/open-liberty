@@ -98,6 +98,9 @@ cpu.systemLoadAverage.description=A rendszer \u00e1tlagos terhel\u00e9s\u00e9t j
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=A Java virtu\u00e1lis g\u00e9p folyamat 'recent cpu usage' \u00e9rt\u00e9k\u00e9t jelen\u00edti meg.
 
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Megjelen\u00edti a Java virtu\u00e1lis g\u00e9pet futtat\u00f3 folyamat \u00e1ltal haszn\u00e1lt CPU id\u0151t.
+
 #Garbage collection count message
 garbageCollectionCount.description=A v\u00e9grehajtott adatgy\u0171jt\u00e9sek teljes sz\u00e1m\u00e1t jelen\u00edti meg. Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha az adatgy\u0171jt\u00e9sek sz\u00e1ma ehhez az adatgy\u0171jt\u0151h\u00f6z nincs meghat\u00e1rozva.
 

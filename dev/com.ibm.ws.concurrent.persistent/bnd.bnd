@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ WS-TraceGroup: persistentExecutor
 Export-Package:\
   com.ibm.websphere.concurrent.persistent,\
   com.ibm.websphere.concurrent.persistent.mbean,\
-  com.ibm.ws.concurrent.persistent.controller,\
   com.ibm.ws.concurrent.persistent.ejb,\
   com.ibm.ws.concurrent.persistent.serializable,\
   com.ibm.wsspi.concurrent.persistent
@@ -45,6 +44,7 @@ Service-Component:\
 -dsannotations:\
   com.ibm.ws.concurrent.persistent.internal.ApplicationTracker,\
   com.ibm.ws.concurrent.persistent.internal.PersistentExecutorImpl,\
+  com.ibm.ws.concurrent.persistent.internal.PersistentExecutorIntrospector,\
   com.ibm.ws.concurrent.persistent.internal.PersistentExecutorMBeanImpl
 
 instrument.classesExcludes: com/ibm/ws/concurrent/persistent/resources/*.class
@@ -52,6 +52,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/persistent/resources/*.class
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.thirdparty.eclipselink,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\

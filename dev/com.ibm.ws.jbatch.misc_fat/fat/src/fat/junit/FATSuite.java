@@ -19,7 +19,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, // Because all other tests are full, need something to run in lite bucket
-                ArrayDeserializeTest.class
+                FATTest.class
 })
 public class FATSuite {
 

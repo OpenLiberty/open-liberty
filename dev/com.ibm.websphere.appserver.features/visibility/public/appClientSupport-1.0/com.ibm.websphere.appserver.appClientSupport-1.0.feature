@@ -7,3 +7,4 @@ Subsystem-Name: Application Client Support for Server 1.0
  com.ibm.websphere.appserver.clientContainerRemoteSupport-1.0
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

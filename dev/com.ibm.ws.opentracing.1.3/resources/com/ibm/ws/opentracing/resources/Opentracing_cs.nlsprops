@@ -74,6 +74,14 @@ OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: Metoda OpenTracing nem\u016f\u017ee sle
 OPENTRACING_NO_TRACERFACTORY.explanation=Metoda OpenTracing nebude spr\u00e1vn\u011b pracovat, proto\u017ee nebyla dod\u00e1na t\u0159\u00edda OpentracingTracerFactory. Po\u017eadavky JAX-RS se provedou norm\u00e1ln\u011b, ale nebudou sledov\u00e1ny.
 OPENTRACING_NO_TRACERFACTORY.useraction=Dal\u0161\u00ed informace najdete v dokumentaci, jak povolit distribuovan\u00e9 trasov\u00e1n\u00ed OpenTracing.
 
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Mapova\u010d v\u00fdjimek OpenTracing zjistil a zpracov\u00e1v\u00e1 neo\u0161et\u0159enou v\u00fdjimku z aplikace JAX-RS.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=Aplikace zalo\u017een\u00e1 na JAX-RS zaznamenala v\u00fdjimku, kter\u00e1 zpracov\u00e1v\u00e1na v aplikaci. K\u00f3d OpenTracing se zpracov\u00e1v\u00e1 protokolov\u00e1n\u00edm trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek a vr\u00e1cen\u00edm odezvy 500 Intern\u00ed chyba serveru.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Toto chov\u00e1n\u00ed m\u016f\u017ee b\u00fdt p\u0159ijateln\u00e9. Chcete-li v\u00fdjimku zpracovat odli\u0161n\u011b, v\u00fdvoj\u00e1\u0159 aplikac\u00ed m\u016f\u017ee p\u0159idat rozhran\u00ed ExceptionMapper, kter\u00e9 v\u00fdjimku zpracov\u00e1v\u00e1 a mapuje ji na jinou odezvu.
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: Metoda OpenTracing nem\u016f\u017ee sledovat po\u017eadavky JAX-RS, proto\u017ee nen\u00ed dod\u00e1na t\u0159\u00edda OpentracingTracerFactory nebo knihovny klienta pro trasov\u00e1n\u00ed typu back-end nejsou v cest\u011b ke t\u0159\u00edd\u011b.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=Po\u017eadavky JAX-RS b\u011b\u017e\u00ed norm\u00e1ln\u011b, ale nejsou sledov\u00e1ny.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Informace o tom, jak povolit a konfigurovat distribuovan\u00e9 trasov\u00e1n\u00ed OpenTracing, najdete v dokumentaci. Toto varov\u00e1n\u00ed lze bezpe\u010dn\u011b ignorovat, nen\u00ed-li pou\u017eito OpenTracing.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

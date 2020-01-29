@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal.utils;
 
@@ -31,6 +31,10 @@ public class ClientConstants {
     public static final String RESPONSE_TYPE = "response_type";
     public static final String RESPONSE_MODE = "response_mode";
     public static final String FORM_POST = "form_post";
+
+    public final static String REQ_METHOD_POST = "POST";
+    public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
+    public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
     public final static String USER_ID = "user_id";
     public final static String USER_NAME = "user_name";

@@ -40,6 +40,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestExample_Web extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "exampleWeb";
     private final static String RESOURCE_ROOT = "test-applications/example/";
     private final static String appFolder = "web";
     private final static String appName = "exampleWeb";
@@ -57,10 +58,9 @@ public class TestExample_Web extends JPAFATServletClient {
         populateSet.add("JPA_EXAMPLE_POPULATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("EclipseLinkServer")
     @TestServlets({
-                    @TestServlet(servlet = TestExampleServlet.class, path = "example" + "/" + "TestExampleServlet"),
-
+                    @TestServlet(servlet = TestExampleServlet.class, path = CONTEXT_ROOT + "/" + "TestExampleServlet")
     })
     public static LibertyServer server;
 
@@ -114,7 +114,6 @@ public class TestExample_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.example.model");
         webApp.addPackages(true, "com.ibm.ws.jpa.example.testlogic");
         webApp.addPackages(true, "com.ibm.ws.jpa.example.web");
-
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();

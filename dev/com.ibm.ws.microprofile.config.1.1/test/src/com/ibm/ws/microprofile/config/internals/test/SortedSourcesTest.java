@@ -18,7 +18,8 @@ import java.util.Iterator;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.config.impl.SortedSources;
+import com.ibm.ws.microprofile.config.impl.SortedSourcesImpl;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
 /**
@@ -28,7 +29,7 @@ public class SortedSourcesTest extends AbstractConfigTest {
 
     @Test
     public void testSimpleOrdinalSort() {
-        SortedSources sources = new SortedSources();
+        SortedSources sources = new SortedSourcesImpl();
         TestSource testSourceMIN = new TestSource(Integer.MIN_VALUE, "TestSourceMIN");
         TestSource testSourceM1 = new TestSource(-1, "TestSourceM1");
         TestSource testSource0 = new TestSource(0, "TestSource0");
@@ -75,7 +76,7 @@ public class SortedSourcesTest extends AbstractConfigTest {
 
     @Test
     public void testIDSort() {
-        SortedSources sources = new SortedSources();
+        SortedSources sources = new SortedSourcesImpl();
         TestSource testSource0A = new TestSource(0, "TestSource0A");
         TestSource testSource0B = new TestSource(0, "TestSource0B");
         TestSource testSource0C = new TestSource(0, "TestSource0C");
@@ -112,7 +113,7 @@ public class SortedSourcesTest extends AbstractConfigTest {
 
     @Test
     public void testHashCodeSort() {
-        SortedSources sources = new SortedSources();
+        SortedSources sources = new SortedSourcesImpl();
         TestSource testSource0A1 = new TestSource(0, "TestSource0A", 1);
         TestSource testSource0A2 = new TestSource(0, "TestSource0A", 2);
 
@@ -151,7 +152,7 @@ public class SortedSourcesTest extends AbstractConfigTest {
 
     @Test
     public void testUnmodifiable() {
-        SortedSources sources = new SortedSources();
+        SortedSources sources = new SortedSourcesImpl();
         TestSource testSource0 = new TestSource(0, "TestSource0");
         TestSource testSource1 = new TestSource(1, "TestSource1");
         TestSource testSource2 = new TestSource(2, "TestSource2");

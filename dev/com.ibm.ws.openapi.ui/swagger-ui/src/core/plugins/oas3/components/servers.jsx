@@ -104,13 +104,14 @@ export default class Servers extends React.Component {
     return (
       <div className="servers">
         <label htmlFor="servers">
-          <select onChange={ this.onServerChange }> id="servers"
+          <select onChange={ this.onServerChange }>
             { servers.valueSeq().map(
               ( server ) =>
               <option
                 value={ server.get("url") }
                 key={ server.get("url") }>
                 { server.get("url") }
+                { server.get("description") && ` - ${server.get("description")}` }
               </option>
             ).toArray()}
           </select>

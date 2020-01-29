@@ -928,7 +928,10 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 {
                     one(attributeToSubject).getMappedRealm();
                     will(returnValue(null));
+                    one(config).getUserApiType();
                     one(taiWebUtils).getAuthorizationEndpoint(config);
+                    will(returnValue(null));
+                    one(config).getUserApi();
                     will(returnValue(null));
                 }
             });
@@ -1024,7 +1027,10 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 {
                     one(config).getRealmName();
                     will(returnValue(null));
+                    one(config).getUserApiType();
                     one(taiWebUtils).getAuthorizationEndpoint(config);
+                    will(returnValue(null));
+                    one(config).getUserApi();
                     will(returnValue(null));
                 }
             });
@@ -1096,20 +1102,22 @@ public class TAISubjectUtilsTest extends CommonTestClass {
         }
     }
 
-    /****************************************** getDefaultRealmFromAuthorizationEndpoint ******************************************/
+    /****************************************** constructDefaultRealmFromConfig ******************************************/
 
     @Test
-    public void getDefaultRealmFromAuthorizationEndpoint_errorGettingAuthorizationEndpoint() throws Exception {
+    public void constructDefaultRealmFromConfig_errorGettingAuthorizationEndpoint() throws Exception {
         try {
             mockery.checking(new Expectations() {
                 {
                     one(taiWebUtils).getAuthorizationEndpoint(config);
                     will(throwException(new SocialLoginException(defaultExceptionMsg, null, null)));
+                    one(config).getUserApi();
+                    will(returnValue(null));
                 }
             });
 
             try {
-                String result = subjectUtils.getDefaultRealmFromAuthorizationEndpoint(config);
+                String result = subjectUtils.constructDefaultRealmFromConfig(config);
                 fail("Should have thrown an exception but got: [" + result + "].");
             } catch (SettingCustomPropertiesException e) {
                 // Do nothing - this is expected
@@ -1122,9 +1130,34 @@ public class TAISubjectUtilsTest extends CommonTestClass {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+    
+    @Test
+    public void constructDefaultRealmFromConfig_errorGettingAuthorizationEndpoint_useUserapi() throws Exception {
+        try {
+            final String userApi = "http://myuser-domain.com:80";
+            mockery.checking(new Expectations() {
+                {
+                    one(taiWebUtils).getAuthorizationEndpoint(config);
+                    will(throwException(new SocialLoginException(defaultExceptionMsg, null, null)));
+                    one(config).getUserApi();
+                    will(returnValue(userApi));
+                }
+            });
+
+            try {
+                String result = subjectUtils.constructDefaultRealmFromConfig(config);
+                assertEquals("Non-HTTPS, authorization endpoint is not valid, get realm from user api endpoint.", userApi, result);
+            } catch (SettingCustomPropertiesException e) {
+                // Do nothing - this is expected
+            }
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     @Test
-    public void getDefaultRealmFromAuthorizationEndpoint_authzEndpointNotHttps_noPath() throws Exception {
+    public void constructDefaultRealmFromConfig_authzEndpointNotHttps_noPath() throws Exception {
         try {
             final String authzEndpoint = "http://my-domain.com:80";
             mockery.checking(new Expectations() {
@@ -1134,7 +1167,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 }
             });
 
-            String result = subjectUtils.getDefaultRealmFromAuthorizationEndpoint(config);
+            String result = subjectUtils.constructDefaultRealmFromConfig(config);
             assertEquals("Non-HTTPS authorization endpoint should still have returned host and port as the realm.", authzEndpoint, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1145,7 +1178,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getDefaultRealmFromAuthorizationEndpoint_authzEndpointNotHttps_withPath() throws Exception {
+    public void constructDefaultRealmFromConfig_authzEndpointNotHttps_withPath() throws Exception {
         try {
             final String host = "http://my-domain.com:80";
             final String authzEndpoint = host + "/some/path";
@@ -1156,7 +1189,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 }
             });
 
-            String result = subjectUtils.getDefaultRealmFromAuthorizationEndpoint(config);
+            String result = subjectUtils.constructDefaultRealmFromConfig(config);
             assertEquals("Non-HTTPS authorization endpoint should still have returned host and port as the realm.", host, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1167,7 +1200,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getDefaultRealmFromAuthorizationEndpoint_authzEndpointHttps_noPath() throws Exception {
+    public void constructDefaultRealmFromConfig_authzEndpointHttps_noPath() throws Exception {
         try {
             final String authzEndpoint = "https://my-domain.com:80";
             mockery.checking(new Expectations() {
@@ -1177,7 +1210,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 }
             });
 
-            String result = subjectUtils.getDefaultRealmFromAuthorizationEndpoint(config);
+            String result = subjectUtils.constructDefaultRealmFromConfig(config);
             assertEquals("HTTPS authorization endpoint without path component should have returned host and port as the realm.", authzEndpoint, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1188,7 +1221,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getDefaultRealmFromAuthorizationEndpoint_authzEndpointHttps_withPath() throws Exception {
+    public void constructDefaultRealmFromConfig_authzEndpointHttps_withPath() throws Exception {
         try {
             final String host = "https://my-domain.com:80";
             final String authzEndpoint = host + "/some/path";
@@ -1199,7 +1232,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 }
             });
 
-            String result = subjectUtils.getDefaultRealmFromAuthorizationEndpoint(config);
+            String result = subjectUtils.constructDefaultRealmFromConfig(config);
             assertEquals("HTTPS authorization endpoint with path component should have returned host and port as the realm.", host, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1210,7 +1243,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getDefaultRealmFromAuthorizationEndpoint_authzEndpointHttps_withPathAndQuery() throws Exception {
+    public void constructDefaultRealmFromConfig_authzEndpointHttps_withPathAndQuery() throws Exception {
         try {
             final String host = "https://my-domain.com:80";
             final String authzEndpoint = host + "/some/path?and=stuff";
@@ -1221,7 +1254,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 }
             });
 
-            String result = subjectUtils.getDefaultRealmFromAuthorizationEndpoint(config);
+            String result = subjectUtils.constructDefaultRealmFromConfig(config);
             assertEquals("HTTPS authorization endpoint with query string should have returned host and port as the realm.", host, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);

@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Main-Class: com.ibm.ws.messaging.open_clientcontainer.fat.MessageListener

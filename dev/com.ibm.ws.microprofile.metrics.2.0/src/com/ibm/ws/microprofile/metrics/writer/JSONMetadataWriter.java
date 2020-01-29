@@ -38,8 +38,8 @@ public class JSONMetadataWriter implements OutputWriter {
 
     private static final TraceComponent tc = Tr.register(JSONMetadataWriter.class);
 
-    private final Writer writer;
-    private final Locale locale;
+    protected final Writer writer;
+    protected final Locale locale;
 
     public JSONMetadataWriter(Writer writer, Locale locale) {
         this.writer = writer;
@@ -77,16 +77,16 @@ public class JSONMetadataWriter implements OutputWriter {
         serialize(payload);
     }
 
-    private JSONObject getMetricsMetadataAsJson(String registryName) throws NoSuchRegistryException, EmptyRegistryException {
+    protected JSONObject getMetricsMetadataAsJson(String registryName) throws NoSuchRegistryException, EmptyRegistryException {
 
         return getJsonFromMetricMetadataMap(Util.getMetricsMetadataAsMap(registryName), Util.getMetricsAsMap(registryName));
     }
 
-    private JSONObject getMetricsMetadataAsJson(String registryName, String metricName) throws NoSuchRegistryException, EmptyRegistryException, NoSuchMetricException {
+    protected JSONObject getMetricsMetadataAsJson(String registryName, String metricName) throws NoSuchRegistryException, EmptyRegistryException, NoSuchMetricException {
         return getJsonFromMetricMetadataMap(Util.getMetricsMetadataAsMap(registryName, metricName), Util.getMetricsAsMap(registryName, metricName));
     }
 
-    private JSONObject getJsonFromMetricMetadataMap(Map<String, Metadata> metadataMap, Map<MetricID, Metric> metricMap) {
+    protected JSONObject getJsonFromMetricMetadataMap(Map<String, Metadata> metadataMap, Map<MetricID, Metric> metricMap) {
         JSONObject jsonObject = new JSONObject();
 
         //for each metric name in metadata map
@@ -101,7 +101,7 @@ public class JSONMetadataWriter implements OutputWriter {
         return jsonObject;
     }
 
-    private JSONArray getJsonArrayTags(Map<MetricID, Metric> metricMap, String metricName) {
+    protected JSONArray getJsonArrayTags(Map<MetricID, Metric> metricMap, String metricName) {
         JSONArray jsonArray = new JSONArray();
         //for each metric in metric map
         for (MetricID metricIDSet : metricMap.keySet()) {
@@ -123,7 +123,7 @@ public class JSONMetadataWriter implements OutputWriter {
         return jsonArray;
     }
 
-    private JSONObject getJsonFromObject(Metadata metadata) {
+    protected JSONObject getJsonFromObject(Metadata metadata) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", sanitizeMetadata(metadata.getName()));
         jsonObject.put("displayName", sanitizeMetadata(metadata.getDisplayName()));
@@ -138,7 +138,7 @@ public class JSONMetadataWriter implements OutputWriter {
         return jsonObject;
     }
 
-    private String sanitizeMetadata(String s) {
+    protected String sanitizeMetadata(String s) {
         if (s == null || s.trim().isEmpty()) {
             return "";
         } else {
@@ -146,7 +146,7 @@ public class JSONMetadataWriter implements OutputWriter {
         }
     }
 
-    private String getJsonFromMap(Map<String, String> map) {
+    protected String getJsonFromMap(Map<String, String> map) {
         if (map == null)
             return null;
         StringBuilder tagList = new StringBuilder();
@@ -158,7 +158,7 @@ public class JSONMetadataWriter implements OutputWriter {
         return tagList.toString();
     }
 
-    private void serialize(JSONObject payload) throws IOException {
+    protected void serialize(JSONObject payload) throws IOException {
         payload.serialize(writer);
     }
 }

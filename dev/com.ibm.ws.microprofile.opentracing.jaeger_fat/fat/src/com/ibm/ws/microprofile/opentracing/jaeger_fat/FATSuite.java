@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JaegerConfigTest.class,
+                JaegerTraceTest.class
 })
 public class FATSuite {
 

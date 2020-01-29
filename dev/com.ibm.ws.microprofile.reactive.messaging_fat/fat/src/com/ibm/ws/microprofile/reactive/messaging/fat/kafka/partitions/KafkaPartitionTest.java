@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
@@ -56,7 +57,7 @@ public class KafkaPartitionTest {
         AdminClient adminClient = AdminClient.create(adminClientProps);
 
         NewTopic newTopic = new NewTopic(PartitionTestReceptionBean.CHANNEL_NAME, 2, (short) 1);
-        adminClient.createTopics(Collections.singleton(newTopic)).all().get(KafkaPartitionTestServlet.TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+        adminClient.createTopics(Collections.singleton(newTopic)).all().get(KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
 
         // Create and deploy the app
         PropertiesAsset appConfig = new PropertiesAsset()
@@ -67,6 +68,7 @@ public class KafkaPartitionTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(KafkaTestClient.class.getPackage())
                         .addPackage(KafkaPartitionTestServlet.class.getPackage())
+                        .addPackage(KafkaTestConstants.class.getPackage())
                         .addAsLibraries(KafkaUtils.kafkaClientLibs())
                         .addAsManifestResource(KafkaUtils.kafkaPermissions(), "permissions.xml")
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");

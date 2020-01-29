@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,5 +43,18 @@ public class TestJPASimpleServlet extends FATServlet {
         Assert.assertNotNull(findEntity);
         Assert.assertNotSame(entity, findEntity);
         Assert.assertEquals(entity.getId(), findEntity.getId());
+    }
+
+    public void testInvalidFormatClassError() throws Exception {
+        // Try to load empty.classx.BadClass -- should fail because it's a file containing 0 values.
+        String cName = "empty.classx.BadClass";
+        try {
+            this.getClass().getClassLoader().loadClass(cName);
+            Assert.fail("No java.lang.ClassFormatError was thrown.");
+        } catch (java.lang.ClassFormatError cnfe) {
+            // Expected
+        } catch (Throwable t) {
+            Assert.fail("Unexpected Exception " + t);
+        }
     }
 }

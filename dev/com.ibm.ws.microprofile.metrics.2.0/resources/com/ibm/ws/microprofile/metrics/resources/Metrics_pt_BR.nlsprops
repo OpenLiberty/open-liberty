@@ -98,6 +98,9 @@ cpu.systemLoadAverage.description=Exibe a m\u00e9dia de carregamento do sistema 
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Exibe o 'uso de CPU recente' para o processo da Java Virtual Machine.
 
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Exibe o tempo de CPU usado pelo processo no qual a Java virtual machine est\u00e1 em execu\u00e7\u00e3o.
+
 #Garbage collection count message
 garbageCollectionCount.description=Exibe o n\u00famero total de coletas ocorridas. Esse atributo listar\u00e1 -1 se a contagem de coletas for indefinida para esse coletor.
 

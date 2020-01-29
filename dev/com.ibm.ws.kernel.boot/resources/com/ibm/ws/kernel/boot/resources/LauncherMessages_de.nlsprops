@@ -681,10 +681,6 @@ warning.package.root.invalid.useraction=Es ist keine Aktion erforderlich.
 warning.package.root.invalid.runnable=CWWKE0948W: Die Option --server-root zusammen mit --include=runnable ist keine zul\u00e4ssige Kombination. Es wird das wlp-Standardargument f\u00fcr das Serverstammverzeichnis verwendet.
 warning.package.root.invalid.runnable.explanation=Der Benutzer hat eine Paketanforderung mit einer Option --server-root zusammen mit --include=runnable ausgef\u00fchrt. Dies ist keine zul\u00e4ssige Kombination. Es wird das Standardstammverzeichnis f\u00fcr Server, wlp, verwendet.
 warning.package.root.invalid.runnable.useraction=Es ist keine Aktion erforderlich. 
-error.no.serialfilteragent=CWWKE0949E: Die angegebene JAR-Datei {0} mit dem Agenten f\u00fcr seriellen Filter ist nicht vorhanden.
-error.no.serialfilteragent.explanation=Die angegebene JAR-Datei mit dem Agenten f\u00fcr seriellen Filter ist nicht vorhanden oder konnte nicht gelesen werden.
-error.no.serialfilteragent.useraction= Stellen Sie sicher, dass die Datei vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
-
 error.package.extension=CWWKE0950E: Der Name der Archivdatei muss mit .jar enden, wenn die ausf\u00fchrbare Option verwendet wird.
 error.package.extension.explanation=Die Option --archive muss die Dateierweiterung .jar enthalten, wenn Sie --include=runnable angeben.
 error.package.extension.useraction=Geben Sie f\u00fcr die Archivdatei mit --archive die Dateierweiterung .jar an, wenn Sie --include=runnable angeben.

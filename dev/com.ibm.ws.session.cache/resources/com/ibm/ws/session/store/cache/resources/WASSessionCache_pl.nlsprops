@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -57,6 +57,10 @@ ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: Biblioteka pami\u0119ci podr\u0119cznej se
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=Sk\u0142adnik sessionCache nie mo\u017ce znale\u017a\u0107 dostawcy JCache do za\u0142adowania.
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=Upewnij si\u0119, \u017ce biblioteka zawiera dostawc\u0119 JCache i \u017ce wszystkie \u015bcie\u017cki s\u0105 okre\u015blone poprawnie.
 
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Wygenerowano konfiguracj\u0119 Infinispan trwa\u0142o\u015bci sesji HTTP: {0}. Aby j\u0105 przes\u0142oni\u0107, skonfiguruj atrybut identyfikatora URI elementu konfiguracji httpSessionCache.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=Pami\u0119ci podr\u0119czne Infinispan u\u017cywane do zapewnienia trwa\u0142o\u015bci sesji HTTP wymagaj\u0105 dodatkowej konfiguracji, aby sesje by\u0142y zachowywane mi\u0119dzy serwerami. Serwer Liberty generuje t\u0119 konfiguracj\u0119, je\u015bli nie zostanie ona podana przez u\u017cytkownika.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Je\u015bli wygenerowana konfiguracja jest zadowalaj\u0105ca, \u017cadna czynno\u015b\u0107 u\u017cytkownika nie jest konieczna. W przeciwnym razie wygenerowanej konfiguracji mo\u017cna u\u017cy\u0107 jako punktu wyj\u015bcia do utworzenia w\u0142asnej.
 INTERNAL_SERVER_ERROR=Wewn\u0119trzny b\u0142\u0105d serwera
 
 SESSION_CACHE_CONFIG_MESSAGE=Upewnij si\u0119, \u017ce konfiguracja serwera zawiera poprawn\u0105 konfiguracj\u0119 httpSessionCache. Zapoznaj si\u0119 z przyk\u0142adow\u0105 konfiguracj\u0105. {0}

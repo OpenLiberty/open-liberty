@@ -10,7 +10,7 @@ Summary:        Open Liberty
 License:        EPL-1.0
 Name:           %{name}
 Version:        %{version}
-Release:        1%{?dist}
+Release:        1
 Source:         %{name}-%{version}.tar.gz
 BuildArch:      noarch
 URL:            https://openliberty.io
@@ -47,10 +47,6 @@ exit 0
 /usr/libexec
 /usr/share/%{name}
 /usr/lib/systemd/system
-
-%changelog
-* Fri Oct 11 2019 Admin <admin@openliberty.io> - @SPEC_VERSION@-1
-- Initial Open Liberty rpm package
 
 %preun
 pidDir=/var/run/openliberty
@@ -124,3 +120,4 @@ fi
 echo "Reloading systemctl services after uninstall of openliberty"
 systemctl daemon-reload
 exit 0
+

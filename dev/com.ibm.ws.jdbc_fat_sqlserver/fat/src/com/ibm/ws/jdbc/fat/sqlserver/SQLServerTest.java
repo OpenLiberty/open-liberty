@@ -45,9 +45,8 @@ public class SQLServerTest extends FATServletClient {
     @TestServlet(servlet = SQLServerTestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
-    //TODO change this to the SQL Server 2019 official image when it is released.  Currently, using a preview image.
     @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CTP3.1-ubuntu").withLogConsumer(SQLServerTest::log);
+    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04").withLogConsumer(SQLServerTest::log);
 
     //Private Method: used to setup logging for containers to this class.
     private static void log(OutputFrame frame) {

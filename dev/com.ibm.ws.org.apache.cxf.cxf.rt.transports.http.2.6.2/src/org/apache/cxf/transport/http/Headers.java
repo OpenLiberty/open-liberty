@@ -206,16 +206,19 @@ public class Headers {
      */
     public static Map<String, List<String>> getSetProtocolHeaders(final Message message) {
         Map<String, List<String>> headers =
-            CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));        
+            CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));
+        //Liberty code change start
         if (null == headers) {
-            headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+            headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER); 
+            message.put(Message.PROTOCOL_HEADERS, headers);
         } else if (headers instanceof HashMap) {
-            Map<String, List<String>> headers2 
+            Map<String, List<String>> headers2
                 = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
             headers2.putAll(headers);
+            message.put(Message.PROTOCOL_HEADERS, headers2);
             headers = headers2;
         }
-        message.put(Message.PROTOCOL_HEADERS, headers);
+        //Liberty code change end
         return headers;
     }
 
@@ -371,10 +374,12 @@ public class Headers {
             return true;
         }
         try {
-            if (Integer.valueOf(ctLen.get(0)) == 0) {
+            //Liberty code change start
+            if (Integer.parseInt(ctLen.get(0)) == 0) {
                 return false;
             }
-        } catch (NumberFormatException ex) {
+            //Liberty code change end
+        } catch (NumberFormatException e) {
             // ignore
         }
         return true;

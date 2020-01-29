@@ -17,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * @author skurz
  *
@@ -42,6 +44,7 @@ public class RemotableSplitFlowEntity extends JobThreadExecutionBase {
 
     private int internalStatus;
 
+    @Trivial
     public RemotableSplitFlowEntity() {}
 
     /**

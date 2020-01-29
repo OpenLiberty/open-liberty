@@ -13,10 +13,8 @@ package com.ibm.ws.jpa.olgh9339.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "SimpleOLGH9339")
 public class SimpleEntityOLGH9339 {
     @Id
     private int id;

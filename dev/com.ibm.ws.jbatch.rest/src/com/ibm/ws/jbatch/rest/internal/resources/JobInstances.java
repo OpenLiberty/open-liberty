@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -832,13 +832,13 @@ public class JobInstances implements RESTHandler {
  	    					unrecognized = "sort="+split[i];
  	    				}
  					} else if (field.equals("lastUpdatedTime")
- 			      			&& (jobRepository.getJobInstanceTableVersion() < 2)) {
+ 			      			&& (jobRepository.getJobInstanceEntityVersion() < 2)) {
  			      		throw new RequestException(HttpURLConnection.HTTP_NOT_IMPLEMENTED, "A search or sort by last update time was requested, but the job instance table does not contain the UPDATETIME column.");
  			      	}
 
  				}
      		} else if (entry.getKey().equals("lastUpdatedTime")
-     				&& (jobRepository.getJobInstanceTableVersion() < 2)) {
+     				&& (jobRepository.getJobInstanceEntityVersion() < 2)) {
      			throw new RequestException(HttpURLConnection.HTTP_NOT_IMPLEMENTED, "A search or sort by last update time was requested, but the job instance table does not contain the UPDATETIME column.");
      		}
      	}
@@ -869,7 +869,7 @@ public class JobInstances implements RESTHandler {
     		}
     	}
 
-        if ((!jobParams.isEmpty()) && (jobRepository.getJobExecutionTableVersion() < 2)) {
+        if ((!jobParams.isEmpty()) && (jobRepository.getJobExecutionEntityVersion() < 2)) {
        	 throw new RequestException(HttpURLConnection.HTTP_NOT_IMPLEMENTED, ResourceBundleRest.getMessage("db.tables.not.created.for.jobparm.search"));
         }
 

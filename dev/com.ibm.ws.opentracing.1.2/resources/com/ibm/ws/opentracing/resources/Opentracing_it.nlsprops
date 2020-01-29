@@ -74,6 +74,14 @@ OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing non pu\u00f2 tenere traccia
 OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing non funzioner\u00e0 correttamente perch\u00e9 non \u00e8 stata fornita una classe OpentracingTracerFactory. Le richieste JAX-RS verranno eseguite regolarmente, ma non verranno tracciate.
 OPENTRACING_NO_TRACERFACTORY.useraction=Per ulteriori informazioni, consultare la documentazione su come abilitare la traccia distribuita OpenTracing.
 
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Rilevato programma di associazione eccezione OpenTracing e gestisce un'eccezione non gestita dall'applicazione JAX-RS.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=Nell'applicazione basata su JAX-RS si \u00e8 verificata un'eccezione che non \u00e8 gestita nell'applicazione. Il codice OpenTracing la gestisce registrando la traccia di stack dell'eccezione e restituendo una risposta Errore server interno 500.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Questo comportamento pu\u00f2 essere accettabile. Per gestire l'eccezione in modo diverso, lo sviluppatore dell'applicazione pu\u00f2 aggiungere un'interfaccia ExceptionMapper che gestisca l'eccezione e la associ a una risposta diversa.
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing non pu\u00f2 tenere traccia delle richieste JAX-RS perch\u00e9 non \u00e8 stata fornita una classe OpentracingTracerFactorya o le librerie client per la traccia di backend non sono nel percorso classe.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=Le richieste JAX-RS vengono eseguite normalmente, ma non sono tracciate.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Consultare la documentazione su come abilitare e configurare la traccia distribuita OpenTracing. Questa avvertenza pu\u00f2 essere tranquillamente ignorata se OpenTracing non viene utilizzato.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

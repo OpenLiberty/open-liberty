@@ -90,7 +90,7 @@ public class ReferrerURLCookieHandler extends URLHandler {
      */
     public Cookie createCookie(String cookieName, @Sensitive String value, boolean enableHttpOnly, HttpServletRequest req) {
         Cookie c = new Cookie(cookieName, value);
-        if (cookieName.equals("WASReqURL")) {
+        if (cookieName.equals(REFERRER_URL_COOKIENAME) || cookieName.startsWith("WASOidcStateKey")) {
             c.setPath(getPathName(req));
         } else {
             c.setPath("/");
@@ -129,7 +129,7 @@ public class ReferrerURLCookieHandler extends URLHandler {
      */
     public void invalidateCookie(HttpServletRequest req, HttpServletResponse res, String cookieName, boolean enableHttpOnly) {
         Cookie c = new Cookie(cookieName, "");
-        if (cookieName.equals("WASReqURL")) {
+        if (cookieName.equals(REFERRER_URL_COOKIENAME)) {
             c.setPath(getPathName(req));
         } else {
             c.setPath("/");

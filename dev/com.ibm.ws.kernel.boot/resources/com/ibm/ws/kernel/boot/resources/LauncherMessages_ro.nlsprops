@@ -690,10 +690,6 @@ warning.package.root.invalid.runnable=CWWKE0948W: O op\u0163iune --server-root c
 warning.package.root.invalid.runnable.explanation=Utilizatorul a realizat o cerere de pachet cu o op\u0163iune --server-root \u015fi --include=runnable, care nu este o combina\u0163ie permis\u0103. Va fi folosit serverul r\u0103d\u0103cin\u0103 implicit wlp.
 warning.package.root.invalid.runnable.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
-error.no.serialfilteragent=CWWKE0949E: Fi\u015fierul jar al agentului de filtru serial specificat, {0}, nu exist\u0103.
-error.no.serialfilteragent.explanation=Fi\u015fierul jar al agentului de filtru serial specificat nu exist\u0103 sau nu poate fi citit.
-error.no.serialfilteragent.useraction= Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 poate fi citit de utilizatorul curent.
-
 error.package.extension=CWWKE0950E: Numele de fi\u015fier al arhivei trebuie s\u0103 se termine cu .jar atunci c\u00e2nd este utilizat\u0103 op\u0163iunea runnable.
 error.package.extension.explanation=Op\u0163iunea --archive trebuie s\u0103 includ\u0103 o extensie de fi\u015fier care se termin\u0103 cu .jar atunci c\u00e2nd se specific\u0103 --include=runnable.
 error.package.extension.useraction=Furniza\u0163i pentru --archive un nume de fi\u015fier cu extensia .jar atunci c\u00e2nd specifica\u0163i --include=runnable.

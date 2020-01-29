@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -319,118 +319,63 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     }
 
     /**
-     * This test verifies that a Liberty server CANNOT recover its own logs if they have been locked for recovery by a peer
+     * This test verifies that a Liberty server DOES recover its own logs if they have been locked for recovery by a peer
      * server where HADB Locking is enabled and the lock is of long duration.
      *
-     * The Cloud001 server is started with HADB Locking enabled and a servlet invoked to halt leaving an indoubt
-     * transaction.
-     *
      * The acquisition of Cloud001's logs by Cloud002 is simulated - in practice Cloud002 will assert ownership of
-     * Cloud001's logs, recover them and then reinstate Cloud001's ownership. Rather than attempting to hit that window
-     * the test drives a servlet to manually change the ownership of the logs in the control row.
+     * Cloud001's logs and recover them. This test drives a servlet to manually change the ownership of the logs
+     * in the control row. The Cloud002 server is started, the servlet is run and Cloud002 stopped.
      *
-     * The Cloud001 server is restarted with a server.xml that includes attributes to enable and configure HADB
-     * peer locking such that a lock on the local logs is of long duration. The trace logs are checked to verify that no local recovery
-     * has occurred. Cloud001's server.xml is reset and the server is restarted to perform local recovery and tidy up.
+     * The Cloud001 server is started with a server.xml that includes attributes to enable and configure HADB
+     * peer locking. Local recovery should occur. Cloud001's server.xml is reset and the server is restarted to tidy up.
      *
      * @throws Exception
      */
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "java.lang.RuntimeException" })
-    public void testLocalServerCannotReAcquireLogs() throws Exception {
+    public void testLocalServerDoesAcquireLogs() throws Exception {
         int test = 3;
 
-        final String method = "testLocalServerCannotReAcquireLogs";
+        final String method = "testLocalServerDoesAcquireLogs";
         final String id = String.format("%03d", test);
         StringBuilder sb = null;
         boolean testFailed = false;
         String testFailureString = "";
 
-        // Start Server1
-        server1.startServer();
+        // Start Server2
+        server2.startServer();
 
         // Set the owner of our recovery logs to a peer in the control row through a servlet
         // This simulates a peer's acquisition of our recovery logs.
         try {
-            sb = runTestWithResponse(server1, servletName, "setPeerOwnership");
+            sb = runTestWithResponse(server2, servletName, "setPeerOwnership");
 
         } catch (Throwable e) {
         }
 
         Log.info(this.getClass(), method, "setPeerOwnership" + id + " returned: " + sb);
-        try {
-            // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, servletName, "setupRec" + id);
-        } catch (Throwable e) {
-            // as expected
-            Log.error(this.getClass(), method, e); // TODO remove this
-        }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        // wait for 1st server to have gone away
-        if (server1.waitForStringInLog("Dump State:") == null) {
-            testFailed = true;
-            testFailureString = "First server did not crash";
-        }
-
+        server2.stopServer();
         if (!testFailed) {
 
             // switch to new configuration for 1st server
-            server1.copyFileToLibertyServerRoot("longLocalStaleTimeServer1/server.xml");
+            server1.copyFileToLibertyServerRoot("longPeerStaleTimeServer1/server.xml");
             // restart 1st server
             //
-            // Under the HADB locking scheme, with the parameters set in XXXXX, the server cannot re-aqcuire the logs
+            // Under the HADB locking scheme, the local server SHOULD aqcuire the logs
             server1.startServerAndValidate(false, true, true);
 
-            // wait for server to attempt (but fail) to perform local recovery
-            if (!testFailed && (server1.waitForStringInLog("HADB Peer locking, local recovery failed") == null)) {
+            // wait for server to attempt to perform local recovery
+            if (!testFailed && (server1.waitForStringInTrace("Claim the logs for the local server") == null)) {
                 testFailed = true;
-                testFailureString = "Server1 did not report that local recovery has failed where HADB Peer locking scheme is enabled";
+                testFailureString = "Server failed to claim logs";
             }
 
             //Stop server1
             if (!testFailed) {
                 server1.stopServer(null);
             }
-
-            // switch to original configuration for 1st server
-            server1.copyFileToLibertyServerRoot("originalServer1/server.xml");
-            // restart 1st server
-            server1.startServerAndValidate(false, true, true);
-
-            if (server1.waitForStringInTrace("WTRN0133I") == null) {
-                testFailed = true;
-                testFailureString = "Recovery incomplete on reconfigured first server";
-            }
-        }
-
-        if (!testFailed) {
-
-            // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + id);
-            try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + id);
-            } catch (Exception e) {
-                Log.error(this.getClass(), "dynamicTest", e);
-                throw e;
-            }
-            Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
-
-            // Bounce first server to clear log
-            server1.stopServer(null);
-            server1.startServerAndValidate(false, true, true);
-
-            // Check log was cleared
-            if (server1.waitForStringInTrace("WTRN0135I") == null) {
-                testFailed = true;
-                testFailureString = "Transactions left in transaction log on first server";
-            }
-            if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
-                testFailed = true;
-                testFailureString = "XAResources left in partner log on first server";
-            }
-
         }
 
         tidyServerAfterTest(server1);
@@ -508,7 +453,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 testFailureString = "Recovery incomplete on first server";
             }
 
-            if (!testFailed && (server1.waitForStringInTrace("Claim the local logs for the local server") == null)) {
+            if (!testFailed && (server1.waitForStringInTrace("Claim the logs for the local server") == null)) {
                 testFailed = true;
                 testFailureString = "Server failed to claim logs";
             }

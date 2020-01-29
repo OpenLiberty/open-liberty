@@ -1,0 +1,14 @@
+<server>
+
+    <include location="../fatTestCommon.xml" />
+
+    <httpEndpoint
+        id="defaultHttpEndpoint"
+        host="*"
+        httpPort="${bvt.prop.security_1_HTTP_default}"
+        httpsPort="${bvt.prop.security_1_HTTP_default.secure}"
+    >
+        <tcpOptions soReuseAddr="true" />
+    </httpEndpoint>
+
+</server>

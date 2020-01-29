@@ -693,10 +693,6 @@ warning.package.root.invalid.runnable.explanation=L'utilisateur a \u00e9mis une 
 warning.package.root.invalid.runnable.useraction=Aucune action n'est \
 requise.
 
-error.no.serialfilteragent=CWWKE0949E: Le fichier JAR d''agent de filtres de s\u00e9rie sp\u00e9cifi\u00e9 {0} n''existe pas.
-error.no.serialfilteragent.explanation=Le fichier JAR d'agent de filtres de s\u00e9rie sp\u00e9cifi\u00e9 n'existe pas ou ne peut pas \u00eatre lu.
-error.no.serialfilteragent.useraction= Assurez-vous que le fichier existe et qu'il peut \u00eatre lu par l'utilisateur en cours.
-
 error.package.extension=CWWKE0950E: Le nom de fichier archive doit se terminer par .jar lorsque l'option runnable est utilis\u00e9e.
 error.package.extension.explanation=L'option --archive doit inclure l'extension de fichier .jar si vous sp\u00e9cifiez --include=runnable.
 error.package.extension.useraction=Indiquez un nom de fichier pour --archive dont l'extension de fichier est .jar si vous sp\u00e9cifiez --include=runnable.

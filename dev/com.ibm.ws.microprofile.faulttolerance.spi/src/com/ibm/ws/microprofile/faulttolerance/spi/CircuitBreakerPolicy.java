@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,6 +34,16 @@ public interface CircuitBreakerPolicy {
 
     @SuppressWarnings("unchecked")
     public void setFailOn(Class<? extends Throwable>... failOn);
+
+    /**
+     * Define the skip criteria
+     *
+     * @return the skip exception
+     */
+    Class<? extends Throwable>[] getSkipOn();
+
+    @SuppressWarnings("unchecked")
+    public void setSkipOn(Class<? extends Throwable>... skipOn);
 
     /**
      *

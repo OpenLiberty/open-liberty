@@ -55,6 +55,11 @@ kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Vlastnost group.id nebyla nastavena
 kafka.groupid.not.set.CWMRX1005E.explanation=ID skupiny z\u00e1kazn\u00edk\u016f Kafka mus\u00ed b\u00fdt nastaveno tak, aby umo\u017e\u0148ovalo spr\u00e1vnou funkci Reactive Messaging.
 kafka.groupid.not.set.CWMRX1005E.useraction=Nastavte vlastnost v jednom z um\u00edst\u011bn\u00ed MicroProfile ConfigSource pro tuto aplikaci, nap\u0159\u00edklad soubor mikroprofile-config.properties.
 
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: T\u0159\u00eddy ze souboru JAR klient\u016f kafka nelze na\u010d\u00edst. Ujist\u011bte se, \u017ee soubor JAR klient\u016f kafka a jeho z\u00e1vislosti jsou dostupn\u00e9 jako knihovny pro va\u0161i aplikaci.
+kafka.library.not.present.CWMRX1006E.explanation=Aplikace, kter\u00e9 pou\u017e\u00edvaj\u00ed klienta Kafka syst\u00e9mu Reactive Messaging, mus\u00ed poskytovat soubor JAR klient\u016f kafka a jeho z\u00e1vislost\u00ed. Tento soubor a jeho z\u00e1vislosti je mo\u017en\u00e9 poskytovat bu\u010f zabalen\u00edm jako knihovnu v r\u00e1mci aplikace, nebo jako sd\u00edlenou knihovnu.
+kafka.library.not.present.CWMRX1006E.useraction=Zabalte soubor JAR klient\u016f kafka a jeho z\u00e1vislosti jako knihovnu v aplikaci nebo jako sd\u00edlenou knihovnu. Soubor JAR klient\u016f kafka lze st\u00e1hnout z webu Apache Kafka nebo Maven Central.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

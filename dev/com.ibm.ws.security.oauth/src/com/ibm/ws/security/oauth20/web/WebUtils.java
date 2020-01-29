@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.oauth20.api.Constants;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 
 /**
@@ -93,7 +94,6 @@ public class WebUtils {
                             "realm=\"\"";
                     // Per section 1.2 of the HTTP Authentication: Basic and Digest Access Authentication spec (RFC 2617), "the
                     // realm directive (case-insensitive) is required for all authentication schemes that issue a challenge."
-
 
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Error code:" + statusCode + " errMsg=" + errMsg + " response already committed: " + response.isCommitted());
@@ -356,9 +356,8 @@ public class WebUtils {
     }
 
     public static void throwOidcServerException(HttpServletRequest request, OAuth20Exception e) throws OidcServerException {
-        String encoding = request.getCharacterEncoding() != null ? request.getCharacterEncoding() : "utf-8";
-        String errorMsg = e.formatSelf(request.getLocale(), encoding);
-        Tr.error(tc, errorMsg, new Object[] {});
-        throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+        Tr.error(tc, e.getMsgKey(), e.getObjects());
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, e.getMsgKey(), e.getObjects()), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+
     }
 }

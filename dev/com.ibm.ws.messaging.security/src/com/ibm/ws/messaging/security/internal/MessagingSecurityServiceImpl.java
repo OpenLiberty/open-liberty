@@ -170,6 +170,18 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
         SibTr.exit(tc, CLASS_NAME + "deactivate");
     }
 
+    /*
+     * Delay this service from starting until LTPAConfiguration is available.
+     * See RTC 269100: Ltpa2 key generation may on occasion take some time; if not available when e.g. an MDB runs an exception
+     * is raised during authentication resulting in an FFDC dump.
+     * This function is a "dummy" that will influence OSGi's running of this bundle, delaying until the service can be resolved.
+     */
+    @Reference( service = com.ibm.ws.security.token.ltpa.internal.LTPAConfiguration.class )
+    protected void setLTPA2(Object arg) {
+        SibTr.entry(tc, CLASS_NAME + "setLTPA2");
+        SibTr.exit(tc, CLASS_NAME + "setLTPA2");
+    }
+
     /**
      * Binding Security Service
      * 

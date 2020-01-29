@@ -12,9 +12,12 @@ package com.ibm.ws.jpa.management;
 
 import static com.ibm.ws.jpa.management.JPAConstants.JNDI_NAMESPACE_JAVA_APP_ENV;
 import static com.ibm.ws.jpa.management.JPAConstants.JNDI_NAMESPACE_JAVA_COMP_ENV;
+import static com.ibm.ws.jpa.management.JPAConstants.JPABYTECODE_TRACE_GROUP;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.instrument.IllegalClassFormatException;
 import java.net.URL;
 import java.security.AccessController;
@@ -58,6 +61,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
     private static final TraceComponent tc = Tr.register(JPAPUnitInfo.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
     private static final TraceComponent tcTransformer = Tr.register(CLASS_NAME + "_Transformer", JPAPUnitInfo.class, JPA_TRACE_GROUP + ".Transformer", JPA_RESOURCE_BUNDLE_NAME);
+    private static final TraceComponent tcBytecodeCapture = Tr.register(CLASS_NAME + "_BytecodeCapture", JPAPUnitInfo.class, JPABYTECODE_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
 
     private static final ThreadContextAccessor svThreadContextAccessor = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction()); // PM27213
 
@@ -497,7 +501,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * environment.
      *
      * @param jarFileValues List of jar file paths from <jar-file> in persistence.xml
-     * @param looseConfig class holding loose config mappings
+     * @param looseConfig   class holding loose config mappings
      */
     //PK62950
     final void setJarFileUrls(List<String> jarFilePaths, JPAPXml pxml) {
@@ -783,8 +787,8 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * created. <p>
      *
      * @param j2eeName
-     *            JavaEE unique identifier for the component, identifying the
-     *            java:comp/env context used.
+     *                     JavaEE unique identifier for the component, identifying the
+     *                     java:comp/env context used.
      *
      * @return EntityManager factory associated with this persistence unit.
      **/
@@ -865,10 +869,10 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * component context (java:comp/env); in which case it will be a
      * component specific instance of JPACompPUnitInfo. <p>
      *
-     * @param puInfo persistence unit information to pass on the call to
-     *            createEntityManagerFactory.
+     * @param puInfo             persistence unit information to pass on the call to
+     *                               createEntityManagerFactory.
      * @param ignoreProviderCNFE whether or not a CNFE should be logged as an FFDC
-     *            (provider CNFE's are tolerated for WABs per defect 152577)
+     *                               (provider CNFE's are tolerated for WABs per defect 152577)
      * @throws RuntimeException if an error occurs while creating the EMF
      **/
     // d510184
@@ -979,12 +983,12 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * accross PersistenceContext references. <p>
      *
      * @param j2eeName
-     *            JavaEE unique identifier for the component, identifying the
-     *            java:comp/env context used.
+     *                       JavaEE unique identifier for the component, identifying the
+     *                       java:comp/env context used.
      * @param refName
-     *            Name of the PersistenceContext reference.
+     *                       Name of the PersistenceContext reference.
      * @param properties
-     *            additional properties to create the EntityManager
+     *                       additional properties to create the EntityManager
      *
      * @return EntityManager pool for the specified component and reference.
      **/
@@ -1208,58 +1212,134 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                                  ClassLoader classloader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tcTransformer.isEntryEnabled()) {
-            Tr.entry(tcTransformer, "transformClass: PUID = " + ivArchivePuId + ", class name = " + className,
+            Tr.entry(tcTransformer, "transformClass: PUID = " + ivArchivePuId + ", class name = " + className
+                                    + ", classBytes.length = " + ((classBytes == null) ? 0 : classBytes.length),
                      codeSource, classloader); //d454146
         }
 
         int numTransform = 0;
-        if (ivTransformers.size() > 0 && classNeedsTransform(className)) {
-            // perform the class transformation by the persistence provider only if it is
-            // defined as a POJO entity class.
-            ProtectionDomain pd = new ProtectionDomain(codeSource, new Permissions(), classloader, null);
-            int oldClassBytesLength;
+        try {
+            if (ivTransformers.size() > 0 && classNeedsTransform(className)) {
+                if (isTraceOn && tcBytecodeCapture.isDebugEnabled()) {
+                    Tr.debug(tcBytecodeCapture,
+                             "Before Class Transform: Bytecode for class " + className + " (size = " + ((classBytes == null) ? 0 : classBytes.length) + "):",
+                             "Hex:\n" + dumpByteCode(classBytes));
+                }
 
-            // Future performance optimizatin:
-            //  In same application that has more than 1 Pu, multiple transformers may be added to
-            //  the same classloader. Multi-calls to the provider can be optimized to a single
-            //  invocation.
-            for (ClassTransformer transformer : ivTransformers) {
-                oldClassBytesLength = classBytes.length;
-                boolean isTransformed = false;
-                try {
-                    byte[] transformedClassBytes = transformer.transform(classloader,
-                                                                         className,
-                                                                         null,
-                                                                         pd,
-                                                                         classBytes);
-                    if (transformedClassBytes != null) {
-                        // replace and return the transformed classBytes back to the caller.
-                        isTransformed = true;
-                        classBytes = transformedClassBytes;
-                        ++numTransform;
+                // perform the class transformation by the persistence provider only if it is
+                // defined as a POJO entity class.
+                ProtectionDomain pd = new ProtectionDomain(codeSource, new Permissions(), classloader, null);
+                int oldClassBytesLength;
+
+                // Future performance optimizatin:
+                //  In same application that has more than 1 Pu, multiple transformers may be added to
+                //  the same classloader. Multi-calls to the provider can be optimized to a single
+                //  invocation.
+                for (ClassTransformer transformer : ivTransformers) {
+                    if (isTraceOn && tcTransformer.isDebugEnabled()) {
+                        Tr.debug(tcTransformer, "transformer: " + transformer
+                                                + " , className: " + className);
                     }
-                    if (isTraceOn && ((tc.isDebugEnabled() && isTransformed) || tcTransformer.isDebugEnabled())) {
-                        TraceComponent tcActive = tcTransformer.isDebugEnabled() ? tcTransformer : tc;
-                        Tr.debug(tcActive, "transformer:" + transformer + ", " // d440322
-                                           + className + " is " + (isTransformed ? "" : "NOT ")
-                                           + "transformed. Byte length(old/new)=" + oldClassBytesLength + "/"
-                                           + classBytes.length);
+                    oldClassBytesLength = classBytes.length;
+                    boolean isTransformed = false;
+                    try {
+                        byte[] transformedClassBytes = transformer.transform(classloader,
+                                                                             className,
+                                                                             null,
+                                                                             pd,
+                                                                             classBytes);
+                        if (transformedClassBytes != null) {
+                            // replace and return the transformed classBytes back to the caller.
+                            isTransformed = true;
+                            classBytes = transformedClassBytes;
+                            ++numTransform;
+                        }
+                        if (isTraceOn && ((tc.isDebugEnabled() && isTransformed) || tcTransformer.isDebugEnabled())) {
+                            TraceComponent tcActive = tcTransformer.isDebugEnabled() ? tcTransformer : tc;
+                            Tr.debug(tcActive, "transformer:" + transformer + ", " // d440322
+                                               + className + " is " + (isTransformed ? "" : "NOT ")
+                                               + "transformed. Byte length(old/new)=" + oldClassBytesLength + "/"
+                                               + classBytes.length);
+                        }
+
+                        if (isTraceOn && tcBytecodeCapture.isDebugEnabled() && (oldClassBytesLength != classBytes.length)) {
+                            Tr.debug(tcBytecodeCapture,
+                                     "After Class Transform: Bytecode for class " + className + " (size = " + ((classBytes == null) ? 0 : classBytes.length) + ")",
+                                     "Hex:\n" + dumpByteCode(classBytes));
+                        }
+                    } catch (IllegalClassFormatException icfe) {
+                        FFDCFilter.processException(icfe, CLASS_NAME + ".transformClass",
+                                                    "1169", this);
+                        // Ignore the exception and the original classBytes is returned.
+                        Tr.error(tc,
+                                 "ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E",
+                                 className);
+                    } catch (RuntimeException t) {
+                        // The transform() method should only throw IllegalClassFormatException but some
+                        // providers may allow a RuntimeException to bubble through, so we have to deal with that
+                        // possibility.
+                        final StringBuilder sb = new StringBuilder();
+                        try {
+                            sb.append("\n----------\n");
+                            sb.append("Original Class Byte Code (length = ").append(((classBytes == null) ? 0 : classBytes.length));
+                            sb.append(") for class ").append(className).append(" :\n");
+                            sb.append(dumpByteCode(classBytes));
+
+                            sb.append("\nRuntime Exception thrown by transformer:\n");
+                            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            t.printStackTrace(new PrintStream(baos));
+                            sb.append(baos.toString());
+
+                            sb.append("\n----------\n");
+                        } catch (Throwable t2) {
+                            // Swallow any unlikely Exceptions
+                        } finally {
+                            Tr.error(tc, "ERROR_TRANSFORMING_CLASS_CWWJP0055E", className, sb.toString());
+                        }
+
+                        throw t;
                     }
-                } catch (IllegalClassFormatException icfe) {
-                    FFDCFilter.processException(icfe, CLASS_NAME + ".transformClass",
-                                                "1169", this);
-                    // Ignore the exception and the original classBytes is returned.
-                    Tr.error(tc,
-                             "ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E",
-                             className);
                 }
             }
+
+            return classBytes;
+        } finally {
+            if (isTraceOn && tcTransformer.isEntryEnabled()) {
+                Tr.exit(tcTransformer, "transformClass: " + numTransform + "/" + ivTransformers.size()); //d454146
+            }
+        }
+    }
+
+    private static String dumpByteCode(final byte[] byteCode) {
+        if (byteCode == null || byteCode.length == 0) {
+            return "No bytecode is available.";
         }
 
-        if (isTraceOn && tcTransformer.isEntryEnabled()) {
-            Tr.exit(tcTransformer, "transformClass: " + numTransform + "/" + ivTransformers.size()); //d454146
+        final int ROW_SIZE = 30;
+        final StringBuilder sb = new StringBuilder();
+        final StringBuilder asciiSB = new StringBuilder();
+        int col = 1;
+        for (int idx = 0; idx < byteCode.length; idx++) {
+            sb.append(String.format("%02X ", byteCode[idx]));
+            if (byteCode[idx] >= 32 && byteCode[idx] < 127) {
+                asciiSB.append((char) (byteCode[idx] & 0xFF));
+            } else {
+                asciiSB.append(".");
+            }
+            if (col++ % ROW_SIZE == 0) {
+                sb.append(" ").append(asciiSB.toString()).append("\n");
+                asciiSB.setLength(0);
+                col = 1;
+            }
         }
-        return classBytes;
+        if (byteCode.length % ROW_SIZE != 0) {
+            int diff = (ROW_SIZE - byteCode.length % ROW_SIZE) * 3;
+            for (int i = 0; i < diff; i++) {
+                sb.append(" ");
+            }
+            sb.append(" ").append(asciiSB.toString()).append("\n");
+        }
+        return sb.toString();
     }
 
     /**

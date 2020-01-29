@@ -168,7 +168,8 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     @Override
     public void writeTo(Object obj, Class<?> type, Type genericType, Annotation[] annotations,
                         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-        getJsonb().toJson(obj, entityStream);
+        String json = getJsonb().toJson(obj);
+        entityStream.write(json.getBytes()); // do not close
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);

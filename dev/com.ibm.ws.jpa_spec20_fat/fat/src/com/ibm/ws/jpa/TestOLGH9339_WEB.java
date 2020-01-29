@@ -40,6 +40,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH9339_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh9339Web";
     private final static String RESOURCE_ROOT = "test-applications/olgh9339/";
     private final static String appFolder = "web";
     private final static String appName = "olgh9339Web";
@@ -59,20 +60,19 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
 
     @Server("JPA20Server")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH9339Servlet.class, path = "olgh9339" + "/" + "TestOLGH9339Servlet"),
-
+                    @TestServlet(servlet = TestOLGH9339Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9339Servlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(TestOLGH9339_WEB.class);
         timestart = System.currentTimeMillis();
 
-        server1.startServer();
+        server.startServer();
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
 
@@ -80,19 +80,19 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         ddlSet.clear();
         for (String ddlName : populateSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
@@ -102,7 +102,6 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.model");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.testlogic");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.web");
-
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
@@ -122,40 +121,53 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
         appNamesSet.add(appName);
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-//            server1.dumpServer("OLGH9339Web");
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(TestOLGH9339_WEB.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
 }

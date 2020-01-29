@@ -369,6 +369,16 @@ public final class ChannelUtils extends ChannelUtilsBase {
         return rc;
     }
 
+    public static synchronized Map<String, List<String>> loadConfigDelay() {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "loadConfigDelay called");
+        }
+
+        loadConfig(null);
+        return null;
+    }
+
     /**
      * Using the provided configuration, create or update channels,
      * chains, and groups within the channel framework.
@@ -387,6 +397,9 @@ public final class ChannelUtils extends ChannelUtilsBase {
         boolean usingDelayed = false;
         if (null == config) {
             if (delayedConfig.isEmpty()) {
+                if (bTrace && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "loadConfig returning - nothing to do");
+                }
                 return null;
             }
             // process the delayed configuration values
@@ -401,7 +414,9 @@ public final class ChannelUtils extends ChannelUtilsBase {
         Map<String, List<String>> rc = load(config, false, true);
         if (usingDelayed && !delayedStarts.isEmpty()) {
             // see if we can start any of the chains now
+
             start(rc, false, false);
+
         }
         return rc;
     }
@@ -872,7 +887,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
                     Tr.debug(tc, "Stopping chain: " + chain);
                 }
 
-                if (quiesceTimeout > 0 ) {
+                if (quiesceTimeout > 0) {
                     listener.watchChain(cd);
                 }
                 cf.stopChain(cd, quiesceTimeout);

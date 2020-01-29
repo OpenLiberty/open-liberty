@@ -697,10 +697,6 @@ warning.package.root.invalid.runnable=CWWKE0948W: Volba --server-root s --includ
 warning.package.root.invalid.runnable.explanation=U\u017eivatel provedl po\u017eadavek na bal\u00edk s volbou --server-root a --include=runnable, co\u017e nen\u00ed povolenou kombinac\u00ed. Pou\u017eije se v\u00fdchoz\u00ed ko\u0159enov\u00fd adres\u00e1\u0159 serveru wlp.
 warning.package.root.invalid.runnable.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-error.no.serialfilteragent=CWWKE0949E: Uveden\u00fd soubor JAR modulu Serial Filter Agent {0} neexistuje.
-error.no.serialfilteragent.explanation=Uveden\u00fd soubor JAR modulu Serial Filter Agent neexistuje, nebo se nezda\u0159ilo na\u010dten\u00ed.
-error.no.serialfilteragent.useraction= Zkontrolujte, \u017ee soubor existuje a \u017ee jej m\u016f\u017ee aktu\u00e1ln\u00ed u\u017eivatel \u010d\u00edst.
-
 error.package.extension=CWWKE0950E: N\u00e1zev archivn\u00edho souboru mus\u00ed kon\u010dit p\u0159\u00edponou .jar, je-li pou\u017eita volba runnable.
 error.package.extension.explanation=Volba --archive mus\u00ed obsahovat p\u0159\u00edponu souboru, kter\u00e1 kon\u010d\u00ed p\u0159\u00edponou .jar p\u0159i ur\u010den\u00ed --include=runnable.
 error.package.extension.useraction=P\u0159i ur\u010den\u00ed --include=runnable zadejte pro --archive n\u00e1zev souboru s p\u0159\u00edponou souboru .jar.

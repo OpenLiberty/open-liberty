@@ -64,7 +64,6 @@ import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 import com.ibm.ws.jaxws.support.JaxWsMetaDataManager;
-import com.ibm.ws.jaxws.support.LibertyHTTPTransportFactory;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -112,7 +111,6 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
     protected void setSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
         securityConfigSR.setReference(serviceRef);
         LibertyProviderImpl.setSecurityConfigService(securityConfigSR);
-        LibertyHTTPTransportFactory.setSecurityConfigService(securityConfigSR);
     }
 
     protected void unsetSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {

@@ -74,6 +74,14 @@ OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: Az OpenTracing nem tudja nyomon k\u00f6
 OPENTRACING_NO_TRACERFACTORY.explanation=Az OpenTracing nem fog megfelel\u0151en m\u0171k\u00f6dni, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly. A JAX-RS k\u00e9r\u00e9sek norm\u00e1lisan v\u00e9grehajt\u00e1sra ker\u00fclnek, de nem lesznek nyomon k\u00f6vetve.
 OPENTRACING_NO_TRACERFACTORY.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az OpenTracing osztott nyomk\u00f6vet\u00e9s enged\u00e9lyez\u00e9s\u00e9t bemutat\u00f3 dokument\u00e1ci\u00f3t.
 
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Az OpenTracing kiv\u00e9tel lek\u00e9pez\u0151 a JAX-RS alkalmaz\u00e1sban egy kezeletlen hib\u00e1t tal\u00e1lt, \u00e9s \u00e9ppen kezeli.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=A JAX-RS alap\u00fa alkalmaz\u00e1s kiv\u00e9telt tapasztalt, amely az alkalmaz\u00e1son bel\u00fcl nem ker\u00fclt kezel\u00e9sre. Az OpenTracing k\u00f3d kezeli a kiv\u00e9telt a veremnyomk\u00f6vet\u00e9s napl\u00f3z\u00e1s\u00e1val, \u00e9s az 500-as Bels\u0151 kiszolg\u00e1l\u00f3hiba v\u00e1laszt adja vissza.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Ez a viselked\u00e9s elfogadhat\u00f3 lehet. A kiv\u00e9tel m\u00e1s m\u00f3don val\u00f3 kezel\u00e9s\u00e9hez az alkalmaz\u00e1sfejleszt\u0151 felvehet egy ExceptionMapper csatol\u00f3t, amely kezeli a kiv\u00e9telt, \u00e9s egy m\u00e1sik v\u00e1laszba k\u00e9pezi le.
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: Az OpenTracing nem tudja nyomon k\u00f6vetni a JAX-RS k\u00e9r\u00e9seket, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly vagy az nyomk\u00f6vet\u00e9si h\u00e1tt\u00e9r \u00fcgyf\u00e9l f\u00fcggv\u00e9nyt\u00e1rai nem szerepelnek az oszt\u00e1ly\u00fatvonalon.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=Lehet, hogy a JAX-RS k\u00e9r\u00e9sek norm\u00e1lisan lefutnak, de nem lesznek nyomon k\u00f6vetve.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Tekintse meg a dokument\u00e1ci\u00f3ban, hogy hogyan enged\u00e9lyezheti \u00e9s konfigur\u00e1lhatja az OpenTracing osztott nyomk\u00f6vet\u00e9st. Ez a figyelmeztet\u00e9s biztons\u00e1gosan figyelmen k\u00edv\u00fcl hagyhat\u00f3, ha az OpenTracing nincs haszn\u00e1latban.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

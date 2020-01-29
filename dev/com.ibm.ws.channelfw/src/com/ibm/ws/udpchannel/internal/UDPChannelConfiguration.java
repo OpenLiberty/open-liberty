@@ -114,8 +114,9 @@ public class UDPChannelConfiguration {
                     continue;
                 }
 
-                if (key.equalsIgnoreCase(ChannelFrameworkConstants.CHAIN_DATA_KEY)) {
-                    // this parameter is made available by the channel framework
+                if (key.equalsIgnoreCase(ChannelFrameworkConstants.CHAIN_DATA_KEY)
+                    || key.equalsIgnoreCase(ChannelFrameworkConstants.CHAIN_NAME_KEY)) {
+                    // these parameters are made available by the channel framework
                     // for any channel that needs it. This channel does not need
                     // it so ignore and move on.
                     continue;
@@ -202,7 +203,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Set the hostname to the input value.
-     * 
+     *
      * @param name
      */
     protected void setHostname(String name) {
@@ -213,7 +214,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query the external name of this channel.
-     * 
+     *
      * @return String
      */
     public String getExternalName() {
@@ -222,7 +223,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query the hostname set in the configuration.
-     * 
+     *
      * @return String
      */
     public String getHostname() {
@@ -231,7 +232,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query whether this is an inbound UDP channel or not.
-     * 
+     *
      * @return boolean
      */
     public boolean isInboundChannel() {
@@ -240,7 +241,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Access the channel framework configuration object for this channel.
-     * 
+     *
      * @return ChannelData
      */
     public ChannelData getChannelData() {
@@ -249,7 +250,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Update the configuration with a new channel framework configuration object.
-     * 
+     *
      * @param data
      * @throws ChannelException
      */
@@ -263,7 +264,7 @@ public class UDPChannelConfiguration {
     /**
      * Query the port value set in the configuration, only valid for an inbound
      * channel.
-     * 
+     *
      * @return int
      */
     public int getPort() {
@@ -273,7 +274,7 @@ public class UDPChannelConfiguration {
     /**
      * Set the port value for the configuration, only valid for an inbound
      * channel.
-     * 
+     *
      * @param newPort
      */
     public void setPort(int newPort) {
@@ -282,7 +283,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query the socket receive buffer size setting value.
-     * 
+     *
      * @return int
      */
     public int getReceiveBufferSize() {
@@ -291,7 +292,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query the socket send buffer size value.
-     * 
+     *
      * @return int
      */
     public int getSendBufferSize() {
@@ -300,7 +301,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Set the socket receive buffer size value.
-     * 
+     *
      * @param size
      */
     public void setReceiveBufferSize(int size) {
@@ -309,7 +310,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Set the socket send buffer size value.
-     * 
+     *
      * @param size
      */
     public void setSendBufferSize(int size) {
@@ -318,7 +319,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query the bytebuffer size configured for receiving data.
-     * 
+     *
      * @return int
      */
     public int getChannelReceiveBufferSize() {
@@ -327,7 +328,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Set the size of the bytebuffer to allocate when receiving data.
-     * 
+     *
      * @param size
      */
     public void setChannelReceiveBufferSize(int size) {
@@ -342,7 +343,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query the address exclude list.
-     * 
+     *
      * @return String[] - null if not configured
      */
     protected String[] getAddressExcludeList() {
@@ -351,7 +352,7 @@ public class UDPChannelConfiguration {
 
     /**
      * Query the address include list.
-     * 
+     *
      * @return String[] - null if not configured
      */
     protected String[] getAddressIncludeList() {

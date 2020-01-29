@@ -2,9 +2,7 @@
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.core.3.2
-
-Bundle-Activator: com.ibm.ws.jaxrs21.cxf.core.NoOpActivator
-
+Bundle-Activator:  com.ibm.ws.cxf.core.NoOpActivator
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # This needs to stay at 3.2.4 even though the bundle version is 3.3.0.
@@ -29,7 +27,6 @@ exportVer=3.2.4
 #  org.apache.cxf.common.i18n
 
 Export-Package: \
-  com.ibm.ws.jaxrs21.cxf.core,\
   org.apache.cxf;version=${exportVer},\
   org.apache.cxf.annotations;version=${exportVer},\
   org.apache.cxf.attachment;version=${exportVer},\
@@ -105,7 +102,7 @@ Export-Package: \
   org.apache.cxf.wsdl.http;version=${exportVer}
 
 Private-Package: \
- com.ibm.ws.cxf.core
+  com.ibm.ws.cxf.core
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
@@ -134,8 +131,4 @@ DynamicImport-Package: \
   com.ctc.wstx.*,\
   javax.xml.ws,\
   org.apache.cxf.bus,\
-  org.apache.cxf.*,\
-
-
-#-dsannotations:\
-#  com.ibm.ws.cxf.core.StaxActivator
+  org.apache.cxf.*

@@ -74,6 +74,14 @@ OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: O OpenTracing n\u00e3o pode rastrear so
 OPENTRACING_NO_TRACERFACTORY.explanation=O OpenTracing n\u00e3o funcionar\u00e1 corretamente porque n\u00e3o foi fornecida uma classe OpentracingTracerFactory. As solicita\u00e7\u00f5es JAX-RS ser\u00e3o executadas normalmente, mas n\u00e3o ser\u00e3o rastreadas.
 OPENTRACING_NO_TRACERFACTORY.useraction=Para obter mais informa\u00e7\u00f5es, consulte a documenta\u00e7\u00e3o sobre como ativar o rastreio distribu\u00eddo OpenTracing.
 
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: O mapeador de exce\u00e7\u00e3o OpenTracing detectou e est\u00e1 manipulando uma exce\u00e7\u00e3o n\u00e3o manipulada do aplicativo JAX-RS.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=No aplicativo baseado em JAX-RS ocorreu uma exce\u00e7\u00e3o que n\u00e3o \u00e9 manipulada no aplicativo. O c\u00f3digo OpenTracing manipula-a registrando o rastreio de pilha de exce\u00e7\u00f5es e retornando uma resposta 500 Erro do servidor interno.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Esse comportamento pode ser aceit\u00e1vel. Para manipular a exce\u00e7\u00e3o de forma diferente, o desenvolvedor de aplicativos pode incluir uma interface ExceptionMapper que manipula a exce\u00e7\u00e3o e mapeia-a para uma resposta diferente.
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: O OpenTracing n\u00e3o pode rastrear as solicita\u00e7\u00f5es JAX-RS porque n\u00e3o foi fornecida uma classe OpentracingTracerFactory ou as bibliotecas do cliente para back-end de rastreio n\u00e3o est\u00e3o no caminho de classe.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=As solicita\u00e7\u00f5es JAX-RS s\u00e3o executadas normalmente, mas n\u00e3o s\u00e3o rastreadas.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Consulte a documenta\u00e7\u00e3o sobre como ativar e configurar o rastreio distribu\u00eddo OpenTracing. Esse aviso pode ser ignorado com seguran\u00e7a caso o OpenTracing n\u00e3o esteja sendo usado.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

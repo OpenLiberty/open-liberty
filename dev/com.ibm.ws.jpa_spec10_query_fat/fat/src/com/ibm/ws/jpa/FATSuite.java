@@ -11,32 +11,28 @@
 
 package com.ibm.ws.jpa;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jpa.spec10.query.aggregatefunctions.TestQueryAggregateFunctions_Web;
-import com.ibm.ws.jpa.spec10.query.apars.TestAggregateFunctionAPARs_Web;
-import com.ibm.ws.jpa.spec10.query.apars.TestBindParametersAPARs_Web;
-import com.ibm.ws.jpa.spec10.query.apars.TestDB2OnZSpecificAPARs_Web;
-import com.ibm.ws.jpa.spec10.query.jpql.TestQueryJPQL_Web;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                TestQueryAggregateFunctions_Web.class,
-                TestAggregateFunctionAPARs_Web.class,
-                TestBindParametersAPARs_Web.class,
-                TestQueryJPQL_Web.class,
-                TestDB2OnZSpecificAPARs_Web.class,
+                TestOLGH8014_EJB.class,
+                TestOLGH8014_Web.class,
+                TestOLGH8294_EJB.class,
+                TestOLGH8294_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";",
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
-//    @ClassRule
-//    public static RepeatTests r = RepeatTests.withoutModification()
-//                    .andWith(FeatureReplacementAction.EE7_FEATURES())
-//                    .andWith(new RepeatWithJPA20());
-
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE7_FEATURES())
+                    .andWith(new RepeatWithJPA20());
 }

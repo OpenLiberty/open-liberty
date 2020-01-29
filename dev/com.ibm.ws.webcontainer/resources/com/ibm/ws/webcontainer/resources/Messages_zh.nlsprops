@@ -1597,3 +1597,9 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=\u68c0\u67e5 Async
 exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: [{0}] ServletContainerInitializer\uff08\u4f4d\u4e8e\u4ee5\u4e0b\u5e94\u7528\u7a0b\u5e8f [{2}] \u4e2d\uff09\u5728\u8c03\u7528 onStartup \u65b9\u6cd5\u65f6\u53d1\u751f\u4e86\u4ee5\u4e0b\u9519\u8bef\uff1a[{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=\u8c03\u7528 onStartup \u65b9\u6cd5\u65f6\u4ece ServletContainerInitializer \u4e2d\u629b\u51fa\u4e86\u5f02\u5e38\u3002
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=\u8bf7\u590d\u67e5\u8be5\u5f02\u5e38\u4ee5\u786e\u5b9a\u9519\u8bef\u539f\u56e0\u3002
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: \u627e\u4e0d\u5230 {1} \u8fc7\u6ee4\u5668\u6620\u5c04\u4e2d {0} servlet \u540d\u79f0\u7684 servlet \u5b9a\u4e49\u3002
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=\u5728\u8fc7\u6ee4\u5668\u6620\u5c04\u4e2d\u4f7f\u7528\u4e86\u8be5 servlet \u540d\u79f0\uff0c\u4f46\u5c1a\u672a\u5bf9\u5176\u8fdb\u884c\u5b9a\u4e49\u3002
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=\u8bf7\u5b9a\u4e49 servlet \u540d\u79f0\u8fc7\u6ee4\u5668\u6620\u5c04\u4e2d\u4f7f\u7528\u7684 servlet\u3002

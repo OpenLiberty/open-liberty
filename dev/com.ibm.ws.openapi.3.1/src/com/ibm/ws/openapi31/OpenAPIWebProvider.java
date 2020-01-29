@@ -212,7 +212,7 @@ public class OpenAPIWebProvider implements OASProvider {
                     }
                 }
                 Reader reader = new Reader(document);
-                reader.setApplicationPath(scanner.getURLMapping());
+                reader.setApplicationPath(scanner.getURLMapping(classNamesToScan));
                 document = reader.read(classes);
             }
         }

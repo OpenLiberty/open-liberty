@@ -941,10 +941,6 @@ warning.package.root.invalid.runnable=CWWKE0948W: Opcja --server-root z opcj\u01
 warning.package.root.invalid.runnable.explanation=U\u017cytkownik wykona\u0142 \u017c\u0105danie utworzenia pakietu z opcj\u0105 --server-root i opcj\u0105 --include=runnable, co nie jest dozwolon\u0105 kombinacj\u0105. Zostanie u\u017cyty domy\u015blny katalog g\u0142\u00f3wny serwera - wlp.
 warning.package.root.invalid.runnable.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-error.no.serialfilteragent=CWWKE0949E: Podany plik JAR agenta filtru szeregowego {0} nie istnieje.
-error.no.serialfilteragent.explanation=Podany plik JAR agenta filtru szeregowego nie istnieje lub nie mo\u017cna go odczyta\u0107.
-error.no.serialfilteragent.useraction= Sprawd\u017a, czy plik istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
-
 error.package.extension=CWWKE0950E: Je\u015bli jest u\u017cywana opcja runnable, nazwa pliku archiwum musi ko\u0144czy\u0107 si\u0119 \u0142a\u0144cuchem .jar.
 error.package.extension.explanation=Je\u015bli podajesz opcj\u0119 --include=runnable, opcja --archive musi uwzgl\u0119dnia\u0107 rozszerzenie nazwy pliku ko\u0144cz\u0105ce si\u0119 \u0142a\u0144cuchem .jar.
 error.package.extension.useraction=Je\u015bli podajesz opcj\u0119 --include=runnable, w przypadku opcji --archive podaj nazw\u0119 pliku z rozszerzeniem nazwy pliku .jar.

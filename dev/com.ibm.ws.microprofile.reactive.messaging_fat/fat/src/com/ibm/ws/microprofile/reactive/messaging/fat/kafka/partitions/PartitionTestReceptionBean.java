@@ -22,7 +22,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractReceptionBean;
 
 @ApplicationScoped
-public class PartitionTestReceptionBean extends AbstractReceptionBean {
+public class PartitionTestReceptionBean extends AbstractReceptionBean<String> {
 
     public static final String CHANNEL_NAME = "partition-test-incoming-topic";
 

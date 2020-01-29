@@ -21,19 +21,22 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FailoverTimersTest.class })
+@SuiteClasses({
+    FailoverTimersTest.class
+    })
 public class FATSuite {
     @BeforeClass
     public static void beforeSuite() throws Exception {
+        // Remove databases that were created by previous executions of this test bucket when running with Derby.
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA");
+        server.deleteDirectoryFromLibertyInstallRoot("usr/shared/resources/data/failovertimersdb");
+        server.deleteDirectoryFromLibertyInstallRoot("usr/shared/resources/data/failovertimers2db");
+
         DerbyNetworkUtilities.startDerbyNetwork();
     }
 
     @AfterClass
     public static void afterSuite() throws Exception {
         DerbyNetworkUtilities.stopDerbyNetwork();
-
-        // Remove the database that is created by this test bucket when running with Derby.
-        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA");
-        server.deleteDirectoryFromLibertyInstallRoot("usr/shared/resources/data/failovertimersdb");
     }
 }

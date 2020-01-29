@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.io.File;
 import java.net.HttpURLConnection;
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -40,17 +39,15 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                // TODO enable tests as we get them converted over to infinispan
                 SessionCacheOneServerTest.class,
                 SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
-                SessionCacheTwoServerTimeoutTest.class,
-                //HazelcastClientTest.class
+                SessionCacheTwoServerTimeoutTest.class
 })
 
 public class FATSuite {
 
-    // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for testing.
+    // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for local testing.
     static {
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
     }
@@ -88,7 +85,7 @@ public class FATSuite {
     /**
      * Custom runner used by test classes.
      *
-     * Creates HTTP connection, adds cookie request, makes connection, analyzes response, and finally returns response
+     * Creates HTTP connection, adds cookie request, makes connection, analyses response, and finally returns response
      *
      * @param server     - The liberty server that is hosting the URL
      * @param path       - The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
@@ -125,22 +122,6 @@ public class FATSuite {
         } finally {
             con.disconnect();
         }
-    }
-
-    /**
-     * Checks if multicast should be disabled in Hazelcast. We want to disable multicase on z/OS,
-     * and when the environment variable disable_multicast_in_fats=true.
-     *
-     * If you are seeing a lot of NPE errors while running this FAT bucket you might need to set
-     * disable_multicast_in_fats to true. This has been needed on some personal Linux systems, as
-     * well as when running through a VPN.
-     *
-     * @return true if multicast should be disabled.
-     */
-    public static boolean isMulticastDisabled() {
-        boolean multicastDisabledProp = Boolean.parseBoolean(System.getenv("disable_multicast_in_fats"));
-        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
-        return (multicastDisabledProp || osName.contains("z/os"));
     }
 
     // Logger used by infinispan container

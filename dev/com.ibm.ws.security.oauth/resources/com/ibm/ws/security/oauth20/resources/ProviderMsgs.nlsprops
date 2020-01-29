@@ -317,7 +317,8 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: The request parameter [{0}]
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=The indicated value of the specific parameter in the OAuth request is not valid. The valid values are listed in the indicated attribute of the server configuration.
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Make sure the values in the request parameter are valid.
 
-security.oauth20.front.end.error=CWOAU0073E: An error was encountered while authenticating a user. Please try authenticating again, or contact the site administrator if the problem persists.
+# this message is also emitted by the oidc client via the PublicErrorFacingServlet
+security.oauth20.front.end.error=CWOAU0073E: An authentication error occurred. Try closing the web browser and authenticating again, or contact the site administrator if the problem persists.
 security.oauth20.front.end.error.explanation=The request might be missing information, the server might have encountered an internal error, or some other error may have prevented the server from successfully authenticating the user.
 security.oauth20.front.end.error.useraction=Contact the system administrator to resolve the problem.
 

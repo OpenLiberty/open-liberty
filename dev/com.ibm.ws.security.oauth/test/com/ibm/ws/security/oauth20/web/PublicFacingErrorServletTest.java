@@ -90,7 +90,7 @@ public class PublicFacingErrorServletTest extends CommonTestClass {
                 will(returnValue(writer));
                 one(request).getLocale();
                 will(returnValue(locale));
-                one(writer).print("CWOAU0073E: An error was encountered while authenticating a user. Please try authenticating again, or contact the site administrator if the problem persists.");
+                one(writer).print("CWOAU0073E: An authentication error occurred. Try closing the web browser and authenticating again, or contact the site administrator if the problem persists.");
                 one(writer).close();
             }
         });

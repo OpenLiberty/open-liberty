@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,8 +63,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef = null;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {
-    }
+    public JTMConfigurationProvider() {}
 
     /*
      * Called by DS to activate service
@@ -607,14 +606,4 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return num.intValue();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLocalTimeBeforeStale()
-     */
-    @Override
-    public int getLocalTimeBeforeStale() {
-        Number num = (Number) _props.get("localTimeBeforeStale");
-        return num.intValue();
-    }
 }

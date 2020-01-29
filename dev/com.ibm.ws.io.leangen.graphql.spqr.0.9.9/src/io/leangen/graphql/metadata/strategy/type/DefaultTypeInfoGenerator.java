@@ -5,7 +5,10 @@ import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Utils;
 import org.eclipse.microprofile.graphql.Description;
-import org.eclipse.microprofile.graphql.InputType;
+import org.eclipse.microprofile.graphql.Enum;
+import org.eclipse.microprofile.graphql.Input;
+import org.eclipse.microprofile.graphql.Interface;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Type;
 
 import java.beans.Introspector;
@@ -30,6 +33,13 @@ public class DefaultTypeInfoGenerator implements TypeInfoGenerator {
                     .forEach(argName -> genericName.append("_").append(argName));
             return genericName.toString();
         }
+        Type typeAnno = type.getAnnotation(Type.class);
+        if (typeAnno != null) {
+            String typeAnnoValue = typeAnno.value();
+            if (Utils.isNotEmpty(typeAnnoValue)) {
+                return typeAnnoValue;
+            }
+        }
         return generateSimpleName(type, messageBundle);
     }
 
@@ -42,11 +52,35 @@ public class DefaultTypeInfoGenerator implements TypeInfoGenerator {
     }
 
     @Override
+    public String generateInterfaceName(AnnotatedType type, MessageBundle messageBundle) {
+        Interface ifaceAnno = type.getAnnotation(Interface.class);
+        if (ifaceAnno != null) {
+            String ifaceAnnoValue = ifaceAnno.value();
+            if (Utils.isNotEmpty(ifaceAnnoValue)) {
+                return ifaceAnnoValue;
+            }
+        }
+        return generateSimpleName(type, messageBundle);
+    }
+
+    @Override
     public String generateInputTypeName(AnnotatedType type, MessageBundle messageBundle) {
-        return Optional.ofNullable(type.getAnnotation(InputType.class))
+        return Optional.ofNullable(type.getAnnotation(Input.class))
                 .map(ann -> messageBundle.interpolate(ann.value()))
                 .filter(Utils::isNotEmpty)
                 .orElse(TypeInfoGenerator.super.generateInputTypeName(type, messageBundle));
+    }
+
+    @Override
+    public String generateEnumName(AnnotatedType type, MessageBundle messageBundle) {
+        Enum enumAnno = type.getAnnotation(Enum.class);
+        if (enumAnno != null) {
+            String enumAnnoValue = enumAnno.value();
+            if (Utils.isNotEmpty(enumAnnoValue)) {
+                return enumAnnoValue;
+            }
+        }
+        return generateSimpleName(type, messageBundle);
     }
 
     @Override
@@ -80,8 +114,8 @@ public class DefaultTypeInfoGenerator implements TypeInfoGenerator {
 
     @SuppressWarnings("unchecked")
     private String generateSimpleName(AnnotatedType type, MessageBundle messageBundle) {
-        Optional<String> name = Optional.ofNullable(type.getAnnotation(Type.class))
-                .map(Type::value)
+        Optional<String> name = Optional.ofNullable(type.getAnnotation(Name.class))
+                .map(Name::value)
                 .filter(Utils::isNotEmpty);
         return messageBundle.interpolate(name.orElseGet(() -> getSimpleName(ClassUtils.getRawType(type.getType()))));
     }

@@ -34,3 +34,4 @@ Subsystem-Name: Batch API 1.0
   com.ibm.websphere.javaee.batch.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.batch:javax.batch-api:1.0.1"
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

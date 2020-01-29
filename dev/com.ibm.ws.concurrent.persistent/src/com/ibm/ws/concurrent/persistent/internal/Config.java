@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2019 IBM Corporation and others.
+ * Copyright (c) 2014,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,10 @@
 package com.ibm.ws.concurrent.persistent.internal;
 
 import java.util.Dictionary;
+import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -19,6 +22,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
  */
 @Trivial
 class Config {
+    private static final TraceComponent tc = Tr.register(Config.class);
+
     /**
      * Indicates if this instance can run tasks.
      */
@@ -28,11 +33,6 @@ class Config {
      * Id. Null if none.
      */
     final String id;
-
-    /**
-     * Amount of time (in seconds) between updating the partition table to indicate that this instance is still running.
-     */
-    final long heartbeatInterval;
 
     /**
      * Initial delay for starting the polling task.
@@ -45,13 +45,16 @@ class Config {
     final String jndiName;
 
     /**
-     * Amount of time (in seconds) beyond a task's scheduled time after which the task is considered to be missed
-     * and is eligible to be taken over by another member.
+     * Amount of time (in seconds) beyond a task's scheduled start time to reserve for running the next execution of the task.
+     * Other executor instances are prevented from claiming ownership of the task prior to the expiration of this interval.
+     * If the interval elapses without successful execution of the task, then the task execution is considered to have been missed,
+     * enabling another instance to attempt to run it.
      */
     final long missedTaskThreshold;
 
     /**
-     * Interval between polling for tasks to run. A value of -1 disables all polling after the initial poll.
+     * Interval between polling for tasks to run. A value of -1 means auto-compute a poll interval.
+     * When fail over is disabled, the -1 value disables all polling after the initial poll.
      */
     final long pollInterval;
 
@@ -81,44 +84,125 @@ class Config {
     Config(Dictionary<String, ?> properties) {
         jndiName = (String) properties.get("jndiName");
         enableTaskExecution = (Boolean) properties.get("enableTaskExecution");
-        heartbeatInterval = (Long) properties.get("heartbeatInterval");
+        boolean ignoreMin = Boolean.parseBoolean((String) properties.get("ignore.minimum.for.test.use.only")); // helps tests run faster, but NOT SUPPORTED for production use
         initialPollDelay = (Long) properties.get("initialPollDelay");
-        missedTaskThreshold = enableTaskExecution ? (Long) properties.get("missedTaskThreshold") : -1;
-        pollInterval = enableTaskExecution ? (Long) properties.get("pollInterval") : -1;
+        missedTaskThreshold = (Long) properties.get("missedTaskThreshold");
+        Long pollIntrvl = enableTaskExecution ? (Long) properties.get("pollInterval") : null;
         pollSize = enableTaskExecution ? (Integer) properties.get("pollSize") : null;
-        retryInterval = (Long) properties.get("retryInterval");
+        Long retryIntrvl = (Long) properties.get("retryInterval");
         retryLimit = (Short) properties.get("retryLimit");
         xpathId = (String) properties.get("config.displayId");
         id = xpathId.contains("]/persistentExecutor[") ? null : (String) properties.get("id");
 
+        if (pollIntrvl == null) {
+            // TODO come up with better auto-compute logic.
+            // For now, we default poll interval to a value between 5m and 30m, matching the missedTaskThreshold, or 5m if less, or 30m if higher.
+            if (enableTaskExecution && missedTaskThreshold > 0) {
+                if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(5) && !ignoreMin)
+                    pollIntrvl = TimeUnit.MINUTES.toMillis(5);
+                else if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(30))
+                    pollIntrvl = TimeUnit.SECONDS.toMillis(missedTaskThreshold);
+                else
+                    pollIntrvl = TimeUnit.MINUTES.toMillis(30);
+            } else {
+                pollIntrvl = -1l;
+            }
+        }
+        pollInterval = pollIntrvl;
+
+        // Default the retry interval to disabled when fail over is enabled.
+        if (retryIntrvl == null) {
+            if (missedTaskThreshold > 0) {
+                retryInterval = -1; // disabled
+            } else {
+                retryInterval = TimeUnit.MINUTES.toMillis(1); // the old default for single-server, which cannot be changed
+            }
+        } else {
+            retryInterval = retryIntrvl;
+        }
+
         // Range checking on duration values, which cannot be enforced via metatype
-        if (heartbeatInterval != -1 && heartbeatInterval < 1)
-            throw new IllegalArgumentException("heartbeatInterval: " + heartbeatInterval + "s");
-        if (missedTaskThreshold != -1 && missedTaskThreshold < 1)
-            throw new IllegalArgumentException("missedTaskThreshold: " + missedTaskThreshold + "s");
+        if ((missedTaskThreshold != -1 && !ignoreMin && missedTaskThreshold < 100) || missedTaskThreshold > 9000) // disallow below 100 seconds and above 2.5 hours
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
+                                                                toString(missedTaskThreshold, TimeUnit.SECONDS), "missedTaskThreshold", "100s", "2h30m"));
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
-        if (pollInterval < -1)
-            throw new IllegalArgumentException("pollInterval: " + pollInterval + "ms");
-        if (retryInterval < 0)
+        if (pollInterval < -1 || missedTaskThreshold > 0 && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
+                                                                toString(pollInterval, TimeUnit.MILLISECONDS), "pollInterval", "100s", "2h30m"));
+        if (retryInterval < 0 && missedTaskThreshold == -1)
             throw new IllegalArgumentException("retryInterval: " + retryInterval + "ms");
+        else if (retryInterval >= 0 && missedTaskThreshold > 0) {
+            // Allow the configuration of the built-in EJB persistent timers executor, but otherwise reject enablement of retryInterval when fail over is enabled.
+            if (!(retryInterval == TimeUnit.SECONDS.toMillis(300) && "defaultEJBPersistentTimerExecutor".equals(id)))
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1521.not.compatible", "retryInterval", "missedTaskThreshold"));
+        }
     }
 
     @Override
     public String toString() {
         return new StringBuilder(300)
-                        .append("instance=").append(Integer.toHexString(System.identityHashCode(this)))
-                        .append(",jndiName=").append(jndiName)
-                        .append(",enableTaskExecution=").append(enableTaskExecution)
-                        .append(",heartbeatInterval=").append(heartbeatInterval)
-                        .append("s,initialPollDelay=").append(initialPollDelay)
-                        .append("ms,missedTaskThreshold=").append(missedTaskThreshold)
-                        .append("s,pollInterval=").append(pollInterval)
-                        .append("ms,pollSize=").append(pollSize)
-                        .append(",retryInterval=").append(retryInterval)
-                        .append("ms,retryLimit=").append(retryLimit)
-                        .append(",xpathId=").append(xpathId)
-                        .append(",id=").append(id)
+                        .append("instance=")
+                        .append(Integer.toHexString(System.identityHashCode(this)))
+                        .append(",id=")
+                        .append(id)
+                        .append(",jndiName=")
+                        .append(jndiName)
+                        .append(",enableTaskExecution=")
+                        .append(enableTaskExecution)
+                        .append(",initialPollDelay=")
+                        .append(initialPollDelay)
+                        .append("ms,missedTaskThreshold=")
+                        .append(missedTaskThreshold)
+                        .append("s,pollInterval=")
+                        .append(pollInterval)
+                        .append("ms,pollSize=")
+                        .append(pollSize)
+                        .append(",retryInterval=")
+                        .append(retryInterval)
+                        .append("ms,retryLimit=")
+                        .append(retryLimit)
+                        .append(",xpathId=")
+                        .append(xpathId)
                         .toString();
+    }
+
+    /**
+     * Display the duration value in the least granular unit possible without losing precision.
+     *
+     * @param duration the duration
+     * @param unit     the units
+     * @return string value for display in messages.
+     */
+    private String toString(long duration, TimeUnit unit) {
+        if (TimeUnit.MILLISECONDS.equals(unit)) {
+            long s = duration / 1000;
+            if (s * 1000 == duration) {
+                duration = s;
+                unit = TimeUnit.SECONDS;
+            }
+        }
+
+        if (TimeUnit.SECONDS.equals(unit)) {
+            long m = duration / 60;
+            if (m * 60 == duration) {
+                duration = m;
+                unit = TimeUnit.MINUTES;
+            }
+        }
+
+        if (TimeUnit.MINUTES.equals(unit)) {
+            long h = duration / 60;
+            if (h * 60 == duration) {
+                duration = h;
+                unit = TimeUnit.HOURS;
+            }
+        }
+
+        return duration + (unit == TimeUnit.MILLISECONDS ? "ms" //
+                        : unit == TimeUnit.SECONDS ? "s" //
+                                        : unit == TimeUnit.MINUTES ? "m" //
+                                                        : unit == TimeUnit.HOURS ? "h" //
+                                                                        : "d");
     }
 }
