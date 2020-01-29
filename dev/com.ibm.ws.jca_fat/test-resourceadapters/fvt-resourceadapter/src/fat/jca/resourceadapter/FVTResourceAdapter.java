@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2013 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
 package fat.jca.resourceadapter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -171,20 +174,27 @@ public class FVTResourceAdapter implements ResourceAdapter {
     /** {@inheritDoc} */
     @Override
     public void stop() {
+        DataSource dataSource;
         try {
-            Class<?> dsClass = xaDataSource.getClass().getClassLoader().loadClass("org.apache.derby.jdbc.EmbeddedDataSource40");
-            DataSource dataSource = (DataSource) dsClass.newInstance();
-            dsClass.getMethod("setDatabaseName", String.class).invoke(dataSource, databaseName);
-            dsClass.getMethod("setShutdownDatabase", String.class).invoke(dataSource, "shutdown");
-            try {
-                dataSource.getConnection().close();
-            } catch (SQLException x) {
-                // expected
-            }
-        } catch (RuntimeException x) {
-            throw x;
-        } catch (Exception x) {
-            throw new RuntimeException(x);
+            dataSource = AccessController.doPrivileged(new PrivilegedExceptionAction<DataSource>() {
+                @Override
+                public DataSource run() throws Exception {
+                    Class<?> dsClass = xaDataSource.getClass().getClassLoader().loadClass("org.apache.derby.jdbc.EmbeddedDataSource40");
+                    @SuppressWarnings("deprecation")
+                    DataSource dataSource = (DataSource) dsClass.newInstance();
+                    dsClass.getMethod("setDatabaseName", String.class).invoke(dataSource, databaseName);
+                    dsClass.getMethod("setShutdownDatabase", String.class).invoke(dataSource, "shutdown");
+                    return dataSource;
+                }
+            });
+        } catch (PrivilegedActionException x) {
+            throw new RuntimeException(x.getCause());
+        }
+
+        try {
+            dataSource.getConnection().close();
+        } catch (SQLException x) {
+            // expected
         }
     }
 }

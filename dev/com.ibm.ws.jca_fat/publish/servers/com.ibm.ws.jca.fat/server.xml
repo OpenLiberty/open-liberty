@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2011,2017 IBM Corporation and others.
+    Copyright (c) 2011,2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -10,10 +10,10 @@
  -->
 <server>
     <featureManager>
-      <feature>servlet-3.0</feature>
+      <feature>servlet-4.0</feature>
       <feature>localConnector-1.0</feature>
-      <feature>jmsMdb-3.1</feature>
-      <feature>jms-1.1</feature>
+      <feature>jmsMdb-3.2</feature>
+      <feature>jms-2.0</feature>
       <feature>concurrent-1.0</feature>
     </featureManager>
 
@@ -61,7 +61,7 @@
     
     <!-- This is used by the fake RAR -->
     <library id="DerbyLib">
-      <fileset dir="${server.config.dir}/derby" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
     
     <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear">
@@ -72,7 +72,11 @@
     granted in the java.policy file at $JAVA_HOME/jre/lib/security/java.policy: 
     permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
     -->
-	<javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+
+    <!-- needed by fake resource adapter -->
+    <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
 </server>
