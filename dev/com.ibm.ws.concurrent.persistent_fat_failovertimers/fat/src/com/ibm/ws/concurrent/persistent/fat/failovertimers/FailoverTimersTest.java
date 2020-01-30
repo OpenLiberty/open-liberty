@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,12 @@ package com.ibm.ws.concurrent.persistent.fat.failovertimers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
@@ -30,18 +35,21 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.DataSource;
-import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import failovertimers.web.FailoverTimersTestServlet;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 
@@ -51,7 +59,9 @@ import componenttest.custom.junit.runner.FATRunner;
  * fail over to another server and continue running there.
  */
 @RunWith(FATRunner.class)
+@SkipIfSysProp(DB_Oracle) //TODO investigate running these tests causes an FFDC java.lang.IllegalStateException: Attempting to execute an operation on a closed EntityManagerFactory.
 public class FailoverTimersTest extends FATServletClient {
+	private static final Class<FailoverTimersTest> c = FailoverTimersTest.class;
 	private static final String APP_NAME = "failoverTimersApp";
 	private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
 
@@ -68,9 +78,13 @@ public class FailoverTimersTest extends FATServletClient {
     @Server(SERVER_B_NAME)
     @TestServlet(servlet = FailoverTimersTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverB;
-
+    
     @Rule
     public TestName testName = new TestName();
+    
+    // Not a ClassRule as Postgres needs to start with a specific command
+    // By default run on DerbyClient and not DerbyEmbedded
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DatabaseContainerType.DerbyClient);
 
     private static final ExecutorService testThreads = Executors.newFixedThreadPool(3);
 
@@ -78,6 +92,36 @@ public class FailoverTimersTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // In order to use two phase commit Postgres needs explicit permission to prepare transactions
+        // See documentation here: https://www.postgresql.org/docs/current/sql-prepare-transaction.html
+        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Postgres) {
+            testContainer.withCommand("postgres -c max_prepared_transactions=2");
+        }
+        
+        testContainer.start();
+    	
+        //Setup datasource properties
+        DatabaseContainerUtil.setupDataSourceProperties(serverA, testContainer);
+        DatabaseContainerUtil.setupDataSourceProperties(serverB, testContainer);
+        
+        //Application uses an XA datasource to perform database access.
+        //Oracle restrictions creation/dropping of database tables using transactions with error:
+        //  ORA-02089: COMMIT is not allowed in a subordinate session
+        //Therefore, we will create the table prior to running tests when running against oracle.
+        if(DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Oracle) {
+                final String createTable = "CREATE TABLE TIMERLOG (TIMERNAME VARCHAR(254) NOT NULL PRIMARY KEY, COUNT INT NOT NULL, SERVERNAME VARCHAR(254) NOT NULL)";
+
+                try (Connection conn = testContainer.createConnection("")) {
+                    try (PreparedStatement pstmt = conn.prepareStatement(createTable)) {
+                        pstmt.executeUpdate();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+                }
+        }
+    	
+    	
         originalConfigA = serverA.getServerConfiguration();
         ShrinkHelper.defaultApp(serverA, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
 
@@ -96,10 +140,14 @@ public class FailoverTimersTest extends FATServletClient {
 
         if (startInParallel) {
             ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
-            if (!serverA.isStarted())
+            if (!serverA.isStarted()) {
+            	serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
                 startActions.add(() -> serverA.startServer(testName.getMethodName()));
-            if (!serverB.isStarted())
+            }
+            if (!serverB.isStarted()) {
+            	serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
                 startActions.add(() -> serverB.startServer(testName.getMethodName()));
+            }
 
             testThreads.invokeAll(startActions).forEach(f -> {
                 try {
@@ -109,10 +157,14 @@ public class FailoverTimersTest extends FATServletClient {
                 }
             });
         } else {
-            if (!serverA.isStarted())
+            if (!serverA.isStarted()) {
+                serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
                 serverA.startServer(testName.getMethodName());
-            if (!serverB.isStarted())
-                serverB.startServer(testName.getMethodName());
+            }
+            if (!serverB.isStarted()) {
+            	serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+            	serverB.startServer(testName.getMethodName());
+            }
         }
     }
 
@@ -125,6 +177,8 @@ public class FailoverTimersTest extends FATServletClient {
             if (serverB.isStarted())
                 serverB.stopServer();
         }
+        
+        testContainer.stop();
     }
 
     /**
