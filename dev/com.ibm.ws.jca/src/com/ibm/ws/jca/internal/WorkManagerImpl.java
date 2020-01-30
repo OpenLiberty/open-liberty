@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.work.ExecutionContext;
@@ -65,7 +64,7 @@ public final class WorkManagerImpl implements WorkManager {
     /**
      * Constructs the implementation of WorkManager.
      *
-     * @param execSvc Liberty executor.
+     * @param execSvc          Liberty executor.
      * @param bootstrapContext the bootstrap context.
      */
     public WorkManagerImpl(BootstrapContextImpl bootstrapContext) {
@@ -228,8 +227,8 @@ public final class WorkManagerImpl implements WorkManager {
      * @param workListener
      * @throws WorkException
      * @exception NullPointerException this method relies on the
-     *                RALifeCycleManager to call setThreadPoolName() to set
-     *                theScheduler
+     *                                     RALifeCycleManager to call setThreadPoolName() to set
+     *                                     theScheduler
      * @see <a
      *      href="http://java.sun.com/j2ee/1.4/docs/api/javax/resource/spi/work/WorkManager.html#scheduleWork(com.ibm.javarx.spi.work.Work, long, com.ibm.javarx.spi.work.ExecutionContext, com.ibm.javarx.spi.work.WorkListener)">
      *      com.ibm.javarx.spi.work.WorkManager.scheduleWork(Work, long, ExecutionContext, WorkListener)</a>
@@ -246,10 +245,9 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            FutureTask<Void> futureTask = new FutureTask<Void>(workProxy);
-            bootstrapContext.execSvc.executeGlobal(futureTask);
+            Future f = bootstrapContext.execSvc.submit((RunnableWithContext) workProxy);
 
-            if (futures.add(futureTask) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
+            if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
         } catch (WorkException ex) {
             throw ex;
