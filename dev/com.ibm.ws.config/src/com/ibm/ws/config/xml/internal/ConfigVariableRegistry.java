@@ -55,6 +55,8 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
     // Variables passed in as command line arguments. These override all other variables.
     private final List<CommandLineVariable> commandLineVariables = new ArrayList<CommandLineVariable>();
 
+    private final StringUtils stringUtils = new StringUtils();
+
     public ConfigVariableRegistry(VariableRegistry registry, String[] cmdArgs, File variableCacheFile) {
         this.registry = registry;
         this.configVariables = Collections.emptyMap();
@@ -158,9 +160,11 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
         boolean dirty = false;
         for (Map.Entry<String, Object> entry : variables.entrySet()) {
             String variableName = entry.getKey();
-            // skip any variables defined in server.xml
+            // skip any variables defined with values in server.xml
             if (configVariables.containsKey(variableName)) {
-                continue;
+                ConfigVariable var = configVariables.get(variableName);
+                if (var.getDefaultValue() == null)
+                    continue;
             }
             Object variableValue = entry.getValue();
             if (!isVariableCached(variableName, variableValue)) {
@@ -204,6 +208,11 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
             if (newVariableValue == null) {
                 newVariableValue = defaultVariableCache.get(variableName);
             }
+
+            if (newVariableValue == null) {
+                newVariableValue = lookupVariableFromAdditionalSources(variableName);
+            }
+
             if (!isEqual(oldVariableValue, newVariableValue)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Variable " + variableName + " has changed. Old value: " + oldVariableValue + " New value: " + newVariableValue);
@@ -212,6 +221,30 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
             }
         }
         return false;
+    }
+
+    Object lookupVariableFromAdditionalSources(String variableName) {
+
+        Object value = null;
+
+        // Try to resolve as an env variable ( resolve env.var-Name )
+
+        value = lookupVariable("env." + variableName);
+
+        // Try to resolve with non-alpha characters replaced ( resolve env.var_Name )
+        if (value == null) {
+            variableName = stringUtils.replaceNonAlpha(variableName);
+            value = lookupVariable("env." + variableName);
+        }
+
+        // Try to resolve with upper case ( resolve env.VAR_NAME )
+        if (value == null) {
+            variableName = variableName.toUpperCase();
+            value = lookupVariable("env." + variableName);
+        }
+
+        return value;
+
     }
 
     /*
