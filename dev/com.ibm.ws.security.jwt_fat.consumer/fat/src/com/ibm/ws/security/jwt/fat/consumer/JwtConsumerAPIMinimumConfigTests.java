@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
+import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
@@ -38,6 +39,8 @@ import componenttest.topology.impl.LibertyServer;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtConsumerAPIMinimumConfigTests extends CommonSecurityFat {
+
+    public final String AppStartMsg = ".*CWWKZ0001I.*" + JwtConsumerConstants.JWT_CONSUMER_SERVLET + ".*";
 
     @Server("com.ibm.ws.security.jwt_fat.consumer")
     public static LibertyServer consumerServer;
@@ -90,7 +93,8 @@ public class JwtConsumerAPIMinimumConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerAPIMinimumConfigTests_minimumHSARunableConfig() throws Exception {
 
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumHS256Config.xml");
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumHS256Config.xml", AppStartMsg);
+        ServerInstanceUtils.waitForSSLMsg(consumerServer);
 
         createBuilderWithHSClaims();
         String jwtToken = builder.build();
@@ -113,7 +117,8 @@ public class JwtConsumerAPIMinimumConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerAPIMinimumConfigTests_minimumSSLConfig_global() throws Exception {
 
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumConfig_ServerWideSSL.xml");
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumConfig_ServerWideSSL.xml", AppStartMsg);
+        ServerInstanceUtils.waitForSSLMsg(consumerServer);
 
         createBuilderWithRSAClaims();
         String jwtToken = builder.build();
@@ -136,7 +141,8 @@ public class JwtConsumerAPIMinimumConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerAPIMinimumConfigTests_minimumSSLConfig_consumer() throws Exception {
 
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumConfig_SSLInConsumer.xml");
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumConfig_SSLInConsumer.xml", AppStartMsg);
+        ServerInstanceUtils.waitForSSLMsg(consumerServer);
 
         createBuilderWithRSAClaims();
         String jwtToken = builder.build();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
@@ -55,7 +56,8 @@ public class JwtConsumerApiConfigWithGlobalTrustTests extends CommonSecurityFat 
     public static void setUp() throws Exception {
 
         serverTracker.addServer(consumerServer);
-        consumerServer.startServerUsingExpandedConfiguration("server_configGlobalTrust.xml");
+        consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
+        consumerServer.startServerUsingExpandedConfiguration("server_configGlobalTrust.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         createBuilderWithDefaultClaims();

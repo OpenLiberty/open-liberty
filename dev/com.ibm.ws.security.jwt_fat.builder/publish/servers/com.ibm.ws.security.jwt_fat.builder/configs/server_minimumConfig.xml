@@ -7,4 +7,9 @@
 
 	<include location="${shared.config.dir}/op_fatTestPorts.xml" />
 
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	<javaPermission className="javax.security.auth.AuthPermission" actions="wssecurity.getRunAsSubject" name="*"/>
+	<javaPermission className="javax.security.auth.AuthPermission" actions="wssecurity.getCallerSubject" name="*"/>
+	<javaPermission className="java.lang.RuntimePermission" actions="setFactory" name="*" />
+
 </server>
