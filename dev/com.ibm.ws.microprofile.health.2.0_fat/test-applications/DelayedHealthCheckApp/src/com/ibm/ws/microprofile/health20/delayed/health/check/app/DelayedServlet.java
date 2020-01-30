@@ -49,6 +49,8 @@ public class DelayedServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().append("Served at: ").append(request.getContextPath()).append("\n");
         response.getWriter().println("Testing Delayed Servlet initialization.");
     }
