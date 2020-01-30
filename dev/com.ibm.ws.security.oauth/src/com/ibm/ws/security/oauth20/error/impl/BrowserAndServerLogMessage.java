@@ -35,10 +35,6 @@ public class BrowserAndServerLogMessage {
     }
 
     public String getBrowserErrorMessage() {
-        System.out.println("asdedalc");
-
-        System.out.println(requestLocales);
-
         return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(requestLocales), msgKey, inserts);
     }
 
