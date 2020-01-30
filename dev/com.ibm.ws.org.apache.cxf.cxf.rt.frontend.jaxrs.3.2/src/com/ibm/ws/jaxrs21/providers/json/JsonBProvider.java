@@ -243,6 +243,9 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     }
 
     private static Charset charset(MultivaluedMap<String, Object> httpHeaders) {
+        if (httpHeaders == null) {
+            return DEFAULT_CHARSET;
+        }
         List<?> charsets = httpHeaders.get(HttpHeaders.ACCEPT_CHARSET);
         return JAXRSUtils.sortCharsets(charsets)
                          .stream()
