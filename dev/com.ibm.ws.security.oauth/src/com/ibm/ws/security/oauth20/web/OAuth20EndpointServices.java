@@ -346,6 +346,7 @@ public class OAuth20EndpointServices {
                             "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
                 }
             }
+            System.out.println("Heeleeleleo");
             boolean suppressBasicAuthChallenge = isBrowserWithBasicAuth; // ui must NOT log in using basic auth, so logout function will work.
             WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(request.getLocales()), suppressBasicAuthChallenge);
         }
