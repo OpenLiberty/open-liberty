@@ -121,7 +121,7 @@ public class RepeatFaultTolerance {
      */
     public static RepeatTests repeatDefault(String server) {
         return RepeatTests.with(mp20Features(server).fullFATOnly())
-                        .andWith(mp30Features(server));
+                        .andWith(mp33Features(server));
     }
 
     /**
@@ -136,7 +136,9 @@ public class RepeatFaultTolerance {
         return RepeatTests.with(mp13Features(server))
                         .andWith(mp20Features(server))
                         .andWith(ft20metrics11Features(server))
-                        .andWith(mp30Features(server));
+                        .andWith(mp30Features(server))
+                        .andWith(mp32Features(server))
+                        .andWith(mp33Features(server));
     }
 
     public static RepeatTests repeat20AndAbove(String server) {
