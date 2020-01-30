@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
@@ -195,6 +196,7 @@ public class AsyncTest extends AbstractFTTest {
         try {
             // Give the execution up to 5 seconds to complete
             result.get(5, TimeUnit.SECONDS);
+            fail("ExecutionException should be thrown");
         } catch (ExecutionException e) {
             assertThat(e.getCause(), instanceOf(TestException.class));
             assertEquals("Activate request context should have been called", 1, asyncRequestContextController.getActivateContextCount());
@@ -212,33 +214,39 @@ public class AsyncTest extends AbstractFTTest {
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
 
-        CountDownLatch startSignal = new CountDownLatch(1); // Prevents the execution from being interrupted until request context is set
+        // Prevents the execution from being interrupted until request context is set
+        CountDownLatch startSignal = new CountDownLatch(1);
 
         // Test an execution which is cancelled
         Future<String> result = executor.execute(() -> {
-            assertEquals("Activate request context should be called when request is started", 1, asyncRequestContextController.getActivateContextCount());
 
-            // Allow the execution to be interrupted
+            // Wait for the execution to start before allowing it to be interrupted
             startSignal.countDown();
 
-            // Wait for up to 10 seconds for the execution to be interrupted
+            // Wait for the execution to be interrupted
             Thread.sleep(FUTURE_TIMEOUT);
 
             return null;
         }, context);
 
         // Wait for the execution to have started before interrupting
-        startSignal.await();
+        boolean hasExecutionStarted = startSignal.await(10, TimeUnit.SECONDS);
+
+        assertTrue("The method execution did not start within 10 seconds", hasExecutionStarted);
+        assertEquals("Activate request context should have been called", 1, asyncRequestContextController.getActivateContextCount());
+        assertEquals("Deactivate request context should not be called until the execution completes", 0, asyncRequestContextController.getDeactivateContextCount());
+
+        // Interrupt
         result.cancel(true);
 
         try {
+            // Give the execution up to 5 seconds to complete
             result.get(5, TimeUnit.SECONDS);
             fail("CancellationException should be thrown");
         } catch (CancellationException e) {
             waitForContext(asyncRequestContextController);
             assertEquals("Activate request context should only be called once", 1, asyncRequestContextController.getActivateContextCount());
             assertEquals("Deactivate request context should be called after the execution is interrupted", 1, asyncRequestContextController.getDeactivateContextCount());
-
         }
     }
 
@@ -263,6 +271,7 @@ public class AsyncTest extends AbstractFTTest {
         try {
             // Give the execution up to 5 seconds to complete
             result.get(5, TimeUnit.SECONDS);
+            fail("ExecutionException should be thrown");
         } catch (ExecutionException e) {
             assertThat(e.getCause(), instanceOf(TestException.class));
             assertEquals("Activate request context should be called 4 times", 4, asyncRequestContextController.getActivateContextCount());
