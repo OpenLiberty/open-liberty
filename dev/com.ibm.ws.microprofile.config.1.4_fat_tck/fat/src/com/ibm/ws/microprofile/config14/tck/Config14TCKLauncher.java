@@ -31,7 +31,7 @@ import componenttest.topology.utils.MvnUtils;
  * There is a detailed output on specific
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL)
+@Mode(TestMode.FULL)
 public class Config14TCKLauncher {
 
     @ClassRule
