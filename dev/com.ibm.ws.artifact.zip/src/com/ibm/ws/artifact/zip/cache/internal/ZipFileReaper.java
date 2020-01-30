@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,19 +12,12 @@ package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 //import java.util.function.Consumer;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -137,25 +130,23 @@ public class ZipFileReaper {
     }
 
     @Trivial
-    private static String toRelSec_s(long baseNS, long actualNS) {
-        return ZipCachingProperties.toRelSec(baseNS, actualNS) + " (s)";
+    private static String toRelSec(long baseNS, long actualNS) {
+        return ZipCachingProperties.toRelSec(baseNS, actualNS);
     }
 
     @Trivial
-    private static String toAbsSec_s(long durationNS) {
-        return ZipCachingProperties.toAbsSec(durationNS) + " (s)";
+    private static String toAbsSec(long durationNS) {
+        return ZipCachingProperties.toAbsSec(durationNS);
     }
 
     //
 
     @Trivial
     public void validate() {
-        synchronized (pendingStorageLock) {
+        synchronized ( reaperLock ) {
             pendingQuickStorage.validate();
             pendingSlowStorage.validate();
-        }
-        if ( !debugState ) {
-            synchronized (completedStorage) {
+            if ( !debugState ) {
                 completedStorage.validate();
             }
         }
@@ -237,7 +228,7 @@ public class ZipFileReaper {
 
         //
 
-        private final BlockingQueue<DeferredLogRecord> deferredLogQueue;
+        protected final BlockingQueue<DeferredLogRecord> deferredLogQueue;
 
         public void post(String msgKey, Object... msgArgs) {
             try {
@@ -270,7 +261,7 @@ public class ZipFileReaper {
         logThread.start();
     }
 
-    private static void asyncWarning(final String msgKey, final Object ... msgArgs) {
+    protected static void asyncWarning(final String msgKey, final Object ... msgArgs) {
         logEmitter.post(msgKey, msgArgs);
     }
 
@@ -284,6 +275,11 @@ public class ZipFileReaper {
             // These are used only by 'run', but are stored at the
             // instance level to enable view by the introspector.
 
+            this.initialAt = -1;
+
+            this.isFinal = false;
+            this.finalAt = -1;
+
             this.didShutdownReap = false;
             this.shutdownReapAt = -1;
 
@@ -293,6 +289,11 @@ public class ZipFileReaper {
 
             this.startupLatch = new CountDownLatch(1);
         }
+
+        private long initialAt;
+
+        private boolean isFinal;
+        private long finalAt;
 
         private boolean didShutdownReap;
         private long shutdownReapAt;
@@ -304,33 +305,35 @@ public class ZipFileReaper {
 
         private final CountDownLatch startupLatch;
 
-        void waitForStartup() throws InterruptedException {
+        protected void waitForStartup() throws InterruptedException {
             startupLatch.await(); // throws InterruptedException
         }
 
-        private void signalStartup() {
+        protected void signalStartup() {
             startupLatch.countDown();
         }
 
         // Invoked by 'ZipFileReaper.introspect(PrintWriter)'
 
-        void introspect(PrintWriter output) {
+        protected void introspect(PrintWriter output) {
             output.println();
             output.println("  Runner [ " + this + " ]");
 
-            output.println("    Initial    [ " + toAbsSec_s( reaper.getInitialAt() ) + " ]");
-            if ( reaper.getIsFinal() ) {
-                output.println("    Final      [ " + reaper.fromInitial_s( reaper.getFinalAt() ) + " ]");
+            long reaperInitialAt = getReaper().getInitialAt();
+
+            output.println("    Initial       [ " + toRelSec(reaperInitialAt, initialAt) + " (s) ]");
+            if ( isFinal ) {
+                output.println("    Final         [ " + toRelSec(reaperInitialAt, initialAt) + " (s) ]");
             }
 
             if ( didShutdownReap ) {
-                output.println("    Shutdown   [ " + reaper.fromInitial_s(shutdownReapAt) + " ]");
+                output.println("    Shutdown Reap [ " + toRelSec(reaperInitialAt, shutdownReapAt) + " (s) ]");
             }
 
-            output.println("    Last Reap  [ " + reaper.fromInitial_s(lastReapAt) + " ]");
-            output.println("    Next Reap  [ " + reaper.fromInitial_s(nextReapAt) + " ]");
-            String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec_s(nextReapDelay) );
-            output.println("    Next Delay [ " + delayText + " ] (" + nextReapReason + ")");
+            output.println("    Last Reap     [ " + toRelSec(reaperInitialAt, lastReapAt) + " (s) ]");
+            output.println("    Next Reap     [ " + toRelSec(reaperInitialAt, nextReapAt) + " (s) ]");
+            String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec(nextReapDelay) );
+            output.println("    Next Delay    [ " + delayText + " (s) ] (" + nextReapReason + ")");
 
             output.println();
             output.println("  Logger [ " + logThread + " ]");
@@ -356,12 +359,12 @@ public class ZipFileReaper {
             String methodName = "run";
             boolean doDebug = ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() );
 
+            long startAt = SystemUtils.getNanoTime();
             if ( doDebug ) {
-                Tr.debug(tc, methodName + " Start [ " + toAbsSec_s( reaper.getInitialAt() ) + " ]");
+                Tr.debug(tc, methodName + " Start [ " + toRelSec(startAt, startAt) + " (s) ]");
             }
 
-            reaper.reaperLock.acquireWriteLock();
-            try {
+            synchronized ( reaper.reaperLock ) {
                 // Use this latch to ensure the reaper thread has started
                 // and has acquired the reaper lock before allowing zip file
                 // operations.  That prevents us from having to handle cases where
@@ -383,14 +386,12 @@ public class ZipFileReaper {
                 nextReapDelay = REAP_DELAY_INDEFINITE;
                 reaper.addWaitReason("indefinite (initial)");
 
-                nextReapAt = reaper.getInitialAt();
+                nextReapAt = initialAt;
                 nextReapReason = "indefinite (initial)";
 
                 while ( true ) {
-                    lastReapAt = nextReapAt;
-
-                    // First make sure we are not over the max cache size
-                    reaper.trimPending();
+                    
+                    long lastReapAt = nextReapAt;
 
                     // Condition:
                     // Start an indefinite wait if and only if there are no pending closes.
@@ -399,7 +400,7 @@ public class ZipFileReaper {
 
                     // The reaper delay logic is fragile: Put in these extra checks to guard
                     // against incorrectly putting the reaper in an indefinite wait, since that
-                    // cannot be recovered.
+                    // cannoe be recovered.
 
                     String errorMessage;
 
@@ -454,12 +455,12 @@ public class ZipFileReaper {
                     }
 
                     nextReapAt = SystemUtils.getNanoTime();
-
+                    
                     if ( doDebug ) {
-                        Tr.debug(tc, methodName + " Reap [ " + reaper.fromInitial_s(nextReapAt) + " ]");
+                        Tr.debug(tc, methodName + " Reap [ " + toRelSec(startAt, nextReapAt) + " (s) ]");
                         
                         // Issue #7770 - Remove reaper stall warning - change to debug
-                        // asyncWarning("reaper.stall", toAbsSec_s(actualDelay), toAbsSec_s(reapDelay));
+                        // asyncWarning("reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
                         
                         String message;
                         long actualReapDelay = nextReapAt - lastReapAt;
@@ -474,8 +475,8 @@ public class ZipFileReaper {
                             message = " Reap cycle time:";
                         }
                         Tr.debug(tc, methodName + message + " Actual delay [ " 
-                                        + toAbsSec_s(actualReapDelay) + " ]; Requested delay [ " 
-                                        + toAbsSec_s(nextReapDelay) + " ]");
+                                        + toAbsSec(actualReapDelay) + " (s) ]; Requested delay [ " 
+                                        + toAbsSec(nextReapDelay) + " (s) ]");
                     }
 
                     ZipFileData ripestPending = reaper.getRipest();
@@ -505,7 +506,7 @@ public class ZipFileReaper {
                         nextReapDelay = pendMax - consumedPend;
                         reaper.addWaitReason("specific (incomplete pend)");
                         if ( doDebug ) {
-                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec_s(consumedPend) + " ] remaining [ " + toAbsSec_s(nextReapDelay) + " ]");
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ] remaining [ " + toAbsSec(nextReapDelay) + " (s) ]");
                         }
 
                     } else {
@@ -513,31 +514,24 @@ public class ZipFileReaper {
                         // other pending closes which are fully ripe, and set the next reap delay
                         // according to the ripest but not fully ripe pending close. 
                         if ( doDebug ) {
-                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec_s(consumedPend) + " ]");
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ]");
                         }
 
                         nextReapDelay = reaper.reap(nextReapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
                         reaper.addWaitReason("specific (reap)");
                     }
                 }
-            } finally {
-                reaper.reaperLock.releaseWriteLock();
             }
 
             long shutdownAt = SystemUtils.getNanoTime();
             if ( doDebug ) {
-                Tr.debug(tc, methodName + " Shutting down [ " + reaper.fromInitial_s(shutdownAt) + " ]");
+                Tr.debug(tc, methodName + " Shutting down [ " + toRelSec(startAt, shutdownAt) + " (s) ]");
             }
-            reaper.reaperLock.acquireWriteLock();
-            try {
-                reaper.reap(shutdownAt, ZipFileReaper.IS_SHUTDOWN_REAP); // Maybe, move this to the shutdown thread.
-            } finally {
-                reaper.reaperLock.releaseWriteLock();
-            }
+            reaper.reap(shutdownAt, ZipFileReaper.IS_SHUTDOWN_REAP); // Maybe, move this to the shutdown thread.
 
             long stopAt = SystemUtils.getNanoTime();
             if ( doDebug ) {
-                Tr.debug(tc, methodName + " Stop [ " + reaper.fromInitial_s(stopAt) + " ]");
+                Tr.debug(tc, methodName + " Stop [ " + toRelSec(startAt, stopAt) + " (s) ]");
             }
         }
     }
@@ -551,18 +545,17 @@ public class ZipFileReaper {
 
     @Trivial
     public ZipFileReaper(String reaperName, long initialAt) {
-        this( reaperName,
-              ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
-              ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
-              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
-              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
-              ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
-              ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
-              NULL_ERROR_HANDLER,
-              initialAt );
+        this(reaperName,
+             ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
+             ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
+             ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
+             ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
+             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
+             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
+             NULL_ERROR_HANDLER);
     }
 
-    private static final ErrorConsumer<String> NULL_ERROR_HANDLER = null;
+    protected static final ErrorConsumer<String> NULL_ERROR_HANDLER = null;
 
     @Trivial
     public ZipFileReaper(
@@ -573,27 +566,35 @@ public class ZipFileReaper {
         long slowPendMin, long slowPendMax,
         ErrorConsumer<String> errorHandler) {
 
-        this( reaperName, debugState,
-              maxCache,
-              quickPendMin, quickPendMax,
-              slowPendMin, slowPendMax,
-              errorHandler,
-              SystemUtils.getNanoTime() );
+        this(reaperName,
+             debugState,
+             maxCache,
+             quickPendMin, quickPendMax,
+             slowPendMin, slowPendMax,
+             errorHandler,
+             SystemUtils.getNanoTime() );
     }
 
     @Trivial
     public ZipFileReaper(
-        String reaperName, boolean debugState,
+        String reaperName,
+        boolean debugState,
         int maxCache,
-        long quickPendMin, long quickPendMax,
-        long slowPendMin, long slowPendMax) {
-
-        this( reaperName, debugState,
-              maxCache,
-              quickPendMin, quickPendMax,
-              slowPendMin, slowPendMax,
-              ZipFileReaper.NULL_ERROR_HANDLER,
-              SystemUtils.getNanoTime() );
+        long quickPendMin,
+        long quickPendMax,
+        long slowPendMin,
+        long slowPendMax
+    ) {
+        this(
+            reaperName,
+            debugState,
+            maxCache,
+            quickPendMin,
+            quickPendMax,
+            slowPendMin,
+            slowPendMax,
+            ZipFileReaper.NULL_ERROR_HANDLER
+        );
     }
 
     private static void validate(
@@ -657,7 +658,7 @@ public class ZipFileReaper {
 
         this.reaperName = reaperName;
         this.debugState = debugState;
-
+        
         this.maxCache = maxCache;
 
         this.quickPendMin = quickPendMin;
@@ -668,7 +669,7 @@ public class ZipFileReaper {
 
         // Storage ...
 
-        this.storage = new ConcurrentHashMap<String, ZipFileData>();
+        this.storage = new HashMap<String, ZipFileData>();
         this.pendingQuickStorage = new ZipFileDataStore("pendingQuick");
         this.pendingSlowStorage = new ZipFileDataStore("pendingSlow");
         
@@ -858,11 +859,6 @@ public class ZipFileReaper {
     private final long initialAt;
 
     /**
-     * Setting of whether the reaper has been shut down.
-     */
-    private boolean isFinal;
-
-    /**
      * Setting of when the reaper was shutdown.
      * Used when displaying zip file statistics.
      */
@@ -874,121 +870,49 @@ public class ZipFileReaper {
     }
 
     @Trivial
-    public boolean getIsFinal() {
-        return isFinal;
-    }
-
-    @Trivial
     public long getFinalAt() {
         return finalAt;
     }
 
-    private void setFinalAt(long finalAt) {
-        this.isFinal = true;
-        this.finalAt = finalAt;
-    }
-
     @Trivial
-    private String fromInitial_s(long actualNS) {
-        return toRelSec_s( getInitialAt(), actualNS);
+    private void setFinalAt(long finalAt) {
+        this.finalAt = finalAt;
     }
 
     //
 
-    private final ConcurrentMap<String, ZipFileData> storage;
+    private final Map<String, ZipFileData> storage;
 
     private final ZipFileDataStore pendingQuickStorage;
     private final ZipFileDataStore pendingSlowStorage;
-    private final Object pendingStorageLock = new Integer(0);
 
     private final ZipFileDataStore completedStorage;
 
     //
 
-    private static final class ZipFilePathLock { }
-
-    static ReferenceQueue<ZipFilePathLock> refQueue = new ReferenceQueue<>();
-    private static ConcurrentHashMap<String, ZipFilePathLockRef> zipFilePathLockMap = new ConcurrentHashMap<>();
-
-    private static final class ZipFilePathLockRef extends WeakReference<ZipFilePathLock> {
-        final String  key;
-        @Trivial
-        public ZipFilePathLockRef(ZipFilePathLock referent, String keyValue) {
-                super(referent, refQueue);
-                key = keyValue;
-        }
-    }
-
-    @Trivial
-    private final ZipFilePathLock getLockForPath(String path) {
-        poll();
-        ZipFilePathLockRef lockRef = zipFilePathLockMap.get(path);
-        ZipFilePathLock lock = lockRef != null ? lockRef.get() : null;
-        if (lock != null) {
-            return lock;
-        }
-
-        lock = new ZipFilePathLock();
-
-        while (true) {
-            ZipFilePathLockRef retVal = zipFilePathLockMap.putIfAbsent(path, new ZipFilePathLockRef(lock, path));
-            if (retVal == null) {
-                return lock;
-            }
-
-            ZipFilePathLock retLock = retVal.get();
-            if (retLock != null) {
-                return retLock;
-            }
-            zipFilePathLockMap.remove(path, retVal);
-        }
-    }
-
-    @Trivial
-    private final void poll() {
-        ZipFilePathLockRef lockRef;
-        while ((lockRef = (ZipFilePathLockRef) refQueue.poll()) != null) {
-            zipFilePathLockMap.remove(lockRef.key, lockRef);
-        }
-    }
-    
     public ZipFileData.ZipFileState getState(String path) {
-        reaperLock.acquireReadLock();
-        try {
-            ZipFilePathLock lock = getLockForPath(path);
-            synchronized (lock) {
-                ZipFileData data = storage.get(path);
-                if ( data == null ) {
-                    if ( !debugState ) {
-                        synchronized (completedStorage) {
-                            data = completedStorage.get(path);
-                        }
-                    }
+        synchronized ( reaperLock ) {
+            ZipFileData data = storage.get(path);
+            if ( data == null ) {
+                if ( !debugState ) {
+                    data = completedStorage.get(path);
                 }
-                return ( (data == null) ? null : data.zipFileState );
             }
-        } finally {
-            reaperLock.releaseReadLock();
+            return ( (data == null) ? null : data.zipFileState );
         }
     }
 
-    ZipFileData getRipest() {
-        ZipFileData ripestQuick;
-        ZipFileData ripestSlow;
-
-        synchronized (pendingStorageLock) {
-            ripestQuick = pendingQuickStorage.getFirst();
-            ripestSlow = pendingSlowStorage.getFirst();
-        }
-
+    protected ZipFileData getRipest() {
         ZipFileData ripest;
-        if (ripestQuick == null) {
-            ripest = ripestSlow;
-        } else if (ripestSlow == null) {
-            ripest = ripestQuick;
+        if ( pendingQuickStorage.isEmpty() ) {
+            ripest = pendingSlowStorage.getFirst();
+        } else if ( pendingSlowStorage.isEmpty() ) {
+            ripest = pendingQuickStorage.getFirst();
         } else {
+            ZipFileData ripestQuick = pendingQuickStorage.getFirst();
             long expireAtQuick = ripestQuick.lastPendAt + quickPendMin;
 
+            ZipFileData ripestSlow = pendingSlowStorage.getFirst();
             long expireAtSlow = ripestSlow.lastPendAt + slowPendMin;
 
             if ( expireAtQuick <= expireAtSlow ) {
@@ -1000,10 +924,10 @@ public class ZipFileReaper {
         return ripest;
     }
 
-    private void fullyClose(ZipFileData data, long fullCloseAt, boolean isShutdown) {
+    protected void fullyClose(ZipFileData data, long fullCloseAt, boolean isShutdown) {
         String methodName = "fullyClose";
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " Path [ " + data.path + " ] at [ " + fromInitial_s(fullCloseAt) + " ]");
+            Tr.debug(tc, methodName + " Path [ " + data.path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " (s) ]");
         }
 
         data.closeZipFile();
@@ -1013,11 +937,8 @@ public class ZipFileReaper {
             @SuppressWarnings("unused") // Same as 'data'
             ZipFileData fullyClosedData = storage.remove(data.path);
 
-            ZipFileData oldestCompletedClose;
-            synchronized (completedStorage) {
-                oldestCompletedClose =
-                    completedStorage.addLast( data, getMaxCache() );
-            }
+            ZipFileData oldestCompletedClose =
+                completedStorage.addLast( data, getMaxCache() );
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 if ( oldestCompletedClose != null ) {
                     Tr.debug(tc, methodName + " Discard completed close [ " + oldestCompletedClose.path + " ]");
@@ -1054,7 +975,7 @@ public class ZipFileReaper {
         return reaperThread;
     }
 
-    private void introspectReaperThread(PrintWriter output) {
+    protected void introspectReaperThread(PrintWriter output) {
         output.println();
         output.println("  Reaper [ " + reaperThread + " ]");
         output.println("    Id          [ " + reaperThread.getId() + " ]"); 
@@ -1105,7 +1026,7 @@ public class ZipFileReaper {
 
     //
 
-    static final int NUM_REASONS = 10;
+    public static final int NUM_REASONS = 10;
 
     private static class Reasons {
         private final String description;
@@ -1119,52 +1040,46 @@ public class ZipFileReaper {
         }
 
         public void add(String reason) {
-            synchronized (reasons) {
-                reasons[nextReason] = reason;
-                if ( nextReason == NUM_REASONS - 1 ) {
-                    nextReason = 0;
-                } else {
-                    nextReason = nextReason + 1;
-                }
+            reasons[nextReason] = reason;
+            if ( nextReason == NUM_REASONS - 1 ) {
+                nextReason = 0;
+            } else {
+                nextReason = nextReason + 1;
             }
         }
 
         public void introspect(PrintWriter printWriter) {
             printWriter.println(description + ": ");
 
-            synchronized(reasons)  {
-                int lastReason = ( (nextReason == 0) ? (NUM_REASONS - 1) : (nextReason - 1) );
-                if ( reasons[lastReason] == null ) {
-                    printWriter.println("  *** NONE ***");
-                } else {
-                    for ( int reasonNo = 0; reasonNo > -NUM_REASONS; reasonNo-- ) {
-                        int actualReasonNo = nextReason + reasonNo - 1;
-                        if ( actualReasonNo < 0 ) {
-                            actualReasonNo += NUM_REASONS;
-                        }
-
-                        String reason = reasons[actualReasonNo];
-                        if ( reason == null ) {
-                            break;
-                        }
-
-                        printWriter.println("  [ " + reasonNo + " ] [ " + reasons[actualReasonNo] + " ]");
+            int lastReason = ( (nextReason == 0) ? (NUM_REASONS - 1) : (nextReason - 1) );
+            if ( reasons[lastReason] == null ) {
+                printWriter.println("  *** NONE ***");
+            } else {
+                for ( int reasonNo = 0; reasonNo > -NUM_REASONS; reasonNo-- ) {
+                    int actualReasonNo = nextReason + reasonNo - 1;
+                    if ( actualReasonNo < 0 ) {
+                        actualReasonNo += NUM_REASONS;
                     }
+
+                    String reason = reasons[actualReasonNo];
+                    if ( reason == null ) {
+                        break;
+                    }
+
+                    printWriter.println("  [ " + reasonNo + " ] [ " + reasons[actualReasonNo] + " ]");
                 }
             }
         }
     }
 
-    private final Reasons waitReasons;
+    private Reasons waitReasons;
 
-    void addWaitReason(String reason) {
+    protected void addWaitReason(String reason) {
         waitReasons.add(reason);
     }
 
     private static class ReaperLock {
-        final ReadWriteLock rwLock = new ReentrantReadWriteLock();
-        final Condition condition = rwLock.writeLock().newCondition();
-        final Reasons lockReasons;
+        Reasons lockReasons;
 
         public ReaperLock() {
             this.lockReasons = new Reasons("Reaper Lock Activity");
@@ -1186,53 +1101,28 @@ public class ZipFileReaper {
             }
         }
 
-        @Trivial
-        void acquireWriteLock() {
-            rwLock.writeLock().lock();
-        }
-
-        @Trivial
-        void releaseWriteLock() {
-            rwLock.writeLock().unlock();
-        }
-
-        @Trivial
-        void acquireReadLock() {
-            rwLock.readLock().lock();
-        }
-
-        @Trivial
-        void releaseReadLock() {
-            rwLock.readLock().unlock();
-        }
-
-        void notify(String methodName, String text) {
+        public void notify(String methodName, String text) {
             addReason(text);
 
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " " + text);
             }
-            rwLock.writeLock().lock();
-            try {
-                condition.signal();
-            } finally {
-                rwLock.writeLock().unlock();
-            }
+            notify();
         }
 
-        void wait(String methodName, String text) throws InterruptedException {
+        public void wait(String methodName, String text) throws InterruptedException {
             addReason(text);
 
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " Waiting for [ " + text + " ]");
             }
-            condition.await();  // throws InterruptedException
+            wait(); // throws InterruptedException
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " Waited for [ " + text + " ]");
             }
         }
 
-        void waitNS(long waitNs, String methodName, String text) throws InterruptedException {
+        public void waitNS(long waitNs, String methodName, String text) throws InterruptedException {
             addReason(text);
 
             long waitMs = waitNs / ZipCachingProperties.NANO_IN_MILLI;
@@ -1250,7 +1140,7 @@ public class ZipFileReaper {
                 throw new IllegalArgumentException(methodName + ": Invalid zero wait request for [ " + text + " ]");
             }
 
-            condition.await(waitNs, TimeUnit.NANOSECONDS); // throws InterruptedException
+            wait(waitMs, fracWaitNs); // throws InterruptedException
 
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName +
@@ -1275,26 +1165,6 @@ public class ZipFileReaper {
      * close is available.
      */
     private static final long REAP_DELAY_INDEFINITE = -1L;
-
-    /**
-     * Reap pending closes if we have reached max cache size for either pending storage
-     */
-    void trimPending() {
-        int maxCacheSize = getMaxCache();
-        if (maxCacheSize != -1) {
-            long closeAt = SystemUtils.getNanoTime();
-            synchronized (pendingStorageLock) {
-                while (pendingQuickStorage.size() > maxCacheSize) {
-                    ZipFileData ripest = pendingQuickStorage.removeFirst();
-                    fullyClose(ripest, closeAt, IS_NOT_SHUTDOWN_REAP);
-                }
-                while (pendingSlowStorage.size() > maxCacheSize) {
-                    ZipFileData ripest = pendingSlowStorage.removeFirst();
-                    fullyClose(ripest, closeAt, IS_NOT_SHUTDOWN_REAP);
-                }
-            }
-        }
-    }
 
     /**
      * Reap the pending closes.
@@ -1341,115 +1211,112 @@ public class ZipFileReaper {
      *
      * @return The next reap time.  -1 if there are no pending closes.
      */
-    long reap(long reapAt, boolean isShutdownReap) {
+    private long reap(long reapAt, boolean isShutdownReap) {
         String methodName = "reap";
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName + " At [ " + toRelSec(initialAt, reapAt) + " (s) ] Force [ " + isShutdownReap + " ]");
+            Tr.debug(tc, methodName +
+                " All [ " + storage.size() + " ]" +
+                " Pending Quick [ " + pendingQuickStorage.size() + " ]" +
+                " Pending Slow [ " + pendingSlowStorage.size() + " ]");
+        }
+
+        // Reap the quick pending closes ...
+
         long nextQuickReapDelay = REAP_DELAY_INDEFINITE;
-        long nextSlowReapDelay = REAP_DELAY_INDEFINITE;
+        Iterator<ZipFileData> pendingQuick = pendingQuickStorage.values();
+        while ( (nextQuickReapDelay == REAP_DELAY_INDEFINITE) && pendingQuick.hasNext() ) {
+            ZipFileData nextPending = pendingQuick.next();
 
-        synchronized (pendingStorageLock) {
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                Tr.debug(tc, methodName + " At [ " + fromInitial_s(reapAt) + " ] Force [ " + isShutdownReap + " ]");
-                Tr.debug(tc, methodName +
-                    " All [ " + storage.size() + " ]" +
-                    " Pending Quick [ " + pendingQuickStorage.size() + " ]" +
-                    " Pending Slow [ " + pendingSlowStorage.size() + " ]");
-            }
+            long nextLastPendAt = nextPending.lastPendAt;
+            long nextPendDuration = reapAt - nextLastPendAt;
 
-            // Reap the quick pending closes ...
+            if ( isShutdownReap ) {
+                // Shutdown closes all pending, regardless of how long they have waited.
 
-            Iterator<ZipFileData> pendingQuick = pendingQuickStorage.values();
-            while ( (nextQuickReapDelay == REAP_DELAY_INDEFINITE) && pendingQuick.hasNext() ) {
-                ZipFileData nextPending = pendingQuick.next();
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName +
+                            " Path [ " + nextPending.path + " ]" +
+                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Quick): Forced");
+                }
 
-                long nextLastPendAt = nextPending.lastPendAt;
-                long nextPendDuration = reapAt - nextLastPendAt;
+                pendingQuick.remove();
 
-                if ( isShutdownReap ) {
-                    // Shutdown closes all pending, regardless of how long they have waited.
+                fullyClose(nextPending, reapAt, IS_SHUTDOWN_REAP);
 
+            } else { // Normal reap.
+                if ( nextPendDuration > quickPendMin) { // Reached the shortest expiration?
                     if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
-                                " Path [ " + nextPending.path + " ]" +
-                                " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Quick): Forced");
+                            " Path [ " + nextPending.path + " ]" +
+                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Quick): Expired");
                     }
 
                     pendingQuick.remove();
 
-                    fullyClose(nextPending, reapAt, IS_SHUTDOWN_REAP);
+                    fullyClose(nextPending, reapAt, IS_NOT_SHUTDOWN_REAP);
 
-                } else { // Normal reap.
-                    if ( nextPendDuration > quickPendMin) { // Reached the shortest expiration?
-                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                            Tr.debug(tc, methodName +
-                                " Path [ " + nextPending.path + " ]" +
-                                " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Quick): Expired");
-                        }
-
-                        pendingQuick.remove();
-
-                        fullyClose(nextPending, reapAt, IS_NOT_SHUTDOWN_REAP);
-
-                    } else { // Not yet reached the shorted expiration.
-                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                            Tr.debug(tc, methodName +
-                                " Path [ " + nextPending.path + " ]" +
-                                " Waiting [ " + toAbsSec_s(nextPendDuration) + " ]: Still Waiting");
-                        }
-
-                        if ( nextPendDuration < 0 ) {
-                            nextPendDuration = 0; // Should never happen;
-                        }
-                        nextQuickReapDelay = quickPendMax - nextPendDuration;
-                    }
-                }
-            }
-
-            // Reap the slow pending closes ...
-
-            Iterator<ZipFileData> pendingSlow = pendingSlowStorage.values();
-            while ( (nextSlowReapDelay == REAP_DELAY_INDEFINITE) && pendingSlow.hasNext() ) {
-                ZipFileData nextPending = pendingSlow.next();
-
-                long nextLastPendAt = nextPending.lastPendAt;
-                long nextPendDuration = reapAt - nextLastPendAt;
-
-                if ( isShutdownReap ) {
-                    // Shutdown closes all pending, regardless of how long they have waited.
-
+                } else { // Not yet reached the shorted expiration.
                     if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
-                                " Path [ " + nextPending.path + " ]" +
-                                " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Slow): Forced");
+                            " Path [ " + nextPending.path + " ]" +
+                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ]: Still Waiting");
+                    }
+
+                    if ( nextPendDuration < 0 ) {
+                        nextPendDuration = 0; // Should never happen;
+                    }
+                    nextQuickReapDelay = quickPendMax - nextPendDuration;
+                }
+            }
+        }
+
+        // Reap the slow pending closes ...
+
+        long nextSlowReapDelay = REAP_DELAY_INDEFINITE;
+        Iterator<ZipFileData> pendingSlow = pendingSlowStorage.values();
+        while ( (nextSlowReapDelay == REAP_DELAY_INDEFINITE) && pendingSlow.hasNext() ) {
+            ZipFileData nextPending = pendingSlow.next();
+
+            long nextLastPendAt = nextPending.lastPendAt;
+            long nextPendDuration = reapAt - nextLastPendAt;
+
+            if ( isShutdownReap ) {
+                // Shutdown closes all pending, regardless of how long they have waited.
+
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName +
+                            " Path [ " + nextPending.path + " ]" +
+                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Slow): Forced");
+                }
+
+                pendingSlow.remove();
+
+                fullyClose(nextPending, reapAt, IS_SHUTDOWN_REAP);
+
+            } else { // Normal reap.
+                if ( nextPendDuration > slowPendMin ) { // Reached the shortest expiration?
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                        Tr.debug(tc, methodName +
+                            " Path [ " + nextPending.path + " ]" +
+                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Slow): Expired");
                     }
 
                     pendingSlow.remove();
 
-                    fullyClose(nextPending, reapAt, IS_SHUTDOWN_REAP);
+                    fullyClose(nextPending, reapAt, IS_NOT_SHUTDOWN_REAP);
 
-                } else { // Normal reap.
-                    if ( nextPendDuration > slowPendMin ) { // Reached the shortest expiration?
-                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                            Tr.debug(tc, methodName +
-                                " Path [ " + nextPending.path + " ]" +
-                                " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Slow): Expired");
-                        }
-
-                        pendingSlow.remove();
-
-                        fullyClose(nextPending, reapAt, IS_NOT_SHUTDOWN_REAP);
-
-                    } else { // Not yet reached the shorted expiration.
-                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                            Tr.debug(tc, methodName +
-                                " Path [ " + nextPending.path + " ]" +
-                                " Waiting [ " + toAbsSec_s(nextPendDuration) + " ]: Still Waiting");
-                        }
-
-                        if ( nextPendDuration < 0 ) {
-                            nextPendDuration = 0; // Should never happen;
-                        }
-                        nextSlowReapDelay = slowPendMax - nextPendDuration;
+                } else { // Not yet reached the shorted expiration.
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                        Tr.debug(tc, methodName +
+                            " Path [ " + nextPending.path + " ]" +
+                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ]: Still Waiting");
                     }
+
+                    if ( nextPendDuration < 0 ) {
+                        nextPendDuration = 0; // Should never happen;
+                    }
+                    nextSlowReapDelay = slowPendMax - nextPendDuration;
                 }
             }
         }
@@ -1536,10 +1403,10 @@ public class ZipFileReaper {
 
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             String delayText =
-                ( (nextReapDelay == REAP_DELAY_INDEFINITE) ? "Indefinite" : toAbsSec_s(nextReapDelay) );
+                ( (nextReapDelay == REAP_DELAY_INDEFINITE) ? "Indefinite" : toAbsSec(nextReapDelay) );
             String speedText =
                 ( useQuick ? "Quick" : "Slow" );
-            Tr.debug(tc, methodName + " Next reap [ " + delayText + " ] (" + speedText + ")");
+            Tr.debug(tc, methodName + " Next reap [ " + delayText + " (s) ] (" + speedText + ")");
         }
         return nextReapDelay;
     }
@@ -1553,110 +1420,100 @@ public class ZipFileReaper {
     public ZipFile open(String path, long openAt) throws IOException, ZipException {
         String methodName = "open";
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " Path [ " + path + " ] at [ " + toRelSec_s(initialAt, openAt) + " ]");
+            Tr.debug(tc, methodName + " Path [ " + path + " ] at [ " + toRelSec(initialAt, openAt) + " (s) ]");
         }
 
         // Open could try to turn off the reaper thread if the last pending close
         // is removed.  Instead, the reaper allowed to run, and is coded to handle
         // that case.
 
-        reaperLock.acquireReadLock();
-        try {
+        synchronized ( reaperLock ) {
             if ( !getIsActive() ) {
                 asyncWarning("reaper.inactive", path, reaperName);
                 // "Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive"
                 throw new IOException("Cannot open [ " + path + " ]: ZipFile cache is inactive");
             }
 
-            ZipFilePathLock lock = getLockForPath(path);
-            synchronized (lock) {
-                ZipFileData data = storage.get(path);
-                ZipFile zipFile;
+            ZipFileData data = storage.get(path);
+            ZipFile zipFile;
+
+            if ( data == null ) {
+                if ( !debugState ) {
+                    data = completedStorage.remove(path);
+                }
 
                 if ( data == null ) {
-                    if ( !debugState ) {
-                        synchronized (completedStorage) {
-                            data = completedStorage.remove(path);
-                        }
-                    }
-
-                    if ( data == null ) {
-                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                            Tr.debug(tc, methodName + " New [ " + path + " ]");
-                        }
-                        data = new ZipFileData( path, getInitialAt() ); // throws IOException, ZipException
-                    } else {
-                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                            Tr.debug(tc, methodName + " Recovered [ " + path + " ]");
-                        }
-                    }
-
-                    storage.put(path, data);
-                }
-
-                if ( data.isFullyClosed() ) {
                     if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + " Open [ " + path + " ]");
+                        Tr.debug(tc, methodName + " New [ " + path + " ]");
                     }
-
-                    zipFile = data.openZipFile(); // throws IOException, ZipException
-
-                } else if ( data.isPending() ) {
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + " Unpend [ " + path + " ]");
-                    }
-
-                    synchronized (pendingStorageLock) {
-                        if ( data.expireQuickly ) {
-                            @SuppressWarnings("unused") // same as 'data'
-                            ZipFileData pendingQuickData = pendingQuickStorage.remove(path);
-                        } else {
-                            @SuppressWarnings("unused") // same as 'data'
-                            ZipFileData pendingSlowData = pendingSlowStorage.remove(path);
-                        }
-                        // Removal from pending may result in the next reap
-                        // discovering no expired closes.
-                    }
-
-                    try {
-                        zipFile = data.reacquireZipFile(); // throws IOException, ZipException
-
-                    } catch (Exception e) {
-                        // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
-                        // Either way, the proper state should be fully closed.
-                        data.enactFullClose(openAt);
-                        throw e;
-                    }
-
-                } else if ( data.isOpen() ) {
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + " Already open [ " + path + " ]");
-                    }
-
-                    try {
-                        zipFile = data.reacquireZipFile(); // throws IOException, ZipException
-
-                    } catch (Exception e) {
-                        // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
-                        // Either way, the proper state should be fully closed.
-                        data.enactClose(openAt, ZipFileData.CLOSE_ALL);
-                        data.enactFullClose( openAt );
-                        throw e;
-                    }
-
+                    data = new ZipFileData( path, getInitialAt() ); // throws IOException, ZipException
                 } else {
-                    throw data.unknownState();
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                        Tr.debug(tc, methodName + " Recovered [ " + path + " ]");
+                    }
                 }
 
-                data.enactOpen(openAt);
-
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, methodName + " Path [ " + path + " ] [ " + zipFile + " ]");
-                }
-                return zipFile;
+                storage.put(path, data);
             }
-        } finally {
-            reaperLock.releaseReadLock();
+
+            if ( data.isFullyClosed() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName + " Open [ " + path + " ]");
+                }
+
+                zipFile = data.openZipFile(); // throws IOException, ZipException
+
+            } else if ( data.isPending() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName + " Unpend [ " + path + " ]");
+                }
+
+                if ( data.expireQuickly ) {
+                    @SuppressWarnings("unused") // same as 'data'
+                    ZipFileData pendingQuickData = pendingQuickStorage.remove(path);
+                } else {
+                    @SuppressWarnings("unused") // same as 'data'
+                    ZipFileData pendingSlowData = pendingSlowStorage.remove(path);
+                }
+                // Removal from pending may result in the next reap
+                // discovering no expired closes.
+
+                try {
+                    zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+
+                } catch (Exception e) {
+                    // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
+                    // Either way, the proper state should be fully closed.
+                    data.enactFullClose(openAt);
+                    throw e;
+                }
+
+            } else if ( data.isOpen() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName + " Already open [ " + path + " ]");
+                }
+
+                try {
+                    zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+
+                } catch (Exception e) {
+                    // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
+                    // Either way, the proper state should be fully closed.
+                    data.enactClose(openAt, ZipFileData.CLOSE_ALL);
+                    data.enactFullClose( openAt );
+                    throw e;
+                }
+
+            } else {
+                throw data.unknownState();
+            }
+
+            data.enactOpen(openAt);
+
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " Path [ " + path + " ] [ " + zipFile + " ]");
+            }
+            return zipFile;
         }
     }
 
@@ -1667,12 +1524,7 @@ public class ZipFileReaper {
     public ZipFileData.ZipFileState close(String path, long closeAt) {
         String methodName = "close";
 
-        String wakeReason = null;
-        String skipWakeReason = null;
-        ZipFileData.ZipFileState state = null;
-
-        reaperLock.acquireReadLock();
-        try {
+        synchronized ( reaperLock ) {
             if ( !getIsActive() ) {
                 if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Path [ " + path + " ]: Ignore: Inactive");
@@ -1680,166 +1532,153 @@ public class ZipFileReaper {
                 return null;
             }
 
-            ZipFilePathLock lock = getLockForPath(path);
+            ZipFileData data = storage.get(path);
 
-            synchronized (lock) {
-                ZipFileData data = storage.get(path);
+            if ( data == null ) {
+                asyncWarning("reaper.unregistered.path", path);
+                // "Unregistered [ " + path + " ]: Ignore"
 
-                if ( data == null ) {
-                    asyncWarning("reaper.unregistered.path", path);
-                    // "Unregistered [ " + path + " ]: Ignore"
+            } else if ( data.isFullyClosed() ) {
+                asyncWarning("reaper.closed.path", path);
+                // "Fully closed [ " + path + " ]: Ignore"
 
-                } else if ( data.isFullyClosed() ) {
-                    asyncWarning("reaper.closed.path", path);
-                    // "Fully closed [ " + path + " ]: Ignore"
+            } else if ( data.isPending() ) {
+                asyncWarning("reaper.pending.path", path);
+                // "Pending [ " + path + " ]: No active opens: Ignore"
 
-                } else if ( data.isPending() ) {
-                    asyncWarning("reaper.pending.path", path);
-                    // "Pending [ " + path + " ]: No active opens: Ignore"
+            } else if ( data.isOpen() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName + " Active opens [ " + path + " ] [ " + data.getActiveOpens() + " ]");
+                }
 
-                } else if ( data.isOpen() ) {
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + " Active opens [ " + path + " ] [ " + data.getActiveOpens() + " ]");
-                    }
+                if ( data.enactClose(closeAt, ZipFileData.CLOSE_ONCE) ) {
+                    boolean expireQuickly = data.setExpireQuickly(slowPendMin);
 
-                    if ( data.enactClose(closeAt, ZipFileData.CLOSE_ONCE) ) {
-                        boolean expireQuickly = data.setExpireQuickly(slowPendMin);
+                    if ( expireQuickly && (quickPendMin == 0) ) {
+                        fullyClose(data, closeAt, IS_NOT_SHUTDOWN_REAP);
 
-                        if ( expireQuickly && (quickPendMin == 0) ) {
-                            fullyClose(data, closeAt, IS_NOT_SHUTDOWN_REAP);
+                    } else {
+                        boolean wasQuickEmpty = pendingQuickStorage.isEmpty();
+                        boolean wasSlowEmpty = pendingSlowStorage.isEmpty();
 
+                        ZipFileData ripestPending;
+                        if ( expireQuickly ) {
+                            // pendingQuickStorage.display();
+                            ripestPending = pendingQuickStorage.addLast(data, getMaxCache());
+                            // pendingQuickStorage.display();
                         } else {
-                            boolean wasQuickEmpty;
-                            boolean wasSlowEmpty;
-                            synchronized (pendingStorageLock) {
-                                wasQuickEmpty = pendingQuickStorage.isEmpty();
-                                wasSlowEmpty = pendingSlowStorage.isEmpty();
+                            // pendingSlowStorage.display();
+                            ripestPending = pendingSlowStorage.addLast(data, getMaxCache());
+                            // pendingSlowStorage.display();
+                        }
 
-                                if ( expireQuickly ) {
-                                    // pendingQuickStorage.display();
-                                    pendingQuickStorage.addLast(data);
-                                    if (pendingQuickStorage.size() > getMaxCache()) {
-                                        wakeReason = "Quick has reached max cache size";
-                                        skipWakeReason = null;
-                                    }
-                                    // pendingQuickStorage.display();
-                                } else {
-                                    // pendingSlowStorage.display();
-                                    pendingSlowStorage.addLast(data);
-                                    if (pendingSlowStorage.size() > getMaxCache()) {
-                                        wakeReason = "Slow has reached max cache size";
-                                        skipWakeReason = null;
-                                    }
-                                    // pendingSlowStorage.display();
-                                }
+                        if ( ripestPending != null ) {
+                            fullyClose(ripestPending, closeAt, IS_NOT_SHUTDOWN_REAP);
+                        }
+
+                        String wakeReason;
+                        String skipWakeReason;
+
+                        if ( wasQuickEmpty && wasSlowEmpty ) {
+                            // The reaper was in an indefinite wait, since there were
+                            // no pending closes.  Since there are now pending closes,
+                            // the reaper must be woken.
+                            //
+                            // The first reap cycle will perform no closes; the first reap
+                            // will find the ripest pending close and set a definite wait
+                            // based on that pending close.
+                            wakeReason = "Added first pending";
+                            skipWakeReason = null;
+
+                        } else if ( expireQuickly ) {
+                            if ( !wasQuickEmpty ) { // expireQuickly && !wasQuickEmpty
+                                // Either:
+                                //
+                                // The reaper is set to a definite wait based on the ripest
+                                // quick pending.
+                                //
+                                // If the new pending is expiring quickly, it is expiring
+                                // after the ripest quick pending.
+                                //
+                                // Either way, the definite wait already set for the reaper
+                                // remains correct.
+                                wakeReason = null; // Added quick while quick are present.
+                                skipWakeReason = "Quick added with other quick";
+                                // wasQuickEmpty ==> !wasSlowEmpty
+
+                            } else { // expireQuickly && wasQuickEmpty && !wasSlowEmpty
+                                // The reaper is set to a definite wait based on the ripest
+                                // slow pending close.
+                                //
+                                // If the new pending was a slow pending, no update to the
+                                // reaper wait would be needed, since the new pending expiration
+                                // would necessarily be after the first slow pending expiration.
+                                //
+                                // But, the new pending is a quick pending, which might expire
+                                // before or after the first slow pending.  The slow pending will
+                                // expire first if it has waited long enough to put its expiration
+                                // before the new quick pending's expiration. 
+                                //
+                                // What should be done is for the new pending to be compared with
+                                // the prior ripest pending, and if the new pending expires sooner,
+                                // to reset the reaper wait time to the new, earlier expiration.
+                                //
+                                // As a simplification, wake the reaper early and allow the reap
+                                // cycle to run.  The reaper will notice that no pending closes
+                                // have expired, and will recompute and set the reaper wait to a
+                                // newly computed definite wait.
+                                //
+                                // The reaper is set to an indefinite wait, because this close
+                                // captured the notification and prevented the reaper from waking
+                                // up for a prior close request.
+
+                                wakeReason = "Added first quick while slow are present";
+                                skipWakeReason = null;
                             }
 
-                            if (wakeReason == null) {
-                                if ( wasQuickEmpty && wasSlowEmpty ) {
-                                    // The reaper was in an indefinite wait, since there were
-                                    // no pending closes.  Since there are now pending closes,
-                                    // the reaper must be woken.
-                                    //
-                                    // The first reap cycle will perform no closes; the first reap
-                                    // will find the ripest pending close and set a definite wait
-                                    // based on that pending close.
-                                    wakeReason = "Added first pending";
-                                    skipWakeReason = null;
+                        } else { // !expireQuickly
+                            // Since the new pending expires slowly, it must have an expiration which
+                            // is later than the expiration of the ripest pending close.  The definite
+                            // wait already set for the reaper remains correct.
+                            wakeReason = null; // Added slow while quick or slow are present.
+                            skipWakeReason = "slow added with quick or slow";
+                        }
 
-                                } else if ( expireQuickly ) {
-                                    if ( !wasQuickEmpty ) { // expireQuickly && !wasQuickEmpty
-                                        // Either:
-                                        //
-                                        // The reaper is set to a definite wait based on the ripest
-                                        // quick pending.
-                                        //
-                                        // If the new pending is expiring quickly, it is expiring
-                                        // after the ripest quick pending.
-                                        //
-                                        // Either way, the definite wait already set for the reaper
-                                        // remains correct.
-                                        wakeReason = null; // Added quick while quick are present.
-                                        skipWakeReason = "Quick added with other quick";
-                                        // wasQuickEmpty ==> !wasSlowEmpty
+                        // CAUTION CAUTION CAUTION CAUTION
+                        //
+                        // This notification does not ensure that reap() is continued
+                        // before any other reaper operation is performed.  This notification
+                        // simply unblocks the reap() thread and puts it in the pool of threads
+                        // available to be run.  This has a strong implication on how 'reap()'
+                        // must work.
+                        //
+                        // CAUTION CAUTION CAUTION CAUTION
 
-                                    } else { // expireQuickly && wasQuickEmpty && !wasSlowEmpty
-                                        // The reaper is set to a definite wait based on the ripest
-                                        // slow pending close.
-                                        //
-                                        // If the new pending was a slow pending, no update to the
-                                        // reaper wait would be needed, since the new pending expiration
-                                        // would necessarily be after the first slow pending expiration.
-                                        //
-                                        // But, the new pending is a quick pending, which might expire
-                                        // before or after the first slow pending.  The slow pending will
-                                        // expire first if it has waited long enough to put its expiration
-                                        // before the new quick pending's expiration. 
-                                        //
-                                        // What should be done is for the new pending to be compared with
-                                        // the prior ripest pending, and if the new pending expires sooner,
-                                        // to reset the reaper wait time to the new, earlier expiration.
-                                        //
-                                        // As a simplification, wake the reaper early and allow the reap
-                                        // cycle to run.  The reaper will notice that no pending closes
-                                        // have expired, and will recompute and set the reaper wait to a
-                                        // newly computed definite wait.
-                                        //
-                                        // The reaper is set to an indefinite wait, because this close
-                                        // captured the notification and prevented the reaper from waking
-                                        // up for a prior close request.
-
-                                        wakeReason = "Added first quick while slow are present";
-                                        skipWakeReason = null;
-                                    }
-
-                                } else { // !expireQuickly
-                                    // Since the new pending expires slowly, it must have an expiration which
-                                    // is later than the expiration of the ripest pending close.  The definite
-                                    // wait already set for the reaper remains correct.
-                                    wakeReason = null; // Added slow while quick or slow are present.
-                                    skipWakeReason = "slow added with quick or slow";
-                                }
-                            }
+                        if ( wakeReason != null ) {
+                            reaperLock.notify(methodName, wakeReason);
+                        } else {
+                            reaperLock.skipNotify(methodName, skipWakeReason);
                         }
                     }
-                } else {
-                    throw data.unknownState();
                 }
-                state = data == null ? null : data.zipFileState;
+
+            } else {
+                throw data.unknownState();
             }
-        } finally {
-            reaperLock.releaseReadLock();
+            
+            return ( (data == null) ? null : data.zipFileState );
         }
-
-        // CAUTION CAUTION CAUTION CAUTION
-        //
-        // This notification does not ensure that reap() is continued
-        // before any other reaper operation is performed.  This notification
-        // simply unblocks the reap() thread and puts it in the pool of threads
-        // available to be run.  This has a strong implication on how 'reap()'
-        // must work.
-        //
-        // CAUTION CAUTION CAUTION CAUTION
-
-        if ( wakeReason != null ) {
-            reaperLock.notify(methodName, wakeReason);
-        } else if (skipWakeReason != null){
-            reaperLock.skipNotify(methodName, skipWakeReason);
-        }
-        
-        return state;
     }
 
     //
 
     public void introspect(PrintWriter output, long introspectAt) {
-        reaperLock.acquireWriteLock();
-        try {
+        synchronized ( reaperLock ) {
             output.println();
             output.println("  IsActive [ " + Boolean.valueOf(isActive) + " ]");
-            output.println("  Initial  [ " + toAbsSec_s(initialAt) + " ]" );
-            output.println("  Final    [ " + toAbsSec_s(finalAt) + " ]");
-            output.println("  Current  [ " + toAbsSec_s(introspectAt) + " ]");
+            output.println("  Initial  [ " + toAbsSec(initialAt) + " (s) ]" );
+            output.println("  Final    [ " + toAbsSec(finalAt) + " (s) ]");
+            output.println("  Current  [ " + toAbsSec(introspectAt) + " (s) ]");
 
             introspectReaperThread(output);
 
@@ -1854,21 +1693,16 @@ public class ZipFileReaper {
                 }
             }
 
-            synchronized (pendingStorageLock) {
-                pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
-                pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
-            }
+            pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
+            pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
 
             if ( completedStorage == null ) {
                 output.println();
                 output.println("Completed zip file data is not being tracked");
             } else {
-                synchronized (completedStorage) {
-                    completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY, introspectAt);
-                }
+                completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY, introspectAt);
             }
-        } finally {
-            reaperLock.releaseWriteLock();
         }
     }
 }
+
