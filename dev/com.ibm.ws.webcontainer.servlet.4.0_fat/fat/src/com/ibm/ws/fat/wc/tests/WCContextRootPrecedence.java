@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,6 @@ public class WCContextRootPrecedence extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         // Apps defined in server.xml are not present during the first server start and this results in unwanted
         // CWKZ0014W warning messages.
         ArrayList<String> expectedErrors = new ArrayList<String>();
@@ -73,26 +72,25 @@ public class WCContextRootPrecedence extends LoggingTest {
         LOG.info("Setup : add applications as needed.");
 
         WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestContextRootAppNamePrecedence.war",
-                                               true, null);
+                                               true);
 
         WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(),
-                                               "TestContextRootDirOrFileNamePrecedence.war", true, null);
+                                               "TestContextRootDirOrFileNamePrecedence.war", true);
 
         WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestContextRootEARAppPrecedence.ear", true, "TestContextRootEARAppPrecedence.war", true, null, false,
-                                                  null);
+                                                  "TestContextRootEARAppPrecedence.ear", true, "TestContextRootEARAppPrecedence.war", true, null, false);
 
         WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(),
-                                               "TestContextRootServerXmlPrecedence.war", true, null);
+                                               "TestContextRootServerXmlPrecedence.war", true);
 
         WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestContextRootWebExtPrecedence.war",
-                                               true, null);
+                                               true);
         WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestDefaultContextPathPrecedence.war",
-                                               true, null);
+                                               true);
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestDefaultContextPathWithEndSlashInvalidCase.war", true, null);
+                                                  "TestDefaultContextPathWithEndSlashInvalidCase.war", true);
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestDefaultContextPathWithoutStartSlashInvalidCase.war", true, null);
+                                                  "TestDefaultContextPathWithoutStartSlashInvalidCase.war", true);
 
         WCApplicationHelper.waitForAppStart("TestContextRootDirOrFileNamePrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
         WCApplicationHelper.waitForAppStart("AppNameContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
@@ -105,10 +103,9 @@ public class WCContextRootPrecedence extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-
         SHARED_SERVER.getLibertyServer().deleteAllDropinConfigurations();
 
-        SHARED_SERVER.getLibertyServer().stopServer(null);
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     /**
