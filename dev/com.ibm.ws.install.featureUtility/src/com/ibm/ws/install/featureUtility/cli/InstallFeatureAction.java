@@ -147,7 +147,7 @@ public class InstallFeatureAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
+                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).setAcceptLicense(acceptLicense).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);

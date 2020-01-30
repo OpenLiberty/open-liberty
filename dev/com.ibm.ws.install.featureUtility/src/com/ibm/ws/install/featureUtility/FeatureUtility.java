@@ -14,27 +14,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.logging.Logger;
 
-import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.InstallKernelFactory;
-import com.ibm.ws.install.InstallKernelInteractive;
-import com.ibm.ws.install.InstallLicense;
+import com.ibm.ws.install.*;
 import com.ibm.ws.install.internal.*;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
-import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
+import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
 import wlp.lib.extract.SelfExtract;
 
 /**
@@ -273,11 +269,15 @@ public class FeatureUtility {
      */
     @SuppressWarnings("unchecked")
     public void installFeatures() throws InstallException, IOException {
+        if(!!!handleLicenses()){
+            return; // TODO move this to installFeatureAction and instead throw runtime exception / return code
+        }
+
+
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         // fine("resolved features: " + resolvedFeatures);
         checkResolvedFeatures(resolvedFeatures);
-        checkForLicenses(featuresToInstall, acceptLicense);
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
@@ -346,26 +346,13 @@ public class FeatureUtility {
         }
     }
 
-    public boolean checkForLicenses(Collection<String> features, boolean acceptedLicenseAlready) {
-        if(acceptedLicenseAlready){ // TODO or if not installing websphere features
-            return true;
-        }
-
+    private boolean determineIfOpenLiberty() {
         try {
-            InstallKernelInteractive installKernel = InstallKernelFactory.getInteractiveInstance();
-            installKernel.resolve(features, false);
-            featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
-            logger.info("size: " +featureLicenses.size());
-            Set<InstallLicense> licenseToAccept = InstallUtils.getLicenseToAccept(featureLicenses);
-
-            logger.info("size 2: " + licenseToAccept);
-            for(InstallLicense license : licenseToAccept){
-                if(!!!handleLicenseAcceptance(license)){
-                    return false;
+            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    return true;
                 }
             }
-        } catch (InstallException e) {
-            e.printStackTrace();
         } catch (ProductInfoParseException e) {
             e.printStackTrace();
         } catch (DuplicateProductInfoException e) {
@@ -373,7 +360,42 @@ public class FeatureUtility {
         } catch (ProductInfoReplaceException e) {
             e.printStackTrace();
         }
+        return false;
+    }
 
+    public boolean handleLicenses() {
+        if(acceptLicense || determineIfOpenLiberty()) {
+            return true;
+        }
+
+        InstallKernelInteractive installKernel = InstallKernelFactory.getInteractiveInstance();
+        try {
+            installKernel.resolve(featuresToInstall, false);
+            featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
+            Set<InstallLicense> licenseToAccept = InstallUtils.getLicenseToAccept(featureLicenses);
+            if (!acceptLicense) {
+                if (!licenseToAccept.isEmpty()) {
+                    showFeaturesForLicenseAcceptance(licenseToAccept);
+                }
+                for (InstallLicense license : licenseToAccept) {
+                    if (!!!handleLicenseAcceptance(license)) {
+                        return false;
+                    }
+                }
+            }
+        } catch (ProductInfoParseException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } catch (DuplicateProductInfoException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } catch (ProductInfoReplaceException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } catch (InstallException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
@@ -424,6 +446,33 @@ public class FeatureUtility {
                 "1", "2");
         System.out.println();
         return accept;
+    }
+
+    private void showFeaturesForLicenseAcceptance(Set<InstallLicense> licenseToAccept) {
+        Set<String> featuresToAccept = new HashSet<String>();
+        StringBuffer buf = new StringBuffer();
+        for (InstallLicense license : licenseToAccept) {
+            String featureToMatch = getFeaturesForLicense(license);
+            if (!featureToMatch.isEmpty()) {
+                featuresToAccept.add(featureToMatch);
+                buf.append(featureToMatch);
+            }
+        }
+        String featuresToAcceptMsg = buf.toString().trim();
+        logger.info("Accept license for: " + featuresToAcceptMsg);
+    }
+
+    private String getFeaturesForLicense(InstallLicense license) {
+        StringBuffer buf = new StringBuffer();
+        for (String feature : license.getFeatures()) {
+            for (String featureToMatch : featuresToInstall) {
+                if (feature.contains(featureToMatch)) {
+                    buf.append(featureToMatch + " ");
+                }
+            }
+        }
+        String matchedFeatures = buf.toString();
+        return matchedFeatures;
     }
 
 
