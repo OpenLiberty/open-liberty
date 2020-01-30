@@ -41,7 +41,7 @@ public class UseProducerRecordTopicTest {
 
     private static final String APP_NAME = "UseProducerRecordTopicTest";
 
-    @Server("ProducerRecordMessagingServer")
+    @Server("SimpleRxMessagingServer")
     @TestServlet(contextRoot = APP_NAME, servlet = UseProducerRecordTopicServlet.class)
     public static LibertyServer server;
 

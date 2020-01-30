@@ -29,7 +29,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWrite
 public class UseProducerRecordTopicServlet extends AbstractKafkaTestServlet {
 
     @Test
-    public void testConfiguredTopic() {
+    public void testProducerRecordTopic() {
         String topicIn = ProducerRecordBean.CHANNEL_IN;
         String expectedTopicOut = ProducerRecordBean.PRODUCER_RECORD_TOPIC;
         String unexpectedTopicOut = ProducerRecordBean.CONFIGURED_TOPIC;

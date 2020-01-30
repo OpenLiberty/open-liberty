@@ -30,7 +30,7 @@ public class ConsumerRecordBean {
     public static final String TOPIC = CHANNEL_IN;
     public static final String KEY = "test_key";
     public static final String VALUE = "hello";
-    //public static final int PARTITION = 9;
+    public static final int PARTITION = 9;
     public static final long TIMESTAMP = 100L;
     public static final int NUM_HEADERS = 5;
     public static final String HEADER_KEY_PREFIX = "headerKey";
@@ -47,7 +47,7 @@ public class ConsumerRecordBean {
         String incomingKey = consumerRecord.key();
         String incomingValue = consumerRecord.value();
         String incomingTopic = consumerRecord.topic();
-        //int incomingPartition = consumerRecord.partition();
+        int incomingPartition = consumerRecord.partition();
         long incomingTimestamp = consumerRecord.timestamp();
         Header[] incomingHeaders = consumerRecord.headers().toArray();
 
@@ -63,9 +63,9 @@ public class ConsumerRecordBean {
             return Message.of("Wrong ConsumerRecord Topic. Expected: " + TOPIC + " - Actual: " + incomingTopic);
         }
 
-//        if (PARTITION != incomingPartition) {
-//            return Message.of("Wrong ConsumerRecord Partition. Expected: " + PARTITION + " - Actual: " + incomingPartition);
-//        }
+        if (PARTITION != incomingPartition) {
+            return Message.of("Wrong ConsumerRecord Partition. Expected: " + PARTITION + " - Actual: " + incomingPartition);
+        }
 
         if (TIMESTAMP != incomingTimestamp) {
             return Message.of("Wrong ConsumerRecord Timestamp. Expected: " + TIMESTAMP + " - Actual: " + incomingTimestamp);

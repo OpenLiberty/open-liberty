@@ -41,7 +41,7 @@ public class ConsumerRecordServlet extends AbstractKafkaTestServlet {
             input_headers.add(header);
         }
 
-        ProducerRecord<String, String> record = new ProducerRecord<String, String>(ConsumerRecordBean.CHANNEL_IN, null, ConsumerRecordBean.TIMESTAMP, ConsumerRecordBean.KEY, ConsumerRecordBean.VALUE, input_headers);
+        ProducerRecord<String, String> record = new ProducerRecord<String, String>(ConsumerRecordBean.CHANNEL_IN, ConsumerRecordBean.PARTITION, ConsumerRecordBean.TIMESTAMP, ConsumerRecordBean.KEY, ConsumerRecordBean.VALUE, input_headers);
         writer.sendMessage(record, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         KafkaReader<String, String> reader = kafkaTestClient.readerFor(ConsumerRecordBean.CHANNEL_OUT);

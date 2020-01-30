@@ -41,7 +41,7 @@ public class UseConfiguredTopicTest {
 
     private static final String APP_NAME = "KafkaMessageTest";
 
-    @Server("ProducerRecordMessagingServer")
+    @Server("SimpleRxMessagingServer")
     @TestServlet(contextRoot = APP_NAME, servlet = UseConfiguredTopicServlet.class)
     public static LibertyServer server;
 

@@ -13,6 +13,14 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -41,12 +49,20 @@ public class ConsumerRecordTest {
 
     private static final String APP_NAME = "ConsumerRecordTest";
 
-    @Server("ProducerRecordMessagingServer")
+    @Server("SimpleRxMessagingServer")
     @TestServlet(contextRoot = APP_NAME, servlet = ConsumerRecordServlet.class)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
+
+        // Create a topic with 10 partitions
+        Map<String, Object> adminClientProps = new HashMap<>();
+        adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, PlaintextTests.kafkaContainer.getBootstrapServers());
+        AdminClient adminClient = AdminClient.create(adminClientProps);
+
+        NewTopic newTopic = new NewTopic(ConsumerRecordBean.CHANNEL_IN, 10, (short) 1);
+        adminClient.createTopics(Collections.singleton(newTopic)).all().get(KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
 
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
