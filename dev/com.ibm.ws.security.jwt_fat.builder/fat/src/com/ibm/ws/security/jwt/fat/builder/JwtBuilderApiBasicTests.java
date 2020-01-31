@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2109 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
@@ -96,13 +97,15 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // Start server that will build the JWT Token
         serverTracker.addServer(builderServer);
-        builderServer.startServerUsingExpandedConfiguration("server_basicRegistry.xml");
+        builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
+        builderServer.startServerUsingExpandedConfiguration("server_basicRegistry.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // start server to run protected app - make sure we can use the JWT Token that we produce
         serverTracker.addServer(rsServer);
         ServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
-        rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml");
+        rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
+        rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(rsServer, JWTBuilderConstants.BVT_SERVER_2_PORT_NAME_ROOT);
 
         protectedApp = SecurityFatHttpUtils.getServerUrlBase(rsServer) + "helloworld/rest/helloworld";
