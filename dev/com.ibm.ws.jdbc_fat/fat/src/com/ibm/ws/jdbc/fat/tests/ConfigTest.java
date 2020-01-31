@@ -173,7 +173,9 @@ public class ConfigTest extends FATServletClient {
 
     @After
     public void cleanUpPerTest() throws Exception {
+        server.setLogOnUpdate(false); //Reduce output that is not specific to the actual tests being run
         updateServerConfig(originalServerConfigUpdatedForJDBC, cleanUpExprs);
+        server.setLogOnUpdate(true);
         cleanUpExprs = EMPTY_EXPR_LIST;
     }
 
