@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
     private final ConcurrentLinkedQueue<ConnectionEventListener> listeners = new ConcurrentLinkedQueue<ConnectionEventListener>();
     final FVTManagedConnectionFactory mcf;
     final Subject subject;
+    final String user;
     private final XAConnection xacon;
 
     FVTManagedConnection(final FVTManagedConnectionFactory mcf, FVTConnectionRequestInfo cri, Subject subj) throws ResourceException {
@@ -70,6 +71,8 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
         } catch (SQLException x) {
             throw new ResourceAllocationException(x);
         }
+
+        this.user = userPwd == null ? null : userPwd[0];
     }
 
     /** {@inheritDoc} */

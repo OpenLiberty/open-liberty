@@ -28,4 +28,5 @@ fat.project: true
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.ws.logging
+	com.ibm.ws.logging,\
+	com.ibm.ws.security.jaas.common;version=latest
