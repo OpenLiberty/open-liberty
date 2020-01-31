@@ -39,24 +39,9 @@ public class CDIApplication32 extends Application implements Serializable {
     public Set<Object> getSingletons() {
        
         LinkedHashSet<Object> classes = new LinkedHashSet<>();
-        TestResource resource = getBean(TestResource.class);
-//        TestResource resource = new TestResource();
+        TestResource resource = CDIUtils.getBean(TestResource.class);
         classes.add(resource);
         return classes;
-    }
-    
-    public <E> E getBean(Class<E> clazz, Annotation... qualifiers) {
-
-        Instance<E> instance = CDI.current().select(clazz, qualifiers);
-
-        if (instance.isUnsatisfied()) {
-            throw new RuntimeException();
-        }
-        if (instance.isAmbiguous()) {
-            throw new RuntimeException();
-        }
-
-        return instance.get();
     }
 }
 

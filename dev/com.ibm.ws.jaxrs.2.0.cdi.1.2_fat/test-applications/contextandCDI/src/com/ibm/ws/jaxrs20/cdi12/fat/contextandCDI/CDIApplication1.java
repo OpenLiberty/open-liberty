@@ -41,30 +41,16 @@ public class CDIApplication1 extends Application {
     public Set<Object> getSingletons() {
        
         LinkedHashSet<Object> classes = new LinkedHashSet<>();
-        CDIFilter filter = getBean(CDIFilter.class);
+        CDIFilter filter = CDIUtils.getBean(CDIFilter.class);
         classes.add(filter);
-        CDIFilter2 filter2 = getBean(CDIFilter2.class);
+        CDIFilter2 filter2 = CDIUtils.getBean(CDIFilter2.class);
         classes.add(filter2);
         // @Dependent scope providers call @PostConstruct method to be called twice.  https://github.com/OpenLiberty/open-liberty/issues/10633 
         // CDIFilter3 filter3 = getBean(CDIFilter3.class);
         // classes.add(filter3);
-        CDIFilter4 filter4 = getBean(CDIFilter4.class);
+        CDIFilter4 filter4 = CDIUtils.getBean(CDIFilter4.class);
         classes.add(filter4);
         return classes;
-    }
-    
-    public <E> E getBean(Class<E> clazz, Annotation... qualifiers) {
-
-        Instance<E> instance = CDI.current().select(clazz, qualifiers);
-
-        if (instance.isUnsatisfied()) {
-            throw new RuntimeException();
-        }
-        if (instance.isAmbiguous()) {
-            throw new RuntimeException();
-        }
-
-        return instance.get();
     }
 }
 

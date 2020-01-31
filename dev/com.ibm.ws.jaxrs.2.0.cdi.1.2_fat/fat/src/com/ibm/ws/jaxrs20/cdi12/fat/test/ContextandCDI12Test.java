@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -49,12 +49,14 @@ public class ContextandCDI12Test extends AbstractTest {
     }
 
     @Before
-    public void preTest() {
+    public void preTest() throws Exception {
         serverRef = server;
+        server.startServer(true);
     }
 
     @After
-    public void afterTest() {
+    public void afterTest() throws Exception {
+        server.stopServer(ignore_messages);
         serverRef = null;
     }
     
@@ -62,144 +64,148 @@ public class ContextandCDI12Test extends AbstractTest {
     public void verifySuccess(String filterName, int messageSize) throws Exception {
         String message = filterName + "#init: servletContext.getServletContextName contextandCDI";        
         List<String> messages = serverRef.findStringsInLogs(message);
-        assertTrue("Expect to get CDI test message: " + message, messages.size() == messageSize);
+        assertEquals("Expect to get CDI init test message: " + message, messageSize, messages.size());
         message = filterName + "#filter#requestContext: servletContext.getServletContextName contextandCDI";        
         messages = serverRef.findStringsInLogs(message);
-        assertTrue("Expect to get CDI test message: " + message, messages.size() == messageSize); 
+        assertEquals("Expect to get CDI request test message: " + message, messageSize, messages.size());
+        if (filterName.contentEquals("CDIFilter")) {
+            message = filterName + "#init: servletContext.getServletContextName2 contextandCDI";        
+            messages = serverRef.findStringsInLogs(message);
+            assertEquals("Expect to get CDI init test message: " + message, messageSize, messages.size());
+            message = filterName + "#filter#requestContext: servletContext.getServletContextName2 contextandCDI";        
+            messages = serverRef.findStringsInLogs(message);
+            assertEquals("Expect to get CDI request test message: " + message, messageSize, messages.size());
+        }
+ 
+    }
+    
+    public void verifySuccess2(String resourceName, int messageSize) throws Exception {        
+        String message = resourceName + "#get: servletContext.getServletContextName contextandCDI";        
+        List<String> messages = serverRef.findStringsInLogs(message);
+        assertEquals("Expect to get resource test message: " + message, messageSize, messages.size());        
+        if (resourceName.contentEquals("TestResource")) {
+            message = resourceName + "#get: servletContext.getServletContextName2 contextandCDI";        
+            messages = serverRef.findStringsInLogs(message);
+            assertEquals("Expect to get resource test message: " + message, messageSize, messages.size());
+        }       
+        
     }
 
     @Test
     public void testContextandCDIResource1() throws Exception {
-        if (server.isStarted()) {
-            server.stopServer(ignore_messages); 
-        }        
-        server.startServer(true);        
+        
         runGetMethod("/contextandCDI1/resource", 200, "ok", true);
         verifySuccess("CDIFilter", 1);
+        verifySuccess2("TestResource", 1);
         runGetMethod("/contextandCDI1/resource2", 200, "ok", true);
         verifySuccess("CDIFilter2", 2);
+        verifySuccess2("TestResource2", 1);
         //@Dependent scope providers call @PostConstruct method to be called twice.  https://github.com/OpenLiberty/open-liberty/issues/10633 
         //runGetMethod("/contextandCDI1/resource3", 200, "ok", true);
-        //verifySuccess("CDIFilter3");;
+        //verifySuccess("CDIFilter3");
+        //verifySuccess2("TestResource3", 1);
         runGetMethod("/contextandCDI1/resource4", 200, "ok", true);
         verifySuccess("CDIFilter4", 3);
+        verifySuccess2("TestResource4", 1);
     }
     
     @Test
     public void testContextandCDIResource2() throws Exception {
-        if (server.isStarted()) {
-            server.stopServer(ignore_messages); 
-        }        
-        server.startServer(true);        
+       
         runGetMethod("/contextandCDI2/resource", 200, "ok", true);
         verifySuccess("CDIFilter", 1);
+        verifySuccess2("TestResource", 1);
         runGetMethod("/contextandCDI1/resource2", 200, "ok", true);
         verifySuccess("CDIFilter2", 2);
+        verifySuccess2("TestResource2", 1);
         //@Dependent scope providers call @PostConstruct method to be called twice.  https://github.com/OpenLiberty/open-liberty/issues/10633 
         //runGetMethod("/contextandCDI1/resource3", 200, "ok", true);
-        //verifySuccess("CDIFilter3");;
+        //verifySuccess("CDIFilter3");
+        //verifySuccess2("TestResource3", 1);
         runGetMethod("/contextandCDI1/resource4", 200, "ok", true);
         verifySuccess("CDIFilter4", 3);
+        verifySuccess2("TestResource4", 1);
     }
     
   @Test
   public void testContextandCDIResource3() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+      
       runGetMethod("/contextandCDI3/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource4() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+       
       runGetMethod("/contextandCDI4/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource5() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+        
       runGetMethod("/contextandCDI5/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource6() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+       
       runGetMethod("/contextandCDI6/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource11() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
+       
       server.startServer(true);        
       runGetMethod("/contextandCDI11/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource12() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+       
       runGetMethod("/contextandCDI12/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource21() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+        
       runGetMethod("/contextandCDI21/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource22() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+      
       runGetMethod("/contextandCDI22/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource31() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+      
       runGetMethod("/contextandCDI31/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource32() throws Exception {
-      if (server.isStarted()) {
-          server.stopServer(ignore_messages); 
-      }        
-      server.startServer(true);        
+      
       runGetMethod("/contextandCDI32/resource", 200, "ok", true);
       verifySuccess("CDIFilter", 1);
+      verifySuccess2("TestResource", 1);
   }
 
 }

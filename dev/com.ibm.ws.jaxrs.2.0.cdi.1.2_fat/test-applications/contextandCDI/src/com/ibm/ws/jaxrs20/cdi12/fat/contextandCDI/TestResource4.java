@@ -13,16 +13,22 @@ package com.ibm.ws.jaxrs20.cdi12.fat.contextandCDI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.enterprise.context.SessionScoped;
+import javax.servlet.ServletContext;
+
 import java.io.Serializable;
 
 @SessionScoped
 @Path("resource4")
 public class TestResource4 implements Serializable {
-
+    
+    @Context ServletContext servletContext;
+    
     @GET
     public Response get() {
+        System.out.println("TestResource4#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
         return Response.ok("ok").build();
     }
 }

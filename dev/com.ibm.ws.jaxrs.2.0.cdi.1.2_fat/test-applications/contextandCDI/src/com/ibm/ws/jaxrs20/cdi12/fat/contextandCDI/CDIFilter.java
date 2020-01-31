@@ -26,16 +26,19 @@ import javax.ws.rs.core.Context;
 public class CDIFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     @Context ServletContext servletContext;
+    @Inject ServletContext servletContext2; 
 
     @PostConstruct
     public void init() {
         System.out.println("CDIFilter#init: servletContext.getContextPath " + servletContext.getContextPath() );         
         System.out.println("CDIFilter#init: servletContext.getServletContextName " + servletContext.getServletContextName() );
+        System.out.println("CDIFilter#init: servletContext.getServletContextName2 " + servletContext2.getServletContextName() );
         new Exception("CDIFilter#init ").printStackTrace(System.out);
     }
 
     public void filter(ContainerRequestContext requestContext) throws IOException {        
-        System.out.println("CDIFilter#filter#requestContext: servletContext.getServletContextName " + servletContext.getServletContextName() );        
+        System.out.println("CDIFilter#filter#requestContext: servletContext.getServletContextName " + servletContext.getServletContextName() );
+        System.out.println("CDIFilter#filter#requestContext: servletContext.getServletContextName2 " + servletContext2.getServletContextName() );
         new Exception("CDIFilter#filter ").printStackTrace(System.out);
     }
     

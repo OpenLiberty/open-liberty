@@ -10,23 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat.contextandCDI;
 
+import java.lang.annotation.Annotation;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.enterprise.context.RequestScoped;
-import javax.servlet.ServletContext;
+public class CDIUtils {
 
-@RequestScoped
-@Path("resource2")
-public class TestResource2 {
-    
-    @Context ServletContext servletContext;
-    
-    @GET    
-    public Response get() {
-        System.out.println("TestResource2#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
-        return Response.ok("ok").build();
+   public static <E> E getBean(Class<E> clazz, Annotation... qualifiers) {
+
+    Instance<E> instance = CDI.current().select(clazz, qualifiers);
+
+    if (instance.isUnsatisfied()) {
+        throw new RuntimeException();
     }
+    if (instance.isAmbiguous()) {
+        throw new RuntimeException();
+    }
+
+    return instance.get();
+  }
 }

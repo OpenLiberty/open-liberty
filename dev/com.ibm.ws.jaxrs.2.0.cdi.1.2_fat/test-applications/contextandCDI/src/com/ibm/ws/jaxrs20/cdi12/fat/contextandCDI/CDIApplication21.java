@@ -39,23 +39,9 @@ public class CDIApplication21 extends Application {
     public Set<Object> getSingletons() {
        
         LinkedHashSet<Object> classes = new LinkedHashSet<>();
-        CDIFilter filter = getBean(CDIFilter.class);
+        CDIFilter filter = CDIUtils.getBean(CDIFilter.class);
         classes.add(filter);
         return classes;
-    }
-    
-    public <E> E getBean(Class<E> clazz, Annotation... qualifiers) {
-
-        Instance<E> instance = CDI.current().select(clazz, qualifiers);
-
-        if (instance.isUnsatisfied()) {
-            throw new RuntimeException();
-        }
-        if (instance.isAmbiguous()) {
-            throw new RuntimeException();
-        }
-
-        return instance.get();
     }
 }
 

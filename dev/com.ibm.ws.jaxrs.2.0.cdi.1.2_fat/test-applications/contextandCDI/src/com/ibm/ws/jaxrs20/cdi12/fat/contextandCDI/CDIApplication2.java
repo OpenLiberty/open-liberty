@@ -40,29 +40,15 @@ public class CDIApplication2 extends Application {
     public Set<Object> getSingletons() {
        
         LinkedHashSet<Object> classes = new LinkedHashSet<>();
-        TestResource resource = getBean(TestResource.class);
+        TestResource resource = CDIUtils.getBean(TestResource.class);
         classes.add(resource);
-        TestResource2 resource2 = getBean(TestResource2.class);
+        TestResource2 resource2 = CDIUtils.getBean(TestResource2.class);
         classes.add(resource2);
-        TestResource3 resource3 = getBean(TestResource3.class);
+        TestResource3 resource3 = CDIUtils.getBean(TestResource3.class);
         classes.add(resource3);
-        TestResource4 resource4 = getBean(TestResource4.class);
+        TestResource4 resource4 = CDIUtils.getBean(TestResource4.class);
         classes.add(resource4);
         return classes;
-    }
-    
-    public <E> E getBean(Class<E> clazz, Annotation... qualifiers) {
-
-        Instance<E> instance = CDI.current().select(clazz, qualifiers);
-
-        if (instance.isUnsatisfied()) {
-            throw new RuntimeException();
-        }
-        if (instance.isAmbiguous()) {
-            throw new RuntimeException();
-        }
-
-        return instance.get();
     }
 }
 
