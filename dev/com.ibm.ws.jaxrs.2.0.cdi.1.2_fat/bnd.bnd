@@ -17,6 +17,7 @@ src: \
     test-applications/beanvalidation/src,\
     test-applications/complex/src,\
     test-applications/contextandclient/src,\
+    test-applications/contextandCDI/src,\
     test-applications/disable/src,\
     test-applications/interceptor/src,\
     test-applications/lifecyclemethod/src,\
