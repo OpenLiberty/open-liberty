@@ -13,13 +13,10 @@ package com.ibm.ws.security.social.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +26,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.web.WebUtils;
+import com.ibm.ws.security.common.lang.LocalesModifier;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginWebappConfig;
 import com.ibm.ws.security.social.TraceConstants;
@@ -251,7 +249,7 @@ public class SelectionPageGenerator {
         }
         return "";
     }
-    
+ 
     String createHtmlHead() {
         StringBuilder html = new StringBuilder();
         html.append("<head>\n");
@@ -279,36 +277,7 @@ public class SelectionPageGenerator {
     }
 
     String getHtmlTitle() {
-        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_TITLE");
-    }
-
-    /**
-     * Determines the preferred Locale of the request, <b>as supported by the Liberty profile</b>.
-     * In other words, if the most-preferred Locale that is requested that is not supported by the
-     * Liberty runtime, then the next most-preferred Locale will be used, finally resulting in the
-     * JVM's default Locale.
-     * <p>
-     * The net effect of this is any French locale (fr, fr_ca, fr_fr, etc) would resolve to just 'fr'.
-     * Any Portugese locale ('pt') other than Brazillian ('pt_br') would resolve to the JVM default
-     * encoding. Portugese Brazillian is tranlated to, so 'pt_br' is returned. Any English locale
-     * is returned as 'en'. Any unrecognized locale resolves to the JVM default.
-     * 
-     * @return The Locale for the request. The best match supported by the Liberty runtime is returned, or the defualt Locale.
-     */
-    public static Locale getLocale(final Enumeration<Locale> locales) {
-        while (locales.hasMoreElements()) {
-            final Locale requestedLocale = locales.nextElement();
-            // If its English, we're done. Just exit with that because we support all English.
-            if (requestedLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
-                return requestedLocale;
-            }
-            final Locale loadedLocale = ResourceBundle.getBundle(TraceConstants.MESSAGE_BUNDLE, requestedLocale).getLocale();
-            if (!loadedLocale.toString().isEmpty() && requestedLocale.toString().startsWith(loadedLocale.toString())) {
-                return loadedLocale;
-            }
-        }
-
-        return Locale.getDefault();
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_TITLE");
     }
     
     String createHtmlBody() {
@@ -358,7 +327,7 @@ public class SelectionPageGenerator {
     }
 
     String getPageHeader() {
-        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_HEADER");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_HEADER");
     }
 
     String createHtmlFormWithButtons() {
@@ -423,7 +392,7 @@ public class SelectionPageGenerator {
     }
 
     String getMiddleSectionText() {
-        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_ALTERNATE_TEXT");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_ALTERNATE_TEXT");
     }
 
     String createHtmlForCredentials() {
@@ -477,7 +446,7 @@ public class SelectionPageGenerator {
     }
 
     String getUsernamePlaceholderText() {
-        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_USERNAME");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_USERNAME");
     }
 
     String createPasswordInputHtml() {
@@ -488,7 +457,7 @@ public class SelectionPageGenerator {
     }
 
     String getPasswordPlaceholderText() {
-        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_PASSWORD");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_PASSWORD");
     }
 
     String createFormSubmitButtonHtml() {
@@ -498,7 +467,7 @@ public class SelectionPageGenerator {
     }
 
     String getSubmitButtonText() {
-        return Tr.formatMessage(tc, getLocale(request.getLocales()), "SELECTION_PAGE_SUBMIT");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_SUBMIT");
     }
 
     /**
