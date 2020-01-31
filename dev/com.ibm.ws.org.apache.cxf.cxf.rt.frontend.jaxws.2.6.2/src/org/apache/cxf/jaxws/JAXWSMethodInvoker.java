@@ -101,6 +101,17 @@ public class JAXWSMethodInvoker extends AbstractJAXWSMethodInvoker {
                 }
             }
 
+            LOG.log(Level.FINE, "Checking for org.apache.cxf.stax.force-start-document in MessageContext...");
+            boolean forceXmlDecl = MessageUtils.isTrue(ctx.get("org.apache.cxf.stax.force-start-document"));
+            if (forceXmlDecl) {
+               LOG.log(Level.FINE, "Setting org.apache.cxf.stax.force-start-document property in Message: " + forceXmlDecl);
+               Message m2 = exchange.getOutMessage();
+               if (m2 != null) {
+                   LOG.log(Level.FINE, "Setting force-start-document in Message: " + m2);
+                   m2.put("org.apache.cxf.stax.force-start-document", Boolean.TRUE);
+               }
+            }
+
             //clear the WebServiceContextImpl's ThreadLocal variable
             WebServiceContextImpl.clear();
             
