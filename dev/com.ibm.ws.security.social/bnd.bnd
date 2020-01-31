@@ -54,7 +54,8 @@ com.ibm.ws.security.social.internal.GoogleLoginConfigImpl,\
 com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl,\
 com.ibm.ws.security.social.internal.TwitterLoginConfigImpl, \
 com.ibm.ws.security.social.internal.SocialLoginWebappConfigImpl, \
-com.ibm.ws.security.social.internal.OidcLoginConfigImpl
+com.ibm.ws.security.social.internal.OidcLoginConfigImpl, \
+com.ibm.ws.security.social.internal.OkdServiceLoginImpl
 
 -dsannotations-inherit = true
 

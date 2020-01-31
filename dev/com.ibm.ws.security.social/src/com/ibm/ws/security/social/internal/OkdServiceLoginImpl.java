@@ -21,6 +21,8 @@ import javax.net.ssl.SSLSocketFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -40,19 +42,30 @@ import com.ibm.ws.security.social.internal.utils.SocialConfigUtils;
 import com.ibm.ws.security.social.tai.SocialLoginTAI;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+@Component(name = "com.ibm.ws.security.social.okdServiceLogin", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=okdServiceLogin" })
 public class OkdServiceLoginImpl implements SocialLoginConfig {
     public static final TraceComponent tc = Tr.register(OkdServiceLoginImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     public static final String KEY_UNIQUE_ID = "id";
-    private String uniqueId = null;
+    private String uniqueId;
+
+    public static final String KEY_userValidationApi = "userValidationApi";
+    private String userValidationApi;
+
+    public static final String KEY_apiResponseCacheTime = "apiResponseCacheTime";
+    private long apiResponseCacheTime = 1000 * 60 * 10;
+
+    public static final String KEY_authFilterRef = "authFilterRef";
+    private String authFilterRef;
+
+    public static final String KEY_realmName = "realmName";
+    private String realmName;
 
     public static final String KEY_sslRef = "sslRef";
     private String sslRef;
 
     private UserApiConfig[] userApiConfigs = null;
-    private String authFilterRef;
     private AuthenticationFilter authFilter = null;
-
     private SSLContext sslContext = null;
     private SSLSocketFactory sslSocketFactory = null;
 
@@ -89,9 +102,33 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
         Tr.info(tc, "SOCIAL_LOGIN_CONFIG_DEACTIVATED", uniqueId);
     }
 
-    public void initProps(ComponentContext cc, Map<String, Object> props) {
+    private void initProps(ComponentContext cc, Map<String, Object> props) {
         uniqueId = configUtils.getConfigAttribute(props, KEY_UNIQUE_ID);
-        // TODO
+        userValidationApi = configUtils.getConfigAttribute(props, KEY_userValidationApi);
+        apiResponseCacheTime = configUtils.getLongConfigAttribute(props, KEY_apiResponseCacheTime, apiResponseCacheTime);
+        authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
+        realmName = configUtils.getConfigAttribute(props, KEY_realmName);
+        sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
+
+        initializeMembersAfterConfigAttributesPopulated(props);
+    }
+
+    private void initializeMembersAfterConfigAttributesPopulated(Map<String, Object> props) {
+        initializeUserApiConfigs();
+        resetLazyInitializedMembers();
+    }
+
+    private void initializeUserApiConfigs() {
+        UserApiConfig[] results = new UserApiConfig[1];
+        results[0] = new UserApiConfigImpl(userValidationApi);
+        userApiConfigs = results;
+    }
+
+    protected void resetLazyInitializedMembers() {
+        // Lazy re-initialize of variables
+        authFilter = null;
+        sslContext = null;
+        sslSocketFactory = null;
     }
 
     @Override
@@ -129,8 +166,7 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
 
     @Override
     public String getUserApi() {
-        // TODO Auto-generated method stub
-        return null;
+        return userValidationApi;
     }
 
     @Override
@@ -167,24 +203,13 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
     }
 
     @Override
-    public SSLContext getSSLContext() throws SocialLoginException {
-        //        this.sslContext = socialConfigUtils.getSSLContext(uniqueId, sslContext, socialLoginServiceRef, sslRef);
-        //        return this.sslContext;
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public SSLSocketFactory getSSLSocketFactory() throws SocialLoginException {
-        //        this.sslSocketFactory = socialConfigUtils.getSSLSocketFactory(uniqueId, sslContext, socialLoginServiceRef, sslRef);
-        //        return this.sslSocketFactory;
-        // TODO Auto-generated method stub
-        return null;
+        this.sslSocketFactory = socialConfigUtils.getSSLSocketFactory(uniqueId, sslContext, socialLoginServiceRef, sslRef);
+        return this.sslSocketFactory;
     }
 
     @Override
     public HashMap<String, PublicKey> getPublicKeys() throws SocialLoginException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -235,8 +260,7 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
 
     @Override
     public String getRealmName() {
-        // TODO Auto-generated method stub
-        return null;
+        return realmName;
     }
 
     @Override
@@ -246,12 +270,14 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
 
     @Override
     public String getUserNameAttribute() {
-        return null;
+        // TODO - This is hard-coded to reflect the v1.User schema definition
+        return "name";
     }
 
     @Override
     public String getGroupNameAttribute() {
-        return null;
+        // TODO - This is hard-coded to reflect the v1.User schema definition
+        return "groups";
     }
 
     @Override
@@ -281,13 +307,11 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
 
     @Override
     public PublicKey getPublicKey() throws SocialLoginException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public PrivateKey getPrivateKey() throws SocialLoginException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -322,8 +346,7 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
     }
 
     public long getApiResponseCacheTime() {
-        // TODO Auto-generated method stub
-        return 0;
+        return apiResponseCacheTime;
     }
 
     @Override

@@ -14,7 +14,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -56,8 +55,6 @@ public interface SocialLoginConfig {
     String getSslRef();
 
     AuthenticationFilter getAuthFilter();
-
-    SSLContext getSSLContext() throws SocialLoginException;
 
     SSLSocketFactory getSSLSocketFactory() throws SocialLoginException;
 
