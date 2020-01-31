@@ -12,19 +12,11 @@ package com.ibm.ws.install.featureUtility.cli;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.InstallKernel;
-import com.ibm.ws.install.InstallKernelFactory;
-import com.ibm.ws.install.InstallKernelInteractive;
+import com.ibm.ws.install.*;
 import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallKernelImpl;
@@ -35,11 +27,16 @@ import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.product.utility.CommandConsole;
 import com.ibm.ws.product.utility.CommandTaskRegistry;
 import com.ibm.ws.product.utility.ExecutionContext;
 import com.ibm.ws.product.utility.extension.ValidateCommandTask;
+import wlp.lib.extract.SelfExtract;
 
 public class InstallFeatureAction implements ActionHandler {
 
@@ -53,6 +50,9 @@ public class InstallFeatureAction implements ActionHandler {
         private Boolean noCache;
         private boolean acceptLicense;
         private ProgressBar progressBar;
+        Set<InstallLicense> featureLicenses = Collections.emptySet();
+        static final private String UNSPECIFIED_LICENSE_TYPE = "UNSPECIFIED";
+
 
         @Override 
         public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -135,6 +135,14 @@ public class InstallFeatureAction implements ActionHandler {
 
         private ExitCode assetInstallInit(Collection<String> assetIds) {
                 featureNames.addAll(assetIds);
+                try {
+                        installKernel.resolve(featureNames, false);
+                        featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
+                } catch (InstallException e) {
+                        logger.severe(e.getMessage());
+                        return FeatureUtilityExecutor.returnCode(e.getRc());
+                }
+
                 return ReturnCode.OK;
         }
 
@@ -159,9 +167,26 @@ public class InstallFeatureAction implements ActionHandler {
                 return ReturnCode.OK;
         }
 
+        private boolean shouldNotShowLicense(){
+                return acceptLicense || determineIfOpenLiberty();
+        }
 
         private ExitCode execute() {
                 ExitCode rc = ReturnCode.OK;
+
+                if(!shouldNotShowLicense()) {
+                        logger.fine("We should show license.");
+                        rc = handleLicenseAcknowledgmentAcceptance();
+                        if (!!!rc.equals(ReturnCode.OK)) {
+                                return rc;
+                        }
+                        rc = handleLicenseAcceptance();
+                        if (!!!rc.equals(ReturnCode.OK)) {
+                                return rc;
+                        }
+                } else {
+                        logger.fine("not showign lciense");
+                }
 
                 if ( !featureNames.isEmpty()) {
                         rc = install();
@@ -181,6 +206,164 @@ public class InstallFeatureAction implements ActionHandler {
 
                 return rc;
         }
+
+        private boolean determineIfOpenLiberty() {
+                try {
+                        for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                                        return true;
+                                }
+                        }
+                } catch (ProductInfoParseException e) {
+                        e.printStackTrace();
+                } catch (DuplicateProductInfoException e) {
+                        e.printStackTrace();
+                } catch (ProductInfoReplaceException e) {
+                        e.printStackTrace();
+                }
+                return false;
+        }
+
+
+
+
+        protected ReturnCode viewLicense(boolean showAgreement) {
+                for (InstallLicense license : featureLicenses) {
+                        if (showAgreement) {
+                                if (license.getAgreement() != null) {
+                                        System.out.println(license.getAgreement());
+                                }
+                        } else {
+                                if (license.getInformation() != null) {
+                                        System.out.println(license.getInformation());
+                                }
+                        }
+                        System.out.println();
+                }
+                return ReturnCode.OK;
+        }
+
+        private Set<InstallLicense> getLicenseToAccept(Set<String> installedLicense, Set<InstallLicense> featureLicense) {
+                HashSet<InstallLicense> licenseToAccept = new HashSet<InstallLicense>();
+                if (featureLicense != null) {
+                        for (InstallLicense license : featureLicense) {
+                                if (!!!isUnspecifiedType(license) && !!!installedLicense.contains(license.getId())) {
+                                        licenseToAccept.add(license);
+                                }
+                        }
+                }
+                return licenseToAccept;
+        }
+
+        private boolean isUnspecifiedType(InstallLicense license) {
+                return license.getType() != null && license.getType().equals(UNSPECIFIED_LICENSE_TYPE);
+        }
+
+        private String getLicenseAcknowledgment(Set<InstallLicense> featureLicense) {
+                for (InstallLicense license : featureLicense) {
+                        if (isUnspecifiedType(license)) {
+                                return license.getAgreement();
+                        }
+                }
+                return null;
+        }
+
+        private ReturnCode handleLicenseAcknowledgmentAcceptance() {
+                String licenseAcknowledgment = getLicenseAcknowledgment(featureLicenses);
+                if (licenseAcknowledgment != null && !!!licenseAcknowledgment.trim().equals("")) {
+                        showMessagesForAdditionalFeatures();
+                        if (acceptLicense) {
+                                // Indicate license acceptance via option
+                                SelfExtract.wordWrappedOut(SelfExtract.format("licenseAccepted", "--acceptLicense"));
+                                System.out.println();
+                        } else {
+                                System.out.println();
+                                System.out.println(licenseAcknowledgment);
+                                System.out.println();
+                                boolean accept = SelfExtract.getResponse(SelfExtract.format("licensePrompt", new Object[] { "[1]", "[2]" }),
+                                        "1", "2");
+                                System.out.println();
+                                if (!accept) {
+                                        return ReturnCode.RUNTIME_EXCEPTION;
+                                }
+                        }
+                }
+                return ReturnCode.OK;
+        }
+
+        protected void showMessagesForAdditionalFeatures() {
+                // do nothing
+        }
+
+        protected ReturnCode handleLicenseAcceptance() {
+                Set<String> installedLicense = installKernel.getInstalledLicense();
+                Set<InstallLicense> licenseToAccept = getLicenseToAccept(installedLicense, featureLicenses);
+                if (!licenseToAccept.isEmpty()) {
+                        showMessagesForAdditionalFeatures();
+                }
+                for (InstallLicense license : licenseToAccept) {
+                        if (!!!handleLicenseAcceptance(license)) {
+                                return ReturnCode.RUNTIME_EXCEPTION;
+                        }
+                }
+                return ReturnCode.OK;
+        }
+
+        private boolean handleLicenseAcceptance(InstallLicense licenseToAccept) {
+                //
+                // Display license requirement
+                //
+                SelfExtract.wordWrappedOut(SelfExtract.format("licenseStatement", new Object[] { licenseToAccept.getProgramName(), licenseToAccept.getName() }));
+                System.out.println();
+
+                if (acceptLicense) {
+                        // Indicate license acceptance via option
+                        SelfExtract.wordWrappedOut(SelfExtract.format("licenseAccepted", "--acceptLicense"));
+                        System.out.println();
+                } else {
+                        // Check for license agreement: exit if not accepted.
+                        if (!obtainLicenseAgreement(licenseToAccept)) {
+                                return false;
+                        }
+                }
+                return true;
+        }
+
+        private boolean obtainLicenseAgreement(InstallLicense license) {
+                // Prompt for word-wrapped display of license agreement & information
+                boolean view;
+
+                SelfExtract.wordWrappedOut(SelfExtract.format("showAgreement", "--viewLicenseAgreement"));
+                view = SelfExtract.getResponse(SelfExtract.format("promptAgreement"), "", "xX");
+                if (view) {
+                        System.out.println(license.getAgreement());
+                        System.out.println();
+                }
+
+                SelfExtract.wordWrappedOut(SelfExtract.format("showInformation", "--viewLicenseInfo"));
+                view = SelfExtract.getResponse(SelfExtract.format("promptInfo"), "", "xX");
+                if (view) {
+                        System.out.println(license.getInformation());
+                        System.out.println();
+                }
+
+                System.out.println();
+                SelfExtract.wordWrappedOut(SelfExtract.format("licenseOptionDescription"));
+                System.out.println();
+
+                boolean accept = SelfExtract.getResponse(SelfExtract.format("licensePrompt", new Object[] { "[1]", "[2]" }),
+                        "1", "2");
+                System.out.println();
+
+                return accept;
+        }
+
+
+
+
+
+
+
 
         private boolean validateProduct() {
 //                logger.log(Level.INFO, "");

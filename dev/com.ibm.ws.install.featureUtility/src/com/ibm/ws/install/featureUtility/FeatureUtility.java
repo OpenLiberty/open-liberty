@@ -269,11 +269,9 @@ public class FeatureUtility {
      */
     @SuppressWarnings("unchecked")
     public void installFeatures() throws InstallException, IOException {
-        if(!!!handleLicenses()){
-            return; // TODO move this to installFeatureAction and instead throw runtime exception / return code
-        }
-
-
+//        if(!!!handleLicenses()){
+//            return; // TODO move this to installFeatureAction and instead throw runtime exception / return code
+//        }
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         // fine("resolved features: " + resolvedFeatures);
