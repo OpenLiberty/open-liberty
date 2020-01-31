@@ -106,10 +106,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
             String parameter;
             String fullMethodName = resourceClass.getName() + "/" + resourceMethod.getName() + "(";
             for (Class<?> p : parameterClasses) {
-             	parameter = p.getName();
-             	if (parameter.startsWith("[L")) {
-             		parameter = parameter.substring(((parameter.indexOf("L")) + 1 ),(parameter.lastIndexOf(";"))) + "[]";
-             	}
+             	parameter = p.getCanonicalName();
             	if (i > 0) {
             		fullMethodName = fullMethodName + "_" + parameter;
             	} else {
