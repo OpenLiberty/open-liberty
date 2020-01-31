@@ -16,10 +16,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -107,6 +107,8 @@ public class DelayAppStartupHealthCheckTest {
             boolean connectionExceptionEncountered = false;
             boolean first_time = true;
             boolean app_ready = false;
+            long start_time = System.currentTimeMillis();
+            long time_out = 180000; // 180000ms = 3min
 
             // Repeatedly hit the readiness endpoint until a response of 200 is received
             while (!app_ready) {
@@ -123,7 +125,6 @@ public class DelayAppStartupHealthCheckTest {
                 // We expect a connection refused as the ports are not open until server is fully started
                 if (first_time) {
                     log("testReadinessEndpointOnServerStart", "Testing the /health/ready endpoint as the server is still starting up.");
-                    startServerThread.join();
                     String failure_message = "The connection was not refused as required, but instead completed with response code: " + responseCode +
                                              " This is likely due to a rare timing issue where the server starts faster than we can hit the readiness endpoint."
                                              + "In that case there are no issues with the feature and this failure may be disregarded.";
@@ -132,13 +133,15 @@ public class DelayAppStartupHealthCheckTest {
                 } else {
                     if (responseCode == 200) {
                         app_ready = true;
+                    } else if (System.currentTimeMillis() - start_time > time_out) {
+                        throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
                     }
                 }
 
             }
         } catch (Exception e) {
             startServerThread.join();
-            fail("Encountered an error while Testing the /health/ready endpoint as the server and/or application(s) are starting up. Error: " + e);
+            fail("Encountered an issue while Testing the /health/ready endpoint as the server and/or application(s) are starting up ---> " + e);
         }
 
         // Access an application endpoint to verify the application is actually ready
@@ -146,21 +149,7 @@ public class DelayAppStartupHealthCheckTest {
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, APP_ENDPOINT);
         assertEquals("The Response Code was not 200 for the following endpoint: " + conReady.getURL().toString(), SUCCESS_RESPONSE_CODE,
                      conReady.getResponseCode());
-
-        // Check if the response is correct
-        String response_text = "";
-        String next_line = "";
-        String expected_response_text = "Served at: /DelayedHealthCheckAppTesting Delayed Servlet initialization.";
-        try {
-            BufferedReader br = HttpUtils.getResponseBody(conReady, "UTF-8");
-            while ((next_line = br.readLine()) != null) {
-                response_text += next_line;
-            }
-            br.close();
-        } catch (IOException e) {
-            fail("Encountered an error while reading from BufferedReader br. Error: " + e);
-        }
-        assertEquals("Expected " + expected_response_text + " but received " + response_text, expected_response_text, response_text);
+        HttpUtils.findStringInUrl(server1, APP_ENDPOINT, "Testing Delayed Servlet initialization.");
     }
 
     @Test
