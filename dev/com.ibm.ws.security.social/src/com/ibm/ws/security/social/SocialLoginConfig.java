@@ -116,8 +116,6 @@ public interface SocialLoginConfig {
     @Sensitive
     public String getUserApiToken();
 
-    public long getUserApiCacheTime();
-
     public boolean isAccessTokenRequired();
 
     public boolean isAccessTokenSupported();
