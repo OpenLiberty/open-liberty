@@ -299,6 +299,10 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
     @Override
     @Sensitive
     protected Object lookup(WSName subname) throws NamingException {
+        // 9099: detect empty lookup on a root context and return a new InitialContext with the same environment instead
+        if (subname.isEmpty()&&getNameInNamespace().isEmpty()) {
+          return new javax.naming.InitialContext(env);
+        }
         Object localObject = myNode.lookup(subname);
         return resolveObject(localObject, subname);
     }
