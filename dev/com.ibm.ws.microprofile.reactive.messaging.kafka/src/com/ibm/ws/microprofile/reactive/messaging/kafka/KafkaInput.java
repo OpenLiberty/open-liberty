@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
@@ -68,9 +69,11 @@ public class KafkaInput<K, V> {
      * Lock to synchronize access to the kafkaConsumer instance
      */
     private final ReentrantLock lock = new ReentrantLock();
+    private final KafkaAdapterFactory kafkaAdapterFactory;
 
     public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor, String topic, AckTracker ackTracker) {
         super();
+        this.kafkaAdapterFactory = kafkaAdapterFactory;
         this.kafkaConsumer = kafkaConsumer;
         this.executor = executor;
         this.topics = Collections.singleton(topic);
@@ -90,21 +93,23 @@ public class KafkaInput<K, V> {
     }
 
     private PublisherBuilder<Message<V>> createPublisher() {
-        PublisherBuilder<Message<V>> kafkaStream;
-        if (ackTracker != null) {
-            kafkaStream = ReactiveStreams.generate(() -> 0)
-                                         .flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync()))
-                                         .flatMap(Function.identity())
-                                         .map(this::wrapInMessage)
-                                         .takeWhile((record) -> this.running);
-        } else {
-            kafkaStream = ReactiveStreams.generate(() -> 0)
-                                         .flatMapCompletionStage(x -> pollKafkaAsync())
-                                         .flatMap(Function.identity())
-                                         .map(r -> Message.of(r.value()))
-                                         .takeWhile((record) -> this.running);
-        }
+        PublisherBuilder<Message<V>> kafkaStream = ReactiveStreams.generate(() -> 0)
+                                                                  .flatMapCompletionStage(this::getPublisherBuilderCompletionStage)
+                                                                  .flatMap(Function.identity())
+                                                                  .map(this::wrapInMessage)
+                                                                  .takeWhile((record) -> this.running);
+
         return kafkaStream;
+    }
+
+    private CompletionStage<? extends PublisherBuilder<ConsumerRecord<K, V>>> getPublisherBuilderCompletionStage(Integer x) {
+        CompletionStage<? extends PublisherBuilder<ConsumerRecord<K, V>>> cs;
+        if (this.ackTracker != null) {
+            cs = this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync());
+        } else {
+            cs = pollKafkaAsync();
+        }
+        return cs;
     }
 
     private CompletionStage<Void> commitOffsets(TopicPartition partition, OffsetAndMetadata offset) {
@@ -140,12 +145,18 @@ public class KafkaInput<K, V> {
     }
 
     private Message<V> wrapInMessage(ConsumerRecord<K, V> record) {
+        Message<V> message = null;
         try {
-            return Message.of(record.value(), this.ackTracker.trackRecord(record));
+            Supplier<CompletionStage<Void>> ack = null;
+            if (this.ackTracker != null) {
+                ack = this.ackTracker.trackRecord(record);
+            }
+            message = this.kafkaAdapterFactory.newIncomingKafkaMessage(record, ack);
         } catch (Throwable t) {
             Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
             throw t;
         }
+        return message;
     }
 
     public void shutdown() {

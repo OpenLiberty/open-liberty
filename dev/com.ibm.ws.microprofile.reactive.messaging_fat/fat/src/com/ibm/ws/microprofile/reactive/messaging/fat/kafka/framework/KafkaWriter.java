@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 /**
  * An interface for writing messages to a kafka topic. The key and message types are dependent on the KafkaProducer which is passed in.
  */
-public class ExtendedKafkaWriter<K, V> implements AutoCloseable {
+public class KafkaWriter<K, V> implements AutoCloseable {
 
     private final KafkaProducer<K, V> kafkaProducer;
     private final String topic;
@@ -35,10 +35,22 @@ public class ExtendedKafkaWriter<K, V> implements AutoCloseable {
      * @param kafkaProducer the configured KafkaProducer to use
      * @param topic         the topic name to write to
      */
-    public ExtendedKafkaWriter(KafkaProducer<K, V> kafkaProducer, String topic) {
+    public KafkaWriter(KafkaProducer<K, V> kafkaProducer, String topic) {
         super();
         this.kafkaProducer = kafkaProducer;
         this.topic = topic;
+    }
+
+    public RecordMetadata sendMessage(V message) {
+        return sendMessage(null, message);
+    }
+
+    public RecordMetadata sendMessage(V message, Duration timeout) {
+        return sendMessage(null, message, timeout);
+    }
+
+    public RecordMetadata sendMessage(V message, int partition, Duration timeout) {
+        return sendMessage(null, message, partition, timeout);
     }
 
     public RecordMetadata sendMessage(K key, V message) {
@@ -46,18 +58,17 @@ public class ExtendedKafkaWriter<K, V> implements AutoCloseable {
     }
 
     public RecordMetadata sendMessage(K key, V message, Duration timeout) {
-        try {
-            ProducerRecord<K, V> record = new ProducerRecord<>(topic, key, message);
-            Future<RecordMetadata> ack = kafkaProducer.send(record);
-            return ack.get(timeout.toMillis(), MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new RuntimeException("Error sending Kafka message", e);
-        }
+        ProducerRecord<K, V> record = new ProducerRecord<>(topic, key, message);
+        return sendMessage(record, timeout);
     }
 
     public RecordMetadata sendMessage(K key, V message, int partition, Duration timeout) {
+        ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, key, message);
+        return sendMessage(record, timeout);
+    }
+
+    public RecordMetadata sendMessage(ProducerRecord<K, V> record, Duration timeout) {
         try {
-            ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, key, message);
             Future<RecordMetadata> ack = kafkaProducer.send(record);
             return ack.get(timeout.toMillis(), MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
