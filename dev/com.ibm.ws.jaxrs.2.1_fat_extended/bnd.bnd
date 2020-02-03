@@ -17,6 +17,7 @@ src: \
   test-applications/classSubResApp/src,\
   test-applications/formApp/src,\
   test-applications/jsonbapp/src,\
+  test-applications/jsonbCharsetApp/src,\
   test-applications/jsonbContextResolverApp/src,\
   test-applications/mutableHeadersApp/src,\
   test-applications/patchapp/src,\
