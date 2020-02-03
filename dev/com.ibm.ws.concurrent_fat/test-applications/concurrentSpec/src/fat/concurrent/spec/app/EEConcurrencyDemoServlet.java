@@ -87,7 +87,7 @@ public class EEConcurrencyDemoServlet extends HttpServlet {
             else
                 out.println("missing or unrecognized test name parameter: " + test);
 
-            out.println("<!--COMPLETED SUCCESSFULLY-->");
+            out.println("<!--[TEST-SERVLET-SUCCESS]-->");
         } catch (Exception x) {
             throw new ServletException(x);
         }

@@ -35,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
  * Utilities for running tests using {@link FATServlet}-style output.
  */
 public class FATServletClient {
-    public static final String SUCCESS = "SUCCESS";
+    public static final String SUCCESS = "[TEST-SERVLET-SUCCESS]";
     public static final String TEST_METHOD = "testMethod";
 
     @Rule
