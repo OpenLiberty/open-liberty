@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1563,10 +1563,17 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Les beans enterprise d\u00e9clar\u00e
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Retirez l'utilisation du bean enterprise entity non pris en charge de l'application ou empaquetez le bean dans une application version 6 ou ant\u00e9rieure.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Impossible de lier l''interface {0} du bean {1} dans le module {2} de l''application {3} \u00e0 l''emplacement de nom {4}. L''interface {5} du bean {6} dans le module {7} de l''application {8} est d\u00e9j\u00e0 li\u00e9e \u00e0 l''emplacement de nom {4}. \
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Impossible de lier l''interface {0} du bean {1} dans le module {2} de l''application {3} \u00e0 l''emplacement de nom {4}. L''interface {5} du bean {6} dans le module {7} de l''application {8} est d\u00e9j\u00e0 li\u00e9e \u00e0 l''emplacement de nom {4}. \
 L''emplacement de nom {4} n''est pas accessible.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Chaque interface de bean enterprise doit sp\u00e9cifier un emplacement de liaison unique.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corrigez le fichier de liaison de l'une de ces deux interfaces de beans de mani\u00e8re \u00e0 ce que chaque interface ait un emplacement de liaison exclusif.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Chaque interface de bean enterprise doit sp\u00e9cifier un emplacement de liaison unique.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corrigez le fichier de liaison de l'une de ces deux interfaces de beans de mani\u00e8re \u00e0 ce que chaque interface ait un emplacement de liaison exclusif.
 
 
 

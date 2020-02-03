@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1552,9 +1552,16 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Objekty enterprise bean deklarovan\u0
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Odeberte pou\u017eit\u00ed nepodporovan\u00e9ho objektu enterprise bean z aplikace, nebo objekt typu bean zabalte do aplikace verze 6 nebo star\u0161\u00ed.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Rozhran\u00ed {0} objektu typu bean {1} v modulu {2} aplikace {3} nelze sv\u00e1zat s um\u00edst\u011bn\u00edm n\u00e1zvu {4}. Rozhran\u00ed {5} objektu typu bean {6} v modulu {7} aplikace {8} je ji\u017e sv\u00e1z\u00e1no s um\u00edst\u011bn\u00edm n\u00e1zvu {4}. Um\u00edst\u011bn\u00ed n\u00e1zvu {4} nen\u00ed p\u0159\u00edstupn\u00e9.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Pro ka\u017ed\u00e9 rozhran\u00ed objektu enterprise bean mus\u00ed b\u00fdt ur\u010deno jedine\u010dn\u00e9 um\u00edst\u011bn\u00ed vazby.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Opravte v\u00e1zac\u00ed soubor pro jedno z uveden\u00fdch rozhran\u00ed objektu typu bean nebo pro ob\u011b rozhran\u00ed tak, aby bylo pro ka\u017ed\u00e9 rozhran\u00ed definov\u00e1no jedine\u010dn\u00e9 um\u00edst\u011bn\u00ed vazby.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Rozhran\u00ed {0} objektu typu bean {1} v modulu {2} aplikace {3} nelze sv\u00e1zat s um\u00edst\u011bn\u00edm n\u00e1zvu {4}. Rozhran\u00ed {5} objektu typu bean {6} v modulu {7} aplikace {8} je ji\u017e sv\u00e1z\u00e1no s um\u00edst\u011bn\u00edm n\u00e1zvu {4}. Um\u00edst\u011bn\u00ed n\u00e1zvu {4} nen\u00ed p\u0159\u00edstupn\u00e9.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Pro ka\u017ed\u00e9 rozhran\u00ed objektu enterprise bean mus\u00ed b\u00fdt ur\u010deno jedine\u010dn\u00e9 um\u00edst\u011bn\u00ed vazby.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Opravte v\u00e1zac\u00ed soubor pro jedno z uveden\u00fdch rozhran\u00ed objektu typu bean nebo pro ob\u011b rozhran\u00ed tak, aby bylo pro ka\u017ed\u00e9 rozhran\u00ed definov\u00e1no jedine\u010dn\u00e9 um\u00edst\u011bn\u00ed vazby.
 
 
 

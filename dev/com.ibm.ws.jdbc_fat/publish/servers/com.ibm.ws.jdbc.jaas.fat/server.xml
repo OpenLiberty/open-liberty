@@ -28,7 +28,7 @@
 <!-- ### JDBC Drivers + library ### -->
 	<!-- Test: library + nested fileset -->
     <library id="AutomaticDerbyLibrary">
-      <fileset dir="${shared.resource.dir}/lib/AutomaticDerbyLibrary" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/AutomaticDerbyLibrary" includes="derby.jar"/>
     </library>
 
 	<!-- Test: nested Library + anonymous driver -->
@@ -229,7 +229,7 @@
     <javaPermission codebase="${shared.resource.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}anonymous/${env.ANON_DRIVER}" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}lib/AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
 	
 	<!-- Login module permission-->
@@ -241,6 +241,15 @@
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.HashMap" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    
+    <!-- Oracle JDBC test requirement -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    
+    <!-- Postgres JDBC test requirement -->
+    <javaPermission className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    
+    <!-- SQLServer JDBC test requirement -->
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
     
     <variable name="onError" value="FAIL"/>
 </server>

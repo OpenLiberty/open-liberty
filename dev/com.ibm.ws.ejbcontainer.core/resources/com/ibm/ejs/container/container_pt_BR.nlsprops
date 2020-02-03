@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1579,9 +1579,16 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Enterprise beans de entidade declarad
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Remova o uso do enterprise bean da entidade do aplicativo ou empacote o bean em um aplicativo vers\u00e3o 6 ou mais antigo.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: A interface {0} do bean {1} no m\u00f3dulo {2} do aplicativo {3} j\u00e1 foi ligada ao local de nome {4}. A interface {5} do bean {6} no m\u00f3dulo {7} do aplicativo {8} j\u00e1 est\u00e1 ligada ao local do nome {4}. O local do nome {4} n\u00e3o est\u00e1 acess\u00edvel.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Cada interface de enterprise bean deve especificar um local de liga\u00e7\u00e3o exclusivo.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corrija o arquivo de liga\u00e7\u00e3o de uma dessas duas interfaces de bean para que cada interface tenha um local de liga\u00e7\u00e3o exclusivo.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: A interface {0} do bean {1} no m\u00f3dulo {2} do aplicativo {3} j\u00e1 foi ligada ao local de nome {4}. A interface {5} do bean {6} no m\u00f3dulo {7} do aplicativo {8} j\u00e1 est\u00e1 ligada ao local do nome {4}. O local do nome {4} n\u00e3o est\u00e1 acess\u00edvel.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Cada interface de enterprise bean deve especificar um local de liga\u00e7\u00e3o exclusivo.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corrija o arquivo de liga\u00e7\u00e3o de uma dessas duas interfaces de bean para que cada interface tenha um local de liga\u00e7\u00e3o exclusivo.
 
 
 

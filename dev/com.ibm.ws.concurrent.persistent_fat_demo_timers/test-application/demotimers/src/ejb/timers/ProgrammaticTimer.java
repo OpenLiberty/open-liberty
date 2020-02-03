@@ -37,7 +37,7 @@ public class ProgrammaticTimer {
      */
     public Timer setTimer() {
         final TimerConfig config = new TimerConfig();
-        config.setInfo("Created Programmaticlly and Running Every 5 minute(s)");
+        config.setInfo("Created Programmatically and Running Every 5 minute(s)");
         config.setPersistent(true);
         ScheduleExpression exp = new ScheduleExpression().hour("*").minute("*/5").second("0");
         return timerService.createCalendarTimer(exp, config);

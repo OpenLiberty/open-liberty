@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.junit.Assert;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.internal.AcmeClient;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 
 /**
  * A simple HTTP server that will use authorizations stored in the
@@ -35,7 +36,6 @@ import com.ibm.ws.security.acme.internal.AcmeClient;
  * class is useful for testing {@link AcmeClient} outside of Liberty.
  */
 public class HttpChallengeServer {
-	private static final String ROOT_CONTEXT = "/.well-known/acme-challenge/";
 	private HttpServer server = null;
 	private AcmeClient acmeClient = null;
 	private int listenerPort;
@@ -77,7 +77,7 @@ public class HttpChallengeServer {
 						Log.info(HttpChallengeServer.class, "handle", "Received request: " + request.toString());
 
 						String uri = request.getRequestLine().getUri();
-						if (!uri.startsWith(ROOT_CONTEXT)) {
+						if (!uri.startsWith(AcmeConstants.ACME_CONTEXT_ROOT + "/")) {
 							response.setStatusCode(HttpStatus.SC_NOT_FOUND);
 						} else {
 
@@ -85,7 +85,7 @@ public class HttpChallengeServer {
 								response.setStatusCode(HttpStatus.SC_SERVICE_UNAVAILABLE);
 							} else {
 
-								String challenge = uri.replace(ROOT_CONTEXT, "");
+								String challenge = uri.replace(AcmeConstants.ACME_CONTEXT_ROOT + "/", "");
 								Log.info(HttpChallengeServer.class, "handle",
 										"Processing HTTP-01 Challenge: " + challenge);
 

@@ -340,7 +340,7 @@
         <AD id="userApiToken" name="%userApiToken" description="%userApiToken.desc"
             required="false" type="String" ibm:type="password" />
         <AD id="userApiCacheTime" name="internal" description="internal use only"
-            required="false" type="String" default="600s" ibm:type="duration(s)" />
+            required="false" type="String" default="600s" ibm:type="duration" />
         <AD id="accessTokenRequired" name="%accessTokenRequired" description="%accessTokenRequired.desc"
             required="false" type="Boolean" default="false" />
         <AD id="accessTokenSupported" name="%accessTokenSupported" description="%accessTokenSupported.desc"

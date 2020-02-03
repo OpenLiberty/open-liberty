@@ -839,6 +839,14 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Run featureUtility with a com
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: The following user features are specified in the server.xml and they will not be installed: {0}
 
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: The {0} and {1} features are incompatible with each other and they cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES.explanation=The features cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Remove one of the features and try again.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: The {0} and {1} singleton features are incompatible with each other and they cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=The features cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Remove one of the features and try again.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No action is required.

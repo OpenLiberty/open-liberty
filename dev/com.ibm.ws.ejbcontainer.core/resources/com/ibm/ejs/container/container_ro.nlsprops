@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1551,9 +1551,16 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Bean-urile entitate de \u00eentreprin
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=\u00cenl\u0103tura\u0163i folosirea bean-ului de \u00eentreprindere entitate nesuportat din aplica\u0163ie sau \u00eempacheta\u0163i bean-ul \u00eentr-o versiune 6 sau \u00eentr-o aplica\u0163ie mai veche.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Interfa\u0163a {0} a bean-ului {1} din modulul {2} al aplica\u0163iei {3} nu poate fi g\u0103sit la loca\u0163ia nume {4}. Interfa\u0163a {5} a bean-ului {6} din modulul {7} al aplica\u0163iei {8} este deja legat\u0103 de loca\u0163ia de nume {4}. Loca\u0163ia de nume {4} nu este accesibil\u0103.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Fiecare interfa\u0163\u0103 de bean enterprise trebuie s\u0103 specifice o loca\u0163ie unic\u0103 de legare.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corecta\u0163i fi\u015fierul de legare pentru una din aceste dou\u0103 interfe\u0163e bean-uri astfel \u00eenc\u00e2t fiecare interface s\u0103 aib\u0103 o loca\u0163ie de legare unic\u0103.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Interfa\u0163a {0} a bean-ului {1} din modulul {2} al aplica\u0163iei {3} nu poate fi g\u0103sit la loca\u0163ia nume {4}. Interfa\u0163a {5} a bean-ului {6} din modulul {7} al aplica\u0163iei {8} este deja legat\u0103 de loca\u0163ia de nume {4}. Loca\u0163ia de nume {4} nu este accesibil\u0103.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Fiecare interfa\u0163\u0103 de bean enterprise trebuie s\u0103 specifice o loca\u0163ie unic\u0103 de legare.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corecta\u0163i fi\u015fierul de legare pentru una din aceste dou\u0103 interfe\u0163e bean-uri astfel \u00eenc\u00e2t fiecare interface s\u0103 aib\u0103 o loca\u0163ie de legare unic\u0103.
 
 
 

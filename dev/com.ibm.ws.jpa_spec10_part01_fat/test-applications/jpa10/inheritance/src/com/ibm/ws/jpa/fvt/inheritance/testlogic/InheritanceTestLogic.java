@@ -39,11 +39,6 @@ public class InheritanceTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -62,7 +57,6 @@ public class InheritanceTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("InheritanceTestLogic.testInheritance001(): Begin");
-            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("1) Create and persist " + targetEntityType.getEntityName() + " (id=1).");
 
@@ -280,11 +274,6 @@ public class InheritanceTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -303,7 +292,6 @@ public class InheritanceTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("InheritanceTestLogic.testMSCInheritance001(): Begin");
-            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("1) Create and persist " + targetEntityType.getEntityName() + " (id=1).");
 
@@ -461,48 +449,5 @@ public class InheritanceTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("InheritanceTestLogic.testMSCInheritance001(): End");
         }
-    }
-
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("InheritanceTestLogic.testTemplate: Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("InheritanceTestLogic.testTemplate(): Begin");
-            cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
-        } finally {
-            System.out.println("InheritanceTestLogic.testTemplate(): End");
-        }
-    }
-
-    private void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), InheritanceEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

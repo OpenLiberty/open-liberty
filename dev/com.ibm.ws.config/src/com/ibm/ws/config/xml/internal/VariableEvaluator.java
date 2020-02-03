@@ -170,18 +170,24 @@ public class VariableEvaluator {
                 }
 
                 // Try to get an environment variable ( env.MYVAR )
-                if (realValue == null && useEnvironment) {
-                    realValue = lookupEnvironmentVariable(variable);
+                if (realValue == null && useEnvironment && variableRegistry != null) {
+                    realValue = variableRegistry.lookupVariableFromAdditionalSources(variable);
+                    if (realValue != null)
+                        context.addDefinedVariable(variable, realValue);
                 }
 
                 // Try to get a default value (<variable name="var" default="defaultValue"/>)
                 if (realValue == null) {
                     realValue = lookupDefaultVariable(variable);
+                    if (realValue != null)
+                        context.addDefinedVariable(variable, realValue);
                 }
 
                 if (realValue == null) {
                     // If the value is null, add it to the context so that we don't try to evaluate it again.
-                    // If the value is not null here, this is a variable that points to a configuration attribute,
+                    // If the value is not null here, it is either:
+                    // 1) An environment variable or mangled variable, in which case we added it above, or
+                    // 2) this is a variable that points to a configuration attribute,
                     // so we don't want to add it to the variable registry.
                     context.addDefinedVariable(variable, null);
                 }
@@ -201,7 +207,7 @@ public class VariableEvaluator {
     /**
      * Attempt to evaluate a variable expression.
      *
-     * @param expr the expression string (for example, "x+0")
+     * @param expr    the expression string (for example, "x+0")
      * @param context the context for evaluation
      * @return the result, or null if evaluation fails
      */
@@ -299,31 +305,6 @@ public class VariableEvaluator {
             return isList ? MetaTypeHelper.parseValue((String) variableValue) : variableValue;
         }
         return null;
-    }
-
-    private Object lookupEnvironmentVariable(String variableName) {
-        if (variableRegistry == null)
-            return null;
-        Object value = null;
-
-        // Try to resolve as an env variable ( resolve env.var-Name )
-
-        value = variableRegistry.lookupVariable("env." + variableName);
-
-        // Try to resolve with non-alpha characters replaced ( resolve env.var_Name )
-        if (value == null) {
-            variableName = stringUtils.replaceNonAlpha(variableName);
-            value = variableRegistry.lookupVariable("env." + variableName);
-        }
-
-        // Try to resolve with upper case ( resolve env.VAR_NAME )
-        if (value == null) {
-            variableName = variableName.toUpperCase();
-            value = variableRegistry.lookupVariable("env." + variableName);
-        }
-
-        return value;
-
     }
 
     private Object lookupDefaultVariable(String variableName) {

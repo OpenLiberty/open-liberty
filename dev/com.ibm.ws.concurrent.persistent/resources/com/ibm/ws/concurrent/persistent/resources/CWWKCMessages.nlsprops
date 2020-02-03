@@ -43,6 +43,18 @@ CWWKC1503.task.failure=CWWKC1503W: Persistent executor {0} rolled back task {1} 
 CWWKC1503.task.failure.explanation=Task execution failed and rolled back.
 CWWKC1503.task.failure.useraction=Correct the cause of the failure, if the failure is unexpected, and reschedule the task.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: Transaction is marked to roll back because the task execution time, {0} seconds, exceeded the transaction timeout, {1} seconds.
+CWWKC1504.tx.timeout.rollback.explanation=The task took too long to run, so the transaction is being rolled back.
+CWWKC1504.tx.timeout.rollback.useraction=A larger transaction timeout might be needed, or the task might need to be made shorter.
+
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: Transaction is marked to roll back because the task execution time, {0} seconds, exceeded the missedTaskThreshold, {1} seconds.
+CWWKC1505.mtt.timeout.rollback.explanation=The task took too long to run, so the transaction is being rolled back.
+CWWKC1505.mtt.timeout.rollback.useraction=A larger missedTaskThreshold might be needed, or the task might need to be made shorter.
+
+CWWKC1506.marked.rollback.only=CWWKC1506E: Transaction is marked to roll back.
+CWWKC1506.marked.rollback.only.explanation=The application marked the transaction to roll back with setRollbackOnly, or an error or timeout caused the rollback.
+CWWKC1506.marked.rollback.only.useraction=If the rollback is unexpected, check the logs and the application.
+
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Persistent executor {0} aborted task {1} because it rolled back or failed {2} consecutive times.
 CWWKC1510.retry.limit.reached.rollback.explanation=The task has reached the limit of consecutive retries and will not be attempted again.
 CWWKC1510.retry.limit.reached.rollback.useraction=If the rollbacks or failures are unexpected, determine the cause and reschedule the task. If the rollbacks and failures are intermittent, consider increasing the retry limit. 
@@ -55,9 +67,9 @@ CWWKC1520.out.of.range=CWWKC1520E: Configured value {0} for {1} is not within th
 CWWKC1520.out.of.range.explanation=A value that is outside of the allowed range is configured for the specified property.
 CWWKC1520.out.of.range.useraction=Configure a value within the allowed range.
 
-CWWKC1521.less.than.min=CWWKC1521E: Configured value {0} for {1} cannot be less than the configured value for {2}, which is {3}.
-CWWKC1521.less.than.min.explanation=Configuring a larger retryInterval encourages other servers to retry the failed task instead of the server on which it failed.
-CWWKC1521.less.than.min.useraction=Configure the retryInterval property so that it is larger than the missedTaskThreshold.
+CWWKC1521.not.compatible=CWWKC1521E: The {0} configuration attribute is not valid when the {1} configuration attribute is enabled.
+CWWKC1521.not.compatible.explanation=The specified configuration attributes are not compatible.
+CWWKC1521.not.compatible.useraction=Update the configuration to remove one of the configuration attributes.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: You cannot schedule persistent tasks from the current thread context.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Schedule persistent tasks only from a thread that is associated with an application or feature with a serializable class loader identity.

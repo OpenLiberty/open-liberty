@@ -53,12 +53,6 @@ public class MappingTable {
         };
 		mappingTable.put("WebSphere:type=ServletStats,name=*", servletTable);
 		
-		String[][] restfulTable = new String[][] {
-        	{ "restful.%s.request.total", "Total Request", "RESTful.request.total.description", COUNTER, MetricUnits.NONE, "RequestCount", null },
-        	{ "restful.%s.responseTime.total", "Total Response Time", "RESTful.responseTime.total.description", GAUGE, MetricUnits.NANOSECONDS, "ResponseTimeDetails", "total" }
-        };
-		mappingTable.put("WebSphere:type=RESTful_Stats,name=*", restfulTable);
-		
 		String[][] connectionPoolTable = new String[][]{
 			{ "connectionpool.%s.create.total", "Create Count", "connectionpool.create.total.description", COUNTER, MetricUnits.NONE, "CreateCount", null },
 			{ "connectionpool.%s.destroy.total", "Destroy Count", "connectionpool.destroy.total.description", COUNTER, MetricUnits.NONE, "DestroyCount", null },

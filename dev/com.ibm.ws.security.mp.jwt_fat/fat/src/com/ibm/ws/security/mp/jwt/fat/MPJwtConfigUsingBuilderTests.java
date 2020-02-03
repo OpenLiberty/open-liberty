@@ -943,8 +943,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         extraClaims.add(new NameValuePair("upn", defaultUser));
         long currentTime = System.currentTimeMillis() / 1000;
         long expTime = currentTime + 5;
-        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT_TIME_IN_SECS, String.valueOf(currentTime)));
-        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME_IN_SECS, String.valueOf(expTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT, String.valueOf(currentTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME, String.valueOf(expTime)));
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "subject_claim_included", extraClaims);
 
@@ -973,8 +973,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         extraClaims.add(new NameValuePair("upn", defaultUser));
         long currentTime = System.currentTimeMillis() / 1000;
         long expTime = currentTime + 5;
-        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT_TIME_IN_SECS, String.valueOf(currentTime)));
-        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME_IN_SECS, String.valueOf(expTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT, String.valueOf(currentTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME, String.valueOf(expTime)));
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "subject_claim_included", extraClaims);
 

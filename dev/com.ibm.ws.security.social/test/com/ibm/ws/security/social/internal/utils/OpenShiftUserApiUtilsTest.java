@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package com.ibm.ws.security.social.internal.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -558,6 +560,72 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void test_sendServiceAccountIntrospectRequest_nullServiceAccountToken() {
+        String serviceAccountToken = null;
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserApi();
+                    will(returnValue(userApi));
+                    one(httpUtils).createConnection(RequestMethod.GET, userApi, sslSocketFactory);
+                    will(returnValue(httpUrlConnection));
+                    one(httpUtils).setHeaders(with(any(HttpURLConnection.class)), with(any(Map.class)));
+                    will(returnValue(httpUrlConnection));
+                    one(httpUrlConnection).connect();
+                }
+            });
+            userApiUtils.sendServiceAccountIntrospectRequest(serviceAccountToken, sslSocketFactory);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void test_sendServiceAccountIntrospectRequest_emptyServiceAccountToken() {
+        String serviceAccountToken = "";
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserApi();
+                    will(returnValue(userApi));
+                    one(httpUtils).createConnection(RequestMethod.GET, userApi, sslSocketFactory);
+                    will(returnValue(httpUrlConnection));
+                    one(httpUtils).setHeaders(with(any(HttpURLConnection.class)), with(any(Map.class)));
+                    will(returnValue(httpUrlConnection));
+                    one(httpUrlConnection).connect();
+                }
+            });
+            userApiUtils.sendServiceAccountIntrospectRequest(serviceAccountToken, sslSocketFactory);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void test_sendServiceAccountIntrospectRequest_nonEmptyServiceAccountToken() {
+        String serviceAccountToken = "Some interesting service account token value";
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserApi();
+                    will(returnValue(userApi));
+                    one(httpUtils).createConnection(RequestMethod.GET, userApi, sslSocketFactory);
+                    will(returnValue(httpUrlConnection));
+                    one(httpUtils).setHeaders(with(any(HttpURLConnection.class)), with(any(Map.class)));
+                    will(returnValue(httpUrlConnection));
+                    one(httpUrlConnection).connect();
+                }
+            });
+            userApiUtils.sendServiceAccountIntrospectRequest(serviceAccountToken, sslSocketFactory);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     @Test
     public void test_createUserApiRequestBody_nullAccessToken() {
         final String accessToken = null;
@@ -604,6 +672,30 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 fail("Should have thrown an exception because we didn't get the right response code, but instead got [" + response + "].");
             } catch (SocialLoginException e) {
                 verifyException(e, CWWKS5373E_KUBERNETES_USER_API_BAD_STATUS + ".+" + responseCode + ".+" + Pattern.quote(connectionResponse));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_readServiceAccountIntrospectResponse_unexpectedStatus() {
+        final int responseCode = 401;
+        final String connectionResponse = "This is the response.";
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(httpUrlConnection).getResponseCode();
+                    will(returnValue(responseCode));
+                    one(httpUtils).readConnectionResponse(httpUrlConnection);
+                    will(returnValue(connectionResponse));
+                }
+            });
+            try {
+                String response = userApiUtils.readServiceAccountIntrospectResponse(httpUrlConnection);
+                fail("Should have thrown an exception because we didn't get the right response code, but instead got [" + response + "].");
+            } catch (SocialLoginException e) {
+                verifyException(e, CWWKS5383E_SERVICE_ACCOUNT_USER_API_BAD_STATUS + ".+" + responseCode + ".+" + Pattern.quote(connectionResponse));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -876,6 +968,195 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
+    }
+
+    @Test
+    public void test_readResponseAsJsonObject_nullResponse() {
+        try {
+            String response = null;
+            JsonObject result = userApiUtils.readResponseAsJsonObject(response);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyException(e, CWWKS5384E_RESPONSE_NOT_JSON);
+        }
+    }
+
+    @Test
+    public void test_readResponseAsJsonObject_emptyResponse() {
+        try {
+            String response = "";
+            JsonObject result = userApiUtils.readResponseAsJsonObject(response);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyException(e, CWWKS5384E_RESPONSE_NOT_JSON);
+        }
+    }
+
+    @Test
+    public void test_readResponseAsJsonObject_nonJsonResponse() {
+        String response = "This is not JSON";
+        try {
+            JsonObject result = userApiUtils.readResponseAsJsonObject(response);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyException(e, CWWKS5384E_RESPONSE_NOT_JSON);
+        }
+    }
+
+    @Test
+    public void test_readResponseAsJsonObject_emptyJsonResponse() {
+        try {
+            String response = "{}";
+            JsonObject result = userApiUtils.readResponseAsJsonObject(response);
+            assertNotNull("Result should not have been null but was.", result);
+            assertTrue("Result should have been empty but was " + result, result.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_readResponseAsJsonObject_normalJsonResponse() {
+        try {
+            String response = "{\"key\":\"value\",\"int\":42,\"boolean\":true,\"array\":[1,2,3]}";
+            JsonObject result = userApiUtils.readResponseAsJsonObject(response);
+            assertNotNull("Result should not have been null but was.", result);
+            assertFalse("Result should not have been empty but was.", result.isEmpty());
+            assertEquals("Result did not have the expected number of entries. Result was " + result, 4, result.size());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_getJsonObjectValueFromJson_emptyJsonResponse() {
+        String key = "myKey";
+        JsonObject input = Json.createObjectBuilder().build();
+        try {
+            JsonObject result = userApiUtils.getJsonObjectValueFromJson(input, key);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyExceptionWithInserts(e, CWWKS5385E_JSON_MISSING_KEY, key);
+        }
+    }
+
+    @Test
+    public void test_getJsonObjectValueFromJson_missingKey() {
+        String key = "myKey";
+        JsonObject input = Json.createObjectBuilder().add("1", "value").add(key + "2", "other value").build();
+        try {
+            JsonObject result = userApiUtils.getJsonObjectValueFromJson(input, key);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyExceptionWithInserts(e, CWWKS5385E_JSON_MISSING_KEY, key);
+        }
+    }
+
+    @Test
+    public void test_getJsonObjectValueFromJson_keyValueNotJsonObject() {
+        String key = "myKey";
+        JsonObject input = Json.createObjectBuilder().add(key, "value").build();
+        try {
+            JsonObject result = userApiUtils.getJsonObjectValueFromJson(input, key);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyException(e, CWWKS5386E_JSON_ENTRY_WRONG_JSON_TYPE);
+        }
+    }
+
+    @Test
+    public void test_getJsonObjectValueFromJson() {
+        try {
+            String key = "myKey";
+            JsonObject value = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
+            JsonObject input = Json.createObjectBuilder().add(key, value).build();
+            JsonObject result = userApiUtils.getJsonObjectValueFromJson(input, key);
+            assertEquals("Value for key \"" + key + "\" did not match expected value.", value, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addGroupsToResult_noGroupNameAttributeConfigured() {
+        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
+        JsonObject rawResponse = Json.createObjectBuilder().add("2", "value2").add("my key", "and other value").build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getGroupNameAttribute();
+                will(returnValue(null));
+            }
+        });
+        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
+        assertEquals("Output should have matched the original user metadata object, but did not.", userMetadata, result);
+    }
+
+    @Test
+    public void test_addGroupsToResult_groupNameAttributeMissingFromObject() {
+        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
+        JsonObject rawResponse = Json.createObjectBuilder().add("2", "value2").add("my key", "and other value").build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getGroupNameAttribute();
+                will(returnValue("some missing key"));
+            }
+        });
+        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
+        assertEquals("Output should have matched the original user metadata object, but did not.", userMetadata, result);
+    }
+
+    @Test
+    public void test_addGroupsToResult_groupsAddedAsNewEntry_string() {
+        final String groupNameAttribute = "groups";
+        String groupsValue = "some string value";
+        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
+        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getGroupNameAttribute();
+                will(returnValue(groupNameAttribute));
+            }
+        });
+        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
+        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
+        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
+        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getString(groupNameAttribute));
+    }
+
+    @Test
+    public void test_addGroupsToResult_groupsAddedAsNewEntry_array() {
+        final String groupNameAttribute = "groups";
+        JsonArray groupsValue = Json.createArrayBuilder().add("group1").add("group2").build();
+        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
+        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getGroupNameAttribute();
+                will(returnValue(groupNameAttribute));
+            }
+        });
+        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
+        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
+        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
+        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getJsonArray(groupNameAttribute));
+    }
+
+    @Test
+    public void test_addGroupsToResult_groupsReplacesExistingEntryInJson() {
+        final String groupNameAttribute = "groups";
+        JsonArray groupsValue = Json.createArrayBuilder().add("group1").add("group2").build();
+        JsonObject userMetadata = Json.createObjectBuilder().add(groupNameAttribute, "value").add("other key", 42).build();
+        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getGroupNameAttribute();
+                will(returnValue(groupNameAttribute));
+            }
+        });
+        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
+        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
+        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
+        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getJsonArray(groupNameAttribute));
     }
 
 }

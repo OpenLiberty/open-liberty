@@ -12,6 +12,7 @@
 	<classpathentry kind="src" path="test-applications/jaxrs20ltpa/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrs20ltpaclient/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrs20withclientfeatureenabled/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrsclient100Continue/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrsclientproxy/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrsclientproxyAuth/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrsclientssl/src"/>

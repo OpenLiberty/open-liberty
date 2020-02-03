@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,8 @@ public class TCPPort {
 
     private TCPChannelConfiguration channelConfigX = null;
     private InetSocketAddress socketAddressX = null;
+
+    private final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
     private static final TraceComponent tc = Tr.register(TCPPort.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
@@ -357,136 +359,158 @@ public class TCPPort {
 
     public synchronized void finishInitServerSocket() throws IOException, RetryableChannelException {
 
-        IOException bindError = null;
+        int currentTry = 1;
+        int portOpenRetries = channelConfigX.getPortOpenRetries(); // make this configurable - default is 0
 
-        // because opening a channel/port during startup is now a two step process, the channel could have been destroyed
-        // and this port destroyed before we get here.   So need to check if the serverSocket is still around
-        if (serverSocket == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "ServerSocket for this port has already been destroyed, return");
-            }
-            return;
-        }
+        while (currentTry <= portOpenRetries + 1) {
+            IOException bindError = null;
 
-        // receieve buffer size for accepted sockets is set on serverSocket,
-        // send buffer size is set on individual sockets
-
-        if ((channelConfigX.getReceiveBufferSize() >= TCPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
-            && (channelConfigX.getReceiveBufferSize() <= TCPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
-            serverSocket.setReceiveBufferSize(channelConfigX.getReceiveBufferSize());
-        }
-
-        if (!channelConfigX.getSoReuseAddress()) {
-            //Forced re-use==false custom property
-            try {
-                attemptSocketBind(socketAddressX, false);
-            } catch (IOException e) {
-                // no FFDC
+            // because opening a channel/port during startup is now a two step process, the channel could have been destroyed
+            // and this port destroyed before we get here.   So need to check if the serverSocket is still around
+            if (serverSocket == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Forced re-use==false bind attempt failed, ioe=" + e);
+                    Tr.debug(tc, "ServerSocket for this port has already been destroyed, return");
                 }
-                bindError = e;
+                return;
             }
-        } else {
-            //re-use==true (default)
-            // try the standard startup attempts
-            try {
-                attemptSocketBind(socketAddressX, false);
-                //If we are not on Windows and the bind succeeded, we should set reuseAddr=true
-                //for future binds.
-                if (!TCPFactoryConfiguration.isWindows()) {
-                    this.serverSocket.setReuseAddress(true);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "ServerSocket reuse set to true to allow for later override");
-                    }
-                }
-            } catch (IOException ioe) {
-                // See if we got the error because the port is in waiting to be cleaned up.
-                // If so, no one should be accepting connections on it, and open should fail.
-                // If that's the case, we can set ReuseAddr to expedite the bind process.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "ServerSocket bind failed on first attempt with IOException: " + ioe.getMessage());
-                }
-                bindError = ioe;
+
+            // receieve buffer size for accepted sockets is set on serverSocket,
+            // send buffer size is set on individual sockets
+
+            if ((channelConfigX.getReceiveBufferSize() >= TCPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
+                && (channelConfigX.getReceiveBufferSize() <= TCPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
+                serverSocket.setReceiveBufferSize(channelConfigX.getReceiveBufferSize());
+            }
+
+            if (!channelConfigX.getSoReuseAddress()) {
+                //Forced re-use==false custom property
                 try {
-                    String hostName = channelConfigX.getHostname();
-                    if (hostName == null) {
-                        hostName = "localhost";
-                    }
-                    InetSocketAddress testAddr = new InetSocketAddress(hostName, channelConfigX.getPort());
-                    // PK40741 - test for localhost being resolvable before using it
-                    if (!testAddr.isUnresolved()) {
-                        SocketChannel testChannel = SocketChannel.open(testAddr);
-                        // if we get here, socket opened successfully, which means
-                        // someone is really listening
-                        // so close connection and don't bother trying to bind again
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "attempt to connect to port to check listen status worked, someone else is using the port!");
-                        }
-                        testChannel.close();
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Test connection addr is unresolvable; " + testAddr);
-                        }
-                    }
-                } catch (IOException testioe) {
+                    attemptSocketBind(socketAddressX, false);
+                } catch (IOException e) {
+                    // no FFDC
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "attempt to connect to port to check listen status failed with IOException: " + testioe.getMessage());
+                        Tr.debug(tc, "Forced re-use==false bind attempt failed, ioe=" + e);
                     }
-                    try {
-                        // open (or close) got IOException, retry with reuseAddr on
-                        attemptSocketBind(socketAddressX, true);
-                        bindError = null;
-
-                    } catch (IOException newioe) {
+                    bindError = e;
+                }
+            } else {
+                //re-use==true (default)
+                // try the standard startup attempts
+                try {
+                    attemptSocketBind(socketAddressX, false);
+                    //If we are not on Windows and the bind succeeded, we should set reuseAddr=true
+                    //for future binds.
+                    if (!TCPFactoryConfiguration.isWindows()) {
+                        this.serverSocket.setReuseAddress(true);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "ServerSocket bind failed on second attempt with IOException: " + newioe.getMessage());
+                            Tr.debug(tc, "ServerSocket reuse set to true to allow for later override");
                         }
-                        bindError = newioe;
+                    }
+                } catch (IOException ioe) {
+                    // See if we got the error because the port is in waiting to be cleaned up.
+                    // If so, no one should be accepting connections on it, and open should fail.
+                    // If that's the case, we can set ReuseAddr to expedite the bind process.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "ServerSocket bind failed on first attempt with IOException: " + ioe.getMessage());
+                    }
+                    bindError = ioe;
+                    try {
+                        String hostName = channelConfigX.getHostname();
+                        if (hostName == null) {
+                            hostName = "localhost";
+                        }
+                        InetSocketAddress testAddr = new InetSocketAddress(hostName, channelConfigX.getPort());
+                        // PK40741 - test for localhost being resolvable before using it
+                        if (!testAddr.isUnresolved()) {
+                            SocketChannel testChannel = SocketChannel.open(testAddr);
+                            // if we get here, socket opened successfully, which means
+                            // someone is really listening
+                            // so close connection and don't bother trying to bind again
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "attempt to connect to port to check listen status worked, someone else is using the port!");
+                            }
+                            testChannel.close();
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Test connection addr is unresolvable; " + testAddr);
+                            }
+                        }
+                    } catch (IOException testioe) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "attempt to connect to port to check listen status failed with IOException: " + testioe.getMessage());
+                        }
+                        try {
+                            // open (or close) got IOException, retry with reuseAddr on
+                            attemptSocketBind(socketAddressX, true);
+                            bindError = null;
+
+                        } catch (IOException newioe) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "ServerSocket bind failed on second attempt with IOException: " + newioe.getMessage());
+                            }
+                            bindError = newioe;
+                        }
                     }
                 }
             }
-        }
 
-        if (bindError == null) {
-            // listen port can be different than config port if configed port is '0'
-            listenPort = serverSocket.getLocalPort();
+            if (bindError == null) {
+                // listen port can be different than config port if configed port is '0'
+                listenPort = serverSocket.getLocalPort();
 
-            String hostName = null;
-            String IPvType = "IPv4";
+                String hostName = null;
+                String IPvType = "IPv4";
 
-            Tr.debug(tc, "serverSocket getInetAddress is: " + serverSocket.getInetAddress());
-            Tr.debug(tc, "serverSocket getLocalSocketAddress is: " + serverSocket.getLocalSocketAddress());
-            Tr.debug(tc, "serverSocket getInetAddress hostname is: " + serverSocket.getInetAddress().getHostName());
-            Tr.debug(tc, "serverSocket getInetAddress address is: " + serverSocket.getInetAddress().getHostAddress());
-            Tr.debug(tc, "channelConfig.getHostname() is: " + tcpChannel.getConfig().getHostname());
-            Tr.debug(tc, "channelConfig.getPort() is: " + tcpChannel.getConfig().getPort());
+                Tr.debug(tc, "serverSocket getInetAddress is: " + serverSocket.getInetAddress());
+                Tr.debug(tc, "serverSocket getLocalSocketAddress is: " + serverSocket.getLocalSocketAddress());
+                Tr.debug(tc, "serverSocket getInetAddress hostname is: " + serverSocket.getInetAddress().getHostName());
+                Tr.debug(tc, "serverSocket getInetAddress address is: " + serverSocket.getInetAddress().getHostAddress());
+                Tr.debug(tc, "channelConfig.getHostname() is: " + tcpChannel.getConfig().getHostname());
+                Tr.debug(tc, "channelConfig.getPort() is: " + tcpChannel.getConfig().getPort());
 
-            if (serverSocket.getInetAddress() instanceof Inet6Address) {
-                IPvType = "IPv6";
-            }
+                if (serverSocket.getInetAddress() instanceof Inet6Address) {
+                    IPvType = "IPv6";
+                }
 
-            if (tcpChannel.config.getHostname() == null) {
-                hostName = "*  (" + IPvType + ")";
+                if (tcpChannel.config.getHostname() == null) {
+                    hostName = "*  (" + IPvType + ")";
+                } else {
+                    hostName = serverSocket.getInetAddress().getHostName() + "  (" + IPvType + ": "
+                               + serverSocket.getInetAddress().getHostAddress() + ")";
+                }
+
+                tcpChannel.setDisplayableHostName(hostName);
+
+                outputBindMessage(channelConfigX.getChannelData().getExternalName(), hostName, listenPort);
+
+                return;
+
+            } else if (currentTry > portOpenRetries) {
+                String displayableHostName = channelConfigX.getDisplayableHostname();
+                tcpChannel.setDisplayableHostName(displayableHostName);
+
+                // add in the exception message to help in problem diagnostics without tracing
+                Tr.error(tc, TCPChannelMessageConstants.BIND_ERROR,
+                         new Object[] { channelConfigX.getChannelData().getExternalName(), displayableHostName, String.valueOf(channelConfigX.getPort()),
+                                        bindError.getMessage() });
+
+                throw new RetryableChannelException(bindError.getMessage());
             } else {
-                hostName = serverSocket.getInetAddress().getHostName() + "  (" + IPvType + ": "
-                           + serverSocket.getInetAddress().getHostAddress() + ")";
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "attempt " + currentTry + " of " + (portOpenRetries + 1) + " failed to open the port, will try again after wait interval");
+                }
+
+                currentTry++;
+
+                try {
+                    Thread.sleep(timeBetweenRetriesMsec);
+                } catch (InterruptedException x) {
+                    // do nothing but debug
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
+                    }
+                }
             }
-
-            tcpChannel.setDisplayableHostName(hostName);
-
-            outputBindMessage(channelConfigX.getChannelData().getExternalName(), hostName, listenPort);
-
-        } else {
-            String displayableHostName = channelConfigX.getDisplayableHostname();
-            tcpChannel.setDisplayableHostName(displayableHostName);
-
-            // add in the exception message to help in problem diagnostics without tracing
-            Tr.error(tc, TCPChannelMessageConstants.BIND_ERROR,
-                     new Object[] { channelConfigX.getChannelData().getExternalName(), displayableHostName, String.valueOf(channelConfigX.getPort()),
-                                    bindError.getMessage() });
-
-            throw new RetryableChannelException(bindError.getMessage());
         }
     }
 

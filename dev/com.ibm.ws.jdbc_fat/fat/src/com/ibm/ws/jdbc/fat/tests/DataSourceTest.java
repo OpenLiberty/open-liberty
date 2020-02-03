@@ -82,7 +82,7 @@ public class DataSourceTest extends FATServletClient {
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         //**** jdbcServer apps ****
-        // Dropin app - setupfat.war 
+        // Dropin app - setupfat.war
         ShrinkHelper.defaultDropinApp(server, setupfat, "setupfat");
 
         // Default app - dsdfat.war and dsdfat_global_lib.war
@@ -395,8 +395,8 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @AllowedFFDC({ "javax.resource.spi.ResourceAllocationException" })
     @Mode(TestMode.FULL)
+    @AllowedFFDC({ "javax.resource.spi.ResourceAllocationException" })
     public void testInterruptedWaiters() throws Exception {
         runTest();
     }

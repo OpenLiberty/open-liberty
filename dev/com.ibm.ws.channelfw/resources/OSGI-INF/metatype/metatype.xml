@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -73,14 +73,18 @@
         <AD name="%tcp.hostNameExcludeList" description="%tcp.hostNameExcludeList.desc"
         	id="hostNameExcludeList" required="false" type="String" default="" />
         	
-        <AD name="%tcp.waitToAccept" description="%tcp.waitToAccept.desc" 
-        	id="waitToAccept" required="false" type="Boolean" default="false" />
+        <AD name="%tcp.portOpenRetries" description="%tcp.portOpenRetries.desc" 
+        	id="portOpenRetries" required="false" type="Integer" default="0" min="0" max="100000" />
         	
         <AD name="%tcp.acceptThread" description="%tcp.acceptThread.desc"
         	id="acceptThread" required="false" type="Boolean" default="false" />
         	
         <AD name="%tcp.maxOpenConnections" description="%tcp.maxOpenConnections.desc"
         	id="maxOpenConnections" required="false" type="Integer" default="128000" />
+
+        <AD name="%tcp.waitToAccept" description="%tcp.waitToAccept.desc" 
+        	id="waitToAccept" required="false" type="Boolean" default="false" />
+        	
 
         <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>

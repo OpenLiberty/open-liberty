@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -22,13 +29,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf22.fat.JSFUtils;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -77,23 +77,24 @@ public class JSF22ComponentTesterTests {
      */
     @Test
     public void JSF22ComponentTester_TestMultiComponents() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("JSF22ComponentTester_TestMultiComponents.xhtml did not render properly.");
+            if (page == null) {
+                Assert.fail("JSF22ComponentTester_TestMultiComponents.xhtml did not render properly.");
+            }
+
+            assertTrue(page.asText().contains("Collapsible panel test page"));
+            assertTrue(page.asText().contains("This information is collapsible"));
+
+            // Click the commandButton to execute the methods and update the page
+            HtmlElement button = (HtmlElement) page.getElementById("collapsiblePanelForm:panel:toggle");
+            page = button.click();
+
+            assertTrue(!page.asText().contains("This information is collapsible"));
         }
-
-        assertTrue(page.asText().contains("Collapsible panel test page"));
-        assertTrue(page.asText().contains("This information is collapsible"));
-
-        // Click the commandButton to execute the methods and update the page
-        HtmlElement button = (HtmlElement) page.getElementById("collapsiblePanelForm:panel:toggle");
-        page = button.click();
-
-        assertTrue(!page.asText().contains("This information is collapsible"));
     }
 
     /**
@@ -107,24 +108,24 @@ public class JSF22ComponentTesterTests {
      */
     @Test
     public void JSF22ComponentTester_Test_MyFaces_3948() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
-        // Drive the initial request.
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            // Drive the initial request.
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Need to have a bit of time between requests to reproduce the issue
-        Thread.sleep(1000);
+            // Need to have a bit of time between requests to reproduce the issue
+            Thread.sleep(1000);
 
-        // Now drive the second request to the same page.
-        page = (HtmlPage) webClient.getPage(url);
+            // Now drive the second request to the same page.
+            page = (HtmlPage) webClient.getPage(url);
 
-        // Ensure that we don't find an IndexOutOfBoundsException on the page
-        assertTrue("A java.lang.IndexOutOfBoundsException was found on the page and it should not have been.",
-                   !page.asText().contains("java.lang.IndexOutOfBoundsException: Index: 0, Size: 0"));
-
+            // Ensure that we don't find an IndexOutOfBoundsException on the page
+            assertTrue("A java.lang.IndexOutOfBoundsException was found on the page and it should not have been.",
+                       !page.asText().contains("java.lang.IndexOutOfBoundsException: Index: 0, Size: 0"));
+        }
     }
 
     /**
@@ -135,16 +136,17 @@ public class JSF22ComponentTesterTests {
      */
     @Test
     public void JSF22ComponentTester_TestDocType() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testDoctype.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testDoctype.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("JSF22ComponentTester_TestDocType.xhtml did not render properly.");
+            if (page == null) {
+                Assert.fail("JSF22ComponentTester_TestDocType.xhtml did not render properly.");
+            }
+
+            assertTrue(page.getWebResponse().getContentAsString().contains("<!DOCTYPE html>"));
         }
-
-        assertTrue(page.getWebResponse().getContentAsString().contains("<!DOCTYPE html>"));
     }
 
     /**
@@ -154,16 +156,17 @@ public class JSF22ComponentTesterTests {
      */
     @Test
     public void JSF22ComponentTester_TestDocTag() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testDoctag.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testDoctag.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("JSF22ComponentTester_TestDocTag.xhtml did not render properly.");
+            if (page == null) {
+                Assert.fail("JSF22ComponentTester_TestDocTag.xhtml did not render properly.");
+            }
+
+            assertTrue(page.getWebResponse().getContentAsString().contains("<!DOCTYPE html>"));
         }
-
-        assertTrue(page.getWebResponse().getContentAsString().contains("<!DOCTYPE html>"));
     }
 
     /**
@@ -179,28 +182,29 @@ public class JSF22ComponentTesterTests {
      */
     @Test
     public void JSF22ComponentTester_TestCommandButtonOrder() throws Exception {
-        WebClient webClient = getWebClient();
+        try (WebClient webClient = getWebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testActionListenerOrder.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testActionListenerOrder.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        System.out.print("JSF22ComponentTester_TestCommandButtonOrder: TOP");
+            System.out.print("JSF22ComponentTester_TestCommandButtonOrder: TOP");
 
-        if (page == null) {
-            Assert.fail("JSF22ComponentTester_TestDocTag.xhtml did not render properly.");
-        }
+            if (page == null) {
+                Assert.fail("JSF22ComponentTester_TestDocTag.xhtml did not render properly.");
+            }
 
-        assertTrue(page.getWebResponse().getContentAsString().contains("Action-Listener order page"));
+            assertTrue(page.getWebResponse().getContentAsString().contains("Action-Listener order page"));
 
-        // Click the commandButton to execute the methods and update the page
-        HtmlElement button = (HtmlElement) page.getElementById("form:testButton");
-        page = button.click();
+            // Click the commandButton to execute the methods and update the page
+            HtmlElement button = (HtmlElement) page.getElementById("form:testButton");
+            page = button.click();
 
-        HtmlElement output = (HtmlElement) page.getElementById("testOutput");
+            HtmlElement output = (HtmlElement) page.getElementById("testOutput");
 
-        if (!output.asText().contains("test action called")) {
-            Assert.fail("JSF22ComponentTester_TestCommandButtonOrder: test output is not correct: "
-                        + output.asText());
+            if (!output.asText().contains("test action called")) {
+                Assert.fail("JSF22ComponentTester_TestCommandButtonOrder: test output is not correct: "
+                            + output.asText());
+            }
         }
     }
 
@@ -217,26 +221,27 @@ public class JSF22ComponentTesterTests {
      */
     @Test
     public void JSF22ComponentTester_TestCommandLinkOrder() throws Exception {
-        WebClient webClient = getWebClient();
+        try (WebClient webClient = getWebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testActionListenerOrder.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testActionListenerOrder.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("JSF22ComponentTester_TestDocTag.xhtml did not render properly.");
-        }
+            if (page == null) {
+                Assert.fail("JSF22ComponentTester_TestDocTag.xhtml did not render properly.");
+            }
 
-        assertTrue(page.getWebResponse().getContentAsString().contains("Action-Listener order page"));
+            assertTrue(page.getWebResponse().getContentAsString().contains("Action-Listener order page"));
 
-        // Click the link to execute the methods and update the page
-        HtmlAnchor anchor = page.getAnchorByName("form:testLink");
-        page = anchor.click();
+            // Click the link to execute the methods and update the page
+            HtmlAnchor anchor = page.getAnchorByName("form:testLink");
+            page = anchor.click();
 
-        HtmlElement output = (HtmlElement) page.getElementById("testOutput");
+            HtmlElement output = (HtmlElement) page.getElementById("testOutput");
 
-        if (!output.asText().contains("test action called")) {
-            Assert.fail("JSF22ComponentTester_TestCommandLinkOrder: test output is not correct: "
-                        + output.asText());
+            if (!output.asText().contains("test action called")) {
+                Assert.fail("JSF22ComponentTester_TestCommandLinkOrder: test output is not correct: "
+                            + output.asText());
+            }
         }
     }
 
