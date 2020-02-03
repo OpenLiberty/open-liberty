@@ -38,11 +38,11 @@ import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.Cache;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 import test.common.SharedOutputManager;
