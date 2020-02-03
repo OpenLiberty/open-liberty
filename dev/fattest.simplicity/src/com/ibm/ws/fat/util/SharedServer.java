@@ -80,12 +80,8 @@ public class SharedServer extends ExternalResource {
     }
 
     @Override
-    protected void before() {
-        try {
+    protected void before() throws Throwable {
             this.startIfNotStarted();
-        } catch (Exception e) {
-            LOG.log(Level.INFO, "Failed to start shared server", e);
-        }
     }
 
     /**
