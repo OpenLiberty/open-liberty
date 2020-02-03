@@ -13,8 +13,10 @@ package failovertimers.ejb.stateless;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.CompletionException;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -36,6 +38,20 @@ public class StatelessTxSuspendedBean {
 
     @Resource
     private SessionContext sessionContext;
+
+    @PostConstruct
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void initTable() {
+        final String createTable = "CREATE TABLE TIMERLOG (TIMERNAME VARCHAR(254) NOT NULL PRIMARY KEY, COUNT INT NOT NULL, SERVERNAME VARCHAR(254) NOT NULL)";
+        boolean isTableCreated = false;
+        try (Connection con = ds.getConnection(); Statement s = con.createStatement()) {
+            s.execute(createTable);
+            isTableCreated = true;
+        } catch (SQLException x) {
+            System.out.println("Table might have already been created: " + x.getMessage());
+        }
+        System.out.println("Was TIMERLOG table created? " + isTableCreated);
+    }
 
     public void cancelTimers() {
         TimerService timerService = sessionContext.getTimerService();
@@ -70,7 +86,6 @@ public class StatelessTxSuspendedBean {
                 found = stmt.executeUpdate() == 1;
             } catch (SQLException x) {
                 found = false;
-                FailoverTimersTestServlet.createTables(ds);
             }
             if (!found) { // insert new entry
                 PreparedStatement stmt = con.prepareStatement("INSERT INTO TIMERLOG VALUES (?,?,?)");

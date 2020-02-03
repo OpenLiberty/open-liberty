@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -254,6 +254,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private CompressionHandler compressHandler = null;
     /** Decompression handler used for the inbound body */
     private DecompressionHandler decompressHandler = null;
+    /** Decompression tolerance counter */
+    private int cyclesAboveDecompressionRatio = 0;
 
     protected Map<String, Float> acceptableEncodings = new HashMap<String, Float>();
     protected boolean bStarEncodingParsed = false;
@@ -1083,6 +1085,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.reqVersion = null;
         this.chunkLengthParseState = GenericConstants.PARSING_NOTHING;
         this.bParsingTrailers = false;
+        this.cyclesAboveDecompressionRatio = 0;
         if (null != this.decompressHandler) {
             this.decompressHandler.close();
             this.decompressHandler = null;
@@ -4253,6 +4256,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     try {
                         List<WsByteBuffer> list = this.decompressHandler.decompress(buffer);
                         if (!list.isEmpty()) {
+                            if (this.decompressHandler.getBytesRead() > 0
+                                && (this.decompressHandler.getBytesWritten() / this.decompressHandler.getBytesRead()) > getHttpConfig().getDecompressionRatioLimit()) {
+                                this.cyclesAboveDecompressionRatio++;
+                                if (this.cyclesAboveDecompressionRatio > getHttpConfig().getDecompressionTolerance()) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "Decompression ratio tolerance reached. Number of cycles above configured ratio: " + this.cyclesAboveDecompressionRatio);
+                                    }
+                                    String s = Tr.formatMessage(tc, "decompression.tolerance.reached");
+                                    throw new DataFormatException(s);
+                                }
+
+                            }
                             this.storage.addAll(list);
                             rc = true;
                         }

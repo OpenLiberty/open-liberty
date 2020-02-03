@@ -43,7 +43,7 @@ public class AutomaticDatabase {
     @Resource(shareable = false)
     private DataSource ds;
 
-    private int count = -1; //Incremented with each execution of timer
+    private int count = 0; //Incremented with each execution of timer
 
     private static final String name = "DatabaseTimer";
 
@@ -64,23 +64,7 @@ public class AutomaticDatabase {
 
     @PostConstruct
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void initTableAndRow() {
-        try {
-            initTable();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
-        }
-
-        try {
-            initRow();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when creating table row: " + e.getMessage());
-        }
-    }
-
-    private void initTable() throws SQLException {
+    public void initTable() throws SQLException {
         final String createTable = "CREATE TABLE AUTOMATICDATABASE (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
 
         try (Connection conn = ds.getConnection()) {
@@ -88,29 +72,21 @@ public class AutomaticDatabase {
             DatabaseMetaData md = conn.getMetaData();
             ResultSet rs = md.getTables(null, null, "AUTOMATICDATABASE", null);
             while (rs.next()) {
-                if (rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE"))
+                if (rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE")) {
+                    System.out.println("Found table AUTOMATICDATABASE. Skipping creation.");
                     return;
+                }
             }
 
             //If not, create it.
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(createTable);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
             }
-        }
-    }
 
-    private void initRow() throws SQLException {
-        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
-
-        //create count
-        count = 0;
-
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
-                pstmt.setString(1, name);
-                pstmt.setInt(2, count);
-                pstmt.executeUpdate();
-            }
+            System.out.println("Created table AUTOMATICDATABASE");
         }
     }
 
@@ -126,18 +102,34 @@ public class AutomaticDatabase {
      * Increment count.
      */
     private int incrementCount(Timer timer) {
-        final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = ? WHERE name = ?";
-
+        final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = count+1 WHERE name = ?";
+        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
+        boolean updated = false;
         count++;
 
+        //Get connection
         try (Connection conn = ds.getConnection()) {
             try (PreparedStatement pstmt = conn.prepareStatement(modifyRow)) {
-                pstmt.setInt(1, count);
-                pstmt.setString(2, name);
+                pstmt.setString(1, name);
                 pstmt.executeUpdate();
+                updated = true;
+            } catch (SQLException e) {
+                updated = false;
+            }
+
+            if (!updated) {
+                //Create row
+                try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
+                    pstmt.setString(1, name);
+                    pstmt.setInt(2, count);
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    fail(c.getName() + " caught exception when creating row identified by " + name + " in table AUTOMATICDATABASE: " + e.getMessage());
+                }
+
+                System.out.println("Created row identified by " + name + " in table AUTOMATICDATABASE");
             }
         } catch (SQLException e) {
-            count--;
             e.printStackTrace();
             fail(c.getName() + " caught exception when incrementing count: " + e.getMessage());
         }

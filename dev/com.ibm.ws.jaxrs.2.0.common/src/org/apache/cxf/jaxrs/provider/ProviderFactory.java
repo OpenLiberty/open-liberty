@@ -1453,8 +1453,10 @@ public abstract class ProviderFactory {
         if (realClass1.isAssignableFrom(realClass2)) {
             // subclass should go first
             return 1;
+        } else if (realClass2.isAssignableFrom(realClass1)) { //Liberty change
+            return -1;
         }
-        return -1;
+        return 0; // Liberty change
     }
 
     //Liberty code change start

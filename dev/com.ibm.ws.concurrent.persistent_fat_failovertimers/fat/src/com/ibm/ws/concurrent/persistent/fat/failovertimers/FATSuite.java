@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,14 +19,18 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    FailoverTimersTest.class
-    })
+                FailoverTimersTest.class
+})
 public class FATSuite {
     @BeforeClass
     public static void beforeSuite() throws Exception {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client.
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+
         // Remove databases that were created by previous executions of this test bucket when running with Derby.
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA");
         server.deleteDirectoryFromLibertyInstallRoot("usr/shared/resources/data/failovertimersdb");

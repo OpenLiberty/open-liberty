@@ -613,4 +613,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         }
     }
 
+    public boolean isWeldProxy(Class clazz){
+        return CDIUtils.isWeldProxy(clazz);
+    }
+
+    public boolean isWeldProxy(Object obj){
+        return CDIUtils.isWeldProxy(obj);
+    }
+
 }

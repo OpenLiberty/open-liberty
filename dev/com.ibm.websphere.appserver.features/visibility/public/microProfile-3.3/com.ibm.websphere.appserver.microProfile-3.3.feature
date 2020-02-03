@@ -17,7 +17,7 @@ Subsystem-Name: MicroProfile 3.3
   com.ibm.websphere.appserver.jsonp-1.1, \
   com.ibm.websphere.appserver.mpConfig-1.4, \
   com.ibm.websphere.appserver.mpFaultTolerance-2.1, \
-  com.ibm.websphere.appserver.mpHealth-2.1, \
+  com.ibm.websphere.appserver.mpHealth-2.2, \
   com.ibm.websphere.appserver.mpJwt-1.1, \
   com.ibm.websphere.appserver.mpMetrics-2.2, \
   com.ibm.websphere.appserver.mpOpenAPI-1.1, \

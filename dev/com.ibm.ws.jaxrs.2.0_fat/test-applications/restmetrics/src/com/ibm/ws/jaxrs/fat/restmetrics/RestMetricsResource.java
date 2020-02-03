@@ -18,6 +18,8 @@ import javax.management.ObjectName;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -28,7 +30,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.ibm.websphere.jaxrs.monitor.RestfulStatsMXBean;
+import com.ibm.websphere.jaxrs.monitor.RestStatsMXBean;
 
 /**
  * <code>RestMetricsResource</code> is a simple POJO which is annotated with
@@ -45,24 +47,28 @@ public class RestMetricsResource {
 
     // Array to hold the names that identify the methods in monitor 1.0
     public static final String[] MONITOR_STRINGS = {
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.getMessage()",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.asyncMethod(javax.ws.rs.container.AsyncResponse)",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.getMultiParamMessage(java.lang.String)",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.getMultiParamMessage(java.lang.String_java.lang.String)",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.postMessage(java.lang.String)",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.putMessage(java.lang.String)",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.deleteMessage()",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.getCheckedException(java.lang.String)",
-                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource.getUncheckedException(java.lang.String)"};
+                                                    "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/optionsMethod()",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/headMethod()",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/headFallbackMethod()",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/asyncMethod(javax.ws.rs.container.AsyncResponse)",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/getMultiParamMessage(java.lang.String)",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/getMultiParamMessage(java.lang.String_java.lang.String)",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/postMessage(java.lang.String)",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/putMessage(java.lang.String)",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/deleteMessage()",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/getCheckedException(java.lang.String)",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/getUncheckedException(java.lang.String)"};
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
@@ -74,6 +80,63 @@ public class RestMetricsResource {
     private final int sleepTime = 250;
 
     /**
+     * Processes an Options request and returns the stored message.
+     *
+     * @return sting indicating success
+     */
+    @OPTIONS
+    @Produces(MediaType.TEXT_PLAIN)
+    public String optionsMethod() {
+        // Note that if null is returned from a resource method, a HTTP 204 (No
+        // Content) status code response is sent.
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        return RestMetricsResource.message;
+    }
+
+    /**
+     * Processes a Head request and returns null.
+     *
+     * @return sting indicating success
+     */
+    @HEAD
+    @Produces(MediaType.TEXT_PLAIN)
+    public void headMethod() {
+        // Note that if null is returned from a resource method, a HTTP 204 (No
+        // Content) status code response is sent.
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        return;
+    }
+
+    /**
+     * Processes a GET request and returns the stored message.
+     * It will serve as a fallback Head method.  The spec
+     * indicates that a Head invocation will result in a Get method
+     * with the same signature being invoked if a Head method with that
+     * signature does not exist.
+     *
+     * @return sting indicating success
+     */
+    @GET
+    @Path("/fallback")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String headFallbackMethod() {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        return RestMetricsResource.message;
+    }
+
+    /**
      * Processes a GET request and returns the stored message.
      *
      * @return sting indicating success
@@ -81,8 +144,6 @@ public class RestMetricsResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getMessage() {
-        // Note that if null is returned from a resource method, a HTTP 204 (No
-        // Content) status code response is sent.
         try {
             Thread.sleep(sleepTime);
         } catch (Exception e) {
@@ -252,6 +313,27 @@ public class RestMetricsResource {
     }
 
     /**
+     * Processes a Patch request and returns the incoming request message.
+     *
+     * @param incomingMessage containing simple string
+     * @return the original message sent indicating successful execution
+     */
+    @Path("/patch1")
+    @PUT
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String patchMessage(String incomingMessage) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+
+        RestMetricsResource.message = incomingMessage;
+        return incomingMessage;
+    }
+
+    /**
      * Processes a DELETE request.
      *
      * @return an empty response with a 204 status code
@@ -288,17 +370,18 @@ public class RestMetricsResource {
         ObjectName monitorObject = new ObjectName(MONITOR_STRINGS[index]);
 
         // Check monitor stats
-        RestfulStatsMXBean restfulStats = JMX.newMXBeanProxy(mbs, monitorObject, RestfulStatsMXBean.class);
-        long monitorCount = restfulStats.getRequestCount();
-        double monitorResponseTime = restfulStats.getResponseTime();
+        RestStatsMXBean restStats = JMX.newMXBeanProxy(mbs, monitorObject, RestStatsMXBean.class);
+        long monitorCount = restStats.getRequestCount();
+        double monitorResponseTime = restStats.getResponseTime();
         if (monitorCount != count) {
             return "Failed:  Expected method count " + count + ", received " + monitorCount
                    + ":  index = " + index;
 
         }
-        double threshold = .0001;
+        double threshold = 100;
         monitorResponseTime /= 1000000;
         if (Math.abs(monitorResponseTime - responseTime) > threshold) {
+
             return "Failed:  Expected response time " + responseTime + ", received " + monitorResponseTime
                    + ":  index = " + index;
         }

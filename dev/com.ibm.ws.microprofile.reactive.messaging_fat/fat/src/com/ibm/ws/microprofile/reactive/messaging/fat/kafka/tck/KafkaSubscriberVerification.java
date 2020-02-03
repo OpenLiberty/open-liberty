@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck;
 
 import java.lang.reflect.Method;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ import org.reactivestreams.tck.TestEnvironment;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaOutput;
@@ -40,7 +40,7 @@ public class KafkaSubscriberVerification extends SubscriberWhiteboxVerification<
 
     private final KafkaTestClient kafkaTestClient = new KafkaTestClient(PlaintextTests.kafkaContainer.getBootstrapServers());
     private final KafkaAdapterFactory kafkaAdapterFactory = new TestKafkaAdapterFactory();
-    private static final int TIMEOUT_MILLIS = 5000;
+
     private int testNo = 0;
     private String testName;
     private final List<KafkaOutput<?, ?>> kafkaOutputs = new ArrayList<>();
@@ -55,7 +55,7 @@ public class KafkaSubscriberVerification extends SubscriberWhiteboxVerification<
         kafkaTestClient.cleanUp();
         for (KafkaOutput<?, ?> output : kafkaOutputs) {
             try {
-                output.shutdown(Duration.ofMillis(TIMEOUT_MILLIS));
+                output.shutdown(KafkaTestConstants.KAFKA_ENVIRONMENT_TIMEOUT);
             } catch (Exception e) {
             }
         }
@@ -66,7 +66,7 @@ public class KafkaSubscriberVerification extends SubscriberWhiteboxVerification<
      * @param env
      */
     public KafkaSubscriberVerification() {
-        super(new TestEnvironment(TIMEOUT_MILLIS));
+        super(new TestEnvironment(KafkaTestConstants.KAFKA_ENVIRONMENT_TIMEOUT.toMillis()));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class KafkaSubscriberVerification extends SubscriberWhiteboxVerification<
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         KafkaProducer<String, String> kafkaProducer = kafkaAdapterFactory.newKafkaProducer(config);
-        KafkaOutput<String, String> kafkaOutput = new KafkaOutput<>(topicName, kafkaProducer);
+        KafkaOutput<String, String> kafkaOutput = new KafkaOutput<>(kafkaAdapterFactory, topicName, "fakeChannelName", kafkaProducer);
         kafkaOutputs.add(kafkaOutput);
         return new VerificationSubscriber<>(probe, kafkaOutput);
     }

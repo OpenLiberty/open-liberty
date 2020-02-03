@@ -133,4 +133,9 @@ public class Http2FullTracingTests extends FATServletClient {
     public void testUnknownFrameType() throws Exception {
         runTest(genericServletPath, testName.getMethodName());
     }
+
+    @Test
+    public void testContinuationFrameAfterDataFrame() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
 }

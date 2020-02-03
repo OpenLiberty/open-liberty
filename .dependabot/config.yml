@@ -1,4 +1,5 @@
 # Documentation in https://dependabot.com/docs/config-file/
+# Can validate at  https://dependabot.com/docs/config-file/validator/
 version: 1
 update_configs:
   - package_manager: "java:maven"
@@ -8,4 +9,19 @@ update_configs:
     allowed_updates:
       - match:
           update_type: "security"
-
+      - match:
+          dependency_name: "cglib:cglib-nodep"
+      - match:
+          dependency_name: "org.glassfish:javax.json:1.0.*"
+      - match:
+          dependency_name: "org.glassfish:javax.json:1.1.*"
+      - match:
+          dependency_name: "org.glassfish:javax.json:1.1.*"
+      - match:
+          dependency_name: "org.hibernate.validator:hibernate-validator"
+      - match:
+          dependency_name: "org.hibernate.validator:hibernate-validator-cdi"
+      - match:
+          dependency_name: "org.ow2.asm:asm"
+      - match:
+          dependency_name: "org.eclipse:yasson"

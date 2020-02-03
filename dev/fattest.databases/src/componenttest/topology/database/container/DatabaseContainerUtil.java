@@ -52,8 +52,9 @@ public final class DatabaseContainerUtil {
      * @throws CloneNotSupportedException
      */
     public static void setupDataSourceProperties(LibertyServer serv, JdbcDatabaseContainer<?> cont) throws CloneNotSupportedException, Exception {
-        //Skip for Derby
-    	if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.Derby)
+        //Skip for Derby and DerbyClient
+    	if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.Derby ||
+    			DatabaseContainerType.valueOf(cont) == DatabaseContainerType.DerbyClient)
             return; //Derby used by default no need to change DS properties
 
         //Get a list of datasources that need to be updated

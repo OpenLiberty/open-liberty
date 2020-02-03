@@ -26,6 +26,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.web.WebUtils;
+import com.ibm.ws.security.common.lang.LocalesModifier;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginWebappConfig;
 import com.ibm.ws.security.social.TraceConstants;
@@ -248,7 +249,7 @@ public class SelectionPageGenerator {
         }
         return "";
     }
-
+ 
     String createHtmlHead() {
         StringBuilder html = new StringBuilder();
         html.append("<head>\n");
@@ -276,9 +277,9 @@ public class SelectionPageGenerator {
     }
 
     String getHtmlTitle() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_TITLE");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_TITLE");
     }
-
+    
     String createHtmlBody() {
         StringBuilder html = new StringBuilder();
         html.append("<body>\n");
@@ -326,7 +327,7 @@ public class SelectionPageGenerator {
     }
 
     String getPageHeader() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_HEADER");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_HEADER");
     }
 
     String createHtmlFormWithButtons() {
@@ -391,7 +392,7 @@ public class SelectionPageGenerator {
     }
 
     String getMiddleSectionText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_ALTERNATE_TEXT");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_ALTERNATE_TEXT");
     }
 
     String createHtmlForCredentials() {
@@ -445,7 +446,7 @@ public class SelectionPageGenerator {
     }
 
     String getUsernamePlaceholderText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_USERNAME");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_USERNAME");
     }
 
     String createPasswordInputHtml() {
@@ -456,7 +457,7 @@ public class SelectionPageGenerator {
     }
 
     String getPasswordPlaceholderText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_PASSWORD");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_PASSWORD");
     }
 
     String createFormSubmitButtonHtml() {
@@ -466,7 +467,7 @@ public class SelectionPageGenerator {
     }
 
     String getSubmitButtonText() {
-        return Tr.formatMessage(tc, request.getLocales(), "SELECTION_PAGE_SUBMIT");
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(request.getLocales()), "SELECTION_PAGE_SUBMIT");
     }
 
     /**
