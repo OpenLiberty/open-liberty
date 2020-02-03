@@ -457,6 +457,19 @@
         <Object ocdref="com.ibm.ws.security.social.client.param.metatype" />
     </Designate>
 
+    <Designate factoryPid="com.ibm.ws.security.social.okdServiceLogin">
+        <Object ocdref="com.ibm.ws.security.social.okdServiceLogin.metatype" />
+    </Designate>
+    <OCD id="com.ibm.ws.security.social.okdServiceLogin.metatype" name="%social.okdServiceLogin.conf" description="%social.okdServiceLogin.conf.desc"
+         ibm:alias="okdServiceLogin" ibm:beta="true" >
+        <AD id="id" name="%uniqueId" description="%uniqueId.desc" required="false" type="String" default="okdServiceLogin" ibm:unique="uniqueId"/>
+        <AD id="userValidationApi" name="%userValidationApi" description="%userValidationApi.desc" required="false" type="String" ibm:type="token" default="https://openshift.default.svc/apis/user.openshift.io/v1/users/~" />
+        <AD id="apiResponseCacheTime" name="%apiResponseCacheTime" description="%apiResponseCacheTime.desc" required="false" type="String" default="600s" ibm:type="duration" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" required="false" type="String" ibm:reference="com.ibm.ws.security.authentication.filter" />
+        <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" ibm:type="token" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+    </OCD>
+
      <!-- 238750, configurable context root.
           The alias or name is the name of the element in server.xml. 
           contextPath is the attribute that will define the context root, ex:
