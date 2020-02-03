@@ -18,8 +18,8 @@ import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.Cache;
 
 public interface SocialLoginConfig {
 
@@ -118,5 +118,7 @@ public interface SocialLoginConfig {
     public boolean isAccessTokenSupported();
 
     public String getAccessTokenHeaderName();
+
+    public long getApiResponseCacheTime();
 
 }
