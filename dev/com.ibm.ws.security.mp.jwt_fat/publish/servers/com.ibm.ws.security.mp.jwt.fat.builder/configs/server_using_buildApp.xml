@@ -12,4 +12,7 @@
 	<include location="${shared.config.dir}/builder_fatTestPorts.xml" />
 	
 	<include location="${shared.config.dir}/jwtbuilderApp.xml" />
+
+	<include location="${shared.config.dir}/builderAppJava2Settings.xml"/>
+
 </server>
