@@ -376,6 +376,11 @@ public class WSJobRepositoryImpl implements WSJobRepository {
         return persistenceManagerService.getRemotablePartitionInternalState(remotablePartitionKey);
     }
 
+    @Override
+    public List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(long jobExecutionId) {
+        return persistenceManagerService.getRemotablePartitionsForJobExecution(jobExecutionId);
+    }
+
     /**
      * {@inheritDoc}
      *
