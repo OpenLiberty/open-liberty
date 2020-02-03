@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.ws.ssl.optional.SSLSupportOptional;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
@@ -86,6 +87,11 @@ public class SSLSupportImpl implements SSLSupport {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "updatedSSLSupportOptional: delegate: " + delegate + " props: " + props);
         }
+        // If we are stopping ignore the update
+        if (FrameworkState.isStopping()) {
+            return;
+        }
+
         if (props != null) {
             this.props = props;
             ServiceRegistration<SSLSupport> registration = this.registration;
