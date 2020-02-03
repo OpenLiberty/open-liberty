@@ -28,7 +28,8 @@ public class ClientMain {
 
   // Writes marker noting test's success. This is used by the JUnit driver to determine the outcome.
   protected void reportSuccess() {
-    Util.ALWAYS("Test '" + Thread.currentThread().getStackTrace()[2].getMethodName() + "' passed.");
+    StackTraceElement e = Thread.currentThread().getStackTrace()[2];
+    Util.ALWAYS("Test '" + e.getMethodName() + "' passed.");
 	}
 
   // Writes an informative message that a test failed.
