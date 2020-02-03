@@ -1,6 +1,10 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
-IBM OPEN LIBERTY 20.0.0.1
+NOTICES AND INFORMATION FOR OPEN LIBERTY 20.0.0.2
+Copyright 1999-2020 IBM Corporation and others
+
+This product includes software developed at
+The Open Liberty Project (https://openliberty.io/).
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -89,7 +93,6 @@ Applications, University of Illinois, Urbana-Champaign.
 
 END OF APACHE SOFTWARE LICENSE 1.1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 APACHE LICENSE 2.0
 
 The Program includes some or all of the following that IBM obtained
@@ -118,11 +121,11 @@ GRAPHQL-JAVA-SERVLET, LOG4J [SLF4J], FAILSAFE, OPENWS,
 COMMONS-HTTPCLIENT, ANT [jaxws-tools], COMMONS-BEANUTILS, CDI11 [weld],
 GOOGLE-DIFF-MATCH-PATCH [jQuery], WELD, OSGI [Felix Gogo Runtime],
 OPENTRACING-JAVA, JAVA-CLASSMATE, JSON-SIMPLE, XMLSCHEMA-CORE, GSON,
-NEKOHTML, GUAVA, CDI-API, JOSE4J, msf4j,  Bootstrap, Daterangepicker, 
+NEKOHTML, GUAVA, CDI-API, JOSE4J, msf4j,  Bootstrap, Daterangepicker,
 CACHE-API, LOCALSTRINGS_JA.PROPERTIES, APACHE XML INTERNAL,
 VALIDATION-API, JAXRPC, FILTER.JAVA [javax.servlet-api],
-NAMESPACECONTEXTIMPL.JAVA, URLPATTERN.JAVA, FAST
-INFOSET, JAVAX.INJECT
+NAMESPACECONTEXTIMPL.JAVA, URLPATTERN.JAVA [Javaee-BC1#10], FAST
+INFOSET, /LICENSE-2.0 [javax.servlet-api], POM.XML, JAVAX.INJECT  
 
 Apache License
 Version 2.0, January 2004
@@ -328,11 +331,11 @@ rights reserved. Copyright (c) 2012 Maximilian Antoni), ASM (Copyright
 Pritchard), NODE-FORGE (Copyright (c) 2010 Digital Bazaar Inc..),
 CRYPTOJS (Copyright (c) 2009-2013 Jeff Mott), DOJO [Apache MyFaces]
 (Copyright (c) 2005, The Dojo Foundation),  
-TableTools ( Copyright 2009-2012 Allan Jardine ), JING (Copyright (c) 
-2001-2003 Thai Open Source Software Center Ltd All rights reserved), 
-JAVAX-PERSISTENCE (Copyright (c) 2007; Eclipse Foundation; Inc. and
-its licensors;All rights reserved. Copyright (c) 1997-2017 Oracle 
-and/or its affiliates. All rights reserved.)
+TableTools ( Copyright 2009-2012 Allan Jardine ),
+JING (Copyright (c) 2001-2003 Thai Open Source Software Center Ltd All
+rights reserved), JAVAX-PERSISTENCE (Copyright (c) 2007; Eclipse
+Foundation; Inc. and its licensors;All rights reserved. Copyright (c)
+1997-2017 Oracle and/or its affiliates. All rights reserved.)
 
 
 BSD 2-CLAUSE
@@ -433,7 +436,7 @@ under the Common Development and Distribution License.
 GLASSFISH [Apache MyFaces] (https://opensource.org/licenses/CDDL-1.0),
 ARRAYELRESOLVER.JAVA [weld]
 (/Source-0/artifacts/weld/weld-se-sources.jar/javax/el/ArrayELResolver.java),
-JAVAMAIL (https://github.com/javaee/javamail/),
+JAVAMAIL (https://github.com/javaee/javamail/tree/JAVAMAIL-1_6_0),
 JAXWS-TOOLS
 (http://grepcode.com/snapshot/repo1.maven.org/maven2/com.sun.xml.ws/jaxws-tools/2.2.10/),
 SERIALIZER [Eclipse yasson]
@@ -447,14 +450,17 @@ JBOSS-JDEPARSER
 (http://mvnrepository.com/artifact/org.jboss.jdeparser/jdeparser/1.0.0.Final),
 JAVAX.EL
 (https://mvnrepository.com/artifact/org.glassfish/javax.el/3.0.0),
-JAVAX.JSON (https://jsonp.java.net/), 
-JAXWS-API (https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api/2.3.0),
-JAVAX.SECURITY 
+JAVAX.JSON (https://jsonp.java.net/)
+JAXWS-API
+(https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api/2.3.0),
+JAVAMAIL [Javaee-BC1#10] (https://github.com/javaee/javamail),
+JAVAX.SECURITY [Javaee-BC1#10]
 (https://repo1.maven.org/maven2/javax/security/auth/message/javax.security.auth.message-api/1.1/),
-JAVAX.WS.RS-API (https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.0-m09/),
+JAVAX.WS.RS-API
+(https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.0-m09/),
 JAXB-JXC
 (https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-jxc/2.2.10/),
-JAVAX.TRANSACTION-API
+JAVAX.TRANSACTION-API [Javaee-BC1#10]
 (https://github.com/javaee/javax.transaction/tree/1.2), JAXWS-RT
 (https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-rt/2.2.10/),
 JAVAX.WEBSOCKET-API
@@ -463,13 +469,17 @@ JAXB-API
 (https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.0/),
 STREAMBUFFER
 (http://central.maven.org/maven2/com/sun/xml/stream/buffer/streambuffer/1.5.3/),
-JAVAX.EJB-API
-(https://github.com/javaee/javax.ejb/tree/3.2), 
-JAVAX.ANNOTATION-API (https://github.com/javaee/javax.annotation/),
+JAXWS-TOOLS
+(https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-tools/2.2.10/),
+JAVAX.EJB-API [Javaee-BC1#10]
+(https://github.com/javaee/javax.ejb/tree/3.2), JAVAX.ANNOTATION-API
+[Javaee-BC1#10] (https://github.com/javaee/javax.annotation/tree/1.3),
+JAVAX.JSON
+(https://repo1.maven.org/maven2/org/glassfish/javax.json/1.1.3/),
 WS-POLICY (https://repo1.maven.org/maven2/com/sun/xml/ws/policy/2.4/),
 JMS-SPEC
 (https://github.com/javaee/jms-spec/tree/9383d33ff79a156d09fb5c9c0ccdfd6b844b1d54),
-CONCURRENT-API 
+CONCURRENT-API [Javaee-BC1#10]
 (https://repo1.maven.org/maven2/javax/enterprise/concurrent/javax.enterprise.concurrent-api/1.0/),
 GLASSFISH-JCDI
 (https://mvnrepository.com/artifact/org.glassfish.main.packager/glassfish-jcdi),
@@ -482,7 +492,7 @@ JSON.BIND-API
 JSTL (https://repo1.maven.org/maven2/javax/servlet/jstl/1.2/),
 JAVAX.SERVLET-API
 (https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.0/),
-JAVAX.INTERCEPTOR-API 
+JAVAX.INTERCEPTOR-API [Javaee-BC1#10]
 (https://github.com/javaee/javax.interceptor/tree/1.2),
 JAVAX.XML.SOAP-API
 (https://github.com/javaee/javax.xml.soap/tree/1.4.0), CONNECTOR
@@ -496,7 +506,8 @@ JAXB-CORE
 JAXB-XJC
 (https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-xjc/2.3.0.1/),
 ACTIVATION
-(https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/)
+(https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/),
+JAVAEE-BC1#10  
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -925,7 +936,7 @@ The Program includes some or all of the following that IBM obtained
 under the MIT License:
 
 WEBAPP [Apache CXF] (Copyright 2010, John Resig),
-JQUERY.COOKIES.2.2.0.JS � [SLF4J] (Copyright (c) 2005 - 2010, James
+JQUERY.COOKIES.2.2.0.JS   [SLF4J] (Copyright (c) 2005 - 2010, James
 Auldridge, All rights reserved.), NORMALIZE.CSS
 [smallrye-reactive-messaging] (Copyright 2011-2014 Twitter, Inc.),
 JQUERY.EVENT.DRAG [msf4j] (Copyright (c) 2008, Three Dub Media
@@ -962,7 +973,7 @@ Copyright (c) 2014 Jon Schlinkert; Vitaly Puzrin.), XREGEXP [weld]
 (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
 (sindresorhus.com)), BASE-X (Copyright base-x contributors (c) 2016),
 PROBE.JS [weld] (Copyright 2011-2014 Twitter, Inc.), FOLLOW-REDIRECTS
-(Copyright 2014 present Olivier Lalonde <olalonde@gmail.com> James
+(Copyright 2014–present Olivier Lalonde <olalonde@gmail.com> James
 Talmage <james@talmage.io> Ruben Verborgh), QUNIT V1.23.1 [jQuery]
 (Copyright 2018 The jQuery Foundation), STRING.PROTOTYPE.TRIMLEFT
 (Copyright (c) 2015 Jordan Harband), REQUIREJS V2.1.22 [jQuery]
@@ -999,7 +1010,7 @@ Author") and additional contributors**), ES-ABSTRACT (Copyright (C) 2015
 Jordan Harband), JQUERY-UI [msf4j] (Copyright 2013 jQuery Foundation and
 other contributors), DELEGATES (Copyright (c) 2015 TJ Holowaychuk
 <tj@vision-media.ca>), JQUERY.VALIDATE.JS [Spring-boot] (Copyright (c)
-2012 J��rn Zaefferer), GULP-HEADER (Copyright (c) 2013-2015 Michael J.
+2012 JÃ¶rn Zaefferer), GULP-HEADER (Copyright (c) 2013-2015 Michael J.
 Ryan <tracker1> and GoDaddy.com), DEEP-EXTEND (Copyright (c) 2013-2018
 Viacheslav Lotsmanov), OS-TMPDIR (Copyright (c) Sindre Sorhus
 <sindresorhus@gmail.com> (sindresorhus.com)), RUBY [Apache CXF]
@@ -1015,22 +1026,23 @@ MONOREPO-SYMLINK-TES (No Copyright Found), NPO.JS [jQuery] (Copyright
 Luo), HANDLEBARS-V2.0.0.JS [weld] (Copyright (C) 2011-2014 by Yehuda
 Katz), SL4J [Apache CXF] (Copyright (c) 2004-2007 QOS.ch),
 (@MY-SCOPE/PACKAGE-A (No Copyright Found), NEEDLE (Copyright (c) Fork
-Ltd.),  Datatables ( Copyright (c) 2008-2013 SpryMedia Limited ), 
-jQuery.flot ( Copyright (c) 2007-2013 IOLA and Ole Laursen ), 
-jQuery ( (c) 2005, 2014 jQuery Foundation, Inc. ), 
-jQuery resize event ( Copyright (c) 2010 "Cowboy" Ben Alman ), 
-moment.js ( Copyright Tim Wood, Iskren Chernev, Moment.js contributors ), 
-jQuery.event.drag ( Copyright (c) 2008, Three Dub Media (http://threedubmedia.com) ), 
-jQuery.mousewheel ( Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net) ), 
-jQuery.base64 ( Copyright (c) 2012 Yannick Albert (http://yckart.com) ), 
-jQuery-UI ( Copyright 2013 jQuery Foundation and other contributors ), 
-Axis Label Plugins ( Copyright (c) 2010 Xuan Luo ), 
-jQuery-jvectormap ( Copyright 2011-2013, Kirill Lebedev ), 
-jQuery-Flot-orderBars ( Benjamin BUFFET, 20-Sep-2010 ), 
-WSSecurity (� OASIS Open 2002-2004.), KOHSUKE/RNGOM 
-(Copyright (C) 2004-2011), ISORELAX (Copyright (c)
+Ltd.),  Datatables ( Copyright (c) 2008-2013 SpryMedia Limited )
+ jQuery.flot ( Copyright (c) 2007-2013 IOLA and Ole Laursen )
+ jQuery ( (c) 2005, 2014 jQuery Foundation, Inc. )
+ jQuery resize event ( Copyright (c) 2010 "Cowboy" Ben Alman )
+ moment.js ( Copyright Tim Wood, Iskren Chernev, Moment.js contributors )
+ jQuery.event.drag ( Copyright (c) 2008, Three Dub Media (http://threedubmedia.com) )
+ jQuery.mousewheel ( Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net) )
+ jQuery.base64 ( Copyright (c) 2012 Yannick Albert (http://yckart.com) )
+ jQuery-UI ( Copyright 2013 jQuery Foundation and other contributors )
+ Axis Label Plugins ( Copyright (c) 2010 Xuan Luo )
+ jQuery-jvectormap ( Copyright 2011-2013, Kirill Lebedev )
+ jQuery-Flot-orderBars ( Benjamin BUFFET, 20-Sep-2010 )
+WSSecurity (© OASIS Open 2002-2004.)
+KOHSUKE/RNGOM (Copyright (C) 2004-2011), ISORELAX (Copyright (c)
 2001-2002, SourceForge ISO-RELAX Project (ASAMI Tomoharu, Daisuke
 Okajima, Kohsuke Kawaguchi, and MURATA Makoto))
+
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -1088,9 +1100,9 @@ WS-ADDR-WSDL.XSD [Apache CXF], W3C XML SCHEMA [OpenWS], SOAP-ENVELOPE
 [OpenWS], XML SCHEMA [xmlsec], SOAP ENVELOPE [OpenWS], XENC-SCHEMA
 [Apache CXF]
 
-W3C� SOFTWARE NOTICE AND LICENSE
+W3C® SOFTWARE NOTICE AND LICENSE
 
-Copyright � 1994-2001 World Wide Web Consortium, (Massachusetts 
+Copyright © 1994-2001 World Wide Web Consortium, (Massachusetts 
 Institute of Technology, Institut National de Recherche en Informatique 
 et en Automatique, Keio University). All Rights Reserved. 
 http://www.w3.org/Consortium/Legal/ 
@@ -1115,7 +1127,7 @@ thereof, including modifications, that you make:
        terms and conditions. If none exist, a short notice of the
        following form (hypertext is preferred, text is permitted) should
        be used within the body of any redistributed or derivative code:
-       "Copyright � [$date-of-software] World Wide Web Consortium,
+       "Copyright © [$date-of-software] World Wide Web Consortium,
        (Massachusetts Institute of Technology, Institut National de
        Recherche en Informatique et en Automatique, Keio University).
        All Rights Reserved. http://www.w3.org/Consortium/Legal/"
@@ -1144,16 +1156,14 @@ holders.
 END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF IBM OPEN LIBERTY NOTICES AND INFORMATION 
+END OF OPEN LIBERTY NOTICES AND INFORMATION 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICE FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
-
-IBM OPEN LIBERTY 19.0.0.12
+OPEN LIBERTY NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS  
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -1225,18 +1235,19 @@ THE RED HAT SOFTWARE. THIS END USER LICENSE AGREEMENT DOES NOT PROVIDE ANY RIGHT
 TO RED HAT SERVICES SUCH AS SOFTWARE MAINTENANCE, UPGRADES OR SUPPORT. PLEASE 
 REVIEW YOUR SERVICE OR SUBSCRIPTION AGREEMENT(S) THAT YOU MAY HAVE WITH RED HAT 
 OR OTHER AUTHORIZED RED HAT SERVICE PROVIDERS REGARDING SERVICES AND ASSOCIATED 
-PAYMENTS. This end user license agreement ( EULA ) governs the use of the certain 
-Red Hat software applications that include or refer to this license, and any related updates, source code, appearance, structure and organization (the  Programs ), 
-regardless of the delivery mechanism. 1. License Grant. Subject to the following terms, Red Hat, Inc. ( Red Hat ) grants to you a perpetual, worldwide license to the Programs (each of which may include multiple software components). With the exception of certain image files identified in Section 2 below, each software component is governed by a license that permits you to run, copy, modify, and redistribute (subject to certain obligations in some cases) the software component. This EULA pertains solely to the Programs and does not limit your rights under, or grant you rights that supersede, the license terms applicable to any particular component. The license terms applicable 
+PAYMENTS.
+This end user license agreement (“EULA”) governs the use of the certain 
+Red Hat software applications that include or refer to this license, and any related updates, source code, appearance, structure and organization (the “Programs”), 
+regardless of the delivery mechanism. 1. License Grant. Subject to the following terms, Red Hat, Inc. (“Red Hat”) grants to you a perpetual, worldwide license to the Programs (each of which may include multiple software components). With the exception of certain image files identified in Section 2 below, each software component is governed by a license that permits you to run, copy, modify, and redistribute (subject to certain obligations in some cases) the software component. This EULA pertains solely to the Programs and does not limit your rights under, or grant you rights that supersede, the license terms applicable to any particular component. The license terms applicable 
 to each software component are provided in the source code of that component. 
 2. Intellectual Property Rights. The Programs and each of their components are owned 
 by Red Hat and other licensors and are protected under copyright law and under other 
 laws as applicable. Title to the Programs and any component, or to any copy, 
 modification, or merged portion shall remain with Red Hat and other licensors, 
-subject to the applicable license. The  JBoss  trademark,  Red Hat  trademark, the individual Program trademarks, and the  Shadowman  logo are trademarks or registered trademarks of Red Hat and its affiliates in the U.S. and other countries. 
+subject to the applicable license. The “JBoss” trademark, “Red Hat” trademark, the individual Program trademarks, and the “Shadowman” logo are trademarks or registered trademarks of Red Hat and its affiliates in the U.S. and other countries. 
 This EULA does not permit you to distribute the Programs using Red Hat's trademarks, regardless of whether they have been modified. You may make a commercial redistribution
  of the Programs only if (a) permitted under a separate written agreement with Red Hat authorizing such commercial redistribution or (b) you remove and replace all occurrences of Red Hat trademarks and logos. Modifications to the software may corrupt the Programs. You should read the information found at http://www.redhat.com/about/corporate/trademark/ before distributing a copy of the Programs. 3. Limited Warranty. Except as specifically stated in this Section
- 3, a separate agreement with Red Hat, or a license for a particular component, to the maximum extent permitted under applicable law, the Programs and the components are provided and licensed  as is  without warranty of any kind, expressed or implied, including the implied warranties of merchantability, non-infringement or fitness for 
+ 3, a separate agreement with Red Hat, or a license for a particular component, to the maximum extent permitted under applicable law, the Programs and the components are provided and licensed “as is” without warranty of any kind, expressed or implied, including the implied warranties of merchantability, non-infringement or fitness for 
 a particular purpose. Red Hat warrants that the media on which the Programs and the components are provided will be free from defects in materials and manufacture under normal use for a period of 30 days from the date of delivery to you. Neither Red Hat nor its affiliates warrant that the functions contained in the Programs will meet your requirements or that the operation of the Programs will be entirely error free, appear 
 or perform precisely as described in the accompanying documentation, or comply with regulatory requirements. This warranty extends only to the party that purchases subscription services for the Programs from Red Hat and/or its affiliates or a Red Hat authorized distributor. 
 4. Limitation of Remedies and Liability. To the maximum extent permitted by applicable law, your exclusive remedy under this EULA is to return any defective media within 
@@ -1246,21 +1257,21 @@ extent permitted under applicable law, under no circumstances will Red Hat, its 
 provided to you under this EULA be liable to you for any incidental or consequential damages, including lost profits or lost savings arising out of the use or inability 
 to use the Programs or any component, even if Red Hat, its affiliates, an authoriz
 ed distributor, and/or licensor has been advised of the possibility of such damages. 
-In no event shall Red Hat's or its affiliates  liability, an authorized distributor s liability or the liability of the licensor of a component provided to you under this 
+In no event shall Red Hat's or its affiliates’ liability, an authorized distributor’s liability or the liability of the licensor of a component provided to you under this 
 EULA exceed the amount that you paid to Red Hat for the media under this EULA. 
 5. Export Control. As required by the laws of the United States and other countries, 
 you represent and warrant that you: (a) understand that the Programs and their 
-components may be subject to export controls under the U.S. Commerce Department s 
-Export Administration Regulations ( EAR ); (b) are not located in a prohibited 
+components may be subject to export controls under the U.S. Commerce Department’s 
+Export Administration Regulations (“EAR”); (b) are not located in a prohibited 
 destination country under the EAR or U.S. sanctions regulations (currently Cuba, 
 Iran, North Korea, Sudan, Syria, and the Crimea Region of Ukraine, subject to change 
 as posted by the United States government); (c) will not export, re-export, or transfer the Programs to any prohibited destination, persons or entities on the U.S. Bureau of Industry and Security Denied Parties List or Entity List, or the U.S. Office of Foreign Assets Control list of Specially Designated Nationals and Blocked Persons, or any 
 similar lists maintained by other countries, without the necessary export license(s) or authorizations(s); (d) will not use or transfer the Programs for use in connection with any nuclear, chemical or biological weapons, missile technology, or military end-uses where prohibited by an applicable arms embargo, unless authorized by the relevant government agency by regulation or specific license; (e) understand and agree that if 
-you are in the United States and export or transfer the Programs to eligible end users, you will, to the extent required by EAR Section 740.17(e), submit semi-annual reports to the Commerce Department s Bureau of Industry and Security, which include the name and address (including country) of each transferee; and (f) understand that countries including the United States may restrict the import, use, or export of encryption 
+you are in the United States and export or transfer the Programs to eligible end users, you will, to the extent required by EAR Section 740.17(e), submit semi-annual reports to the Commerce Department’s Bureau of Industry and Security, which include the name and address (including country) of each transferee; and (f) understand that countries including the United States may restrict the import, use, or export of encryption 
 products (which may include the Programs and the components) and agree that you shall be solely responsible for compliance with any such import, use, or export restrictions. 
 Red Hat Standard End User License Agreement Page 2 of 2 July 22, 20196. Third Party Programs. Red Hat may distribute third party software programs with the Programs that are not part of the Programs. These third party software programs are not required to run the Programs, are provided as a convenience to you, and are subject to their own license terms. The license terms either accompany the third party software programs or can be viewed at http://www.redhat.com/licenses/thirdparty/eula.html. If you do not agree to abide by the applicable license terms for the third party software programs, then you may not install them. If you wish to install the third party software programs on more than one system or transfer the third party software programs to another party, then you must contact the licensor of the applicable third party software programs. 7. General. If any provision of this EULA is held to be unenforceable, the enforceability of the remaining provisions shall not be affected. Any claim, controversy or dispute arising under or relating to this EULA shall be governed by the laws of the State of New York and of the United States, without regard to any conflict of laws provisions. The rights and obligations of the parties to this EULA shall not be governed by the United Nations Convention on the International Sale of Goods. 
 
-Copyright � 2019 Red Hat, Inc. All rights reserved. The  Red Hat  mark, the JBoss" mark and the JBoss logo and Shadowman logo are trademarks or registered trademarks of Red Hat, Inc. All other trademarks are the property of their respective owners. 
+Copyright © 2019 Red Hat, Inc. All rights reserved. The “Red Hat” mark, the JBoss" mark and the JBoss logo and Shadowman logo are trademarks or registered trademarks of Red Hat, Inc. All other trademarks are the property of their respective owners. 
 
 END OF REDHAT UBI LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1304,8 +1315,9 @@ END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-END OF IBM OPEN LIBERTY NOTICES AND INFORMATION 
+END OF OPEN LIBERTY NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICE FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
