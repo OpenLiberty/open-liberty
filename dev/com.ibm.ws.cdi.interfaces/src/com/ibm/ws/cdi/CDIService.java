@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,5 +51,19 @@ public interface CDIService {
      * @return true if the current module, or any module or libraries it can access, has any CDI Beans
      */
     public boolean isCurrentModuleCDIEnabled();
+
+    /**
+     * Returns whether a class is a weld proxy subclass.
+     *
+     * @return true if clazz is a weld proxy subclass.
+     */
+    public boolean isWeldProxy(Class clazz);
+
+    /**
+     * Returns whether an object is an instance of weld proxy subclass.
+     *
+     * @return true if obj is an instance of a weld proxy subclass.
+     */
+    public boolean isWeldProxy(Object obj);
 
 }
