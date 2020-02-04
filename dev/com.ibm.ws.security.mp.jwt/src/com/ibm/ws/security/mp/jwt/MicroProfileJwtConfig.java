@@ -24,7 +24,7 @@ public interface MicroProfileJwtConfig extends JwtConsumerConfig {
 
     public String getGroupNameAttribute();
 
-    public String getMpJwtHeader();
+    public String getAuthorizationHeaderScheme();
 
     public boolean ignoreApplicationAuthMethod();
 

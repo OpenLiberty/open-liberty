@@ -20,7 +20,6 @@ import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
-import com.ibm.ws.security.mp.jwt.impl.utils.ClientConstants;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
 
 /**
@@ -39,6 +38,7 @@ public class TAIRequestHelper {
     public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String AUTHN_TYPE = "MP-JWT";
+    public static final String KEY_AUTHORIZATION_HEADER_SCHEME = "authorizationHeaderScheme";
 
     /**
      * Creates a new {@link MicroProfileJwtTaiRequest} object and sets the object as an attribute in the request object provided.
@@ -99,6 +99,10 @@ public class TAIRequestHelper {
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
+        if (result) {
+            request.setAttribute(KEY_AUTHORIZATION_HEADER_SCHEME, mpJwtConfig.getAuthorizationHeaderScheme());
+        }
+
         return result;
     }
 
@@ -148,7 +152,6 @@ public class TAIRequestHelper {
 
     }
 
-    
     public String getBearerToken(HttpServletRequest req, MicroProfileJwtConfig clientConfig) {
         String methodName = "getBearerToken";
         if (tc.isDebugEnabled()) {
@@ -214,7 +217,7 @@ public class TAIRequestHelper {
             Tr.debug(tc, "Specific config ID not provided, so will set generic config information for MpJwtTaiRequest object");
         }
         MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfo(request, mpJwtTaiRequest, defaultConfig);
-        
+
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
@@ -261,7 +264,7 @@ public class TAIRequestHelper {
                 }
             } else if (defaultConfig) {
                 mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
-            } else if (!isMpJwtDefaultConfig(mpJwtConfig)){
+            } else if (!isMpJwtDefaultConfig(mpJwtConfig)) {
                 mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
             }
         }
@@ -270,14 +273,14 @@ public class TAIRequestHelper {
         }
         return mpJwtTaiRequest;
     }
-    
+
     public boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
         boolean isDefault = false;
         if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
             isDefault = true;
         }
         return isDefault;
-        
+
     }
 
     MicroProfileJwtTaiRequest handleNoMatchingConfiguration(String configId, MicroProfileJwtTaiRequest mpJwtTaiRequest) {

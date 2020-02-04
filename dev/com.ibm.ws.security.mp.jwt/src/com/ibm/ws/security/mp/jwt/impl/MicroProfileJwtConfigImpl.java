@@ -92,8 +92,8 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String KEY_groupNameAttribute = "groupNameAttribute";
     protected String groupNameAttribute = null;
 
-    public static final String KEY_mpJwtHeaderAttribute = "mpJwtHeaderAttribute";
-    protected String mpJwtHeaderAttribute = null;
+    public static final String KEY_authorizationHeaderScheme = "authorizationHeaderScheme";
+    protected String authorizationHeaderScheme = null;
 
     public static final String CFG_KEY_TOKEN_REUSE = "tokenReuse";
     protected boolean tokenReuse = true;
@@ -464,8 +464,8 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     /** {@inheritDoc} */
     @Override
-    public String getMpJwtHeader() {
-        return this.mpJwtHeaderAttribute;
+    public String getAuthorizationHeaderScheme() {
+        return this.authorizationHeaderScheme;
     }
 
     /** {@inheritDoc} */
