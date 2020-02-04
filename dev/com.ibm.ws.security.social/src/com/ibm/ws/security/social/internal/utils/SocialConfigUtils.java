@@ -26,38 +26,6 @@ public class SocialConfigUtils {
 
     public static final TraceComponent tc = Tr.register(SocialConfigUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
-    public SSLContext getSSLContext(String uniqueId, SSLContext classSslContext, AtomicServiceReference<SocialLoginService> socialLoginServiceRef, String sslRef) throws SocialLoginException {
-        SSLContext sslContext = classSslContext;
-        if (sslContext == null) {
-            SocialLoginService service = socialLoginServiceRef.getService();
-            if (service == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Social login service is not available");
-                }
-                return null;
-            }
-            SSLSupport sslSupport = service.getSslSupport();
-            if (sslSupport == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SSL support could not be found for social login service");
-                }
-                return null;
-            }
-            try {
-                JSSEHelper jsseHelper = sslSupport.getJSSEHelper();
-                if (jsseHelper != null) {
-                    sslContext = jsseHelper.getSSLContext(sslRef, null, null, true);
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "sslContext (" + sslRef + ") get: " + sslContext);
-                    }
-                }
-            } catch (Exception e) {
-                throw new SocialLoginException("FAILED_TO_GET_SSL_CONTEXT", e, new Object[] { uniqueId, e.getLocalizedMessage() });
-            }
-        }
-        return sslContext;
-    }
-
     public SSLSocketFactory getSSLSocketFactory(String uniqueId, SSLContext classSslContext, AtomicServiceReference<SocialLoginService> socialLoginServiceRef, String sslRef) throws SocialLoginException {
         SSLSocketFactory sslSocketFactory = null;
         if (classSslContext == null) {
@@ -87,23 +55,5 @@ public class SocialConfigUtils {
         }
         return sslSocketFactory;
     }
-
-    //    public PublicKey getPublicKey(SslRefInfo sslRefInfo, AtomicServiceReference<SocialLoginService> socialLoginServiceRef) throws SocialLoginException {
-    //        if (sslRefInfo == null) {
-    //            SocialLoginService service = socialLoginServiceRef.getService();
-    //            if (service == null) {
-    //                if (tc.isDebugEnabled()) {
-    //                    Tr.debug(tc, "Social login service is not available");
-    //                }
-    //                return null;
-    //            }
-    //            sslRefInfo = createSslRefInfoImpl(service);
-    //        }
-    //        return sslRefInfo.getPublicKey();
-    //    }
-    //
-    //    protected SslRefInfoImpl createSslRefInfoImpl(SocialLoginService socialLoginService) {
-    //        return new SslRefInfoImpl(socialLoginService.getSslSupport(), socialLoginService.getKeyStoreServiceRef(), sslRef, keyAliasName);
-    //    }
 
 }

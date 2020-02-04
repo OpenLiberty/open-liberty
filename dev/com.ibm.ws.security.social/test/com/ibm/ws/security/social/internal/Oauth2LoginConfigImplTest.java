@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import javax.net.ssl.SSLContext;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -139,7 +137,7 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
-    
+
     @Test
     public void testUseJvmProps() {
         try {
@@ -511,7 +509,9 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
         }
     }
 
-    /************************************** getRequiredSerializableProtectedStringConfigAttribute **************************************/
+    /**************************************
+     * getRequiredSerializableProtectedStringConfigAttribute
+     **************************************/
 
     @Test
     public void getRequiredSerializableProtectedStringConfigAttribute_emptyProps() {
@@ -988,144 +988,6 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
 
             HashMap<String, PublicKey> result = configImpl.getPublicKeys();
             assertTrue("Result should be an empty map, but was [" + result + "].", result.isEmpty());
-
-            verifyLogMessage(outputMgr, CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED);
-            verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /************************************** getSSLContext **************************************/
-
-    @Test
-    public void getSSLContext_noSocialLoginService() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    allowing(cc).getBundleContext();
-                }
-            });
-            configImpl = getActivatedConfig(getRequiredConfigProps());
-            configImpl = setSocialLoginServiceReference(configImpl, null);
-
-            SSLContext result = configImpl.getSSLContext();
-            assertNull("Result should have been null because no social login service should be available.", result);
-
-            verifyLogMessage(outputMgr, CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED);
-            verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getSSLContext_noSslSupport() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    allowing(cc).getBundleContext();
-                    one(socialLoginService).getSslSupport();
-                    will(returnValue(null));
-                }
-            });
-
-            configImpl = getActivatedConfig(getRequiredConfigProps());
-            configImpl = setSocialLoginServiceReference(configImpl, socialLoginService);
-
-            SSLContext result = configImpl.getSSLContext();
-            assertNull("Result should have been null because no SSL support object should be available.", result);
-
-            verifyLogMessage(outputMgr, CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED);
-            verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getSSLContext_noJsseHelper() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    allowing(cc).getBundleContext();
-                    one(socialLoginService).getSslSupport();
-                    will(returnValue(sslSupport));
-                    one(sslSupport).getJSSEHelper();
-                    will(returnValue(null));
-                }
-            });
-
-            configImpl = getActivatedConfig(getRequiredConfigProps());
-            configImpl = setSocialLoginServiceReference(configImpl, socialLoginService);
-
-            SSLContext result = configImpl.getSSLContext();
-            assertNull("Result should have been null because no JSSEHelper should be available.", result);
-
-            verifyLogMessage(outputMgr, CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED);
-            verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getSSLContext_jsseHelperThrowsException() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    allowing(cc).getBundleContext();
-                    one(socialLoginService).getSslSupport();
-                    will(returnValue(sslSupport));
-                    one(sslSupport).getJSSEHelper();
-                    will(returnValue(jsseHelper));
-                    one(jsseHelper).getSSLContext(null, null, null, true);
-                    will(throwException(new SSLException(defaultExceptionMsg)));
-                }
-            });
-
-            configImpl = getActivatedConfig(getStandardConfigProps());
-            configImpl = setSocialLoginServiceReference(configImpl, socialLoginService);
-
-            try {
-                SSLContext result = configImpl.getSSLContext();
-                fail("Should have thrown SocialLoginException but did not. Result was [" + result + "].");
-            } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5463E_FAILED_TO_GET_SSL_CONTEXT + ".+\\[" + configId + "\\].*"
-                        + Pattern.quote(defaultExceptionMsg));
-            }
-
-            verifyLogMessage(outputMgr, CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED);
-            verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getSSLContext_successful() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    allowing(cc).getBundleContext();
-                    one(socialLoginService).getSslSupport();
-                    will(returnValue(sslSupport));
-                    one(sslSupport).getJSSEHelper();
-                    will(returnValue(jsseHelper));
-                    one(jsseHelper).getSSLContext(null, null, null, true);
-                }
-            });
-
-            configImpl = getActivatedConfig(getStandardConfigProps());
-            configImpl = setSocialLoginServiceReference(configImpl, socialLoginService);
-
-            SSLContext result = configImpl.getSSLContext();
-            assertNotNull("SSLContext result should not have been null.", result);
 
             verifyLogMessage(outputMgr, CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED);
             verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);

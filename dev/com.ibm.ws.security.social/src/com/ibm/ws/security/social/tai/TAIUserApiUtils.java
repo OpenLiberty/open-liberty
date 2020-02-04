@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,9 @@ import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
+import com.ibm.ws.security.social.internal.utils.IntrospectUserApiUtils;
 import com.ibm.ws.security.social.internal.utils.OAuthClientUtil;
 import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtils;
-import com.ibm.ws.security.social.internal.utils.IntrospectUserApiUtils;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 
 public class TAIUserApiUtils {
@@ -45,7 +45,7 @@ public class TAIUserApiUtils {
                 return getUserApiResponseFromOpenShift(clientConfig, accessToken, sslSocketFactory);
             }
 
-            if("introspect".equals(clientConfig.getUserApiType())) {
+            if ("introspect".equals(clientConfig.getUserApiType())) {
                 return getUserApiResponseFromIntrospectEndpoint((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             if (isTokenExpectedToBeServiceAccountToken(clientConfig)) {
@@ -66,14 +66,13 @@ public class TAIUserApiUtils {
         return introspectUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }
 
-
-  private String getUserApiResponseFromOpenShift(SocialLoginConfig config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
-       OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
+    private String getUserApiResponseFromOpenShift(SocialLoginConfig config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+        OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
         return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }
 
     private boolean isTokenExpectedToBeServiceAccountToken(SocialLoginConfig clientConfig) {
-        return Oauth2LoginConfigImpl.USER_API_TYPE_OPENSHIFT.equals(clientConfig.getUserApiType());
+        return SocialUtil.isOkdConfig(clientConfig);
     }
 
     private String getUserApiResponseForServiceAccountToken(SocialLoginConfig config, @Sensitive String serviceAccountToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {

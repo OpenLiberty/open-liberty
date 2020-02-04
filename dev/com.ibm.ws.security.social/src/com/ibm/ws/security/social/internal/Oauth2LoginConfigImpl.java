@@ -176,7 +176,6 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String USER_API_TYPE_BASIC = "basic";
     public static final String USER_API_TYPE_KUBE = "kube";
-    public static final String USER_API_TYPE_OPENSHIFT = "openshift";
 
     public static final String KEY_userApiType = "userApiType";
     protected String userApiType = null;
@@ -631,12 +630,6 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             sslRefInfo = createSslRefInfoImpl(service);
         }
         return sslRefInfo.getPublicKeys();
-    }
-
-    @Override
-    public SSLContext getSSLContext() throws SocialLoginException {
-        this.sslContext = socialConfigUtils.getSSLContext(uniqueId, sslContext, socialLoginServiceRef, sslRef);
-        return this.sslContext;
     }
 
     @Override
