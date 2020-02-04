@@ -16,15 +16,16 @@ import java.util.HashMap;
 import com.ibm.wsspi.threading.WorkContext;
 
 //Implements WorkContext class to add context to JCA threads.
-public class JCAWorkContext extends HashMap<String, Serializable> implements WorkContext {
+//This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
+public class LibertyWorkContext extends HashMap<String, Serializable> implements WorkContext {
 
-    JCAWorkContext() {
+    LibertyWorkContext() {
         super();
     }
 
     @Override
     public String getWorkType() {
-        return WorkContext.WORK_TYPE_JCA_MDB;
+        return WorkContext.WORK_TYPE_JCA;
     }
 
 }

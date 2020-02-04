@@ -51,7 +51,6 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
 
-
 /**
  * A wrapper for Work.
  * This wrapper takes care of execution context handling, work listener notification
@@ -60,7 +59,8 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
 public class WorkProxy implements Callable<Void>, RunnableWithContext {
 
     //Creates a workContext item we can put the hintsContext into and return
-    private com.ibm.wsspi.threading.WorkContext wc = new JCAWorkContext();
+    //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
+    private final com.ibm.wsspi.threading.WorkContext wc = new LibertyWorkContext();
 
     /**
      * Constructor for WorkProxy.
@@ -140,6 +140,8 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
                         hintsContextSetupFailure = new ClassCastException(Tr.formatMessage(TC, "J2CA8687.hint.datatype.invalid", "HintsContext.LONGRUNNING_HINT",
                                                                                            Boolean.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
+
+                    //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
                     wc.putAll(hints);
                 }
         executionProperties.put("javax.enterprise.concurrent.IDENTITY_NAME", workName == null ? work == null ? null : work.getClass().getName() : workName);
@@ -460,6 +462,7 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
     protected WorkListener lsnr;
 
     //Returns the workContext for this JCA runnable including the hintsContext if it's applicable.
+    //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
     @Override
     public com.ibm.wsspi.threading.WorkContext getWorkContext() {
         return this.wc;

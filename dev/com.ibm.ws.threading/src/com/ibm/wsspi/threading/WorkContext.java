@@ -21,7 +21,7 @@ public interface WorkContext extends Map<String, Serializable> {
     static final String WORK_TYPE_EJB_TIMER = "EJBTimer";
     static final String WORK_TYPE_EJB_ASYNC = "EJBAsync";
     static final String WORK_TYPE_HTTP = "HTTP";
-    static final String WORK_TYPE_JCA_MDB = "JCAMDB";
+    static final String WORK_TYPE_JCA = "JCA";
     static final String WORK_TYPE_UNKNOWN = "Unknown";
 
     /**
