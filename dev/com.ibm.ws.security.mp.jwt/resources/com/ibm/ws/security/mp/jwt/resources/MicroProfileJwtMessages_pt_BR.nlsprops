@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: O recurso MicroProfile JWT n\u00e3o pode ex
 JWT_NOT_FOUND_IN_REQUEST.explanation=Para executar a autentica\u00e7\u00e3o, um MicroProfile JWT deve ser inclu\u00eddo no cabe\u00e7alho de autoriza\u00e7\u00e3o usando o esquema de autoriza\u00e7\u00e3o do portador ou como um par\u00e2metro POST. O cabe\u00e7alho de autoriza\u00e7\u00e3o est\u00e1 ausente, o esquema de autoriza\u00e7\u00e3o do cabe\u00e7alho de autoriza\u00e7\u00e3o n\u00e3o est\u00e1 configurado para o portador, a solicita\u00e7\u00e3o n\u00e3o \u00e9 uma solicita\u00e7\u00e3o de POST ou um MicroProfile JWT n\u00e3o est\u00e1 inclu\u00eddo como um par\u00e2metro.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Assegure-se de que um MicroProfile JWT seja inclu\u00eddo no cabe\u00e7alho de autoriza\u00e7\u00e3o ou como um par\u00e2metro POST da solicita\u00e7\u00e3o.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: O recurso MicroProfile JWT n\u00e3o pode autenticar a solicita\u00e7\u00e3o porque um JWT v\u00e1lido n\u00e3o pode ser criado do token inclu\u00eddo na solicita\u00e7\u00e3o. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: O recurso do MicroProfile JWT n\u00e3o pode autenticar a solicita\u00e7\u00e3o porque o token que est\u00e1 inclu\u00eddo na solicita\u00e7\u00e3o n\u00e3o pode ser validado. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=O recurso MicroProfile JWT encontrou um erro ao criar um JWT da sequ\u00eancia do token fornecida. Um consumidor JWT n\u00e3o pode ser criado ou o consumidor JWT encontrou um erro ao analisar e validar a sequ\u00eancia de token.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
 

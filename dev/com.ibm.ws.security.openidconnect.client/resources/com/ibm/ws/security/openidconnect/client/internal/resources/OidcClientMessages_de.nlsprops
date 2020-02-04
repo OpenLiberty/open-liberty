@@ -273,5 +273,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Dies ist eine Informationsna
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Das erforderliche Konfigurationsattribut [{0}] fehlt oder ist leer und es wurde kein Standardwert angegeben. Wenn das Attribut konfiguriert ist oder vom Provider erkannt wurde, vergewissern Sie sich, dass es nicht leer ist und dass es nicht ausschlie\u00dflich aus Leerzeichen besteht.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Das angegebene Konfigurationsattribut fehlt in der Serverkonfiguration. Wenn ein Wert angegeben ist, werden Leerzeichen am Anfang und am Ende des Werts entfernt, wenn der Wert verarbeitet wird, sodass der Wert in der Konfiguration leer sein oder ausschlie\u00dflich aus Leerzeichen bestehen kann. Wenn der Erkennungsendpunkt angegeben wurde, um diesen Attributwert vom Provider abzurufen, tritt bei der Erkennung m\u00f6glicherweise ein Problem auf.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Stellen Sie sicher, dass das angegebene Konfigurationsattribut konfiguriert ist, dass es nicht leer ist und dass es nicht ausschlie\u00dflich aus Leerzeichen besteht. Wenn der Erkennungsendpunkt zum Abrufen dieser Informationen konfiguriert ist, vergewissern Sie sich, dass bei der Erkennungsanforderung keine Fehler auftreten.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Mehr als eine OpenID Connect-Clientkonfiguration gibt denselben Authentifizierungfilter [{0}] an. Dies kann zu unbestimmten Verhalten f\u00fchren.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Mehr als eine OpenID Connect-Clientkonfiguration enth\u00e4lt ein authFilterRef-Attribut, das sich auf denselben Filter bezieht. Jeder dieser Clients k\u00f6nnte eine Anforderung verarbeiten, die mit dem Filter \u00fcbereinstimmt, was zu unbestimmtem Verhalten f\u00fchrt. 
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Sehen Sie sich die Datei server.xml an und korrigieren Sie die Konfiguration.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Mehr als ein OpenID Connect-Clientauthentifizierungsfilter stimmt mit einer Anforderung an die URL [{0}] \u00fcberein. Die \u00fcbereinstimmenden Filter sind [{1}]. Dies kann zu unbestimmten Verhalten f\u00fchren.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=Mehr als ein Authentifizierungsfilter stimmt mit einer eingehenden Anforderung \u00fcberein. Jeder Client, der einen dieser Filter verwendet, k\u00f6nnte die Anforderung verarbeiten, was zu unbestimmten Verhalten f\u00fchren kann. 
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Sehen Sie sich die Datei server.xml an und korrigieren Sie die Konfiguration.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
