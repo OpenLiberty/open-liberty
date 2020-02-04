@@ -14,6 +14,7 @@ package com.ibm.ws.security.acme.internal.util;
 public class AcmeConstants {
 
 	public static final String ACME_CONFIG_PID = "com.ibm.ws.security.acme.config";
+	public static final String ACME_CONTEXT_ROOT = "/.well-known/acme-challenge";
 
 	/*
 	 * Constants that match the metatype fields

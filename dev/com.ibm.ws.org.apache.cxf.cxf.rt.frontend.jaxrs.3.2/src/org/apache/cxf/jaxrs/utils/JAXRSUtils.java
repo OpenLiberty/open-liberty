@@ -30,6 +30,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -1712,6 +1714,59 @@ public final class JAXRSUtils {
         return types;
     }
 
+    //Liberty change start
+    public static List<Charset> sortCharsets(List<?> charsetHeaderValues) {
+        if (charsetHeaderValues == null || charsetHeaderValues.size() < 1) {
+            return Collections.emptyList();
+        }
+        return charsetHeaderValues.stream()
+                                  .map(CharsetQualityTuple::parseTuple)
+                                  .sorted((t1, t2) -> { return Float.compare(t1.quality, t2.quality) * -1; })
+                                  .filter(t -> { return t.charset != null && t.quality > 0; })
+                                  .map(t -> { return t.charset; })
+                                  .collect(Collectors.toList());
+    }
+
+    private static class CharsetQualityTuple {
+        Charset charset;
+        float quality = 1; // aka weight
+
+        @FFDCIgnore(IllegalCharsetNameException.class)
+        static CharsetQualityTuple parseTuple(Object o) {
+            String s;
+            if (o instanceof String) {
+                s = (String) o;
+            } else {
+                s = o.toString();
+            }
+            CharsetQualityTuple tuple = new CharsetQualityTuple();
+            String[] sArr = s.split(";[qQ]=");
+            if (sArr.length > 1) {
+                try {
+                    float f = Float.parseFloat(sArr[1]);
+                    tuple.quality = Float.min(1.0f, Float.max(0f, f));
+                } catch (NumberFormatException ex) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Invalid charset weight (" + s + ") - defaulting to 0.");
+                    }
+                    tuple.quality = 0;
+                }
+            }
+            try {
+                if (Charset.isSupported(sArr[0])) {
+                    tuple.charset = Charset.forName(sArr[0]);
+                } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Unsupported charset, " + sArr[0]);
+                }
+            } catch (IllegalCharsetNameException ex) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Illegal charset name, " + sArr[0]);
+                }
+            }
+            return tuple;
+        }
+    }
+    //Liberty change end
     public static <T extends Throwable> Response convertFaultToResponse(T ex, Message currentMessage) {
         return ExceptionUtils.convertFaultToResponse(ex, currentMessage);
     }

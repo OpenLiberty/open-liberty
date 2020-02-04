@@ -24,6 +24,7 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
+import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
@@ -55,11 +56,13 @@ import componenttest.topology.impl.LibertyServer;
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
 
+    public final String AppStartMsg = ".*CWWKZ0001I.*" + JWTBuilderConstants.JWT_BUILDER_SERVLET + ".*";
+
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() ;
+    public static RepeatTests r = RepeatTests.withoutModification();
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
@@ -94,7 +97,7 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     @Test
     public void JwtBuilderAPIMinimumConfigTests_minimumRunnableConfig() throws Exception {
 
-        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumRunnableConfig.xml");
+        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumRunnableConfig.xml", AppStartMsg);
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
         expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
@@ -113,8 +116,9 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     @Test
     public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_global() throws Exception {
 
-        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig1.xml");
+        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig1.xml", AppStartMsg);
 
+        ServerInstanceUtils.waitForSSLMsg(builderServer);
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
@@ -127,8 +131,9 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     @Test
     public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_builder() throws Exception {
 
-        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig2.xml");
+        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig2.xml", AppStartMsg);
 
+        ServerInstanceUtils.waitForSSLMsg(builderServer);
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
         expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
 

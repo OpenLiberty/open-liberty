@@ -16,10 +16,14 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,6 +34,7 @@ import javax.json.bind.spi.JsonbProvider;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.ContextResolver;
@@ -38,9 +43,11 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.model.ProviderInfo;
+import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 @Produces({ "*/*" })
 @Consumes({ "*/*" })
@@ -48,9 +55,33 @@ import com.ibm.websphere.ras.TraceComponent;
 public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object>, UnaryOperator<Jsonb> {
 
     private final static TraceComponent tc = Tr.register(JsonBProvider.class);
+    private final static Charset DEFAULT_CHARSET = getDefaultCharset();
     private final JsonbProvider jsonbProvider;
     private final AtomicReference<Jsonb> jsonb = new AtomicReference<>();
     private final Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers;
+    
+    @FFDCIgnore(Exception.class)
+    private static Charset getDefaultCharset() {
+        Charset cs = null;
+        String csStr = null;
+        try {
+            csStr = AccessController.doPrivileged((PrivilegedAction<String>)() -> {
+                return System.getProperty("com.ibm.ws.jaxrs.jsonbprovider.defaultCharset");
+            });
+            if (csStr != null) {
+                cs = Charset.forName(csStr);
+            }
+        } catch (Exception ex) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not load specified default charset: " + csStr);
+            }
+        }
+        if (cs == null) {
+            cs = StandardCharsets.UTF_8;
+        }
+        return cs;
+    }
+    
 
     public JsonBProvider(JsonbProvider jsonbProvider, Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers) {
         this.contextResolvers = contextResolvers;
@@ -169,7 +200,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     public void writeTo(Object obj, Class<?> type, Type genericType, Annotation[] annotations,
                         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
         String json = getJsonb().toJson(obj);
-        entityStream.write(json.getBytes()); // do not close
+        entityStream.write(json.getBytes(charset(httpHeaders))); // do not close entityStream
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
@@ -209,5 +240,22 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
             return t;
         }
         return jsonbProvider.create().build();
+    }
+
+    private static Charset charset(MultivaluedMap<String, Object> httpHeaders) {
+        if (httpHeaders == null) {
+            return DEFAULT_CHARSET;
+        }
+        List<?> charsets = httpHeaders.get(HttpHeaders.ACCEPT_CHARSET);
+        return JAXRSUtils.sortCharsets(charsets)
+                         .stream()
+                         .findFirst()
+                         .orElseGet(() -> {
+                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                 Tr.debug(tc, "No matching charsets, using " + DEFAULT_CHARSET.name() + 
+                                              ", client requested " + charsets);
+                             }
+                             return DEFAULT_CHARSET;
+                         });
     }
 }

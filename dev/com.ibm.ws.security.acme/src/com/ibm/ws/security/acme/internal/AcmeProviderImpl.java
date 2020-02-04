@@ -15,7 +15,6 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,23 +25,16 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
-import com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServices;
-import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 /**
  * ACME 2.0 support component service.
@@ -72,11 +64,6 @@ public class AcmeProviderImpl implements AcmeProvider, ServletContextListener, S
 	private String domainKeyFile = null;
 
 	private AcmeClient acmeClient = null;
-
-	private final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
-
-	private final ConcurrentServiceReferenceMap<String, AcmeAuthorizationServices> acmeAuthServiceRef = new ConcurrentServiceReferenceMap<String, AcmeAuthorizationServices>(
-			"acmeAuthService");
 
 	@Activate
 	public void activate(ComponentContext context, Map<String, Object> properties) throws AcmeCaException {
@@ -130,19 +117,6 @@ public class AcmeProviderImpl implements AcmeProvider, ServletContextListener, S
 
 	@Override
 	public void contextInitialized(ServletContextEvent cte) {
-	}
-
-	@Reference(service = AcmeAuthorizationServices.class, name = "com.ibm.ws.security.acme.web.AcmeAuthorizationServices", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
-	protected void setAcmeAuthService(ServiceReference<AcmeAuthorizationServices> ref) {
-		synchronized (acmeAuthServiceRef) {
-			acmeAuthServiceRef.putReference((String) ref.getProperty("acmeAuthID"), ref);
-		}
-	}
-
-	protected void unsetAcmeAuthService(ServiceReference<AcmeAuthorizationServices> ref) {
-		synchronized (acmeAuthServiceRef) {
-			acmeAuthServiceRef.removeReference((String) ref.getProperty("acmeAuthID"), ref);
-		}
 	}
 
 	@Override

@@ -36,6 +36,7 @@ import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
@@ -64,7 +65,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     @Server("com.ibm.ws.security.jwt_fat.builder.rs")
     public static LibertyServer rsServer;
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() ;
+    public static RepeatTests r = RepeatTests.withoutModification();
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
@@ -80,7 +81,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(builderServer);
-        builderServer.startServerUsingExpandedConfiguration("server_configTests.xml");
+        builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
+        builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!
@@ -89,7 +91,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // start server to run protected app - make sure we can use the JWT Token that we produce
         serverTracker.addServer(rsServer);
         ServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
-        rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml");
+        rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
+        rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(rsServer, JWTBuilderConstants.BVT_SERVER_2_PORT_NAME_ROOT);
 
     }

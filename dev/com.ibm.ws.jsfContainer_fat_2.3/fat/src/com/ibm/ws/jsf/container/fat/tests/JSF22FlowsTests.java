@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -151,33 +151,35 @@ public class JSF22FlowsTests extends FATServletClient {
     @ExpectedFFDC("java.util.NoSuchElementException")
     public void JSF22Flows_TestFailedFlowEntry_Mojarra() throws Exception {
         // Navigate to the failed flow entry page
-        WebClient webClient = getWebClient();
-        HtmlPage page = webClient.getPage(getServerURL() + '/' + MOJARRA_APP + "/JSF22Flows_noAccess.xhtml");
-        assertNotInFlow(page);
+        try (WebClient webClient = getWebClient()) {
+            HtmlPage page = webClient.getPage(getServerURL() + '/' + MOJARRA_APP + "/JSF22Flows_noAccess.xhtml");
+            assertNotInFlow(page);
 
-        // Try navigating directly to the second page in an application-local flow
-        page = findAndClickButton(page, "button1");
-        assertNotInFlow(page);
+            // Try navigating directly to the second page in an application-local flow
+            page = findAndClickButton(page, "button1");
+            assertNotInFlow(page);
 
-        // MyFaces has slightly different err msg than Mojarra
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Unable to find matching navigation case"));
+            // MyFaces has slightly different err msg than Mojarra
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Unable to find matching navigation case"));
+        }
     }
 
     @Test
     public void JSF22Flows_TestFailedFlowEntry_MyFaces() throws Exception {
         // Navigate to the failed flow entry page
-        WebClient webClient = getWebClient();
-        HtmlPage page = webClient.getPage(getServerURL() + '/' + MYFACES_APP + "/JSF22Flows_noAccess.xhtml");
-        assertNotInFlow(page);
+        try (WebClient webClient = getWebClient()) {
+            HtmlPage page = webClient.getPage(getServerURL() + '/' + MYFACES_APP + "/JSF22Flows_noAccess.xhtml");
+            assertNotInFlow(page);
 
-        // Try navigating directly to the second page in an application-local flow
-        page = findAndClickButton(page, "button1");
-        assertNotInFlow(page);
+            // Try navigating directly to the second page in an application-local flow
+            page = findAndClickButton(page, "button1");
+            assertNotInFlow(page);
 
-        // MyFaces has slightly different err msg than Mojarra
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("No navigation case match"));
+            // MyFaces has slightly different err msg than Mojarra
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("No navigation case match"));
+        }
     }
 
     /**
@@ -195,50 +197,51 @@ public class JSF22FlowsTests extends FATServletClient {
 
     public void JSF22Flows_TestDeclarativeNavigation(String app) throws Exception {
         // Navigate to the
-        WebClient webClient = getWebClient();
-        HtmlPage page = getIndex(webClient, app);
+        try (WebClient webClient = getWebClient()) {
+            HtmlPage page = getIndex(webClient, app);
 
-        String flowID = "simpleNavigationDeclarative";
+            String flowID = "simpleNavigationDeclarative";
 
-        /*
-         * Enter flow, submit a flowScope variable, navigate back and update it, then exit flow
-         */
-        page = findAndClickButton(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Declarative Navigation Flow Example Page 1"));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: no flowscope value"));
+            /*
+             * Enter flow, submit a flowScope variable, navigate back and update it, then exit flow
+             */
+            page = findAndClickButton(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Declarative Navigation Flow Example Page 1"));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: no flowscope value"));
 
-        // Assign flowscope value
-        HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("test string");
+            // Assign flowscope value
+            HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("test string");
 
-        // Navigate to next page and check flowScope value
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Declarative Navigation Flow Example Page 2"));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: test string"));
+            // Navigate to next page and check flowScope value
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Declarative Navigation Flow Example Page 2"));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: test string"));
 
-        page = findAndClickButton(page, "button1");
+            page = findAndClickButton(page, "button1");
 
-        // Update flowScope value
-        inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("another test string");
+            // Update flowScope value
+            inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("another test string");
 
-        // Navigate to next page and verify updated flowScope value
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Declarative Navigation Flow Example Page 2"));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: another test string"));
+            // Navigate to next page and verify updated flowScope value
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Declarative Navigation Flow Example Page 2"));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: another test string"));
 
-        // Exit flow, verify exit
-        page = findAndClickButton(page, "button2");
-        assertNotInFlow(page);
+            // Exit flow, verify exit
+            page = findAndClickButton(page, "button2");
+            assertNotInFlow(page);
+        }
     }
 
     /**
@@ -260,48 +263,49 @@ public class JSF22FlowsTests extends FATServletClient {
      */
     protected static void testFlowSwitch(String flowID, String contextRoot) throws Exception {
         // Navigate to the index
-        WebClient webClient = getWebClient();
-        HtmlPage page = getIndex(webClient, contextRoot);
-        //String flowID = "declarativeSwitch";
+        try (WebClient webClient = getWebClient()) {
+            HtmlPage page = getIndex(webClient, contextRoot);
+            //String flowID = "declarativeSwitch";
 
-        /*
-         * Enter flow, submit a flowScope variable that doesn't, then does, satisfy the switch, then exit
-         */
-        page = findAndClickButton(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Declarative Switch Page 1"));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: no flowscope value"));
+            /*
+             * Enter flow, submit a flowScope variable that doesn't, then does, satisfy the switch, then exit
+             */
+            page = findAndClickButton(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Declarative Switch Page 1"));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: no flowscope value"));
 
-        // Assign flowscope value
-        HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("incorrect value");
+            // Assign flowscope value
+            HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("incorrect value");
 
-        // Click submit: we should stay on the same page - the switch only allows us to
-        // navigate to the next page when the flowScope value is "next"
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Declarative Switch Page 1"));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: incorrect value"));
+            // Click submit: we should stay on the same page - the switch only allows us to
+            // navigate to the next page when the flowScope value is "next"
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Declarative Switch Page 1"));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: incorrect value"));
 
-        // Assign flowscope value
-        inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("next");
+            // Assign flowscope value
+            inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("next");
 
-        // Click submit: since the flowScope value is "next" we should navigate to page 2
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Declarative Switch Page 2"));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: next"));
+            // Click submit: since the flowScope value is "next" we should navigate to page 2
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Declarative Switch Page 2"));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: next"));
 
-        // Exit flow, verify exit
-        page = findAndClickButton(page, "button2");
-        assertNotInFlow(page);
+            // Exit flow, verify exit
+            page = findAndClickButton(page, "button2");
+            assertNotInFlow(page);
+        }
     }
 
     /**
@@ -329,173 +333,175 @@ public class JSF22FlowsTests extends FATServletClient {
      */
     protected static void testNestedFlows(String flowID1, String flowID2, String ButtonID, String contextRoot) throws Exception {
         // Navigate to the index
-        WebClient webClient = getWebClient();
-        HtmlPage page = getIndex(webClient, contextRoot);
+        try (WebClient webClient = getWebClient()) {
+            HtmlPage page = getIndex(webClient, contextRoot);
 
-        /*
-         * Navigate into flow 1, verify a parameter is passed to flow 2, return to flow 1 and update
-         * the parameter, verify that this updated value is passed to flow 2, then exit
-         */
-        page = findAndClickButton(page, ButtonID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Nested Flow Example Page 1"));
-        assertInFlow(page, flowID1);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: no flowscope value"));
+            /*
+             * Navigate into flow 1, verify a parameter is passed to flow 2, return to flow 1 and update
+             * the parameter, verify that this updated value is passed to flow 2, then exit
+             */
+            page = findAndClickButton(page, ButtonID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Nested Flow Example Page 1"));
+            assertInFlow(page, flowID1);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: no flowscope value"));
 
-        // Assign flowscope value and navigate to page 2 in the first flow
-        HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("test string");
+            // Assign flowscope value and navigate to page 2 in the first flow
+            HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("test string");
 
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Nested Flow Example Page 2"));
-        assertInFlow(page, flowID1);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: test string"));
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Nested Flow Example Page 2"));
+            assertInFlow(page, flowID1);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: test string"));
 
-        // Navigate into flow 2, check passed parameter value
-        page = findAndClickButton(page, "button2");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Nested Flow Example Page 1 (flow 2)"));
-        assertInFlow(page, flowID2);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: test string"));
+            // Navigate into flow 2, check passed parameter value
+            page = findAndClickButton(page, "button2");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Nested Flow Example Page 1 (flow 2)"));
+            assertInFlow(page, flowID2);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: test string"));
 
-        // Navigate back into flow 1 page 1
-        page = findAndClickButton(page, "button2");
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Nested Flow Example Page 1"));
-        assertInFlow(page, flowID1);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: test string"));
+            // Navigate back into flow 1 page 1
+            page = findAndClickButton(page, "button2");
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Nested Flow Example Page 1"));
+            assertInFlow(page, flowID1);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: test string"));
 
-        // Assign a new flowscope value, make sure it propagates to flow 2
-        inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("another test string");
+            // Assign a new flowscope value, make sure it propagates to flow 2
+            inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("another test string");
 
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Nested Flow Example Page 2"));
-        assertInFlow(page, flowID1);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: another test string"));
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Nested Flow Example Page 2"));
+            assertInFlow(page, flowID1);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: another test string"));
 
-        // Navigate into flow 2, check passed parameter value
-        page = findAndClickButton(page, "button2");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Nested Flow Example Page 1 (flow 2)"));
-        assertInFlow(page, flowID2);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: another test string"));
+            // Navigate into flow 2, check passed parameter value
+            page = findAndClickButton(page, "button2");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Nested Flow Example Page 1 (flow 2)"));
+            assertInFlow(page, flowID2);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: another test string"));
 
-        // Navigate into flow 2 page 2, check passed parameter value
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Nested Flow Example Page 2 (flow 2)"));
-        assertInFlow(page, flowID2);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: another test string"));
+            // Navigate into flow 2 page 2, check passed parameter value
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Nested Flow Example Page 2 (flow 2)"));
+            assertInFlow(page, flowID2);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: another test string"));
 
-        // Navigate back to page 1
-        page = findAndClickButton(page, "button2");
+            // Navigate back to page 1
+            page = findAndClickButton(page, "button2");
 
-        // Exit flows
-        page = findAndClickButton(page, "button3");
-        assertNotInFlow(page);
+            // Exit flows
+            page = findAndClickButton(page, "button3");
+            assertNotInFlow(page);
+        }
     }
 
     /**
      * Verify the behavior of a simple flow; the flow ID must be passed in, allowing re-use
      */
     protected static void testSimpleCase(String flowID, String appName) throws Exception {
-        WebClient webClient = getWebClient();
-        HtmlPage page = getIndex(webClient, appName);
+        try (WebClient webClient = getWebClient()) {
+            HtmlPage page = getIndex(webClient, appName);
 
-        /*
-         * 1: Enter flow, then verify exit
-         */
-        page = findAndClickButton(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("flow page 1"));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Flow Id: " + flowID));
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: no flowscope value"));
+            /*
+             * 1: Enter flow, then verify exit
+             */
+            page = findAndClickButton(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("flow page 1"));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Flow Id: " + flowID));
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: no flowscope value"));
 
-        // Exit flow, verify exit
-        page = findAndClickButton(page, "button2");
-        assertNotInFlow(page);
+            // Exit flow, verify exit
+            page = findAndClickButton(page, "button2");
+            assertNotInFlow(page);
 
-        /*
-         * 2: Enter flow, assign flowScope a value, check for that value in the second flow page,
-         * return to the first flow page, update the flowScope value, return to page 2 and
-         * check for the updated value, then exit the flow and return to the index
-         */
-        page = findAndClickButton(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("flow page 1"));
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains(flowID));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: no flowscope value"));
+            /*
+             * 2: Enter flow, assign flowScope a value, check for that value in the second flow page,
+             * return to the first flow page, update the flowScope value, return to page 2 and
+             * check for the updated value, then exit the flow and return to the index
+             */
+            page = findAndClickButton(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("flow page 1"));
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains(flowID));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: no flowscope value"));
 
-        // Assign flowscope value
-        HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("test string");
+            // Assign flowscope value
+            HtmlInput inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("test string");
 
-        // Navigate to next page and check flowScope value
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("flow page 2"));
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains(flowID));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: test string"));
-        page = findAndClickButton(page, "button1");
+            // Navigate to next page and check flowScope value
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("flow page 2"));
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains(flowID));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: test string"));
+            page = findAndClickButton(page, "button1");
 
-        // Update flowScope value
-        inputField = (HtmlInput) page.getElementById("inputValue");
-        inputField.setValueAttribute("another test string");
+            // Update flowScope value
+            inputField = (HtmlInput) page.getElementById("inputValue");
+            inputField.setValueAttribute("another test string");
 
-        // Navigate to next page and verify updated flowScope value
-        page = findAndClickButton(page, "button1");
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("flow page 2"));
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains(flowID));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: another test string"));
+            // Navigate to next page and verify updated flowScope value
+            page = findAndClickButton(page, "button1");
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("flow page 2"));
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains(flowID));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: another test string"));
 
-        // Exit flow, verify exit
-        HtmlElement nextButton = (HtmlElement) page.getElementById("button2");
-        page = nextButton.click();
-        assertNotInFlow(page);
+            // Exit flow, verify exit
+            HtmlElement nextButton = (HtmlElement) page.getElementById("button2");
+            page = nextButton.click();
+            assertNotInFlow(page);
 
-        nextButton = (HtmlElement) page.getElementById("button1");
-        page = nextButton.click();
-        assertNotInFlow(page);
+            nextButton = (HtmlElement) page.getElementById("button1");
+            page = nextButton.click();
+            assertNotInFlow(page);
 
-        /*
-         * 3: Verify that the flowScope value is not still set upon flow re-entry
-         */
-        page = findAndClickButton(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("flow page 1"));
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains(flowID));
-        assertInFlow(page, flowID);
-        assertTrue("The page doesn't contain the right text: " + page.asText(),
-                   page.asText().contains("Current flowscope value: no flowscope value"));
+            /*
+             * 3: Verify that the flowScope value is not still set upon flow re-entry
+             */
+            page = findAndClickButton(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("flow page 1"));
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains(flowID));
+            assertInFlow(page, flowID);
+            assertTrue("The page doesn't contain the right text: " + page.asText(),
+                       page.asText().contains("Current flowscope value: no flowscope value"));
 
-        // Exit flow, verify exit
-        page = findAndClickButton(page, "button2");
-        assertNotInFlow(page);
+            // Exit flow, verify exit
+            page = findAndClickButton(page, "button2");
+            assertNotInFlow(page);
+        }
     }
 
     /**

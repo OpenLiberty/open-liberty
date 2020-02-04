@@ -125,7 +125,7 @@ public class MonitorMetrics {
             	//otherwise first bracket becomes underscores
             	Tags[2] = Tags[2].replaceAll("\\(", "_");
             	//second bracket is removed
-            	Tags[2] = Tags[2].replaceAll("\\(", "");
+            	Tags[2] = Tags[2].replaceAll("\\)", "");
             	break;
             }
 		}

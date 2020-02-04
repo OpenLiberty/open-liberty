@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
-import com.ibm.ws.jaxrs.monitor.JaxRsMonitorFilter.RestfulMetricInfo;
+import com.ibm.ws.jaxrs.monitor.JaxRsMonitorFilter.RestMetricInfo;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
 @Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE, service = {JaxRsProviderRegister.class, ApplicationStateListener.class})
@@ -43,7 +43,7 @@ public class JaxRsMonitorProviderRegister implements JaxRsProviderRegister, Appl
     	// information such as whether the application is
     	// contained within an ear file or not.
     	String appName = appInfo.getDeploymentName();
-    	RestfulMetricInfo metricInfo = monitorFilter.getMetricInfo(appName);
+    	RestMetricInfo metricInfo = monitorFilter.getMetricInfo(appName);
     	
     	// Determine if the application is packaged within an ear file.  This is 
     	// useful since a key created in the monitorFilter class will be 

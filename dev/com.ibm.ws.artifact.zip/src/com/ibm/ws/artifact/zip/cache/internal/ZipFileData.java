@@ -668,59 +668,22 @@ ZipFile [Path]
 
             @SuppressWarnings("unused")
             ZipFile oldZipFile = closeZipFile();
-
             @SuppressWarnings("unused")
-            ZipFile newZipFile = openZipFile(newZipLength, newZipLastModified);
-            // throws IOException, ZipException
+            ZipFile newZipFile = openZipFile(newZipLength, newZipLastModified); // throws IOException, ZipException
         }
 
         return zipFile;
     }
 
-    /**
-     * Open the zip file.  Set the zip file length and last modified values.
-     *
-     * @throws IOException Thrown if the zip file could not be opened, or if the
-     *     zip file length or last modified value could not be obtained.
-     * @throws ZipException Throw if the zip file could not be opened.
-     */
+    private static final long UNKNOWN_ZIP_LENGTH = -1L;
+    private static final long UNUSED_ZIP_LAST_MODIFIED = -1L;
+
     @Trivial
     protected ZipFile openZipFile() throws IOException, ZipException {
         return openZipFile(ZipFileData.UNKNOWN_ZIP_LENGTH, ZipFileData.UNUSED_ZIP_LAST_MODIFIED);
         // throws IOException, ZipException
     }
 
-    /**
-     * Control parameter: The zip file length is not yet known and must
-     * be obtained from the file system.
-     * 
-     * See {@link #openZipFile(ZipFile, long, long)}.
-     */
-    private static final long UNKNOWN_ZIP_LENGTH = -1L;
-    
-    /**
-     * Control parameter: The zip file last modified value is not yet known and
-     * must be obtained from the file system.
-     * 
-     * See {@link #openZipFile(ZipFile, long, long)}.
-     */
-    private static final long UNUSED_ZIP_LAST_MODIFIED = -1L;
-
-    /**
-     * Open the zip file.  Set the zip file length and last modified values.
-     *
-     * @param useZipLength The length of the zip file.  If set to {@link #UNKNOWN_ZIP_LENGTH},
-     *     the zip file length will be obtained from the file system.
-     * @param useZipLastModified The last modified value of the zip file.  If set
-     *     to {@link #UNKNOWN_ZIP_LAST_MODIFIED}, the last modified value will be obtained
-     *     from the file system.
-     *
-     * @return the zip file which was just opened.
-     *
-     * @throws IOException Thrown if the zip file could not be opened, or if the
-     *     zip file length or last modified value could not be obtained.
-     * @throws ZipException Throw if the zip file could not be opened.
-     */
     @Trivial
     protected ZipFile openZipFile(long useZipLength, long useZipLastModified) throws IOException, ZipException {
         String methodName = "openZipFile";
