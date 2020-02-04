@@ -683,7 +683,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     // show the host & port that were requested (potentially based on Host header)
                     // if the resource is not found, given that some translation may happen based on
                     // interjection of proxy headers, there has to be some way of showing what
-                    // ended up being requested..
+                    // ended up being requested.
+                    // Scrub the host header before returning it in the error response
                     msg = getRequestedHost().getBytes();
                     body.write(msg);
                     body.write(port);
@@ -1030,7 +1031,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         close(getVirtualConnection(), error);
     }
 
-     /**
+    /**
      * Searches the passed in String for any characters that could be
      * used in a cross site scripting attack (<, >, +, &, ", ', (, ), %, ;)
      * and converts them to their browser equivalent name or code specification.
