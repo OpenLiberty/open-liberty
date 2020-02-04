@@ -57,7 +57,7 @@
 
     <application type="ear" id="derbyRAApp" name="${id}Name" location="derbyRAApp.ear"/>
 
-    <transaction heuristicRetryInterval="2s"/>
+    <transaction heuristicRetryInterval="2"/>
 
     <!-- 
     NOTE: for this bucket to run cleanly with j2sec enabled with IBM JDK, the following permission must 

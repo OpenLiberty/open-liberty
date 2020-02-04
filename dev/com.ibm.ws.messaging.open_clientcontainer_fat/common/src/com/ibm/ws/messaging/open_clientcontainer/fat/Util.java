@@ -38,32 +38,53 @@ public class Util {
     return logger_;
   }
 
+  /**
+   * 
+   * @param currentMethodName - the method name whose caller you want to know
+   * @param tiers - how many callers back you want to know.  Usually it is 1.
+   * @return
+   */
+  private static StackTraceElement getCaller(String currentMethodName, int tiers) {
+      StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+      for (int i = 2; i < elements.length; ++i) {
+          if (elements[i].getMethodName().equals(currentMethodName)) {
+              return elements[i+tiers];
+          }
+      }
+      // If it isn't found just return the 3rd element
+      return elements[2 + tiers];
+  }
+
+  public static StackTraceElement getCaller(String currentMethodName) {
+      return getCaller(currentMethodName, 1);
+  }
+  
   // tracing/logging helper methods so we can simplify and keep consistent
   // only bother to test level here as we're getting a stack trace for the method name which we can avoid if it won't be logged
   public static void TRACE_ENTRY() {
     if (logger_.isLoggable(Level.FINEST)) {
-      StackTraceElement e = Thread.currentThread().getStackTrace()[2];
+      StackTraceElement e = getCaller("TRACE_ENTRY");
       logger_.entering(e.getClassName(),e.getMethodName());
     }
   }
 
   public static void TRACE_ENTRY(Object obj) {
     if (logger_.isLoggable(Level.FINEST)) {
-      StackTraceElement e = Thread.currentThread().getStackTrace()[2];
+      StackTraceElement e = getCaller("TRACE_ENTRY");
       logger_.entering(e.getClassName(),e.getMethodName(),obj);
     }
   }
 
   public static void TRACE_EXIT() {
     if (logger_.isLoggable(Level.FINEST)) {
-      StackTraceElement e = Thread.currentThread().getStackTrace()[2];
+      StackTraceElement e = getCaller("TRACE_EXIT");
       logger_.exiting(e.getClassName(),e.getMethodName());
     }
   }
 
   public static void TRACE_EXIT(Object obj) {
     if (logger_.isLoggable(Level.FINEST)) {
-      StackTraceElement e = Thread.currentThread().getStackTrace()[2];
+      StackTraceElement e = getCaller("TRACE_EXIT");
       logger_.exiting(e.getClassName(),e.getMethodName(),obj);
     }
   }
@@ -109,18 +130,18 @@ public class Util {
       logger_.setLevel(Level.INFO);
       changed = true;
     }
-    StackTraceElement frame = Thread.currentThread().getStackTrace()[3];
+    StackTraceElement frame = Util.getCaller("doAlways", 2);
     logger_.logp(Level.INFO,frame.getClassName(),frame.getMethodName(),assembleMsg(args));
     if (changed) logger_.setLevel(keep);
   }
 
   private static void doLog(Object ... args) {
-    StackTraceElement e = Thread.currentThread().getStackTrace()[3];
+    StackTraceElement e = Util.getCaller("doLog", 2);
     logger_.logp(Level.INFO,e.getClassName(),e.getMethodName(),assembleMsg(args));
   }
 
   private static void doTrace(Object ... args) {
-    StackTraceElement e = Thread.currentThread().getStackTrace()[3];
+    StackTraceElement e = Util.getCaller("doTrace", 2);
     logger_.logp(Level.FINEST,e.getClassName(),e.getMethodName(),"["+e.getFileName()+":"+e.getLineNumber()+"] "+assembleMsg(args));
   }
 

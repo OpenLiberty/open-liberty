@@ -18,7 +18,7 @@ import org.junit.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -39,6 +39,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -46,6 +47,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @Mode(TestMode.FULL)
 @SkipForRepeat(NO_MODIFICATION)
+@RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 8)
 public class HibernateSearchTest extends LoggingTest {
 
