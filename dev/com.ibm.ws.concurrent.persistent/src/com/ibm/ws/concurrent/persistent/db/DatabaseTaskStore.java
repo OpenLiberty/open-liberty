@@ -570,6 +570,73 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
+    public long findOrCreatePollPartition() throws Exception {
+        String find = "SELECT p.ID FROM Partition p WHERE p.LSERVER=:s";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findOrCreatePollPartition", find);
+
+        long partitionId;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            // First look for an existing entry
+            TypedQuery<Long> query = em.createQuery(find, Long.class);
+            query.setParameter("s", ".pollinfo"); // prefix of . is used to avoid collision with actual Liberty server names
+            List<Long> results = query.getResultList();
+            if (results.size() > 0) {
+                partitionId = results.get(0);
+            } else {
+                // If not found, create a new entry
+                Partition partition = new Partition();
+                // Initialize to already-expired and eligible for any server to claim.
+                // Use a fractional second to help avoid accessing the database around the same time as scheduled tasks
+                // which might be scheduled to run on the hour or minute.
+                partition.EXPIRY = (System.currentTimeMillis() / 1000 - 1) * 1000 + 600;
+                partition.LSERVER = ".pollinfo";
+                partition.EXECUTOR = ""; // unused, cannot be null
+                partition.HOSTNAME = ""; // unused, cannot be null
+                partition.USERDIR = ""; // unused, cannot be null
+                em.persist(partition);
+                em.flush();
+                partitionId = partition.ID;
+            }
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findOrCreatePollPartition", partitionId);
+        return partitionId;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    // TODO decide what to return from this method, update the implementation, and make the result more specific
+    public Object findPollInfoForUpdate(long partitionId) throws Exception {
+        String find = "SELECT p.EXPIRY FROM Partition p WHERE p.ID=:i";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findPollInfoForUpdate", partitionId, find);
+
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(find, Long.class);
+            query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            query.setParameter("i", partitionId);
+            Long result = query.getSingleResult();
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "findPollInfoForUpdate", result);
+            return result;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public List<Long> findTaskIds(String pattern, Character escape, TaskState state, boolean inState,
                                   Long minId, Integer maxResults, String owner, Long partition) throws Exception {
         int i = 0;
@@ -1554,6 +1621,31 @@ public class DatabaseTaskStore implements TaskStore {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "transfer", count);
             return count;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    // TODO update implementation and parameters after we decide what implementation we want
+    public boolean updatePollInfo(long partitionId, long newExpiry, String otherStuff) throws Exception {
+        String update = "UPDATE Partition p SET p.EXPIRY=:e WHERE p.ID=:i";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "updatePollInfo", partitionId, newExpiry, otherStuff, update);
+
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Query query = em.createQuery(update);
+            query.setParameter("i", partitionId);
+            query.setParameter("e", newExpiry);
+            int count = query.executeUpdate();
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "updatePollInfo", count);
+            return count > 0;
         } finally {
             em.close();
         }

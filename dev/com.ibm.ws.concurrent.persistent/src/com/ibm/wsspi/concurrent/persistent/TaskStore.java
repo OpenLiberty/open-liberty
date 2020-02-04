@@ -151,6 +151,24 @@ public interface TaskStore {
     long findOrCreate(PartitionRecord record) throws Exception;
 
     /**
+     * Creates a dedicated partition record to be used for partitioning out poll attempts across multiple instances.
+     * Only use this when missedTaskTheshold is enabled and pollInterval is unspecified, which means Liberty determines it automatically.
+     *
+     * @return unique identifier for the partition record to be used for coordination of automatically determined polling.
+     * @throws Exception if an error occurs when attempting to access the persistent task store.
+     */
+    long findOrCreatePollPartition() throws Exception;
+
+    /**
+     * Reads information from the partition entry for polling coordination and obtains a write lock on it.
+     *
+     * @param partitionId unique identifier of the partition entry for polling coordination.
+     * @return TODO specify precise type for return value and document here
+     * @throws Exception if an error occurs accessing the persistent store.
+     */
+    Object findPollInfoForUpdate(long partitionId) throws Exception;
+
+    /**
      * Find all task IDs for tasks that match the specified name pattern and the presence or absence
      * (as determined by the inState attribute) of the specified state.
      * For example, to find taskIDs for the first 100 tasks belonging to app1 in partition 12 that have not completed all executions
@@ -370,4 +388,15 @@ public interface TaskStore {
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
     int transfer(Long maxTaskId, long oldPartitionId, long newPartitionId) throws Exception;
+
+    /**
+     * Reads information from the partition entry for polling coordination.
+     *
+     * @param partitionId unique identifier of the partition entry for polling coordination.
+     * @param newExpiry   the new expiry value to use.
+     * @param otherStuff  TODO what we need will depend on the algorithm that is chosen
+     * @return true if the partition entry for polling was updated. Otherwise false.
+     * @throws Exception if an error occurs accessing the persistent store.
+     */
+    boolean updatePollInfo(long partitionId, long newExpiry, String otherStuff) throws Exception;
 }
