@@ -143,7 +143,7 @@ public class InstallKernelMap implements Map {
     private final String OPEN_LIBERTY_GROUP_ID = "io.openliberty.features";
     private final String JSON_ARTIFACT_ID = "features";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
-    private final String MAVEN_CENTRAL = "http://repo.maven.apache.org/maven2/";
+    private final String MAVEN_CENTRAL = "https://repo.maven.apache.org/maven2/";
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "tmp"
                                           + File.separator;
     private static final String ETC_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "etc"

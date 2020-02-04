@@ -215,20 +215,36 @@ public class DataSourceTestServlet extends FATServlet {
      * Create the default table used by the tests.
      */
     private void createTable(DataSource ds) throws SQLException {
-        Connection con = ds.getConnection();
-        try {
-            Statement st = con.createStatement();
-            try {
-                st.executeUpdate("drop table cities");
-            } catch (SQLException x) {
+        try (Connection con = ds.getConnection()) {
+            //See if cities table was already created
+            DatabaseMetaData md = con.getMetaData();
+            boolean tableFound = false;
+            ResultSet rs = md.getTables(null, null, "CITIES", null); // Some DB providers require the table name in all upper case
+            while (rs.next()) {
+                if (rs.getString("TABLE_NAME").equalsIgnoreCase("cities")) {
+                    tableFound = true;
+                }
             }
-            String dbProductName = con.getMetaData().getDatabaseProductName().toUpperCase();
-            if (dbProductName.contains("IDS") || dbProductName.contains("INFORMIX")) // Informix JCC and JDBC
-                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30)) LOCK MODE ROW");
-            else
-                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
-        } finally {
-            con.close();
+
+            if (!tableFound) {
+                rs = md.getTables(null, null, "cities", null); // Other DB providers require the table name in all lower case
+                while (rs.next()) {
+                    if (rs.getString("TABLE_NAME").equalsIgnoreCase("cities")) {
+                        tableFound = true;
+                    }
+                }
+            }
+
+            try (Statement st = con.createStatement()) {
+                if (tableFound) {
+                    st.executeUpdate("drop table cities");
+                }
+                String dbProductName = md.getDatabaseProductName().toUpperCase();
+                if (dbProductName.contains("IDS") || dbProductName.contains("INFORMIX")) // Informix JCC and JDBC
+                    st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30)) LOCK MODE ROW");
+                else
+                    st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,6 +103,8 @@ public class LdapXPathTranslateHelper implements XPathTranslateHelper {
 
             short operator = ldapConfigMgr.getOperator(propNode.getOperator());
             value = ldapConfigMgr.escapeSpecialCharacters((String) value);
+            value = ((String) value).replace("\"\"", "\""); // Unescape escaped XPath quotation marks
+            value = ((String) value).replace("''", "'"); // Unescape escaped XPath apostrophes
             Object[] arguments = { ldapAttrName, value };
             String searchCondtion = ldapConfigMgr.CONDITION_FORMATS[operator].format(arguments);
             searchExpBuffer.append(searchCondtion);
@@ -140,6 +142,8 @@ public class LdapXPathTranslateHelper implements XPathTranslateHelper {
                 value = ldapConfigMgr.getLdapValue(propNode.getValue(), dataType, ldapConfigMgr.getSyntax(ldapAttrName));
                 short operator = ldapConfigMgr.getOperator(propNode.getOperator());
                 value = ldapConfigMgr.escapeSpecialCharacters((String) value);
+                value = ((String) value).replace("\"\"", "\""); // Unescape escaped XPath quotation marks
+                value = ((String) value).replace("''", "'"); // Unescape escaped XPath apostrophes
                 Object[] arguments = { ldapAttrName, value };
                 String searchCondtion = ldapConfigMgr.CONDITION_FORMATS[operator].format(arguments);
                 searchExpBuffer.append("(");

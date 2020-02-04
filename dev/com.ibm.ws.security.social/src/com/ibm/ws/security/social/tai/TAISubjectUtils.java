@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
@@ -30,11 +30,9 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.subject.mapping.AttributeToSubject;
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.jwt.builder.utils.BuilderUtils;
-import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.CacheToken;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
@@ -72,12 +70,13 @@ public class TAISubjectUtils {
         this.userApiResponseTokens = userApiResponseTokens;
         this.userApiResponse = userApiResponse;
     }
-    
+
     /**
      * called by oidc client authentication if userInfo available
+     * 
      * @param userInfo
      */
-    void setUserInfo(String userInfo){
+    void setUserInfo(String userInfo) {
         this.userInfo = userInfo;
     }
 
@@ -192,7 +191,7 @@ public class TAISubjectUtils {
 
     private String getDefaultRealm(SocialLoginConfig config) throws SettingCustomPropertiesException {
         String realm = null;
-        if (SocialUtil.isKubeConfig(config)) {
+        if (shouldRealmBeConstructedFromUserApi(config)) {
             String ep = getRealmFromUserApiEndpoint(config);
             if (ep == null) {
                 if (tc.isDebugEnabled()) {
@@ -208,35 +207,41 @@ public class TAISubjectUtils {
             realm = constructDefaultRealmFromConfig(config);
         }
         return realm;
-        
+
+    }
+
+    private boolean shouldRealmBeConstructedFromUserApi(SocialLoginConfig config) {
+        // Kubernetes-based configs can use the user API endpoint to construct the appropriate realm name
+        return SocialUtil.isKubeConfig(config) || SocialUtil.isOkdConfig(config);
     }
 
     private String getRealmFromUserApiEndpoint(SocialLoginConfig config) {
-        
-        String defaultKubeService = "https://kubernetes.default.svc";  
-        String ep = config.getUserApi();
-        
-        if (isDefaultKubeTokenReviewEndpoint(ep)) {
-            return defaultKubeService;
+        String defaultClusterHost;
+        String expectedApiPath;
+        if (SocialUtil.isOkdConfig(config)) {
+            defaultClusterHost = "https://openshift.default.svc";
+            expectedApiPath = "/apis/user.openshift.io/v1/users";
         } else {
-            return trimKubeTokenReviewEndpoint(ep);
+            defaultClusterHost = "https://kubernetes.default.svc";
+            expectedApiPath = "/apis/authentication.k8s.io/v1/tokenreviews";
         }
+        String userApi = config.getUserApi();
+        if (userApi != null && userApi.startsWith(defaultClusterHost)) {
+            return defaultClusterHost;
+        }
+        return trimUserApiEndpoint(userApi, expectedApiPath);
     }
 
-    private String trimKubeTokenReviewEndpoint(String ep) {
-        String kubeTokenReviewApiExt = "/apis/authentication.k8s.io/v1/tokenreviews";
-        if (ep != null) {
-           int index = ep.indexOf(kubeTokenReviewApiExt);
-           if (index > 0) {
-               return ep.substring(0, index);
-           }
+    private String trimUserApiEndpoint(String userApi, String expectedApiPath) {
+        if (userApi != null) {
+            int index = userApi.indexOf(expectedApiPath);
+            if (index > 0) {
+                return userApi.substring(0, index);
+            } else {
+                return extractRealmFromEndpoint(userApi);
+            }
         }
-        return ep;
-    }
-
-    private boolean isDefaultKubeTokenReviewEndpoint(String ep) {
-        String defaultKubeTokenReview = "https://kubernetes.default.svc/apis/authentication.k8s.io/v1/tokenreviews";
-        return defaultKubeTokenReview.equals(ep);
+        return userApi;
     }
 
     String getRealm(SocialLoginConfig config) throws SettingCustomPropertiesException {
@@ -246,7 +251,7 @@ public class TAISubjectUtils {
         }
         return realm;
     }
-    
+
     String constructDefaultRealmFromConfig(SocialLoginConfig config) throws SettingCustomPropertiesException {
         // try authorization endpoint first and then the userapi endpoint
         String endpoint = getAuthorizationEndpoint(config);
@@ -261,7 +266,7 @@ public class TAISubjectUtils {
                 }
                 Tr.error(tc, "REALM_NOT_FOUND");
                 throw new SettingCustomPropertiesException();
-            }    
+            }
         }
         return extractRealmFromEndpoint(endpoint);
     }
@@ -305,7 +310,7 @@ public class TAISubjectUtils {
         } catch (Exception e) {
 
         }
-        
+
         return new UserProfile(jwt, customProperties, claims, userInfo);
     }
 
