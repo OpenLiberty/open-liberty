@@ -247,9 +247,11 @@
     
     <!-- Postgres JDBC test requirement -->
     <javaPermission className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
     
     <!-- SQLServer JDBC test requirement -->
     <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
     
     <variable name="onError" value="FAIL"/>
 </server>
