@@ -50,7 +50,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
@@ -130,9 +129,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         if (newContext.containsKey(clazz)) {
             return true;
         }
-        if (CDIUtils.isWeldProxy(clazz)) {
+        if (cdiService.isWeldProxy(clazz)) {
             return true;
-        }        
+        }
         return false;
     }
 
@@ -265,7 +264,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                 Tr.debug(tc, "getInstanceFromManagedObejct - \"clobbered\" " + oldMO + " with " + newServiceObject + " for key " + clazz + " in map " + newContext);
             }
 
-            return (T) newServiceObject.getObject();
+            return newServiceObject.getObject();
         } else {
             newContext.remove(clazz);
         }
