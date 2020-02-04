@@ -28,7 +28,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.AckTracker;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaInput;
@@ -82,7 +82,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         String topicName = "kafka-publisher-test-" + ++testNo + "-" + testName;
 
         // Push one message into Kafka
-        try (SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(topicName)) {
+        try (KafkaWriter<String, String> writer = kafkaTestClient.writerFor(topicName)) {
             writer.sendMessage("test");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -112,7 +112,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         elements = Math.min(elements, MESSAGE_LIMIT); // Cap count of messages we will create
 
         // Push the required number of elements into Kafka
-        try (SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(topicName)) {
+        try (KafkaWriter<String, String> writer = kafkaTestClient.writerFor(topicName)) {
             for (int i = 0; i < elements; i++) {
                 System.out.println("Sending test message to " + topicName);
                 writer.sendMessage("Test-message-" + i);

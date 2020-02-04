@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,6 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
 
     @Override
     public SubscriberBuilder<Message<Object>, Void> getSubscriberBuilder(Config config) {
-
         // Configure our defaults
         Map<String, Object> producerConfig = new HashMap<>();
 
@@ -62,9 +61,9 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
         KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
 
         String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
-        String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
+        String configuredTopic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(null);
 
-        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(topic, kafkaProducer);
+        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(this.kafkaAdapterFactory, configuredTopic, channelName, kafkaProducer);
         this.kafkaOutputs.add(kafkaOutput);
 
         return ReactiveStreams.<Message<Object>> builder().to(kafkaOutput.getSubscriber());

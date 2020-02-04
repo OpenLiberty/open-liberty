@@ -28,8 +28,8 @@ import org.junit.Test;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 @WebServlet("/KafkaTlsTestServlet")
 @ApplicationScoped
@@ -50,13 +50,13 @@ public class KafkaTlsTestServlet extends AbstractKafkaTestServlet {
         sslConfig.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, trustStorePassword);
         sslConfig.put("security.protocol", "SSL");
 
-        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(sslConfig, BasicMessagingBean.CHANNEL_OUT);
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(sslConfig, BasicMessagingBean.CHANNEL_IN);
+        KafkaReader<String, String> reader = kafkaTestClient.readerFor(sslConfig, BasicMessagingBean.CHANNEL_OUT);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(sslConfig, BasicMessagingBean.CHANNEL_IN);
 
         writer.sendMessage("abc");
         writer.sendMessage("xyz");
 
-        List<String> msgs = reader.waitForMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        List<String> msgs = reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         assertThat(msgs, contains("cba", "zyx"));
     }

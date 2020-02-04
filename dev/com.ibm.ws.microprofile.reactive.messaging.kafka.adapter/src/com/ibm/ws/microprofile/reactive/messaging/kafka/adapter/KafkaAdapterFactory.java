@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
+
+import org.eclipse.microprofile.reactive.messaging.Message;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -40,12 +44,45 @@ public abstract class KafkaAdapterFactory {
     private static final String COMMIT_FAILED_EXCEPTION = "org.apache.kafka.clients.consumer.CommitFailedException";
     private static final Class<?>[] COMMIT_FAILED_EXCEPTION_ARG_TYPES = {};
 
+    private static final String INCOMING_KAFKA_MESSAGE_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.IncomingKafkaMessage";
+    private static final Class<?>[] INCOMING_KAFKA_MESSAGE_ARG_TYPES = { ConsumerRecord.class, Supplier.class };
+
+    private static final String PRODUCER_RECORD_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.ProducerRecordImpl";
+    private static final Class<?>[] PRODUCER_RECORD_ARG_TYPES = { String.class, String.class, Object.class };
+
     /**
      * Class from the Kafka client jar which we use to test whether the client library is present
      */
     private static final String KAFKA_TEST_CLASS = "org.apache.kafka.clients.producer.KafkaProducer";
 
     protected abstract ClassLoader getClassLoader();
+
+    /**
+     * @param <K>
+     * @param <V>
+     * @param key
+     * @param value
+     * @return
+     */
+    public <K, V> ProducerRecord<K, V> newProducerRecord(String configuredTopic, String channelName, V value) {
+        @SuppressWarnings("unchecked")
+        ProducerRecord<K, V> producerRecord = getInstance(getClassLoader(), ProducerRecord.class, PRODUCER_RECORD_IMPL, PRODUCER_RECORD_ARG_TYPES, configuredTopic, channelName,
+                                                          value);
+        return producerRecord;
+    }
+
+    /**
+     * @param <K>
+     * @param <V>
+     * @param consumerRecord
+     * @param ack
+     * @return
+     */
+    public <K, V> Message<V> newIncomingKafkaMessage(ConsumerRecord<K, V> consumerRecord, Supplier<CompletionStage<Void>> ack) {
+        @SuppressWarnings("unchecked")
+        Message<V> incomingMessage = getInstance(getClassLoader(), Message.class, INCOMING_KAFKA_MESSAGE_IMPL, INCOMING_KAFKA_MESSAGE_ARG_TYPES, consumerRecord, ack);
+        return incomingMessage;
+    }
 
     /**
      * @param <K>

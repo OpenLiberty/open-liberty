@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.Callback;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaProducer;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ProducerRecord;
 
 /**
  *
@@ -32,11 +33,13 @@ public class KafkaProducerImpl<K, V> extends AbstractKafkaAdapter<org.apache.kaf
 
     /** {@inheritDoc} */
     @Override
-    public void send(String topic, V value, Callback callback) {
+    public void send(ProducerRecord<K, V> producerRecord, Callback callback) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.logp(Level.FINEST, CLAZZ, "send", "Topic: {0}, Value: {1}", new String[] { topic, value.toString() });
+            LOGGER.logp(Level.FINEST, CLAZZ, "send", "ProducerRecord: {0}",
+                        new String[] { producerRecord.toString() });
         }
-        org.apache.kafka.clients.producer.ProducerRecord<K, V> delegateRecord = new org.apache.kafka.clients.producer.ProducerRecord<>(topic, value);
+
+        org.apache.kafka.clients.producer.ProducerRecord<K, V> delegateRecord = (org.apache.kafka.clients.producer.ProducerRecord<K, V>) producerRecord.getDelegate();
 
         org.apache.kafka.clients.producer.Callback delegateCallback = (m, e) -> {
             org.apache.kafka.clients.producer.RecordMetadata delegateRecordMetadata = m;

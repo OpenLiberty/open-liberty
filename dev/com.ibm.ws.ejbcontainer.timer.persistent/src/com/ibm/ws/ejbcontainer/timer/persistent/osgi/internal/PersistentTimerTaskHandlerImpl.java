@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.ejbcontainer.runtime.EJBRuntime;
+import com.ibm.ws.ejbcontainer.timer.persistent.osgi.internal.EJBPersistentTimerRuntimeImpl.MissedTimerAction;
 import com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -55,6 +56,12 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
     private static final String TIMER_NAME_PREFIX_PROG = "!EJBTimerP!";
     private static final String TIMER_NAME_PREFIX_PATTERN = "!EJBTimer_!";
 
+    // Start time of the TimerService; effects missed timer actions
+    private static final Long TIMER_SERVICE_START = System.currentTimeMillis();
+
+    // Access to the persistent timer runtime; set when the component activates
+    static volatile EJBPersistentTimerRuntimeImpl persistentTimerRuntime;
+
     /**
      * Constructor for expiration based persistent timers. Expiration based timers are
      * either "single-action" timers that run just once at a specific time (expiration),
@@ -63,11 +70,11 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
      *
      * Automatic timers cannot be based on an initial expiration. <p>
      *
-     * @param j2eeName identity of the Timer bean that is the target of the associated task.
-     * @param info the user data associated with this timer
+     * @param j2eeName   identity of the Timer bean that is the target of the associated task.
+     * @param info       the user data associated with this timer
      * @param expiration The point in time at which the timer must expire.
-     * @param interval The number of milliseconds that must elapse between timer expiration notifications.
-     *            A negative value indicates this is a single-action timer.
+     * @param interval   The number of milliseconds that must elapse between timer expiration notifications.
+     *                       A negative value indicates this is a single-action timer.
      *
      * @throws IOException if the serializable user object cannot be serialized.
      **/
@@ -80,8 +87,8 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
     /**
      * Constructor for calendar based persistent timers (not automatic).
      *
-     * @param j2eeName identity of the Timer bean that is the target of the associated task.
-     * @param info the user data associated with this timer; may be null
+     * @param j2eeName       identity of the Timer bean that is the target of the associated task.
+     * @param info           the user data associated with this timer; may be null
      * @param parsedSchedule the parsed schedule expression for calendar-based timers; must be non-null
      *
      * @throws IOException if the serializable user object cannot be serialized.
@@ -95,12 +102,12 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
     /**
      * Constructor for automatic calendar based persistent timers.
      *
-     * @param j2eeName identity of the Timer bean that is the target of the associated task.
-     * @param info the user data associated with this timer; may be null
+     * @param j2eeName       identity of the Timer bean that is the target of the associated task.
+     * @param info           the user data associated with this timer; may be null
      * @param parsedSchedule the parsed schedule expression for calendar-based timers; must be non-null
-     * @param methodId timeout callback method identifier; must be a non-zero value
-     * @param methodame timeout callback method name; used for validation
-     * @param className timeout callback class name; used for validation (null if defined in XML)
+     * @param methodId       timeout callback method identifier; must be a non-zero value
+     * @param methodame      timeout callback method name; used for validation
+     * @param className      timeout callback class name; used for validation (null if defined in XML)
      *
      * @throws IOException if the serializable user object cannot be serialized.
      **/
@@ -212,15 +219,52 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
     @Override
     public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
         Date lastExecution = lastExecutionInfo == null ? null : lastExecutionInfo.getScheduledStart();
-        return getNextTimeout(lastExecution, taskScheduledTime);
+        Date nextRunTime = getNextTimeout(lastExecution, taskScheduledTime);
+
+        // When not configured to run all missed expirations, advance the next run time
+        // to the next expiration after the current system time, skipping over all missed
+        // expirations. The timer will have just run one time to catch up, unless it
+        // was intentionally skipped by skipRun() for the NONE missed timer action.
+        EJBPersistentTimerRuntimeImpl timerRuntime = persistentTimerRuntime;
+        if (timerRuntime != null && timerRuntime.getMissedTimerAction() != MissedTimerAction.ALL) {
+            int skippedExpirations = 0;
+            while (nextRunTime != null && nextRunTime.getTime() < System.currentTimeMillis()) {
+                nextRunTime = getNextTimeout(nextRunTime, taskScheduledTime);
+                skippedExpirations++;
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Skipped Expirations = " + skippedExpirations);
+        }
+
+        return nextRunTime;
     }
 
     @Override
     public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
-        // EJB Timers never skip, however this is where a warning may be logged
+        // Obtain missed timer action from runtime; default to ALL
+        EJBPersistentTimerRuntimeImpl timerRuntime = persistentTimerRuntime;
+        MissedTimerAction missedTimerAction = (timerRuntime != null) ? timerRuntime.getMissedTimerAction() : MissedTimerAction.ALL;
+
+        // When configured to perform no action for missed timers and the timer expired
+        // prior to the timer feature starting (usually when the server was down), skip
+        // running the timer. The timer will be rescheduled via getNextRunTime() to a
+        // future time without running immediately on timer service start.
+        if (missedTimerAction == MissedTimerAction.NONE) {
+            if (scheduledRunTime.getTime() < TIMER_SERVICE_START) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Run time = " + scheduledRunTime.getTime() + " < service start = " + TIMER_SERVICE_START);
+                return true;
+            }
+        }
+
+        // Except for the NONE action, EJB Timers never skip, however this is where a warning may be logged
         // if a timer is running noticeably later than scheduled, like ASYN0091_LATE_ALARM on traditional WAS
-        EJBRuntime ejbRuntime = EJSContainer.getDefaultContainer().getEJBRuntime();
-        ejbRuntime.checkLateTimerThreshold(scheduledRunTime, TaskIdAccessor.get().toString(), j2eeName);
+        // For ONCE and NONE actions, only log the warning if the timer is scheduled to run after timer service
+        // start (i.e. ONCE and NONE configurations accept it is normal for late timers to run on start)
+        if (missedTimerAction == MissedTimerAction.ALL || scheduledRunTime.getTime() > TIMER_SERVICE_START) {
+            EJBRuntime ejbRuntime = EJSContainer.getDefaultContainer().getEJBRuntime();
+            ejbRuntime.checkLateTimerThreshold(scheduledRunTime, TaskIdAccessor.get().toString(), j2eeName);
+        }
 
         return false;
     }
