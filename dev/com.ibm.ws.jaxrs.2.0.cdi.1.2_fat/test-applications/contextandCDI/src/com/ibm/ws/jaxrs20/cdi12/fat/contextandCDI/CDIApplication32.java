@@ -23,7 +23,8 @@ import javax.ws.rs.core.Application;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
-@SessionScoped@ApplicationPath("contextandCDI32")
+@SessionScoped
+@ApplicationPath("contextandCDI32")
 public class CDIApplication32 extends Application implements Serializable {
 
     @Override
