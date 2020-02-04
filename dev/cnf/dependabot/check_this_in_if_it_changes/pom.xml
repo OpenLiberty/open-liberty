@@ -1687,6 +1687,11 @@
       <version>1.3.1</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.rest.client</groupId>
+      <artifactId>microprofile-rest-client-api</artifactId>
+      <version>1.4-RC2</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
       <version>1.0.6</version>
