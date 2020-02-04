@@ -43,7 +43,8 @@ public class CDIFilter implements ContainerRequestFilter, ContainerResponseFilte
     }
     
     public void filter(ContainerRequestContext reqContext, ContainerResponseContext responseContext) throws IOException {        
-        System.out.println("CDIFilter#filter#responseContext: servletContext.getServletContextName "  + servletContext.getServletContextName());        
+        System.out.println("CDIFilter#filter#responseContext: servletContext.getServletContextName "  + servletContext.getServletContextName());
+        System.out.println("CDIFilter#filter#responseContext: servletContext.getServletContextName2 " + servletContext2.getServletContextName() );
     }
 
 }

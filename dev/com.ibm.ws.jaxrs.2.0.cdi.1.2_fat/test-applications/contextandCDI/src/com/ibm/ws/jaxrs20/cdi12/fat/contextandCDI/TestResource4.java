@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.enterprise.context.SessionScoped;
 import javax.servlet.ServletContext;
+import javax.inject.Inject;
 
 import java.io.Serializable;
 
@@ -25,10 +26,12 @@ import java.io.Serializable;
 public class TestResource4 implements Serializable {
     
     @Context ServletContext servletContext;
+    @Inject ServletContext servletContext2;
     
     @GET
     public Response get() {
         System.out.println("TestResource4#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
+        System.out.println("TestResource4#get: servletContext.getServletContextName2 " + servletContext2.getServletContextName() );
         return Response.ok("ok").build();
     }
 }

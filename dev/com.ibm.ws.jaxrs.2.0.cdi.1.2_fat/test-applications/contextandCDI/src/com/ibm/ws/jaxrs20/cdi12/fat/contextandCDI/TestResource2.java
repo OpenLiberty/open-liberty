@@ -17,16 +17,19 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.ServletContext;
+import javax.inject.Inject;
 
 @RequestScoped
 @Path("resource2")
 public class TestResource2 {
     
     @Context ServletContext servletContext;
+    @Inject ServletContext servletContext2;
     
     @GET    
     public Response get() {
         System.out.println("TestResource2#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
+        System.out.println("TestResource2#get: servletContext.getServletContextName2 " + servletContext2.getServletContextName() );
         return Response.ok("ok").build();
     }
 }

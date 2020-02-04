@@ -17,15 +17,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.enterprise.context.Dependent;
 import javax.servlet.ServletContext;
+import javax.inject.Inject;
 
 @Dependent
 @Path("resource3")
 public class TestResource3 {
     
     @Context ServletContext servletContext;
+    @Inject ServletContext servletContext2;
 
     @GET
     public Response get() {
+        System.out.println("TestResource3#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
         System.out.println("TestResource3#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
         return Response.ok("ok").build();
     }
