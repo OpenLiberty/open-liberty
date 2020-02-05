@@ -401,8 +401,8 @@ public class BaseTraceService implements TrService {
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
          */
         if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) ||
-            (!consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) &&
-             !consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT))) {
+            (!messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) &&
+             !messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT))) {
             if (messageLogHandler != null) {
                 messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
                 messageLogHandler.modified(new ArrayList<String>());
@@ -508,13 +508,14 @@ public class BaseTraceService implements TrService {
         for (String pair : keyValuePairs) //iterate over the pairs
         {
             pair = pair.trim();
-            if (pair.endsWith(":"))
+            if (pair.endsWith(":") && omitJsonFields) //omitJsonFields beta guard
                 pair = pair + OMIT_FIELDS_STRING;
 
             String[] entry = pair.split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
 
-            if (entry.length == 2) {//if the mapped value is intended for all event types
+            //!pair.endsWith(":") for beta guard for entry length 2 because ie. message:type: will rename message to type
+            if (entry.length == 2 && !pair.endsWith(":")) {//if the mapped value is intended for all event types
                 entry[1] = entry[1].trim();
                 //add properties to all the hashmaps and trim whitespaces
                 if (LogTraceList.contains(entry[0])) {

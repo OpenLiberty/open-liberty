@@ -49,6 +49,7 @@ public class NameAliases {
 
     public void resetAliases() {
         aliases = originalNames.clone();
+        originalExtensions.clear();
         aliasesExtensions.clear();
     }
 
