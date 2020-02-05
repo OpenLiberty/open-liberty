@@ -100,6 +100,13 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      */
     boolean interceptorsActive = false;
 
+    private final ThreadLocal<WorkContext> workThreadLocal = new ThreadLocal<WorkContext>() {
+        @Override
+        protected WorkContext initialValue() {
+            return null;
+        }
+    };
+
     /**
      * A Set of interceptors that are all given a chance to wrap tasks that are submitted
      * to the executor for execution.
