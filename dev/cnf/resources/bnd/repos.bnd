@@ -40,6 +40,12 @@ fetch.oss.repository: \
     releaseUrl        = https://repo.maven.apache.org/maven2/; \
     index             = ${build}/oss_dependencies.maven
 
+fetch.oss.fs.repository: \
+  aQute.bnd.repository.maven.provider.MavenBndRepository; \
+    name              = RemotePublicFS; \
+    releaseUrl        = https://repo.maven.apache.org/maven2/; \
+    index             = ${build}/rh_dependencies.maven
+
 fetch.oss.ibm.repository: \
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = RemoteIBM; \
@@ -58,6 +64,8 @@ push.ibm.repository:
 -plugin.5.RemoteIBMJava: ${fetch.ibm.java.repository}
 
 -plugin.6.RemotePublish: ${push.ibm.repository}
+
+-plugin.7.RemotePublicFS:  ${fetch.oss.fs.repository}
 
 -releaserepo: Release
 -baselinerepo: Release

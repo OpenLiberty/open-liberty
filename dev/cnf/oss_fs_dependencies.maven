@@ -1,0 +1,9 @@
+commons-collections:commons-collections:3.2.2
+commons-digester:commons-digester:1.8
+javax.inject:javax.inject:1
+javax.validation:validation-api:2.0.1.Final
+org.apache.commons:commons-compress:1.19
+org.apache.httpcomponents:httpclient:4.5.5
+org.apache.httpcomponents:httpcore:4.4.9
+org.jboss.classfilewriter:jboss-classfilewriter:1.2.4.Final
+org.jboss.logging:jboss-logging:3.3.2.Final
