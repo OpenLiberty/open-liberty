@@ -163,10 +163,10 @@ public interface TaskStore {
      * Reads information from the partition entry for polling coordination and obtains a write lock on it.
      *
      * @param partitionId unique identifier of the partition entry for polling coordination.
-     * @return TODO specify precise type for return value and document here
+     * @return size 2 array where the first element is the expiry (type <code>long</code>) and the second is the last-updated timestamp (type <code>long</code>).
      * @throws Exception if an error occurs accessing the persistent store.
      */
-    Object findPollInfoForUpdate(long partitionId) throws Exception;
+    Object[] findPollInfoForUpdate(long partitionId) throws Exception;
 
     /**
      * Find all task IDs for tasks that match the specified name pattern and the presence or absence
@@ -390,13 +390,12 @@ public interface TaskStore {
     int transfer(Long maxTaskId, long oldPartitionId, long newPartitionId) throws Exception;
 
     /**
-     * Reads information from the partition entry for polling coordination.
+     * Writes a new expiry and last-updated timestamp to the partition entry for polling coordination.
      *
      * @param partitionId unique identifier of the partition entry for polling coordination.
      * @param newExpiry   the new expiry value to use.
-     * @param otherStuff  TODO what we need will depend on the algorithm that is chosen
      * @return true if the partition entry for polling was updated. Otherwise false.
      * @throws Exception if an error occurs accessing the persistent store.
      */
-    boolean updatePollInfo(long partitionId, long newExpiry, String otherStuff) throws Exception;
+    boolean updatePollInfo(long partitionId, long newExpiry) throws Exception;
 }

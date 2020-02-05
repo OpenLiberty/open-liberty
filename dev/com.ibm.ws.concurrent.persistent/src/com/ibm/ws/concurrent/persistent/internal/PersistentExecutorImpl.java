@@ -2294,9 +2294,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 tranMgr.begin();
                 try {
                     // TODO implement this method. For now, we invoke some basic db operations to demonstrate that what we have so far is working
-                    Object result = taskStore.findPollInfoForUpdate(pollPartitionId);
-                    taskStore.updatePollInfo(pollPartitionId, System.currentTimeMillis() + config.pollInterval,
-                                             "TODO: compute with the previous parameter and do something with " + result);
+                    Object[] expiryAndLastUpdated = taskStore.findPollInfoForUpdate(pollPartitionId);
+                    long expiry = (Long) expiryAndLastUpdated[0];
+                    long lastUpdated = (Long) expiryAndLastUpdated[1];
+                    taskStore.updatePollInfo(pollPartitionId, System.currentTimeMillis() + config.pollInterval);
                     delay = config.pollInterval;
                     successful = true;
                 } finally {

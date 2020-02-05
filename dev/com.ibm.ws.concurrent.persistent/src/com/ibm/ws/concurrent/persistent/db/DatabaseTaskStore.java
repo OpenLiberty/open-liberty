@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -593,6 +594,7 @@ public class DatabaseTaskStore implements TaskStore {
                 // Use a fractional second to help avoid accessing the database around the same time as scheduled tasks
                 // which might be scheduled to run on the hour or minute.
                 partition.EXPIRY = (System.currentTimeMillis() / 1000 - 1) * 1000 + 600;
+                partition.STATES = partition.EXPIRY; // used as a last-updated timestamp
                 partition.LSERVER = ".pollinfo";
                 partition.EXECUTOR = ""; // unused, cannot be null
                 partition.HOSTNAME = ""; // unused, cannot be null
@@ -612,9 +614,8 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
-    // TODO decide what to return from this method, update the implementation, and make the result more specific
-    public Object findPollInfoForUpdate(long partitionId) throws Exception {
-        String find = "SELECT p.EXPIRY FROM Partition p WHERE p.ID=:i";
+    public Object[] findPollInfoForUpdate(long partitionId) throws Exception {
+        String find = "SELECT p.EXPIRY,p.STATES FROM Partition p WHERE p.ID=:i";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -622,13 +623,13 @@ public class DatabaseTaskStore implements TaskStore {
 
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
-            TypedQuery<Long> query = em.createQuery(find, Long.class);
+            TypedQuery<Object[]> query = em.createQuery(find, Object[].class);
             query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             query.setParameter("i", partitionId);
-            Long result = query.getSingleResult();
+            Object[] result = query.getSingleResult();
 
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "findPollInfoForUpdate", result);
+                Tr.exit(this, tc, "findPollInfoForUpdate", Arrays.toString(result));
             return result;
         } finally {
             em.close();
@@ -1628,19 +1629,19 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
-    // TODO update implementation and parameters after we decide what implementation we want
-    public boolean updatePollInfo(long partitionId, long newExpiry, String otherStuff) throws Exception {
-        String update = "UPDATE Partition p SET p.EXPIRY=:e WHERE p.ID=:i";
+    public boolean updatePollInfo(long partitionId, long newExpiry) throws Exception {
+        String update = "UPDATE Partition p SET p.EXPIRY=:e,p.STATES=:s WHERE p.ID=:i";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "updatePollInfo", partitionId, newExpiry, otherStuff, update);
+            Tr.entry(this, tc, "updatePollInfo", partitionId, newExpiry, update);
 
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
             Query query = em.createQuery(update);
             query.setParameter("i", partitionId);
             query.setParameter("e", newExpiry);
+            query.setParameter("s", System.currentTimeMillis()); // last-updated timestamp
             int count = query.executeUpdate();
 
             if (trace && tc.isEntryEnabled())
