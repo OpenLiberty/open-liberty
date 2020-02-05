@@ -10,14 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
+import static org.junit.Assert.fail;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.output.OutputFrame;
@@ -38,6 +43,7 @@ public class OracleTest extends FATServletClient {
 
     public static final String JEE_APP = "oraclejdbcfat";
     public static final String SERVLET_NAME = "OracleTestServlet";
+    public static final String SSL_PASSWORD = "{xor}Oz0vKDtu";
 
     @Server("com.ibm.ws.jdbc.fat.oracle")
     @TestServlet(servlet = OracleTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
@@ -63,6 +69,7 @@ public class OracleTest extends FATServletClient {
         server.addEnvVar("DBNAME", "XE");
         server.addEnvVar("PORT", Integer.toString(oracle.getFirstMappedPort()));
         server.addEnvVar("HOST", oracle.getContainerIpAddress());
+        server.addEnvVar("SSL_PASSWORD", SSL_PASSWORD);
 
     	// Create a normal Java EE application and export to server
     	ShrinkHelper.defaultApp(server, JEE_APP, "web");
@@ -78,6 +85,34 @@ public class OracleTest extends FATServletClient {
     public static void tearDown() throws Exception {
         if (server.isStarted())
             server.stopServer();
+    }
+    
+    @Test
+    //FIXME com.ibm.ws.jdbc.* does not log this password, but it is still being logged 
+    //by OSGi Declaritive Service.  Enable this test once that is no longer the case. 
+    public void testSSLPasswordIsNotLogged() throws Exception {
+    	if(server.isStarted()) {
+    		//Allow in output.txt log as we use env variables to set SSL_PASSWORD and URL
+    		int count = server.findStringsInTrace(Pattern.quote(SSL_PASSWORD)).size();
+    		
+    		if(count != 0) {
+    			fail("Found SSL password being traced in log or trace.  Occurrences: " + count);
+    		}
+    	}
+    }
+    
+    @Test
+    //FIXME com.ibm.ws.jdbc.* does not log the URL with password, but it is still being logged 
+    //by OSGi Declaritive Service.  Enable this test once that is no longer the case. 
+    public void testURLPasswordIsNotLogged() throws Exception {
+    	if(server.isStarted()) {
+    		//Allow in output.txt log as we use env variables to set SSL_PASSWORD and URL
+    		int count = server.findStringsInTrace(Pattern.quote(oracle.getJdbcUrl())).size();
+    		
+    		if(count != 0) {
+    			fail("Found JDBC URL being traced with password in log or trace.  Occurrences: " + count);
+    		}
+    	}
     }
     
     private static void initDatabaseTables() throws SQLException {

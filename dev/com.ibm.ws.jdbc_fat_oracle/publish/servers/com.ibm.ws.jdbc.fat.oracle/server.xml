@@ -14,9 +14,12 @@
       <feature>jdbc-4.2</feature>
       <feature>jndi-1.0</feature>
       <feature>componenttest-1.0</feature>
+      <feature>transportSecurity-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
+    
+    <keyStore id="defaultKeyStore" password="${env.SSL_PASSWORD}" />
 
     <application location="oraclejdbcfat.war" >
         <classloader commonLibraryRef="DBLib"/>
@@ -51,6 +54,16 @@
     
     <dataSource id="inferred-ds" jndiName="jdbc/inferred-ds">
     	<properties databaseName="${env.DBNAME}" portNumber="${env.PORT}" serverName="${env.HOST}" user="${env.USER}" password="${env.PASSWORD}" driverType="thin"/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    </dataSource>
+    
+    <dataSource id="ssl-ds" jndiName="jdbc/ssl-ds">
+    	<properties.oracle URL="${env.URL}" connectionProperties="oracle.net.ssl_version=1.2; oracle.net.authentication_services=(TCPS); javax.net.ssl.keyStore=${server.config.dir}/resources/security/key.p12; javax.net.ssl.keyStoreType=PKCS12; javax.net.ssl.keyStorePassword=${env.SSL_PASSWORD}; javax.net.ssl.trustStore=${server.config.dir}/resources/security/key.p12; javax.net.ssl.trustStoreType=PKCS14; javax.net.ssl.trustStorePassword=${env.SSL_PASSWORD}"/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    </dataSource>
+    
+     <dataSource id="url-auth-ds" jndiName="jdbc/url-auth-ds">
+    	<properties.oracle URL="${env.URL}"/> <!-- Username and Password contained in URL -->
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     

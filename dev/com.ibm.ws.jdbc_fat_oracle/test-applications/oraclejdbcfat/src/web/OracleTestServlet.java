@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
@@ -57,6 +56,9 @@ public class OracleTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/inferred-ds")
     private DataSource inferred_ds;
+    
+    @Resource(lookup = "jdbc/ssl-ds")
+    private DataSource ssl_ds;
 
     // Verify that connections are/are not castable to OracleConnection based on whether enableConnectionCasting=true/false.
     @Test
@@ -281,6 +283,23 @@ public class OracleTestServlet extends FATServlet {
             conn2.close();
         }
     }
+    
+    
+    @Test
+    public void testDSUsingSSL() throws Exception {
+        Connection conn = ssl_ds.getConnection();
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");
+            ps.setInt(1, 21);
+            ps.setString(2, "twenty-one");
+            ps.executeUpdate();
+            ps.close();
+        } finally {
+            conn.close();
+        }
+    }
+
 
     //Test that the proper implementation classes are used for the various datasources configured in this test bucket
     //since the JDBC Driver used is named so as not to be recognized by the built-in logic
