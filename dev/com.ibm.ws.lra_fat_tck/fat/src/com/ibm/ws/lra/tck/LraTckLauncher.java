@@ -11,7 +11,6 @@
 package com.ibm.ws.lra.tck;
 
 import java.util.Collections;
-import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,10 +22,6 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -38,9 +33,9 @@ import componenttest.topology.utils.MvnUtils;
  * location.
  */
 @RunWith(FATRunner.class)
-public class LraTck10Launcher {
+public class LraTckLauncher {
 
-    private static final String SERVER_NAME = "LRA10TCKServer";
+    private static final String SERVER_NAME = "LRATCKServer";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -57,15 +52,6 @@ public class LraTck10Launcher {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Vendor vendor = JavaInfo.forServer(server).vendor();
-        // For J9 JVMs, add JIT trace for getConfig method to diagnose crashes
-        if (vendor == Vendor.IBM || vendor == Vendor.OPENJ9) {
-            Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
-            jvmOptions.put("-Xjit:{org/eclipse/microprofile/config/ConfigProvider.getConfig(Ljava/lang/ClassLoader;)Lorg/eclipse/microprofile/config/Config;}(tracefull,traceInlining,traceCG,log=getConfig.trace)",
-                           null);
-            server.setJvmOptions(jvmOptions);
-        }
-
         server.startServer();
     }
 
@@ -79,8 +65,9 @@ public class LraTck10Launcher {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        //server.stopServer("CWMFT5001E"); // CWMFT0001E: No free capacity is available in the bulkhead
-        server.stopServer(); // CWMFT0001E: No free capacity is available in the bulkhead
+        // server.stopServer("CWMFT5001E"); // CWMFT0001E: No free capacity is available in the bulkhead
+        // CWMFT0001E: No free capacity is available in the bulkhead
+        server.stopServer();
     }
 
     /**
@@ -91,11 +78,10 @@ public class LraTck10Launcher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchLRATCK() throws Exception {
-        boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
+        //boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
+        //String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
 
-        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.lra_fat_tck", this.getClass() + ":launchLRATCK", suiteFileName,
-                              Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.lra_fat_tck", this.getClass() + ":launchLRATCK", Collections.emptyMap());
         //MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
         //                      Collections.emptyMap(), Collections.emptySet());
     }

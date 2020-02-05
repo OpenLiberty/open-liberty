@@ -15,5 +15,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ LraTck10Launcher.class })
-public class FATSuite {}
+@SuiteClasses({ LraTckLauncher.class })
+public class FATSuite {
+}
