@@ -80,7 +80,7 @@ public class TestEnableDisableFeaturesTest {
     
     private static LibertyServer currentServ;
     
-    
+    private static boolean serverEDF6FirstUse = true;
     
     @BeforeClass
     public static void setUp() throws Exception {
@@ -282,7 +282,15 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF6;
     	String testName = "testEDF6";
     	serverEDF6.startServer();
-    	waitForSecurityPrerequisites(serverEDF6, 60000);
+    	
+    	if (serverEDF6FirstUse) {
+    		// We only need to wait for LTPA keys if this is the first time using this server
+    		waitForSecurityPrerequisites(serverEDF6, 60000);
+    	} else {
+    		Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",serverEDF6.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl",60000));
+    	}
+    	serverEDF6FirstUse = false;
+    	
     	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
     	serverEDF6.setServerConfigurationFile("server_monitorFilter1.xml");
         Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF6.waitForStringInLogUsingMark("CWWKG0017I"));
@@ -299,9 +307,17 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF6;
     	String testName = "testEDF7";
     	serverEDF6.startServer();
-    	Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",serverEDF6.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl",60000));
+    	
+    	if (serverEDF6FirstUse) {
+    		// We only need to wait for LTPA keys if this is the first time using this server
+    		waitForSecurityPrerequisites(serverEDF6, 60000);
+    	} else {
+    		Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",serverEDF6.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl",60000));
+    	}
+    	serverEDF6FirstUse = false;
+    	
     	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
-       	serverEDF6.setMarkToEndOfLog();
+    	serverEDF6.setMarkToEndOfLog();
        	serverEDF6.setServerConfigurationFile("server_monitorFilter2.xml");
        	Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF6.waitForStringInLogUsingMark("CWWKG0017I"));
     	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet", serverEDF6), 
