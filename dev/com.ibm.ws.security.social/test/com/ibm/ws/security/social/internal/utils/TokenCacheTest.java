@@ -16,6 +16,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.security.common.structures.Cache;
+
 public class TokenCacheTest {
 
     private Cache cache;

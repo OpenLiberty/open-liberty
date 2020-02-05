@@ -16,6 +16,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
@@ -30,6 +31,8 @@ import com.ibm.ws.security.social.internal.utils.SocialUtil;
 public class TAIUserApiUtils {
 
     public static final TraceComponent tc = Tr.register(TAIUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+
+    static SingleTableCache userApiCache = null;
 
     @FFDCIgnore(SocialLoginException.class)
     public String getUserApiResponse(OAuthClientUtil clientUtil, SocialLoginConfig clientConfig, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
@@ -76,8 +79,33 @@ public class TAIUserApiUtils {
     }
 
     private String getUserApiResponseForServiceAccountToken(SocialLoginConfig config, @Sensitive String serviceAccountToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
-        OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
-        return openShiftUtils.getUserApiResponseForServiceAccountToken(serviceAccountToken, sslSocketFactory);
+        String userApiResponse = getUserApiResponseFromCache(config, serviceAccountToken);
+        if (userApiResponse == null) {
+            OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
+            userApiResponse = openShiftUtils.getUserApiResponseForServiceAccountToken(serviceAccountToken, sslSocketFactory);
+            cacheUserApiResponse(serviceAccountToken, userApiResponse);
+        }
+        return userApiResponse;
+    }
+
+    private String getUserApiResponseFromCache(SocialLoginConfig config, @Sensitive String serviceAccountToken) {
+        initializeCache(config);
+        return (String) userApiCache.get(serviceAccountToken);
+    }
+
+    private synchronized void initializeCache(SocialLoginConfig config) {
+        long cacheTime = config.getApiResponseCacheTime();
+        if (userApiCache == null) {
+            userApiCache = new SingleTableCache(cacheTime);
+        } else {
+            if (cacheTime != userApiCache.getTimeoutInMilliseconds()) {
+                userApiCache.rescheduleCleanup(cacheTime);
+            }
+        }
+    }
+
+    private void cacheUserApiResponse(@Sensitive String serviceAccountToken, String userApiResponse) {
+        userApiCache.put(serviceAccountToken, userApiResponse);
     }
 
     private String getUserApiResponseFromGenericThirdParty(OAuthClientUtil clientUtil, SocialLoginConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, String userinfoApi) throws Exception {

@@ -38,13 +38,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
+import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.SslRefInfo;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.Cache;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialConfigUtils;
 import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
@@ -792,6 +792,10 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public String getAccessTokenHeaderName() {
         return accessTokenHeaderName;
 
+    }
+
+    public long getApiResponseCacheTime() {
+        return 0;
     }
 
 }

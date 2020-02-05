@@ -32,12 +32,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
+import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.Cache;
 import com.ibm.ws.security.social.internal.utils.SocialConfigUtils;
 import com.ibm.ws.security.social.tai.SocialLoginTAI;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -345,6 +345,7 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
         return null;
     }
 
+    @Override
     public long getApiResponseCacheTime() {
         return apiResponseCacheTime;
     }
