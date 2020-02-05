@@ -79,6 +79,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>io.openliberty.arquillian</groupId>
 			<artifactId>arquillian-liberty-managed</artifactId>
 			<version>1.0.5</version>
@@ -135,6 +141,9 @@
 					<dependenciesToScan>
 						<dependency>org.eclipse.microprofile.lra:microprofile-lra-tck</dependency>
 					</dependenciesToScan>
+					<includes>
+						<include>**/*Test*.java</include>
+					</includes>
 				</configuration>
 			</plugin>
 		</plugins>
