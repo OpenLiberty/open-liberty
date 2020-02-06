@@ -46,6 +46,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.security.JCASecurityContext;
 import com.ibm.ws.threading.RunnableWithContext;
+import com.ibm.ws.threading.CallableWithContext;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -56,7 +57,7 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
  * This wrapper takes care of execution context handling, work listener notification
  * and startTimeout.
  */
-public class WorkProxy implements Callable<Void>, RunnableWithContext {
+public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext {
 
     //Creates a workContext item we can put the hintsContext into and return
     //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context

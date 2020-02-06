@@ -87,13 +87,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      */
     Map<String, Object> componentConfig = null;
 
-    private final ThreadLocal<WorkContext> workThreadLocal = new ThreadLocal<WorkContext>() {
-        @Override
-        protected WorkContext initialValue() {
-            return null;
-        }
-    };
-
     /**
      * Indicates whether any interceptors are currently being used. This is for performance
      * reasons, to avoid getting an iterator over an empty set for every task that is submitted.
