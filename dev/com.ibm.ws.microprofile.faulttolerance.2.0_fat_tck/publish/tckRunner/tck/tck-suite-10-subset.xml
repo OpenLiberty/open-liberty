@@ -14,7 +14,12 @@
         <classes>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchTest">
                 <methods>
+                    <!-- This test in 2.0 relies on newly specified bulkhead behavior -->
                     <exclude name="testBulkheadExceptionThrownWhenQueueFullAsync"/>
+                    <!-- These tests expect to be able to fully fill the bulkhead and queue immediately -->
+                    <!-- FT 1.x bulkhead queues everything until it is actually run, so the queue can overflow -->
+                    <exclude name="testBulkheadClassAsynchronousQueueing10"/>
+                    <exclude name="testBulkheadMethodAsynchronousQueueing10"/>
                 </methods>
             </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
