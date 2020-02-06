@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2017 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Set;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.ConnectionMetaData;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -375,6 +376,42 @@ public class JCAFVTServlet extends HttpServlet {
             tran.rollback();
         } finally {
             con2.close();
+            con.close();
+        }
+    }
+
+    /**
+     * testLoginModuleInJarInJarInRar - Look up a JMS connection factory using a resource reference that specifies to use a login module
+     * that is packaged within a JAR within another JAR within a RAR.
+     * Check the JMS provider name (to which the fake resource adapter appends the user name) to confirm that the login module is used.
+     */
+    public void testLoginModuleInJarInJarInRar(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ConnectionFactory cf = (ConnectionFactory) new InitialContext().lookup("java:module/env/jms/jar1loginref");
+        Connection con = cf.createConnection();
+        try {
+            ConnectionMetaData mdata = con.getMetaData();
+            String name = mdata.getJMSProviderName();
+            if (!name.endsWith("for jar1user"))
+                throw new Exception("User name from login module not included in: " + name);
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * testLoginModuleInJarInRar - Look up a JMS connection factory using a resource reference that specifies to use a login module
+     * that is packaged within a JAR within a RAR.
+     * Check the JMS provider name (to which the fake resource adapter appends the user name) to confirm that the login module is used.
+     */
+    public void testLoginModuleInJarInRar(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ConnectionFactory cf = (ConnectionFactory) new InitialContext().lookup("java:global/env/jms/jar2loginref");
+        Connection con = cf.createConnection();
+        try {
+            ConnectionMetaData mdata = con.getMetaData();
+            String name = mdata.getJMSProviderName();
+            if (!name.endsWith("for jar2user"))
+                throw new Exception("User name from login module not included in: " + name);
+        } finally {
             con.close();
         }
     }
