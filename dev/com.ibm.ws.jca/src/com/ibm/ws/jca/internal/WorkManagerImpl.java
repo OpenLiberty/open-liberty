@@ -246,7 +246,7 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            Future f = bootstrapContext.execSvc.submit((CallableWithContext<Void>) workProxy);
+            Future<Void> f = bootstrapContext.execSvc.submit((CallableWithContext<Void>) workProxy);
 
             if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
