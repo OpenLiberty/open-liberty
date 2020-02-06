@@ -228,6 +228,10 @@ public class DataSourceTestServlet extends FATServlet {
         //Create table in derby database
         try (Connection con = ds5u.getConnection()) {
             try (Statement st = con.createStatement()) {
+                if (tableFound) {
+                    st.executeUpdate("drop table cities");
+                }
+
                 st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
             }
         } catch (SQLException e) {
@@ -1455,8 +1459,7 @@ public class DataSourceTestServlet extends FATServlet {
 
             DatabaseMetaData metadata = con2.getMetaData();
             if (isolation != nonDefaultIsolation
-                && !metadata.getDatabaseProductName().toUpperCase().contains("DB2") // because of isolation level switching (DB2)
-                && !metadata.getDatabaseProductName().toUpperCase().contains("IDS")) // because of isolation level switching (Informix JCC)
+                && !metadata.getDatabaseProductName().toUpperCase().contains("DB2")) // because of isolation level switching (DB2)
                 throw new Exception("Expecting non-default isolation of " + nonDefaultIsolation + " on shared connection, not " + isolation);
 
             PreparedStatement pstmt2 = con2.prepareStatement("update cities set county = ? where name = ?");
@@ -3028,13 +3031,6 @@ public class DataSourceTestServlet extends FATServlet {
 
             String dbProductName = cons[0].getMetaData().getDatabaseProductName().toUpperCase();
             System.out.println("Product Name is " + dbProductName);
-            if (dbProductName.contains("INFORMIX") || dbProductName.contains("IDS")) {
-                // set lock mode to wait for 60 seconds
-                // The lock mode wait should be set on each session so we need to set it for both the connections.
-                Statement st = cons[0].createStatement();
-                st.executeUpdate("SET LOCK MODE TO WAIT 60");
-                st.close();
-            }
 
             // Verify isolation-level="TRANSACTION_READ_COMMITTED" from ibm-web-ext.xml
             int isolation = cons[0].getTransactionIsolation();
@@ -3098,14 +3094,6 @@ public class DataSourceTestServlet extends FATServlet {
         System.out.println("attempting to access data (only possible after recovery)");
         Connection con = ds4u_8.getConnection();
 
-        String dbProductName = con.getMetaData().getDatabaseProductName().toUpperCase();
-        if (dbProductName.contains("INFORMIX") || dbProductName.contains("IDS")) {
-            // set lock mode to wait for 60 seconds
-            // The lock mode wait should be set on each session so we need to set it for both the connections.
-            Statement st = con.createStatement();
-            st.executeUpdate("SET LOCK MODE TO WAIT 60");
-            st.close();
-        }
         int isolation = con.getTransactionIsolation();
         if (isolation != Connection.TRANSACTION_SERIALIZABLE)
             throw new Exception("The isolation-level of the resource-ref is not honored, instead: " + isolation);

@@ -51,7 +51,6 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_db2_jcc;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_client;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
-import com.ibm.websphere.simplicity.config.dsprops.Properties_informix_jcc;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -1405,22 +1404,6 @@ public class ConfigTest extends FATServletClient {
 
                 dsfat1.setSupplementalJDBCTrace(null);
                 break; // this is iffy since we really don't know how to enable/disable trace for every driver
-            case DataSourceProperties.INFORMIX_JCC:
-                platform = "Informix (JCC)";
-                traceSpec = "com.ibm.ws.db2.logwriter=all=enabled";
-                traceString = "\\[jcc\\]\\[";
-
-                ConfigElementList<Properties_informix_jcc> informixJccProps = dsfat1.getProperties_informix_jcc();
-                if (!informixJccProps.isEmpty())
-                    informixJccProps.get(0).setTraceLevel(null);
-                break;
-            case DataSourceProperties.INFORMIX_JDBC:
-                platform = "Informix JDBC";
-                traceString = "new com.informix.jdbcx.IfxConnectionPoolDataSource()";
-                traceSpec = "com.ibm.ws.informix.logwriter=all=enabled";
-
-                dsfat1.setSupplementalJDBCTrace(null);
-                break;
             case DataSourceProperties.ORACLE_JDBC:
                 // Oracle tracing will only work if we are using *_g.jar
                 // Make a best effort to check for it
@@ -1530,14 +1513,6 @@ public class ConfigTest extends FATServletClient {
             case DataSourceProperties.GENERIC:
                 dsfat1.setSupplementalJDBCTrace("true");
                 break; // this is iffy since we really don't know how to enable/disable trace for every driver
-            case DataSourceProperties.INFORMIX_JCC:
-                ConfigElementList<Properties_informix_jcc> informixJccProps = dsfat1.getProperties_informix_jcc();
-                if (!informixJccProps.isEmpty())
-                    informixJccProps.get(0).setTraceLevel("-1");
-                break;
-            case DataSourceProperties.INFORMIX_JDBC:
-                dsfat1.setSupplementalJDBCTrace("true");
-                break;
             case DataSourceProperties.ORACLE_JDBC:
                 break; // No additional setting needed to setup Oracle trace
             case DataSourceProperties.DATADIRECT_SQLSERVER:
