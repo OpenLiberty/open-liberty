@@ -228,10 +228,6 @@ public class DataSourceTestServlet extends FATServlet {
         //Create table in derby database
         try (Connection con = ds5u.getConnection()) {
             try (Statement st = con.createStatement()) {
-                if (tableFound) {
-                    st.executeUpdate("drop table cities");
-                }
-
                 st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
             }
         } catch (SQLException e) {
