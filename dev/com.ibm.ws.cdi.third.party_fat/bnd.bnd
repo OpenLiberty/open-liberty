@@ -16,6 +16,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/hibernateSearchTest.war/src,\
+	test-applications/CDIInEntityListernersTest.war/src,\
+	test-applications/CDIInEntityListernersTestEarLib.jar/src,\
 	test-applications/deltaspikeTest.war/src
 	
 tested.features:\

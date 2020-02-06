@@ -10,9 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.AfterClass;
@@ -44,8 +45,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @Mode(TestMode.FULL)
-@SkipForRepeat(NO_MODIFICATION)
-public class HibernateSearchTest extends LoggingTest {
+public class EntityListenerTest extends LoggingTest {
 
     private static LibertyServer server;
 
@@ -57,24 +57,33 @@ public class HibernateSearchTest extends LoggingTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        WebArchive hibernateSearchTest = ShrinkWrap.create(WebArchive.class, "hibernateSearchTest.war")
-                        .addPackages(true, "cdi.hibernate.test")
-                        .add(new FileAsset(new File("test-applications/hibernateSearchTest.war/resources/WEB-INF/classes/META-INF/persistence.xml")), "/WEB-INF/classes/META-INF/persistence.xml")
-                        .add(new FileAsset(new File("test-applications/hibernateSearchTest.war/resources/WEB-INF/classes/META-INF/jpaorm.xml")), "/WEB-INF/classes/META-INF/jpaorm.xml");
+        JavaArchive cdiInEntityListernersTestEarLib = ShrinkWrap.create(JavaArchive.class, "CDIInEntityListernersTestEarLib.jar")
+                        .addPackage("cdi.entity.listeners.test.model.lib");
 
-        server = LibertyServerFactory.getLibertyServer("cdi20HibernateSearchServer");
-        ShrinkHelper.exportAppToServer(server, hibernateSearchTest);
+        WebArchive cdiInEntityListernersTestWar = ShrinkWrap.create(WebArchive.class, "CDIInEntityListernersTest.war")
+                        .addPackage("cdi.entity.listeners.test.web")
+                        .addPackage("cdi.entity.listeners.test.model")
+                        .add(new FileAsset(new File("test-applications/CDIInEntityListernersTest.war/resources/WEB-INF/classes/META-INF/persistence.xml")), "/WEB-INF/classes/META-INF/persistence.xml")
+                        .add(new FileAsset(new File("test-applications/CDIInEntityListernersTest.war/resources/WEB-INF/classes/META-INF/jpaorm.xml")), "/WEB-INF/classes/META-INF/jpaorm.xml");
+
+        EnterpriseArchive cdiInEntityListernersTestEar = ShrinkWrap.create(EnterpriseArchive.class, "CDIInEntityListernersTest.ear")
+                        .addAsModule(cdiInEntityListernersTestWar)
+                        .addAsLibrary(cdiInEntityListernersTestEarLib);
+
+        server = LibertyServerFactory.getLibertyServer("cdiEntityListenersServer");
+        ShrinkHelper.exportAppToServer(server, cdiInEntityListernersTestEar);
         server.startServer();
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application hibernateSearchTest.war started");
     }
 
     @Test
-    public void testHibernateSearch() throws Exception {
+    public void testInjectWorksInsideEntityListeners() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
-        String url = createURL("/hibernateSearchTest/SimpleTestServlet");
+        String url = createURL("/CDIInEntityListernersTest/SimpleTestServlet");
         WebResponse response = browser.request(url);
-        String body = response.getResponseBody();
-        Assert.assertTrue("Could not find \"field bridge called: true\" in: " + body, body.contains("field bridge called: true"));
+        String body = response.getResponseBody(); // we just poke the server to make sure everything runs.
+
+        List<String> matching = server.findStringsInLogsAndTraceUsingMark("testInjectWorksInsideEntityListeners passed!");
+        assertFalse("Did not find the test passed string in logs.", matching.isEmpty());
     }
 
     @AfterClass
