@@ -42,7 +42,7 @@ public class FATSuite {
                         .withID("mpRestClient-" + version)
                         .forServers(serverName);
         if ("1.0".equals(version) || "1.1".equals(version)) {
-            return use(action, "mpConfig", "1.1", "1.3");
+            return use(action, "mpConfig", "1.1", "1.3", "1.4");
         }
         return use(action, "mpConfig", "1.3", "1.1");
     }
