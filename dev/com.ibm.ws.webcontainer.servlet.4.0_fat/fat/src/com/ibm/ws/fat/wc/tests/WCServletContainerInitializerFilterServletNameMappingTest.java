@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class WCServletContainerInitializerFilterServletNameMappingTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCServletContainerInitializerFilterServletNameMappingTest.class.getName());
-    final static String warName = "SCIFilterServletNameMapping.war";
-    final static String jarName = "SCIFilterServletNameMapping.jar";
-    final static String jarResource = "testsci.jar.servletsfilters";
+    private static final String WAR_NAME = "SCIFilterServletNameMapping.war";
+    private static final String JAR_NAME = "SCIFilterServletNameMapping.jar";
+    private static final String JAR_RESOURCE = "testsci.jar.servletsfilters";
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
@@ -57,14 +57,13 @@ public class WCServletContainerInitializerFilterServletNameMappingTest extends L
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        LOG.info("Setup : add " + warName + " to the server if not already present.");
+        LOG.info("Setup : add " + WAR_NAME + " to the server if not already present.");
 
         WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(),
                                                   null, false,
-                                                  warName, false,
-                                                  jarName, true,
-                                                  jarResource);
+                                                  WAR_NAME, false,
+                                                  JAR_NAME, true,
+                                                  JAR_RESOURCE);
 
         SHARED_SERVER.startIfNotStarted();
         WCApplicationHelper.waitForAppStart("SCIFilterServletNameMapping", WCServletContainerInitializerFilterServletNameMappingTest.class.getName(),

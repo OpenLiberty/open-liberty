@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,6 @@ import componenttest.custom.junit.runner.FATRunner;
 @RunWith(FATRunner.class)
 public class WCServerTest extends LoggingTest {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
 
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
@@ -49,13 +48,11 @@ public class WCServerTest extends LoggingTest {
      */
     @Override
     protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
         WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
@@ -69,11 +66,9 @@ public class WCServerTest extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-
         LOG.info("testCleanUp : stop server");
 
-        SHARED_SERVER.getLibertyServer().stopServer(null);
-
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     protected String parseResponse(WebResponse wr, String beginText, String endText) {
@@ -96,7 +91,6 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     public void testSimpleServlet() throws Exception {
-
         this.verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
     }
 
@@ -105,7 +99,7 @@ public class WCServerTest extends LoggingTest {
      * Servlet 4.0
      *
      * @throws Exception
-     *             if something goes horribly wrong
+     *                       if something goes horribly wrong
      */
     @Test
     public void testServletHeader() throws Exception {
