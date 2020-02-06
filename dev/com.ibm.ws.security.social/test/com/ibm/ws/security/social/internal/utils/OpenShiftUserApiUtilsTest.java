@@ -1078,6 +1078,163 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
+    public void test_modifyUsername_nullUsernameAttribute() {
+        try {
+            JsonObject input = Json.createObjectBuilder().build();
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserNameAttribute();
+                    will(returnValue(null));
+                }
+            });
+            JsonObject result = userApiUtils.modifyUsername(input);
+            assertEquals("Result should have remained an unmodified, empty JSON object.", input, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_modifyUsername_missingUsernameAttribute() {
+        final String usernameAttribute = "user";
+        JsonObject input = Json.createObjectBuilder().build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(usernameAttribute));
+            }
+        });
+        try {
+            JsonObject result = userApiUtils.modifyUsername(input);
+            fail("Should have thrown an exception but got " + result);
+        } catch (SocialLoginException e) {
+            verifyExceptionWithInserts(e, CWWKS5385E_JSON_MISSING_KEY, usernameAttribute);
+        }
+    }
+
+    @Test
+    public void test_modifyUsername_usernameAttributeEntryWrongType() {
+        final String usernameAttribute = "user";
+        JsonObject input = Json.createObjectBuilder().add(usernameAttribute, 123).build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(usernameAttribute));
+            }
+        });
+        try {
+            JsonObject result = userApiUtils.modifyUsername(input);
+            fail("Should have thrown an exception but got " + result);
+        } catch (SocialLoginException e) {
+            verifyExceptionWithInserts(e, CWWKS5386E_JSON_ENTRY_WRONG_JSON_TYPE, usernameAttribute);
+        }
+    }
+
+    @Test
+    public void test_modifyUsername_usernameIsEmpty() {
+        try {
+            final String usernameAttribute = "user";
+            String usernameValue = "";
+            JsonObject input = Json.createObjectBuilder().add(usernameAttribute, usernameValue).build();
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserNameAttribute();
+                    will(returnValue(usernameAttribute));
+                }
+            });
+            JsonObject result = userApiUtils.modifyUsername(input);
+            assertEquals("Result should have remained an unmodified from the inputted JSON object.", input, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_modifyUsername_nonServiceAccount() {
+        try {
+            final String usernameAttribute = "username should be here";
+            String usernameValue = "jane doe";
+            JsonObject input = Json.createObjectBuilder().add(usernameAttribute, usernameValue).build();
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserNameAttribute();
+                    will(returnValue(usernameAttribute));
+                }
+            });
+            JsonObject result = userApiUtils.modifyUsername(input);
+            assertEquals("Result should have remained an unmodified from the inputted JSON object.", input, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_modifyUsername_serviceAccount_noGroupOrName() {
+        try {
+            final String usernameAttribute = "user";
+            String prefix = "system:serviceaccount:";
+            String groupAndName = "";
+            String usernameValue = prefix + groupAndName;
+            JsonObject input = Json.createObjectBuilder().add(usernameAttribute, usernameValue).build();
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserNameAttribute();
+                    will(returnValue(usernameAttribute));
+                }
+            });
+            JsonObject result = userApiUtils.modifyUsername(input);
+            assertNotSame("Result should have been modified in some way, but wasn't.", input, result);
+            assertEquals("Modified username did not match the expected value. Full result was " + result, groupAndName, result.getString(usernameAttribute));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_modifyUsername_serviceAccount_groupAndNameMatchPrefix() {
+        try {
+            final String usernameAttribute = "user";
+            String prefix = "system:serviceaccount:";
+            String groupAndName = prefix;
+            String usernameValue = prefix + groupAndName;
+            JsonObject input = Json.createObjectBuilder().add(usernameAttribute, usernameValue).build();
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserNameAttribute();
+                    will(returnValue(usernameAttribute));
+                }
+            });
+            JsonObject result = userApiUtils.modifyUsername(input);
+            assertNotSame("Result should have been modified in some way, but wasn't.", input, result);
+            assertEquals("Modified username did not match the expected value. Full result was " + result, groupAndName, result.getString(usernameAttribute));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_modifyUsername_serviceAccount_typical() {
+        try {
+            final String usernameAttribute = "user";
+            String prefix = "system:serviceaccount:";
+            String groupAndName = "some group:and user";
+            String usernameValue = prefix + groupAndName;
+            JsonObject input = Json.createObjectBuilder().add(usernameAttribute, usernameValue).build();
+            mockery.checking(new Expectations() {
+                {
+                    one(config).getUserNameAttribute();
+                    will(returnValue(usernameAttribute));
+                }
+            });
+            JsonObject result = userApiUtils.modifyUsername(input);
+            assertNotSame("Result should have been modified in some way, but wasn't.", input, result);
+            assertEquals("Modified username did not match the expected value. Full result was " + result, groupAndName, result.getString(usernameAttribute));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_addGroupsToResult_noGroupNameAttributeConfigured() {
         JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
         JsonObject rawResponse = Json.createObjectBuilder().add("2", "value2").add("my key", "and other value").build();
