@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,6 +78,8 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
      */
     @Override
     protected void updateSelector() {
+        boolean trace = (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled());
+        if (trace) Tr.entry(this,tc,"updateSelector");
         final Queue<Object> queue = getWorkQueue();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "updateSelector - processing " + queue.size() + " items");
@@ -95,20 +97,19 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
                     // could have been destroyed before we get here.  Therefore we need to check if it is still valid
                     if (serverSocket == null) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "ServerSocket for this port has already been destroyed, return");
+                            Tr.debug(tc, "REGISTER_ENDPOINT: ServerSocket for this port has already been destroyed");
                         }
-                        return;
-                    }
+                    } else {
+                        // Configure all inbound channels to be non-blocking
+                        serverSocket.getChannel().configureBlocking(false);
 
-                    // Configure all inbound channels to be non-blocking
-                    serverSocket.getChannel().configureBlocking(false);
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Registering: " + serverSocket);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(this, tc, "Registering: " + serverSocket);
+                        }
+                        // Add a new listener socket in to the selector.
+                        serverSocket.getChannel().register(selector, SelectionKey.OP_ACCEPT, work.endPoint);
+                        ++usageCount;
                     }
-                    // Add a new listener socket in to the selector.
-                    serverSocket.getChannel().register(selector, SelectionKey.OP_ACCEPT, work.endPoint);
-                    ++usageCount;
                 } catch (Throwable t) {
                     if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping() == false) {
                         FFDCFilter.processException(t, getClass().getName() + ".updateSelector", "101", this, new Object[] { work });
@@ -130,24 +131,22 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
                     // could have been destroyed before we get here.  Therefore we need to check if it is still valid.
                     if (serverSocket == null) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "ServerSocket for this port has already been destroyed, return");
+                            Tr.debug(tc, "REMOVE_ENDPOINT: ServerSocket for this port has already been destroyed");
                         }
-                        return;
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(this, tc, "Removing: " + serverSocket);
+                        }
+                        // cancel the key. Shouldn't need to do this, but there is a bug on HP
+                        // so we will just do it regardless of OS
+                        serverSocket.getChannel().keyFor(selector).cancel();
+                        // force selector to process key cancel before continuing
+                        selector.selectNow();
+                        --usageCount;
+                        if (usageCount <= 0) {
+                            shutDown();
+                        }
                     }
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Removing: " + serverSocket);
-                    }
-                    // cancel the key. Shouldn't need to do this, but there is a bug on HP
-                    // so we will just do it regardless of OS
-                    serverSocket.getChannel().keyFor(selector).cancel();
-                    // force selector to process key cancel before continuing
-                    selector.selectNow();
-                    --usageCount;
-                    if (usageCount <= 0) {
-                        shutDown();
-                    }
-
                 } catch (Throwable t) {
                     if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping() == false) {
                         FFDCFilter.processException(t, getClass().getName() + ".updateSelector", "102", this, new Object[] { work });
@@ -162,7 +161,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
                 }
             }
         } // process all items on the work queue
-
+        if (trace) Tr.exit(this,tc,"updateSelector");
     }
 
     /**

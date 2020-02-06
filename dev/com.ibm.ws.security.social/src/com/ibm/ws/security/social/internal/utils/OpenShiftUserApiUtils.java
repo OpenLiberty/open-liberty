@@ -247,7 +247,8 @@ public class OpenShiftUserApiUtils {
     String processServiceAccountIntrospectResponse(String response) throws SocialLoginException {
         JsonObject jsonResponse = readResponseAsJsonObject(response);
         JsonObject userMetadata = getJsonObjectValueFromJson(jsonResponse, "metadata");
-        JsonObject result = addGroupsToResult(userMetadata, jsonResponse);
+        JsonObject result = modifyUsername(userMetadata);
+        result = addGroupsToResult(result, jsonResponse);
         return result.toString();
     }
 
@@ -274,6 +275,33 @@ public class OpenShiftUserApiUtils {
             throw new SocialLoginException("JSON_ENTRY_WRONG_JSON_TYPE", null, new Object[] { key, ValueType.OBJECT, rawValue.getValueType(), json });
         }
         return json.getJsonObject(key);
+    }
+
+    String getStringValueFromJson(JsonObject json, String key) throws SocialLoginException {
+        if (!json.containsKey(key)) {
+            throw new SocialLoginException("JSON_MISSING_KEY", null, new Object[] { key, json });
+        }
+        JsonValue rawValue = json.get(key);
+        if (rawValue.getValueType() != ValueType.STRING) {
+            throw new SocialLoginException("JSON_ENTRY_WRONG_JSON_TYPE", null, new Object[] { key, ValueType.STRING, rawValue.getValueType(), json });
+        }
+        return json.getString(key);
+    }
+
+    JsonObject modifyUsername(JsonObject metadataEntry) throws SocialLoginException {
+        JsonObject result = metadataEntry;
+        String userNameAttribute = config.getUserNameAttribute();
+        if (userNameAttribute != null) {
+            String username = getStringValueFromJson(metadataEntry, userNameAttribute);
+            String serviceAccountPrefix = "system:serviceaccount:";
+            if (username.startsWith(serviceAccountPrefix)) {
+                username = username.substring(serviceAccountPrefix.length());
+            }
+            JsonObjectBuilder resultBuilder = copyJsonObject(metadataEntry);
+            resultBuilder.add(userNameAttribute, username);
+            result = resultBuilder.build();
+        }
+        return result;
     }
 
     JsonObject addGroupsToResult(JsonObject metadataEntry, JsonObject rawJsonResponse) {

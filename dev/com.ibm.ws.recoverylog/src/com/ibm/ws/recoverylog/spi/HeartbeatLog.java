@@ -23,9 +23,11 @@ public interface HeartbeatLog {
 
     /**
      * Used to maintain the liveness of the Recovery Log.
+     * 
+     * @throws LogClosedException
      *
      */
-    public void heartBeat();
+    public void heartBeat() throws LogClosedException;
 
     /**
      * Claim ownership of the Local Server's Recovery Logs.

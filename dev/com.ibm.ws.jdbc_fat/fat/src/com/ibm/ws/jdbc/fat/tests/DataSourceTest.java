@@ -12,7 +12,6 @@ package com.ibm.ws.jdbc.fat.tests;
 
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
-import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.fail;
 
@@ -324,10 +323,7 @@ public class DataSourceTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.transaction.xa.XAException" })
-    @SkipIfSysProp({
-                     DB_Oracle,
-                     DB_Postgres //TODO Fails with Exception "Missing second entry in database." thrown from line 3154 in DataSourceTestServlet.testXARecovery:3154
-    })
+    @SkipIfSysProp(DB_Oracle)
     public void testXARecovery() throws Exception {
         runTest();
     }
