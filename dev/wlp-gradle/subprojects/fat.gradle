@@ -362,7 +362,7 @@ if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
 
 task runfat(type: Exec) {
   dependsOn cleanBeforeRun
-  shouldRunAfter build
+  mustRunAfter buildfat
   shouldRunAfter cleanBeforeRun
   System.setProperty("fat.test.localrun", "true");
   environment System.getProperties()

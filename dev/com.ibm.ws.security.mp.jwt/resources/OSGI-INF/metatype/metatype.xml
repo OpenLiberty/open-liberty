@@ -25,7 +25,7 @@
             required="false" type="String" />
         <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="2147483647" />
         <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
-            required="false" type="String" default="upn" />    
+            required="false" type="String" default="upn" />     
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
         <AD id="keyName" name="%trustAliasName" description="%trustAliasName.desc" required="false" type="String" />   
