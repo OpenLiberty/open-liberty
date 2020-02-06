@@ -162,6 +162,11 @@
       <version>2.0</version>
     </dependency>
     <dependency>
+      <groupId>com.googlecode.java-diff-utils</groupId>
+      <artifactId>diffutils</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
       <version>1.1.1</version>
@@ -1549,7 +1554,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-api</artifactId>
-      <version>1.4-RC3</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.context-propagation</groupId>
@@ -1574,7 +1579,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <version>2.1-RC2</version>
+      <version>2.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
@@ -2562,9 +2567,9 @@
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.java-diff-utils</groupId>
-      <artifactId>diffutils</artifactId>
-      <version>1.2.1</version>
+      <groupId></groupId>
+      <artifactId>null</artifactId>
+      <version>null</version>
     </dependency>
   </dependencies>
 </project>
