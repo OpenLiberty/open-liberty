@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,9 +265,9 @@ public class HttpChain implements ChainEventListener {
         Map<String, Object> endpointOptions = owner.getEndpointOptions();
         Map<String, Object> remoteIpOptions = owner.getRemoteIpConfig();
         Map<String, Object> compressionOptions = owner.getCompressionConfig();
-        
+        Map<String, Object> samesiteOptions = owner.getSamesiteConfig();
 
-        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, endpointOptions, resolvedHostName);
+        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, samesiteOptions, endpointOptions, resolvedHostName);
         
         if (newConfig.configPort < 0 || !newConfig.complete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -433,7 +433,25 @@ public class HttpChain implements ChainEventListener {
                         }
                     }
 
-
+                    if(samesiteOptions.get("id").equals("defaultSameSite")){
+                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, "false");
+                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, null);
+                    }
+                    
+                    else{
+                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, "true");
+                        if(samesiteOptions.containsKey("lax")){
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, samesiteOptions.get("lax"));
+                        }
+                        if(samesiteOptions.containsKey("none")){
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, samesiteOptions.get("none"));
+                        }
+                        if(samesiteOptions.containsKey("strict")){
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, samesiteOptions.get("strict"));
+                        }
+                    }
 
 
                     httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPInboundChannel"), chanProps);
@@ -698,6 +716,7 @@ public class HttpChain implements ChainEventListener {
         final Map<String, Object> httpOptions;
         final Map<String, Object> remoteIp;
         final Map<String, Object> compression;
+        final Map<String, Object> samesite;
         final Map<String, Object> endpointOptions;
 
         volatile int activePort = -1;
@@ -709,6 +728,7 @@ public class HttpChain implements ChainEventListener {
                             Map<String, Object> http,
                             Map<String, Object> remoteIp,
                             Map<String, Object> compression,
+                            Map<String, Object> samesite,
                             Map<String, Object> endpoint,
                             String resolvedHostName) {
             this.isHttps = isHttps;
@@ -717,6 +737,7 @@ public class HttpChain implements ChainEventListener {
             httpOptions = http;
             this.remoteIp = remoteIp;
             this.compression = compression;
+            this.samesite = samesite;
             endpointOptions = endpoint;
 
             String attribute = isHttps ? "httpsPort" : "httpPort";
@@ -799,6 +820,7 @@ public class HttpChain implements ChainEventListener {
                        httpOptions == other.httpOptions &&
                        remoteIp == other.remoteIp &&
                        compression == other.compression &&
+                       samesite == other.samesite &&
                        !endpointChanged(other);
             } else {
                 return configHost.equals(other.configHost) &&
@@ -807,6 +829,7 @@ public class HttpChain implements ChainEventListener {
                        httpOptions == other.httpOptions &&
                        remoteIp == other.remoteIp &&
                        compression == other.compression &&
+                       samesite == other.samesite &&
                        !endpointChanged(other);
             }
         }
@@ -831,7 +854,7 @@ public class HttpChain implements ChainEventListener {
             if (other == null)
                 return true;
 
-            return (httpOptions != other.httpOptions) || (remoteIp != other.remoteIp) || (compression != other.compression);
+            return (httpOptions != other.httpOptions) || (remoteIp != other.remoteIp) || (compression != other.compression) || (samesite != other.samesite);
             
         }
 
@@ -857,6 +880,7 @@ public class HttpChain implements ChainEventListener {
                    + ",httpOptions=" + System.identityHashCode(httpOptions)
                    + ",remoteIp=" + System.identityHashCode(remoteIp)
                    + ",compression=" + System.identityHashCode(compression)
+                   + ",samesite=" + System.identityHashCode(samesite)
                    + ",sslOptions=" + (isHttps ? System.identityHashCode(sslOptions) : "0")
                    + ",endpointOptions=" + endpointOptions.get(Constants.SERVICE_PID)
                    + "]";

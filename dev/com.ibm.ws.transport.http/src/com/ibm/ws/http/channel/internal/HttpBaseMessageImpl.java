@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap; //PI31734
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -2301,6 +2303,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param cache
      */
     private void marshallCookieCache(CookieCacheData cache) {
+
         if (null != cache && cache.isDirty()) {
             HttpHeaderKeys type = cache.getHeaderType();
             parseAllCookies(cache, type);
@@ -2344,7 +2347,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         }
 
         super.preMarshallMessage();
-
         /**
          * Only if the cookies in storage(master list of all headers) have been
          * modified do we reserialize/transform before marshalling otherwise we
@@ -2353,6 +2355,18 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
          */
         marshallCookieCache(this.cookieCache);
         marshallCookieCache(this.cookie2Cache);
+        if (getServiceContext().getHttpConfig().useSameSiteConfig()) {
+            //If there are set-cookie and set-cookie2 headers and the respective cache hasn't been initialized,
+            //do so and set it as dirty so the cookie parsing logic is run.
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE) && (this.setCookieCache == null)) {
+                getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE).setIsDirty(true);
+            }
+
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE2) && (this.setCookieCache == null)) {
+                getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE2).setIsDirty(true);
+            }
+
+        }
         marshallCookieCache(this.setCookieCache);
         marshallCookieCache(this.setCookie2Cache);
 
@@ -2672,7 +2686,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *         if setcookie constraints are violated.
      **/
     protected boolean addCookie(HttpCookie cookie, HttpHeaderKeys cookieType) {
-
         // Set is only permitted on non-committed messages
         if (isCommitted()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2737,6 +2750,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         // middle (which throws off the parse cookie logic)
         if (header.equals(HttpHeaderKeys.HDR_COOKIE)) {
             if (null == this.cookieCache) {
+
                 this.cookieCache = new CookieCacheData(header);
                 if (!isIncoming()) {
                     parseAllCookies(this.cookieCache, header);
@@ -2842,6 +2856,54 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         // colon separation (if cookies were to go into one single header instead
         // of multiple)
         for (HttpCookie cookie : list) {
+            //Add Samesite default config
+            if (getServiceContext().getHttpConfig().useSameSiteConfig() && cookie.getAttribute("samesite") == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No SameSite value has been added for [" + cookie.getName() + "], checking configuration for a match");
+                }
+                String sameSiteAttributeValue = null;
+                Matcher m = null;
+
+                //First attempt to match the name explicitly.
+                if (getServiceContext().getHttpConfig().getSameSiteCookies().containsKey(cookie.getName())) {
+                    sameSiteAttributeValue = getServiceContext().getHttpConfig().getSameSiteCookies().get(cookie.getName());
+                }
+                //If the only pattern is a standalone '*' avoid regex cost
+                else if (getServiceContext().getHttpConfig().onlySameSiteStar()) {
+                    sameSiteAttributeValue = getServiceContext().getHttpConfig().getSameSiteCookies().get(HttpConfigConstants.WILDCARD_CHAR);
+                }
+
+                else {
+                    //Attempt to find a match amongst the configured SameSite patterns
+                    for (Pattern p : getServiceContext().getHttpConfig().getSameSitePatterns().keySet()) {
+                        m = p.matcher(cookie.getName());
+                        if (m.matches()) {
+                            sameSiteAttributeValue = getServiceContext().getHttpConfig().getSameSitePatterns().get(p);
+                            break;
+                        }
+                    }
+
+                }
+
+                if (sameSiteAttributeValue != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "SameSite configuration found, value set to: " + sameSiteAttributeValue);
+                    }
+                    cookie.setAttribute("samesite", sameSiteAttributeValue);
+                    //If SameSite has been defined, and it's value is set to 'none', ensure the cookie is set to secure
+                    if (!cookie.isSecure() && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
+
+                        cookie.setSecure(true);
+
+                    }
+
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "No SameSite configuration found");
+                    }
+                }
+            }
+
             String value = CookieUtils.toString(cookie, header, getServiceContext().getHttpConfig().isv0CookieDateRFC1123compat(),
                                                 getServiceContext().getHttpConfig().shouldSkipCookiePathQuotes());
             if (null != value) {
