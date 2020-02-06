@@ -176,9 +176,10 @@ public class TAIRequestHelper {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Authorization header=", hdrValue);
         }
-        String bearerAuthzMethod = "Bearer ";
+        String bearerAuthzMethod = (String) req.getAttribute(KEY_AUTHORIZATION_HEADER_SCHEME);
         if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
             hdrValue = hdrValue.substring(bearerAuthzMethod.length());
+            hdrValue = hdrValue.replaceAll("\\s", "");
         }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, hdrValue);
