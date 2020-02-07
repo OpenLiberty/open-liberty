@@ -644,18 +644,16 @@ public class KeyStoreManager {
             Tr.debug(tc, "clearJavaKeyStoresFromKeyStoreMap ", new Object[] { modifiedFiles });
 
         String filePath = null;
-        String comparePath = null;
         for (File modifiedKeystoreFile : modifiedFiles) {
             try {
                 filePath = modifiedKeystoreFile.getCanonicalPath();
-                comparePath = filePath.replace('\\', '/');
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Exception comparing file path.");
                 continue;
             }
 
-            findKeyStoreInMapAndClear(comparePath);
+            findKeyStoreInMapAndClear(filePath);
         }
     }
 
