@@ -10,7 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.lra.tck;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -52,6 +53,17 @@ public class LraTckLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // microprofile config will allow this to be accessed by the application as
+        // lra.tck.base.url, which is what the tck is looking for. LibertyServer won't allow
+        // '.' to be used in an env var name, as it "isn't cross platform".
+        String key = "lra_tck_base_url";
+        String protocol = "http";
+        String host = server.getHostname();
+        String port = Integer.toString(server.getHttpDefaultPort());
+        String value = protocol + "://" + host + ":" + port;
+
+        server.addEnvVar(key, value);
+
         server.startServer();
     }
 
@@ -66,7 +78,6 @@ public class LraTckLauncher {
     @AfterClass
     public static void tearDown() throws Exception {
         // server.stopServer("CWMFT5001E"); // CWMFT0001E: No free capacity is available in the bulkhead
-        // CWMFT0001E: No free capacity is available in the bulkhead
         server.stopServer();
     }
 
@@ -78,11 +89,18 @@ public class LraTckLauncher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchLRATCK() throws Exception {
-        //boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
-        //String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
 
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.lra_fat_tck", this.getClass() + ":launchLRATCK", Collections.emptyMap());
+        // This makes the property lra.tck.base.url available to maven, so that it can pass it on to the
+        // arquillian launcher. Not entirely sure if it is needed or not.
+        String protocol = "http";
+        String host = server.getHostname();
+        String port = Integer.toString(server.getHttpDefaultPort());
+        Map<String, String> additionalProps = new HashMap<>();
+        additionalProps.put("lra.tck.base.url", protocol + "://" + host + ":" + port);
+
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.lra_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
         //MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
         //                      Collections.emptyMap(), Collections.emptySet());
+
     }
 }
