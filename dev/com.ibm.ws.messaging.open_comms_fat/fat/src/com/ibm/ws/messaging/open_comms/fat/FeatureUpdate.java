@@ -129,7 +129,7 @@ public class FeatureUpdate extends FATBase {
     serv.setServerConfigurationFile(newServerXml);
 
     // wait for configuration update to complete
-    serv.waitForStringInLogUsingMark("CWWKG0017I");
+    serv.waitForStringInLogUsingMark("CWWKG001[78]I");
     Util.TRACE_EXIT();
   }
 }
