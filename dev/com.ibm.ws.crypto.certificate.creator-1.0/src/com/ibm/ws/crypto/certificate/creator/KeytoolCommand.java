@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.crypto.certificateutil.keytool;
+package com.ibm.ws.crypto.certificate.creator;
 
 import java.io.IOException;
 import java.io.InputStream;

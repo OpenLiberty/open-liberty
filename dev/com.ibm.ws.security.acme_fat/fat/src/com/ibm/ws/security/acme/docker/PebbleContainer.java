@@ -86,8 +86,6 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 	/**
 	 * Get Pebble's intermediate certificate.
 	 * 
-	 * @param fileName
-	 *            The name of the file to save the certificate to.
 	 * @return Pebble's root CA certificate in the form of a PEM file.
 	 * @throws Exception
 	 *             If we failed to receive the certificate.
@@ -97,7 +95,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT)
 				+ "/intermediates/0";
 
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpClient()) {
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
 			/*
 			 * Create a GET request to the ACME CA server.
 			 */
@@ -127,8 +125,6 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 	/**
 	 * Get Pebble's root certificate.
 	 * 
-	 * @param fileName
-	 *            The name of the file to save the certificate to.
 	 * @return Pebble's root CA certificate in the form of a PEM file.
 	 * @throws Exception
 	 *             If we failed to receive the certificate.
@@ -137,7 +133,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		final String METHOD_NAME = "getAcmeCaRootCertificate()";
 		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT) + "/roots/0";
 
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpClient()) {
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
 			/*
 			 * Create a GET request to the ACME CA server.
 			 */
@@ -177,7 +173,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT)
 				+ "/cert-status-by-serial/" + certificate.getSerialNumber().toString(16);
 
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpClient()) {
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
 			/*
 			 * Create a GET request to the ACME CA server.
 			 */

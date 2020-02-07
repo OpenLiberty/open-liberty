@@ -27,6 +27,7 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.json4j;version=latest,\
+	com.ibm.ws.crypto.certificate.creator-1.0;version=latest,\
 	com.ibm.ws.crypto.certificateutil;version=latest,\
 	com.ibm.ws.crypto.ltpakeyutil;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest,\

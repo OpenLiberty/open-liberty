@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.crypto.certificateutil.keytool;
+package com.ibm.ws.crypto.certificate.creator;
 
 import java.io.File;
+import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 
 /**
- *
+ * A {@link DefaultSSLCertificateCreator} OSGi service that will create a default
+ * certificate using keytool. The the resulting certificate is self-signed.
  */
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreator {
 
     /** {@inheritDoc} */
@@ -145,4 +151,10 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
             return KEYALG_RSA_TYPE;
     }
 
+    @Override
+    public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, String password) {
+        /*
+         * Will not be updating self-signed certificates at this time.
+         */
+    }
 }

@@ -14,8 +14,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibm.ws.crypto.certificate.creator.KeytoolSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
-import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtilityImpl;
 import com.ibm.ws.kernel.service.util.UtilityTemplate;
@@ -153,7 +153,7 @@ public class SecurityUtility extends UtilityTemplate {
         ConsoleWrapper console = new ConsoleWrapper(System.console(), System.err);
 
         // Create / obtain the collaborators
-        DefaultSSLCertificateCreator certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
+        DefaultSSLCertificateCreator certCreator = new KeytoolSSLCertificateCreator();
         LTPAKeyFileUtility ltpaKeyFileCreator = new LTPAKeyFileUtilityImpl();
 
         // Create the SecurityUtility and register tasks

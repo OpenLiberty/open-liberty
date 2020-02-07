@@ -29,6 +29,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.ibm.ws.crypto.certificate.creator.KeytoolSSLCertificateCreator;
+import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.ssl.internal.KeystoreConfig;
 import com.ibm.ws.ssl.internal.LibertyConstants;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -226,6 +228,7 @@ public class WSKeyStoreTest {
             }
         });
 
+        DefaultSSLCertificateFactory.setDefaultSSLCertificateCreator(new KeytoolSSLCertificateCreator());
         WSKeyStore keystore = new WSKeyStore(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, props, testConfigService);
 
         assertEquals(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, keystore.getProperty("com.ibm.ssl.keyStoreName"));

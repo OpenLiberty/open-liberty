@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.certificateutil;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.util.List;
 
 import org.junit.Test;
-
-import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
 
 /**
  *
@@ -27,8 +30,8 @@ public class DefaultSSLCertificateFactoryTest {
      */
     @Test
     public void getDefaultSSLCertificateCreator() {
-        assertTrue("Was not the expected KeytoolSSLCertificateCreator instance",
-                   DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator() instanceof KeytoolSSLCertificateCreator);
+        assertNull("Was not the expected KeytoolSSLCertificateCreator instance",
+                   DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator());
     }
 
     /**
@@ -36,7 +39,28 @@ public class DefaultSSLCertificateFactoryTest {
      */
     @Test
     public void setDefaultSSLCertificateCreator() {
-        KeytoolSSLCertificateCreator creator = new KeytoolSSLCertificateCreator();
+        /*
+         * Create new implementation.
+         */
+        DefaultSSLCertificateCreator creator = new DefaultSSLCertificateCreator() {
+
+            @Override
+            public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, String password) throws CertificateException {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+                                                    List<String> extInfo) throws CertificateException {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
+
+        /*
+         * Set it as the creator on the factory and retrieve it.
+         */
         DefaultSSLCertificateFactory.setDefaultSSLCertificateCreator(creator);
         assertSame("Was not the expected KeytoolSSLCertificateCreator instance",
                    creator, DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator());

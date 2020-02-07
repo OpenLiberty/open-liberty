@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.crypto.certificateutil.keytool;
+package com.ibm.ws.crypto.certificate.creator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,6 +25,7 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
+import com.ibm.ws.crypto.certificate.creator.KeytoolCommand;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 
 /**
