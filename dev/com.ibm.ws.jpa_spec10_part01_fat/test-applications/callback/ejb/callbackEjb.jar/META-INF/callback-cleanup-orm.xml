@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings
+    xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete/>
+    </persistence-unit-metadata>
+
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackPackageMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackPrivateMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackProtectedMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackPublicMSC"/>
+
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPackageMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPrivateMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackProtectedMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPublicMSC"/>
+
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerMappedSuperclass"/>
+
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIPackageMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIPrivateMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIProtectedMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIPublicMSC"/>
+
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIPackageMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIPrivateMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIProtectedMSC"/>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIPublicMSC"/>
+
+    <entity class="com.ibm.ws.jpa.fvt.callback.entities.AbstractCallbackEntity">
+        <table name="CALLBACKENTITY"/>
+        <inheritance strategy="SINGLE_TABLE"/>
+        <discriminator-column name="protectionType"/>
+        <exclude-default-listeners/>
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.ano.CallbackPackageEntity"
+        metadata-complete="false">
+        <discriminator-value>Package</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.ano.CallbackPrivateEntity"
+        metadata-complete="false">
+        <discriminator-value>Private</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.ano.CallbackProtectedEntity"
+        metadata-complete="false">
+        <discriminator-value>Protected</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.ano.CallbackPublicEntity"
+        metadata-complete="false">
+        <discriminator-value>Public</discriminator-value>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackPackageEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLPackage</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackPrivateEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLPrivate</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackProtectedEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLProtected</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackPublicEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLPublic</discriminator-value>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackPackageMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>MSCPackage</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackPrivateMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>MSCPrivate</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackProtectedMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>MSCProtected</discriminator-value>
+    </entity>   
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.ano.CallbackPublicMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>MSCPublic</discriminator-value>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPackageMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCPackage</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPrivateMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCPrivate</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackProtectedMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCProtected</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPublicMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCPublic</discriminator-value>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerEntity"
+        metadata-complete="false">
+        <discriminator-value>AnoListener</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>AnoListenerMSC</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerExcludeMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>AnoListenerExcludeMSC</discriminator-value>
+        <exclude-superclass-listeners/>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLListener</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLListenerMSC</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerExcludeMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLListenerExcludeMSC</discriminator-value>
+        <exclude-superclass-listeners/>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.EntitySupportingDefaultCallbacks">
+        <table name="CallbkEntNSptDefCbk"/>
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.EntityNotSupportingDefaultCallbacks">
+        <table name="CallbkEntSptDefCbk"/>
+        <exclude-default-listeners/>
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.XMLEntitySupportingDefaultCallbacks">
+        <table name="XMLCallbkEntNSptDefCbk"/>
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.XMLEntityNotSupportingDefaultCallbacks">
+        <table name="XMLCallbkEntSptDefCbk"/>
+        <exclude-default-listeners/>
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+
+    <!-- Order of Invocation entities -->
+
+    <entity class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.OrderOfInvocationRootEntity">
+        <table name="OOIRootEntity"/>
+        <inheritance strategy="SINGLE_TABLE"/>
+        <discriminator-column name="leafType" discriminator-type="STRING"/>
+        <exclude-default-listeners/>
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafPackageEntity">
+        <discriminator-value>AnoOOILeafPackageEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafPrivateEntity">
+        <discriminator-value>AnoOOILeafPrivateEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafProtectedEntity">
+        <discriminator-value>AnoOOILeafProtectedEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOILeafPublicEntity">
+        <discriminator-value>AnoOOILeafPublicEntity</discriminator-value>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIRootPackageEntity">
+        <discriminator-value>AnoOOIRootPackageEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIRootPrivateEntity">
+        <discriminator-value>AnoOOIRootPrivateEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIRootProtectedEntity">
+        <discriminator-value>AnoOOIRootProtectedEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.ano.AnoOOIRootPublicEntity">
+        <discriminator-value>AnoOOIRootPublicEntity</discriminator-value>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafPackageEntity">
+        <discriminator-value>XMLOOILeafPackageEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafPrivateEntity">
+        <discriminator-value>XMLOOILeafPrivateEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafProtectedEntity">
+        <discriminator-value>XMLOOILeafProtectedEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOILeafPublicEntity">
+        <discriminator-value>XMLOOILeafPublicEntity</discriminator-value>
+    </entity>
+
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIRootPackageEntity">
+        <discriminator-value>XMLOOIRootPackageEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIRootPrivateEntity">
+        <discriminator-value>XMLOOIRootPrivateEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIRootProtectedEntity">
+        <discriminator-value>XMLOOIRootProtectedEntity</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.xml.XMLOOIRootPublicEntity">
+        <discriminator-value>XMLOOIRootPublicEntity</discriminator-value>
+    </entity>
+</entity-mappings>

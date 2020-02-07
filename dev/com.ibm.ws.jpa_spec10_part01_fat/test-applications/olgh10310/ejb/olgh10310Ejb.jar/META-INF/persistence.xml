@@ -21,6 +21,7 @@
         <jta-data-source>jdbc/JPA_DS</jta-data-source>
         <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
         <properties>
+            <!-- Eclipselink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>
@@ -29,6 +30,7 @@
     <persistence-unit name="OLGH10310_RL" transaction-type="RESOURCE_LOCAL">
         <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
         <properties>
+            <!-- Eclipselink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>
