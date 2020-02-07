@@ -20,6 +20,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
@@ -35,11 +37,15 @@ public class LivePartitionTestBean {
 
     public static final String CHANNEL_IN = "live-partition-test-in";
     public static final int WORK_TIME = 100;
+    public static final int ACK_TIME = 1000;
     public static final int FINAL_MESSAGE_NUMBER = 9999;
     public static final int PARTITION_COUNT = 2;
 
-    ArrayList<ReceivedMessage> messages = new ArrayList<>();
+    private final ArrayList<ReceivedMessage> messages = new ArrayList<>();
     private final CountDownLatch paritionsFinished = new CountDownLatch(PARTITION_COUNT);
+
+    @Resource
+    private ManagedScheduledExecutorService executor;
 
     @Incoming(CHANNEL_IN)
     @Acknowledgment(Strategy.MANUAL)
@@ -51,17 +57,22 @@ public class LivePartitionTestBean {
         messages.add(status);
         System.out.println("Bean received message " + message.getPayload());
 
-        message.ack().handle((r, t) -> {
-            if (t == null) {
-                status.ackStatus.set(AckStatus.ACK_SUCCESS);
-                if (status.number == FINAL_MESSAGE_NUMBER) {
-                    paritionsFinished.countDown();
+        executor.schedule(() -> {
+            System.out.println("Bean acking message " + message.getPayload());
+            message.ack().handle((r, t) -> {
+                if (t == null) {
+                    System.out.println("Bean successfully acked message " + message.getPayload());
+                    status.ackStatus.set(AckStatus.ACK_SUCCESS);
+                    if (status.number == FINAL_MESSAGE_NUMBER) {
+                        paritionsFinished.countDown();
+                    }
+                } else {
+                    System.out.println("Bean failed to ack message " + message.getPayload());
+                    status.ackStatus.set(AckStatus.ACK_FAILED);
                 }
-            } else {
-                status.ackStatus.set(AckStatus.ACK_FAILED);
-            }
-            return null;
-        });
+                return null;
+            });
+        }, ACK_TIME, TimeUnit.MILLISECONDS);
 
         return CompletableFuture.completedFuture(null);
     }

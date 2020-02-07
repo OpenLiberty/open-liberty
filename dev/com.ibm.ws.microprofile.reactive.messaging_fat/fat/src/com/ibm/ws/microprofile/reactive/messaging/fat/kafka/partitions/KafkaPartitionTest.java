@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestC
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -75,7 +76,8 @@ public class KafkaPartitionTest {
                                         .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5"))
                         .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.kafkaContainer, LivePartitionTestBean.CHANNEL_IN,
                                                                            LivePartitionTestServlet.APP_GROUPID)
-                                        .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5"));
+                                        .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5")
+                                        .addProperty(KafkaConnectorConstants.UNACKED_LIMIT, "100")); // Want to simulate having lots of unacked messages
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(KafkaTestClient.class.getPackage())

@@ -96,6 +96,7 @@ public class LivePartitionTestServlet extends AbstractKafkaTestServlet {
         consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, APP_GROUPID);
+        consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         // Sleep
         Thread.sleep(700);
