@@ -41,6 +41,7 @@ pluginManagement {
   props.setProperty('is.using.artifactory', isUsingArtifactory.toString())
 
   String repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
+  String repoFSURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-redhat-ga-maven-remote')
 
   // Bnd configuration for where to download open source software binaries from.
   String fetchRepoPublic = !isUsingArtifactory ?
@@ -56,6 +57,21 @@ pluginManagement {
                   +';snapshotUrl=' + repoURL
                   +';index=${build}/oss_dependencies.maven')
   props.setProperty('fetch.oss.repository', fetchRepoPublic)
+
+  // Bnd configuration for where to download open source software binaries from.
+  String fetchRepoPublicFS = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
+                  +'name = RemotePublicFS;'
+                  +'releaseUrl=https://repo.maven.apache.org/maven2/'
+                  +';index=${build}/oss_fs_dependencies.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemotePublicFS'
+                  +';local=~/.ibmartifactoryfs/repository'
+                  +';releaseUrl=' + repoFSURL
+                  +';snapshotUrl=' + repoFSURL
+                  +';index=${build}/oss_fs_dependencies.maven')
+  props.setProperty('fetch.oss.fs.repository', fetchRepoPublicFS)
 
   // Bnd configuration for where to download IBM released binaries from.
   String fetchRepoIBM = !isUsingArtifactory ?
