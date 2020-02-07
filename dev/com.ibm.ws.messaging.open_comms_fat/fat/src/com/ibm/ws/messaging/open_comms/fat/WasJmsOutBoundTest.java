@@ -203,6 +203,6 @@ public class WasJmsOutBoundTest extends FATBase {
     s.join();
     c.join();
     Util.TRACE_EXIT();
-    if ("zos".equalsIgnoreCase(System.getProperty("os.name",""))) assertNotNull("Forced failure",null);
+    assertNotNull("Forced failure",null);
   }
 }
