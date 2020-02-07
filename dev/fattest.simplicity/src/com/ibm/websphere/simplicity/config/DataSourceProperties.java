@@ -24,6 +24,7 @@ public class DataSourceProperties extends ConfigElement {
     public static final String INFORMIX_JDBC = "properties.informix";
     public static final String ORACLE_JDBC = "properties.oracle";
     public static final String ORACLE_UCP = "properties.oracle.ucp";
+    public static final String POSTGRESQL = "properties.postgresql";
     public static final String DATADIRECT_SQLSERVER = "properties.datadirect.sqlserver";
     public static final String MICROSOFT_SQLSERVER = "properties.microsoft.sqlserver";
     public static final String SYBASE = "properties.sybase";
