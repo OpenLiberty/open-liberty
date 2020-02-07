@@ -257,7 +257,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
                                           unackedMessageCounter.decrement();
                                           return tracker.recordDone(r.offset(), r.leaderEpoch());
                                       });
-                                      return new TrackedMessage(message, tracker);
+                                      return new TrackedMessage<>(message, tracker);
                                   } catch (Throwable t) {
                                       Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
                                       throw t;
@@ -267,8 +267,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
                               .map(m -> m.message);
     }
 
-    //TODO: replace with a dedicated Kafka Message
-    private class TrackedMessage {
+    private static class TrackedMessage<V> {
         private final Message<V> message;
         private final PartitionTracker tracker;
 
