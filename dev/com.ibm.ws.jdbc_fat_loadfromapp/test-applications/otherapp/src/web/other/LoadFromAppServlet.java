@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,9 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.util.concurrent.Callable;
 
+import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -30,8 +32,16 @@ import componenttest.app.FATDatabaseServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/LoadFromAppServlet")
 public class LoadFromAppServlet extends FATDatabaseServlet {
+    // TODO this turned out to be a good test of loading a JDBC driver from the app in combination with a login module. Cannot enable it yet because that function isn't complete.
+    //@Resource(name = "java:app/env/jdbc/ddsLoadFromAppWithWebModLoginModule")
+    //private DataSource loadedFromAppDataSourceWithWebModLoginModule;
+
+    @Resource(name = "java:app/env/jdbc/slLoadFromAppWithWebModLoginModule", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sharedLibDataSourceWithWebModLoginModule;
+
     @Override
-    public void init(ServletConfig config) throws ServletException {}
+    public void init(ServletConfig config) throws ServletException {
+    }
 
     // This basic test verifies that the application cannot load Derby classes because it does not package a Derby library.
     @Test
@@ -100,6 +110,36 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
             assertEquals("dsuser1", mdata.getUserName());
         } finally {
             con.close();
+        }
+    }
+
+    // TODO determine expectations around loading login modules from EJBs.
+    // Currently not expecting to load login modules from EJB modules, but what about being able to load login modules
+    // that are packaged elsewhere within the application when on an EJB code path?
+
+    @Test
+    public void testLoginModuleFromEJBModule1() throws Exception {
+        Callable<String> bean = InitialContext.doLookup("java:global/otherApp/ejb1/FirstBean!java.util.concurrent.Callable");
+        String userName = bean.call();
+        assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+    }
+
+    @Test
+    public void testLoginModuleFromEJBModule2() throws Exception {
+        Callable<String> bean = InitialContext.doLookup("java:global/otherApp/ejb2/SecondBean!java.util.concurrent.Callable");
+        String userName = bean.call();
+        assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+    }
+
+    /**
+     * testLoginModuleFromWebModule - verify that a login module that is packaged within the web module is used to authenticate
+     * to a data source when its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromWebModule() throws Exception {
+        try (Connection con = sharedLibDataSourceWithWebModLoginModule.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            assertEquals("webuser", metadata.getUserName());
         }
     }
 
