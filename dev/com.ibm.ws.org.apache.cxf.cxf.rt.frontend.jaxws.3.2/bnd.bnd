@@ -32,6 +32,7 @@ Service-Component: \
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
+   org/apache/cxf=${bin}/org/apache/cxf, \
    META-INF=resources/META-INF
    
 -buildpath: org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\

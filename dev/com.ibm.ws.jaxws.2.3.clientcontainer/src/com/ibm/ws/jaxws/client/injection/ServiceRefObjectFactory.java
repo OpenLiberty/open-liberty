@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,6 @@ import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 import com.ibm.ws.jaxws.support.JaxWsMetaDataManager;
-import com.ibm.ws.jaxws.support.LibertyHTTPTransportFactory;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -66,7 +65,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * This object factory will be used to create instances of JAX-WS service subclasses or ports. It will be utilized by
  * both the resource injection engine and the JNDI naming code to create these instances.
- *
+ * 
  */
 @Component(service = { javax.naming.spi.ObjectFactory.class, com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory.class },
            configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
@@ -74,7 +73,8 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 
     private static final TraceComponent tc = Tr.register(ServiceRefObjectFactory.class);
 
-    private final AtomicServiceReference<JaxWsSecurityConfigurationService> securityConfigSR = new AtomicServiceReference<JaxWsSecurityConfigurationService>("securityConfigurationService");
+    private final AtomicServiceReference<JaxWsSecurityConfigurationService> securityConfigSR =
+                    new AtomicServiceReference<JaxWsSecurityConfigurationService>("securityConfigurationService");
 
     @Activate
     protected void activate(ComponentContext cCtx) {
@@ -92,15 +92,15 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
     protected void setSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
         securityConfigSR.setReference(serviceRef);
         LibertyProviderImpl.setSecurityConfigService(securityConfigSR);
-        LibertyHTTPTransportFactory.setSecurityConfigService(securityConfigSR);
+        // Testing removal of this method
+        // LibertyHTTPTransportFactory.setSecurityConfigService(securityConfigSR);
     }
 
     protected void unsetSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
         securityConfigSR.unsetReference(serviceRef);
     }
 
-    public ServiceRefObjectFactory() {
-    }
+    public ServiceRefObjectFactory() {}
 
     /**
      * This method will create an instance of either a javax.xml.ws.Service subclass, or it will create an SEI type.
@@ -160,7 +160,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
         Bus originalThreadBus = BusFactory.getThreadDefaultBus(false);
         try {
             BusFactory.setThreadDefaultBus(declaredClientMetaData.getClientBus());
-            // Collect all of our module-specific service-ref metadata.
+            // Collect all of our module-specific service-ref metadata.            
             TransientWebServiceRefInfo tInfo = new TransientWebServiceRefInfo(declaredClientMetaData, wsrInfo, declaredClientMetaData.getModuleMetaData().getAppContextClassLoader());
             Object instance = getInstance(tInfo, wsrInfo);
             return instance;
@@ -183,9 +183,10 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
         List<WebServiceFeature> originalWsFeatureList = LibertyProviderImpl.getWebServiceFeatures();
         WebServiceRefInfo originalWebServiceRefInfo = LibertyProviderImpl.getWebServiceRefInfo();
         try {
-            //Check @MTOM @RespectBinding @Addressing
+            //Check @MTOM @RespectBinding @Addressing 
             //set web service features to ThreadLocal
-            final List<WebServiceFeature> wsFeatureList = wsrInfo.getWSFeatureForSEIClass(wsrInfo.getServiceRefTypeClassName());
+            final List<WebServiceFeature> wsFeatureList =
+                            wsrInfo.getWSFeatureForSEIClass(wsrInfo.getServiceRefTypeClassName());
 
             LibertyProviderImpl.setWebServiceRefInfo(wsrInfo);
             LibertyProviderImpl.setWebServiceFeatures(wsFeatureList);
@@ -426,7 +427,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 
         /**
          * This is a helper method to get a URL for the WSDL location.
-         *
+         * 
          * @throws IOException
          * @throws MalformedURLException
          */
@@ -484,7 +485,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 
     /**
      * merge the configurations from the ibm-ws-bnd.xml
-     *
+     * 
      * @param wsrInfo
      */
     private void mergeWebServicesBndInfo(WebServiceRefInfo wsrInfo, JaxWsClientMetaData jaxwsClientMetaData) {

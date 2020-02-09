@@ -46,12 +46,12 @@ public class JaxWsHandlerChainInstanceInterceptor implements InstanceInterceptor
 
     @Override
     public void postNewInstance(InterceptorContext ctx) throws InterceptException {
+        //configureHandler((Handler<?>) ctx.getInstance());
         Object o = ctx.getInstance();
         configureHandler((Handler<?>) o);
 
         Method postConstructMethod = ResourceUtils.findPostConstructMethod(o.getClass());
         ResourceUtils.invokeLifeCycleMethod(o, postConstructMethod);
-
     }
 
     @Override
@@ -61,13 +61,11 @@ public class JaxWsHandlerChainInstanceInterceptor implements InstanceInterceptor
 
     @Override
     public void preDestroyInstance(InterceptorContext ctx) throws InterceptException {
-
         Object o = ctx.getInstance();
         configureHandler((Handler<?>) o);
 
         Method preDestroyMethod = ResourceUtils.findPreDestroyMethod(o.getClass());
         ResourceUtils.invokeLifeCycleMethod(o, preDestroyMethod);
-
     }
 
     private void configureHandler(Handler<?> handler) {

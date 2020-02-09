@@ -12,16 +12,19 @@
           
 bVersion=1.0
 
-Bundle-Name: JAX-WS ClientContainer
+Bundle-Name: JAX-WS ClientContainer 2.3
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.clientcontainer
-Bundle-Description: IBM JAX-WS ClientContainer; version=${bVersion}
+Bundle-Description: IBM JAX-WS ClientContainer 2.3; version=${bVersion}
+
+Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
+
 
 javac.source: 1.8
 javac.target: 1.8
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-# in cxf-rt-frontend-jaxws-2.6.2 bundle, we exposed: 
+# in cxf-rt-frontend-jaxws-3.2 bundle, we exposed: 
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
 # so we need make com.ibm.ws.jaxws.client;thread-context=true
 Export-Package: \
@@ -43,7 +46,8 @@ Import-Package: \
    javax.xml.bind.*;version="[2.3,3)", \
    javax.xml.ws.*;version="[2.3,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
-   org.apache.cxf.*;version="[3.2,4)", \
+   org.apache.cxf.*;version="[3.2.4,4)", \
+   org.apache.cxf.binding.soap;version="[3.3.3,4)", \
    javax.annotation;version=!,\
    *
 
@@ -59,7 +63,8 @@ DynamicImport-Package: com.sun.xml.bind.v2, \
     com.ibm.xml.xlxp2.api.wssec
     
 
--dsannotations: com.ibm.ws.jaxws.metadata.builder.AnnotationEndpointInfoConfigurator,\
+-dsannotations:\
+  com.ibm.ws.jaxws.metadata.builder.AnnotationEndpointInfoConfigurator,\
   com.ibm.ws.jaxws.metadata.builder.WebServicesBndEndpointInfoConfigurator,\
   com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory
   
@@ -100,12 +105,7 @@ Service-Component: \
   com.ibm.ws.jaxws.metadata.builder.jaxWsModuleInfo.adapter; \
      implementation:=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoAdapter; \
      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
-     properties:="service.vendor=IBM,toType=com.ibm.ws.jaxws.metadata.JaxWsModuleInfo", \
-  com.ibm.ws.jaxws.http.transport.factory.provider; \
-     configuration-policy:=optional; \
-     implementation:=com.ibm.ws.jaxws.support.LibertyHTTPTransportFactoryProvider; \
-     provide:='com.ibm.ws.jaxws.bus.ExtensionProvider'; \
-     properties:="service.vendor=IBM"
+     properties:="service.vendor=IBM,toType=com.ibm.ws.jaxws.metadata.JaxWsModuleInfo"
 
 instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/*.class
 
@@ -118,6 +118,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
@@ -138,4 +139,4 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	com.ibm.ws.clientcontainer;version=latest,\
 	com.ibm.websphere.appserver.spi.classloading;version=latest,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

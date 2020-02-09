@@ -129,7 +129,6 @@ public class JaxWsModuleMetaDataListener implements ModuleMetaDataListener {
 
     @Override
     public void moduleMetaDataDestroyed(MetaDataEvent<ModuleMetaData> event) {
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "moduleMetaDataDestroyed(" + event.getMetaData().getName() + ") : " + event.getMetaData());
         }

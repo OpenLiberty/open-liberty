@@ -275,12 +275,15 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
 
             // This has been moved to LibertyProviderImpl since in that time slot, clientMetadata will always be available
             // If CDI is enabled, the injections happens before JaxwsModuleMetaDataLister.metaDataCreated()
+
             /*
              * if (ivNameSpaceConfig.getClassLoader() != null) {
              * // get the client metadata. in client side, here should be the first time get the client metadata, so will create one.
              * JaxWsClientMetaData clientMetaData = JaxWsMetaDataManager.getJaxWsClientMetaData(ivNameSpaceConfig.getModuleMetaData());
              *
              * // parsing and merge the client configuration from the ibm-ws-bnd.xml
+             *
+             *
              * if (clientMetaData != null)
              * {
              * mergeWebServicesBndInfo(wsrInfo, clientMetaData);
@@ -288,6 +291,7 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
              *
              * }
              */
+
             J2EEName j2eeName = ivNameSpaceConfig.getJ2EEName();
             String componenetName = (null != j2eeName) ? j2eeName.getComponent() : null;
             wsrInfo.setComponenetName(componenetName);
@@ -305,6 +309,10 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
      * @param wsrInfo
      */
     private void mergeWebServicesBndInfo(WebServiceRefInfo wsrInfo, JaxWsClientMetaData jaxwsClientMetaData) {
+
+        if (jaxwsClientMetaData == null) {
+            jaxwsClientMetaData = wsrInfo.getClientMetaData();
+        }
 
         WebservicesBnd webServicesBnd = null;
         try {

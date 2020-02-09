@@ -13,6 +13,12 @@ package com.ibm.ws.jaxws;
 import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.soap.SOAPBinding;
 
+/*
+ * This class is a holder for the jaxws.2.3.common component constants. The strings point to package names in
+ * the JAX-WS spec, file locations for catalog files, annotation names, SOAP Binding types, annotation property
+ * names for metadata processing, and CXF factory PIDs.
+ */
+
 public class JaxWsConstants {
 
     public static final String WEB_SERVICE_ANNOTATION_NAME = "javax.jws.WebService";
