@@ -16,7 +16,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.ConcurrentModificationException;
+import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -998,26 +999,10 @@ public class BaseTraceFormatter extends Formatter {
 
     private String formatObject(Object objs, int depth) {
         if (objs == null) {
-            return null;
+            return nullParamString;
         }
         if (depth >= COLLECTION_DEPTH_LIMIT) {
             return "Collection depth limit exceeded";
-        }
-        if (objs instanceof Collection) {
-            try {
-                Iterator<?> iter = ((Collection<?>) objs).iterator();
-                StringBuilder sb = new StringBuilder("[");
-                if (iter.hasNext()) {
-                    sb.append(formatObject(iter.next(), depth + 1));
-                }
-                while (iter.hasNext()) {
-                    sb.append(", ").append(formatObject(iter.next(), depth + 1));
-                }
-                sb.append("]");
-                return sb.toString();
-            } catch (Throwable t) {
-                return "[Caught " + t.toString() + " while logging collection type " + objs.getClass().getName() + "]";
-            }
         }
         if (objs instanceof Untraceable) {
             return objs.getClass().getName(); // Use only the class name of the object
@@ -1027,12 +1012,40 @@ public class BaseTraceFormatter extends Formatter {
             return DataFormatHelper.throwableToString((TruncatableThrowable) objs);
         } else if (objs instanceof Throwable) {
             return DataFormatHelper.throwableToString(new TruncatableThrowable((Throwable) objs));
+        } else if (objs instanceof Collection) {
+            Object[] objArray = null;
+            int retryableExceptionCount = 0;
+            while (objArray == null) {
+                try {
+                    if (retryableExceptionCount >= 100) {
+                        return "[Caught too many exceptions while logging collection type " + objs.getClass().getName() + "]";
+                    }
+                    objArray = ((Collection) objs).toArray();
+                } catch (ConcurrentModificationException cme) {
+                    // this exception is possible.  Need to retry until it doesn't happen any longer.
+                    retryableExceptionCount++;
+                } catch (NoSuchElementException nsee) {
+                    // this exception is possible.  Need to retry until it doesn't happen any longer.
+                    retryableExceptionCount++;
+                } catch (Throwable t) {
+                    return "[Caught " + t.toString() + " while logging collection type " + objs.getClass().getName() + "]";
+                }
+            }
+            StringBuilder sb = new StringBuilder("[");
+            if (objArray.length != 0) {
+                sb.append(formatObject(objArray[0], depth + 1));
+            }
+            for (int i = 1; i < objArray.length; ++i) {
+                sb.append(", ").append(formatObject(objArray[i], depth + 1));
+            }
+            sb.append("]");
+            return sb.toString();
         }
         try { // Protect ourselves from badly behaved toString methods
             Class<?> cls = objs.getClass();
             String className = cls.getName();
             if (Proxy.isProxyClass(cls) || className.contains("$Proxy$_$$_Weld")) {
-                return "Proxy for " + className;
+                return "Proxy for " + className + "@" + Integer.toHexString(System.identityHashCode(objs));
             }
             return objs.toString();
         } catch (Exception e) {

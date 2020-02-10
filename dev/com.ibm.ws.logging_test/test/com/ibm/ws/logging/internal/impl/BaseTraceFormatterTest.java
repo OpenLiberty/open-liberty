@@ -788,7 +788,7 @@ public class BaseTraceFormatterTest {
                                               new Class<?>[] { MyProxyInterface.class },
                                               new ProxyHandler(123));
         String formatted = formatter.formatObj(proxy);
-        assertEquals("Proxy for " + proxy.getClass().getName(), formatted.trim());
+        assertTrue(formatted.trim().startsWith("Proxy for " + proxy.getClass().getName() + "@"));
     }
 
     @Test
@@ -816,15 +816,12 @@ public class BaseTraceFormatterTest {
         formatted = formatted.replace('\n', ',');
 
         assertEquals("Unexpected output: " + formatted,
-                     "[Proxy for " + proxy1.getClass().getName() + ", " +
-                                                        "ProxiedTraceable.toTraceString(), " +
-                                                        "foo]",
+                     "[" + proxyName(proxy1) + ", ProxiedTraceable.toTraceString(), foo]",
                      formatted.trim());
+    }
 
-//        assertTrue("Unexpected output: " + formatted,
-//                   Pattern.matches("\\[Proxy for " + proxy1.getClass().getName() + ".*" +
-//                                   "ProxiedTraceable.toTraceString().*" +
-//                                   "foo\\]", formatted));
+    private String proxyName(Object proxyObj) {
+        return "Proxy for " + proxyObj.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(proxyObj));
     }
 
     @Test
@@ -933,7 +930,7 @@ public class BaseTraceFormatterTest {
             if ("equals".equals(method.getName())) {
                 return proxy == args[0];
             }
-            if ("iterator".contentEquals(method.getName())) {
+            if ("toArray".contentEquals(method.getName())) {
                 throw new UnsupportedOperationException("expected");
             }
             assertFalse("toString method invoked on proxy object", method.getName().equals("toString"));
