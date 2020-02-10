@@ -286,6 +286,17 @@ public class CommittingPartitionTracker extends PartitionTracker {
         }
     }
 
+    @Override
+    public void close() {
+        synchronized (completedWork) {
+            if (!completedWork.isEmpty()) {
+                // Attempt a final commit before we relinquish the partition
+                commitCompletedWork();
+            }
+            super.close();
+        }
+    }
+
     /**
      * Represents a record which the application has finished processing, but which may not yet have been committed
      */
