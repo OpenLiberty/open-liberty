@@ -40,7 +40,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -107,24 +106,6 @@ public class PersistentTimerCoreTest extends FATServletClient {
         if (server != null && server.isStarted()) {
             server.stopServer("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E", "CWWKG0032W.*Blah");
         }
-    }
-
-    /**
-     * Returns the test method name without the RepeatTests suffix.
-     *
-     * For example, when using RepeatTests with EE7_FEATURES, the suffix _EE7_FEATURES is added
-     * to provide unique test names for junit reporting purposes. The simple test method name
-     * dose not include the suffix.
-     *
-     * @return test method name without the RepeatTests suffix.
-     */
-    protected String getTestMethodSimpleName() {
-        String testMethodName = testName.getMethodName();
-        if (testMethodName.endsWith(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
-            testMethodName = testMethodName.substring(0, testMethodName.length() - (RepeatTestFilter.CURRENT_REPEAT_ACTION.length() + 1));
-        }
-
-        return testMethodName;
     }
 
     //-----------------------------------------------------
