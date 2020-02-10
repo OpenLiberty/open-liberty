@@ -10,24 +10,19 @@
  *******************************************************************************/
 package ejb.second;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.sql.DataSource;
 
 @Stateless
-public class SecondBean implements Callable<String> {
+public class SecondBean implements Executor {
     @Resource(name = "java:comp/env/jdbc/dsref", lookup = "jdbc/sharedLibDataSource")
     DataSource ds;
 
     @Override
-    public String call() throws Exception {
-        try (Connection con = ds.getConnection()) {
-            DatabaseMetaData mdata = con.getMetaData();
-            return mdata.getUserName();
-        }
+    public void execute(Runnable runnable) {
+        runnable.run();
     }
 }

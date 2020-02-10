@@ -64,6 +64,14 @@
     </library>
     <javaPermission codebase="${server.config.dir}/tempLoginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
 
+    <jaasLoginContextEntry id="app1loginEntry" name="app1login">
+      <loginModule className="loginmod.LoadFromAppLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="webapploginEntry" name="webapplogin">
+      <loginModule className="web.derby.LoadFromWebAppLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+    </jaasLoginContextEntry>
+
     <jaasLoginContextEntry id="web1loginEntry" name="web1login">
       <loginModule className="web.other.LoadFromWebModLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
     </jaasLoginContextEntry>

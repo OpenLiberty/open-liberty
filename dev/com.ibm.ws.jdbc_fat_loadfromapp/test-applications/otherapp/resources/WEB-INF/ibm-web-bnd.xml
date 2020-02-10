@@ -20,7 +20,15 @@
     </custom-login-configuration>
   </resource-ref>
 
-  <resource-ref name="java:app/env/jdbc/slLoadFromAppWithWebModLoginModule">
+  <resource-ref name="java:app/env/jdbc/sldsLoginModuleFromTopLevelJarInApp">
+    <custom-login-configuration name="app1login">
+      <property name="shape" value="octagon"/>
+      <property name="sides" value="8"/>
+      <property name="sumOfAngles" value="1080"/>
+    </custom-login-configuration>
+  </resource-ref>
+
+  <resource-ref name="java:app/env/jdbc/sldsLoginModuleFromWebModuleInApp">
     <custom-login-configuration name="web1login">
       <property name="shape" value="triangle"/>
       <property name="sides" value="3"/>
