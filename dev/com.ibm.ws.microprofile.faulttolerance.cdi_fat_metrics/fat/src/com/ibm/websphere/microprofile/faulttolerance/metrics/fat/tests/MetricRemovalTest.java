@@ -31,8 +31,8 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.MetricListServlet;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalServlet;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;

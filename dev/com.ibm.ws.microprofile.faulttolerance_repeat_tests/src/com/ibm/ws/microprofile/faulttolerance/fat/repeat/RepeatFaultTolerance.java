@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.microprofile.faulttolerance_fat.suite;
+package com.ibm.ws.microprofile.faulttolerance.fat.repeat;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -111,10 +111,10 @@ public class RepeatFaultTolerance {
     }
 
     /**
-     * Return a rule to repeat tests for FT 1.1 and 2.0
+     * Return a rule to repeat tests for FT 1.1 and 2.1
      * <p>
-     * This is the default because FT 1.1 and 2.0 have a mostly separate implementation so we want to ensure both are tested
-     * mp20Features includes FT 1.1, as it is an older version it will only run in full mode.
+     * This is the default because FT 1.* and 2.* have a mostly separate implementation so we want to ensure both are tested
+     * mp20Features includes FT 1.1, and as it is an older version it will only run in full mode.
      *
      * @param server the server name
      * @return the RepeatTests rule
@@ -125,7 +125,7 @@ public class RepeatFaultTolerance {
     }
 
     /**
-     * Return a rule to repeat tests for FT 1.0, 1.1 and 2.0
+     * Return a rule to repeat tests for FT 1.0, 1.1, 2.0, and 2.1
      * <p>
      * We run a few tests using this rule so that we have some coverage of all implementations
      *
