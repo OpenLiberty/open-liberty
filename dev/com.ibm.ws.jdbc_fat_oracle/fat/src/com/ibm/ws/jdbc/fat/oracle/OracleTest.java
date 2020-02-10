@@ -15,14 +15,12 @@ import static org.junit.Assert.fail;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.output.OutputFrame;
@@ -83,14 +81,17 @@ public class OracleTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server.isStarted())
+    	testSSLPasswordIsNotLogged();
+    	testURLPasswordIsNotLogged();
+    	
+        if (server.isStarted()) {
             server.stopServer();
+        }
     }
     
-    @Test
     //FIXME com.ibm.ws.jdbc.* does not log this password, but it is still being logged 
     //by OSGi Declaritive Service.  Enable this test once that is no longer the case. 
-    public void testSSLPasswordIsNotLogged() throws Exception {
+    private static void testSSLPasswordIsNotLogged() throws Exception {
     	if(server.isStarted()) {
     		//Allow in output.txt log as we use env variables to set SSL_PASSWORD and URL
     		int count = server.findStringsInTrace(Pattern.quote(SSL_PASSWORD)).size();
@@ -101,10 +102,9 @@ public class OracleTest extends FATServletClient {
     	}
     }
     
-    @Test
     //FIXME com.ibm.ws.jdbc.* does not log the URL with password, but it is still being logged 
     //by OSGi Declaritive Service.  Enable this test once that is no longer the case. 
-    public void testURLPasswordIsNotLogged() throws Exception {
+    private static void testURLPasswordIsNotLogged() throws Exception {
     	if(server.isStarted()) {
     		//Allow in output.txt log as we use env variables to set SSL_PASSWORD and URL
     		int count = server.findStringsInTrace(Pattern.quote(oracle.getJdbcUrl())).size();

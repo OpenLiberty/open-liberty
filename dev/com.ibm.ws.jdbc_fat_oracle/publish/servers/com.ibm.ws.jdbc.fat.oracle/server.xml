@@ -57,6 +57,8 @@
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
+    <!-- Not actually interested in making a true SSL connection here.
+         Just making sure that SSL Trust/Key Store passwords are not being logged. -->
     <dataSource id="ssl-ds" jndiName="jdbc/ssl-ds">
     	<properties.oracle URL="${env.URL}" connectionProperties="oracle.net.ssl_version=1.2; oracle.net.authentication_services=(TCPS); javax.net.ssl.keyStore=${server.config.dir}/resources/security/key.p12; javax.net.ssl.keyStoreType=PKCS12; javax.net.ssl.keyStorePassword=${env.SSL_PASSWORD}; javax.net.ssl.trustStore=${server.config.dir}/resources/security/key.p12; javax.net.ssl.trustStoreType=PKCS14; javax.net.ssl.trustStorePassword=${env.SSL_PASSWORD}"/>
     	<jdbcDriver libraryRef="DBLib"/>

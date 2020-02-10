@@ -102,12 +102,12 @@ public class PropertyService extends Properties {
     private static final List<String> PASSWORD_PROPS = Arrays.asList(DataSourceDef.password.name(),
                                                                      "accessToken",
                                                                      "apiKey",
+                                                                     "connectionProperties",
+                                                                     "connectionFactoryProperties",
                                                                      "keyStoreSecret",
                                                                      "trustStorePassword",
                                                                      "sslTrustStorePassword",
-                                                                     "sslKeyStorePassword",
-                                                                     "connectionProperties",
-                                                                     "connectionFactoryProperties"
+                                                                     "sslKeyStorePassword"
                                                                      );
 
     /**
@@ -135,6 +135,15 @@ public class PropertyService extends Properties {
      */
     public String getFactoryPID() {
         return factoryPID;
+    }
+    
+    /**
+     * Factory pid for the nested vendor properties elements.
+     * 
+     * @param factoryPID factory pid for vendor properties element.
+     */
+    public void setFactoryPID(String factoryPID) {
+        this.factoryPID = factoryPID;
     }
 
     /**
@@ -279,21 +288,11 @@ public class PropertyService extends Properties {
      * @param vendorProps
      */
     public static final void parsePasswordProperties(Map<String, Object> vendorProps) {
-
         for (String propName : PASSWORD_PROPS) {
             String propValue = (String) vendorProps.remove(propName);
             if (propValue != null)
                 vendorProps.put(propName, new SerializableProtectedString(propValue.toCharArray()));
         }
-    }
-
-    /**
-     * Factory pid for the nested vendor properties elements.
-     * 
-     * @param factoryPID factory pid for vendor properties element.
-     */
-    public void setFactoryPID(String factoryPID) {
-        this.factoryPID = factoryPID;
     }
 
     /**

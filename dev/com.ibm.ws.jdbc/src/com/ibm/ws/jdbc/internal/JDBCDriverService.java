@@ -21,7 +21,6 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +31,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -270,7 +268,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                         @SuppressWarnings("unchecked")
                         Class<T> dsClass = (Class<T>) loader.loadClass(className);
                         introspectedClasses.add(dsClass);
-                        T ds = dsClass.newInstance();
+                        T ds = dsClass.getDeclaredConstructor().newInstance();
 
                         // Set all of the JDBC vendor properties
                         Hashtable<?, ?> p = (Hashtable<?, ?>) props.clone();
@@ -828,7 +826,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 public Driver run() throws Exception {
                     ClassLoader loader = classloader == null ? Thread.currentThread().getContextClassLoader() : classloader;
                     Class<Driver> driverClass = (Class<Driver>) loader.loadClass(className);
-                    return driverClass.newInstance();
+                    return driverClass.getDeclaredConstructor().newInstance();
                 }
             });
             drivers = Collections.singleton(driver);
@@ -1044,7 +1042,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         if (embDerbyRefCount.remove(classloader) && !embDerbyRefCount.contains(classloader))
             try {
                 Class<?> EmbDS = AdapterUtil.forNameWithPriv("org.apache.derby.jdbc.EmbeddedDataSource40", true, classloader);
-                DataSource ds = (DataSource) EmbDS.newInstance();
+                DataSource ds = (DataSource) EmbDS.getDeclaredConstructor().newInstance();
                 EmbDS.getMethod("setShutdownDatabase", String.class).invoke(ds, "shutdown");
                 ds.getConnection().close();
                 if (trace && tc.isEntryEnabled())
