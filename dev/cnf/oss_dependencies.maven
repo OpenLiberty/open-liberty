@@ -71,7 +71,7 @@ com.sun.xml.stream.buffer:streambuffer:1.5.3
 com.sun.xml.ws:jaxws-rt:2.2.10
 com.sun.xml.ws:jaxws-tools:2.2.10
 com.sun.xml.ws:policy:2.4
-com.unboundid:unboundid-ldapsdk:4.0.9
+com.unboundid:unboundid-ldapsdk:4.0.14
 commons-beanutils:commons-beanutils:1.9.4
 commons-codec:commons-codec:1.10
 commons-codec:commons-codec:1.11
