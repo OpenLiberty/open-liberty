@@ -173,6 +173,7 @@ public class WasJmsOutBoundTest extends FATBase {
     Util.TRACE_EXIT();
   }
 
+  @Mode(TestMode.LITE)
   @Test
   public void testWJOSendReceive2LP() throws Exception {
     Util.TRACE_ENTRY();
@@ -186,6 +187,7 @@ public class WasJmsOutBoundTest extends FATBase {
     Util.TRACE_EXIT();
   }
 
+  @Mode(TestMode.LITE)
   @Test
   public void testSocketCloseOnzOS() throws Exception
   {
