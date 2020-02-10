@@ -124,7 +124,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
     public ResourceFactory createResourceFactory(Map<String, Object> props) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(tc, "createResourceFactory", PropertyService.hidePasswords(props));
+            Tr.entry(tc, "createResourceFactory", props);
 
         Hashtable<String, Object> cmSvcProps = new Hashtable<String, Object>();
         Hashtable<String, Object> dsSvcProps = new Hashtable<String, Object>();
@@ -593,16 +593,16 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                                     try {
                                         if (driver.acceptsURL(url)) {
                                             if (trace && tc.isDebugEnabled())
-                                                Tr.debug(this, tc, driver + " accepts " + PropertyService.filterURL(url));
+                                                Tr.debug(this, tc, driver + " accepts " + url);
                                             className = driver.getClass().getName();
                                             break;
                                         } else {
                                             if (trace && tc.isDebugEnabled())
-                                                Tr.debug(this, tc, driver + " does not accept " + PropertyService.filterURL(url));
+                                                Tr.debug(this, tc, driver + " does not accept " + url);
                                         }
                                     } catch (SQLException x) {
                                         if (trace && tc.isDebugEnabled())
-                                            Tr.debug(this, tc, driver + " does not accept " + PropertyService.filterURL(url), x);
+                                            Tr.debug(this, tc, driver + " does not accept " + url, x);
                                     }
                                 }
                             } else {

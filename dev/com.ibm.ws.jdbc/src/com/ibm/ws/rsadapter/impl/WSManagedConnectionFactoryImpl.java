@@ -870,7 +870,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                             if ("URL".equals(name) || "url".equals(name)) {
                                 url = str;
                                 if (isTraceOn && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, name + '=' + PropertyService.filterURL(str));
+                                    Tr.debug(this, tc, name + '=' + str);
                             } else if ((user == null || !"user".equals(name)) && (pwd == null || !"password".equals(name))) {
                                 // Decode passwords
                                 if (PropertyService.isPassword(name)) {

@@ -236,7 +236,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", PropertyService.hidePasswords(properties));
+            Tr.entry(this, tc, "activate", properties);
 
         String jndiName = (String) properties.get(JNDI_NAME);
         id = (String) properties.get("config.displayId");
@@ -836,7 +836,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     } else if (trace && tc.isDebugEnabled()) {
                         if(key.toLowerCase().equals("url")) {
                             if(value instanceof String)
-                                Tr.debug(this, tc, "Found vendor property: " + key + '=' + PropertyService.filterURL((String) value));
+                                Tr.debug(this, tc, "Found vendor property: " + key + '=' + (String) value);
                         } else {
                             Tr.debug(this, tc, "Found vendor property: " + key + '=' + value);
                         }

@@ -157,7 +157,7 @@ public class WSJdbcTracer implements InvocationHandler
             if (tracer.getLevel() <= 1 /* LevelConstants.LEVEL_ALL */&& args != null)
                 for (int i = 0; i < args.length; i++) {
                     if(methName.equals("connect") && i == 0) {
-                        buffer.append(PropertyService.filterURL(toString(args[i])));
+                        buffer.append(toString(args[i]));
                         continue;
                     }
                     

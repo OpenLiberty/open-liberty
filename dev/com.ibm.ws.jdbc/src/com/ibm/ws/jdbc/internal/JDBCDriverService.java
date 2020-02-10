@@ -241,7 +241,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(tc, "create", className, classloader, PropertyService.hidePasswords(props));
+            Tr.entry(tc, "create", className, classloader, props);
 
         //Add a value for connectionFactoryClassName when using UCP if one is not specified
         if (className.startsWith("oracle.ucp.jdbc") && !props.containsKey("connectionFactoryClassName")) {
@@ -306,10 +306,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                                     if (x instanceof InvocationTargetException)
                                         x = x.getCause();
                                     FFDCFilter.processException(x, getClass().getName(), "217", this, new Object[] { className, name, value });
-                                    boolean isURL = ("URL".equals(name) || "url".equals(name)) && value instanceof String;
-                                    SQLException failure = connectorSvc.ignoreWarnOrFail(tc, x, SQLException.class, "PROP_SET_ERROR", name,
-                                                                                                     "=" + (isPassword ? "******" : isURL ? PropertyService.filterURL((String) value) : value),
-                                                                                                     AdapterUtil.stackTraceToString(x));
+                                    SQLException failure = connectorSvc.ignoreWarnOrFail(tc, x, SQLException.class, "PROP_SET_ERROR", name, "=" + value, AdapterUtil.stackTraceToString(x));
                                     if (failure != null)
                                         throw failure;
                                 }
@@ -794,7 +791,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     private Driver loadDriver(final String className, String url, final ClassLoader classloader, Properties props, String dataSourceID) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
-            Tr.entry(this, tc, "loadDriver", className, PropertyService.filterURL(url), classloader);
+            Tr.entry(this, tc, "loadDriver", className, url, classloader);
         int index = url.toLowerCase().indexOf("logintimeout");
         if(index != -1) {
             int length = url.length();
@@ -972,11 +969,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         String propName = pd.getName();
 
         if (tc.isDebugEnabled()) {
-            if("URL".equals(propName) || "url".equals(propName)) {
-                Tr.debug(tc, "set " + propName + " = " + PropertyService.filterURL(value));
-            } else {
-                Tr.debug(tc, "set " + propName + " = " + (doTraceValue ? value : "******"));
-            }
+                Tr.debug(tc, "set " + propName + " = " + value);
         }
 
         java.lang.reflect.Method setter = pd.getWriteMethod();

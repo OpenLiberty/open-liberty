@@ -334,7 +334,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         return new String[] {
                              toString(),
                              nameValuePairs.toString(),
-                             PropertyService.hidePasswords(vendorProps).toString() };
+                             vendorProps.toString() };
     }
 
     /**

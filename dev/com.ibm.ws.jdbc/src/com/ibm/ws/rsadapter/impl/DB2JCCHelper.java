@@ -643,7 +643,7 @@ public class DB2JCCHelper extends DB2Helper {
 
     public void reuseKerbrosConnection(Connection sqlConn, GSSCredential gssCred, Properties props) throws SQLException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "reuseKerbrosConnection", sqlConn, gssCred, PropertyService.hidePasswords(props));
+            Tr.debug(this, tc, "reuseKerbrosConnection", sqlConn, gssCred, props);
         invokeOnDB2Connection(sqlConn, reuseDB2Connection, "reuseDB2Connection", TYPES_GSSCredential_Properties, gssCred, props);
     }
 }
