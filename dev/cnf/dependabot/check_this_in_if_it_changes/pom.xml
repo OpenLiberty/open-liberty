@@ -379,7 +379,7 @@
     <dependency>
       <groupId>com.unboundid</groupId>
       <artifactId>unboundid-ldapsdk</artifactId>
-      <version>4.0.9</version>
+      <version>4.0.14</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
