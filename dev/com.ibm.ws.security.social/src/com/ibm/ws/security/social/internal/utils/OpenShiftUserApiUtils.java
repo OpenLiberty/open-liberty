@@ -249,7 +249,6 @@ public class OpenShiftUserApiUtils {
         JsonObject userMetadata = getJsonObjectValueFromJson(jsonResponse, "metadata");
         JsonObject result = modifyUsername(userMetadata);
         result = addProjectNameAsGroup(result);
-        //result = addGroupsToResult(result, jsonResponse);
         return result.toString();
     }
 
