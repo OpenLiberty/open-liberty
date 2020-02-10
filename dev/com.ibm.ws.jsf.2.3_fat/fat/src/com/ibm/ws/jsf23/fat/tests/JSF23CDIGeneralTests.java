@@ -264,11 +264,22 @@ public class JSF23CDIGeneralTests {
     /**
      * Test to ensure that the EL implicit objects can be injected through CDI.
      *
+     * Additionally, test that this application can be restarted without a LinkageError:
+     * see https://github.com/OpenLiberty/open-liberty/issues/10816
+     *
      * @throws Exception
      */
     @Test
     public void testInjectableELImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
+            checkInjectableELImplicitObjects(webClient);
+            // restart the app and test again
+            jsf23CDIServer.restartDropinsApplication("ELImplicitObjectsViaCDI.war");
+            checkInjectableELImplicitObjects(webClient);
+        }
+    }
+
+    private void checkInjectableELImplicitObjects(WebClient webClient) throws Exception {
 
             // Add a message to the header map
             webClient.addRequestHeader("headerMessage", "This is a test");
@@ -316,7 +327,6 @@ public class JSF23CDIGeneralTests {
             assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
             assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
             assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
-        }
     }
 
     /**
