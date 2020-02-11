@@ -248,7 +248,7 @@ public class OpenShiftUserApiUtils {
         JsonObject jsonResponse = readResponseAsJsonObject(response);
         JsonObject userMetadata = getJsonObjectValueFromJson(jsonResponse, "metadata");
         JsonObject result = modifyUsername(userMetadata);
-        result = addGroupsToResult(result, jsonResponse);
+        result = addProjectNameAsGroup(result);
         return result.toString();
     }
 
@@ -303,15 +303,25 @@ public class OpenShiftUserApiUtils {
         }
         return result;
     }
-
-    JsonObject addGroupsToResult(JsonObject metadataEntry, JsonObject rawJsonResponse) {
+    
+    JsonObject addProjectNameAsGroup(JsonObject metadataEntry) throws SocialLoginException {
         JsonObject result = metadataEntry;
-        String groupNameAttribute = config.getGroupNameAttribute();
-        if (groupNameAttribute != null && rawJsonResponse.containsKey(groupNameAttribute)) {
-            JsonObjectBuilder resultBuilder = copyJsonObject(metadataEntry);
-            resultBuilder.add(groupNameAttribute, rawJsonResponse.get(groupNameAttribute));
-            result = resultBuilder.build();
+        String userNameAttribute = config.getUserNameAttribute();
+        String username = getStringValueFromJson(metadataEntry, userNameAttribute);
+        int index = username.indexOf(":");        
+        if (index >= 0) {
+            String group = null;
+            group = username.substring(0,index);
+            if (group != null && !group.isEmpty()) {
+                String groupNameAttribute = config.getGroupNameAttribute();
+                if (groupNameAttribute != null) {
+                    JsonObjectBuilder resultBuilder = copyJsonObject(metadataEntry);
+                    resultBuilder.add(groupNameAttribute, group);
+                    result = resultBuilder.build();
+                }
+            }
         }
+        
         return result;
     }
 

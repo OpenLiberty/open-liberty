@@ -1235,85 +1235,108 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_addGroupsToResult_noGroupNameAttributeConfigured() {
-        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
-        JsonObject rawResponse = Json.createObjectBuilder().add("2", "value2").add("my key", "and other value").build();
+    public void test_addProjectNameAsGroup_noProjectInUserMetadata() {
+        JsonObject userMetadata = Json.createObjectBuilder().add("name", "value").add("other key", 42).build();
+        final String userNameAttribute = "name";
         mockery.checking(new Expectations() {
             {
-                one(config).getGroupNameAttribute();
-                will(returnValue(null));
+                one(config).getUserNameAttribute();
+                will(returnValue (userNameAttribute));
             }
         });
-        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
+        JsonObject result = null;
+        try {
+            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+        } catch (SocialLoginException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
         assertEquals("Output should have matched the original user metadata object, but did not.", userMetadata, result);
     }
 
+   
     @Test
-    public void test_addGroupsToResult_groupNameAttributeMissingFromObject() {
-        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
-        JsonObject rawResponse = Json.createObjectBuilder().add("2", "value2").add("my key", "and other value").build();
-        mockery.checking(new Expectations() {
-            {
-                one(config).getGroupNameAttribute();
-                will(returnValue("some missing key"));
-            }
-        });
-        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
-        assertEquals("Output should have matched the original user metadata object, but did not.", userMetadata, result);
-    }
-
-    @Test
-    public void test_addGroupsToResult_groupsAddedAsNewEntry_string() {
+    public void test_addProjectNameAsGroup_singleCharacterProject() {
+        JsonObject userMetadata = Json.createObjectBuilder().add("name", "p:username").add("groups", "group123").build();
+        final String userNameAttribute = "name";
         final String groupNameAttribute = "groups";
-        String groupsValue = "some string value";
-        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
-        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
+        String groupsValue = "p";
         mockery.checking(new Expectations() {
             {
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
                 one(config).getGroupNameAttribute();
                 will(returnValue(groupNameAttribute));
             }
         });
-        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
-        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
-        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
+        JsonObject result = null;
+        try {
+            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+        } catch (SocialLoginException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getString(groupNameAttribute));
+    }
+    @Test
+    public void test_addProjectNameAsGroup_nullGroupNameAttribute() {
+        JsonObject userMetadata = Json.createObjectBuilder().add("name", "p:username").add("groups", "group123").build();
+        final String userNameAttribute = "name";
+        
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
+                one(config).getGroupNameAttribute();
+                will(returnValue (null) );
+            }
+        });
+        JsonObject result = null;
+        try {
+            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+        } catch (SocialLoginException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+        assertEquals("Output should have matched the original user metadata object, but did not.", userMetadata, result);
+    }
+    
+    @Test
+    public void test_addProjectNameAsGroup() {
+        JsonObject userMetadata = Json.createObjectBuilder().add("name", "myproject:userA").add("groups", "groupABC").build();
+        final String userNameAttribute = "name";
+        final String groupNameAttribute = "groups";
+        String groupsValue = "myproject";
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
+                one(config).getGroupNameAttribute();
+                will(returnValue(groupNameAttribute));
+            }
+        });
+        JsonObject result = null;
+        try {
+            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+        } catch (SocialLoginException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
         assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getString(groupNameAttribute));
     }
 
-    @Test
-    public void test_addGroupsToResult_groupsAddedAsNewEntry_array() {
-        final String groupNameAttribute = "groups";
-        JsonArray groupsValue = Json.createArrayBuilder().add("group1").add("group2").build();
-        JsonObject userMetadata = Json.createObjectBuilder().add("1", "value").add("other key", 42).build();
-        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
-        mockery.checking(new Expectations() {
-            {
-                one(config).getGroupNameAttribute();
-                will(returnValue(groupNameAttribute));
-            }
-        });
-        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
-        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
-        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
-        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getJsonArray(groupNameAttribute));
-    }
-
-    @Test
-    public void test_addGroupsToResult_groupsReplacesExistingEntryInJson() {
-        final String groupNameAttribute = "groups";
-        JsonArray groupsValue = Json.createArrayBuilder().add("group1").add("group2").build();
-        JsonObject userMetadata = Json.createObjectBuilder().add(groupNameAttribute, "value").add("other key", 42).build();
-        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
-        mockery.checking(new Expectations() {
-            {
-                one(config).getGroupNameAttribute();
-                will(returnValue(groupNameAttribute));
-            }
-        });
-        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
-        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
-        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
-        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getJsonArray(groupNameAttribute));
-    }
+//    @Test
+//    public void test_addGroupsToResult_groupsReplacesExistingEntryInJson() {
+//        final String groupNameAttribute = "groups";
+//        JsonArray groupsValue = Json.createArrayBuilder().add("group1").add("group2").build();
+//        JsonObject userMetadata = Json.createObjectBuilder().add(groupNameAttribute, "value").add("other key", 42).build();
+//        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
+//        mockery.checking(new Expectations() {
+//            {
+//                one(config).getGroupNameAttribute();
+//                will(returnValue(groupNameAttribute));
+//            }
+//        });
+//        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
+//        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
+//        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
+//        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getJsonArray(groupNameAttribute));
+//    }
 
 }
