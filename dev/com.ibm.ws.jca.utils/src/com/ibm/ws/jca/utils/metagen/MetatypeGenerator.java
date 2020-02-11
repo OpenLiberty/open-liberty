@@ -511,8 +511,8 @@ public class MetatypeGenerator {
             //   The ConnectionDefinition and ConnectionDefinitions annotations are
             //   applied to the JavaBean class and are restricted to be applied only on JavaBean
             //   classes that implement the ManagedConnectionFactory interface (see
-            //   Section 5.3.2, “ManagedConnectionFactory JavaBean and Outbound
-            //   Communication” on page 5-8).
+            //   Section 5.3.2, "ManagedConnectionFactory JavaBean and Outbound
+            //   Communication" on page 5-8).
 
             //   The element managedconnectionfactory-class specifies
             //   the fully qualified name of the Java class that
@@ -1424,7 +1424,7 @@ public class MetatypeGenerator {
     }
 
     private ModuleAnnotations getModuleAnnotations() throws UnableToAdaptException {
-        return AnnotationsBetaHelper.getModuleAnnotations( config.getRarContainer() );
+        return AnnotationsBetaHelper.getModuleAnnotations(config.getRarContainer());
     }
 
     /**
