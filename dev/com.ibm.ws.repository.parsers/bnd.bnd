@@ -31,6 +31,7 @@ Private-Package: \
 	com.ibm.ws.repository;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
 	com.ibm.ws.org.apache.aries.util;version=latest,\
 	com.ibm.ws.org.apache.ant;version=latest,\

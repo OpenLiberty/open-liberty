@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -60,7 +61,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * @param <E> the type of the elements
  */
 
-public class BlockingList<K, E> extends AbstractList<E> implements List<E> {
+public class BlockingList<K, E> extends AbstractList<E> implements List<E>, Traceable {
     static final TraceComponent tc = Tr.register(BlockingList.class);
 
     @com.ibm.websphere.ras.annotation.Trivial
@@ -649,6 +650,11 @@ public class BlockingList<K, E> extends AbstractList<E> implements List<E> {
         } finally {
             stateLock.readLock().unlock();
         }
+    }
+
+    @Override
+    public String toTraceString() {
+        return toString();
     }
 
     /**
