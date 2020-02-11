@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,10 +45,16 @@ public enum DatabaseContainerType {
         Class containerClass = null, dsPropsClass  = null;
 		try {
 			containerClass = (Class<? extends JdbcDatabaseContainer>) Class.forName(packageName + containerClassName);
+		} catch (ClassNotFoundException e) {
+			fail("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name());
+		}
+		
+		try {
 			dsPropsClass = (Class<DataSourceProperties>) Class.forName("com.ibm.websphere.simplicity.config.dsprops." + dataSourcePropertiesClassName);
 		} catch (ClassNotFoundException e) {
-			fail("Could not find on of the following classes: " + containerClassName + dataSourcePropertiesClassName);
+			fail("Could not find the datasource properties class: " + dataSourcePropertiesClassName + " for testconatiner type: " + this.name());
 		}
+		
         this.containerClass = containerClass;
         this.dsPropsClass = dsPropsClass;
     }

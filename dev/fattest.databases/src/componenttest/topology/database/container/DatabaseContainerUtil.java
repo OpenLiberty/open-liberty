@@ -44,7 +44,7 @@ public final class DatabaseContainerUtil {
     	
     	//Get server config
     	ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
-    	//Get datasources to be changes
+    	//Get datasources to be changed
     	List<DataSource> datasources = getDataSources(serv, cloneConfig);
     	//Modify those datasources
     	modifyDataSourcePropsForDatabase(datasources, cloneConfig, serv, cont);
@@ -77,7 +77,7 @@ public final class DatabaseContainerUtil {
     	
     	//Get server config
     	ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
-    	//Get datasources to be changes
+    	//Get datasources to be changed
     	List<DataSource> datasources = getDataSources(serv, cloneConfig);
     	//Modify those datasources
         modifyDataSourcePropsGeneric(datasources, cloneConfig, serv, cont);
