@@ -16,6 +16,10 @@ import java.net.URI;
 import javax.enterprise.context.ApplicationScoped;
 
 
+/**
+ * A non-implementation of the LRARecoveryService, just to get the LRA TCK running
+ * (not passing!). Must be made available to the tests via META-INF/services. 
+ */
 @ApplicationScoped
 public class LRARecoveryServiceImpl implements LRARecoveryService {
     

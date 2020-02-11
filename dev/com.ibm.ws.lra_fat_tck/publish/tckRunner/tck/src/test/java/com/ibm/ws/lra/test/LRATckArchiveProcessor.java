@@ -20,6 +20,11 @@ import org.jboss.arquillian.test.spi.TestClass;
 import org.eclipse.microprofile.lra.tck.service.spi.LRARecoveryService;
 import com.ibm.ws.lra.test.LRARecoveryServiceImpl;
 
+/**
+ * Adds the LRARecoveryServiceImpl to all arquillian archives and exposes it
+ * as a loadable service via META-INF/services (which is required by the LRA
+ * TCK)
+ */
 public class LRATckArchiveProcessor implements ApplicationArchiveProcessor {
     
     @Override
@@ -35,41 +40,3 @@ public class LRATckArchiveProcessor implements ApplicationArchiveProcessor {
     }
 
 }
-
-
-/*
-
-import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
-import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
-import org.jboss.arquillian.test.spi.TestClass;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-
-  // We weave in the hamcrest jar that is used by some of the microprofile config tck tests.
-  //  The build.gradle file pull the hamcrest jar from maven and puts it in the lib directory
- 
-public class TestLoggingObserverArchiveProcessor implements ApplicationArchiveProcessor {
-
-    private static final Logger LOG = Logger.getLogger(TestLoggingObserverArchiveProcessor.class.getName());
-
-     // @see org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor#process(org.jboss.shrinkwrap.api.Archive, org.jboss.arquillian.test.spi.TestClass)
-    @Override
-    public void process(Archive<?> applicationArchive, TestClass testClass) {
-        if (applicationArchive instanceof WebArchive) {
-            LOG.log(Level.INFO, "WLP: Adding observer for test start and finish to {0}", applicationArchive.getName());
-            ((WebArchive) applicationArchive).addClass(TestLoggingObserver.class)
-                            .addClass(TestLoggingObserverExtension.class)
-                            .addAsServiceProvider(RemoteLoadableExtension.class, TestLoggingObserverExtension.class);
-        } else if (applicationArchive instanceof JavaArchive) {
-            LOG.log(Level.INFO, "WLP: Adding observer for test start and finish to {0}", applicationArchive.getName());
-            ((JavaArchive) applicationArchive).addClass(TestLoggingObserver.class)
-                            .addClass(TestLoggingObserverExtension.class)
-                            .addAsServiceProvider(RemoteLoadableExtension.class, TestLoggingObserverExtension.class);
-        } else {
-            LOG.log(Level.INFO, "Attempted to add the test observer to archive {0} but it was not a WebArchive or a JavaArchive", applicationArchive);
-        }
-    }
-}
-*/

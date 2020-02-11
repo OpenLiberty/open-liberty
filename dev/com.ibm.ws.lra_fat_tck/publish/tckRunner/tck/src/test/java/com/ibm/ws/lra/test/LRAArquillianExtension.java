@@ -15,7 +15,7 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.core.spi.LoadableExtension.ExtensionBuilder;
 
 /**
- *
+ * An Arquillian extension which registers LRATckArchiveProcessor as an ApplicationArchiveProcessor
  */
 public class LRAArquillianExtension implements LoadableExtension {
     @Override
@@ -25,28 +25,3 @@ public class LRAArquillianExtension implements LoadableExtension {
 }
 
 
-/*
-
-package com.ibm.ws.fat.util.tck;
-
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.jboss.arquillian.core.spi.LoadableExtension;
-
-public abstract class AbstractArquillianLoadableExtension implements LoadableExtension {
-
-   private static final Logger LOG = Logger.getLogger(AbstractArquillianLoadableExtension.class.getName());
-
-   @Override
-   public void register(ExtensionBuilder extensionBuilder) {
-       Set<TCKArchiveModifications> modifications = getModifications();
-       for (TCKArchiveModifications modifier : modifications) {
-           modifier.applyModification(extensionBuilder);
-       }
-   }
-
-   public abstract Set<TCKArchiveModifications> getModifications();
-}
-*/
