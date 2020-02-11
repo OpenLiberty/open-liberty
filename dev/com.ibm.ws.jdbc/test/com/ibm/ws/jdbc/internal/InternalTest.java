@@ -216,6 +216,25 @@ public class InternalTest {
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password16;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password16",
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password17;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password17"
     };
+    static String[] expectedObfuscatedConnProps = {
+                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStorePassword =*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStorePassword= *****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword = *****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;",
+                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStorePassword =*****",
+                                 "javax.net.ssl.keyStorePassword= *****",
+                                 "javax.net.ssl.keyStorePassword =*****;",
+                                 "javax.net.ssl.keyStorePassword = *****;;",
+                                 "oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword = *****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "javax.net.ssl.keyStorePassword= *****",
+                                 "javax.net.ssl.keyStorePassword =*****;;",
+                                 "oracle.net.ssl_version=1.2;javax.net.ssl.keyStorePassword = *****;oracle.net.authentication_services=(TCPS);",
+                                 "javax.net.ssl.keyStorePassword = *****  ;oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);",
+                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****"
+   };
     static String[] connProps = {
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=unencPassword1;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password",
                                   "javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStorePassword ={xor}KjE6MTwPPiwsKDAtO20=;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password",
@@ -247,6 +266,22 @@ public class InternalTest {
             }            
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName, t);
+        }
+    }
+    
+    @Test
+    public void testOracleConnPropsPwdObfuscating() {
+        String message;
+        // compare expected connProp after substitution
+        try {
+            for (int i = 0; i < connProps.length; i++ ) {
+                message = System.lineSeparator() + "input: " + connProps[i] + System.lineSeparator() + "expected: " + expectedObfuscatedConnProps[i];
+                String result = PropertyService.filterConnectionProperties(connProps[i]);
+                message += System.lineSeparator() + "output: " + result;
+                assertEquals(message, expectedObfuscatedConnProps[i], result );
+            }            
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable("testOracleConnPropsPwdObfuscating", t);
         }
     }
 }
