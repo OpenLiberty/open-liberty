@@ -49,6 +49,7 @@ public class JDBCLoadFromAppTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive derbyApp = ShrinkWrap.create(WebArchive.class, "derbyApp.war")
                         .addPackage("web.derby") //
+                        .addAsWebInfResource(new File("test-applications/derbyapp/resources/WEB-INF/ibm-web-bnd.xml"))
                         .addAsLibrary(new File("publish/shared/resources/derby/derby.jar")) //
                         .addPackage("jdbc.driver.proxy"); // delegates to the Derby JDBC driver
         ShrinkHelper.exportAppToServer(server, derbyApp);
@@ -67,16 +68,22 @@ public class JDBCLoadFromAppTest extends FATServletClient {
         JavaArchive ejb2JAR = ShrinkWrap.create(JavaArchive.class, "ejb2.jar")
                         .addPackage("ejb.second");
 
+        JavaArchive lmJAR = ShrinkWrap.create(JavaArchive.class, "top-level-login-modules.jar")
+                        .addPackage("loginmod");
+
         EnterpriseArchive otherApp = ShrinkWrap.create(EnterpriseArchive.class, "otherApp.ear")
                         .addAsModule(otherWAR)
                         .addAsModule(ejb1JAR)
-                        .addAsModule(ejb2JAR);
+                        .addAsModule(ejb2JAR)
+                        .addAsLibrary(lmJAR);
 
         ShrinkHelper.exportAppToServer(server, otherApp);
 
         // TODO remove this
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "tempLoginModule.jar");
+        jar.addPackage("web.derby");
         jar.addPackage("web.other");
+        jar.addPackage("loginmod");
         ShrinkHelper.exportToServer(server, "/", jar);
 
         server.addInstalledAppForValidation("derbyApp");
