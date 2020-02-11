@@ -2566,10 +2566,5 @@
       <artifactId>xml-resolver</artifactId>
       <version>1.2</version>
     </dependency>
-    <dependency>
-      <groupId></groupId>
-      <artifactId>null</artifactId>
-      <version>null</version>
-    </dependency>
   </dependencies>
 </project>

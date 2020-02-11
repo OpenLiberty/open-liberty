@@ -48,10 +48,6 @@ task dependabotGenerate() {
   inputs.file('oss_dependencies.maven')
   outputs.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
   doLast {
-    def xmlParser = new XmlSlurper()
-    int totalArtifacts = 0
-    int possibleUpdates = 0
-    
     // Generate pom.xml
     File pom = rootProject.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
     pom.delete()
@@ -69,9 +65,8 @@ task dependabotGenerate() {
       
     file('oss_dependencies.maven').eachLine { line ->
       line = line.trim()
-      if (line.startsWith('#'))
+      if (line.startsWith('#') || line.isEmpty())
         return;
-      totalArtifacts++
       def (g,a,v) = line.split(':').collect { it.trim() }
       pom << "    <dependency>\n"
       pom << "      <groupId>"    + g + "</groupId>\n"
