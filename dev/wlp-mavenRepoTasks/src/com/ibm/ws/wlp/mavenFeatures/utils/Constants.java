@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.wlp.mavenFeatures.utils;
 
+import java.util.HashMap;
+
 public class Constants {
 		
 	public static final String WLP_INFORMATION_KEY = "wlpInformation";
@@ -70,6 +72,14 @@ public class Constants {
 	public static final String DEV_EMAIL = "ericglau@ca.ibm.com"; 
 	
 	public static final String SHORT_NAME_KEY = "shortName";
+
+	public static final String [] LICENSE_PRIORITY = {"Base", "ND"};
+	public static final HashMap<String, String> LICENSE_TO_MAVEN_COORD_NO_VERSION = new HashMap<String, String>(){
+		{
+			put("Base", "com.ibm.websphere.appserver.features:BaseLicense");
+			put("ND", "com.ibm.websphere.appserver.features:NDLicense");
+		}
+	};
 	
 	public static final String MAVEN_MODEL_VERSION = "4.0.0";
 
