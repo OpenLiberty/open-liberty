@@ -46,8 +46,7 @@ Import-Package: \
    javax.xml.bind.*;version="[2.3,3)", \
    javax.xml.ws.*;version="[2.3,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
-   org.apache.cxf.*;version="[3.2.4,4)", \
-   org.apache.cxf.binding.soap;version="[3.3.3,4)", \
+   org.apache.cxf.*;version="[3.2,4)", \
    javax.annotation;version=!,\
    *
 
@@ -118,7 +117,6 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\

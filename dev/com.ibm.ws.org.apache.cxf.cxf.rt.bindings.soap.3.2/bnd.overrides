@@ -28,7 +28,7 @@ Import-Package: \
   com.ibm.ws.ffdc, \
   javax.activation;resolution:=optional, \
   javax.annotation, \
-  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.xml.bind.annotation;version="[2.3,3)", \
   javax.jws.soap, \
   javax.wsdl, \
   javax.wsdl.extensions, \

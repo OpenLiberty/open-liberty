@@ -30,12 +30,8 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
-import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.DispatchImpl;
 import org.apache.cxf.jaxws.ServiceImpl;
-import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
 import com.ibm.websphere.ras.Tr;
@@ -147,12 +143,12 @@ public class LibertyServiceImpl extends ServiceImpl {
                 requestContext.putAll(portProps);
             }
 
-            if (null != wsrProps && Boolean.valueOf(wsrProps.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
-                List<Interceptor<? extends Message>> inInterceptors = client.getInInterceptors();
-                inInterceptors.add(new LoggingInInterceptor());
-                List<Interceptor<? extends Message>> outInterceptors = client.getOutInterceptors();
-                outInterceptors.add(new LoggingOutInterceptor());
-            }
+//            if (null != wsrProps && Boolean.valueOf(wsrProps.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
+//                List<Interceptor<? extends Message>> inInterceptors = client.getInInterceptors();
+//                inInterceptors.add(new LoggingInInterceptor());
+//                List<Interceptor<? extends Message>> outInterceptors = client.getOutInterceptors();
+//                outInterceptors.add(new LoggingOutInterceptor());
+//            }
         }
 
         Set<ConfigProperties> configPropsSet = servicePropertiesMap.get(portName);
