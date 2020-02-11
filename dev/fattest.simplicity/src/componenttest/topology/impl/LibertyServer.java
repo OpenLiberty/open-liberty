@@ -6091,6 +6091,11 @@ public class LibertyServer implements LogMonitorClient {
         return !isJava2SecExempt;
     }
 
+    /**
+     * No longer using bootstrap properties to update server config for database rotation.
+     * Instead look at using the fattest.databases module
+     */
+    @Deprecated
     public void configureForAnyDatabase() throws Exception {
         ServerConfiguration config = this.getServerConfiguration();
         config.updateDatabaseArtifacts();

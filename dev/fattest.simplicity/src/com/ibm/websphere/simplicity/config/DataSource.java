@@ -38,7 +38,7 @@ import com.ibm.websphere.simplicity.config.dsprops.Properties_sybase;
  * @author Tim Burns
  *
  */
-public class DataSource extends ConfigElement implements ModifiableConfigElement {
+public class DataSource extends ConfigElement {
     private String jndiName;
     private String jdbcDriverRef;
     private String connectionManagerRef;
@@ -517,11 +517,6 @@ public class DataSource extends ConfigElement implements ModifiableConfigElement
 
     public String getFatModify() {
         return fatModify;
-    }
-
-    @Override
-    public void modify(ServerConfiguration config) throws Exception {
-        //Do nothing
     }
 
     public void replaceDatasourceProperties(DataSourceProperties props) {
