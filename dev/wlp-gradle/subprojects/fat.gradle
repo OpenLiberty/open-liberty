@@ -381,7 +381,6 @@ task runfat(type: Exec) {
   dependsOn cleanBeforeRun
   mustRunAfter buildfat
   mustRunAfter cleanBeforeRun
-  System.setProperty("fat.test.localrun", "true");
   environment System.getProperties()
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
@@ -390,7 +389,12 @@ task runfat(type: Exec) {
     executable "ant"
     args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
+
   doLast {
+    //This should be set during the execution phase and not the configuration stage
+    //Only set this property to true if the runfat task is called (which should only happen when calling buildandrun)
+    System.setProperty("fat.test.localrun", "true");
+    
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
@@ -446,9 +450,10 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
   //Staging area parent folder to enable copying all subfolders.
   File gitReposDir = new File(project.buildDir, 'gitRepos')
 
-  // If running locally use git directly
-  if( System.properties['fat.test.localrun'] ){
-
+  // Intended Behavior: If running locally use git directly
+  // TODO add conditional here once EBC cloning is implemented.
+  // Suggestion: !isAutomatedBuild - do not use [fat.test.localrun] as this is only know at runtime and not build time. 
+  if( true ) { 
     File repoDir = new File(gitReposDir, folder)
     String into = repoDir.getAbsolutePath()
      
@@ -463,7 +468,7 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
     proc.err.eachLine { line -> println cmd + ':\n' + line }
     proc.waitFor()
     
-  } else {
+  } else { // TODO Non-local cloning is not implemented for now 
     // Make use of the EBC clone mechanism
     project.logger.lifecycle('ebc clone')
     ebcClone(url) 
@@ -476,11 +481,10 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
       into gitReposDir
     }
   }
-  
 }
 
 def ebcClone(String url, String branch, String repoPath){
-  // Non-local cloning is not implemented for now  
+  // TODO Non-local cloning is not implemented for now  
 }
 
 build {
