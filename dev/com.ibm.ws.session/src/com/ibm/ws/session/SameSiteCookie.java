@@ -41,7 +41,7 @@ public enum SameSiteCookie {
      * returned.
      * 
      * @param value - The value to check against the SameSiteCookie.
-     * @return - The SameSiteCookie the matches the value.
+     * @return - The SameSiteCookie that matches the value.
      */
     public static SameSiteCookie get(String value) {
         if (LAX.toString().equalsIgnoreCase(value)) {
