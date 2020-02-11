@@ -96,7 +96,8 @@ public class LoadTestServlet extends FATServlet {
      */
     @Test
     @AllowedFFDC({
-        "javax.transaction.RollbackException" // under load, task executions sometimes roll back due to the 4 second transaction timeout that is used by the test
+        "javax.transaction.RollbackException", // under load, task executions sometimes roll back due to the 4 second transaction timeout that is used by the test
+        "javax.persistence.PersistenceException" // can wrap the RollbackException
     })
     public void testShortRun() throws Exception {
         // Clear results to start.
@@ -141,7 +142,8 @@ public class LoadTestServlet extends FATServlet {
     @Mode(TestMode.FULL)
     @AllowedFFDC({
         "java.lang.Exception",
-        "javax.transaction.RollbackException" // under load, task executions sometimes roll back due to the 4 second transaction timeout that is used by the test
+        "javax.transaction.RollbackException", // under load, task executions sometimes roll back due to the 4 second transaction timeout that is used by the test
+        "javax.persistence.PersistenceException" // can wrap the RollbackException
     })
     public void testFiveMinuteRun() throws Exception {
         // Clear results to start.
