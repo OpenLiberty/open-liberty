@@ -12,12 +12,12 @@
 package com.ibm.ejb2x.jndiName.ejb;
 
 /**
- * Local interface for Enterprise Bean: JNDIName.
+ * Remote interface for Enterprise Bean: JNDIName.
  */
-public interface JNDIName extends javax.ejb.EJBLocalObject {
+public interface JNDIRemoteName extends javax.ejb.EJBObject {
 
     /**
     */
-    public String foo();
+    public String foo() throws java.rmi.RemoteException;
 
 }
