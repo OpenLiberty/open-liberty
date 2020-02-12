@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+      metadata-complete="false" version="3.1">
+      <display-name>OtherWar</display-name>
+      <enterprise-beans>
+         <session id="OtherWarBean">
+            <ejb-name>OtherWarBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwaro.OtherWarBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="DupBean">
+            <ejb-name>DupBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwaro.DupBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="TestBean">
+            <ejb-name>TestBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkLocalOtherWar</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkRemoteOtherWar</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwaro.TestBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+		</session>
+         
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+      </assembly-descriptor>
+   </ejb-jar>

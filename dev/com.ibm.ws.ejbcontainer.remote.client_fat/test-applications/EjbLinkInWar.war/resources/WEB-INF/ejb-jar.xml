@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="ejb-jar_ID" version="3.1"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+         metadata-complete="false">
+     <display-name>EjbLinkInWar</display-name>
+     <enterprise-beans>
+         <session id="TestDriverFromWar">
+            <ejb-name>TestDriverFromWar</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+             
+            <ejb-local-ref>
+               <ejb-ref-name>ejb/OtherWarStyle1</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+               <ejb-link>OtherWarBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+                  <injection-target-name>otherWarStyle1</injection-target-name>
+               </injection-target>
+            </ejb-local-ref> 
+
+            <ejb-ref>
+               <ejb-ref-name>ejb/OtherWarStyle2</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+               <ejb-link>../EjbLinkInOtherWar.war#OtherWarBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+                  <injection-target-name>otherWarStyle2</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            
+            <ejb-local-ref>
+               <ejb-ref-name>ejb/OtherWarStyle3</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+               <ejb-link>logicalOtherWar/OtherWarBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+                  <injection-target-name>otherWarStyle3</injection-target-name>
+               </injection-target>
+            </ejb-local-ref> 
+
+            <ejb-local-ref>
+			  <ejb-ref-name>ejb/SameWarStyle1</ejb-ref-name>
+			  <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+			  <ejb-link>SameWarBean</ejb-link>
+  		      <injection-target>
+			    <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+			    <injection-target-name>sameWarStyle1</injection-target-name>
+		      </injection-target>
+			</ejb-local-ref>
+            
+             <ejb-local-ref>
+			  <ejb-ref-name>ejb/SameWarStyle2</ejb-ref-name>
+			  <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+			  <ejb-link>../EjbLinkInWar.war#SameWarBean</ejb-link>
+  		      <injection-target>
+			    <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+			    <injection-target-name>sameWarStyle2</injection-target-name>
+		      </injection-target>
+			</ejb-local-ref>
+            
+           <ejb-local-ref>
+			  <ejb-ref-name>ejb/SameWarStyle3</ejb-ref-name>
+			  <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+			  <ejb-link>ejbinwar/SameWarBean</ejb-link>
+  		      <injection-target>
+			    <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+			    <injection-target-name>sameWarStyle3</injection-target-name>
+		      </injection-target>
+			</ejb-local-ref>
+
+            <ejb-local-ref>
+			  <ejb-ref-name>ejb/JarStyle1</ejb-ref-name>
+			  <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+			  <ejb-link>OtherJarBean</ejb-link>
+  		      <injection-target>
+			    <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+			    <injection-target-name>jarStyle1</injection-target-name>
+		      </injection-target>
+			</ejb-local-ref>
+
+            <ejb-local-ref>
+			  <ejb-ref-name>ejb/JarStyle2</ejb-ref-name>
+			  <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+			  <ejb-link>../EjbLinkOtherBean.jar#OtherJarBean</ejb-link>
+  		      <injection-target>
+			    <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+			    <injection-target-name>jarStyle2</injection-target-name>
+		      </injection-target>
+			</ejb-local-ref>
+
+            <ejb-local-ref>
+			  <ejb-ref-name>ejb/JarStyle3</ejb-ref-name>
+			  <local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</local>
+			  <ejb-link>logicalOther/OtherJarBean</ejb-link>
+  		      <injection-target>
+			    <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+			    <injection-target-name>jarStyle3</injection-target-name>
+		      </injection-target>
+			</ejb-local-ref>
+
+            <resource-env-ref id="ResourceEnvRef_401">
+               <description>SessionContext</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestDriverFromWar</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+ 
+    	<session id="SameWarBean">
+			<ejb-name>SameWarBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</business-local>
+			<business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</business-remote>
+			<ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.SameWarBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+		</session>
+		
+		<session id="TestBean">
+            <ejb-name>TestBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkLocalWar</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkRemoteWar</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+		</session>
+		
+ 		<session id="TestAutoLinkOtherWarOtherJar">
+            <ejb-name>TestAutoLinkOtherWarOtherJar</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestAutoLinkOtherWarOtherJar</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+		</session>
+  
+ 		<session id="TestAutoLinkJarOtherJar">
+            <ejb-name>TestAutoLinkJarOtherJar</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestAutoLinkJarOtherJar</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+		</session>
+  
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+      </assembly-descriptor>
+   </ejb-jar>
