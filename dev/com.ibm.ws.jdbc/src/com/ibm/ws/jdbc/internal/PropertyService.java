@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jca.cm.ConnectorService;
@@ -172,7 +171,7 @@ public class PropertyService extends Properties {
                 entry.setValue("******");
             else if(entry.getKey() instanceof String && entry.getValue() instanceof String && ((String) entry.getKey()).toLowerCase().contains("url"))
                 entry.setValue(filterURL((String) entry.getValue()));
-            else if (entry.getKey() instanceof String && entry.getKey() instanceof String && ((String) entry.getKey()).toLowerCase().contains("connectionProperties"))
+            else if (entry.getKey() instanceof String && entry.getKey() instanceof String && ((String) entry.getKey()).toLowerCase().contains("connectionproperties"))
                 entry.setValue(filterConnectionProperties((String) entry.getValue()));
         return map;
     }
@@ -209,20 +208,23 @@ public class PropertyService extends Properties {
     }
     
     public static String filterConnectionProperties(String props) {
-        final String keyStorePattern = "javax\\.net\\.ssl\\.keyStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
-        final String trustStorePattern = "javax\\.net\\.ssl\\.trustStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
+        final String regex = "Password\\s*=\\s*(.*?)\\s*(;|$)";
         
-        Matcher keyStoreMatcher = Pattern.compile(keyStorePattern).matcher(props);
-        if (keyStoreMatcher.find()) {
-            props = new StringBuilder(props).replace(keyStoreMatcher.start(1), keyStoreMatcher.end(1), "*****").toString();
+        StringBuffer sb = new StringBuffer();
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(props);
+
+        while (matcher.find()) {
+            //group(0) = "Password = abcd;" group(1) = "abcd" group(2) = ";"
+            //This appends a replacement for group(0), so we want to just replace group(1) with *****
+            matcher.appendReplacement(sb, matcher.group(0).replace(matcher.group(1), "*****"));
         }
         
-        Matcher trustStoreMatcher = Pattern.compile(trustStorePattern).matcher(props);
-        if(trustStoreMatcher.find()) {
-            props = new StringBuilder(props).replace(trustStoreMatcher.start(1), trustStoreMatcher.end(1), "*****").toString();
-        }
+        //Append any trailing characters after matches
+        //If there were no matches this will just append props
+        matcher.appendTail(sb);
         
-        return props;           
+        return sb.toString(); 
     }
 
     /**

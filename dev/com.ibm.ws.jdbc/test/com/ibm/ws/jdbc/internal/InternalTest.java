@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -214,7 +214,8 @@ public class InternalTest {
                                   "javax.net.ssl.keyStorePassword = password14  ;oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);",
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password15;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password15",
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password16;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password16",
-                                  "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password17;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password17"
+                                  "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password17;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password17",
+                                  "oracle.net.ssl_version=1.2;"
     };
     static String[] expectedObfuscatedConnProps = {
                                  "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
@@ -233,7 +234,8 @@ public class InternalTest {
                                  "javax.net.ssl.keyStorePassword = *****  ;oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);",
                                  "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
                                  "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
-                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****"
+                                 "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=*****;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=*****",
+                                 "oracle.net.ssl_version=1.2;"
    };
     static String[] connProps = {
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=unencPassword1;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password",
@@ -252,7 +254,8 @@ public class InternalTest {
                                   "javax.net.ssl.keyStorePassword = {aes}AJsqh5c/+TrDO8Qw+9V12zBh8osrL3+01Nz//lctzD+u  ;oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);",
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword={xor}Lz4sLCgwLTtuag==;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword={xor}Lz4sLCgwLTtuag==",
                                   "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword={xor}Lz4sLCgwLTtuaQ==;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword=password16",
-                                  "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password17;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword={aes}AAu/gbr1pTHWM6fMJVxR79MgjNp4bs2ZKBw97EWi5M23"
+                                  "oracle.net.ssl_version=1.2;oracle.net.authentication_services=(TCPS);javax.net.ssl.keyStore=path-to-keystore/keystore.p12;javax.net.ssl.keyStoreType=PKCS12;javax.net.ssl.keyStorePassword=password17;javax.net.ssl.trustStore= path-to-keystore/keystore.p12;javax.net.ssl.trustStoreType=PKCS12;javax.net.ssl.trustStorePassword={aes}AAu/gbr1pTHWM6fMJVxR79MgjNp4bs2ZKBw97EWi5M23",
+                                  "oracle.net.ssl_version=1.2;"
     };
     
     @Test
