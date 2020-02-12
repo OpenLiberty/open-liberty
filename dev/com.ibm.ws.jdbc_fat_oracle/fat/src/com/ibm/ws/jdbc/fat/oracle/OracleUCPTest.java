@@ -10,12 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collections;
-import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,7 +32,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import oracle.jdbc.pool.OracleDataSource;
 import ucp.web.OracleUCPTestServlet;
 
 @RunWith(FATRunner.class)
@@ -49,64 +43,29 @@ public class OracleUCPTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.oracle.ucp")
     @TestServlet(servlet = OracleUCPTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
-    
-    //TODO replace this container with the official oracle-xe container if/when it is available without a license
-    public static OracleContainer oracle = FATSuite.oracle;
+
+    public static final OracleContainer oracle = FATSuite.oracle;
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	// Set server environment variables
+        FATSuite.initDatabaseTables();
+
+        // Set server environment variables
         server.addEnvVar("URL", oracle.getJdbcUrl());
         server.addEnvVar("USER", oracle.getUsername());
         server.addEnvVar("PASSWORD", oracle.getPassword());
-        
-    	// Create a normal Java EE application and export to server
-    	ShrinkHelper.defaultApp(server, JEE_APP, "ucp.web");
 
-    	// Start Server
+        // Create a normal Java EE application and export to server
+        ShrinkHelper.defaultApp(server, JEE_APP, "ucp.web");
+
+        // Start Server
         server.startServer();
-
-        // Create database tables
-        initDatabaseTables();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted())
             server.stopServer("CWWKE0701E"); // CWWKE0701E expected in testOracleUCPConnectionPoolDS
-    }
-    
-    private static void initDatabaseTables() throws SQLException {
-		Properties connProps = new Properties();
-		// This property prevents "ORA-01882: timezone region not found" errors due to the Oracle DB not understanding 
-		// some time zones(specifically those used by our RHEL 6 test systems).
-		connProps.put("oracle.jdbc.timezoneAsRegion", "false");
-		
-		OracleDataSource ds = new OracleDataSource();
-		ds.setConnectionProperties(connProps);
-		ds.setUser(oracle.getUsername());
-		ds.setPassword(oracle.getPassword());
-		ds.setURL(oracle.getJdbcUrl());
-		
-    	try (Connection conn = ds.getConnection()) {
-            Statement stmt = conn.createStatement();
-            
-            //Create COLORTABLE for OracleUCPTest.class
-            try {
-                stmt.execute("DROP TABLE COLORTABLE");
-            } catch (SQLException x) {
-                // probably didn't exist
-            }
-            stmt.execute("CREATE TABLE COLORTABLE (ID NUMBER NOT NULL PRIMARY KEY, COLOR NVARCHAR2(40))");
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO COLORTABLE VALUES(?,?)");
-            ps.setInt(1, 1);
-            ps.setString(2, "maroon");
-            ps.executeUpdate();
-            ps.close();
-
-            //Close statement
-            stmt.close();
-    	}
     }
 
     /**
