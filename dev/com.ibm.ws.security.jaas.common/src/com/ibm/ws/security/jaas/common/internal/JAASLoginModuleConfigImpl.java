@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,18 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     public static final String TOKEN = "token";
     public static final String USERNAME_AND_PASSWORD = "userNameAndPassword";
 
+    /**
+     * The value of the DELEGATE property within the options map is the login module Class when loaded from a shared library.
+     * The value is the login module class name when loaded from a resource adapter or application.
+     */
     public static final String DELEGATE = "delegate";
+
+    /**
+     * The value of the DELEGATE_PROVIDER_PID property within the options map is the pid of the configured
+     * application or resourceAdapter which must load the login module.
+     * This property is not included in the options map when loading from a shared library.
+     */
+    public static final String DELEGATE_PROVIDER_PID = "delegateProviderPid";
 
     public static final Class<WSLoginModuleProxy> WSLOGIN_MODULE_PROXY_CLASS = com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy.class;
 
@@ -91,36 +102,51 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             Class<?> cl = getTargetClassForName(target);
             options.put(LoginModuleProxy.KERNEL_DELEGATE, cl);
         } else {
-            options = processDelegateOptions(options, originalLoginModuleClassName, classLoadingService, sharedLibrary, false);
+            String classProviderPid = (String) props.get("classProviderRef");
+            options = processDelegateOptions(options, originalLoginModuleClassName, classProviderPid, classLoadingService, sharedLibrary, false);
         }
         this.options = options;
     }
 
     @FFDCIgnore(ClassNotFoundException.class)
-    public static Map<String, Object> processDelegateOptions(Map<String, Object> inOptions, String originalLoginModuleClassName, ClassLoadingService classLoadingService,
+    public static Map<String, Object> processDelegateOptions(Map<String, Object> inOptions, String originalLoginModuleClassName,
+                                                             String originalClassProviderPid, ClassLoadingService classLoadingService,
                                                              Library sharedLibrary, boolean jaasConfigFile) {
         Map<String, Object> options = new HashMap<String, Object>();
         options.putAll(inOptions);
         String target = getTargetClassName(originalLoginModuleClassName, options);
         options.put(LoginModuleProxy.KERNEL_DELEGATE, WSLOGIN_MODULE_PROXY_CLASS);
         if (target != null) {
-            ClassLoader loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
-            Class<?> cl = null;
-            try {
-                if (isIBMJdk18Lower() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
-                    //Do not initialize the IBM Krb5LoginModule if we are running with IBM JDK 18 or lower
-                    cl = Class.forName(target, false, loader);
+            if (originalClassProviderPid == null) {
+                // TODO error path if neither libraryRef nor classProviderRef are specified
+                // For now, while this function is internal, this is unreachable because libraryRef is still mandatory
+
+                // Login module is provided by a Library
+                ClassLoader loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
+                Class<?> cl = null;
+                try {
+                    if (isIBMJdk18Lower() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
+                        //Do not initialize the IBM Krb5LoginModule if we are running with IBM JDK 18 or lower
+                        cl = Class.forName(target, false, loader);
+                    }
+                } catch (ClassNotFoundException e) {
+                    //TODO consider different warning/error
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exception performing class for name.", e);
+                    }
+                    if (jaasConfigFile) {
+                        Tr.error(tc, "JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND", originalLoginModuleClassName, e);
+                    }
                 }
-            } catch (ClassNotFoundException e) {
-                //TODO consider different warning/error
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Exception performing class for name.", e);
-                }
-                if (jaasConfigFile) {
-                    Tr.error(tc, "JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND", originalLoginModuleClassName, e);
-                }
+                options.put(DELEGATE, cl);
+            } else {
+                // TODO error path if both libraryRef and classProviderRef are specified.
+                // For now, we will not enforce it while only enabled internally for
+
+                // Login module is provided by a resource adapter or application
+                options.put(DELEGATE, originalLoginModuleClassName);
+                options.put(DELEGATE_PROVIDER_PID, originalClassProviderPid);
             }
-            options.put(DELEGATE, cl);
         }
         return options;
     }
