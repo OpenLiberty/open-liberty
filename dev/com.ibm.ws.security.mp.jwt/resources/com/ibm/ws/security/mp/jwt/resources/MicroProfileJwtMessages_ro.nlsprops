@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: Caracteristica MicroProfile JWT nu poate re
 JWT_NOT_FOUND_IN_REQUEST.explanation=Pentru a realiza autentificarea, trebuie s\u0103 fie inclus un MicroProfile JWT \u00een antetul Authorization folosind schema de autorizare Bearer sau ca un parametru POST. Antetul Authorization lipse\u015fte, schema de autorizare a antetului Authorization nu este setat\u0103 la Bearer, cererea nu este o cerere POST sau nu este inclus un MicroProfile JWT ca parametru.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Asigura\u0163i-v\u0103 c\u0103 este inclus un MicroProfile JWT \u00een antetul Authorization sau ca parametru POST al cererii.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Caracteristica MicroProfile JWT nu poate realiza autentificarea cererii, deoarece nu poate fi creat un JWT valid din jetonul inclus \u00een cerere. ''{0}''
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Caracteristica MicroProfile JWT nu poate autentifica cererea deoarece jetonul care este inclus \u00een cerere nu poate fi validat. ''{0}''
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=Caracteristica MicroProfile JWT a detectat o eroare \u00een timpul cre\u0103rii unui JWT din \u015firul jetonului furnizat. Fie nu poate fi creat un consumator JWT, fie consumatorul JWT a detectat o eroare \u00een timpul pars\u0103rii \u015fi valid\u0103rii \u015firului jetonului.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
 

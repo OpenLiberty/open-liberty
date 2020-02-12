@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: A MicroProfile JWT szolg\u00e1ltat\u00e1s n
 JWT_NOT_FOUND_IN_REQUEST.explanation=Hiteles\u00edt\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz MicroProfile JWT-t kell hozz\u00e1adni az Authorization fejl\u00e9chez a Bearer jogosults\u00e1gs\u00e9ma seg\u00edts\u00e9g\u00e9vel vagy POST param\u00e9terk\u00e9nt. Az Authorization fejl\u00e9c hi\u00e1nyzik, az Authorization fejl\u00e9c jogosults\u00e1gs\u00e9m\u00e1ja nem Bearer \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, a k\u00e9r\u00e9s nem POST k\u00e9r\u00e9s, vagy nem tartalmaz MicroProfile JWT-t param\u00e9terk\u00e9nt.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a MicroProfile JWT szerepel az Authorization fejl\u00e9cben vagy a k\u00e9r\u00e9s POST param\u00e9terek\u00e9nt.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tudja hiteles\u00edteni a k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben szerepl\u0151 tokenb\u0151l nem hozhat\u00f3 l\u00e9tre \u00e9rv\u00e9nyes JWT. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tudja hiteles\u00edteni a k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben szerepl\u0151 token nem \u00e9rv\u00e9nyes\u00edthet\u0151. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=A MicroProfile JWT szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt a JWT l\u00e9trehoz\u00e1sa k\u00f6zben a biztos\u00edtott token karaktersorozatb\u00f3l. A JWT fogyaszt\u00f3 nem hozhat\u00f3 l\u00e9tre vagy a JWT fogyaszt\u00f3 hib\u00e1ba \u00fctk\u00f6z\u00f6tt a token karaktersorozat \u00e9rtelmez\u00e9se \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9se k\u00f6zben.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
 

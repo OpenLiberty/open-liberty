@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: La fonction du JWT MicroProfile ne peut pas
 JWT_NOT_FOUND_IN_REQUEST.explanation=Pour effectuer l'authentification, un JWT MicroProfile doit \u00eatre inclus dans l'en-t\u00eate Authorization \u00e0 l'aide du sch\u00e9ma d'autorisation Bearer ou en tant que param\u00e8tre POST. L'en-t\u00eate Authorization est manquante, le sch\u00e9ma d'autorisation de l'en-t\u00eate Authorization n'est pas d\u00e9fini sur Bearer, la demande n'est pas une demande POST ou aucun JWT MicroProfile n'est inclus en tant que param\u00e8tre.
 JWT_NOT_FOUND_IN_REQUEST.useraction=V\u00e9rifiez qu'un JWT MicroProfile est inclus dans l'en-t\u00eate Authorization ou en tant que param\u00e8tre POST de la demande.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La fonction du JWT MicroProfile ne peut pas authentifier la demande car aucun JWT valide ne peut \u00eatre cr\u00e9\u00e9 \u00e0 partir du jeton inclus dans la demande. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La fonction MicroProfile JWT ne peut pas authentifier la demande car le jeton qui est inclus dans la demande ne peut pas \u00eatre valid\u00e9. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=La fonction du JWT MicroProfile a rencontr\u00e9 une erreur lors de la cr\u00e9ation d'un JWT \u00e0 partir de la cha\u00eene de jeton fournie. Un consommateur JWT ne peut pas \u00eatre cr\u00e9\u00e9 ou le consommateur JWT a rencontr\u00e9 une erreur lors de l'analyse et de la validation de la cha\u00eene de jeton.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Consultez l'action utilisateur \u00e0 engager pour l'erreur affich\u00e9e dans le message. Recherchez dans les journaux du serveur d'\u00e9ventuels messages d'erreur suppl\u00e9mentaires.
 

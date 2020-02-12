@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,14 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Si los errores o retrotraccion
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: El ejecutor persistente {0} ha cancelado la tarea {1} porque se ha retrotra\u00eddo o ha fallado {2} veces consecutivas. La anomal\u00eda final es {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=La tarea ha alcanzado el l\u00edmite de reintentos consecutivos y no se volver\u00e1 a intentar ejecutar.
 CWWKC1511.retry.limit.reached.failed.useraction=Si los errores o retrotracciones son inesperadas, determine la causa y vuelva a planificar la tarea. Si las retrotracciones y anomal\u00edas son intermitentes, considere la posibilidad de aumentar el l\u00edmite de reintentos. 
+
+CWWKC1520.out.of.range=CWWKC1520E: El valor configurado {0} para {1} no est\u00e1 dentro del rango de {2} a {3}.
+CWWKC1520.out.of.range.explanation=Se ha configurado un valor que est\u00e1 fuera del rango permitido para la propiedad especificada.
+CWWKC1520.out.of.range.useraction=Configure un valor en el rango permitido.
+
+CWWKC1521.less.than.min=CWWKC1521E: El valor configurado {0} para {1} no puede ser menor que el valor configurado para {2}, que es {3}.
+CWWKC1521.less.than.min.explanation=La configuraci\u00f3n de un retryInterval mayor fomenta que otros servidores vuelvan a intentar la tarea an\u00f3mala en lugar del servidor en el que ha fallado.
+CWWKC1521.less.than.min.useraction=Configure la propiedad retryInterval de forma que sea mayor que missedTaskThreshold.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: No puede planificar tareas persistentes desde el contexto de hebras actual.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Planifique tareas persistentes s\u00f3lo desde una hebra asociada con una aplicaci\u00f3n o caracter\u00edstica con una identidad de cargador de clases serializable.

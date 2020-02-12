@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: Das MicroProfile-JWT-Feature kann die Authe
 JWT_NOT_FOUND_IN_REQUEST.explanation=Zur Durchf\u00fchrung der Authentifizierung muss ein MicroProfile-JWT entweder im Authorization-Header unter Verwendung des Bearer-Berechtigungsschemas oder als POST-Parameter enthalten sein. Der Authorization-Header fehlt, das Berechtigungsschema f\u00fcr den Authorization-Header ist nicht auf Bearer gesetzt, die Anforderung ist keine POST-Anforderung oder ein MicroProfile-JWT ist nicht als Parameter enthalten.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Stellen Sie sicher, dass ein MicroProfile-JWT im Authorization-Header oder als POST-Parameter der Anforderung enthalten ist.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Das MicroProfile-JWT-Feature kann die Anforderung nicht authentifizieren, weil aus dem in der Anforderung enthaltenen Token kein g\u00fcltiges JWT erstellt werden kann. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Das MicroProfile-JWT-Feature kann die Anforderung nicht authentifizieren, weil das in der Anforderung enthaltene Token nicht validiert werden kann. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=Das MicroProfile-JWT-Feature hat beim Erstellen eines JWT aus der angegebenen Tokenzeichenfolge einen Fehler festgestellt. Entweder konnte ein JWT-Konsument nicht erstellt werden, oder der JWT-Konsument hat beim Parsing und Validieren der Tokenzeichenfolge einen Fehler festgestellt.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
 

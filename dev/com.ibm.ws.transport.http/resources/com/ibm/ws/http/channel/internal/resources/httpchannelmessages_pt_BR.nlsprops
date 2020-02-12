@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,23 @@ duplicateAlias.useraction=Assegure-se de que todos os alias de host definidos co
 context.root.changed=CWWKT0028I: Aplicativo da web movido ({0}): {1}
 context.root.changed.explanation=Essa mensagem \u00e9 apenas informativa.
 context.root.changed.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+compression.duplicateType=CWWKT0029W: Uma inclus\u00e3o duplicada do tipo {0} foi tentada. A configura\u00e7\u00e3o padr\u00e3o {1} \u00e9 usada como alternativa. 
+compression.duplicateType.explanation=O valor especificado j\u00e1 est\u00e1 registrado como um tipo de conte\u00fado aceit\u00e1vel para compacta\u00e7\u00e3o.
+compression.duplicateType.useraction=Ao definir o valor de codifica\u00e7\u00f5es aceit\u00e1veis, assegure-se de que cada valor seja exclusivo. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: Uma remo\u00e7\u00e3o duplicada da codifica\u00e7\u00e3o {0} foi tentada. A configura\u00e7\u00e3o padr\u00e3o {1} \u00e9 usada como alternativa.
+compression.duplicateTypeRemoval.explanation=O valor especificado j\u00e1 est\u00e1 registrado como um tipo de conte\u00fado exclu\u00eddo para compacta\u00e7\u00e3o.
+compression.duplicateTypeRemoval.useraction=Ao usar a op\u00e7\u00e3o remover (-), assegure-se de que o valor especificado j\u00e1 n\u00e3o esteja registrado como um tipo de conte\u00fado exclu\u00eddo.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: Uma tentativa foi feita para incluir e remover o mesmo tipo de conte\u00fado {0}. A configura\u00e7\u00e3o padr\u00e3o {1} \u00e9 usada como alternativa.
+compression.duplicateTypeAddRemove.explanation=O valor especificado est\u00e1 sendo inclu\u00eddo e removido pelas op\u00e7\u00f5es '+/-' de configura\u00e7\u00e3o.
+compression.duplicateTypeAddRemove.useraction=N\u00e3o inclua (+) e remova (-) o mesmo tipo de conte\u00fado.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Foi feita uma tentativa de sobrescrever a configura\u00e7\u00e3o padr\u00e3o de compacta\u00e7\u00e3o, mas tamb\u00e9m usar a op\u00e7\u00e3o incluir (+) em outro(s) tipo(s) de conte\u00fado. A configura\u00e7\u00e3o padr\u00e3o {0} \u00e9 usada como alternativa.
+compression.duplicateOverwriteAndAdd.explanation=A configura\u00e7\u00e3o est\u00e1 tentando sobrescrever o valor padr\u00e3o enquanto tamb\u00e9m usa a op\u00e7\u00e3o incluir (+). A op\u00e7\u00e3o incluir n\u00e3o poder\u00e1 ser usada se voc\u00ea estiver sobrescrevendo os valores padr\u00e3o.
+compression.duplicateOverwriteAndAdd.useraction=Se a configura\u00e7\u00e3o padr\u00e3o deve ser sobrescrita, n\u00e3o use a op\u00e7\u00e3o incluir (+). Se o padr\u00e3o n\u00e3o precisar ser sobrescrito, inclua quaisquer outros tipos de conte\u00fado desejados usando a op\u00e7\u00e3o incluir (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: Foi feita uma tentativa de configurar {0} como o algoritmo preferencial do servidor. Os valores suportados s\u00e3o gzip, x-gzip, zlib, deflate, identity e none. A configura\u00e7\u00e3o padr\u00e3o {1} \u00e9 usada como alternativa.
+compression.unsupportedAlgorithm.explanation=A configura\u00e7\u00e3o est\u00e1 tentando configurar um algoritmo n\u00e3o suportado como o algoritmo preferencial do servidor a ser usado para compacta\u00e7\u00e3o. 
+compression.unsupportedAlgorithm.useraction= Ao definir o valor, assegure-se de que ele esteja configurado como gzip, x-gzip, deflate, zlib, identity ou nenhum.
