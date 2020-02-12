@@ -72,7 +72,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	private String openLibertyJson;
 	private String websphereLibertyJson;
 	private String releaseVersion;
-	
+
 	/**
 	 * Generates a Maven repository from a given directory of existing Liberty
 	 * assets in ESA and JSON format.   
@@ -230,7 +230,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	public void setReleaseVersion(String releaseVersion) {
 		this.releaseVersion = releaseVersion;
 	}
-	
+
 	/**
 	 * Generate POM file.
 	 * 
@@ -646,7 +646,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				String symbolicName = provideFeatureArray.getString(0);
 
 				String appliesTo = wlpInfo.getString(Constants.APPLIES_TO_KEY);
-				String productVersion = parseProductVersion(appliesTo);
+				final String productVersion = parseProductVersion(appliesTo);
 				if (productVersion == null) {
 					throw new MavenRepoGeneratorException("Cannot parse product version from " + Constants.APPLIES_TO_KEY
 							+ " key for feature " + symbolicName + " in file " + jsonFile.getAbsolutePath());
@@ -708,29 +708,38 @@ public class LibertyFeaturesToMavenRepo extends Task {
 					mavenCoordinates = wlpInfo.getString(Constants.MAVEN_COORDINATES_KEY);
 				}
 
-				String minimumLicense = null;
-				if(wlpInfo.containsKey("appliesToFilterInfo")){
-					JsonArray editions =  wlpInfo.getJsonArray("appliesToFilterInfo").getJsonObject(0).getJsonArray("editions");
+				 HashMap<String, String> licenseMap = new HashMap<String, String>(){
+					{
+						put("Base", String.format("%s:%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID, productVersion));
+						put("ND", String.format("%s:%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID, productVersion));
+					}
+				};
 
-					boolean licenseFound = false;
-					for(String license : Constants.LICENSE_PRIORITY){
-						for(int ind = 0; i < editions.size(); ind ++){
-							if(editions.getString(ind).equals(license)){
-								minimumLicense = license;
-								licenseFound = true;
+
+				String minimumLicenseMavenCoordinate = null;
+				if(isWebsphereLiberty) {
+					if (wlpInfo.containsKey("appliesToFilterInfo")) {
+						JsonArray editions = wlpInfo.getJsonArray("appliesToFilterInfo").getJsonObject(0).getJsonArray("editions");
+
+						boolean licenseFound = false;
+						for (String license : Constants.LICENSE_PRIORITY) {
+							for (int ind = 0; i < editions.size(); ind++) {
+								if (editions.getString(ind).equals(license)) {
+									minimumLicenseMavenCoordinate = licenseMap.get(license);
+									licenseFound = true;
+									break;
+								}
+							}
+							if (licenseFound) {
 								break;
 							}
 						}
-						if(licenseFound){
-							break;
-						}
 					}
-//					minimumLicense = wlpInfo.getJsonArray("appliesToFilterInfo").getJsonObject(0).getJsonArray("editions").getString(0);
 				}
 
 
-				LibertyFeature feature = minimumLicense == null ? new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty, restrictedLicense)
-						: new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty, restrictedLicense, minimumLicense) ;
+				LibertyFeature feature = minimumLicenseMavenCoordinate == null ? new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty, restrictedLicense)
+						: new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty, restrictedLicense, minimumLicenseMavenCoordinate) ;
 				
 				features.put(symbolicName, feature);
 			}
@@ -779,9 +788,8 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			wlpInfoBuilder.add(Constants.MAVEN_COORDINATES_KEY,
 					features.get(symbolicName).getMavenCoordinates().toString());
 
-			if(features.get(symbolicName).getMinimumLicense() != null){
-				System.out.println("adding minimum license to json");
-				wlpInfoBuilder.add("minimumLicense", features.get(symbolicName).getMinimumLicense());
+			if(features.get(symbolicName).getMinimumLicenseMavenCoordinate() != null){
+				wlpInfoBuilder.add("minLicenseMavenCoordinate", features.get(symbolicName).getMinimumLicenseMavenCoordinate());
 			}
 
 			jsonObjectBuilder.add(Constants.WLP_INFORMATION_KEY, wlpInfoBuilder);
@@ -789,22 +797,26 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		}
 
 		// license info
-		JsonObjectBuilder licenseObject = Json.createObjectBuilder();
+		JsonObjectBuilder licenseObject = Json.createObjectBuilder();;
 
-		JsonObjectBuilder mapObject = Json.createObjectBuilder(new HashMap<String, Object>(Constants.LICENSE_TO_MAVEN_COORD_NO_VERSION));
+		// license map
+		HashMap<String, String> licenseMap = new HashMap<String, String>(){
+			{
+				put("Base", String.format("%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID));
+				put("ND", String.format("%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID));
+			}
+		};
+
+		JsonObjectBuilder mapObject = Json.createObjectBuilder(new HashMap<String, Object>(licenseMap));
 		licenseObject.add("licenseMap", mapObject);
 
-		// add license map to maven coords
 		// add license priority
 		JsonArrayBuilder licensePriorityArray = Json.createArrayBuilder();
 		for(String license : Constants.LICENSE_PRIORITY){
 			licensePriorityArray.add(license);
 		}
 		licenseObject.add("licensePriority", licensePriorityArray);
-
 		jsonArrayBuilder.add(licenseObject);
-
-
 
 
 		// Write JSON to the modified file

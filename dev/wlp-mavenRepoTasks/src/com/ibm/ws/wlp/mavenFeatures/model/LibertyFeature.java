@@ -26,7 +26,7 @@ public class LibertyFeature {
 	private final MavenCoordinates mavenCoordinates;
 	private final boolean isWebsphereLiberty;
 	private final boolean restrictedLicense;
-	private String minimumLicense;
+	private String minimumLicenseMavenCoordinate;
 
 	/**
 	 * Construct LibertyFeature
@@ -61,10 +61,10 @@ public class LibertyFeature {
 		}
 		this.isWebsphereLiberty = isWebsphereLiberty;
 		this.restrictedLicense = restrictedLicense;
-		this.minimumLicense = null;
+		this.minimumLicenseMavenCoordinate = null;
 	}
 
-	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty, boolean restrictedLicense, String minimumLicense) throws MavenRepoGeneratorException {
+	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty, boolean restrictedLicense, String minimumLicenseMavenCoordinate) throws MavenRepoGeneratorException {
 		super();
 		this.symbolicName = symbolicName;
 		this.shortName = shortName;
@@ -86,7 +86,7 @@ public class LibertyFeature {
 		}
 		this.isWebsphereLiberty = isWebsphereLiberty;
 		this.restrictedLicense = restrictedLicense;
-		this.minimumLicense = minimumLicense;
+		this.minimumLicenseMavenCoordinate = minimumLicenseMavenCoordinate;
 	}
 
 	public String getSymbolicName() {
@@ -117,8 +117,8 @@ public class LibertyFeature {
 		return requiredFeaturesWithTolerates;
 	}
 
-	public String getMinimumLicense(){
-		return  minimumLicense;
+	public String getMinimumLicenseMavenCoordinate(){
+		return minimumLicenseMavenCoordinate;
 	}
 	
 }

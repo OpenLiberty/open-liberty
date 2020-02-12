@@ -74,12 +74,9 @@ public class Constants {
 	public static final String SHORT_NAME_KEY = "shortName";
 
 	public static final String [] LICENSE_PRIORITY = {"Base", "ND"};
-	public static final HashMap<String, String> LICENSE_TO_MAVEN_COORD_NO_VERSION = new HashMap<String, String>(){
-		{
-			put("Base", "com.ibm.websphere.appserver.features:BaseLicense");
-			put("ND", "com.ibm.websphere.appserver.features:NDLicense");
-		}
-	};
+	public static final String BASE_LICENSE_ARTIFACT_ID= "license-base";
+	public static final String ND_LICENSE_ARTIFACT_ID= "license-nd";
+
 	
 	public static final String MAVEN_MODEL_VERSION = "4.0.0";
 
