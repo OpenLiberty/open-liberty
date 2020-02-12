@@ -109,7 +109,13 @@ public class TestActions {
         loggingUtils.printMethodName(thisMethod);
         try {
             WebRequest request = createHttpRequest(url, method);
-            request.setAdditionalHeader("Authorization", tokenPrefix + " " + token);
+            if (tokenPrefix != null) {
+                if (tokenPrefix != tokenPrefix.trim()) {
+                    request.setAdditionalHeader("Authorization", tokenPrefix + token);
+                } else {
+                    request.setAdditionalHeader("Authorization", tokenPrefix + " " + token);
+                }
+            }
             if (requestParms != null) {
                 request.setRequestParameters(requestParms);
             }

@@ -27,32 +27,32 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
                 // -- the config attribute authorizationHeaderPrefix will tell runtime what prefix to look for
                 MPJwtBasicTests.class,
                 // More targeted tests
-//                MPJwtConfigUsingBuilderTests.class,
-//                MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
-//                MPJwtJDKTests.class,
-//                MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
-//                MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
-//                MPJwtNoMpJwtConfig.class,
-//                MPJwtPropagationTests_usingWebTarget.class,
-//                MPJwtPropagationTests_notUsingWebTarget.class,
-//                // mp-config specified in the applications
-//                MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class,
-//                MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests.class,
-//                MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests.class,
-//                MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests.class,
-//                MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests.class,
-//                // mp-config specified as system properties
-//                MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc.class,
-//                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLoc.class,
-//                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_X509.class,
-//                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK.class,
-//                MPJwtBadMPConfigAsSystemProperties.class,
-//                // mp-config specified as env vars
-//                MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc.class,
-//                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLoc.class,
-//                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_X509.class,
-//                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK.class,
-//                MPJwtBadMPConfigAsEnvVars.class
+                MPJwtConfigUsingBuilderTests.class,
+                MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
+                MPJwtJDKTests.class,
+                MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
+                MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
+                MPJwtNoMpJwtConfig.class,
+                MPJwtPropagationTests_usingWebTarget.class,
+                MPJwtPropagationTests_notUsingWebTarget.class,
+                // mp-config specified in the applications
+                MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class,
+                MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests.class,
+                MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests.class,
+                MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests.class,
+                MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests.class,
+                // mp-config specified as system properties
+                MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc.class,
+                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLoc.class,
+                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_X509.class,
+                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK.class,
+                MPJwtBadMPConfigAsSystemProperties.class,
+                // mp-config specified as env vars
+                MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc.class,
+                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLoc.class,
+                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_X509.class,
+                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK.class,
+                MPJwtBadMPConfigAsEnvVars.class
 
 })
 

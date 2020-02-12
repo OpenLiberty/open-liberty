@@ -55,9 +55,9 @@ public class Constants {
     public static final String EXCEPTION_MESSAGE = "exceptionMsg";
 
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
-    public static final String TOKEN_TYPE_BEARER = "Bearer";
-    public static final String TOKEN_TYPE_TOKEN = "Token";
-    public static final String TOKEN_TYPE_MISC = "misc";
+    public static final String TOKEN_TYPE_BEARER = "Bearer ";
+    public static final String TOKEN_TYPE_TOKEN = "Token ";
+    public static final String TOKEN_TYPE_MISC = "misc ";
 
     public static final String J_SECURITY_CHECK = "j_security_check";
     public static final String J_USERNAME = "j_username";

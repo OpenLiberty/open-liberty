@@ -220,12 +220,13 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
         JwtTokenForTest jwtTokenTools = new JwtTokenForTest(token); // ?????
         WebClient webClient = actions.createWebClient();
-        Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, token);
+        Page response = actions.invokeUrlWithAuthorizationHeaderToken(_testName, webClient, testUrl, FATSuite.authHeaderPrefix, token, HttpMethod.GET, null);
+
         Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, "SecurityContext.ApplicationScoped");
         validationUtils.validateResult(response, expectations);
 
         // now try it again and we should get a 401
-        response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, token);
+        response = actions.invokeUrlWithAuthorizationHeaderToken(_testName, webClient, testUrl, FATSuite.authHeaderPrefix, token, HttpMethod.GET, null);
         int rc = response.getWebResponse().getStatusCode();
         Assert.assertTrue("expected 401 but got " + rc, rc == 401);
         expectations = new Expectations();
