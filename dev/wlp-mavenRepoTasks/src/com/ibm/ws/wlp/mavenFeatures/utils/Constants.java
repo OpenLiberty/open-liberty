@@ -76,7 +76,13 @@ public class Constants {
 	public static final String [] LICENSE_PRIORITY = {"Base", "ND"};
 	public static final String BASE_LICENSE_ARTIFACT_ID= "license-base";
 	public static final String ND_LICENSE_ARTIFACT_ID= "license-nd";
-
+	// license map
+	private static final HashMap<String, String> licenseMap = new HashMap<String, String>(){
+		{
+			put("Base", String.format("%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID));
+			put("ND", String.format("%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID));
+		}
+	};
 	
 	public static final String MAVEN_MODEL_VERSION = "4.0.0";
 
