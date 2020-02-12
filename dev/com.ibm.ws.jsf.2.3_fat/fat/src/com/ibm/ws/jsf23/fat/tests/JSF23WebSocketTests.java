@@ -101,7 +101,7 @@ public class JSF23WebSocketTests {
             String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
             // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not opened succesfully.", result1 != null);
+            assertNotNull("Message not found. Channel was not opened succesfully.", result1);
 
             // Get the form that we are dealing with
             HtmlForm form = testPushWebSocketPage.getFormByName("form1");
@@ -124,7 +124,7 @@ public class JSF23WebSocketTests {
             String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
             // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not closed succesfully.", result2 != null);
+            assertNotNull("Message not found. Channel was not closed succesfully.", result2);
         }
     }
 
@@ -170,7 +170,7 @@ public class JSF23WebSocketTests {
             String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
             // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not opened succesfully.", result1 != null);
+            assertNotNull("Message not found. Channel was not opened succesfully.", result1);
 
             // Now click the close button and get the resulted page.
             HtmlPage closePage = closeButton.click();
@@ -181,7 +181,7 @@ public class JSF23WebSocketTests {
             String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
             // Verify that the correct message is found in the logs
-            assertNotNull("Message not found. Channel was not closed succesfully.", result2 != null);
+            assertNotNull("Message not found. Channel was not closed succesfully.", result2);
         }
     }
 }
