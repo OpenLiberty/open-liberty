@@ -24,12 +24,7 @@ public class AccessLogRemoteUser extends AccessLogData {
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
 
-        String remoteUser = null;
-        if (request != null) {
-            HttpRequestMessageImpl requestMessageImpl = null;
-            requestMessageImpl = (HttpRequestMessageImpl) request;
-            remoteUser = requestMessageImpl.getRemoteUser();
-        }
+        String remoteUser = getRemoteUser(response, request, data);
 
         if (remoteUser != null && !remoteUser.equals("")) {
             accessLogEntry.append(remoteUser);
@@ -38,5 +33,15 @@ public class AccessLogRemoteUser extends AccessLogData {
         }
 
         return true;
+    }
+
+    public static String getRemoteUser(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        HttpRequestMessageImpl requestMessageImpl = null;
+        String remoteUser = null;
+        if (request != null) {
+            requestMessageImpl = (HttpRequestMessageImpl) request;
+            remoteUser = requestMessageImpl.getRemoteUser();
+        }
+        return remoteUser;
     }
 }

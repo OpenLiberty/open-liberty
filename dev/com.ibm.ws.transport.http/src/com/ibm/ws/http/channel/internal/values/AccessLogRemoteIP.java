@@ -27,6 +27,17 @@ public class AccessLogRemoteIP extends AccessLogData {
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request,
                        Object data) {
+        String hostIPAddress = getRemoteIP(response, request, data);
+
+        if (hostIPAddress != null) {
+            accessLogEntry.append(hostIPAddress);
+        } else {
+            accessLogEntry.append("-");
+        }
+        return true;
+    }
+
+    public static String getRemoteIP(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         HttpRequestMessageImpl requestMessageImpl = null;
         String hostIPAddress = null;
         if (request != null) {
@@ -50,12 +61,6 @@ public class AccessLogRemoteIP extends AccessLogData {
                 hostIPAddress = hostIPAddress.substring(hostIPAddress.indexOf('/') + 1);
             }
         }
-
-        if (hostIPAddress != null) {
-            accessLogEntry.append(hostIPAddress);
-        } else {
-            accessLogEntry.append("-");
-        }
-        return true;
+        return hostIPAddress;
     }
 }

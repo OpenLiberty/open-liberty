@@ -63,8 +63,8 @@ public abstract class Collector implements Handler, Formatter {
     private static final String TAG_LIST_KEY = "tag";
     private static final String MAX_FIELD_KEY = "maxFieldLength";
     private static final String MAX_EVENTS_KEY = "maxEvents";
-
     protected static final String EXECUTOR_SERVICE = "executorService";
+
     protected final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>(EXECUTOR_SERVICE);
 
     protected abstract void setExecutorService(ServiceReference<ExecutorService> executorService);

@@ -40,7 +40,8 @@ Export-Package: \
     com.ibm.ws.http.channel.inputstream, \
     com.ibm.ws.http.logging.source, \
     com.ibm.ws.http2, \
-    com.ibm.ws.http2.upgrade
+    com.ibm.ws.http2.upgrade,\
+    com.ibm.ws.http.logging.internal
 
 Import-Package: \
     !com.ibm.ws.http.logging.source, \
@@ -60,7 +61,8 @@ Private-Package: \
   com.ibm.ws.http.internal.VirtualHostImpl,\
   com.ibm.ws.http.logging.internal.AccessLogger,\
   com.ibm.ws.http.internal.HttpProxyRedirect,\
-  com.ibm.ws.http.dispatcher.internal.channel.WelcomePageHelper
+  com.ibm.ws.http.dispatcher.internal.channel.WelcomePageHelper,\
+  com.ibm.ws.http.logging.internal.ConfigurationSetterLogstash
 
 Service-Component: \
     com.ibm.ws.http.options; \

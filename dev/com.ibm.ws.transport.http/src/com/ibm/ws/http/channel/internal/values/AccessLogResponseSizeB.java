@@ -26,15 +26,7 @@ public class AccessLogResponseSizeB extends AccessLogData {
                        HttpResponseMessage response, HttpRequestMessage request,
                        Object data) {
 
-        long responseSize = -999;
-        HttpResponseMessageImpl responseMessageImpl = null;
-        if (response != null) {
-            responseMessageImpl = (HttpResponseMessageImpl) response;
-        }
-
-        if (responseMessageImpl != null) {
-            responseSize = responseMessageImpl.getServiceContext().getNumBytesWritten();
-        }
+        long responseSize = getBytesReceived(response, request, data);
 
         if (responseSize != -999) {
             accessLogEntry.append(responseSize);
@@ -45,4 +37,16 @@ public class AccessLogResponseSizeB extends AccessLogData {
         return true;
     }
 
+    public static long getBytesReceived(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        long responseSize = -999;
+        HttpResponseMessageImpl responseMessageImpl = null;
+        if (response != null) {
+            responseMessageImpl = (HttpResponseMessageImpl) response;
+        }
+
+        if (responseMessageImpl != null) {
+            responseSize = responseMessageImpl.getServiceContext().getNumBytesWritten();
+        }
+        return responseSize;
+    }
 }
