@@ -32,6 +32,7 @@ public class CollectorJsonHelpers {
 
     private static String startMessageJson = null;
     private static String startMessageJsonFields = null;
+    private static String startAccessLogLogstashCollector = null;
     private static String startTraceJson = null;
     private static String startTraceJsonFields = null;
     private static String startFFDCJson = null;
@@ -86,7 +87,7 @@ public class CollectorJsonHelpers {
             return "";
     }
 
-    protected static ThreadLocal<BurstDateFormat> dateFormatTL = new ThreadLocal<BurstDateFormat>() {
+    public static ThreadLocal<BurstDateFormat> dateFormatTL = new ThreadLocal<BurstDateFormat>() {
         @Override
         protected BurstDateFormat initialValue() {
             return new BurstDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
@@ -158,7 +159,7 @@ public class CollectorJsonHelpers {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s String to escape
+     * @param s  String to escape
      */
     protected static void jsonEscape3(StringBuilder sb, String s) {
         for (int i = 0; i < s.length(); i++) {
@@ -385,20 +386,27 @@ public class CollectorJsonHelpers {
         return jsonBuilder;
     }
 
-    protected static JSONObjectBuilder startAccessLogJsonFields(String hostName, String wlpUserDir, String serverName) {
+    protected static JSONObjectBuilder startAccessLogJsonFields(String hostName, String wlpUserDir, String serverName, int format) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
-        String tempStartFields = startAccessLogJsonFields;
+        String tempStartFields = null;
+        if (format == AccessLogData.KEYS_JSON)
+            tempStartFields = startAccessLogJsonFields;
+        else if (format == AccessLogData.KEYS_LOGSTASH)
+            tempStartFields = startAccessLogLogstashCollector;
 
-        if (tempStartFields != null)
+        if (tempStartFields != null) {
             jsonBuilder.addPreformatted(tempStartFields);
-        else {
+        } else {
             //@formatter:off
-            jsonBuilder.addField(AccessLogData.getTypeKeyJSON(), CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false)
-            .addField(AccessLogData.getHostKeyJSON(), hostName, false, false)
-            .addField(AccessLogData.getUserDirKeyJSON(), wlpUserDir, false, true)
-            .addField(AccessLogData.getServerNameKeyJSON(), serverName, false, false);
+            jsonBuilder.addField(AccessLogData.getTypeKey(format), CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false)
+            .addField(AccessLogData.getHostKey(format), hostName, false, false)
+            .addField(AccessLogData.getUserDirKey(format), wlpUserDir, false, true)
+            .addField(AccessLogData.getServerNameKey(format), serverName, false, false);
             //@formatter:on
-            startAccessLogJsonFields = jsonBuilder.toString();
+            if (format == AccessLogData.KEYS_JSON)
+                startAccessLogJsonFields = jsonBuilder.toString();
+            else if (format == AccessLogData.KEYS_LOGSTASH)
+                startAccessLogLogstashCollector = jsonBuilder.toString();
         }
         return jsonBuilder;
     }

@@ -18,6 +18,9 @@ import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
 public class AccessLogElapsedTime extends AccessLogData {
 
+    // We're assuming that the methods below that use this elapsedTime will be called on the same thread
+    private static ThreadLocal<Long> elapsedTime = new ThreadLocal<>();
+
     public AccessLogElapsedTime() {
         super("%D");
         // %D - Elapsed time, in milliseconds, of the request/response exchange
@@ -28,6 +31,20 @@ public class AccessLogElapsedTime extends AccessLogData {
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request,
                        Object data) {
+        long startTime = getStartTime(response, request, data);
+        if (startTime != 0) {
+            long elapsedTimeInMicroseconds = TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
+            elapsedTime.set(elapsedTimeInMicroseconds);
+            accessLogEntry.append(elapsedTimeInMicroseconds);
+        } else {
+            elapsedTime.set((long) -1);
+            accessLogEntry.append("-");
+        }
+
+        return true;
+    }
+
+    public static long getStartTime(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         HttpRequestMessageImpl requestMessageImpl = null;
         long startTime = 0;
         if (request != null) {
@@ -37,15 +54,10 @@ public class AccessLogElapsedTime extends AccessLogData {
         if (requestMessageImpl != null) {
             startTime = requestMessageImpl.getStartTime();
         }
-
-        if (startTime != 0) {
-            long elapsedTime = System.nanoTime() - startTime;
-            accessLogEntry.append(TimeUnit.NANOSECONDS.toMicros(elapsedTime));
-        } else {
-            accessLogEntry.append("-");
-        }
-
-        return true;
+        return startTime;
     }
 
+    public static long getElapsedTimeForJSON(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        return elapsedTime.get();
+    }
 }

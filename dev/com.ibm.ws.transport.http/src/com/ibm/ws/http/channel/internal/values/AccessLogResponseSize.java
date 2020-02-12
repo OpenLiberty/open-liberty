@@ -27,6 +27,18 @@ public class AccessLogResponseSize extends AccessLogData {
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
 
+        long responseSize = getResponseSize(response, request, data);
+
+        if (responseSize > 0) {
+            accessLogEntry.append(responseSize);
+        } else {
+            accessLogEntry.append("-");
+        }
+
+        return true;
+    }
+
+    public static long getResponseSize(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         long responseSize = -999;
         HttpResponseMessageImpl responseMessageImpl = null;
         if (response != null) {
@@ -38,14 +50,15 @@ public class AccessLogResponseSize extends AccessLogData {
             responseSize = responseMessageImpl.getServiceContext().getNumBytesWritten();
 
         }
-
-        if (responseSize > 0) {
-            accessLogEntry.append(responseSize);
-        } else {
-            accessLogEntry.append("-");
-        }
-
-        return true;
+        return responseSize;
     }
 
+    public static String getResponseSizeAsString(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        long responseSize = getResponseSize(response, request, data);
+        if (responseSize > 0) {
+            return Long.toString(responseSize);
+        }
+        // Return null instead of 0, since %B already returns 0 (%b will return it formatted as string)
+        return null;
+    }
 }

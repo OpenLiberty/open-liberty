@@ -20,6 +20,9 @@ import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
 public class AccessLogStartTime extends AccessLogData {
 
+    // We're assuming that the methods below that use this start time will be called on the same thread
+    private static ThreadLocal<String> startTimeFormatted = new ThreadLocal<>();
+
     public AccessLogStartTime() {
         super("%t");
         // %T - Note the start time for the request
@@ -33,9 +36,9 @@ public class AccessLogStartTime extends AccessLogData {
 
         if (startTime != 0) {
             Date startDate = new Date(startTime);
-            accessLogEntry.append("[");
-            accessLogEntry.append(HttpDispatcher.getDateFormatter().getNCSATime(startDate));
-            accessLogEntry.append("]");
+            String formattedDate = "[" + HttpDispatcher.getDateFormatter().getNCSATime(startDate) + "]";
+            accessLogEntry.append(formattedDate);
+            startTimeFormatted.set(formattedDate);
         } else {
             accessLogEntry.append("-");
         }
@@ -57,4 +60,7 @@ public class AccessLogStartTime extends AccessLogData {
         return startTime;
     }
 
+    public static String getStartTimeAsStringForJSON(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        return startTimeFormatted.get();
+    }
 }

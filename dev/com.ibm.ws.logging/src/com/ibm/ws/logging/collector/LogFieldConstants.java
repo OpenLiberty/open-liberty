@@ -76,6 +76,25 @@ public class LogFieldConstants {
     public static final String RESPONSECODE = "responseCode";
     public static final String IBM_ELAPSEDTIME = "ibm_elapsedTime";
     public static final String ELAPSEDTIME = "elapsedTime";
+    // Non-default access log fields
+    public static final String IBM_REMOTEIP = "ibm_remoteIP";
+    public static final String REMOTEIP = "remoteIP";
+    public static final String IBM_BYTESSENT = "ibm_bytesSent";
+    public static final String BYTESSENT = "bytesSent";
+    public static final String IBM_COOKIE = "ibm_cookie";
+    public static final String COOKIE = "cookie";
+    public static final String IBM_REQUESTELAPSEDTIME = "ibm_requestElapsedTime";
+    public static final String REQUESTELAPSEDTIME = "requestElapsedTime";
+    public static final String IBM_REQUESTHEADER = "ibm_requestHeader";
+    public static final String REQUESTHEADER = "requestHeader";
+    public static final String IBM_RESPONSEHEADER = "ibm_responseHeader";
+    public static final String RESPONSEHEADER = "responseHeader";
+    public static final String IBM_REQUESTFIRSTLINE = "ibm_requestFirstLine";
+    public static final String REQUESTFIRSTLINE = "requestFirstLine";
+    public static final String IBM_ACCESSLOGDATETIME = "ibm_accessLogDatetime";
+    public static final String ACCESSLOGDATETIME = "accessLogDatetime";
+    public static final String IBM_REMOTEUSERID = "ibm_remoteUserID";
+    public static final String REMOTEUSERID = "remoteUserID";
 
     //liberty_ffdc
     public static final String DATEOFFIRSTOCCURENCE = "dateOfFirstOccurence";

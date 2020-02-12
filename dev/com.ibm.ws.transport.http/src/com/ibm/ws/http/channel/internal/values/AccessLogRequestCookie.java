@@ -70,4 +70,21 @@ public class AccessLogRequestCookie extends AccessLogData {
         return true;
     }
 
+    public static HttpCookie getCookie(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        String cookieName = (String) data;
+        HttpCookie headerCookie = null;
+
+        if (cookieName != null) {
+            headerCookie = request.getCookie(cookieName);
+        }
+
+        return headerCookie;
+    }
+
+    public static List<HttpCookie> getAllCookies(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        List<HttpCookie> cookieValues = null;
+        cookieValues = request.getAllCookies();
+        return cookieValues;
+    }
+
 }

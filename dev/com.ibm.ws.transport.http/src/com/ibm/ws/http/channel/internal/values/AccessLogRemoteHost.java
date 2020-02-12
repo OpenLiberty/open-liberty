@@ -26,6 +26,30 @@ public class AccessLogRemoteHost extends AccessLogData {
     @Override
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        String hostAddress = getRemoteHostAddress(response, request, data);
+
+        if (hostAddress != null) {
+            accessLogEntry.append(hostAddress);
+        } else {
+            accessLogEntry.append("-");
+        }
+        return true;
+
+//		String requestHost = null;
+//		if(request != null){
+//			requestHost = request.getURLHost();
+//		}
+//
+//		if(requestHost != null){
+//			accessLogEntry.append(requestHost);
+//		} else {
+//			accessLogEntry.append("-");
+//		}
+//
+//		return true;
+    }
+
+    public static String getRemoteHostAddress(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         HttpRequestMessageImpl requestMessageImpl = null;
         String hostAddress = null;
         if (request != null) {
@@ -49,24 +73,6 @@ public class AccessLogRemoteHost extends AccessLogData {
 
         }
 
-        if (hostAddress != null) {
-            accessLogEntry.append(hostAddress);
-        } else {
-            accessLogEntry.append("-");
-        }
-        return true;
-
-//		String requestHost = null;
-//		if(request != null){
-//			requestHost = request.getURLHost();
-//		}
-//
-//		if(requestHost != null){
-//			accessLogEntry.append(requestHost);
-//		} else {
-//			accessLogEntry.append("-");
-//		}
-//
-//		return true;
+        return hostAddress;
     }
 }

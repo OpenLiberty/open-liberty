@@ -51,4 +51,26 @@ public class AccessLogFirstLine extends AccessLogData {
 
         return true;
     }
+
+    public static String getFirstLineAsString(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        if (request != null) {
+            StringBuilder sb = new StringBuilder();
+            String requestMethod = request.getMethod();
+            String requestURI = request.getRequestURI();
+            String requestQueryString = request.getQueryString();
+            String requestVersion = request.getVersion();
+            sb.append(requestMethod);
+            sb.append(" ");
+            sb.append(requestURI);
+            if (requestQueryString != null) {
+                sb.append("?");
+                sb.append(GenericUtils.nullOutPasswords(requestQueryString, (byte) '&'));
+            }
+            sb.append(" ");
+            sb.append(requestVersion);
+            return sb.toString();
+        }
+        return null;
+    }
+
 }
