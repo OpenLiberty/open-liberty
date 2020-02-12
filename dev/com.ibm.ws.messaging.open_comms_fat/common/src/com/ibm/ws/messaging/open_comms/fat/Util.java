@@ -19,7 +19,7 @@ public class Util {
   protected static Logger       logger_ = Logger.getLogger("FAT");
   static {
     Level l;
-    String p = System.getProperty("fat.test.debug","INFO").toUpperCase();;
+    String p = System.getProperty("fat.test.debug","FINEST").toUpperCase();;
     // 3 settings: no output, default output, trace output
     if (!"INFO".equals(p)&&!"OFF".equals(p)) p = "FINEST";
     try {
