@@ -12,7 +12,12 @@ package com.ibm.websphere.simplicity.config;
 
 /**
  * Represents a config element that allows modification.
+ *
+ * To be used in conjunction with fat.modify tag on certain config elements.
+ * This used to be used for database rotation but a new method of doing this is available
+ * in the fattest.databases module.
  */
+@Deprecated
 public interface ModifiableConfigElement {
 
     /**
