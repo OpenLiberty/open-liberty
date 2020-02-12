@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,14 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Je\u015bli wycofywanie zmian l
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Trwa\u0142y program wykonuj\u0105cy {0} przerwa\u0142 zadanie {1}, poniewa\u017c zosta\u0142o ono wycofane lub nie powiod\u0142o si\u0119 {2} razy pod rz\u0105d. Ostateczne niepowodzenie to {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=Zadanie osi\u0105gn\u0119\u0142o limit kolejnych pr\u00f3b i nie b\u0119dzie wi\u0119cej uruchamiane.
 CWWKC1511.retry.limit.reached.failed.useraction=Je\u015bli operacje wycofywania zmian lub niepowodzenia s\u0105 nieoczekiwane, okre\u015bl przyczyn\u0119 i ponownie zaplanuj zadanie. Je\u015bli operacje wycofywania zmian i niepowodzenia powtarzaj\u0105 si\u0119, rozwa\u017c zwi\u0119kszenie limitu liczby pr\u00f3b.
+
+CWWKC1520.out.of.range=CWWKC1520E: Skonfigurowana warto\u015b\u0107 {0} w\u0142a\u015bciwo\u015bci {1} nie mie\u015bci si\u0119 w zakresie od {2} do {3}.
+CWWKC1520.out.of.range.explanation=Dla okre\u015blonej w\u0142a\u015bciwo\u015bci skonfigurowana jest warto\u015b\u0107 spoza dozwolonego zakresu.
+CWWKC1520.out.of.range.useraction=Skonfiguruj warto\u015b\u0107 nale\u017c\u0105c\u0105 do dozwolonego zakresu.
+
+CWWKC1521.less.than.min=CWWKC1521E: Skonfigurowana warto\u015b\u0107 {0} w\u0142a\u015bciwo\u015bci {1} nie mo\u017ce by\u0107 mniejsza ni\u017c skonfigurowana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci {2}, kt\u00f3ra wynosi {3}.
+CWWKC1521.less.than.min.explanation=Skonfigurowanie wi\u0119kszej warto\u015bci retryInterval zach\u0119ca do ponowienia zadania zako\u0144czonego niepowodzeniem inne serwery ni\u017c ten, na kt\u00f3rym to zadanie nie powiod\u0142o si\u0119.
+CWWKC1521.less.than.min.useraction=Skonfiguruj w\u0142a\u015bciwo\u015b\u0107 retryInterval w taki spos\u00f3b, aby by\u0142a wi\u0119ksza ni\u017c w\u0142a\u015bciwo\u015b\u0107 missedTaskThreshold.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Nie mo\u017cna planowa\u0107 zada\u0144 trwa\u0142ych z kontekstu bie\u017c\u0105cego w\u0105tku.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Zadania trwa\u0142e mo\u017cna planowa\u0107 tylko z w\u0105tku, kt\u00f3ry jest powi\u0105zany z aplikacj\u0105 lub sk\u0142adnikiem o to\u017csamo\u015bci programu \u0142aduj\u0105cego klasy, kt\u00f3ry mo\u017cna przekszta\u0142ca\u0107 do postaci szeregowej.

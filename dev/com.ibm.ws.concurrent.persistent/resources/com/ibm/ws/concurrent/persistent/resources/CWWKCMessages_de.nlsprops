@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,13 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Wenn die Rollbacks oder Fehler
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Das persistente Steuerprogramm {0} hat die Task {1} abgebrochen, weil sie r\u00fcckg\u00e4ngig gemacht wurde oder {2} Mal hintereinander fehlgeschlagen ist. Der letzte Fehler ist {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=Die Task hat die maximal zul\u00e4ssige Anzahl fortlaufender Neuversuche erreicht und wird nicht mehr ausgef\u00fchrt.
 CWWKC1511.retry.limit.reached.failed.useraction=Wenn die Rollbacks oder Fehler nicht erwartet sind, bestimmen Sie die Ursache und planen Sie die Task erneut. Wenn die Rollbacks und Fehler tempor\u00e4r sind, sollten Sie das Wiederholungslimit erh\u00f6hen. 
+
+CWWKC1520.out.of.range=CWWKC1520E: Der konfigurierte Wert {0} f\u00fcr {1} befindet sich nicht im Bereich von {2} bis {3}.
+CWWKC1520.out.of.range.explanation=Es wurde ein Wert f\u00fcr die angegebene Eigenschaft konfiguriert, der au\u00dferhalb des zul\u00e4ssigen Bereichs liegt.
+CWWKC1520.out.of.range.useraction=Konfigurieren Sie einen Wert innerhalb des zul\u00e4ssigen Bereichs. 
+CWWKC1521.less.than.min=CWWKC1521E: Der konfigurierte Wert {0} f\u00fcr {1} darf nicht kleiner sein als der f\u00fcr {2} konfigurierte Wert ({3}).
+CWWKC1521.less.than.min.explanation=Wenn Sie ein gr\u00f6\u00dferes Wiederholungsintervall konfigurieren, versuchen andere Server, die fehlgeschlagene Task anstelle des Servers erneut auszuf\u00fchren, auf dem die Task fehlgeschlagen ist.
+CWWKC1521.less.than.min.useraction=Konfigurieren Sie die Eigenschaft retryInterval so, dass sie gr\u00f6\u00dfer als die Eigenschaft missedTaskThreshold ist.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Sie k\u00f6nnen keine persistenten Tasks \u00fcber den aktuellen Threadkontext terminieren.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Terminieren Sie persistente Tasks nur \u00fcber einen Thread, der einer Anwendung oder einem Feature mit einer serialisierbaren Klasselader-ID zugeordnet ist.

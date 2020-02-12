@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 import org.apache.commons.io.FileUtils;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -214,6 +215,7 @@ public class PluginGenerator {
      * @param root      install location of plugin; overrides configured values for root install and log path
      * @param name
      */
+    @FFDCIgnore(IOException.class)
     protected synchronized void generateXML(String rootLoc, String serverName,
                                             WebContainer container,
                                             SessionManager smgr,
@@ -235,6 +237,14 @@ public class PluginGenerator {
             // add error message in next update
             return;
         }
+
+        if(getBundleContext() == null){
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "generateXML", "Error creating plugin config xml: BundleContext is null");
+            }
+            return; 
+        }
+
         utilityRequest = utilityReq;
         boolean writeFile = true;
 
@@ -796,7 +806,17 @@ public class PluginGenerator {
                         fOutputStream.getFD().sync();
                         pluginCfgWriter.close();
                     }
-                    copyFile(cachedFile, outFile.asFile());
+
+                    try {
+                        copyFile(cachedFile, outFile.asFile());
+                    } catch (IOException e){
+                        //File no longer exists if the bundle was deactivated 
+                        Bundle bundle = FrameworkUtil.getBundle(PluginGenerator.class);
+                        if(bundle.getState() != bundle.UNINSTALLED){
+                            throw e; // Missing for some other reason 
+                        }
+                    }
+                        
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -841,6 +861,7 @@ public class PluginGenerator {
         }
     }
     
+    @FFDCIgnore(IOException.class)
     public static void copyFile(File in, File out) 
                     throws IOException
                 {

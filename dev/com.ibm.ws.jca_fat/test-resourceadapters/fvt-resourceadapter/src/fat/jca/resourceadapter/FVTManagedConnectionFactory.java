@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package fat.jca.resourceadapter;
 
 import java.io.PrintWriter;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -117,10 +119,19 @@ public class FVTManagedConnectionFactory implements ManagedConnectionFactory, Re
         for (Object o : set)
             if (o instanceof FVTManagedConnection) {
                 FVTManagedConnection m = (FVTManagedConnection) o;
-                if (match(m.cri, cri) && match(m.subject, subject))
+                if (match(m.cri, cri) && matchSubjects(m.subject, subject))
                     return m;
             }
         return null;
+    }
+
+    private static final boolean matchSubjects(final Subject s1, final Subject s2) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                return match(s1, s2);
+            }
+        });
     }
 
     public void setClientID(String clientID) {

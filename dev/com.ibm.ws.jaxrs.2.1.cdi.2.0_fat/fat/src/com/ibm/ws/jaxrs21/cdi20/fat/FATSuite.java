@@ -17,6 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AtInjectTest.class,
-                InterceptorTest.class
+                AtInjectRxTest.class,
+                InterceptorTest.class,
+                InterceptorRxTest.class
 })
 public class FATSuite {}

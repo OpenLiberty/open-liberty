@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,3 +141,23 @@ duplicateAlias.useraction=Stellen Sie sicher, dass alle in der Datei server.xml 
 context.root.changed=CWWKT0028I: Die Webanwendung wurde verschoben ({0}): {1}
 context.root.changed.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 context.root.changed.useraction=Es ist keine Aktion erforderlich.
+
+compression.duplicateType=CWWKT0029W: Es wurde versucht, den Typ {0} doppelt hinzuzuf\u00fcgen. Es wird stattdessen die Standardkonfiguration {1} verwendet. 
+compression.duplicateType.explanation=Der angegebene Wert ist bereits als zul\u00e4ssiger Inhaltstyp f\u00fcr die Komprimierung registriert.
+compression.duplicateType.useraction=Wenn Sie den Wert zul\u00e4ssiger Codierungen definieren, m\u00fcssen Sie sicherstellen, dass jeder Wert eindeutig ist. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: Es wurde versucht, die {0}-Codierung doppelt zu entfernen. Es wird stattdessen die Standardkonfiguration {1} verwendet.
+compression.duplicateTypeRemoval.explanation=Der angegebene Wert ist bereits als ausgeschlossener Inhaltstyp f\u00fcr die Komprimierung registriert.
+compression.duplicateTypeRemoval.useraction=Wenn Sie die Option zum Entfernen (-) verwenden, stellen Sie sicher, dass der angegebene Wert nicht bereits als ausgeschlossener Inhaltstyp registriert ist.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: Es wurde versucht, denselben Inhaltstyp {0} hinzuzuf\u00fcgen und zu entfernen. Es wird stattdessen die Standardkonfiguration {1} verwendet.
+compression.duplicateTypeAddRemove.explanation=Der angegebene Wert wird durch die Konfigurationsoptionen '+/-' hinzugef\u00fcgt und entfernt.
+compression.duplicateTypeAddRemove.useraction=F\u00fcgen Sie nicht denselben Inhaltstyp hinzu (+) und entfernen Sie nicht denselben Inhaltstyp (-).
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Es wurde versucht, die Standardkonfiguration f\u00fcr die Komprimierung zu \u00fcberschreiben, und die Option zum Hinzuf\u00fcgen (+) wurde f\u00fcr andere Inhaltstypen verwendet. Es wird stattdessen die Standardkonfiguration {0} verwendet.
+compression.duplicateOverwriteAndAdd.explanation=Die Konfiguration versucht, den Standardwert zu \u00fcberschreiben, w\u00e4hrend gleichzeitig auch die Option zum Hinzuf\u00fcgen (+) verwendet wird. Die Option zum Hinzuf\u00fcgen darf nicht verwendet werden, wenn Sie Standardwert \u00fcberschreiben.
+compression.duplicateOverwriteAndAdd.useraction=Wenn die Standardkonfiguration \u00fcberschrieben werden muss, verwenden Sie nicht die Option zum Hinzuf\u00fcgen (+). F\u00fcgen Sie weitere gew\u00fcnschte Inhaltstypen mithilfe der Option zum Hinzfu\u00fcgen (+) hinzu, wenn die Standardkonfiguration nicht \u00fcberschrieben werden muss.
+
+compression.unsupportedAlgorithm=CWWKT0033W: Es wurde versucht, {0} als bevorzugten Algorithmus f\u00fcr den Server zu konfigurieren. Zu den unterst\u00fctzten Werten geh\u00f6ren gzip, x-gzip, zlib, deflate, identity und none. Die Standardkonfiguration {1} wird stattdessen verwendet.
+compression.unsupportedAlgorithm.explanation=Die Konfiguration versucht, einen nicht unterst\u00fctzten Algorithmus als bevorzugten Algorithmus f\u00fcr die Komprimierung zu verwenden. 
+compression.unsupportedAlgorithm.useraction= Wenn Sie den Wert definieren, stellen Sie sicher, dass er auf gzip, x-gzip, deflate, zlib, identity oder none gesetzt ist.

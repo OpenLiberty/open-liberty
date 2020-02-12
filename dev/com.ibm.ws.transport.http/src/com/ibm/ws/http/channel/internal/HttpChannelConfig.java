@@ -1157,10 +1157,9 @@ public class HttpChannelConfig {
                 case ("none"):
                     break;
                 default:
-                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                        Tr.warning(tc, "compression.unsupportedAlgorithm", value, preferredCompressionAlgorithm);
-                    }
+                    Tr.warning(tc, "compression.unsupportedAlgorithm", value, preferredCompressionAlgorithm);
                     isSupportedConfiguration = false;
+                    break;
 
             }
 

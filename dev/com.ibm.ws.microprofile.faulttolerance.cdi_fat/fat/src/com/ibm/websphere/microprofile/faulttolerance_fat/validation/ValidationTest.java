@@ -47,7 +47,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SuperclassPrivateSearchB;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.WildcardNegativeSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.subpackage.OutOfPackageSearchB;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;

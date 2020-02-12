@@ -53,6 +53,11 @@ class Config {
     final long missedTaskThreshold;
 
     /**
+     * Experimental attribute that causes a single poll interval to be coordinated across multiple instances when fail over is also enabled.
+     */
+    final boolean pollingCoordination;
+
+    /**
      * Interval between polling for tasks to run. A value of -1 means auto-compute a poll interval.
      * When fail over is disabled, the -1 value disables all polling after the initial poll.
      */
@@ -88,6 +93,7 @@ class Config {
         initialPollDelay = (Long) properties.get("initialPollDelay");
         missedTaskThreshold = (Long) properties.get("missedTaskThreshold");
         Long pollIntrvl = enableTaskExecution ? (Long) properties.get("pollInterval") : null;
+        pollingCoordination = missedTaskThreshold > 0 && Boolean.parseBoolean((String) properties.get("pollingCoordination.for.test.use.only")); // NOT SUPPORTED for production use
         pollSize = enableTaskExecution ? (Integer) properties.get("pollSize") : null;
         Long retryIntrvl = (Long) properties.get("retryInterval");
         retryLimit = (Short) properties.get("retryLimit");

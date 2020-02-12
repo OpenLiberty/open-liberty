@@ -118,7 +118,7 @@ action-desc.resume=\tRiattiva tutti i componenti messi in pausa nel server. \u00
 \t--target per riattivare i componenti in pausa specifici.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tElimina tutte le informazioni memorizzate nella cache relative a questa istanza del server.
+option-desc.start.clean=\tElimina tutte le informazioni memorizzate nella cache relative a questa istanza del server.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="percorso del file di archivio di destinazione"
 option-desc.dump.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione dump.       \n\
@@ -177,3 +177,15 @@ option-desc.no-password=\tDisabilita la generazione della password del keystore 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="cartella server root nell'archivio"
 option-desc.package.server-root=\tSpecifica il nome della cartella del server root nel file di archivio.\n
+#------------------------------\n\
+\ a 72 car -- scheda iniziale-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tIgnora la fase di inattivit\u00e0 prima dell'arresto del server. Un normale arresto\n\
+\tdel server include una fase di inattivit\u00e0 prima che il server venga arrestato. La \n\
+\tfase di inattivit\u00e0, un periodo di 30 secondi, consente ai servizi di eseguire    \n\
+\tattivit\u00e0 precedenti all'arresto, ad esempio i listener in entrata vengono arrestati ma    \n\
+\til completamento delle richieste esistenti \u00e8 consentito. L'opzione --force non ha \n\
+\teffetto se l'arresto del server \u00e8 gi\u00e0 stato invocato. Se si utilizza l'opzione --force,    \n\
+\tnel file messages.log potrebbero essere presenti eccezioni impreviste\n\
+\tverificatesi dopo la ricezione del comando server stop da parte del server.

@@ -428,4 +428,10 @@ public class JwtSsoComponent implements JwtSsoConfig {
         return false; // jwk retrieval is not in play here
     }
 
+    @Override
+    public String getAuthorizationHeaderScheme() {
+        // TODO Auto-generated method stub
+        return "Bearer ";
+    }
+
 }

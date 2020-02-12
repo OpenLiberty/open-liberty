@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,14 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Si les annulations ou les \u00
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Le programme d''ex\u00e9cution persistant {0} a abandonn\u00e9 la t\u00e2che {1} en raison de {2} annulations ou \u00e9checs cons\u00e9cutifs. L''\u00e9chec final est {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=La t\u00e2che a atteint le nombre maximum de nouvelles tentatives cons\u00e9cutives, aucune nouvelle tentative ne sera effectu\u00e9e.
 CWWKC1511.retry.limit.reached.failed.useraction=Si les annulations ou les \u00e9checs sont inattendus, d\u00e9terminez la cause et planifiez \u00e0 nouveau la t\u00e2che. Si les annulations et les \u00e9checs sont intermittents, pensez \u00e0 augmenter le nombre maximal de nouvelles tentatives. 
+
+CWWKC1520.out.of.range=CWWKC1520E: La valeur {0} configur\u00e9e pour {1} n''est pas comprise entre {2} et {3}.
+CWWKC1520.out.of.range.explanation=Une valeur hors de la plage autoris\u00e9e a \u00e9t\u00e9 configur\u00e9e pour la propri\u00e9t\u00e9 sp\u00e9cifi\u00e9e.
+CWWKC1520.out.of.range.useraction=Configurez une valeur dans la plage autoris\u00e9e.
+
+CWWKC1521.less.than.min=CWWKC1521E: La valeur {0} configur\u00e9e pour {1} ne peut pas \u00eatre inf\u00e9rieure \u00e0 la valeur configur\u00e9e pour {2}, c''est-\u00e0-dire {3}.
+CWWKC1521.less.than.min.explanation=La configuration d'un intervalle entre les tentatives plus long encourage les autres serveurs \u00e0 retenter l'ex\u00e9cution de la t\u00e2che ayant \u00e9chou\u00e9 \u00e0 la place du serveur sur lequel elle a \u00e9chou\u00e9.
+CWWKC1521.less.than.min.useraction=Configurez la propri\u00e9t\u00e9 retryInterval de sorte que sa valeur soit sup\u00e9rieure \u00e0 celle de la propri\u00e9t\u00e9 missedTaskThreshold.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Vous ne pouvez pas planifier des t\u00e2ches persistantes depuis le contexte d'unit\u00e9 d'ex\u00e9cution actuel.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Planifiez des t\u00e2ches persistantes uniquement depuis une unit\u00e9 d'ex\u00e9cution qui est associ\u00e9e \u00e0 une application ou fonction avec une identit\u00e9 de chargeur de classe s\u00e9rialisable.

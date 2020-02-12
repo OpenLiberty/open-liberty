@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,23 @@ duplicateAlias.useraction=Assicurarsi che tutti gli alias host definiti come ele
 context.root.changed=CWWKT0028I: Applicazione Web spostata ({0}): {1}
 context.root.changed.explanation=Messaggio a solo scopo informativo.
 context.root.changed.useraction=Non \u00e8 richiesta alcuna azione.
+
+compression.duplicateType=CWWKT0029W: \u00c8 stata tentata un''aggiunta duplicata del tipo {0}. Viene utilizzata la configurazione predefinita {1}. 
+compression.duplicateType.explanation=Il valore specificato \u00e8 gi\u00e0 registrato come tipo di contenuto accettabile per la compressione.
+compression.duplicateType.useraction=Quando si definisce il valore delle codifiche accettabili, assicurarsi che ciascun valore sia univoco. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: \u00c8 stata tentata una rimozione duplicata della codifica {0}. Viene utilizzata la configurazione predefinita {1}.
+compression.duplicateTypeRemoval.explanation=Il valore specificato \u00e8 gi\u00e0 registrato come tipo di contenuto escluso per la compressione.
+compression.duplicateTypeRemoval.useraction=Quando si utilizza l'opzione di rimozione (-), assicurarsi che il valore specificato non sia gi\u00e0 registrato come tipo di contenuto escluso.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: \u00c8 stato effettuato un tentativo sia di aggiungere che di rimuovere lo stesso tipo di contenuto {0}. Viene utilizzata la configurazione predefinita {1}.
+compression.duplicateTypeAddRemove.explanation=Il valore specificato \u00e8 contemporaneamente in fase di aggiunta e rimozione dalle opzioni di configurazione '+/-'.
+compression.duplicateTypeAddRemove.useraction=Non aggiungere (+) e rimuovere (-) lo stesso tipo di contenuto.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: \u00c8 stato effettuato un tentativo di sovrascrivere la configurazione predefinita di compressione, ma \u00e8 stata anche utilizzata l''opzione di aggiunta (+) su altri tipi di contenuto. Viene utilizzata la configurazione predefinita {0}.
+compression.duplicateOverwriteAndAdd.explanation=La configurazione sta tentando di sovrascrivere il valore predefinito in concomitanza con l'utilizzo dell'opzione di aggiunta (+). L'opzione di aggiunta non pu\u00f2 essere utilizzata mentre si sovrascrivono i valori predefiniti.
+compression.duplicateOverwriteAndAdd.useraction=Se \u00e8 necessario sovrascrivere la configurazione predefinita, non utilizzare l'opzione di aggiunta (+). Se non \u00e8 necessario sovrascrivere i valori predefiniti, includere gli altri tipi di contenuto desiderati utilizzando l'opzione di aggiunta (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: \u00c8 stato effettuato un tentativo di configurare {0} come algoritmo preferito del server. I valori supportati sono gzip, x-gzip, zlib, deflate, identity e none. Viene utilizzata la configurazione predefinita {1}.
+compression.unsupportedAlgorithm.explanation=La configurazione sta tentando di impostare un algoritmo non supportato come algoritmo preferito del server da utilizzare per la compressione. 
+compression.unsupportedAlgorithm.useraction= Quando si definisce il valore, assicurarsi che sia impostato su gzip, x-gzip, deflate, zlib, identity o none.
