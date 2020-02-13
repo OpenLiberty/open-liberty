@@ -14,14 +14,14 @@
 
 <%!
    public String xssguard(String name){
-	    if (name == null || name.isEmpty()) return name;
+	 if (name == null || name.isEmpty()) return name;
 	    StringBuffer sb = new StringBuffer();
 	    for(int i=0; i<name.length(); i++){
-	        char c = name.charAt(i);
+	        int c = name.codePointAt(i);
 	        if(!Character.isLetterOrDigit(c) && c != ' '){
 	            continue;
 	        }
-	        sb.append(c);       
+	        sb.appendCodePoint(c);  
 	    }
 	    return sb.toString();
    }
