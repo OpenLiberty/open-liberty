@@ -1699,7 +1699,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
-      <version>1.4-RC2</version>
+      <version>1.4.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>
