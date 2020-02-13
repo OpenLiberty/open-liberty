@@ -7,19 +7,22 @@
   <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
     <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_2"/>
   </ejbBindings>
-  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
     <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_3"/>
   </ejbBindings>
-  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
     <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_4"/>
   </ejbBindings>
-  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
     <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_5"/>
   </ejbBindings>
-  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
     <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_6"/>
   </ejbBindings>
-  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
     <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_7"/>
+  </ejbBindings>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome8">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_8"/>
   </ejbBindings>
 </ejbbnd:EJBJarBinding>

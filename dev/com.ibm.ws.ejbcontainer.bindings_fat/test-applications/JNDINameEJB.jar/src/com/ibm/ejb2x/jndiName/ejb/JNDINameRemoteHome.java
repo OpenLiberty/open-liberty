@@ -12,12 +12,11 @@
 package com.ibm.ejb2x.jndiName.ejb;
 
 /**
- * Local interface for Enterprise Bean: JNDIName.
+ * Remote Home interface for Enterprise Bean: JNDIName
  */
-public interface JNDIName extends javax.ejb.EJBLocalObject {
-
+public interface JNDINameRemoteHome extends javax.ejb.EJBHome {
     /**
-    */
-    public String foo();
-
+     * Creates a default instance of Session Bean: JNDIName
+     */
+    public JNDIRemoteName create() throws javax.ejb.CreateException, java.rmi.RemoteException;
 }
