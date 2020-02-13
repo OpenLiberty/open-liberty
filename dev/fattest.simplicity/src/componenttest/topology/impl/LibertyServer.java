@@ -4748,7 +4748,7 @@ public class LibertyServer implements LogMonitorClient {
 
             for (String line : findStringsInFileInLibertyServerRoot(".*((CWWKZ0)|(J2CA7))00[139]I: .*", "logs/messages.log"))
                 for (String name : possiblyInstalledAppNames)
-                    if (line.contains(name))
+                    if (line.contains(" " + name + " "))
                         counters.put(name, counters.get(name) + (line.contains("009I: ") ? -1 : 1));
 
             for (Map.Entry<String, Integer> entry : counters.entrySet())
