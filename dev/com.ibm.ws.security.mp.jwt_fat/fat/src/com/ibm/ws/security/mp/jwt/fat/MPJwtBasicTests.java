@@ -74,7 +74,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
-        bootstrapUtils.writeBootstrapProperty(server, "mpJwt_authHeaderPrefix", FATSuite.authHeaderPrefix);
+        bootstrapUtils.writeBootstrapProperty(server, "mpJwt_authHeaderPrefix", FATSuite.authHeaderPrefix + " ");
         deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);

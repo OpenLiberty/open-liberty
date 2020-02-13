@@ -110,11 +110,7 @@ public class TestActions {
         try {
             WebRequest request = createHttpRequest(url, method);
             if (tokenPrefix != null) {
-                if (tokenPrefix != tokenPrefix.trim()) {
-                    request.setAdditionalHeader("Authorization", tokenPrefix + token);
-                } else {
-                    request.setAdditionalHeader("Authorization", tokenPrefix + " " + token);
-                }
+                request.setAdditionalHeader("Authorization", tokenPrefix + " " + token);
             }
             if (requestParms != null) {
                 request.setRequestParameters(requestParms);
