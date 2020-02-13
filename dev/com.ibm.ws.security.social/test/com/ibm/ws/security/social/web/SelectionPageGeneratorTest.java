@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.ws.security.social.internal.utils.SocialTaiRequest;
 import com.ibm.ws.security.social.test.CommonTestClass;
 import com.ibm.ws.security.social.web.utils.ConfigInfoJsonBuilder;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
+import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 
 import test.common.SharedOutputManager;
 
@@ -164,6 +165,7 @@ public class SelectionPageGeneratorTest extends CommonTestClass {
     public void before() {
         System.out.println("Entering test: " + testName.getMethodName());
         generator = new SelectionPageGenerator();
+        WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecConfig);
     }
 
     @After
@@ -1170,6 +1172,10 @@ public class SelectionPageGeneratorTest extends CommonTestClass {
                     will(returnValue(HTML_PAGE_TITLE));
                     one(mockInterface).createCssContentString();
                     will(returnValue(""));
+                    one(webAppSecConfig).getSSORequiresSSL();
+                    will(returnValue(false));
+                    one(webAppSecConfig).getSameSiteCookie();
+                    will(returnValue("SameSiteValue"));
                 }
             });
 

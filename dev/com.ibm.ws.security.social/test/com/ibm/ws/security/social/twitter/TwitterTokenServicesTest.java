@@ -69,6 +69,7 @@ public class TwitterTokenServicesTest extends CommonTestClass {
     final String MSG_RESPONSE_FAILURE = "CWWKS5424E";
 
     static final String JSON_FAILURE_MSG = "JSON failure message. Something went wrong.";
+    static final String SAME_SITE_COOKIE_VALUE = "SameSiteValue";
 
     static Map<String, String> SUCCESSFUL_REQUEST_TOKEN_RESPONSE = new HashMap<String, String>();
     static Map<String, String> SUCCESSFUL_ACCESS_TOKEN_RESPONSE = new HashMap<String, String>();
@@ -836,6 +837,8 @@ public class TwitterTokenServicesTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(false));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue(SAME_SITE_COOKIE_VALUE));
                 allowing(webAppSecConfig).createReferrerURLCookieHandler();
                 will(returnValue(new ReferrerURLCookieHandler(webAppSecConfig)));
                 allowing(webAppSecConfig).getSameSiteCookie();
