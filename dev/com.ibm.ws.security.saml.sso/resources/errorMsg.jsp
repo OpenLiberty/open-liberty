@@ -13,18 +13,27 @@
 -->
 
 <%!
-   public String xssguard(String name){
-	 if (name == null || name.isEmpty()) return name;
-	    StringBuffer sb = new StringBuffer();
-	    for(int i=0; i<name.length(); i++){
-	        int c = name.codePointAt(i);
-	        if(!Character.isLetterOrDigit(c) && c != ' '){
-	            continue;
-	        }
-	        sb.appendCodePoint(c);  
-	    }
-	    return sb.toString();
-   }
+	public String xssguard(String name) {
+		if (name == null || name.isEmpty()){
+			return name;
+		}
+		StringBuffer sb = new StringBuffer();
+		String otherAllowed = " .,:()[]";
+		for (int i = 0; i < name.length(); i++) {
+			int c = name.codePointAt(i);
+			if (Character.isLetterOrDigit(c)) {
+				sb.appendCodePoint(c);
+				continue;
+			}
+			int[] ca = new int[1];
+			ca[0] = c;
+			// convert any nonalphanumeric to &#nnnn; form
+			if (otherAllowed.contains(new String(ca, 0, 1))) {
+				sb.append("&#" + Integer.toString(c) + ";");
+			}
+		}		
+		return sb.toString();
+	}
 %>
 
 <%
