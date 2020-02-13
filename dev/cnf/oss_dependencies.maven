@@ -127,6 +127,8 @@ io.smallrye:smallrye-graphql:1.0.1
 io.smallrye:smallrye-graphql-schema-builder:1.0.1
 io.smallrye:smallrye-graphql-schema-model:1.0.1
 io.smallrye:smallrye-graphql-servlet:1.0.1
+io.smallrye.config:smallrye-config:1.6.1
+io.smallrye.config:smallrye-config-common:1.6.1
 io.smallrye.reactive:smallrye-reactive-converter-api:1.0.10
 io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.8
 io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.10
