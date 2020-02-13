@@ -12,24 +12,39 @@
         IBM Corporation - initial API and implementation
 -->
 
+<%!
+   public String xssguard(String name){
+	 if (name == null || name.isEmpty()) return name;
+	    StringBuffer sb = new StringBuffer();
+	    for(int i=0; i<name.length(); i++){
+	        int c = name.codePointAt(i);
+	        if(!Character.isLetterOrDigit(c) && c != ' '){
+	            continue;
+	        }
+	        sb.appendCodePoint(c);  
+	    }
+	    return sb.toString();
+   }
+%>
+
 <%
-    String errTitle = request.getParameter("title");
+    String errTitle = xssguard(request.getParameter("title"));
     if( errTitle  == null || errTitle.isEmpty() ){
         errTitle = "HTTP Error Message";
     }
-    String errMessage = request.getParameter("message");
+    String errMessage = xssguard(request.getParameter("message"));
     if( errMessage  == null || errMessage.isEmpty() ){
         errMessage = "HTTP Error 403 - Forbidden"; // "The verification on the SAML Response failed";
     }
-    String errUserAction = request.getParameter("userAction");
+    String errUserAction = xssguard(request.getParameter("userAction"));
     if( errUserAction  == null || errUserAction.isEmpty() ){
         errUserAction = "Please contact the administrator for further information";
     }
-    String errFormAction = request.getParameter("action");
+    String errFormAction = xssguard(request.getParameter("action"));
     if( errFormAction  == null || errFormAction.isEmpty() ){
         errFormAction = "";
     }
-    String errMethod = request.getParameter("method");
+    String errMethod = xssguard(request.getParameter("method"));
     if( errMethod  == null || errMethod.isEmpty() ){
         errMethod = "get";
     }
