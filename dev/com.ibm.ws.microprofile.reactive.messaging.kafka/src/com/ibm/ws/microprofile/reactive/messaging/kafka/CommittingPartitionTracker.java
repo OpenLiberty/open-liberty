@@ -111,21 +111,27 @@ public class CommittingPartitionTracker extends PartitionTracker {
     public CompletionStage<Void> recordDone(long offset, Optional<Integer> leaderEpoch) {
 
         CompletableFuture<Void> result = new CompletableFuture<>();
-        synchronized (completedWork) {
-            // Protect against this method being called twice for the same message
-            boolean isNewOffset;
-            if (offset < committedOffset) {
-                isNewOffset = false;
-            } else {
-                isNewOffset = completedWork.add(new CompletedWork(offset, leaderEpoch, result));
-            }
+        try {
+            synchronized (completedWork) {
+                // Protect against this method being called twice for the same message
+                boolean isNewOffset;
+                if (offset < committedOffset) {
+                    isNewOffset = false;
+                } else {
+                    isNewOffset = completedWork.add(new CompletedWork(offset, leaderEpoch, result));
+                }
 
-            if (isNewOffset) {
-                outstandingUncommittedWork++;
-                requestCommit();
-            } else {
-                result.completeExceptionally(new IllegalStateException("recordDone called more than once for offset " + offset));
+                if (isNewOffset) {
+                    outstandingUncommittedWork++;
+                    requestCommit();
+                } else {
+                    result.completeExceptionally(new IllegalStateException("recordDone called more than once for offset " + offset));
+                }
             }
+        } catch (Throwable t) {
+            // Log any unexpected exceptions and return them in the completion stage
+            Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
+            result.completeExceptionally(new KafkaConnectorException(Tr.formatMessage(tc, "internal.kafka.connector.error.CWMRX1000E"), t));
         }
 
         return result;
@@ -289,11 +295,14 @@ public class CommittingPartitionTracker extends PartitionTracker {
     @Override
     public void close() {
         synchronized (completedWork) {
-            if (!completedWork.isEmpty()) {
-                // Attempt a final commit before we relinquish the partition
-                commitCompletedWork();
+            try {
+                if (!completedWork.isEmpty()) {
+                    // Attempt a final commit before we relinquish the partition
+                    commitCompletedWork();
+                }
+            } finally {
+                super.close();
             }
-            super.close();
         }
     }
 
