@@ -68,16 +68,33 @@ public class RepeatConfigActions {
     }
 
     /**
-     * Get the RepeatTests actions for Config 1.4 tests. This is Config 1.4 + EE8 and if the test
-     * mode is full Config 1.4 + EE7.
+     * Get the RepeatTests actions for Config 1.4 tests. This is the same as for Config 2.0 tests but
+     * if the test mode is FULL the it also adds Config 1.4 + EE7 and Config 1.4 + EE8.
      *
      * @param server The name of the test server
      * @return The RepeatTests for Config 1.4 tests
      */
     public static RepeatTests repeatConfig14(String server) {
-        RepeatTests r = RepeatTests.with(new RepeatConfig14EE8(server));
+        RepeatTests r = repeatConfig20(server);
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
             r = r.andWith(new RepeatConfig14EE7(server));
+            r = r.andWith(new RepeatConfig14EE8(server));
+        }
+        return r;
+    }
+
+    /**
+     * Get the RepeatTests actions for Config 2.0 tests.
+     * In lite mode, this is Config 2.0 + EE8.
+     * In full mode Config 2.0 + EE7 would be run as well.
+     *
+     * @param server The name of the test server
+     * @return The RepeatTests for Config 1.4 tests
+     */
+    public static RepeatTests repeatConfig20(String server) {
+        RepeatTests r = RepeatTests.with(new RepeatConfig20EE8(server));
+        if (TestModeFilter.shouldRun(TestMode.FULL)) {
+            r = r.andWith(new RepeatConfig20EE7(server));
         }
         return r;
     }

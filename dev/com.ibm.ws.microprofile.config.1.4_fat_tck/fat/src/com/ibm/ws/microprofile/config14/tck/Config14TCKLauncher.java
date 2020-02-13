@@ -35,7 +35,9 @@ import componenttest.topology.utils.MvnUtils;
 public class Config14TCKLauncher {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()).andWith(FeatureReplacementAction.EE8_FEATURES());
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("mpConfig-1.4").addFeature("mpConfig-2.0"));
 
     @Server("Config14TCKServer")
     public static LibertyServer server;
