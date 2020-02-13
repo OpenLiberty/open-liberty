@@ -95,8 +95,7 @@ Service-Component: \
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
     OSGI-INF=resources/OSGI-INF, \
-    scripts=resources/scripts, \
-    resources/authzMgmt.jsp, \
+    scripts=resources/scripts, \    
     resources/clienttable.jsp, \
     resources/login.jsp, \
     resources/template.jsp, \
