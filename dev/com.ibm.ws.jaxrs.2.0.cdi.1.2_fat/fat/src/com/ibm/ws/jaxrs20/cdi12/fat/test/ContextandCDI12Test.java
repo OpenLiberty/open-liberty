@@ -90,17 +90,19 @@ public class ContextandCDI12Test extends AbstractTest {
     @Test
     public void testContextandCDIResource1() throws Exception {
         
-        runGetMethod("/contextandCDI1/resource", 200, "ok", true);
+        String testName = "testContextandCDIResource1";
+        
+        runGetMethod("/contextandCDI1/resource/" + testName, 200, "ok", true);
         verifySuccess("CDIFilter", 1);
         verifySuccess2("TestResource", 1);
-        runGetMethod("/contextandCDI1/resource2", 200, "ok", true);
+        runGetMethod("/contextandCDI1/resource2/" + testName, 200, "ok", true);
         verifySuccess("CDIFilter2", 2);
         verifySuccess2("TestResource2", 1);
         //@Dependent scope providers call @PostConstruct method to be called twice.  https://github.com/OpenLiberty/open-liberty/issues/10633 
         //runGetMethod("/contextandCDI1/resource3", 200, "ok", true);
         //verifySuccess("CDIFilter3");
         //verifySuccess2("TestResource3", 1);
-        runGetMethod("/contextandCDI1/resource4", 200, "ok", true);
+        runGetMethod("/contextandCDI1/resource4/" + testName, 200, "ok", true);
         verifySuccess("CDIFilter4", 3);
         verifySuccess2("TestResource4", 1);
     }
@@ -108,10 +110,12 @@ public class ContextandCDI12Test extends AbstractTest {
     @Test
     public void testContextandCDIResource2() throws Exception {
         
-        runGetMethod("/contextandCDI2/resource", 200, "ok", true);
+        String testName = "testContextandCDIResource2";
+        
+        runGetMethod("/contextandCDI2/resource/" + testName, 200, "ok", true);
         verifySuccess("CDIFilter", 1);
         verifySuccess2("TestResource", 1);
-        runGetMethod("/contextandCDI2/resource2", 200, "ok", true);
+        runGetMethod("/contextandCDI2/resource2/" + testName, 200, "ok", true);
         // See https://github.com/OpenLiberty/open-liberty/issues/10725
         //verifySuccess("CDIFilter2", 2);
         verifySuccess2("TestResource2", 1);
@@ -119,7 +123,7 @@ public class ContextandCDI12Test extends AbstractTest {
         //runGetMethod("/contextandCDI2/resource3", 200, "ok", true);
         //verifySuccess("CDIFilter3");
         //verifySuccess2("TestResource3", 1);
-        runGetMethod("/contextandCDI2/resource4", 200, "ok", true);
+        runGetMethod("/contextandCDI2/resource4/" + testName, 200, "ok", true);
         // See https://github.com/OpenLiberty/open-liberty/issues/10725
         //verifySuccess("CDIFilter4", 3);
         verifySuccess2("TestResource4", 1);
@@ -128,23 +132,29 @@ public class ContextandCDI12Test extends AbstractTest {
   @Test
   public void testContextandCDIResource3() throws Exception {
       
-      runGetMethod("/contextandCDI3/resource", 200, "ok", true);
+      String testName = "testContextandCDIResource3";
+      
+      runGetMethod("/contextandCDI3/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource4() throws Exception {
+      
+      String testName = "testContextandCDIResource4";
        
-      runGetMethod("/contextandCDI4/resource", 200, "ok", true);
+      runGetMethod("/contextandCDI4/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
   
   @Test
   public void testContextandCDIResource5() throws Exception {
+      
+      String testName = "testContextandCDIResource5";
         
-      runGetMethod("/contextandCDI5/resource", 200, "ok", true);
+      runGetMethod("/contextandCDI5/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
@@ -152,15 +162,19 @@ public class ContextandCDI12Test extends AbstractTest {
   @Test
   public void testContextandCDIResource6() throws Exception {
       
-      runGetMethod("/contextandCDI6/resource", 200, "ok", true);
+      String testName = "testContextandCDIResource6";
+      
+      runGetMethod("/contextandCDI6/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
   
   @Test
-  public void testContextandCDIResource11() throws Exception {       
+  public void testContextandCDIResource11() throws Exception {
+      
+      String testName = "testContextandCDIResource11";
              
-      runGetMethod("/contextandCDI11/resource", 200, "ok", true);
+      runGetMethod("/contextandCDI11/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
@@ -168,7 +182,9 @@ public class ContextandCDI12Test extends AbstractTest {
   @Test
   public void testContextandCDIResource12() throws Exception {
       
-      runGetMethod("/contextandCDI12/resource", 200, "ok", true);
+      String testName = "testContextandCDIResource12";
+      
+      runGetMethod("/contextandCDI12/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
@@ -176,7 +192,9 @@ public class ContextandCDI12Test extends AbstractTest {
   @Test
   public void testContextandCDIResource21() throws Exception {
       
-      runGetMethod("/contextandCDI21/resource", 200, "ok", true);
+      String testName = "testContextandCDIResource21";
+      
+      runGetMethod("/contextandCDI21/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
@@ -184,7 +202,9 @@ public class ContextandCDI12Test extends AbstractTest {
   @Test
   public void testContextandCDIResource22() throws Exception {
       
-      runGetMethod("/contextandCDI22/resource", 200, "ok", true);
+      String testName = "testContextandCDIResource22";
+      
+      runGetMethod("/contextandCDI22/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
@@ -192,7 +212,9 @@ public class ContextandCDI12Test extends AbstractTest {
   @Test
   public void testContextandCDIResource31() throws Exception {
       
-      runGetMethod("/contextandCDI31/resource", 200, "ok", true);
+      String testName = "testContextandCDIResource31";
+      
+      runGetMethod("/contextandCDI31/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
@@ -200,7 +222,9 @@ public class ContextandCDI12Test extends AbstractTest {
   @Test
   public void testContextandCDIResource32() throws Exception {
       
-      runGetMethod("/contextandCDI32/resource", 200, "ok", true);
+      String testName = "testContextandCDIResource32";
+      
+      runGetMethod("/contextandCDI32/resource/" + testName, 200, "ok", true);
       verifySuccess("CDIFilter", 1);
       verifySuccess2("TestResource", 1);
   }
