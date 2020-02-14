@@ -723,7 +723,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 
 						boolean licenseFound = false;
 						for (String license : Constants.LICENSE_PRIORITY) {
-							for (int ind = 0; i < editions.size(); ind++) {
+							for (int ind = 0; ind < editions.size(); ind++) {
 								if (editions.getString(ind).equals(license)) {
 									minimumLicenseMavenCoordinate = licenseMap.get(license);
 									licenseFound = true;
