@@ -100,6 +100,7 @@ cpu.processCpuLoad.description=Wy\u015bwietla u\u017cycie procesora przez proces
 
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Wy\u015bwietla czas pracy procesora u\u017cywany przez proces, w kt\u00f3rym dzia\u0142a wirtualna maszyna j\u0119zyka Java.
+
 #Garbage collection count message
 garbageCollectionCount.description=Wy\u015bwietla \u0142\u0105czn\u0105 liczb\u0119 operacji gromadzenia, kt\u00f3re wyst\u0105pi\u0142y. Ten atrybut ma warto\u015b\u0107 -1, je\u015bli liczba operacji gromadzenia dla tego kolektora jest niezdefiniowana.
 
@@ -114,6 +115,9 @@ threadpool.size.description=Wielko\u015b\u0107 puli w\u0105tk\u00f3w.
 
 servlet.request.total.description=Liczba odwiedzin w tym serwlecie od momentu uruchomienia serwera.
 servlet.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tego serwletu od momentu uruchomienia serwera.
+
+RESTful.request.total.description=Liczba wywo\u0142a\u0144 tej metody zasobu RESTful od momentu uruchomienia serwera.
+RESTful.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera.
 
 connectionpool.create.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y utworzone od momentu utworzenia puli.
 connectionpool.destroy.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y zniszczone od momentu utworzenia puli.

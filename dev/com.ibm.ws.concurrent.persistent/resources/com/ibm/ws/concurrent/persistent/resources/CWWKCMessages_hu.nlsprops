@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,14 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Ha a visszag\u00f6rget\u00e9se
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: A(z) {0} \u00e1lland\u00f3 v\u00e9grehajt\u00f3 megszak\u00edtotta a(z) {1} feladatot, mert az {2} egym\u00e1st k\u00f6vet\u0151 alkalommal ker\u00fclt visszag\u00f6rget\u00e9sre vagy hi\u00fasult meg. A v\u00e9gs\u0151 hiba a k\u00f6vetkez\u0151: {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=A feladat el\u00e9rte az egym\u00e1st k\u00f6vet\u0151 \u00fajrapr\u00f3b\u00e1lkoz\u00e1sok korl\u00e1tj\u00e1t, \u00e9s nem lesz \u00fajra megk\u00eds\u00e9relve.
 CWWKC1511.retry.limit.reached.failed.useraction=Ha a hib\u00e1k vagy visszag\u00f6rget\u00e9sek v\u00e1ratlanok, akkor \u00e1llap\u00edtsa meg az okot, \u00e9s \u00fctemezze \u00fajra a feladatot. Ha a visszag\u00f6rget\u00e9sek \u00e9s hib\u00e1k id\u0151szakosak, akkor fontolja meg az \u00fajrapr\u00f3b\u00e1lkoz\u00e1si korl\u00e1t n\u00f6vel\u00e9s\u00e9t. 
+
+CWWKC1520.out.of.range=CWWKC1520E: A(z) {0} be\u00e1ll\u00edtott \u00e9rt\u00e9k {1} eset\u00e9ben nem a(z) {2} - {3} tartom\u00e1nyba esik.
+CWWKC1520.out.of.range.explanation=Az enged\u00e9lyezett tartom\u00e1nyon k\u00edv\u00fcl es\u0151 \u00e9rt\u00e9k a megadott tulajdons\u00e1ghoz van be\u00e1ll\u00edtva.
+CWWKC1520.out.of.range.useraction=Az enged\u00e9lyezett tartom\u00e1nyba es\u0151 \u00e9rt\u00e9ket \u00e1ll\u00edtson be.
+
+CWWKC1521.less.than.min=CWWKC1521E: A(z) {0} be\u00e1ll\u00edtott \u00e9rt\u00e9k {1} eset\u00e9ben nem lehet kisebb, mint a(z) {2} be\u00e1ll\u00edtott \u00e9rt\u00e9ke, ami {3}.
+CWWKC1521.less.than.min.explanation=A nagyobb retryInterval be\u00e1ll\u00edt\u00e1s arra \u00f6szt\u00f6n\u00f6z, hogy a sikertelen feladatot \u00fajra megk\u00eds\u00e9relj\u00e9k m\u00e1s kiszolg\u00e1l\u00f3kon a sikertelen helyett.
+CWWKC1521.less.than.min.useraction=\u00c1ll\u00edtsa be a retryInterval tulajdons\u00e1got a missedTaskThreshold \u00e9rt\u00e9k\u00e9n\u00e9l nagyobbra.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Nem \u00fctemezhet \u00e1lland\u00f3 feladatokat az aktu\u00e1lis sz\u00e1lkontextusb\u00f3l.
 CWWKC1540.thread.cannot.submit.tasks.explanation=\u00c1lland\u00f3 feladatokat csak olyan sz\u00e1lb\u00f3l \u00fctemezhet, amely soros\u00edthat\u00f3 oszt\u00e1lybet\u00f6lt\u0151 azonoss\u00e1ggal rendelkez\u0151 alkalmaz\u00e1ssal vagy szolg\u00e1ltat\u00e1ssal van t\u00e1rs\u00edtva.

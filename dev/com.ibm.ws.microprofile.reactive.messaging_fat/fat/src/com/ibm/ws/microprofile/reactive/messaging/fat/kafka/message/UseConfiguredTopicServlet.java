@@ -13,11 +13,13 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.header.Header;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
@@ -29,7 +31,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWrite
 public class UseConfiguredTopicServlet extends AbstractKafkaTestServlet {
 
     @Test
-    public void testConfiguredTopic() {
+    public void testConfiguredTopic() throws UnsupportedEncodingException {
         String topicIn = ConfiguredTopicBean.CHANNEL_IN;
         String expectedTopicOut = ConfiguredTopicBean.CONFIGURED_TOPIC;
         String unexpectedTopicOut = ConfiguredTopicBean.PRODUCER_RECORD_TOPIC;
@@ -54,6 +56,16 @@ public class UseConfiguredTopicServlet extends AbstractKafkaTestServlet {
                 assertEquals(keyOut, record.key());
                 assertEquals(valueOut, record.value());
                 assertEquals(expectedTopicOut, record.topic());
+
+                Header[] headers = record.headers().toArray();
+                assertEquals(ConfiguredTopicBean.NUM_HEADERS, headers.length);
+                for (int i = 0; i < ConfiguredTopicBean.NUM_HEADERS; i++) {
+                    Header header = headers[i];
+                    String headerKey = header.key();
+                    String headerValue = new String(header.value(), "UTF-8");
+                    assertEquals(ConfiguredTopicBean.HEADER_KEY_PREFIX + i, headerKey);
+                    assertEquals(ConfiguredTopicBean.HEADER_VALUE_PREFIX + i, headerValue);
+                }
             }
         } else {
             if (unexpectedRecords.size() == 0) {

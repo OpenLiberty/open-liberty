@@ -115,7 +115,7 @@ action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tObnovit b\u011bh v\u0161ech pozastaven\u00fdch komponent serveru. S pomoc\u00ed volby \n \t--target je mo\u017en\u00e9 obnovit pouze b\u011bh konkr\u00e9tn\u00edch pozastaven\u00fdch komponent.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tVy\u010dist\u00ed ve\u0161ker\u00e9 informace ulo\u017een\u00e9 v mezipam\u011bti vztahuj\u00edc\u00ed se k t\u00e9to instanci serveru.
+option-desc.start.clean=\tVy\u010dist\u00ed ve\u0161ker\u00e9 informace ulo\u017een\u00e9 v mezipam\u011bti vztahuj\u00edc\u00ed se k t\u00e9to instanci serveru. 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="cesta k c\u00edlov\u00e9mu souboru archivu"
 option-desc.dump.archive=\tUr\u010dete c\u00edl archivu, kter\u00fd m\u00e1 b\u00fdt vygenerov\u00e1n akc\u00ed v\u00fdpisu pam\u011bti.       \n\
@@ -175,3 +175,15 @@ option-desc.no-password=\tZak\u00e1zat generov\u00e1n\u00ed v\u00fdchoz\u00edho 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ Slo\u017eka serveru --server-root="root v archivu"
 option-desc.package.server-root=\tUr\u010duje n\u00e1zev slo\u017eky ko\u0159enov\u00e9ho serveru v archivn\u00edm souboru.\n
+#------------------------------\n\
+\ 72 znak\u016f  -- \u00favodn\u00ed tabul\u00e1tor-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tP\u0159esko\u010d\u00ed f\u00e1zi uveden\u00ed do klidov\u00e9ho stavu p\u0159edt\u00edm, ne\u017e bude server ukon\u010den. Standardn\u00ed zastaven\u00ed serveru\n\
+\tzahrnuje f\u00e1zi uveden\u00ed do klidov\u00e9ho stavu p\u0159edt\u00edm, ne\u017e bude server ukon\u010den. F\u00e1ze \n\
+\tuveden\u00ed do klidov\u00e9ho stavu, v trv\u00e1n\u00ed 30 sekund, umo\u017e\u0148uje slu\u017eb\u00e1m prov\u00e9st \n\
+\tpr\u00e1ce nezbytn\u00e9 p\u0159ed ukon\u010den\u00edm, nap\u0159. zastaveny jsou p\u0159\u00edchoz\u00ed moduly listener, ale \n\
+\tst\u00e1vaj\u00edc\u00ed po\u017eadavky mohou b\u00fdt dokon\u010deny. Volba --force nem\u00e1 \u017e\u00e1dn\u00fd \n\
+\tvliv, pokud bylo zastaven\u00ed serveru ji\u017e vyvol\u00e1no. Pou\u017eijete-li volbu --force,  \n\
+\tmohou se do souboru messages.log zaznamenat neo\u010dek\u00e1van\u00e9 v\u00fdjimky, \n\
+\tkter\u00e9 se vyskytnou pot\u00e9, co server p\u0159ijme p\u0159\u00edkaz zastaven\u00ed serveru.

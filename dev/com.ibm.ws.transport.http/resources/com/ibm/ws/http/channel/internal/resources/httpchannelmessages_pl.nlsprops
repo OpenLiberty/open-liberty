@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -140,3 +140,24 @@ duplicateAlias.useraction=Upewnij si\u0119, \u017ce wszystkie aliasy hosta zdefi
 context.root.changed=CWWKT0028I: Przeniesiona aplikacja WWW ({0}): {1}
 context.root.changed.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 context.root.changed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+compression.duplicateType=CWWKT0029W: Podj\u0119to pr\u00f3b\u0119 ponownego dodania typu {0}. Zamiast tego u\u017cywana jest konfiguracja domy\u015blna {1}. 
+compression.duplicateType.explanation=Podana warto\u015b\u0107 jest ju\u017c zarejestrowana jako dopuszczalny typ tre\u015bci do kompresji.
+compression.duplicateType.useraction=Przy definiowaniu warto\u015bci dopuszczalnych kodowa\u0144 nale\u017cy zwr\u00f3ci\u0107 uwag\u0119 na to, aby ka\u017cda warto\u015b\u0107 by\u0142a unikalna. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: Podj\u0119to pr\u00f3b\u0119 ponownego usuni\u0119cia kodowania {0}. Zamiast tego u\u017cywana jest konfiguracja domy\u015blna {1}. \
+
+compression.duplicateTypeRemoval.explanation=Podana warto\u015b\u0107 jest ju\u017c zarejestrowana jako typ tre\u015bci wykluczony z kompresji.
+compression.duplicateTypeRemoval.useraction=U\u017cywaj\u0105c opcji usuwania (-), upewnij si\u0119, \u017ce podana warto\u015b\u0107 nie jest jeszcze zarejestrowana jako wykluczony typ tre\u015bci.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: Podj\u0119to pr\u00f3b\u0119 dodania i usuni\u0119cia tego samego typu tre\u015bci {0}. Zamiast tego u\u017cywana jest konfiguracja domy\u015blna {1}.
+compression.duplicateTypeAddRemove.explanation=Podana warto\u015b\u0107 jest zar\u00f3wno dodawana, jak i usuwana przy u\u017cyciu opcji '+/-' w konfiguracji.
+compression.duplicateTypeAddRemove.useraction=Nie nale\u017cy dodawa\u0107 (+) i usuwa\u0107 (-) tego samego typu tre\u015bci.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Podj\u0119to pr\u00f3b\u0119 nadpisania domy\u015blnej konfiguracji kompresji, ale r\u00f3wnie\u017c u\u017cyto opcji dodawania (+) w przypadku innych typ\u00f3w tre\u015bci. Zamiast tego u\u017cywana jest konfiguracja domy\u015blna {0}.
+compression.duplicateOverwriteAndAdd.explanation=Konfiguracja pr\u00f3buje nadpisa\u0107 warto\u015b\u0107 domy\u015bln\u0105, korzystaj\u0105c tak\u017ce z opcji dodawania (+). Nie mo\u017cna u\u017cy\u0107 opcji dodawania, je\u015bli nadpisuje si\u0119 warto\u015bci domy\u015blne.
+compression.duplicateOverwriteAndAdd.useraction=Je\u015bli konieczne jest nadpisanie konfiguracji domy\u015blnej, nie nale\u017cy u\u017cywa\u0107 opcji dodawania (+). Je\u015bli nie ma potrzeby nadpisywania konfiguracji domy\u015blnej, nale\u017cy uwzgl\u0119dni\u0107 wszelkie inne wymagane typy tre\u015bci przy u\u017cyciu opcji dodawania (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: Podj\u0119to pr\u00f3b\u0119 skonfigurowania {0} jako algorytmu preferowanego przez serwer. Obs\u0142ugiwane warto\u015bci: gzip, x-gzip, zlib, deflate, identity i none. Zamiast tego u\u017cywana jest konfiguracja domy\u015blna {1}.
+compression.unsupportedAlgorithm.explanation=Konfiguracja pr\u00f3buje ustawi\u0107 nieobs\u0142ugiwany algorytm jako preferowany przez serwer algorytm kompresji. 
+compression.unsupportedAlgorithm.useraction= Definiuj\u0105c to ustawienie konfiguracji, nale\u017cy u\u017cy\u0107 jednej z warto\u015bci: gzip, x-gzip, deflate, zlib, identity lub none.

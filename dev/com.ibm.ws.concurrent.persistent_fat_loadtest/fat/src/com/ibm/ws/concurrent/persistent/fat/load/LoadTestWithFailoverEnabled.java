@@ -63,7 +63,7 @@ public class LoadTestWithFailoverEnabled extends FATServletClient {
         server.updateServerConfiguration(config);
 
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "web.task");
-        server.configureForAnyDatabase();
+
         server.startServer();
     }
 

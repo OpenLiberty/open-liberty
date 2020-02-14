@@ -33,7 +33,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
                 PropsTest.class
 })
 public class FATSuite {
-    private static final String[] ALL_VERSIONS = {"1.0", "1.1", "1.2", "1.3"};
+    private static final String[] ALL_VERSIONS = {"1.0", "1.1", "1.2", "1.3", "1.4"};
 
     static FeatureReplacementAction MP_REST_CLIENT(String version, String serverName) {
         return MP_REST_CLIENT(new FeatureReplacementAction(), version, serverName);
