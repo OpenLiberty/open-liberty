@@ -717,7 +717,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 
 
 				String minimumLicenseMavenCoordinate = null;
-				if(true) {//if(isWebsphereLiberty) {
+				if(isWebsphereLiberty) {
 					if (wlpInfo.containsKey("appliesToFilterInfo")) {
 						JsonArray editions = wlpInfo.getJsonArray("appliesToFilterInfo").getJsonObject(0).getJsonArray("editions");
 
