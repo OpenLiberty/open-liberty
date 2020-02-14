@@ -37,10 +37,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("MPM23")
 public class MetricsMonitorTest {
 	
     private static Class<?> c = MetricsMonitorTest.class;
@@ -125,6 +127,29 @@ public class MetricsMonitorTest {
           	new String[] {});
       	
       	Log.info(c, testName, "------- Remove mpMetrics-2.0: no metrics should be available ------");
+      	server.setServerConfigurationFile("server_monitorOnly.xml");
+      	// old one for metrics 1.1 was CWPMI2002I
+      	String logMsg = server.waitForStringInLogUsingMark("CWPMI2004I");
+      	Log.info(c, testName, logMsg);
+      	Assert.assertNotNull("No CWPMI2004I message", logMsg);
+    }
+    
+    @Test
+    public void testDisableMpMetrics23Feature() throws Exception {
+    	
+    	String testName = "testDisableMpMetricsFeature";
+    	
+    	Log.info(c, testName, "------- Enable mpMetrics-2.3 and monitor-1.0: vendor metrics should be available ------");
+    	server.setServerConfigurationFile("server_monitor2.xml");
+    	server.startServer();
+    	Assert.assertNotNull("CWWKO0219I NOT FOUND", server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	Log.info(c, testName, "------- server started -----");
+    	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
+      	checkStrings(getHttpsServlet("/metrics"), 
+          	new String[] { "base_", "vendor_" }, 
+          	new String[] {});
+      	
+      	Log.info(c, testName, "------- Remove mpMetrics-2.3: no metrics should be available ------");
       	server.setServerConfigurationFile("server_monitorOnly.xml");
       	// old one for metrics 1.1 was CWPMI2002I
       	String logMsg = server.waitForStringInLogUsingMark("CWPMI2004I");
