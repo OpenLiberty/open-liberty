@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.webcontainer.security.internal.URLHandler;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 
 /**
  * Contains all WASReqURL Cookie related functions required by WAS.security.
@@ -102,12 +103,10 @@ public class ReferrerURLCookieHandler extends URLHandler {
         if (webAppSecConfig.getSSORequiresSSL()) {
             c.setSecure(true);
         }
-//        String sameSite = webAppSecConfig.getSameSiteCookie();
+        String sameSite = webAppSecConfig.getSameSiteCookie();
         // call WebContainer code to set the attribute SameSite
-        // Do we allow to set SameSite=None with HTTP?
-
-//      WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
-//      requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
+        WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+        requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
         return c;
     }
 

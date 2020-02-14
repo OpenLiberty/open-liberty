@@ -38,9 +38,9 @@ import com.ibm.ws.webcontainer.security.internal.LoggedOutJwtSsoCookieCache;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
-//import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 
 /**
  * Single sign-on cookie helper class.
@@ -152,11 +152,10 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if (domainName != null) {
             ssoCookie.setDomain(domainName);
         }
-//        String sameSite = config.getSameSiteCookie();
+        String sameSite = config.getSameSiteCookie();
         // call WebContainerRequestState code to set the attribute SameSite
-        // Do we allow to set SameSite=None with HTTP?
-//        WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
-//        requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
+        WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+        requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
 
         return ssoCookie;
     }
