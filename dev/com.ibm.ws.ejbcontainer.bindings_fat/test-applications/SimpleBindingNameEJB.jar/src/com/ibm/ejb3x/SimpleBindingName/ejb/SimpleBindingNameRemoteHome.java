@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,15 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ejb2x.jndiName.ejb;
+package com.ibm.ejb3x.SimpleBindingName.ejb;
 
 /**
- * Local interface for Enterprise Bean: JNDIName.
+ * Home interface for Enterprise Bean: SimpleBindingName
  */
-public interface JNDIName extends javax.ejb.EJBLocalObject {
-
+public interface SimpleBindingNameRemoteHome extends javax.ejb.EJBHome {
     /**
-    */
-    public String foo();
-
+     * Creates a default instance of Session Bean: SimpleBindingName
+     */
+    public SimpleBindingRemoteName create() throws javax.ejb.CreateException, java.rmi.RemoteException;
 }
