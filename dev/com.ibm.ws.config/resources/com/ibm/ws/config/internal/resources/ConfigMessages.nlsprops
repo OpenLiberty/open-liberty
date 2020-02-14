@@ -472,8 +472,8 @@ variables.in.id.not.supported=CWWKG0104W: The ID attribute with value {1} for th
 variables.in.id.not.supported.explanation: Variable values are not allowed in ID attributes. All variables in ID attributes will be treated as literal strings.  
 variables.in.id.not.supported.useraction: Remove the variable from the value of the ID attribute.
 
-error.root.must.be.server=CWWKG0105E: The configuration document {0} must begin with the element '{1}'.
-error.root.must.be.server.explanation=Configuration must be contained in either a server element or a client element. 
+error.root.must.be.server=CWWKG0105E: The {0} configuration document must begin with the [{1}] element.
+error.root.must.be.server.explanation=The configuration must be contained in either a server element or a client element. 
 error.root.must.be.server.useraction: Add a server or client element as the root of the configuration file. 
 
 # Non-TR message
