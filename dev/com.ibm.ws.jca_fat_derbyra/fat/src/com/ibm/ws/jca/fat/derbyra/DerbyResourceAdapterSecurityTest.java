@@ -80,12 +80,22 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
 
     @Test
     public void testJCADataSourceResourceRefSecurity() throws Exception {
-        FATServletClient.runTest(server, DerbyRAServlet, testName);
+        runTest(DerbyRAServlet);
     }
 
     @Test
     public void testCustomLoginModuleCF() throws Exception {
-        FATServletClient.runTest(server, DerbyRAAnnoServlet, testName);
+        runTest(DerbyRAAnnoServlet);
     }
 
+    private void runTest(String servlet) throws Exception {
+        String test = testName.getMethodName();
+        // RepeatTests causes the test name to be appended with _EE8_FEATURES.  Strip it off so that the right
+        // test name is sent to the servlet
+        int index = test == null ? -1 : test.indexOf("_EE8_FEATURES");
+        if (index != -1) {
+            test = test.substring(0, index);
+        }
+        FATServletClient.runTest(server, servlet, test);
+    }
 }

@@ -15,7 +15,7 @@
       <feature>concurrent-1.0</feature>
       <feature>jca-1.7</feature>
       <feature>jndi-1.0</feature>
-      <feature>servlet-4.0</feature>
+      <feature>servlet-3.1</feature>
     </featureManager>
 
     <include optional="true" location="../fatTestPorts.xml"/>
