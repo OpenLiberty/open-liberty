@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,15 +114,18 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
         // Create the kafkaConsumer
         KafkaConsumer<String, Object> kafkaConsumer = this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
 
-        // Create the AckTracker
-        AckTracker ackTracker = null;
-        if (!enableAutoCommit) {
-            // We only need to track acknowledgments if the user hasn't enabled auto commit
-            ackTracker = new AckTracker(kafkaAdapterFactory, executor, unackedLimit);
+        PartitionTrackerFactory partitionTrackerFactory = new PartitionTrackerFactory();
+        partitionTrackerFactory.setExecutor(executor);
+        partitionTrackerFactory.setAdapterFactory(kafkaAdapterFactory);
+        partitionTrackerFactory.setAutoCommitEnabled(enableAutoCommit);
+
+        if (enableAutoCommit) {
+            unackedLimit = 0;
         }
 
         // Create our connector around the kafkaConsumer
-        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topic, ackTracker);
+        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, partitionTrackerFactory, kafkaConsumer, this.executor,
+                                                                 topic, unackedLimit);
         kafkaInputs.add(kafkaInput);
 
         return kafkaInput.getPublisher();

@@ -30,8 +30,8 @@ import org.testng.annotations.BeforeMethod;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
-import com.ibm.ws.microprofile.reactive.messaging.kafka.AckTracker;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaInput;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.PartitionTrackerFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
 
@@ -96,9 +96,12 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, FailingDeserializer.class.getName());
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
-        AckTracker ackTracker = new AckTracker(kafkaAdapterFactory, executor, MESSAGE_LIMIT);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, topicName, ackTracker);
+        PartitionTrackerFactory trackerFactory = new PartitionTrackerFactory();
+        trackerFactory.setExecutor(executor);
+        trackerFactory.setAutoCommitEnabled(false);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }
@@ -129,9 +132,12 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
-        AckTracker ackTracker = new AckTracker(kafkaAdapterFactory, executor, MESSAGE_LIMIT);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, kafkaConsumer, executor, topicName, ackTracker);
+        PartitionTrackerFactory trackerFactory = new PartitionTrackerFactory();
+        trackerFactory.setExecutor(executor);
+        trackerFactory.setAutoCommitEnabled(false);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }
