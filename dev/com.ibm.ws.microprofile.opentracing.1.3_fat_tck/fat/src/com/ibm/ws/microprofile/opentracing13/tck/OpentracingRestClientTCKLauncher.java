@@ -14,12 +14,14 @@ import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -28,8 +30,15 @@ import componenttest.topology.utils.MvnUtils;
  */
 @RunWith(FATRunner.class)
 public class OpentracingRestClientTCKLauncher {
+	
+	final static String SERVER_NAME = "OpentracingRestClientTCKServer";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+        .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME));
     
-    @Server("OpentracingRestClientTCKServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

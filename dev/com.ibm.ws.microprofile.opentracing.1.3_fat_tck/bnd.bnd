@@ -24,7 +24,7 @@ src: \
 
 fat.project: true
 
-tested.features: opentracing-1.3
+tested.features: opentracing-1.3, mprestclient-1.4
 
 -buildpath: \
     com.ibm.websphere.org.eclipse.microprofile.opentracing.1.3;version=latest,\
