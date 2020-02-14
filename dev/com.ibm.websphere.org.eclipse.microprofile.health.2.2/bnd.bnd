@@ -26,7 +26,7 @@ Export-Package: org.eclipse.microprofile.health;version=2.2, \
 publish.wlp.jar.suffix: dev/api/stable
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.health:microprofile-health-api;2.2.0.RC2;EXACT}
+  @${repo;org.eclipse.microprofile.health:microprofile-health-api;2.2;EXACT}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"
 
