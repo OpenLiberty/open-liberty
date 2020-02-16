@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -65,7 +66,14 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     private LoginModuleControlFlag controlFlag = null;
     private Map<String, Object> options = Collections.emptyMap();
 
-    /** The required shared library */
+    /**
+     * The class provider, if specified.
+     */
+    private ClassProviderProxy classProvider;
+
+    /**
+     * The shared library, if specified.
+     */
     private Library sharedLibrary;
 
     private ClassLoadingService classLoadingService;
@@ -91,20 +99,29 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             Class<?> cl = getTargetClassForName(target);
             options.put(LoginModuleProxy.KERNEL_DELEGATE, cl);
         } else {
-            options = processDelegateOptions(options, originalLoginModuleClassName, classLoadingService, sharedLibrary, false);
+            options = processDelegateOptions(options, originalLoginModuleClassName, classProvider, classLoadingService, sharedLibrary, false);
         }
         this.options = options;
     }
 
     @FFDCIgnore(ClassNotFoundException.class)
-    public static Map<String, Object> processDelegateOptions(Map<String, Object> inOptions, String originalLoginModuleClassName, ClassLoadingService classLoadingService,
+    public static Map<String, Object> processDelegateOptions(Map<String, Object> inOptions, String originalLoginModuleClassName,
+                                                             ClassProviderProxy classProvider, ClassLoadingService classLoadingService,
                                                              Library sharedLibrary, boolean jaasConfigFile) {
         Map<String, Object> options = new HashMap<String, Object>();
         options.putAll(inOptions);
         String target = getTargetClassName(originalLoginModuleClassName, options);
         options.put(LoginModuleProxy.KERNEL_DELEGATE, WSLOGIN_MODULE_PROXY_CLASS);
         if (target != null) {
-            ClassLoader loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
+            // TODO error path if neither libraryRef nor classProviderRef are specified
+            // For now, while this function is internal, this is unreachable because libraryRef is still mandatory
+
+            ClassLoader loader;
+            if (classProvider == null)
+                loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
+            else
+                loader = classProvider.getDelegateLoader();
+
             Class<?> cl = null;
             try {
                 if (isIBMJdk18Lower() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
@@ -218,6 +235,11 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     @Override
     public Map<String, ?> getOptions() {
         return options;
+    }
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    protected void setClassProvider(ClassProviderProxy provider) {
+        classProvider = provider;
     }
 
     /** Set required service, will be called before activate */

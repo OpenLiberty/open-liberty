@@ -60,11 +60,9 @@ public class LoginModuleInStandaloneResourceAdapterTest extends FATServletClient
 
         rar.addAsLibrary(new File("publish/shared/resources/derby/derby.jar"));
 
-        rar.as(JavaArchive.class).addPackage("com.ibm.ws.jca.fat.security.login");
-        // TODO switch to JAR within resource adapter once implemented to properly read from the rar
-        //JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "loginModule.jar");
-        //jar.addPackage("com.ibm.ws.jca.fat.security.login");
-        //rar.addAsLibraries(jar);
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "loginModule.jar");
+        jar.addPackage("com.ibm.ws.jca.fat.security.login");
+        rar.addAsLibraries(jar);
 
         ShrinkHelper.exportToServer(server, "connectors", rar);
 
