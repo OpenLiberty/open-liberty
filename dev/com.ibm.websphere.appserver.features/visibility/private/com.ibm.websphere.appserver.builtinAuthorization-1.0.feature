@@ -6,3 +6,4 @@ symbolicName=com.ibm.websphere.appserver.builtinAuthorization-1.0
  com.ibm.ws.security.authorization.builtin
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

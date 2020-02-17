@@ -10,3 +10,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.microprofile.rest.client.ssl
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

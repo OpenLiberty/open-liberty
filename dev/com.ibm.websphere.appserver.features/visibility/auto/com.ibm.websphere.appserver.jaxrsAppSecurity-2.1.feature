@@ -9,3 +9,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxrs.2.0.security
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

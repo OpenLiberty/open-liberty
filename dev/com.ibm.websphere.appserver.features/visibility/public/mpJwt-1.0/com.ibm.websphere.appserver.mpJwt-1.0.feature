@@ -19,3 +19,4 @@ Subsystem-Name: MicroProfile JSON Web Token 1.0
   com.ibm.ws.security.mp.jwt.cdi
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
