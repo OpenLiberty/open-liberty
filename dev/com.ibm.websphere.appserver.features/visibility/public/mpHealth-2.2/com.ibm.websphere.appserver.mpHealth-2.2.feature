@@ -10,12 +10,12 @@ IBM-API-Package: \
 IBM-ShortName: mpHealth-2.2
 Subsystem-Name: MicroProfile Health 2.2
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.health-2.2, \
- com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:=2.0, \
+ com.ibm.websphere.appserver.cdi-2.0; ibm.tolerates:=1.2, \
  com.ibm.websphere.appserver.classloaderContext-1.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.json-1.0, \
- com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
+ com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:=3.1, \
  com.ibm.wsspi.appserver.webBundle-1.0 
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.websphere.org.eclipse.microprofile.health.2.2; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.health:microprofile-health-api:2.2", \
