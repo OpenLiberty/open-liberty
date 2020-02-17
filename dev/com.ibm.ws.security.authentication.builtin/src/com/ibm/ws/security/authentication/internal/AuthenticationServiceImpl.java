@@ -343,9 +343,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     /**
-     * @param authCacheService An authentication cache service
-     * @param token The cache key, can be either a byte[] (SSO Token) or String (SSO Token Base64 encoded)
-     * @param ssoTokenBytes Optional SSO token as byte[], if null, it will be constructed from the token
+     * @param authCacheService   An authentication cache service
+     * @param token              The cache key, can be either a byte[] (SSO Token) or String (SSO Token Base64 encoded)
+     * @param ssoTokenBytes      Optional SSO token as byte[], if null, it will be constructed from the token
      * @param authenticaitonData TODO
      * @return the cached subject
      * @throws AuthenticationException if no cached subject was found
@@ -390,7 +390,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private Subject findSubjectByUseridAndPassword(AuthCacheService authCacheService, String userid, @Sensitive String password) {
-        return authCacheService.getSubject(BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password));
+        // Since generating password is expensive, don't look it up with password unless a cache object
+        // of which user id matches the specified userid.
+        String realm = getRealm();
+        Subject subject = authCacheService.getSubject(BasicAuthCacheKeyProvider.createLookupKey(realm, userid));
+        if (subject != null) {
+            subject = authCacheService.getSubject(BasicAuthCacheKeyProvider.createLookupKey(realm, userid, password));
+        }
+        return subject;
     }
 
     private Subject findSubjectBySubjectHashtable(AuthCacheService authCacheService, Subject partialSubject) {
@@ -412,13 +419,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String userid = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_USERID);
             String password = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_PASSWORD);
 
-            String lookupKey;
-            if (password != null) {
-                lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password);
-            } else {
-                lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid);
-            }
+            String lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid);
             subject = authCacheService.getSubject(lookupKey);
+
+            // Since generating password is expensive, don't look it up with password unless a cache object
+            // of which user id matches the specified userid.
+            if (password != null) {
+                if (subject != null) {
+                    lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password);
+                    subject = authCacheService.getSubject(lookupKey);
+                }
+            }
         }
 
         return subject;
@@ -479,12 +490,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (jaasService != null) {
             try {
                 return jaasService.performLogin(jaasEntryName, authenticationData, subject);
-            }
-            catch (LoginException e) {
-                if(e instanceof PasswordExpiredException) {
+            } catch (LoginException e) {
+                if (e instanceof PasswordExpiredException) {
                     throw new PasswordExpiredException(e.getLocalizedMessage());
-                }
-                else if(e instanceof UserRevokedException) {
+                } else if (e instanceof UserRevokedException) {
                     throw new UserRevokedException(e.getLocalizedMessage());
                 }
                 throw new AuthenticationException(e.getLocalizedMessage());
@@ -532,7 +541,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * or the MethodDelegationProvider if one is not configured.
      *
      * @param roleName the name of the role, used to look up the corresponding user.
-     * @param appName the name of the application, used to look up the corresponding user.
+     * @param appName  the name of the application, used to look up the corresponding user.
      * @return subject a subject representing the user that is mapped to the given run-as role.
      * @throws IllegalArgumentException
      */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Set;
 
 import javax.security.auth.Subject;
@@ -30,14 +30,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.cache.AuthCacheConfig;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
 import com.ibm.ws.security.authentication.cache.CacheObject;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -59,6 +58,8 @@ public class BasicAuthCacheKeyProviderTest {
     private static String realmUseridAndHashedPassword;
     private static String realmSecurityNameAndHashedPassword;
     private static String realmUniqueSecurityNameAndHashedPassword;
+    private static BasicAuthCacheKeyProvider bacp = new BasicAuthCacheKeyProvider();
+    private static String seedValue = bacp.getSeedValue();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -112,8 +113,8 @@ public class BasicAuthCacheKeyProviderTest {
         cacheContext = new CacheContext(config, cacheObject, testUser, testPassword);
     }
 
-    private static void createExpectedKeys() throws NoSuchAlgorithmException {
-        String hashedPassword = getHashedPassword(testPassword);
+    private static void createExpectedKeys() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        String hashedPassword = BasicAuthCacheKeyProvider.getHashedPassword(testUser, testPassword, seedValue);
         realmUseridAndHashedPassword = testRealm + ":" + testUser + ":" + hashedPassword;
         realmSecurityNameAndHashedPassword = testRealm + ":" + testUserSecurityName + ":" + hashedPassword;
         realmUniqueSecurityNameAndHashedPassword = testRealm + ":" + testUserUniqueSecurityName + ":" + hashedPassword;
@@ -122,14 +123,9 @@ public class BasicAuthCacheKeyProviderTest {
         realmAndUniqueSecurityName = testRealm + ":" + testUserUniqueSecurityName;
     }
 
-    private static String getHashedPassword(String password) throws NoSuchAlgorithmException {
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA");
-        return Base64Coder.base64EncodeToString(messageDigest.digest(Base64Coder.getBytes(password)));
-    }
-
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -140,7 +136,7 @@ public class BasicAuthCacheKeyProviderTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -268,6 +264,19 @@ public class BasicAuthCacheKeyProviderTest {
             assertNull("There must not be a key.", cacheKey);
             cacheKey = BasicAuthCacheKeyProvider.createLookupKey(testRealm, testUser, null);
             assertNull("There must not be a key.", cacheKey);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testgetHashedPasswordDifferentSeed() {
+        final String methodName = "testgetHashedPasswordDifferentSeed";
+        try {
+            Object firstHash = BasicAuthCacheKeyProvider.getHashedPassword(testUser, testPassword, "123456789");
+            Object secondHash = BasicAuthCacheKeyProvider.getHashedPassword(testUser, testPassword, "987654321");
+
+            assertFalse("The hashed value must be different when seed values are different.", firstHash.equals(secondHash));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }

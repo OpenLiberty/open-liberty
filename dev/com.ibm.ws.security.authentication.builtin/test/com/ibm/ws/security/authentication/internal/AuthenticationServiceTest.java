@@ -336,16 +336,43 @@ public class AuthenticationServiceTest {
         final String methodName = "authenticateSubjectUseridPasswordInCache";
         try {
             final String cacheKey = BasicAuthCacheKeyProvider.createLookupKey(REALM, GOOD_USER, GOOD_USER_PWD);
+            final String cacheKeyIdOnly = BasicAuthCacheKeyProvider.createLookupKey(REALM, GOOD_USER);
             final Subject partialSubject = createPartialSubject(GOOD_USER, GOOD_USER_PWD);
             final Subject authenticatedSubject = new Subject();
             mockery.checking(new Expectations() {
                 {
+                    one(authCacheService).getSubject(cacheKeyIdOnly);
+                    will(returnValue(authenticatedSubject));
                     one(authCacheService).getSubject(cacheKey);
                     will(returnValue(authenticatedSubject));
+
                 }
             });
 
             assertNotNull("The subject must be found from the cache.", authenticationServiceImpl.authenticate(jaasEntryName, partialSubject));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void authenticateSubjectUseridPasswordNotInCache() {
+        final String methodName = "authenticateSubjectUseridPasswordInCache";
+        try {
+            final String cacheKeyIdOnly = BasicAuthCacheKeyProvider.createLookupKey(REALM, GOOD_USER);
+            final Subject partialSubject = createPartialSubject(GOOD_USER, GOOD_USER_PWD);
+            final Subject authenticatedSubject = new Subject();
+            subjectInsertedAfterAuthentication();
+            mockery.checking(new Expectations() {
+                {
+                    one(authCacheService).getSubject(cacheKeyIdOnly);
+                    will(returnValue(null));
+                    one(jaasService).performLogin(with(jaasEntryName), with(any(AuthenticationData.class)), with(partialSubject));
+                    will(returnValue(authenticatedSubject));
+                }
+            });
+
+            assertNotNull("getSubject method with password should not be called.", authenticationServiceImpl.authenticate(jaasEntryName, partialSubject));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -462,6 +489,7 @@ public class AuthenticationServiceTest {
         try {
             final Subject authenticatedSubject = new Subject();
             final String cacheKey = BasicAuthCacheKeyProvider.createLookupKey(REALM, GOOD_USER, GOOD_USER_PWD);
+            final String cacheKeyIdOnly = BasicAuthCacheKeyProvider.createLookupKey(REALM, GOOD_USER);
             final Action firstGetSubjectAction = new Action() {
 
                 @Override
@@ -470,7 +498,8 @@ public class AuthenticationServiceTest {
                 }
 
                 @Override
-                public void describeTo(Description arg0) {}
+                public void describeTo(Description arg0) {
+                }
             };
 
             final Action secondGetSubjectAction = new Action() {
@@ -481,13 +510,16 @@ public class AuthenticationServiceTest {
                 }
 
                 @Override
-                public void describeTo(Description arg0) {}
+                public void describeTo(Description arg0) {
+                }
             };
 
             mockery.checking(new Expectations() {
                 {
-                    allowing(authCacheService).getSubject(cacheKey);
+                    allowing(authCacheService).getSubject(cacheKeyIdOnly);
                     will(onConsecutiveCalls(firstGetSubjectAction, secondGetSubjectAction));
+                    one(authCacheService).getSubject(cacheKey);
+                    will(returnValue(authenticatedSubject));
                     one(jaasService).performLogin(jaasEntryName, authenticationData, null);
                     will(returnValue(authenticatedSubject));
                     one(authCacheService).insert(with(any(Subject.class)), with(GOOD_USER), with(GOOD_USER_PWD));
