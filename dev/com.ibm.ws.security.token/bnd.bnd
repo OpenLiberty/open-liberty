@@ -44,8 +44,6 @@ Service-Component: \
     configuration-policy:=optional; \
     tokenService=com.ibm.ws.security.token.TokenService; \
     dynamic:='tokenService'; \
-    optional:='tokenService'; \
-    multiple:='tokenService'; \
     properties:='service.vendor=IBM'
 
 instrument.classesExcludes: com/ibm/ws/security/token/internal/resources/*.class
