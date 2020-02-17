@@ -13,6 +13,7 @@ package com.ibm.ws.jaxrs20.cdi12.fat.contextandCDI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
@@ -28,9 +29,10 @@ public class TestResource {
     @Inject ServletContext servletContext2; 
 
     @GET
-    public Response get() {                 
-        System.out.println("TestResource#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
-        System.out.println("TestResource#get: servletContext.getServletContextName2 " + servletContext2.getServletContextName() );
+    @Path("/{test}")
+    public Response get(@PathParam("test") String testName) {                 
+        System.out.println(testName + " TestResource#get: servletContext.getServletContextName " + servletContext.getServletContextName() );
+        System.out.println(testName + " TestResource#get: servletContext.getServletContextName2 " + servletContext2.getServletContextName() );
         return Response.ok("ok").build();
     }
 }
