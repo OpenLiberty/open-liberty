@@ -222,6 +222,9 @@ public class XMLConfigParser {
                     if (processType.equals(name) || "server".equals(name)) {
                         parseServer(parser, docLocation, config, processType);
                         return true;
+                    } else if ("client".equals(name)) {
+                        // Silently ignore client configuration when the processType is not client
+                        return false;
                     }
                 }
             }
