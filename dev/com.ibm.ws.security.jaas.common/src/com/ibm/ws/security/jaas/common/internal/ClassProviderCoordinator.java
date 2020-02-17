@@ -18,16 +18,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.kernel.service.util.SecureAction;
-import com.ibm.wsspi.application.Application;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 /**
@@ -38,15 +31,13 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
  * The need to do this is a result of security eagerly loading everything. If that ever changes, consider
  * replacing the mechanism that is provided by this class.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ClassProviderCoordinator {
     static final SecureAction secureAction = AccessController.doPrivileged(SecureAction.get());
 
-    private final ConcurrentHashMap<ServiceReference<Application>, ClassProviderProxy> proxyClassProvidersForResourceAdapters = //
-                    new ConcurrentHashMap<ServiceReference<Application>, ClassProviderProxy>();
+    private final ConcurrentHashMap<ServiceReference<?>, ClassProviderProxy> proxyClassProvidersForResourceAdapters = //
+                    new ConcurrentHashMap<ServiceReference<?>, ClassProviderProxy>();
 
-    @Reference(service = Application.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setClassProvider(ServiceReference<Application> ref) throws InvalidSyntaxException {
+    protected void setClassProvider(ServiceReference<?> ref) throws InvalidSyntaxException {
         String classProviderId = (String) ref.getProperty("id");
         String extendsFactoryPid = (String) ref.getProperty("ibm.extends.source.factoryPid");
         if ("com.ibm.ws.jca.resourceAdapter".equals(extendsFactoryPid)) {
@@ -72,11 +63,9 @@ public class ClassProviderCoordinator {
                 previous.unregister();
             }
         }
-
-        System.out.println("*** Class provider found " + ref);
     }
 
-    protected void unsetClassProvider(ServiceReference<Application> ref) {
+    protected void unsetClassProvider(ServiceReference<?> ref) {
         ClassProviderProxy proxy = proxyClassProvidersForResourceAdapters.remove(ref);
         if (proxy != null) {
             BundleContext bundleContext = FrameworkUtil.getBundle(ClassProviderCoordinator.class).getBundleContext();

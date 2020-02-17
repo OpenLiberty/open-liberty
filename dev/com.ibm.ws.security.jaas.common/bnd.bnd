@@ -27,7 +27,11 @@ Export-Package: \
   com.ibm.wsspi.security.auth.callback;provide:=true;thread-context=true  
   
 Import-Package: \
-  com.ibm.ws.common.internal.encoder, !*.internal.*, !javax.resource.spi.*, *
+  com.ibm.ws.common.internal.encoder, \
+  !*.internal.*, \
+  !javax.resource.spi.*, \
+  !com.ibm.wsspi.application.*, \
+  *
 
 DynamicImport-Package: \
   javax.resource.spi.*
@@ -52,11 +56,19 @@ Service-Component: \
     optional:='changeListener'; \
     multiple:='changeListener'; \
     dynamic:='changeListener'; \
-    properties:='service.vendor=IBM'
+    properties:='service.vendor=IBM',\
+  com.ibm.ws.security.jaas.common.internal.ClassProviderCoordinator; \
+    implementation:=com.ibm.ws.security.jaas.common.internal.ClassProviderCoordinator; \
+    configuration-policy:=ignore; \
+    immediate:=true; \
+    classProvider=com.ibm.wsspi.application.Application; \
+    dynamic:='classProvider'; \
+    greedy:='classProvider'; \
+    multiple:='classProvider'; \
+    optional:='classProvider'
 
 -dsannotations: \
   com.ibm.ws.security.jaas.common.JAASConfigurationFactory, \
-  com.ibm.ws.security.jaas.common.internal.ClassProviderCoordinator, \
   com.ibm.ws.security.jaas.common.internal.JAASLoginContextEntryImpl, \
   com.ibm.ws.security.jaas.common.internal.JAASLoginModuleConfigImpl, \
   com.ibm.ws.security.jaas.config.internal.JAASLoginConfigImpl
@@ -71,7 +83,6 @@ instrument.classesExcludes: com/ibm/ws/security/jaas/common/internal/resources/*
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
