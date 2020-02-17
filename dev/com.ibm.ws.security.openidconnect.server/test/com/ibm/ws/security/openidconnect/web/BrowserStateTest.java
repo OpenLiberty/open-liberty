@@ -54,8 +54,7 @@ public class BrowserStateTest {
     private final WebAppSecurityConfig webAppSecConfig = context.mock(WebAppSecurityConfig.class);
 
     @Before
-    public void setUp() {
-    }
+    public void setUp() {}
 
     /*
      * test getOriginalBrowserState method with no cookie.
@@ -105,6 +104,8 @@ public class BrowserStateTest {
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 one(response).addCookie(with(any(Cookie.class)));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         BrowserState browserState = new BrowserState();

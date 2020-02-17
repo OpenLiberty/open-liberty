@@ -77,7 +77,8 @@ public class SSOAuthenticatorTest {
                 will(returnValue(null));
                 allowing(req).getMethod();
                 will(returnValue("GET"));
-
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
 

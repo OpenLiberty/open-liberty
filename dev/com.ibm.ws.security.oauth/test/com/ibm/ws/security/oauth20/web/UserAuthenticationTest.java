@@ -300,6 +300,8 @@ public class UserAuthenticationTest {
                     will(returnValue(false));
                     allowing(provider).isAllowCertAuthentication();
                     will(returnValue(false));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -432,6 +434,8 @@ public class UserAuthenticationTest {
                     will(returnValue(null));
                     one(request).getParameter(ATTR_PROMPT);
                     will(returnValue(null));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -472,6 +476,8 @@ public class UserAuthenticationTest {
                     one(request).getUserPrincipal();
                     will(returnValue(ppl));
                     one(request).logout();
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -1078,6 +1084,8 @@ public class UserAuthenticationTest {
                     will(returnValue(null));
                     allowing(provider).isAllowSpnegoAuthentication();
                     will(returnValue(false));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -1118,6 +1126,8 @@ public class UserAuthenticationTest {
                     will(returnValue(Constants.PROMPT_LOGIN + " " + Constants.PROMPT_CONSENT));
                     allowing(provider).isAllowSpnegoAuthentication();
                     will(returnValue(false));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
