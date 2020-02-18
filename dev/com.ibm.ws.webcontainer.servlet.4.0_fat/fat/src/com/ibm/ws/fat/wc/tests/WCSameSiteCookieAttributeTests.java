@@ -74,7 +74,9 @@ public class WCSameSiteCookieAttributeTests {
         // Stop the server
         if (sameSiteServer != null && sameSiteServer.isStarted()) {
             // Allow the Warning message we have generated on purpose.
-            sameSiteServer.stopServer();
+            // When an invalid <httpSession cookieSameSite="InvalidValue"/> is used the following Warning is found
+            // in the logs: WWKG0032W: Unexpected value specified for property [cookieSameSite], value = [InvalideValue]. Expected value(s) are: [Lax][Strict][None][Disabled]. Default value in use: [Disabled].
+            sameSiteServer.stopServer("CWWKG0032W");
         }
     }
 
@@ -599,8 +601,8 @@ public class WCSameSiteCookieAttributeTests {
      *
      * @throws Exception
      */
-    //@Test
-    public void testSameSiteSessionCookieLax() throws Exception {
+    @Test
+    public void testSameSiteSessionCookie_Lax() throws Exception {
         boolean headerFound = false;
         boolean splitSameSiteHeaderFound = false;
 
@@ -609,8 +611,7 @@ public class WCSameSiteCookieAttributeTests {
         ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Server configuration that was saved: " + configuration.toString());
 
-        // TODO
-        //configuration.getHttpSession().setCookieSameSite("Lax");
+        configuration.getHttpSession().setCookieSameSite("Lax");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
@@ -672,8 +673,8 @@ public class WCSameSiteCookieAttributeTests {
      *
      * @throws Exception
      */
-    // @Test
-    public void testSameSiteSessionCookieStrict() throws Exception {
+    @Test
+    public void testSameSiteSessionCookie_Strict() throws Exception {
         boolean headerFound = false;
         boolean splitSameSiteHeaderFound = false;
 
@@ -682,8 +683,7 @@ public class WCSameSiteCookieAttributeTests {
         ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Server configuration that was saved: " + configuration.toString());
 
-        // TODO
-        //configuration.getHttpSession().setCookieSameSite("Strict");
+        configuration.getHttpSession().setCookieSameSite("Strict");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
@@ -746,14 +746,10 @@ public class WCSameSiteCookieAttributeTests {
      * The assumption here is that the Secure attribute is added via the server's configuration
      * as well using the cookieSecure httpSession attribute.
      *
-     * TODO: If we decide not to leverage httpSession and instead treat the session cookie
-     * like any other cookie added via addCookie servlet API then we can modify this test a bit
-     * if necessary.
-     *
      * @throws Exception
      */
-    //@Test
-    public void testSameSiteSessionCookieNone() throws Exception {
+    @Test
+    public void testSameSiteSessionCookie_None() throws Exception {
         boolean headerFound = false;
         boolean splitSameSiteHeaderFound = false;
 
@@ -762,9 +758,8 @@ public class WCSameSiteCookieAttributeTests {
         ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Server configuration that was saved: " + configuration.toString());
 
-        // TODO
-        //configuration.getHttpSession().setCookieSameSite("None");
-        //configuration.getHttpSession().setCookieSecure(true);
+        configuration.getHttpSession().setCookieSameSite("None");
+        configuration.getHttpSession().setCookieSecure(true);
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
@@ -820,16 +815,215 @@ public class WCSameSiteCookieAttributeTests {
     /**
      * Drive a request to Servlet that creates a session.
      *
-     * Configure the Server to mark the Session Cookie SameSite=Lax
+     * Configure the Server via <httpSession cookieSamesite="Disabled"/>
      *
-     * Configure the Servie via <httpSession cookieName="uniqueSessionIdCookieName"/>
-     *
-     * Ensure that the SET-COOKIE header contains the correct SameSite Attribute
+     * Ensure that the SET-COOKIE header contains no SameSite attribute.
      *
      * @throws Exception
      */
-    // @Test
-    public void testSameSiteSessionCookieUniqueName() throws Exception {
+    @Test
+    public void testSameSiteSessionCookie_Disabed() throws Exception {
+        boolean headerFound = false;
+
+        sameSiteServer.saveServerConfiguration();
+
+        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration.toString());
+
+        configuration.getHttpSession().setCookieSameSite("Disabled");
+        sameSiteServer.setMarkToEndOfLog();
+        sameSiteServer.updateServerConfiguration(configuration);
+
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                    if (header.getValue().contains("SameSite")) {
+                        headerFound = true;
+                    }
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            assertTrue(responseText.equals("Welcome to the SameSiteSessionCreationServlet!"));
+            Assert.assertFalse("The JSESSIONID Set-Cookie header contained the SameSite attribute and it should not have.", headerFound);
+        } finally {
+            sameSiteServer.setMarkToEndOfLog();
+            sameSiteServer.restoreServerConfiguration();
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration().toString());
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        }
+    }
+
+    /**
+     * Drive a request to Servlet that creates a session.
+     *
+     * Not specifying the cookieSameSite in the httpSession config should be the same
+     * as setting cookieSameSite="Disabled".
+     *
+     * Ensure that the SET-COOKIE header contains no SameSite attribute.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSiteSessionCookie_NothingSpecified() throws Exception {
+        boolean headerFound = false;
+
+        sameSiteServer.saveServerConfiguration();
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                    if (header.getValue().contains("SameSite")) {
+                        headerFound = true;
+                    }
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            assertTrue(responseText.equals("Welcome to the SameSiteSessionCreationServlet!"));
+            Assert.assertFalse("The JSESSIONID Set-Cookie header contained the SameSite attribute and it should not have.", headerFound);
+        }
+    }
+
+    /**
+     * Drive a request to Servlet that creates a session.
+     *
+     * Configure the Server via <httpSession cookieSamesite="InvalidValue"/>
+     *
+     * Ensure that the SET-COOKIE header contains no SameSite attribute.
+     *
+     * Ensure the logs contain an error message for the InvalidValue:
+     * CWWKG0032W: Unexpected value specified for property [cookieSameSite], value = [InvalidValue]. Expected value(s) are: [Lax][Strict][None][Disabled]. Default value in use:
+     * [Disabled].
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSiteSessionCookie_InvalidValue() throws Exception {
+        boolean headerFound = false;
+
+        sameSiteServer.saveServerConfiguration();
+
+        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration.toString());
+
+        configuration.getHttpSession().setCookieSameSite("InvalidValue");
+        sameSiteServer.setMarkToEndOfLog();
+        sameSiteServer.updateServerConfiguration(configuration);
+
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                    if (header.getValue().contains("SameSite")) {
+                        headerFound = true;
+                    }
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            assertTrue(responseText.equals("Welcome to the SameSiteSessionCreationServlet!"));
+            Assert.assertFalse("The JSESSIONID Set-Cookie header contained a SameSite attribute and it should not have..", headerFound);
+            Assert.assertTrue("The following Warning was not found in the logs: CWWKG0032W: Unexpected value specified for property [cookieSameSite]",
+                              sameSiteServer.waitForStringInLogUsingMark("CWWKG0032W.*cookieSameSite.*InvalidValue") != null);
+        } finally {
+            sameSiteServer.setMarkToEndOfLog();
+            sameSiteServer.restoreServerConfiguration();
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration().toString());
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        }
+    }
+
+    /**
+     * Drive a request to Servlet that creates a session.
+     *
+     * Configure the Server to mark the Session Cookie SameSite=Lax with the following configuration:
+     *
+     * <httpSession cookieSamesite="LaX"/>
+     *
+     * Ensure that the SET-COOKIE header contains the correct SameSite Attribute.
+     *
+     * The configuration is not case sensitive but we should see the proper Lax SameSite Attribute.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSiteSessionCookie_MixedCaseValue() throws Exception {
         boolean headerFound = false;
         boolean splitSameSiteHeaderFound = false;
 
@@ -838,9 +1032,82 @@ public class WCSameSiteCookieAttributeTests {
         ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Server configuration that was saved: " + configuration.toString());
 
-        // TODO
-        //configuration.getHttpSession().setCookieSameSite("Lax");
-        //configuration.getHttpSession().setCookieName("uniqueSessionIdCookieName");
+        configuration.getHttpSession().setCookieSameSite("LaX");
+        sameSiteServer.setMarkToEndOfLog();
+        sameSiteServer.updateServerConfiguration(configuration);
+
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                    if (header.getValue().contains("SameSite=Lax")) {
+                        headerFound = true;
+                    }
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            assertTrue(responseText.equals("Welcome to the SameSiteSessionCreationServlet!"));
+            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        } finally {
+            sameSiteServer.setMarkToEndOfLog();
+            sameSiteServer.restoreServerConfiguration();
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration().toString());
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        }
+    }
+
+    /**
+     * Drive a request to Servlet that creates a session.
+     *
+     * Configure the Server to mark the Session Cookie SameSite=Lax
+     *
+     * Configure the Servie via <httpSession cookieName="uniqueSessionIdCookieName"/>
+     *
+     * Ensure that the SET-COOKIE header contains the correct SameSite Attribute
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSiteSessionCookie_UniqueName() throws Exception {
+        boolean headerFound = false;
+        boolean splitSameSiteHeaderFound = false;
+
+        sameSiteServer.saveServerConfiguration();
+
+        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration.toString());
+
+        configuration.getHttpSession().setCookieSameSite("Lax");
+        configuration.getHttpSession().setCookieName("uniqueSessionIdCookieName");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
