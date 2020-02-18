@@ -519,7 +519,7 @@ public class HttpChannelConfig {
         parseCompressionPreferredAlgorithm(props);
         parseDecompressionRatioLimit(props);
         parseDecompressionTolerance(props);
-        parseCookiesConfig(props);
+        parseSameSiteConfig(props);
         parseCookiesSameSiteLax(props);
         parseCookiesSameSiteNone(props);
         parseCookiesSameSiteStrict(props);
@@ -1009,12 +1009,12 @@ public class HttpChannelConfig {
     }
 
     /**
-     * Check the configuration to see if the cookies config element has been configured
+     * Check the configuration to see if the samesite config element has been configured
      * to consider cookie specific attributes.
      *
      * @param props
      */
-    private void parseCookiesConfig(Map<Object, Object> props) {
+    private void parseSameSiteConfig(Map<Object, Object> props) {
         Object value = props.get(HttpConfigConstants.PROPNAME_SAMESITE);
         if (null != value) {
             this.useSameSiteConfig = convertBoolean(value);
@@ -1107,13 +1107,20 @@ public class HttpChannelConfig {
             //Wildcard support is only supported for patterns ending on the * character. There cannot
             //be more than one * character in the string.
             if (name.endsWith(HttpConfigConstants.WILDCARD_CHAR) && name.indexOf(HttpConfigConstants.WILDCARD_CHAR) == name.lastIndexOf(HttpConfigConstants.WILDCARD_CHAR)) {
-                //Check that it isn't already defined
-                if (this.sameSiteStringPatterns.containsKey(name)) {
+                //Check that it isn't already defined with a different SameSite value
+                if (this.sameSiteStringPatterns.containsKey(name) && !this.sameSiteStringPatterns.get(name).equals(sameSiteAttribute.getName())) {
                     this.sameSiteStringPatterns.remove(name);
                     Tr.warning(tc, "cookies.samesite.duplicateName", name, sameSiteAttribute.getName().toLowerCase());
                     this.sameSiteErrorCookies.add(name);
                 } else {
-                    this.sameSiteStringPatterns.put(name, sameSiteAttribute.getName());
+                    // If this is not a duplicate with the same value then add it, otherwise ignore the duplicate.
+                    if (!this.sameSiteStringPatterns.containsKey(name)) {
+                        this.sameSiteStringPatterns.put(name, sameSiteAttribute.getName());
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(tc, "The duplicate pattern: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
+                        }
+                    }
                 }
             }
             //If the wildcard character is used in any other context, report the error
@@ -1123,23 +1130,32 @@ public class HttpChannelConfig {
             }
             //This is an explicitly named cookie
             else {
-                //Check that the cookie isn't already defined
-                if (this.sameSiteCookies.containsKey(name)) {
+                /*
+                 * Check that the cookie isn't already defined with a different value. If the cookieName exists
+                 * in the sameSiteCookies map but has the same sameSiteAttribute value specified here then just
+                 * ignore since this is just a duplicate in the configuration. There is no ambiguity here since the values are the same.
+                 */
+                if (this.sameSiteCookies.containsKey(name) && !this.sameSiteCookies.get(name).equals(sameSiteAttribute.getName())) {
                     this.sameSiteCookies.remove(name);
                     Tr.warning(tc, "cookies.samesite.duplicateName", name, sameSiteAttribute.getName().toLowerCase());
                     this.sameSiteErrorCookies.add(name);
-                }
-
-                else {
-                    this.sameSiteCookies.put(name, sameSiteAttribute.getName());
+                } else {
+                    // If this is not a duplicate with the same value then add it, otherwise ignore the duplicate.
+                    if (!this.sameSiteCookies.containsKey(name)) {
+                        this.sameSiteCookies.put(name, sameSiteAttribute.getName());
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(tc, "The duplicate cookieName: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
+                        }
+                    }
                 }
             }
         }
     }
 
     /**
-     * If the Http Endpoint is configured to use the <cookies> child element, this method will compile all the
-     * wildcard regex patterns that were provided thru the SameSite lax, none, and strict attributes. The patterns
+     * If the Http Endpoint is configured to use the <samesite> child element, this method will compile all the
+     * wildcard regex patterns that were provided thru the samesite lax, none, and strict attributes. The patterns
      * are loaded into a sorted linked hash map that will contain range from most specific to most broad. Both the
      * explicit name's Map and the pattern's Map are iterated to print out a visual representation of all names
      * registered as 'lax', 'none', and 'strict'; as well as a representation of all values that were considered
@@ -2550,7 +2566,7 @@ public class HttpChannelConfig {
     }
 
     /**
-     * Specifies whether the <httpEndpoint> is configured to considered the <cookies> sub element configurations.
+     * Specifies whether the <httpEndpoint> is configured to considered the <samesite> sub element configurations.
      *
      * @return
      */
