@@ -19,6 +19,7 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -34,9 +35,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -92,6 +95,19 @@ public class TestEnableDisableFeaturesTest {
     	add2Apps(serverEDF11);
     	add2Apps(serverEDF5);
     	setUpEDF12();
+    }
+    
+    private static String retrieveMPMVersion(LibertyServer server) throws Exception {
+    	ServerConfiguration config = server.getServerConfiguration();
+    	Set<String> features = config.getFeatureManager().getFeatures();
+    	String returnMpMetricsFeature = null;
+    	for (String feature : features) {
+    		if (feature.contains("mpMetrics-")) {
+    			returnMpMetricsFeature = feature.trim();
+    			break;
+    		}
+    	}	
+    	return returnMpMetricsFeature;
     }
     
     private static void trustAll() throws Exception {
@@ -151,6 +167,7 @@ public class TestEnableDisableFeaturesTest {
     }
 
     @Test
+    @SkipForRepeat("MPM23")
     public void testEDF1() throws Exception {
     	currentServ = serverEDF1;
     	String testName = "testEDF1";
@@ -169,8 +186,9 @@ public class TestEnableDisableFeaturesTest {
     @Test 
     public void testEDF2() throws Exception {
     	currentServ = serverEDF2;
+    	String metricFeature = retrieveMPMVersion(currentServ);
     	String testName = "testEDF2";
-    	Log.info(c, testName, "------- Enable mpMetrics-2.0 and monitor-1.0: threadpool metrics should be available ------");
+    	Log.info(c, testName, "------- Enable " + metricFeature + " and monitor-1.0: threadpool metrics should be available ------");
     	serverEDF2.startServer();
     	waitForSecurityPrerequisites(serverEDF2, 60000);
     	serverEDF2.setServerConfigurationFile("server_monitor2.xml");
@@ -411,6 +429,7 @@ public class TestEnableDisableFeaturesTest {
     }
     
     @Test
+    @SkipForRepeat("MPM23")
     public void testEDF12() throws Exception {
     	currentServ = serverEDF12;
     	String testName = "testEDF12";
