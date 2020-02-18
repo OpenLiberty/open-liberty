@@ -13,27 +13,13 @@
 -->
 
 <%!
-	public String xssguard(String name) {
-		if (name == null || name.isEmpty()){
-			return name;
-		}
-		StringBuffer sb = new StringBuffer();
-		String otherAllowed = " .,:()[]";
-		for (int i = 0; i < name.length(); i++) {
-			int c = name.codePointAt(i);
-			if (Character.isLetterOrDigit(c)) {
-				sb.appendCodePoint(c);
-				continue;
-			}
-			int[] ca = new int[1];
-			ca[0] = c;
-			// convert any nonalphanumeric to &#nnnn; form
-			if (otherAllowed.contains(new String(ca, 0, 1))) {
-				sb.append("&#" + Integer.toString(c) + ";");
-			}
-		}		
-		return sb.toString();
-	}
+	//only guards against xss in HTML element content 
+	public String xssguard(String name){
+	if (name == null || name.isEmpty()) return name;
+	String buf =  name.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+	   .replace("\"","&quot;").replace("'","&apos;").replace("/","&#x2F;");  
+	return buf;
+	}	
 %>
 
 <%
@@ -96,9 +82,7 @@
                </tr>
                <tr>
                   <td style="background-color:#ffffff;color:#000000" nowrap="nowrap" width="100%">
-                     <!--  form action="<%=errFormAction%>" method="<%=errMethod%>">
-                        <button type="submit">OK</BUTTON>
-                     </form -->
+                    
                   </td>
                </tr>
             </tbody>

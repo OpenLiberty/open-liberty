@@ -13,10 +13,11 @@
 -->
 
 <%!
+//  only guards against xss in HTML element content 
 public String xssguard(String name){
     if (name == null || name.isEmpty()) return name;
     String buf =  name.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-       .replace("\"","&quot;").replace("'","&apos;");   
+       .replace("\"","&quot;").replace("'","&apos;").replace("/","&#x2F;");  
     return buf;
   }
 %>
