@@ -2284,7 +2284,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
          * @return the computed delay until the next poll for this instance.
          */
         private long coordinateNextPoll(Config config) {
-            long delay;
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+            long delay = -1;
             try {
                 EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
 
@@ -2293,12 +2295,29 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
                 tranMgr.begin();
                 try {
-                    // TODO implement this method. For now, we invoke some basic db operations to demonstrate that what we have so far is working
                     Object[] expiryAndLastUpdated = taskStore.findPollInfoForUpdate(pollPartitionId);
                     long expiry = (Long) expiryAndLastUpdated[0];
                     long lastUpdated = (Long) expiryAndLastUpdated[1];
-                    taskStore.updatePollInfo(pollPartitionId, System.currentTimeMillis() + config.pollInterval);
-                    delay = config.pollInterval;
+                    long now = System.currentTimeMillis();
+                    int slot = 0;
+                    final int missedPollsThreshold = 2; // Could be make configurable in the future.
+
+                    if (now - lastUpdated > missedPollsThreshold * config.pollInterval) {
+                        expiry = now / 1000 * 1000 + 600;
+                        delay = config.pollInterval - (now - expiry);
+                        slot = 1;
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(PersistentExecutorImpl.this, tc, "Detected " + missedPollsThreshold + " or more poll intervals were missed.  Resetting poll info.");
+                    } else {
+                        while (delay < 0) {
+                            delay = ((++slot) * config.pollInterval) - (now - expiry);
+                        }
+
+                    }
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(PersistentExecutorImpl.this, tc, "now = " + now + "; slot = " + slot);
+
+                    taskStore.updatePollInfo(pollPartitionId, expiry + slot * config.pollInterval);
                     successful = true;
                 } finally {
                     if (successful)
