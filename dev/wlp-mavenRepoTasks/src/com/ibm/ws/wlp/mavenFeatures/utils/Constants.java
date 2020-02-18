@@ -74,8 +74,9 @@ public class Constants {
 	public static final String SHORT_NAME_KEY = "shortName";
 
 	public static final String [] LICENSE_PRIORITY = {"Base", "ND"};
-	public static final String BASE_LICENSE_ARTIFACT_ID= "license-base";
-	public static final String ND_LICENSE_ARTIFACT_ID= "license-nd";
+	public static final String LICENSE_GROUP_ID = "com.ibm.websphere.appserver.license";
+	public static final String BASE_LICENSE_ARTIFACT_ID= "wlp-base-license";
+	public static final String ND_LICENSE_ARTIFACT_ID= "wlp-nd-license";
 	// license map
 	private static final HashMap<String, String> licenseMap = new HashMap<String, String>(){
 		{
