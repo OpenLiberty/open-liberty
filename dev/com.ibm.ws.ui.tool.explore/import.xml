@@ -1,0 +1,59 @@
+<project name="com.ibm.ws.ui.tool.explore" default="build" basedir=".">
+  <import file="../ant_build.js/public_imports/js_imports.xml"/>
+  <import file="../ant_build.js/public_imports/internal_imports/commonSource.xml"/>
+
+  <target name="css-validation-files">
+    <echo>Overriding the default CSS file set! Working around known tool limitations / bugs</echo>
+    <fileset id="css.sources" dir="${basedir}/resources/WEB-CONTENT">
+      <include name="**/*.css"/>
+      <!-- css3 validator doesn't support calc(), it's a bug in css3 validator:
+        	https://www.w3.org/Bugs/Public/show_bug.cgi?id=18913
+        	css validator doesn't support text-overflow:ellipsis, its a bug in css3 validator:
+        	https://www.w3.org/Bugs/Public/show_bug.cgi?id=19476
+        	Disable the validation for bottomBar.css & cardExcludeValidator for now"
+        	css validator doesn't support background:linear-gradient, its a bug in css3 validator:
+        	https://www.w3.org/Bugs/Public/show_bug.cgi?id=23031   and
+        	https://www.w3.org/Bugs/Public/show_bug.cgi?id=16235
+
+        	-->
+      <exclude name="**/*ExcludeValidator.css"/>
+    </fileset>
+  </target>
+
+  <property name="jsdoc.src.dir" value="${basedir}/resources/WEB-CONTENT/jsExplore/*" />
+
+  <!-- Temporarily disable jshint because the code is a mess -->
+  <target name="jshint" />
+
+  <!-- Copy over the things we need from the DOJO build process -->
+  <target name="dojo-release-post-ext">
+    <copy todir="${dojo.project.release.output}/idx">
+      <fileset dir="${dojo.project.build.output}/idx">
+        <include name="widget/nls/Dialog.js" />
+        <include name="widget/nls/HoverHelpTooltip.js" />
+      </fileset>
+    </copy>
+    <copy todir="${dojo.project.release.output}/css">
+      <fileset dir="${dojo.project.build.output}/css">
+        <include name="explore.css" />
+      	<include name="desktop.css" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="post-compile">
+    <antcall target="get-svg4everybody-lib" />
+  	<copy todir="${basedir}/build/jsShared/utils">
+        <fileset dir="${basedir}/../com.ibm.ws.ui.shared/resources/WEB-CONTENT/jsShared/utils">
+        	<include name="apiMsgUtils.js" />
+        	<include name="toolData.js" />
+        	<include name="userConfig.js" />
+        </fileset>
+    </copy>
+    <copy-one-font-file font-file="helvetica-neue/helvetica-neue-bold.woff" font-target-dir="lib/fonts" />
+    <copy-one-font-file font-file="helvetica-neue/helvetica-neue-medium.woff" font-target-dir="lib/fonts" />
+    <copy-one-font-file font-file="helvetica-neue/helvetica-neue-roman.woff" font-target-dir="lib/fonts" />
+    <antcall target="404_copy_to_tools"></antcall>
+  </target>
+
+</project>

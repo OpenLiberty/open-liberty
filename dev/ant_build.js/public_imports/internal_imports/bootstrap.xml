@@ -1,0 +1,32 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="bootstrap" default="get-bootstrap-lib">
+    
+    <property name="bootstrap.project.destination" location="${basedir}/lib/bootstrap" />
+    <property name="bootstrap.version" value="3.4.1" />
+    <property name="bootstrap.home" location="${basedir}/../ant_build.js/lib/bootstrap/bootstrap-${bootstrap.version}" />
+    
+    <!-- Common 'bootstrap build' process-->
+    <target name="get-bootstrap-lib">
+        <echo>Getting bootstrap!</echo>
+        <echo>bootstrap.project.destination: ${bootstrap.project.destination}</echo>
+        <echo>bootstrap.home: ${bootstrap.home}</echo>
+        <delete dir="${bootstrap.project.destination}" failonerror="false" />
+        <mkdir dir="${bootstrap.project.destination}" />
+        <copy todir="${bootstrap.project.destination}">
+            <fileset dir="${bootstrap.home}">
+                <include name="**/js/bootstrap.min.js" />
+            	<include name="**/fonts/*" />
+            	<include name="**/css/*.min.css" />
+            </fileset>
+        </copy>
+    </target>
+</project>

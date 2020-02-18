@@ -1,0 +1,26 @@
+<div>
+  <div>
+    <div class="confirmDescriptionIconDiv" style="">
+      <svg class="confirmDescriptionIcon" xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 32 32" preserveAspectRatio="xMidYMid meet">
+        <use xlink:href="${confirmDescriptionIcon}"></use>
+      </svg>
+    </div>
+    <div class="confirmDescription" style="">
+      <div style="padding-bottom:16px;">
+      	<div class="confirmDescriptionText" style="">${!confirmDescription}</div>
+      	<div class="helpLink" style="">
+          <a href='${helpLinkURL}' target="_blank" rel='noreferrer' aria-label="${helpLinkAriaLabel}"><span style="display:none">${helpLinkAriaLabel}</span>
+            <svg class="" xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 32 32" preserveAspectRatio="xMidYMid meet">
+              <use xlink:href="${helpLinkImg}"></use>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div data-dojo-attach-point='optionsNode'></div>
+      <div>${confirmMessage}</div>
+    </div>
+  </div>
+  <div class="acDialogPaneActionBar">
+    <button id="${confirmButtonId}" class="confirmOkButton" role="button" aria-label="${confirmButtonAriaLabel}" data-dojo-attach-point="okButton">${confirmButtonLabel}</button>
+  </div>
+</div>

@@ -156,6 +156,7 @@ if (addAll) {
 }
 
 // Add our common build/tool projects
+projectNames.add('ant_build.js')
 projectNames.add('build.image')
 projectNames.add('wlp-bndPlugins')
 projectNames.add('wlp-rasInstrumentation')

@@ -1,0 +1,17 @@
+<div class="yesNoDialog">
+  <div>
+    <div style='display:inline-block; width:77px; vertical-align:top;'>
+      <svg class="yesNoDescriptionIcon" xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 32 32" preserveAspectRatio="xMidYMid meet">
+        <use xlink:href="${descriptionIcon}"></use>
+      </svg>
+    </div>
+    <div style='display:inline-block; width:265px;'>
+      <div class="yesNoDescription">${!description}</div>
+      <div class="yesNoMessage">${message}</div>
+    </div>
+  </div>
+  <div class="yesNoButtonDiv">
+    <button class="yesNoButton ${yesButtonClass}" id="yesNoYesButton" role="button" aria-label="${yesButtonAriaLabel}" data-dojo-attach-point="yesButton" tabindex="${yesButtonTabIndex}">${yesButtonText}</button>
+    <button class="yesNoButton ${noButtonClass}" id="yesNoNoButton" role="button" aria-label="${noButtonAriaLabel}" data-dojo-attach-point="noButton" tabindex="${noButtonTabIndex}">${noButtonText}</button>
+  </div>
+</div>

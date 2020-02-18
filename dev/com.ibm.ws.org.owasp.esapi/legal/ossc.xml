@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ossc project="owasp-esapi-java" 
+      projectURL="https://code.google.com/p/owasp-esapi-java/" 
+      version="2.1.0" revision="GA" 
+      license-type="Creative Commons 3.0, BSD 3" 
+      contact="kboo@ca.ibm.com" 
+      encryption="no">
+      <download location="https://code.google.com/p/owasp-esapi-java/downloads/list">
+          <file basename="esapi-2.1.0.jar" checksum="96af18ceaf39dffa1817c5ddb7204749"/>
+          <file basename="commons-fileupload-1.3.3.jar" checksum="dd77e787b7b5dc56f6a1cb658716d55d"/>
+      </download>   
+   <clearencehistory/>
+   <notes/>
+</ossc>

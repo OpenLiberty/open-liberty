@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 20.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="JavaBatchLayer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 64 64" enable-background="new 0 0 64 64" display="none" xml:space="preserve">
+		<rect id="box" fill="none" stroke="#000000" stroke-miterlimit="10" width="32" height="32"/>
+		<g id="top-Icons" display="inline">
+			<g id="top">
+				<rect x="12" y="4" fill="#FFFFFF" width="40" height="8"/>
+				<polygon fill="#FFFFFF" points="12.9,35.8 16.5,39.6 29,26.9 29,60 35,60 35,26.9 47.5,39.6 51.2,35.8 32.1,16.7 				"/>
+			</g>
+			<g id="top-grey">
+				<rect x="12" y="4" fill="#6F6F6F" width="40" height="8"/>
+				<polygon fill="#6F6F6F" points="12.9,35.8 16.5,39.6 29,26.9 29,60 35,60 35,26.9 47.5,39.6 51.2,35.8 32.1,16.7 				"/>
+			</g>
+			<g id="top-small">
+				<rect x="6" y="2" fill="#FFFFFF" width="20" height="4"/>
+				<polygon fill="#FFFFFF" points="6.5,17.9 8,19.8 14,13.5 14,30 17,30 17,13.5 23.5,19.8 25.5,17.9 16,8.4 				"/>
+			</g>
+		</g>
+		<g id="submitted-Icons" display="inline">
+			<g id="submitted">
+				<path fill="#4178BE" d="M26,17v-6H4v5.6v5.6V52h56V22.3V17H26z M58,50H6V22h52V50z"/>
+				<g>
+					<polygon fill="#4178BE" points="28,40.1 21.4,33.5 18.6,36.4 28,45.8 45.4,28.4 42.6,25.5 					"/>
+				</g>
+			</g>
+			<g id="submitted-small">
+				<path fill="#4178BE" d="M13,8V5H2v2.8v2.8V26h28V10.6V8H13z M29,25H3V11h26V25z"/>
+				<g>
+					<polygon fill="#4178BE" points="14,19.6 10.7,16.3 9.3,17.7 14,22.4 22.7,13.7 21.3,12.3 					"/>
+				</g>
+			</g>
+		</g>
+		<g id="stopped-Icons" display="inline">
+			<g id="stopped">
+				<circle fill="#8B191D" cx="28.4" cy="31.7" r="3.2"/>
+				<circle fill="#8B191D" cx="16.2" cy="31.7" r="3.2"/>
+				<circle fill="#8B191D" cx="3.9" cy="31.7" r="3.2"/>
+				<rect x="38" y="19" fill="#8B191D" width="25" height="26"/>
+			</g>
+			<g id="stopped-small">
+				<circle fill="#8B191D" cx="14.3" cy="15.8" r="1.5"/>
+				<circle fill="#8B191D" cx="8.4" cy="15.8" r="1.5"/>
+				<circle fill="#8B191D" cx="2.5" cy="15.8" r="1.5"/>
+				<rect x="19" y="10" fill="#8B191D" width="12" height="12"/>
+			</g>
+		</g>
+		<g id="refresh-Icons" display="inline">
+			<g id="refresh-small">
+				<path fill="#FFFFFF" d="M26.8,10.1C24.8,6,20.7,3,16,3C10.5,3,5.8,7,4.3,12h1.8c1.4-4,5.3-7.2,9.9-7.2c4,0,7.4,2.4,9.2,5.8
+					l-3.9,1.7l7,3.7L30,8.7L26.8,10.1z"/>
+				<path fill="#FFFFFF" d="M16,27.3c-3.9,0-7.4-2.4-9.2-5.8l3.9-1.7l-7-3.7L2,23.5l3.2-1.3c2.1,4.1,6.1,7,10.8,7
+					c5.5,0,10.2-4.1,11.7-9.1h-1.8C24.4,24,20.6,27.3,16,27.3z"/>
+			</g>
+			<g id="refresh">
+				<path fill="#FFFFFF" d="M53.6,19.9C49.5,11.7,41.4,5.8,32,5.8C20.9,5.8,11.6,14,8.6,24h3.7C15.1,16,22.9,9.5,32,9.5
+					c7.9,0,14.8,4.8,18.4,11.7l-7.9,3.4l14,7.5L60,17.2L53.6,19.9z"/>
+				<path fill="#FFFFFF" d="M32,54.6c-7.9,0-14.8-4.8-18.4-11.6l7.9-3.4l-14-7.5L4,46.9l6.4-2.7c4.1,8.2,12.3,14.1,21.6,14.1
+					c11.1,0,20.4-8.3,23.4-18.3h-3.7C48.9,48,41.1,54.6,32,54.6z"/>
+			</g>
+		</g>
+		<g id="partitioned-step-Icons" display="inline">
+			<g id="partitioned-step">
+				<g>
+					<polygon fill="#A4A4A4" points="40.9,32.7 32,39.9 32,25.5 					"/>
+					<polyline fill="#A4A4A4" points="33.4,30.9 20,30.9 20,33.9 33.2,34 					"/>
+				</g>
+				<rect x="4.5" y="22.5" fill="#FECB42" stroke="#D78A12" stroke-miterlimit="10" width="18" height="19"/>
+				<rect x="46" y="4" fill="#3677AD" width="13" height="12"/>
+				<rect x="46" y="47" fill="#3677AD" width="13" height="13"/>
+				<rect x="46" y="26" fill="#3677AD" width="13" height="12"/>
+			</g>
+			<g id="partitioned-step-small">
+				<g>
+					<polygon fill="#A4A4A4" points="20.9,17 16,21 16,13 					"/>
+					<polyline fill="#A4A4A4" points="16.5,16 9,16 9,17.7 16.4,17.7 					"/>
+				</g>
+				<rect x="0.5" y="11.5" fill="#FECB42" stroke="#D78A12" stroke-miterlimit="10" width="10" height="10"/>
+				<rect x="24" y="1" fill="#3677AD" width="7" height="7"/>
+				<rect x="24" y="25" fill="#3677AD" width="7" height="7"/>
+				<rect x="24" y="13" fill="#3677AD" width="7" height="7"/>
+			</g>
+		</g>
+		<g id="logfile-Icons" display="inline">
+			<g id="logfile">
+				<rect x="13" y="58" fill="#4178BE" width="37" height="2"/>
+				<path fill="#4178BE" d="M13,4v7.5V56h37V11.5V4H13z M48,54H15V13h33V54z"/>
+				<rect x="20" y="30" fill="#4178BE" width="23" height="2"/>
+				<rect x="20" y="23" fill="#4178BE" width="23" height="2"/>
+				<rect x="20" y="37" fill="#4178BE" width="23" height="2"/>
+			</g>
+			<g id="logfile-small">
+				<rect x="7" y="29" fill="#4178BE" width="18" height="1"/>
+				<path fill="#4178BE" d="M7,2v3.9V28h18V5.9V2H7z M24,26H8V7h16V26z"/>
+				<rect x="10" y="15" fill="#4178BE" width="12" height="1"/>
+				<rect x="10" y="12" fill="#4178BE" width="12" height="1"/>
+				<rect x="10" y="18" fill="#4178BE" width="12" height="1"/>
+			</g>
+		</g>
+		<g id="jmsqueued-Icons" display="inline">
+	    	<g id="jmsqueued">
+				<g>
+					<polygon fill="#BE9B00" points="58,33 58,48 6,48 6,33 4,33 4,47.7 4,55 5.9,55 58.1,55 60,55 60,47.7 60,33 					"/>
+				</g>
+				<rect x="14" y="18" fill="#BE9B00" width="37" height="4"/>
+				<rect x="14" y="27" fill="#BE9B00" width="37" height="4"/>
+				<rect x="14" y="36" fill="#BE9B00" width="37" height="4"/>
+				<rect x="14" y="9" fill="#BE9B00" width="37" height="4"/>
+			</g>
+			<g id="jmsqueued-small">
+				<g>
+					<polygon fill="#BE9B00" points="29,17 29,25 3,25 3,17 2,17 2,24.2 2,28 2.9,28 28.9,28 30,28 30,24.2 30,17 					"/>
+				</g>
+				<rect x="7" y="9" fill="#BE9B00" width="19" height="3"/>
+				<rect x="7" y="14" fill="#BE9B00" width="19" height="2"/>
+				<rect x="7" y="18" fill="#BE9B00" width="19" height="2"/>
+				<rect x="7" y="5" fill="#BE9B00" width="19" height="2"/>
+			</g>
+		</g>
+		<g id="jmsconsumed-Icons" display="inline">
+			<g id="jmsconsumed">
+				<polygon fill="#5A6464" points="39.1,12.1 35,16.2 50.4,31.5 50.4,31.5 35,46.9 39.1,51 58.6,31.5 				"/>
+				<circle fill="#5A6464" cx="32.4" cy="31.7" r="3.2"/>
+				<circle fill="#5A6464" cx="20.2" cy="31.7" r="3.2"/>
+				<circle fill="#5A6464" cx="7.9" cy="31.7" r="3.2"/>
+			</g>
+			<g id="jmsconsumed-small">
+				<circle fill="#5A6464" cx="16.3" cy="15.8" r="1.5"/>
+				<circle fill="#5A6464" cx="10.4" cy="15.8" r="1.5"/>
+				<circle fill="#5A6464" cx="4.5" cy="15.8" r="1.5"/>
+				<g id="jms-consumed_x5F_56_1_">
+					<polygon fill="#5A6464" points="19.4,6.1 17.4,8.1 24.9,15.6 24.9,15.6 17.4,23 19.4,25 28.8,15.6 					"/>
+				</g>
+			</g>
+		</g>
+		<g id="jobInstance-Icons" display="inline">
+			<g id="job">
+				<path fill="#4178BE" d="M60,57c0,1.7-1.3,3-3,3H13c-1.7,0-3-1.3-3-3V13c0-1.7,1.3-3,3-3h44c1.7,0,3,1.3,3,3V57z"/>
+				<path fill="#4178BE" d="M8,52.1c-1-0.4-2-1.5-2-2.7V8.8C6,7.2,7.2,6,8.8,6h40.6c1.3,0,2.3,1,2.7,2H54V6.9C54,5.3,52.9,4,51.3,4
+					H6.9C5.3,4,4,5.3,4,6.9v44.4C4,52.9,5.3,54,6.9,54H8V52.1z"/>
+			</g>
+			<g id="job-small">
+				<path fill="#4178BE" d="M27,30H8c-1.7,0-3-1.3-3-3V8c0-1.7,1.3-3,3-3h19c1.7,0,3,1.3,3,3v19C30,28.7,28.7,30,27,30z"/>
+				<path fill="#4178BE" d="M4,26c-0.5-0.2-1-0.7-1-1.4V4.4C3,3.6,3.6,3,4.4,3h20.3c0.6,0,1.2,0.5,1.4,1h1V3.4C27,2.6,26.5,2,25.7,2
+					H3.4C2.6,2,2,2.6,2,3.4v22.2C2,26.5,2.6,27,3.4,27H4V26z"/>
+			</g>
+		</g>
+		<g id="filter-Icons" display="inline">
+			<path id="filter-small" fill="#FFFFFF" d="M30,2H2v3.7l11,11.2V30l6-5.6v-3.2c0,0.8,1.6,1.3,2.7,1.3c2.1,0,3.7-1.7,3.7-3.7
+				s-1.7-3.7-3.8-3.7c-0.4,0-0.8,0.1-1.1,0.2L30,5.7V2z M23.5,18.8c0,1-0.8,1.9-1.9,1.9c-1,0-1.9-0.8-1.9-1.9c0-1,0.8-1.9,1.9-1.9
+				C22.6,16.9,23.5,17.8,23.5,18.8z M17.5,15.7L17,16.2v0.8v6.7l-2,1.9v-8.6v-0.8l-0.5-0.4L4.6,6h22.7L17.5,15.7z"/>
+			<path id="filter" fill="#FFFFFF" d="M60,4H4v7.5l22,22.4V60l12-11.2v-6.3c0,1.6,3.2,2.6,5.4,2.6c4.1,0,7.4-3.3,7.4-7.5
+				s-3.4-7.5-7.5-7.5c-0.8,0-1.6,0.2-2.3,0.4l19-19V4z M46.9,37.6c0,2.1-1.7,3.7-3.7,3.7c-2.1,0-3.7-1.7-3.7-3.7
+				c0-2.1,1.7-3.7,3.7-3.7C45.3,33.9,46.9,35.5,46.9,37.6z M35,31.5l-1,0.8v1.5v13.4L30,51V33.9v-1.5l-1-0.8L9.3,12h45.4L35,31.5z"/>
+		</g>
+		<g id="failed-Icons" display="inline">
+			<g id="failed">
+				<circle fill="#BA2430" cx="32" cy="32" r="28"/>
+				<polygon fill="#FFFFFF" points="40.6,20.6 32,29.2 23.4,20.6 20.6,23.4 29.2,32 20.6,40.6 23.4,43.4 32,34.8 40.6,43.4 43.4,40.6
+					34.8,32 43.4,23.4 		"/>
+			</g>
+			<g id="failed-small">
+				<circle fill="#BA2430" cx="16" cy="16" r="14"/>
+				<polygon fill="#FFFFFF" points="20.3,10.3 16,14.6 11.7,10.3 10.3,11.7 14.5,16 10.3,20.3 11.7,21.7 16,17.5 20.3,21.7 21.7,20.3
+					17.4,16 21.7,11.7 		"/>
+			</g>
+		</g>
+		<g id="execution-Icons" display="inline">
+			<g id="execution">
+				<polygon id="dispatched-small_2_" fill="#5BA845" points="27.9,50.2 17.7,26.5 15.4,36 2,36 2,32 12.1,32 16.4,13.6 26.7,36.3
+					28.9,26 44,26 44,32 32.1,32 				"/>
+				<g>
+					<circle fill="#FFFFFF" cx="47.9" cy="28" r="11.8"/>
+					<path id="completed-small_2_" fill="#4178BE" d="M48.6,15.4c-7.4,0-13.4,6-13.4,13.4s6,13.4,13.4,13.4s13.4-6,13.4-13.4
+						S56.1,15.4,48.6,15.4z M46.8,34.3l-5.5-5.5l1.8-1.8l3.7,3.7l7.3-7.3l1.8,1.7L46.8,34.3z"/>
+				</g>
+			</g>
+			<g id="execution-small">
+				<polygon id="dispatched-small_1_" fill="#5BA845" points="14.2,25 9.1,13.2 8,18 1,18 1,16 6.3,16 8.5,6.7 13.6,18.1 14.7,13
+					22,13 22,16 16.3,16 				"/>
+				<g>
+					<circle fill="#FFFFFF" cx="24.2" cy="13.8" r="5.9"/>
+					<path id="completed-small_1_" fill="#4178BE" d="M24.6,7.5c-3.7,0-6.7,3-6.7,6.7s3,6.7,6.7,6.7s6.7-3,6.7-6.7
+						S28.3,7.5,24.6,7.5z M23.6,16.9l-2.7-2.7l0.9-0.9l1.8,1.8l3.6-3.6l0.9,0.9L23.6,16.9z"/>
+				</g>
+			</g>
+		</g>
+		<g id="download-2-Icons" display="inline">
+			<polygon id="download-2-arrow" fill="#C7C7C7" points="48.3,26.8 45.7,24.1 34,35.9 34,5 30,5 30,35.9 18.3,24.1 15.7,26.8 32,43
+				"/>
+			<polygon id="download-2-bottom" fill="#C7C7C7" points="56,37 56,52 8,52 8,37 4,37 4,51.6 4,59 7.7,59 56.3,59 60,59 60,51.6
+				60,37 			"/>
+		</g>
+		<g id="download-Icons" display="inline">
+			<g id="download">
+				<polygon fill="#FFFFFF" points="48.3,26.8 45.7,24.1 34,35.9 34,5 30,5 30,35.9 18.3,24.1 15.7,26.8 32,43 				"/>
+				<polygon fill="#FFFFFF" points="56,37 56,52 8,52 8,37 4,37 4,51.6 4,59 7.7,59 56.3,59 60,59 60,51.6 60,37 				"/>
+			</g>
+			<g id="download-grey">
+				<polygon fill="#6F6F6F" points="48.3,26.8 45.7,24.1 34,35.9 34,5 30,5 30,35.9 18.3,24.1 15.7,26.8 32,43 				"/>
+				<polygon fill="#6F6F6F" points="56,37 56,52 8,52 8,37 4,37 4,51.6 4,59 7.7,59 56.3,59 60,59 60,51.6 60,37 				"/>
+			</g>
+			<g id="download-small">
+				<polygon fill="#FFFFFF" points="24.1,13.9 22.8,12.6 17,18.4 17,3 15,3 15,18.4 9.2,12.6 7.9,13.9 16,22 				"/>
+				<polygon fill="#FFFFFF" points="28,19 28,27 4,27 4,19 2,19 2,26.3 2,30 3.9,30 28.1,30 30,30 30,26.3 30,19 				"/>
+			</g>
+			<g id="download-grey-small">
+				<polygon fill="#6F6F6F" points="48.3,26.8 45.7,24.1 34,35.9 34,5 30,5 30,35.9 18.3,24.1 15.7,26.8 32,43 				"/>
+				<polygon fill="#6F6F6F" points="56,37 56,52 8,52 8,37 4,37 4,51.6 4,59 7.7,59 56.3,59 60,59 60,51.6 60,37 				"/>
+			</g>
+		</g>
+		<g id="dispatched-Icons" display="inline">
+			<polygon id="dispatched" fill="#5BA845" points="39.6,56.2 26,25.1 23,38 4,38 4,33 18.6,33 24.3,8.2 37.9,38.9 40.9,26 60,26
+				60,32 45.1,32 			"/>
+			<polygon id="dispatched-small" fill="#5BA845" points="20.1,28.2 13.2,12.4 11.7,19 2,19 2,17 9.4,17 12.3,4 19.2,19.6 20.7,13
+				30,13 30,16 22.9,16 			"/>
+		</g>
+		<g id="completed-Icons" display="inline">
+			<g id="completed-small">
+				<g>
+					<path fill="#4B8400" d="M16.4,2c-7.7,0-14,6.3-14,14s6.3,14,14,14s14-6.3,14-14S24.1,2,16.4,2z M14.5,21.7L8.7,16l1.9-1.9
+						l3.8,3.8l7.6-7.6l1.9,1.8L14.5,21.7z"/>
+				</g>
+			</g>
+			<g id="completed">
+				<g>
+				<path fill="#4B8400" d="M32,4C16.5,4,4,16.5,4,32s12.5,28,28,28s28-12.5,28-28S47.5,4,32,4z M28.2,43.5L16.7,32l3.8-3.8l7.6,7.6
+					l15.2-15.2l3.8,3.6L28.2,43.5z"/>
+				</g>
+			</g>
+		</g>
+		<g id="bottom-Icons" display="inline">
+			<g id="bottom">
+				<rect x="12" y="52" fill="#FFFFFF" width="40" height="8"/>
+				<polygon fill="#FFFFFF" points="51.1,28.2 47.5,24.4 35,37.1 35,4 29,4 29,37.1 16.5,24.4 12.8,28.2 31.9,47.3 				"/>
+			</g>
+			<g id="bottom-grey">
+				<rect x="12" y="52" fill="#6F6F6F" width="40" height="8"/>
+				<polygon fill="#6F6F6F" points="51.1,28.2 47.5,24.4 35,37.1 35,4 29,4 29,37.1 16.5,24.4 12.8,28.2 31.9,47.3 				"/>
+			</g>
+			<g id="bottom-small">
+				<rect x="6" y="26" fill="#FFFFFF" width="20" height="4"/>
+				<polygon fill="#FFFFFF" points="25.5,14.1 23.5,12.2 17,18.5 17,2 14,2 14,18.5 8,12.2 6.3,14.1 15.9,23.6 				"/>
+			</g>
+		</g>
+		<g id="caret-icons" display="inline">
+			<g id="caret">
+				<polygon fill="#6F6F6F" points="24.9,55.2 21.8,52.8 37.9,32 21.8,11.2 24.9,8.8 43,32 		"/>
+			</g>
+			<g id="caret-small">
+				<polygon fill="#6F6F6F" points="13.9,27 12.3,25.8 19.9,15.9 12.3,6.1 13.9,4.9 22.5,15.9 		"/>
+			</g>
+			<g id="caret-white-small">
+				<polygon fill="#FFFFFF" points="13.9,27 12.3,25.8 19.9,15.9 12.3,6.1 13.9,4.9 22.5,15.9 		"/>
+			</g>
+			<g id="double-caret">
+				<polygon fill="#6F6F6F" points="35.1,55.2 32,52.8 48.1,32 32,11.2 35.1,8.8 53.2,32 		"/>
+				<polygon fill="#6F6F6F" points="14.3,55.2 11.2,52.8 27.3,32 11.2,11.2 14.3,8.8 32.4,32 		"/>
+			</g>
+		</g>
+		<g id="abandoned-Icons" display="inline">
+			<g id="abandoned">
+				<path fill="#D74108" d="M32,6L2,58h60L32,6z M32,10l26.5,46h-53L32,10z"/>
+				<polygon fill="#D74108" points="30,28 30,32 31,42 33,42 34,32 34,28 				"/>
+				<circle fill="#D74108" cx="32" cy="46" r="2"/>
+			</g>
+			<g id="abandoned-small">
+				<path fill="#D74108" d="M16,2L1,28h30L16,2z M16,6l11.5,20h-23L16,6z"/>
+				<polygon fill="#D74108" points="15,13 15,15.1 15.5,20 16.5,20 17,15.1 17,13 				"/>
+				<circle fill="#D74108" cx="16" cy="22.1" r="1"/>
+			</g>
+		</g>
+		<g id="started-Icons" display="inline">
+    		<polygon id="started" fill="#5BA845" points="39.6,56.2 26,25.1 23,38 4,38 4,33 18.6,33 24.3,8.2 37.9,38.9 40.9,26 60,26
+        		60,32 45.1,32   "/>
+    		<polygon id="started-small" fill="#5BA845" points="20.1,28.2 13.2,12.4 11.7,19 2,19 2,17 9.4,17 12.3,4 19.2,19.6 20.7,13
+        		30,13 30,16 22.9,16     "/>
+		</g>
+		<g id="java-batch-breadcrumb-Icons" display="inline">
+			<g id="jobinst-small">
+				<path fill="#FFFFFF" d="M30.752,7.454V1.187h-6.267v2.279H14.8V15.43H7.393v-2.279H1.126v6.267h6.267v-2.279H14.8v11.394h9.685v2.279h6.267v-6.267
+					h-6.267v2.279h-7.976v-9.685h7.976v2.279h6.267v-6.267h-6.267v2.279h-7.976V5.175h7.976v2.279H30.752z M26.194,2.896h2.849v2.849
+					h-2.849V2.896z M26.194,26.255h2.849v2.849h-2.849V26.255z M26.194,14.861h2.849v2.849h-2.849V14.861z"/>
+			</g>
+		</g>
+        <g id="submission-Icons" display="inline">
+           <g id="submission-error-small">
+                <path fill="#8B191D" d="M16,0C7.2,0,0,7.2,0,16s7.2,16,16,16s16-7.2,16-16S24.8,0,16,0z M23.1,20.2l-2.8,2.8L16,18.8l-4.2,4.2l-2.8-2.8l4.2-4.2
+                    l-4.2-4.2l2.8-2.8l4.2,4.2l4.2-4.2l2.8,2.8L18.8,16L23.1,20.2z"/>
+           </g>
+        </g>
+        <g id="generic-Icons" display="inline">
+           <g id="add-new-small">
+						 		<path d="M16,0C7.2,0,0,7.2,0,16s7.2,16,16,16s16-7.2,16-16S24.8,0,16,0z M24,18h-6v6h-4v-6H8v-4h6V8h4v6h6V18z"/>
+           </g>
+           <g id="remove-small">
+						 		<path d="M16,0C7.2,0,0,7.2,0,16s7.2,16,16,16s16-7.2,16-16S24.8,0,16,0z M24,18H8v-4h16V18z"/>
+           </g>
+        </g>
+</svg>

@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="velocity" default="get-velocity-lib">
+    
+    <property name="velocity.project.destination" location="${basedir}/lib/velocity" />
+    <property name="velocity.version" value="1.4.2" />
+    <property name="velocity.home" location="${basedir}/../ant_build.js/lib/velocity" />
+    
+    <!-- Common 'velocity build' process-->
+    <target name="get-velocity-lib">
+        <echo>Getting velocity!</echo>
+        <echo>velocity.project.destination: ${velocity.project.destination}</echo>
+        <echo>velocity.home: ${velocity.home}</echo>
+        <delete dir="${velocity.project.destination}" failonerror="false" />
+        <mkdir dir="${velocity.project.destination}" />
+        <copy file="${velocity.home}/velocity-${velocity.version}/velocity.min.js" tofile="${velocity.project.destination}/velocity.min.js" />
+    </target>
+</project>

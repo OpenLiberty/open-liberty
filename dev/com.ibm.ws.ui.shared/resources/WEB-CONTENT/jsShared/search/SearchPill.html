@@ -1,0 +1,21 @@
+<div class="searchPill searchPillNotSelected"  tabindex="0" 
+	 data-dojo-attach-event="click:showPillAsSelected,focus:showPillAsSelected,blur:showPillAsNotSelected,keypress:checkKeyCode">
+	 <!-- look into 'containerNode' in templates again --> 
+	 <div id="${id}_left-div" class="searchPillLeft">
+	 	<!-- also considered using ComboButton -->
+	 	<div id="${id}_searchBy-comboBox" tabindex="0"
+	 			data-dojo-type ="dijit/form/DropDownButton" data-dojo-attach-point="searchByDropDown"  
+	 			data-dojo-props="autoWidth:true,baseClass:'searchByDropDownButton inputFont','class':'searchPillLeftNotSelected',iconClass:'searchByButtonIcon'" 
+	 			data-dojo-attach-event="click:searchByClicked,focus:showPillAsNotSelected,blur:searchByBlur">
+			<div id="${id}_searchBy-dropDownMenu" data-dojo-type="dijit/DropDownMenu" data-dojo-attach-point="searchByDropDownMenu" 
+					data-dojo-props="baseClass:'searchByDropDownMenu inputFont', 'aria-labelledby':'${id}_searchBy-comboBox'" >
+			</div>
+	 	</div> 
+	 </div>
+
+	 <div id="${id}_right-div" data-dojo-attach-point="searchPillRightDiv">
+	 </div>
+
+ 	 <button id="${id}_deleteButton" data-dojo-attach-point="searchPillDeleteButton" role="button" aria-label="" title="" tab-index="0" class="searchPillDeleteIcon searchPillDeleteButton">
+	 </button>
+</div>

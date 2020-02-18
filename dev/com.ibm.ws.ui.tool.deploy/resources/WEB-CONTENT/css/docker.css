@@ -1,0 +1,242 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+@import url("dockerExcludeValidator.css");
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader {
+    border: 11px solid transparent;
+    border-top: 11px solid #4178BE;
+    border-radius: 50%;
+    width: 125px !important;
+    height: 125px !important;
+    animation: spin 0.8s linear infinite;
+    margin: auto;
+    margin-top: 100px;
+}
+
+.listView .loader {
+    background-color: #FFFFFF;
+}
+
+.listSearch {
+    padding-bottom: 50px;
+    vertical-align: middle;
+}
+
+.listSearch input {
+    width: 100%;
+    display: inline-block;
+    color: #434343;
+    border: none;
+    margin-bottom: 0;
+    padding: 4px 4px 0px 34px;
+    height: 30px;
+    font-family: HelvNeueLight, helvetica, sans-serif;
+    font-size: 14px;
+}
+
+/*
+#listSearchTitle {
+    color: rgb(121, 121, 121);
+    font-size: 24px;
+    padding-bottom: 11px;
+}
+*/
+.listSearchIconSpan {
+    width: 100%;
+    color: #797979;
+    font-size: 20px;
+    border-bottom: solid 2px #4178BE;
+    padding-bottom: 2px;
+    display: table;
+}
+
+.listSearchIcon {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    padding-left: 5px;
+    padding-top: 5px;
+    vertical-align: middle;
+    position: absolute;
+}
+
+.parameters .listSearchField:hover {
+    border-bottom: none;
+}
+
+.parameters .listSearchField:focus {
+    border-bottom: none;
+    box-shadow: #5AAAFA 0 0 2px 2px;
+}
+
+/* .dockerImageSearchField::-webkit-input-placeholder { WebKit, Blink, Edge
+    color:    #4178BE;
+}
+.dockerImageSearchField:-moz-placeholder { Mozilla Firefox 4 to 18
+   color:    #4178BE;
+   opacity:  1;
+}
+.dockerImageSearchField::-moz-placeholder { Mozilla Firefox 19+
+   color:    #4178BE;
+   opacity:  1;
+}
+.dockerImageSearchField:-ms-input-placeholder { Internet Explorer 10-11
+   color:    #4178BE;
+} */
+.listView {
+    height: 370px;
+    border-top: 20px solid #C7C7C7;
+    border-bottom: 2px solid #4178BE;
+}
+
+.listView a {
+    text-decoration: none;
+}
+
+.listViewList {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+    background-color: #EDEDED;
+}
+
+.listViewListItem {
+    display: block;
+    width: 100%;
+    color: #777677;
+    padding: 12px 0px;
+    outline-color: black;
+    font-size: 14px;
+    text-decoration: none;
+    text-align: left;
+    text-indent: 10px;
+    cursor: pointer;
+    background-color: #EDEDED;
+    border-bottom: none;
+    border-top: none;
+    border-left: 14px solid #EDEDED;
+    border-right: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-height: 40px;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+}
+
+.listViewListItem:hover, .listViewListItem:focus {
+    box-shadow: none;
+    background-color: #FFFFFF;
+    border-left: 14px solid #FDD600;
+    outline: none;
+}
+
+.listViewListItemSelected {
+    border-left: 14px solid #4178BE;
+    background-color: #FFFFFF;
+    color: #4178BE;
+}
+
+.listViewListItemSelected a, .listViewListItemSelected:hover a, .listViewListItemSelected:focus a {
+    color: #4178BE;
+}
+
+.listViewListItemSelected:hover {
+    border-left: 14px solid #4178BE;
+    box-shadow: none;
+    color: #4178BE;
+    background-color: #FFFFFF;
+}
+
+.listViewListItemSelected:focus {
+    border-left: 14px solid #4178BE;
+}
+
+.listViewListItem svg {
+    height: 22px;
+    width: 22px;
+    vertical-align: middle;
+    padding-left: 4px;
+}
+
+.listViewListItem a {
+    vertical-align: middle;
+    padding-left: 16px;
+    color: #434343;
+}
+
+.listViewListItem[disabled] {
+    color: grey !important;
+    cursor: no-drop;
+}
+
+.listViewError {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+    background-color: #EDEDED;
+    padding: 0px 35px;
+}
+
+.listViewErrorIcon {
+    height: 150px;
+    width: 150px;
+    margin: auto;
+    padding: 30px;
+}
+
+.listViewErrorMessage {
+    height: 60px;
+    width: 300px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 15px;
+    font-family: HelvNeueBold, helvetica, sans-serif;
+}
+
+.listViewErrorLink {
+    font-family: HelvNeueBold, helvetica, sans-serif;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.listViewErrorFooter {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.parameters .listViewResetButton {
+    width: inherit;
+    border: 3px solid #4178BE;
+    padding: 4px 8px;
+    text-align: center;
+    line-height: 1.5em;
+    text-indent: 0px;
+}
+
+.listViewResetButton:hover, .listViewResetButton:focus {
+    color: white;
+    background-color: #4178BE;
+}
+
+.listViewResetButton:hover {
+    cursor: pointer;
+}
