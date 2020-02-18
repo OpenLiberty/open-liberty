@@ -307,7 +307,6 @@ public class BaseTraceService implements TrService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
-        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
         logHeader = trConfig.getLogHeader();
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
@@ -466,6 +465,8 @@ public class BaseTraceService implements TrService {
                 updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
             }
         }
+
+        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
     }
 
     public static boolean getIsServerConfigUpdate() {

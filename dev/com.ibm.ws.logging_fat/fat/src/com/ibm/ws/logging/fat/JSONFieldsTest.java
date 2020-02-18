@@ -49,7 +49,7 @@ public class JSONFieldsTest {
     //env and bootstrap server initial config
     private static final String SERVER_NAME_ENV = "com.ibm.ws.logging.fieldnameenv";
     private static final String SERVER_NAME_BOOTSTRAP = "com.ibm.ws.logging.fieldnamebootstrap";
-    private static final String SERVER_NAME_OMIT_ENV = "com.ibm.ws.logging.fieldnameenv";
+    private static final String SERVER_NAME_OMIT_ENV = "com.ibm.ws.logging.fieldnameomitenv";
     private static final String SERVER_NAME_OMIT_BOOTSTRAP = "com.ibm.ws.logging.fieldnameomitbootstrap";
 
     private static LibertyServer server_xml;
