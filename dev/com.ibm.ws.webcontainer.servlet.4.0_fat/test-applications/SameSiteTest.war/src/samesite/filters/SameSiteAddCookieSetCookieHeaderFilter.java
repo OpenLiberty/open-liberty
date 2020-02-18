@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package samesite.filter;
+package samesite.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -258,6 +258,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlAnyElement
     private List<Element> unknownElements;
 
+    @XmlElement(name = "samesite")
+    private ConfigElementList<SameSite> samesites;
+
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
     }
@@ -1190,5 +1193,32 @@ public class ServerConfiguration implements Cloneable {
             this.activedLdapFilterProperties = new ConfigElementList<LdapFilters>();
         }
         return this.activedLdapFilterProperties;
+    }
+
+    /**
+     * Add a SameSite configuration to this server
+     *
+     * @param samesite The SameSite element to be added to this server.
+     */
+    public void addSameSite(SameSite samesite) {
+
+        ConfigElementList<SameSite> samesiteCfgs = getSameSites();
+
+        for (SameSite samesiteEntry : samesiteCfgs) {
+            if (samesiteEntry.getId().equals(samesite.getId())) {
+                samesiteCfgs.remove(samesiteEntry);
+            }
+        }
+        samesiteCfgs.add(samesite);
+    }
+
+    /**
+     * @return the samesite configurations for this server
+     */
+    public ConfigElementList<SameSite> getSameSites() {
+        if (this.samesites == null) {
+            this.samesites = new ConfigElementList<SameSite>();
+        }
+        return this.samesites;
     }
 }

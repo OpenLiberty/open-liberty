@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package samesite.filter;
+package samesite.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +43,7 @@ public class SameSiteSetCookieFilter implements Filter {
         boolean testSameSiteEmptyValue = Boolean.valueOf(request.getParameter("testEmptySameSiteValue"));
         boolean testSameSiteIncorrectValue = Boolean.valueOf(request.getParameter("testIncorrectSameSiteValue"));
         boolean testSameSiteDuplicateSameSiteValue = Boolean.valueOf(request.getParameter("testDuplicateSameSiteValue"));
+        boolean testSameSiteConfigSetAddHeaderValue = Boolean.valueOf(request.getParameter("testSameSiteConfigSetAddHeader"));
 
         servletContext.log("***********< SameSiteSetCookieFilter doFilter testSameSiteEmptyValue: " + testSameSiteEmptyValue + " >****************");
         servletContext.log("***********< SameSiteSetCookieFilter doFilter testSameSiteIncorrectValue: " + testSameSiteIncorrectValue + " >****************");
@@ -65,6 +66,9 @@ public class SameSiteSetCookieFilter implements Filter {
         } else if (testSameSiteDuplicateSameSiteValue) {
             httpResponse.setHeader("Set-Cookie", "MySameSiteCookieNameSetHeader=MySameSiteCookieValueSetHeader; Secure; SameSite=Lax; SameSite=None");
             httpResponse.addHeader("Set-Cookie", "MySameSiteCookieNameAddHeader=MySameSiteCookieValueAddHeader; Secure; SameSite=Lax; SameSite=None");
+        } else if (testSameSiteConfigSetAddHeaderValue) {
+            httpResponse.setHeader("Set-Cookie", "MySameSiteCookieNameSetHeader=MySameSiteCookieValueSetHeader");
+            httpResponse.addHeader("Set-Cookie", "MySameSiteCookieNameAddHeader=MySameSiteCookieValueAddHeader");
         } else {
             // We will call setHeader before addHeader so we can test both methods.
             // If there is already a Set-Cookie header in the response we will overwrite it but for
