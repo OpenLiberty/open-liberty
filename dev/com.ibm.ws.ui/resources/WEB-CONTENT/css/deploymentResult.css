@@ -1,0 +1,317 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+.mblView {
+    color: #000000
+} /* Override the rather stupid OneUI / dojo mobile idea of WHITE text */
+.bgTasksTreeView {
+    color: #000000
+}
+
+.filename {
+    float: left;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 200px;
+    height: 24px;
+    text-align: left
+}
+
+.status {
+    float: left;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 150px;
+    text-align: left
+}
+
+.progressbar {
+    float: left;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 230px;
+    text-align: right
+}
+
+.progressbarPopup {
+    float: left;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 350px;
+    text-align: right
+}
+
+.percentage {
+    float: right;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 50px;
+    text-align: right
+}
+
+.uptime {
+    float: left;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 130px;
+    text-align: left
+}
+
+.container {
+    float: right;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 550px;
+    text-align: right
+}
+
+.bgtbold {
+    font-weight: bold;
+    padding: 15px 0px 10px 0px;
+}
+
+.centerImg {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.description {
+    cursor: pointer;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    width: calc(100% - 250px);
+}
+
+.deployInstallationTitle {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    width: calc(100% - 588px);
+}
+
+.timestamp {
+    float: right;
+    vertical-align: middle;
+    margin-top: 0px;
+    width: 170px;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.normalWhiteSpaceAlignMiddle {
+    white-space: normal;
+    width: calc(100% - 38px);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.repeatingGradientPending {
+    background: repeating-linear-gradient(135deg, #B0B0B0, #B0B0B0 5px, #C8C8C8 5px, #C8C8C8 10px /* determines size */
+    );
+}
+
+.normalWhiteSpace {
+    white-space: normal;
+}
+
+.succeeded {
+    background-image: url("../images/colors/green.png");
+}
+
+.inProgress {
+    background-image: url("../images/colors/grey.png");
+}
+
+.pending {
+    background-image: url("../images/colors/white.png");
+}
+
+.failed {
+    background-image: url("../images/colors/red.png");
+}
+
+.partialSucceeded {
+    background-image: url("../images/colors/orange.png");
+}
+
+.backgroundTaskPopupTable {
+    padding: 0px;
+    border-spacing: 1px 1px;
+    width: 350px;
+    overflow: hidden;
+    /*  text-overflow: ellipsis; <-- CSS validator will flag this as error*/
+    white-space: nowrap;
+}
+
+.backgroundTaskPopupTableText {
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+/* new design: */
+.rootStatusIcon, .childStatusIcon {
+    width: 40px;
+    border: 0px;
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.rootStatusIcon {
+    width: 38px;
+}
+
+.rootStatusIcon img {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.arrowDivBox {
+    position: relative;
+    background: #E3E1DD;
+    border: 2px solid #9A9691;
+    padding-top: 10px;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    line-height: 180%;
+}
+
+.arrowDivBox:after, .arrowDivBox:before {
+    bottom: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+}
+
+.arrowDivBox:after {
+    border-color: rgba(227, 225, 221, 0);
+    border-bottom-color: #E3E1DD;
+    border-width: 10px;
+    margin-left: -10px;
+}
+
+.arrowDivBox:before {
+    border-color: rgba(154, 150, 145, 0);
+    border-bottom-color: #9A9691;
+    border-width: 13px;
+    margin-left: -13px;
+}
+
+.clickableLine {
+    cursor: pointer;
+    line-height: 200%;
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
+    background-color: rgba(171, 214, 255, 0);
+    border-color: rgba(118, 157, 192, 0);
+    border-width: 0;
+    -webkit-transition-property: background-color, border-color;
+    -moz-transition-property: background-color, border-color;
+    transition-property: background-color, border-color;
+    -webkit-transition-duration: 0.25s;
+    -moz-transition-duration: 0.25s;
+    transition-duration: 0.25s;
+    -webkit-transition-timing-function: ease-out;
+    -moz-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+.clickableLine:hover {
+    background-color: #cce8f2;
+    color: #000000;
+    -webkit-transition-duration: 0.25s;
+    -moz-transition-duration: 0.25s;
+    transition-duration: 0.25s;
+}
+
+.clickableLine, .bgLinePadding {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.statusBarSingleBlock {
+    vertical-align: middle;
+    border: 1px solid black;
+    margin-left: 2px;
+    opacity: 1;
+}
+
+.bgdetailsDialog {
+    background-color: #f4f4f1 !important;
+    border-radius: 0 !important;
+    min-width: 740px !important;
+    max-width: 740px !important;
+    overflow: visible !important;
+    max-height: 400px !important;
+    height: 400px !important;
+    border: none !important;
+    -webkit-box-shadow: none !important;
+}
+
+.bgdetailsDialog .dijitDialogTitleBar {
+    text-align: center;
+    padding: 25px 0 0 0 !important;
+    margin: 0 !important;
+}
+
+.bgdetailsDialog .dijitDialogCloseIcon {
+    background-image: url(../imagesShared/close-T.png) !important;
+    background-repeat: no-repeat !important;
+    background-color: transparent !important;
+    display: block !important;
+    height: 40px !important;
+    width: 40px !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    margin-top: -14px !important;
+    margin-right: -14px !important;
+    position: absolute !important;
+    top: 5px !important;
+    right: 5px !important;
+}
+
+.bgdetailsDialog .dijitDialogTitle {
+    color: #000000;
+    font-size: 30px;
+}
+
+.bgdetailsDialog .bgdetailsContentScrollY {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: inherit;
+    word-wrap: break-word;
+    padding: 0 10px;
+}
+
+.bgdetailsDialog .dijitDialogPaneContent {
+    padding: 20px 0 23px 0;
+}
+
+.bgdetailsDialog .dijitDialogPaneActionBar {
+    border: none;
+    text-align: center;
+    padding: 20px 0 0 0;
+}

@@ -1,0 +1,812 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/* @media only screen and (min-device-width: 767px) {  */
+.tableContainerDropDownActionButton {
+    border: 0;
+}
+
+.tableContainerDropDownActionButton td {
+    border: 0;
+    text-align: center;
+    /*	width: 25%;*/
+}
+
+.cardLabel {
+    display: block;
+    overflow: hidden !important;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cardBottomListedStat {
+    font-size: 14px;
+    vertical-align: bottom;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cardStatusLabel {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 26px);
+}
+
+.cardHostName {
+    display: block;
+    font-size: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.clusterServerListBottomLabel, .clusterAppListBottomLabel {
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 28px);
+}
+
+.actionMenu-start-Icon-SVG, .actionMenu-restart-Icon-SVG, .actionMenu-stop-Icon-SVG, .actionMenu-start-disabled-Icon-SVG,
+    .actionMenu-restart-disabled-Icon-SVG, .actionMenu-stop-disabled-Icon-SVG {
+    height: 14px;
+    width: 14px;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+
+.hideForAccessibility {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+.actionMenu-expandButton-contentPane {
+    padding: 0px;
+}
+
+.expandButton {
+    position: absolute;
+    right: 10px;
+    top: 3px;
+    background: inherit;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    padding: 0;
+}
+
+.expandButton:focus {
+    outline: none;
+}
+
+.expandButton svg {
+    padding: 8px;
+    width: 24px;
+    height: 24px;
+}
+
+.expandButton:hover {
+    cursor: pointer;
+}
+
+.expandButton:hover, .expandButton:focus, .expandButtonFocused {
+    box-shadow: #7CC7FF 0 0 2px 1px;
+    outline: none;
+}
+
+.expandButton .dijitButtonContents {
+	outline: none;
+	width: 24px;
+	height: 24px;
+}
+
+.tableContainer-valueCell .expandedButton {
+    background-color: #3F474F;
+    display: block;
+}
+
+.tableContainer-valueCell .expandedButtonHidden {
+    display: none;
+}
+
+@media screen and (max-device-width : 480px) {
+    .cardBottomListedStat {
+        width: 100%;
+        font-size: 14px;
+        vertical-align: bottom;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
+
+.alertExclamation, .maintenanceMode {
+    background-color: #D74108;
+    position: absolute;
+    display: inline;
+    right: 0px;
+    bottom: 0px;
+    z-Index: 10;
+    border: 0px;
+    width: 21px;
+    height: 21px;
+    padding: 0px;
+    text-align: center;
+}
+
+.alertExclamation:hover {
+    box-shadow: #7CC7FF 0 0 2px 2px;
+    cursor: pointer;
+}
+
+.alertExclamationFocused, .maintenanceModeFocused {
+    border-left: solid 1px #4178BE;
+    border-right: solid 2px #4178BE;
+    border-top: solid 1px #4178BE;
+    border-bottom: solid 2px #4178BE;
+}
+
+.alertContentPane {
+    font-size: 14px;
+    word-wrap: break-word;
+    color: #ffffff;
+    padding: 10px;
+    line-height: 130%;
+    background-color: #404E56;
+    z-Index: 10;
+    position: absolute;
+    margin-top: 2px;
+    left: -2px;
+    width: 199px;
+}
+
+.graph {
+    height: 100%;
+    background-color: transparent;
+    right: 16px !important;
+}
+
+.cardInner:focus {
+    outline: none;
+    box-shadow: #7CC7FF 0px 0px 3px 1px;
+}
+
+.contentPaneInner {
+    padding: 0px;
+    width: 100%;
+    background-color: #EDEDED;
+    border: solid 2px #c2c2c2;
+    position: relative;
+}
+
+.contentPaneInner .dijitButtonNode, .contentPaneInnerAlert .dijitButtonNode {
+    padding: 0px !important; /* the extra padding in singleResource css caused the focus to include area way outside the card */
+}
+
+.contentPaneInnerAlert {
+    padding: 0px;
+    width: 100%;
+    background-color: #EDEDED;
+    border: solid 2px #D74108;
+    position: relative;
+}
+
+.contentPaneInner .mblListItem, .contentPaneInnerAlert .mblListItem {
+    border-bottom: 0px;
+    font-weight: normal;
+}
+
+/*Toggle button*/
+input.checkboxToggleButton {
+    max-height: 0;
+    max-width: 0;
+    opacity: 0;
+}
+
+input.checkboxToggleButton+label {
+    display: inline-block;
+    position: relative;
+    border: 0px;
+    background-color: #a3a39b;
+    text-indent: -5000px;
+    height: 26px;
+    width: 42px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -ms-border-radius: 15px;
+    cursor: pointer;
+}
+
+input.checkboxToggleButton+label:hover {
+    cursor: pointer;
+    box-shadow: #7CC7FF 0 0 2px 1px;
+}
+
+input.checkboxToggleButton:focus+label {
+    box-shadow: #7CC7FF 0 0 2px 1px;
+}
+
+input.checkboxToggleButton+label:before {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    height: 22px;
+    width: 22px;
+    top: 0;
+    left: 0;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -ms-border-radius: 15px;
+    background: rgba(0, 138, 191, 0);
+    -moz-transition: .20s ease-in-out;
+    -webkit-transition: .20s ease-in-out;
+    transition: .20s ease-in-out;
+}
+
+input.checkboxToggleButton+label:after {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    height: 22px;
+    width: 22px;
+    top: 2px;;
+    left: 0px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -ms-border-radius: 15px;
+    background: white;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .2), 0 2px 4px rgba(0, 0, 0, .2);
+    -moz-transition: .20s ease-in-out;
+    -webkit-transition: .20s ease-in-out;
+    transition: .20s ease-in-out;
+}
+
+input.checkboxToggleButton:checked+label:before {
+    width: 42px;
+    height: 26px;
+    background: rgba(0, 138, 191, 1);
+}
+
+input.checkboxToggleButton:checked+label:after {
+    left: 20px;
+    box-shadow: inset 0 0 0 1px rgba(0, 138, 191, 1), 0 2px 4px rgba(0, 0, 0, .2);
+}
+
+.ellipses {
+    overflow: hidden !important;
+    direction: rtl;
+    TEXT-ALIGN: right;
+    margin-left: 2px;
+    white-space: nowrap;
+}
+
+.ellipses:after {
+    position: absolute;
+    left: 30px;
+    content: "...";
+}
+
+.cardBorderContainer, .cardBorderContainerClusterApp, .cardBorderContainerSingleAppInst, .cardBorderContainerServer,
+    .cardBorderContainerGraph, .cardBorderContainerHost, .cardBorderContainerCluster, .cardBorderContainerRuntime {
+    font-size: 16px;
+    width: 215px;
+    overflow: visible;
+    margin-top: 35px !important;
+    margin-left: 35px !important;
+    display: inline-block;
+    color: #2f2f2f;
+    position: relative;
+    vertical-align: bottom;
+}
+
+.contentPaneSelected {
+    height: 100px;
+    width: 325px;
+    background-color: green;
+}
+
+.cardSelectedPane {
+    height: 149px;
+    width: 215px;
+    background-color: #000000;
+    opacity: 0.5;
+    text-align: center;
+    z-index: 2;
+    display: table;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.cardSelectedPaneCheck {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cardSelectedPaneCheck svg {
+    height: 32px;
+    width: 32px;
+}
+
+.cardSelectedPaneCheck:hover {
+    box-shadow: #83d1f5 0 0 2px 2px;
+    cursor: pointer;
+}
+
+.cardInner {
+    
+}
+
+.cardInner:hover {
+    box-shadow: #7CC7FF 0 0 2px 2px;
+    cursor: pointer;
+}
+
+.cardTop {
+    background-color: white;
+    padding-top: 14px;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+}
+
+.cardTopRight {
+    display: inline-block;
+    max-width: 162px;
+    width: 100%;
+}
+
+.cardIcon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    vertical-align: top;
+    overflow: hidden !important;
+    white-space: nowrap;
+}
+
+.cardUserDir {
+    display: block;
+    font-size: 12px;
+    overflow: hidden;
+    direction: rtl;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.cardUserDir:after {
+    position: absolute;
+    left: 30px;
+    content: "...";
+}
+
+.cardUserDirNoTruncate {
+    display: block;
+    font-size: 12px;
+    /*overflow: hidden;
+  /*direction:rtl;
+  text-align:right;
+  visibility: hidden;*/
+    white-space: nowrap;
+}
+
+/* to calculate the user dir pixel */
+#userDirWidth {
+    position: absolute;
+    visibility: hidden;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+.cardUserDirNone {
+    display: none;
+}
+
+.cardBottom {
+    background-color: #EDEDED;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
+.cardBottomNone {
+    display: none;
+}
+
+.cardFieldDisplayNone {
+    display: none;
+}
+
+.cardBottomListedStatUserDir {
+    font-size: 12px;
+    margin-left: 20px;
+    color: #2F2F2F;
+    overflow: hidden;
+    direction: rtl;
+    TEXT-ALIGN: right;
+    white-space: nowrap;
+}
+
+.cardBottomListedStatUserDir:after {
+    position: absolute;
+    left: 20px;
+    content: "...";
+}
+
+.cardBottomListedStatUserDirNoTruncate {
+    font-size: 12px;
+    margin-left: 20px;
+    color: #2F2F2F;
+    white-space: nowrap;
+}
+
+.cardStatusIcon {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    padding-right: 6px;
+}
+
+.cardStatusIcon svg {
+    vertical-align: middle;
+}
+
+.cardStatusLabel {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #2F2F2F;
+}
+
+.cardServerIcon {
+    vertical-align: top;
+    float: left;
+}
+
+.cardServerList {
+    overflow: hidden;
+}
+
+.cardServer {
+    padding-left: 13px !important;
+    padding-bottom: 5px !important;
+}
+
+/* DropDown Action Button on each card */
+.dropDownActionButtons {
+    min-width: 75px;
+    width: calc(100% - 40px);
+    height: 22px !important;  /* override the one in desktop.css */
+    background-color: #404e56;
+    font-size: 14px;
+    color: white;
+    border: none;
+    padding: 8px 20px 8px 20px;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.dropDownActionButtonsRtl {
+    text-align: right;
+}
+
+.dropDownActionButtons:not(.dropDownActionButtonsDisabled):hover {
+    box-shadow: #7CC7FF 0 0 2px 2px inset;
+    -moz-box-shadow: #7CC7FF 0 0 2px 2px inset;
+    -webkit-box-shadow: #7CC7FF 0 0 2px 2px inset;
+    cursor: pointer;
+    background-color: #404e56 !important;
+    color: white !important;
+    outline: none;
+}
+
+.dropDownActionButtons:not(.dropDownActionButtonsDisabled):focus, 
+.dropDownActionButtonsFocused { /* after switching to dijit/form/Button, not able to pick up the :focus css */
+    box-shadow: #7CC7FF 0px 0px 3px 1px inset;
+    -moz-box-shadow: #7CC7FF 0px 0px 3px 1px inset;
+    -webkit-box-shadow: #7CC7FF 0px 0px 3px 1px inset;
+    cursor: pointer;
+    background-color: #404e56 !important;
+    color: white !important;
+    outline: none;
+}
+
+.dropDownActionButtonFocused:not(.dropDownActionButtonFocused) {
+    box-shadow: inset 0px 0px 2px 2px rgba(255, 255, 255, 0.3);
+}
+
+.dropDownActionButtonsFocused .dijitButtonContents {
+	outline: none;
+}
+
+.dropDownActionButtonsDisabled {
+    min-width: 75px;
+    width: calc(100% - 40px);
+    height: 22px !important;
+    background-color: #404e56 !important;
+    font-size: 14px;
+    color: #8C959A !important;
+    border: none;
+    padding: 8px 20px 8px 20px;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.dropDownActionButtonsDisabledRtl {
+    text-align: right;
+}
+
+.dropDownActionButtonsSelected {
+    min-width: 75px;
+    width: 100%;
+    height: 38px;
+    background-color: #39464D;
+    font-size: 14px;
+    color: white;
+    border: none;
+    padding: 8px 20px 8px 20px;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.dropDownActionButtonsSelectedRtl {
+    text-align: right;
+}
+
+.dropDownActionButtonIcon {
+    height: 23px;
+    width: 23px;
+    padding-left: 0px;
+    padding-right: 10px;
+    vertical-align: middle;
+}
+
+.dropDownActionButtonIconRtl {
+    padding-left: 10px;
+    padding-right: 0px;
+}
+
+.dropDownButton {
+    position: absolute;
+    display: inline;
+    right: -10px; /* -8px for positioning + -2 for the border we added to this element */
+    top: -10px;
+    z-Index: 1;
+    color: white;
+    outline: 0px;
+    text-align: right;
+    border: 2px solid transparent;
+}
+
+.dropDownButton:hover {
+    box-shadow: #7CC7FF 0 0 2px 1px;
+    cursor: pointer;
+    border-radius: 40px;
+}
+
+.dropDownPositionAboveButton {
+    margin-top: 300px;
+}
+
+.dropDownButtonFocused {
+    outline: none !important;
+    box-shadow: #7CC7FF 0px 0px 2px 1px;
+    border-radius: 40px;
+}
+
+.dropDownButtonDisabled:hover, 
+.dropDownButtonDisabled img:hover {
+    cursor: not-allowed;
+}
+
+.dijitDownArrowButton:focus {
+    outline: none !important;
+}
+
+/* no border if opening the action button */
+.dropDownButtonFocused.dropDownButtonOpenedFocused {
+    /* border: none; */
+    
+}
+
+.oneui .dijitTooltipAbove .dijitTooltipConnector {
+    background-image: url("../imagesShared/triangle-connector-downward-dialog-confirmation-T.png");
+    bottom: -1px !important;
+    right: 6px !important;
+}
+
+.oneui .dijitTooltipBelow .dijitTooltipConnector {
+    background-image: url("../imagesShared/triangle-connector-upward-dialog-confirmation-T.png");
+    left: 10px;
+    top: -4px !important;
+    right: 6px !important;
+    background-position: 0px;
+}
+
+.oneui .dropDownButton .dijitArrowButtonInner {
+    display: none !important;
+}
+
+.oneui .actionMenu .dijitTooltipContainer {
+    background-color: #404e56;
+    border: none;
+    border-radius: 0px;
+    -webkit-box-shadow: none;
+    padding: 0px;
+}
+
+.oneui .actionMenuPopup {
+    box-shadow: none;
+}
+
+.oneui .actionMenuPopup:hover {
+    cursor: pointer;
+}
+
+.dijitTooltipFocusNode {
+    padding: 0px;
+}
+
+.clusterAppList {
+    font-size: 14px;
+    vertical-align: bottom;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.austoscaleNoAction {
+    font-size: 14px;
+    color: white;
+    padding: 15px;
+    vertical-align: middle;
+}
+
+@media screen and (max-device-width : 480px) {
+    .contentPaneInner {
+        /* margin-top: 20px;
+       margin-left: 17px;
+       margin-right: 17px; */
+        /*top: 0px !important;
+       left: 5px !important;    
+       width: 270px !important;*/
+        /* TODO: This is just a temporary hack for now.
+       Something is calculating card height as 88px, automatically,
+       it seems, but can't figure out what and how 
+       height: 108px !important;*/
+        
+    }
+    .contentPaneInner .mblListItem {
+        /*width: 215px;*/
+        padding-top: 0px;
+        padding-bottom: 0px;
+        padding-left: 11px;
+        /* border: 2px solid #dfdfdf; */
+    }
+    .contentPaneInner .mblVariableHeight .mblListItemLabel {
+        margin-top: 9px;
+        margin-bottom: 9px;
+        font-size: 16px;
+        font-family: HelvNeueBold, Helvetica, Arial, sans-serif;
+        font-weight: bold;
+    }
+    .contentPaneInner .mblListItem hr {
+        margin-top: 0px;
+        margin-bottom: 9px;
+    }
+    .contentPaneInner .mblListItem .dijitContentPane {
+        /*
+       margin-top: 10px;
+       margin-bottom: 6px;
+       */
+        margin: 8px 0px;
+        font-size: 14px;
+    }
+
+    /* Temporary Solution to get wrench icon aligned correctly for "All Servers"! */
+    /* Unique ID should be assigned, not an automatically generated one */
+    /* There's something different about the clusters icon containing dijit.ContentPane */
+    /* It has class dijitAlignRight, which the other views don't have, so its automatically */
+    /* generated style is different. Right alignment should always result in "wrench" icon */
+    /* flushing to right without need for hardcoded pixels. And yes, this uses wildcard in selector! */
+    div[id*='_FilterBar'] {
+        text-align: right;
+        top: 0px;
+        height: 100px;
+    }
+    .cardTop {
+        padding-top: 5px;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+    .cardBottom {
+        padding: 5px;
+    }
+    .cardBorderContainer, .cardBorderContainerClusterApp, .cardBorderContainerSingleAppInst, .cardBorderContainerServer,
+        .cardBorderContainerGraph, .cardBorderContainerHost, .cardBorderContainerCluster, .cardBorderContainerRuntime {
+        margin: 0px !important;
+        padding: 20px 17px 0px 17px !important;
+    }
+    .cardSingleBorderContainer {
+        width: 100%;
+        overflow: visible;
+        left: 0px !important;
+        padding: 0px !important;
+        margin-top: 0px !important;
+    }
+    .actionDropDownPopup {
+        width: 100%;
+        height: 64px;
+        left: 0px !important;
+    }
+    .oneui .dijitTooltipAbove .dijitTooltipConnector {
+        background-image: url("../images/triangle-connector-downward-dialog-confirmation-S.png");
+        bottom: -3px !important;
+        right: 6px !important;
+    }
+    .oneui .dijitTooltipBelow .dijitTooltipConnector {
+        background-image: url("../images/triangle-connector-upward-dialog-confirmation-S.png");
+        top: -3px !important;
+        left: 10px;
+        background-position: 0px;
+    }
+    .dropDownActionButtons {
+        width: 33.3%;
+        height: auto;
+        background-color: #404e56;
+        color: white;
+        border: none;
+        padding: 16px 0px;
+        margin: 0px;
+        white-space: nowrap;
+    }
+    .dropDownActionButtonsDisabled {
+        width: 33.3%;
+        height: auto;
+        background-color: #404e56;
+        color: #8C959A;
+        border: none;
+        padding: 16px 0px;
+        margin: 0px;
+        white-space: nowrap;
+    }
+    .dropDownActionButtonsSelected {
+        width: 33.3%;
+        height: auto;
+        background-color: #36474a;
+        color: #ffffff;
+        border: none;
+        padding: 16px 0px;
+        margin: 0px;
+        white-space: nowrap;
+    }
+    .clusterAppList {
+        font-size: 14px;
+    }
+    .cardBottomListedStat {
+        width: 100%;
+        font-size: 14px;
+        vertical-align: bottom;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

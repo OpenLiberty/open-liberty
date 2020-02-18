@@ -1,0 +1,240 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+#execution-borderContainer {
+	overflow: auto;
+}
+
+.scrollableContentPane {
+   overflow: auto !important;
+}
+
+.longValue {
+    width: calc(100% - 200px);
+}
+
+.valueBold {
+    font-family: HelvNeueBold, Helvetica, Arial, sans-serif;
+}
+
+.executionDetailsSizeInfo {
+    min-width: 460px;
+}
+
+.leftSideWidth {
+    width: 160px;
+}
+
+.detailsContentPane {
+    padding: 10px;
+}
+
+.executionDetailHeaderPane {
+    max-height: 60%;
+}
+
+.executionIdentitySection {
+    max-width: 40%;
+    min-width: 345px;
+    background-color: white; 
+    float: left;
+    margin-right: 25px;
+}
+
+.executionIdentityLine {
+    margin: 0px 16px 25px 0px;
+}
+
+.executionIdentityLineElement {
+    display: inline-block; 
+    margin-top: 16px;
+    margin-left: 16px;
+}
+
+.executionIdentityLineLabel {
+    font-size: 14px; 
+    color: #777677; 
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;  
+}
+
+.executionIdentityLineValue {
+    padding-top: 5px;
+    padding-right: 8px;
+    color: #323232;
+}
+
+.executionIdentityLineJobEID {
+    font-size: 28px; 
+}
+
+.executionIdentityLineJobName {
+    font-size: 16px; 
+}
+
+.batchJobNameDiv {
+    position: relative; 
+    top: -12px;
+} 
+
+.executionIdentityInfoSection {
+    padding: 5px 16px 5px 0px; 
+    margin-left: 16px;
+    font-family: HelvNeueBold, Helvetica, Arial, sans-serif;
+    font-size: 14px; 
+    color: #323232;
+}
+
+.detailSpace {
+    margin-top: 10px;
+}
+
+.detailLabel {
+    font-size: 12px;
+    font-weight: normal;
+    margin-top: 8px;
+    vertical-align: top;
+    overflow: hidden;
+    padding-right: 8px;
+    display: inline-block;
+    line-height:14px;
+}
+
+.detailLabelOnWhite {
+    color: #777677;
+}
+
+.detailLabelOnGrey {
+    color: #5A5A5A;
+}
+
+.detailValue {
+    font-size: 12px;
+    display: inline-block;
+    padding-top: 8px;
+    padding-right: 8px;
+    vertical-align: top;
+    margin-left: 8px;
+    line-height: 14px;
+}
+
+.detailValueLong {
+    font-size: 12px;
+    padding-right: 10px; 
+    color: #777677; 
+    margin-top: 8px; 
+    word-wrap: break-word;
+}
+
+.detailValueOnWhite {
+    color: #464646;
+}
+
+.detailValueOnGrey {
+    color: #323232;
+}
+
+.timesLastUpdateDiv {
+    width: 260px;
+    display: inline-block; 
+    float:left;
+}
+
+.timesLastUpdate {
+    color: #323232; 
+    font-size: 16px;
+}
+
+.timeLabel {
+    font-size: 12px;
+    font-weight: normal;
+    color: #5A5A5A;
+    margin-top: 8px;
+    vertical-align: top;
+    overflow: hidden;
+    padding-right: 8px;
+    line-height:14px;
+}
+
+.timeValue {
+    font-size: 12px;
+    color: #323232;
+    padding-top: 4px;
+    padding-right: 8px;
+    vertical-align: top;
+    line-height: 14px;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;      
+}
+
+.executionViewLog {
+    display:inline-block; 
+    position: relative; 
+    top: 8px; 
+    float: right;   
+}
+
+.executionViewLogButton {
+    cursor: pointer;
+    display: inline-block;
+    color: #325C80; 
+    font-size: 12px;
+}
+
+.executionViewLogButton:hover,
+.executionViewLogButton:focus {
+    cursor: pointer;
+    box-shadow: #7CC7FF 0 0 2px 1px;
+    background-color: #C0E6FF;
+}
+
+.executionViewlogIcon {
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+}
+
+.executionInfoSection {
+    min-width: 460px;
+    width: 50%;
+    max-width: 665px; 
+    min-height: 335px;
+    float: left;
+    font-size: 16px;
+    color: #5A5A5A;
+} 
+
+.executionTitlePane.dijitTitlePane {
+    background-color: transparent;
+}
+
+.executionTitlePane .dijitTitlePaneTitle {
+    border: none;
+    border-bottom: 1px solid #5A5A5A;
+}
+
+.executionTitlePane .dijitTitlePaneTitle .dijitTitlePaneTitleFocus .dijitArrowNode {
+    float: right;
+}
+
+.executionTitlePane .dijitTitlePaneContentOuter {
+    border: none;
+}
+
+@media ( max-width : 860px) {
+    .executionIdentitySection {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    .executionInfoSection {
+        min-width: 100%;
+        padding-top: 25px;
+    }
+}
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="copyright" content="Copyright (c) IBM Corporation and others 2013.">
+    <title>Orion JSON Support</title>
+	<script src="../../../../requirejs/require.min.js"></script>
+	<script type="text/javascript">
+		/*eslint-env browser, amd*/
+		require({
+			baseUrl: '../../../',
+			paths: {
+				text: 'requirejs/text',
+				i18n: 'requirejs/i18n',
+				domReady: 'requirejs/domReady'
+			},
+			packages: [
+			]
+		});
+		require(["plugins/languages/json/jsonPlugin"], function(jsonPlugin) {
+			//jsonPlugin.connect();
+		});
+	</script>
+</head>
+
+<body id="orion-settings" class="orionPage" style="padding: 10px;">
+	<h2>JSON Tools Support</h2>
+	<p>
+		This plugin provides JSON tooling, including:
+	</p>
+	<ul>
+		<li><em>Editing</em> - an editor with syntax highlighting</li>
+	</ul>
+	<p>June 29, 2016</p>	
+	
+	<div class="split-selection-table">
+	<div class="sectionWrapper toolComposite" style="margin: 15px 30px 0px 15px; max-width: 600px;">
+		<div class="sectionAnchor sectionTitle layoutLeft">
+			License
+		</div>
+	</div>
+	<div class="sections sectionTable" style="margin: 0px 30px 0px 15px; padding-left: 6px; padding-right: 6px; max-width: 600px;">
+		<p>
+		The Eclipse Foundation makes available all content in this plug-in (&quot;Content&quot;).  Unless otherwise 
+		indicated below, the Content is provided to you under the terms and conditions of the
+		<a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License Version 1.0</a>
+		(&quot;EPL&quot;), and the <a href="http://www.eclipse.org/org/documents/edl-v10.html">
+		Eclipse Distribution License Version 1.0</a> (&quot;EDL&quot;).
+		For purposes of the EPL and EDL, &quot;Program&quot; will mean the Content.
+		</p>
+		
+		<p>
+		If you did not receive this Content directly from the Eclipse Foundation, the Content is 
+		being redistributed by another party (&quot;Redistributor&quot;) and different terms and conditions may
+		apply to your use of any object code in the Content.  Check the Redistributor's license that was 
+		provided with the Content.  If no such license exists, contact the Redistributor.  Unless otherwise
+		indicated below, the terms and conditions of the EPL still apply to any source code in the Content
+		and such source code may be obtained at <a href="http://www.eclipse.org/">http://www.eclipse.org</a>.
+		</p>
+	</div>
+	</div>
+</body>	
+</html>

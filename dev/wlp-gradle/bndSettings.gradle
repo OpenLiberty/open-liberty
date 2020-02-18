@@ -156,6 +156,7 @@ if (addAll) {
 }
 
 // Add our common build/tool projects
+projectNames.add('ant_build.js')
 projectNames.add('build.image')
 projectNames.add('com.ibm.websphere.appserver.features')
 projectNames.add('wlp-bndPlugins')

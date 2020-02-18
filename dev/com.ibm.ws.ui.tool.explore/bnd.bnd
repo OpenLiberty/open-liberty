@@ -1,0 +1,26 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Admin Center Explore Tool
+Bundle-SymbolicName: com.ibm.ws.ui.tool.explore
+Bundle-Description: WebSphere Admin Center Explore Tool, version ${bVersion}
+
+Web-ContextPath: /ibm/adminCenter/explore-1.0
+OL-VirtualHost: ${admin.virtual.host}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+
+Include-Resource: \
+  WEB-INF=resources/WEB-INF, \
+  images=resources/WEB-CONTENT/images, \
+  index.jsp=resources/WEB-CONTENT/index.jsp, \
+  feature=resources/WEB-CONTENT/feature, \
+  jsShared/bidiConfig.jsp=build/dojo/jsShared/bidiConfig.jsp, \
+  =lib/dojo-release, \
+  svg4everybody=lib/svg4everybody, \
+  fonts=lib/fonts, \
+  404=lib/404, \
+  imagesShared=build/dojo/imagesShared, \
+  jsShared/utils/toolData.js=build/jsShared/utils/toolData.js, \
+  jsShared/utils/userConfig.js=build/jsShared/utils/userConfig.js, \
+  jsShared/utils/apiMsgUtils.js=build/jsShared/utils/apiMsgUtils.js

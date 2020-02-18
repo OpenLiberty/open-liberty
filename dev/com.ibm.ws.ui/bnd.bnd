@@ -1,0 +1,73 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: ui
+Bundle-SymbolicName: com.ibm.ws.ui
+Bundle-Description: Provides the Admin Center toolbox and catalog
+
+WS-TraceGroup: UI
+
+Web-ContextPath: /adminCenter
+OL-VirtualHost: ${admin.virtual.host}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+
+instrument.disabled: true
+
+Export-Package: \
+  com.ibm.ws.ui.persistence,\
+  com.ibm.ws.ui.servlet.filter
+
+Private-Package: \
+  com.ibm.ws.ui.internal.*
+
+# Need a special import to properly construct import for commons.io
+Import-Package: \
+  com.ibm.websphere.jsonsupport.*, \
+  com.ibm.ws.common.internal.encoder, \
+  !*.internal.*, \
+  *
+
+DynamicImport-Package: \
+ com.ibm.ws.security.openidconnect.server.plugins
+
+Include-Resource: \
+  WEB-INF=resources/WEB-INF, \
+  images=resources/WEB-CONTENT/images, \
+  login.jsp=resources/WEB-CONTENT/login.jsp, \
+  feature=resources/WEB-CONTENT/feature, \
+  404=resources/WEB-CONTENT/404, \
+  login/images=resources/WEB-CONTENT/login/images, \
+  toolbox.jsp=resources/WEB-CONTENT/toolbox.jsp, \
+  =lib/dojo-release, \
+  fonts=lib/fonts, \
+  imagesShared=build/dojo/imagesShared, \
+  html=resources/WEB-CONTENT/html
+
+-dsannotations: \
+  com.ibm.ws.ui.internal.persistence.FilePersistenceProvider, \
+  com.ibm.ws.ui.internal.rest.AdminCenterRouter, \
+  com.ibm.ws.ui.internal.v1.pojo.POJOLoaderService, \
+  com.ibm.ws.ui.internal.v1.pojo.PlainTextLoaderService, \
+  com.ibm.ws.ui.internal.v1.utils.FeatureToolService
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.jsonsupport;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.org.apache.aries.util;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
+	com.ibm.ws.org.owasp.esapi.2.1.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	commons-fileupload:commons-fileupload;version=1.3.3,\
+	org.owasp.esapi:esapi;version=2.1.0
