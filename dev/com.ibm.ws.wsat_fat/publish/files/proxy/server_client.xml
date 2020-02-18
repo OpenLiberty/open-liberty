@@ -5,7 +5,8 @@
 		<feature>wsAtomicTransaction-1.2</feature>
 		<feature>jndi-1.0</feature>
 		<feature>jdbc-4.0</feature>
-		<feature>cdi-2.0</feature>
+                <feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
 		<feature>txtest-1.0</feature>
 	</featureManager>
 

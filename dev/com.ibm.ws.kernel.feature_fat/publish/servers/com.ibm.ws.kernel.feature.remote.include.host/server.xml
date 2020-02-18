@@ -1,6 +1,6 @@
 <server>
     <include location="../fatTestPorts.xml"/>
     <featureManager>
-        <feature>servlet-4.0</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
 </server>

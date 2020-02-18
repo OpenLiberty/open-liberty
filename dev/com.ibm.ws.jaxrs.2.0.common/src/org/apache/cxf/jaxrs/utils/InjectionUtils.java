@@ -1307,7 +1307,7 @@ public final class InjectionUtils {
                 Object oldProvider = pi.getOldProvider();
                 clz = oldProvider.getClass();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "injectContexts pre: oldProvider=" + oldProvider + " clz=" + clz + " loader="+clz.getClassLoader());
+                    Tr.debug(tc, "injectContexts pre: oldProvider=" +  oldProvider.getClass().getSimpleName() + " clz=" + clz + " loader="+clz.getClassLoader());
                 }
             } else {
                 clz = requestObject.getClass();
