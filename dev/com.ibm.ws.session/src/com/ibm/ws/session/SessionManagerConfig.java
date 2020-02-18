@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -197,6 +197,7 @@ public class SessionManagerConfig implements Cloneable {
     private boolean useSeparateSessionInvalidatorThreadPool = true; //set default to true so that ScheduledExecutorService is used as thread scheduler
     
     private int connectionRetryCount = 2; // Feature 68570
+    private SameSiteCookie sessionCookieSameSite;
     
     // finished Custom Properties
 
@@ -1059,6 +1060,7 @@ public class SessionManagerConfig implements Cloneable {
             msg.append("sessionCookieMaxAge=").append(this.getSessionCookieMaxAge()).append("\n");
             msg.append("sessionCookiePath=").append(this.getSessionCookiePath()).append("\n");
             msg.append("sessionCookieSecure=").append(this.getSessionCookieSecure()).append("\n");
+            msg.append("sessionCookieSameSite=").append(this.getSessionCookieSameSite().getSameSiteCookieValue()).append("\n");
             msg.append("inMemorySize=").append(inMemorySize).append("\n");
             msg.append("enableOverflow=").append(enableOverflow).append("\n");
             msg.append("sessionInvalidationTime=").append(sessionInvalidationTime).append("\n");
@@ -1103,6 +1105,16 @@ public class SessionManagerConfig implements Cloneable {
         final boolean externalCall = false;
         cookieConfig.setHttpOnly(b, externalCall);
     }
+    
+    //sessionSameSite
+    public final SameSiteCookie getSessionCookieSameSite() {
+        return this.sessionCookieSameSite;
+    }
+    
+    public final void setSessionCookieSameSite(SameSiteCookie sameSite) {
+       this.sessionCookieSameSite = sameSite;
+    }
+    
 
     public void updateCookieInfo(SessionCookieConfigImpl scc) {
         if (scc != null) {

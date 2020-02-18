@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -124,7 +124,7 @@ public class PersistentExecutorConfigUpdateTest {
     /**
      * Schedule a repeating task. Switch to enableTaskExecution=false, then back to enableTaskExecution=true. Verify the task runs.
      */
-    //@Test
+    @Test
     public void testDisableAndEnableTaskExecution() throws Exception {
         StringBuilder output = runInServlet(
                                             "test=testScheduleRepeatingTask&jndiName=concurrent/MyExecutor&initialDelay=0&interval=1000&invokedBy=testDisableAndEnableTaskExecution");
@@ -162,7 +162,7 @@ public class PersistentExecutorConfigUpdateTest {
     /**
      * Starting with unlimited retries, schedule a task that always fails. Update config with 0 retries and make sure the task ends with failure.
      */
-    //@Test
+    @Test
     public void testDisableRetries() throws Exception {
         try {
             // Disable propagation of jeeMetaDataContext
@@ -202,7 +202,7 @@ public class PersistentExecutorConfigUpdateTest {
      * Re-enable task execution with initialPollDelay=-1 (no polling), pollInterval=-1.
      * Update config with initialPollDelay=0 (immediate). Verify the task runs.
      */
-    //@Test
+    @Test
     public void testEnablePolling() throws Exception {
         try {
             // Disable execution of tasks
@@ -270,7 +270,7 @@ public class PersistentExecutorConfigUpdateTest {
      * Re-enable task execution with initialPollDelay=10 days, pollInterval=3 days.
      * Update config with initialPollDelay=100ms. Verify the task runs.
      */
-    //@Test
+    @Test
     public void testReduceTheInitialPollDelay() throws Exception {
         try {
             // Disable execution of tasks
@@ -317,7 +317,7 @@ public class PersistentExecutorConfigUpdateTest {
     /**
      * Starting with retry limit 10, retrying every 2 seconds, schedule a task that always fails. Update config with 10ms retry interval and make sure the task ends with failure.
      */
-    //@ExpectedFFDC("javax.naming.NamingException") TODO this is currently failing even though the expected FFDC is indeed logged.
+    @AllowedFFDC("javax.naming.NamingException")
     @Test
     public void testReduceTheRetryInterval() throws Exception {
         try {
@@ -360,7 +360,7 @@ public class PersistentExecutorConfigUpdateTest {
      * Verify the task runs successfully, then cancel it.
      * Schedule a task that does a java:comp lookup. Verify it fails.
      */
-    //@ExpectedFFDC("javax.naming.NamingException") TODO this is currently failing even though the expected FFDC is indeed logged.
+    @AllowedFFDC("javax.naming.NamingException")
     @Test
     public void testReplaceTheContextService() throws Exception {
         StringBuilder output = runInServlet(

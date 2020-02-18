@@ -22,22 +22,24 @@
          </session>
          <session id="Session_3">
             <ejb-name>JNDIName3</ejb-name>
-            <local-home>com.ibm.ejb2x.jndiName.ejb.JNDINameHome</local-home>
-            <local>com.ibm.ejb2x.jndiName.ejb.JNDIName</local>
+            <home>com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome</home>
+            <remote>com.ibm.ejb2x.jndiName.ejb.JNDIRemoteName</remote>
             <ejb-class>com.ibm.ejb2x.jndiName.ejb.JNDINameBean</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Container</transaction-type>
          </session>
          <session id="Session_4">
             <ejb-name>JNDIName4</ejb-name>
-            <local-home>com.ibm.ejb2x.jndiName.ejb.JNDINameHome</local-home>
-            <local>com.ibm.ejb2x.jndiName.ejb.JNDIName</local>
+            <home>com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome</home>
+            <remote>com.ibm.ejb2x.jndiName.ejb.JNDIRemoteName</remote>
             <ejb-class>com.ibm.ejb2x.jndiName.ejb.JNDINameBean</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Container</transaction-type>
          </session>
          <session id="Session_5">
             <ejb-name>JNDIName5</ejb-name>
+            <home>com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome</home>
+            <remote>com.ibm.ejb2x.jndiName.ejb.JNDIRemoteName</remote>
             <local-home>com.ibm.ejb2x.jndiName.ejb.JNDINameHome</local-home>
             <local>com.ibm.ejb2x.jndiName.ejb.JNDIName</local>
             <ejb-class>com.ibm.ejb2x.jndiName.ejb.JNDINameBean</ejb-class>
@@ -46,6 +48,8 @@
          </session>
          <session id="Session_6">
             <ejb-name>JNDIName6</ejb-name>
+            <home>com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome</home>
+            <remote>com.ibm.ejb2x.jndiName.ejb.JNDIRemoteName</remote>
             <local-home>com.ibm.ejb2x.jndiName.ejb.JNDINameHome</local-home>
             <local>com.ibm.ejb2x.jndiName.ejb.JNDIName</local>
             <ejb-class>com.ibm.ejb2x.jndiName.ejb.JNDINameBean</ejb-class>
@@ -54,6 +58,18 @@
          </session>
          <session id="Session_7">
             <ejb-name>JNDIName7</ejb-name>
+            <home>com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome</home>
+            <remote>com.ibm.ejb2x.jndiName.ejb.JNDIRemoteName</remote>
+            <local-home>com.ibm.ejb2x.jndiName.ejb.JNDINameHome</local-home>
+            <local>com.ibm.ejb2x.jndiName.ejb.JNDIName</local>
+            <ejb-class>com.ibm.ejb2x.jndiName.ejb.JNDINameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_8">
+            <ejb-name>JNDIName8</ejb-name>
+            <home>com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome</home>
+            <remote>com.ibm.ejb2x.jndiName.ejb.JNDIRemoteName</remote>
             <local-home>com.ibm.ejb2x.jndiName.ejb.JNDINameHome</local-home>
             <local>com.ibm.ejb2x.jndiName.ejb.JNDIName</local>
             <ejb-class>com.ibm.ejb2x.jndiName.ejb.JNDINameBean</ejb-class>

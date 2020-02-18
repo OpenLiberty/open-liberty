@@ -95,7 +95,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=The user AP
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verify that the configuration attribute that is specified in the message is configured correctly. Ensure that the value of the configuration attribute corresponds to the entry in the user API response that should be used as the username.
 
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: The response from the service account user API cannot be processed: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: The following response from the user API cannot be processed: {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Information about the service account cannot be obtained because another error occurred.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for more error messages that might indicate where the other error occurred.
 

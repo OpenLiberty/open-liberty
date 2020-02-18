@@ -12,16 +12,12 @@ update_configs:
       - match:
           dependency_name: "cglib:cglib-nodep"
       - match:
-          dependency_name: "org.glassfish:javax.json:1.0.*"
+          dependency_name: "org.eclipse:yasson"
       - match:
-          dependency_name: "org.glassfish:javax.json:1.1.*"
-      - match:
-          dependency_name: "org.glassfish:javax.json:1.1.*"
+          dependency_name: "org.glassfish:javax.json"
       - match:
           dependency_name: "org.hibernate.validator:hibernate-validator"
       - match:
           dependency_name: "org.hibernate.validator:hibernate-validator-cdi"
       - match:
           dependency_name: "org.ow2.asm:asm"
-      - match:
-          dependency_name: "org.eclipse:yasson"

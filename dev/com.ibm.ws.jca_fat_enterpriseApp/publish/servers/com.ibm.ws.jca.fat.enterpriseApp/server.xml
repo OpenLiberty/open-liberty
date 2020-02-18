@@ -11,9 +11,9 @@
 <server>
     <featureManager>
       <feature>appSecurity-2.0</feature>
-      <feature>servlet-4.0</feature>
+      <feature>servlet-3.1</feature>
       <feature>localConnector-1.0</feature>
-      <feature>jdbc-4.2</feature>
+      <feature>jdbc-4.1</feature>
       <feature>jca-1.7</feature>
       <feature>jms-2.0</feature>
       <feature>mdb-3.2</feature>

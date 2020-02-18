@@ -7,7 +7,8 @@
 		<feature>jndi-1.0</feature>
 		<feature>jdbc-4.0</feature>
 		<feature>ejbLite-3.2</feature>
-		<feature>cdi-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
 	</featureManager>
 
 	<include location="../fatTestPorts.xml" />

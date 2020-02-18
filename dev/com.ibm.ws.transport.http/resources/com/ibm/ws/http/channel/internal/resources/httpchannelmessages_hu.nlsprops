@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,23 @@ duplicateAlias.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a server.xml f\u00e1
 context.root.changed=CWWKT0028I: Webalkalmaz\u00e1s \u00e1thelyezve ({0}): {1}
 context.root.changed.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 context.root.changed.useraction=Semmit sem kell tennie.
+
+compression.duplicateType=CWWKT0029W: \u00dajb\u00f3li k\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {0} t\u00edpus hozz\u00e1ad\u00e1s\u00e1ra. Az alap\u00e9rtelmezett {1} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra helyette.
+compression.duplicateType.explanation=A megadott \u00e9rt\u00e9k m\u00e1r regisztr\u00e1lva van elfogadhat\u00f3 tartalomt\u00edpusak\u00e9nt a t\u00f6m\u00f6r\u00edt\u00e9shez.
+compression.duplicateType.useraction=Az elfogadhat\u00f3 k\u00f3dol\u00e1sok \u00e9rt\u00e9k\u00e9nek meghat\u00e1roz\u00e1sakor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden \u00e9rt\u00e9k egyedi. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: \u00dajb\u00f3li k\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {0} t\u00edpus elt\u00e1vol\u00edt\u00e1s\u00e1ra. Az alap\u00e9rtelmezett {1} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra helyette.
+compression.duplicateTypeRemoval.explanation=A megadott \u00e9rt\u00e9k m\u00e1r regisztr\u00e1lva van kiz\u00e1rt tartalomt\u00edpusak\u00e9nt a t\u00f6m\u00f6r\u00edt\u00e9shez.
+compression.duplicateTypeRemoval.useraction=Az elt\u00e1vol\u00edt\u00e1s (-) param\u00e9ter haszn\u00e1lata eset\u00e9n gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00e9rt\u00e9k nincs-e m\u00e1r regisztr\u00e1lva kiz\u00e1rt tartalomt\u00edpusk\u00e9nt.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt ugyanannak a(z) {0} tartalomt\u00edpusnak mind a hozz\u00e1ad\u00e1s\u00e1ra, mind az elt\u00e1vol\u00edt\u00e1s\u00e1ra. Az alap\u00e9rtelmezett {1} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra helyette.
+compression.duplicateTypeAddRemove.explanation=A megadott \u00e9rt\u00e9k a konfigur\u00e1ci\u00f3 '+/' param\u00e9terei \u00e1ltal hozz\u00e1ad\u00e1sra \u00e9s elt\u00e1vol\u00edt\u00e1sra is ker\u00fcl.
+compression.duplicateTypeAddRemove.useraction=Ne adja hozz\u00e1 (+) \u00e9s t\u00e1vol\u00edtsa el (-) ugyanazt a tartalomt\u00edpust.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt az alap\u00e9rtelmezett t\u00f6m\u00f6r\u00edt\u00e9si konfigur\u00e1ci\u00f3 fel\u00fcl\u00edr\u00e1s\u00e1ra, de a hozz\u00e1ad\u00e1s (+) param\u00e9ter m\u00e1s tartalomt\u00edpusokon t\u00f6rt\u00e9n\u0151 haszn\u00e1lat\u00e1ra is. Ehelyett az alap\u00e9rtelmezett {0} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra.
+compression.duplicateOverwriteAndAdd.explanation=A konfigur\u00e1ci\u00f3 megpr\u00f3b\u00e1lja fel\u00fcl\u00edrni az alap\u00e9rtelmezett \u00e9rt\u00e9ket a hozz\u00e1ad\u00e1s (+) param\u00e9ter haszn\u00e1lata k\u00f6zben. A hozz\u00e1ad\u00e1s param\u00e9ter nem haszn\u00e1lhat\u00f3, ha fel\u00fcl\u00edrja az alap\u00e9rtelmezett \u00e9rt\u00e9keket.
+compression.duplicateOverwriteAndAdd.useraction=Ha az alap\u00e9rtelmezett konfigur\u00e1ci\u00f3t fel\u00fcl kell \u00edrni, akkor ne haszn\u00e1lja a hozz\u00e1ad\u00e1s (+) param\u00e9tert. Ha az alap\u00e9rtelmez\u00e9st nem kell fel\u00fcl\u00edrni, akkor szerepeltethet b\u00e1rmilyen m\u00e1sik k\u00edv\u00e1nt tartalomt\u00edpust a hozz\u00e1ad\u00e1s (+) param\u00e9ter seg\u00edts\u00e9g\u00e9vel.
+
+compression.unsupportedAlgorithm=CWWKT0033W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {0} be\u00e1ll\u00edt\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3 el\u0151nyben r\u00e9szes\u00edtett algoritmusak\u00e9nt. A t\u00e1mogatott \u00e9rt\u00e9kek: gzip, x-gzip, zlib, deflate, identity \u00e9s none. Helyette az alap\u00e9rtelmezett {1} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra.
+compression.unsupportedAlgorithm.explanation=A konfigur\u00e1ci\u00f3 nem t\u00e1mogatott algoritmust pr\u00f3b\u00e1l be\u00e1ll\u00edtani a t\u00f6m\u00f6r\u00edt\u00e9shez a kiszolg\u00e1l\u00f3 \u00e1ltal el\u0151nyben r\u00e9szes\u00edtett algoritmusk\u00e9nt. 
+compression.unsupportedAlgorithm.useraction= Az \u00e9rt\u00e9k meghat\u00e1roz\u00e1sakor biztos\u00edtsa, hogy az gzip, x-gzip, deflate, zlib, identity vagy none \u00e9rt\u00e9kre legyen be\u00e1ll\u00edtva.

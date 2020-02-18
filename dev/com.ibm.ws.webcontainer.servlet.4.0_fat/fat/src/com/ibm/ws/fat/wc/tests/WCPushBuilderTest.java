@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ public class WCPushBuilderTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
         WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
@@ -53,18 +52,15 @@ public class WCPushBuilderTest extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-
-        SHARED_SERVER.getLibertyServer().stopServer(null);
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     @Test
     public void testPushBuilderAPI() throws Exception {
-
         String[] expectedMessages = { "PASS" };
         String[] unExpectedMessages = { "FAIL" };
 
         this.verifyResponse("/TestServlet40/PushBuilderAPIServlet", expectedMessages, unExpectedMessages);
-
     }
 
     /*
@@ -74,7 +70,6 @@ public class WCPushBuilderTest extends LoggingTest {
      */
     @Override
     protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 

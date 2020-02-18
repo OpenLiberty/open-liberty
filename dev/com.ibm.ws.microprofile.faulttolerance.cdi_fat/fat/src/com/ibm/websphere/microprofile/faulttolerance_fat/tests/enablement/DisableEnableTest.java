@@ -26,8 +26,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 import componenttest.annotation.Server;

@@ -83,14 +83,14 @@ public class TAIUserApiUtils {
         if (userApiResponse == null) {
             OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
             userApiResponse = openShiftUtils.getUserApiResponseForServiceAccountToken(serviceAccountToken, sslSocketFactory);
-            cacheUserApiResponse(serviceAccountToken, userApiResponse);
+            cacheUserApiResponse(serviceAccountToken + config.getUniqueId(), userApiResponse);
         }
         return userApiResponse;
     }
 
     private String getUserApiResponseFromCache(SocialLoginConfig config, @Sensitive String serviceAccountToken) {
         initializeCache(config);
-        return (String) userApiCache.get(serviceAccountToken);
+        return (String) userApiCache.get(serviceAccountToken + config.getUniqueId());
     }
 
     private synchronized void initializeCache(SocialLoginConfig config) {
@@ -125,7 +125,7 @@ public class TAIUserApiUtils {
         }
     }
 
-    // flatten linkedin's json 
+    // flatten linkedin's json
     // in: {"elements":[{"handle~":{"emailAddress":"abcde@gmail.com"},"handle":"urn:li:emailAddress:688645328"}]}
     // out: {"emailAddress":"abcde@gmail.com"};
     private String convertLinkedinToJson(String resp, String usernameattr) {

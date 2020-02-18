@@ -58,13 +58,13 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>${microprofile.config.version}-RC3</version>
+            <version>${microprofile.config.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>${microprofile.config.version}-RC2</version>
+            <version>${microprofile.config.version}</version>
             <scope>system</scope>
             <systemPath>${com.ibm.websphere.org.eclipse.microprofile.config.1.4_}</systemPath>
         </dependency>

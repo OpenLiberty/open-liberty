@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.java2sec;
 
+import java.io.IOException;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
@@ -46,6 +48,8 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.url.URLStreamHandlerService;
+import org.osgi.service.component.annotations.Reference;
+
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -53,6 +57,9 @@ import com.ibm.ws.kernel.boot.security.PermissionsCombiner;
 import com.ibm.ws.kernel.boot.security.WLPDynamicPolicy;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+
 
 public class PermissionManager implements PermissionsCombiner {
 
@@ -62,6 +69,9 @@ public class PermissionManager implements PermissionsCombiner {
     private static final TraceComponent tc = Tr.register(PermissionManager.class);
     
     private BundleContext bundleContext;
+    
+    private static final Class<?> CLASS_NAME = PermissionManager.class;
+
 
     /**
      * Class Loader
@@ -143,6 +153,7 @@ public class PermissionManager implements PermissionsCombiner {
     PermissionManager(boolean java2SecurityEnabled) {
         this.java2SecurityEnabled = java2SecurityEnabled;
     }
+    
 
     @Activate
     protected void activate(ComponentContext cc) {
@@ -171,7 +182,7 @@ public class PermissionManager implements PermissionsCombiner {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        if (java2SecurityEnabled) {
+        if (java2SecurityEnabled) {        
             permissions.deactivate(cc);
             clearPermissions();
             setAsDynamicPolicyPermissionCombiner(null);
@@ -654,17 +665,103 @@ public class PermissionManager implements PermissionsCombiner {
     public void addPermissionsXMLPermission(CodeSource codeSource, Permission permission) {
         ArrayList<Permission> permissions = null;
         String codeBase = codeSource.getLocation().getPath();
-
+        String fileName = codeSource.getLocation().getFile();
+        int last = fileName.lastIndexOf("/");
+        fileName = fileName.substring(last + 1);
+        
+        File installRoot = new File(getInstallRoot());
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " getInstallRoot: " + getInstallRoot() + " fileName: " + fileName + " codeBase: " + codeBase);
+        }
+        
         if (!isRestricted(permission)) {
             if (permissionXMLPermissionMap.containsKey(codeBase)) {
                 permissions = permissionXMLPermissionMap.get(codeBase);
                 permissions.add(permission);
+                
             } else {
                 permissions = new ArrayList<Permission>();
                 permissions.add(permission);
                 permissionXMLPermissionMap.put(codeBase, permissions);
+                // Calling recursive method 
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, " added new perm to codebase: " + codeBase + ", calling recursive find on filename: " + fileName + " codeBase: " + codeBase);
+                }
+                RecursiveFind(installRoot, fileName, codeBase, permissions);
+
             }
+
         }
     }
+    /**
+     * Returns the installation root. If it wasn't detected, use current directory.
+     */
+    public static String getInstallRoot() {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                String output = System.getProperty("server.config.dir");
+                if (output == null) {
+                    output = System.getenv("SERVER_CONFIG_DIR");
+                }
+                if (output == null) {
+                        output = ".";
+                }
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The install root is " + output);
+                }
+                return output;
+            }
+        });
+    }
+    
+    private void RecursiveFind(File dir, String fileName, String codeBase, ArrayList<Permission> permissions)  
+    { 
+        File [] files = dir.listFiles();
+          
+        // for files 
+        for (File file : files) {
+        if (file.isFile()) {
+            String newcodebase = file.getPath().replace("\\", "/");
+            newcodebase = "/".concat(newcodebase);
+            
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, ".....RecursiveFind: found file: " + file.getName() + " fileName: " + fileName + "   file.getPath(): " + 
+                                file.getPath() + " codeBase: " + codeBase + " newcodebase: " + newcodebase);              
+            }
+            
+            if (file.getName().equals(fileName)) {
+                if (newcodebase.equals(codeBase)) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "       the filename and codebases matched, keep searching");
+                    // this is the same file, keep searching 
+                } else {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "          the file name matched, but the codebase didnt, so let's see if it's in cache");
+                    }
+                    // diff codebase, check for cache, add perm
+                    if (newcodebase.contains("data/cache")) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "                        newcodebase contains data/cache, adding perm to cache entry");
+                        }
+                        permissionXMLPermissionMap.put(newcodebase, permissions);
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, " ... cached file, adding permissions");
+                        }
+                    }                    
+                }
+            }
+        }  
+        // for sub-directories 
+        else if(file.isDirectory()) 
+        {          
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, ".....RecursiveFind: found directory: " + file.getName());
+            }
+            RecursiveFind(file, fileName, codeBase, permissions);                
+        } 
+        }
+   } 
 
 }

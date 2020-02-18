@@ -11,6 +11,10 @@
 <server>
 <!-- All datasources that have fat.modify="true" will be modified at test
 		run time to run against alternative databases. -->
+		
+<!-- Derby database has two save locations
+	${shared.resource.dir}/data/jdbcfat - for datasources enlisted in database rotation
+	${shared.resource.dir}/data/derbyfat - for datasources that always run against derby -->
 
     <featureManager>
       <feature>componenttest-1.0</feature>
