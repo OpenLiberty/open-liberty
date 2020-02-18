@@ -539,16 +539,20 @@ public class InstallUtils {
         }
 
         @Override
-        public void printInfoMessage(String message) {}
+        public void printInfoMessage(String message) {
+        }
 
         @Override
-        public void printlnInfoMessage(String message) {}
+        public void printlnInfoMessage(String message) {
+        }
 
         @Override
-        public void printErrorMessage(String errorMessage) {}
+        public void printErrorMessage(String errorMessage) {
+        }
 
         @Override
-        public void printlnErrorMessage(String errorMessage) {}
+        public void printlnErrorMessage(String errorMessage) {
+        }
 
     }
 
@@ -1087,7 +1091,7 @@ public class InstallUtils {
 
         String editionCodeUpperCase = editionCode.toUpperCase();
         if (editionCodeUpperCase.equals("BASE"))
-            return "";
+            return "Base";
         else if (editionCodeUpperCase.equals("BASE_ILAN"))
             return "(ILAN)";
         else if (editionCodeUpperCase.equals("DEVELOPERS"))
@@ -1103,7 +1107,7 @@ public class InstallUtils {
         else if (editionCodeUpperCase.equals("ZOS"))
             return "z/OS";
         else if (editionCodeUpperCase.equals("LIBERTY"))
-            return "";
+            return "Base";
         else if (editionCodeUpperCase.startsWith("LIBERTY "))
             return editionCode.substring("LIBERTY ".length());
         else {
@@ -1201,7 +1205,6 @@ public class InstallUtils {
         return licensesToAccept;
     }
 
-    
     public static void setIsServerXmlInstall(Set<String> allServerFeatures) {
         isServerXmlInstallation = true;
         serverFeatures = allServerFeatures;
@@ -1226,6 +1229,5 @@ public class InstallUtils {
     public static Set<String> getAllServerFeatures() {
         return serverFeatures;
     }
-
 
 }

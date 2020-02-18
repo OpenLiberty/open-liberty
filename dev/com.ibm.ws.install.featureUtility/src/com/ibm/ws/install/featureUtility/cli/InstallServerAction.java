@@ -53,6 +53,7 @@ public class InstallServerAction implements ActionHandler {
         private String fromDir;
         private String toDir;
         private Boolean noCache;
+        private Boolean acceptLicense;
         private ProgressBar progressBar;
 
 
@@ -87,6 +88,8 @@ public class InstallServerAction implements ActionHandler {
                 }
 
                 this.noCache = args.getOption("nocache") != null;
+                
+                this.acceptLicense = args.getOption("acceptlicense") != null;
                 
                 this.toDir = args.getOption("to");
 
@@ -220,7 +223,7 @@ public class InstallServerAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
+                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
