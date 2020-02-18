@@ -710,8 +710,8 @@ public class LibertyFeaturesToMavenRepo extends Task {
 
 				 HashMap<String, String> licenseMap = new HashMap<String, String>(){
 					{
-						put("Base", String.format("%s:%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID, productVersion));
-						put("ND", String.format("%s:%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID, productVersion));
+						put("Base", String.format("%s:%s:%s", Constants.LICENSE_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID, productVersion));
+						put("ND", String.format("%s:%s:%s", Constants.LICENSE_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID, productVersion));
 					}
 				};
 

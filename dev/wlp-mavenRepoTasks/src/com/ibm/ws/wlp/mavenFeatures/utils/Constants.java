@@ -80,8 +80,8 @@ public class Constants {
 	// license map
 	private static final HashMap<String, String> licenseMap = new HashMap<String, String>(){
 		{
-			put("Base", String.format("%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID));
-			put("ND", String.format("%s:%s", Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID));
+			put("Base", String.format("%s:%s", Constants.LICENSE_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID));
+			put("ND", String.format("%s:%s", Constants.LICENSE_GROUP_ID Constants.ND_LICENSE_ARTIFACT_ID));
 		}
 	};
 	
