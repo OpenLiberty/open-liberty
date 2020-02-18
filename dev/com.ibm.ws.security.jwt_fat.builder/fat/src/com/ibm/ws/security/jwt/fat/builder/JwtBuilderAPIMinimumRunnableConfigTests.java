@@ -17,10 +17,17 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
+import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
+import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
+import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -42,12 +49,11 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
-public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
-
-    public final String AppStartMsg = ".*CWWKZ0001I.*" + JWTBuilderConstants.JWT_BUILDER_SERVLET + ".*";
+public class JwtBuilderAPIMinimumRunnableConfigTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
@@ -55,13 +61,15 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification();
 
+    private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
 
         serverTracker.addServer(builderServer);
-        builderServer.startServerUsingExpandedConfiguration("server_minimumConfig.xml");
+        builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
+        builderServer.startServerUsingExpandedConfiguration("server_minimumRunnableConfig.xml");
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!
@@ -70,11 +78,35 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     }
 
     /**
-     * This class just tests that the server starts and stops properly with just the basic config
-     *
+     * <p>
+     * Test Purpose:
+     * </p>
+     * <OL>
+     * <LI>Invoke the JWT Builder using the default builder config.
+     * <LI>What this means is that we're not specifying any JWT Builder config, therefore, we'll use attributes from base config
+     * as well as embedded defaults
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the default values for the JWT Token
+     * </OL>
      */
     @Test
-    public void JwtBuilderAPIMinimumConfigTests_minimumConfig() throws Exception {
+    public void JwtBuilderAPIMinimumConfigTests_minimumRunnableConfig() throws Exception {
+
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null, testSettings);
+        validationUtils.validateResult(response, expectations);
 
     }
+
 }
