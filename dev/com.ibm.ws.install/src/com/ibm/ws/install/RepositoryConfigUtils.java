@@ -123,9 +123,9 @@ public class RepositoryConfigUtils {
     /**
      * Set Proxy Authenticator Default
      *
-     * @param proxyHost The proxy host
-     * @param proxyPort The proxy port
-     * @param proxyUser the proxy username
+     * @param proxyHost  The proxy host
+     * @param proxyPort  The proxy port
+     * @param proxyUser  the proxy username
      * @param decodedPwd the proxy password decoded
      */
     public static void setProxyAuthenticator(final String proxyHost, final String proxyPort, final String proxyUser, final String decodedPwd) {
@@ -203,7 +203,8 @@ public class RepositoryConfigUtils {
                     } catch (InvalidPasswordDecodingException ipde) {
                         decodedPwd = proxyPwd;
                         logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", proxyURL) + InstallUtils.NEWLINE);
-                        setProxyAuthenticator(proxyHost, proxyPort, proxyUser, decodedPwd);
+                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED"));
+                        //setProxyAuthenticator(proxyHost, proxyPort, proxyUser, decodedPwd);
                     } catch (UnsupportedCryptoAlgorithmException ucae) {
                         throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.RUNTIME_EXCEPTION);
                     }
@@ -400,7 +401,7 @@ public class RepositoryConfigUtils {
      * Gets the name of the repository by connection and properties
      *
      * @param repoProperties The repository properties
-     * @param repoConn The repository connection
+     * @param repoConn       The repository connection
      * @return The name of the Repository
      * @throws InstallException
      */
@@ -440,7 +441,7 @@ public class RepositoryConfigUtils {
     /**
      * Checks if the inputed Repository Connection is a liberty repository
      *
-     * @param lie The RestRepositoryConnection connection
+     * @param lie            The RestRepositoryConnection connection
      * @param repoProperties The repository properties
      * @return True of the repository location is a liberty location
      * @throws InstallException
