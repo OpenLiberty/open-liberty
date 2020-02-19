@@ -78,10 +78,10 @@ public class Constants {
 	public static final String BASE_LICENSE_ARTIFACT_ID= "wlp-base-license";
 	public static final String ND_LICENSE_ARTIFACT_ID= "wlp-nd-license";
 	// license map
-	private static final HashMap<String, String> licenseMap = new HashMap<String, String>(){
+	public static final HashMap<String, String> licenseMap = new HashMap<String, String>(){
 		{
 			put("Base", String.format("%s:%s", Constants.LICENSE_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID));
-			put("ND", String.format("%s:%s", Constants.LICENSE_GROUP_ID Constants.ND_LICENSE_ARTIFACT_ID));
+			put("ND", String.format("%s:%s", Constants.LICENSE_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID));
 		}
 	};
 	

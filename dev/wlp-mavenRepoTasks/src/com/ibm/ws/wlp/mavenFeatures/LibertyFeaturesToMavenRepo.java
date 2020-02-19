@@ -708,12 +708,15 @@ public class LibertyFeaturesToMavenRepo extends Task {
 					mavenCoordinates = wlpInfo.getString(Constants.MAVEN_COORDINATES_KEY);
 				}
 
-				 HashMap<String, String> licenseMap = new HashMap<String, String>(){
-					{
-						put("Base", String.format("%s:%s:%s", Constants.LICENSE_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID, productVersion));
-						put("ND", String.format("%s:%s:%s", Constants.LICENSE_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID, productVersion));
-					}
-				};
+				HashMap<String, String> licenseMap = new HashMap<>(Constants.licenseMap);
+				for(String license : licenseMap.keySet()){
+					licenseMap.put(license, String.format("%s:%s", licenseMap.get(license), productVersion));
+				}
+//					{
+//						put("Base", String.format("%s:%s:%s", Constants.LICENSE_GROUP_ID, Constants.BASE_LICENSE_ARTIFACT_ID, productVersion));
+//						put("ND", String.format("%s:%s:%s", Constants.LICENSE_GROUP_ID, Constants.ND_LICENSE_ARTIFACT_ID, productVersion));
+//					}
+//				};
 
 
 				String minimumLicenseMavenCoordinate = null;
