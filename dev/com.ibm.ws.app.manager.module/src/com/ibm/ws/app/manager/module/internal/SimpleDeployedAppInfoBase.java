@@ -573,22 +573,24 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
             // Register ApplicationInfo for started applications as a service component that other services can depend on via declarative services.
             final Hashtable<String, Object> props = new Hashtable<String, Object>();
             NestedConfigHelper config = appInfo.getConfigHelper();
-            Object value;
-            props.put("service.pid", config.get("service.pid"));
-            if (null != (value = config.get("id")))
-                props.put("id", value);
-            if (null != (value = config.get("location")))
-                props.put("location", value);
-            if (null != (value = config.get("type")))
-                props.put("type", value);
+            if (config != null) {
+                Object value;
+                props.put("service.pid", config.get("service.pid"));
+                if (null != (value = config.get("id")))
+                    props.put("id", value);
+                if (null != (value = config.get("location")))
+                    props.put("location", value);
+                if (null != (value = config.get("type")))
+                    props.put("type", value);
 
-            appInfoRegistration = AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration<ApplicationInfo>>() {
-                @Override
-                public ServiceRegistration<ApplicationInfo> run() {
-                    BundleContext bundleContext = FrameworkUtil.getBundle(SimpleDeployedAppInfoBase.class).getBundleContext();
-                    return bundleContext.registerService(ApplicationInfo.class, appInfo, props);
-                }
-            });
+                appInfoRegistration = AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration<ApplicationInfo>>() {
+                    @Override
+                    public ServiceRegistration<ApplicationInfo> run() {
+                        BundleContext bundleContext = FrameworkUtil.getBundle(SimpleDeployedAppInfoBase.class).getBundleContext();
+                        return bundleContext.registerService(ApplicationInfo.class, appInfo, props);
+                    }
+                });
+            }
 
             stateChangeService.fireApplicationStarted(appInfo);
         } catch (Throwable ex) {
