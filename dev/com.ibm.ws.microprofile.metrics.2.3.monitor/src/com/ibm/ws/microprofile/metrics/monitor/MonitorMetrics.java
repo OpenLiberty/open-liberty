@@ -138,27 +138,28 @@ public class MonitorMetrics {
 	}
 
 	protected String[] getRESTMBeanStatsTags() {
-		String[] mbeanProperties = new String[3];
+		String[] mbeanNameProperty = new String[3];
 		for (String subString : objectName.split(",")) {
 			subString = subString.trim();
-
+			
+			//Example of expected Mbean property name=ApplicationName/fully.qualified.class.name/methodSignature(java.lang.String)
 			if (subString.contains("name=")) {
-				mbeanProperties = subString.split("/");
+				mbeanNameProperty = subString.split("/");
 
-				mbeanProperties[0] = mbeanProperties[0].substring(mbeanProperties[0].indexOf("=") + 1,
-						mbeanProperties[0].length());
+				mbeanNameProperty[0] = mbeanNameProperty[0].substring(mbeanNameProperty[0].indexOf("=") + 1,
+						mbeanNameProperty[0].length());
 
 				// blank method
-				mbeanProperties[2] = mbeanProperties[2].replaceAll("\\(\\)", "");
+				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\(\\)", "");
 				// otherwise first bracket becomes underscores
-				mbeanProperties[2] = mbeanProperties[2].replaceAll("\\(", "_");
+				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\(", "_");
 				// second bracket is removed
-				mbeanProperties[2] = mbeanProperties[2].replaceAll("\\)", "");
+				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\)", "");
 
 				break;
 			}
 		}
-		return mbeanProperties;
+		return mbeanNameProperty;
 	}
 
 	protected String getMBeanStatsString() {
