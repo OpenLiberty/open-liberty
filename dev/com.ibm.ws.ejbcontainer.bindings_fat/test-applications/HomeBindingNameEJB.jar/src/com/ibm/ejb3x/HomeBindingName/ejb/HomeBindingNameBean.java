@@ -13,13 +13,15 @@ package com.ibm.ejb3x.HomeBindingName.ejb;
 
 import java.util.logging.Logger;
 
+import com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBndBean;
+
 @SuppressWarnings("serial")
-public class LocalHomeBindingNameBean implements javax.ejb.SessionBean {
-    private final static String CLASS_NAME = LocalHomeBindingNameBean.class.getName();
+public class HomeBindingNameBean implements javax.ejb.SessionBean {
+    private final static String CLASS_NAME = HomeBindingNameBean.class.getName();
     private final static Logger svLogger = Logger.getLogger(CLASS_NAME);
     private static final String BeanName = "LocalHomeBindingName";
 
-    public LocalHomeBindingNameBean() {}
+    public HomeBindingNameBean() {}
 
     /**
      * setSessionContext
@@ -65,8 +67,7 @@ public class LocalHomeBindingNameBean implements javax.ejb.SessionBean {
         svLogger.info("       " + beanName + " : " + msg);
     }
 
-    @Override
-    public String toString() {
+    public String foo() {
         return "LocalHomeBindingNameBean.toString()";
     }
 }

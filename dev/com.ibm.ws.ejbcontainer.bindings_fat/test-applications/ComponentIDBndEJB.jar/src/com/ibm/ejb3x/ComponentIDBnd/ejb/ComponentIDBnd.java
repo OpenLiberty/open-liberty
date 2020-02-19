@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,16 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ejb3x.HomeBindingName.ejb;
-
-import com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBnd;
+package com.ibm.ejb3x.ComponentIDBnd.ejb;
 
 /**
- * Home interface for Enterprise Bean: HomeBindingName
+ * Local interface for Enterprise Bean: LocalHomeBindingName.
  */
-public interface LocalHomeBindingNameHome extends javax.ejb.EJBLocalHome {
-    /**
-     * Creates a default instance of Session Bean: HomeBindingName
-     */
-    public ComponentIDBnd create() throws javax.ejb.CreateException;
+public interface ComponentIDBnd extends javax.ejb.EJBLocalObject {
+
+    public String foo();
+
 }

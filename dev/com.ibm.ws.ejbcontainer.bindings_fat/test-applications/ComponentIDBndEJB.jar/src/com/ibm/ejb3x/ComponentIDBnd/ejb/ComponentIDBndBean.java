@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,17 +9,17 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ejb3x.BindingName.ejb;
+package com.ibm.ejb3x.ComponentIDBnd.ejb;
 
 import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
-public class BindingNameBean implements javax.ejb.SessionBean, BindingNameIntf, RemoteBindingNameIntf {
-    private final static String CLASS_NAME = BindingNameBean.class.getName();
+public class ComponentIDBndBean implements javax.ejb.SessionBean {
+    private final static String CLASS_NAME = ComponentIDBndBean.class.getName();
     private final static Logger svLogger = Logger.getLogger(CLASS_NAME);
-    private static final String BeanName = "BindingName";
+    private static final String BeanName = "ComponentIDBnd";
 
-    public BindingNameBean() {}
+    public ComponentIDBndBean() {}
 
     /**
      * setSessionContext
@@ -65,13 +65,7 @@ public class BindingNameBean implements javax.ejb.SessionBean, BindingNameIntf, 
         svLogger.info("       " + beanName + " : " + msg);
     }
 
-    @Override
-    public String toString() {
-        return "SimpleBindingNameBean.toString()";
-    }
-
-    @Override
     public String foo() {
-        return "bar";
+        return "ComponentIDBndBean.toString()";
     }
 }
