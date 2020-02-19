@@ -67,14 +67,14 @@ class Server extends Base
       report("Listening.");
       SocketChannel conn = sc.accept(); // blocking
       report("A connection has been made.");
-      try { Thread.sleep(500); } catch (InterruptedException ie) {}
-      report("Stopping listening.");
-      sc.close();
-      report("Listening stopped.");
-      try { Thread.sleep(100); } catch (InterruptedException ie) {}
+      try { Thread.sleep(200); } catch (InterruptedException ie) {}
       report("Closing connection.");
       conn.close();
       report("Connection closed.");
+      try { Thread.sleep(200); } catch (InterruptedException ie) {}
+      report("Stopping listening.");
+      sc.close();
+      report("Listening stopped.");
     }
     catch (IOException ioe)
     {
@@ -100,9 +100,11 @@ class Client extends Base
       SocketChannel sc = SocketChannel.open();
       sc.connect(new InetSocketAddress("localhost",10000));
       report("Connected.");
+      try { Thread.sleep(300); } catch (InterruptedException ie) {}
       ByteBuffer b = ByteBuffer.allocate(17);
       int num_written = sc.write(b);
       report(num_written+" byte(s) written to socket.");
+      try { Thread.sleep(200); } catch (InterruptedException ie) {}
       sc.configureBlocking(false);
       Selector selector = Selector.open();
       SelectionKey key = sc.register(selector,SelectionKey.OP_READ);
@@ -129,7 +131,8 @@ class Client extends Base
             {
               int num_read = rc.read(b);
               report(num_read+" byte(s) read from socket.");
-              if (-1==num_read) { done=true; break; }
+              if (0==num_read) report("Read returned EOF - socket is closed.");
+              if (0>=num_read) { done=true; break; }
             }
             catch (IOException ioe)
             {
