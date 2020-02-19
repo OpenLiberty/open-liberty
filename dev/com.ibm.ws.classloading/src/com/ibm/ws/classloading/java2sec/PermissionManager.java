@@ -789,26 +789,27 @@ public class PermissionManager implements PermissionsCombiner {
         
         // take the archive referenced by fileName apart to its individual archives
         ZipFile z = null;
-        try {
-            z = new ZipFile(codeBase);
-           
-        } catch (java.io.IOException ioe) {
-            // should never get here
-        }
-        ZipEntry ze = null;
-        Enumeration <? extends ZipEntry> zenum = z.entries();
-        while (zenum.hasMoreElements()) {
-            ze = (ZipEntry)zenum.nextElement();
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "for every  enumerated archive name: " + ze.getName());
+        if (!codeBase.contains("expanded")) {
+            try {
+                z = new ZipFile(codeBase);
+               
+            } catch (java.io.IOException ioe) {
+                // should never get here
             }
-            String individualArchive = ze.getName();
-            RecursiveArchiveFind(dir, individualArchive, codeBase, permissions);
-
-            
-            
+            ZipEntry ze = null;
+            if (z != null) {
+                Enumeration <? extends ZipEntry> zenum = z.entries();
+                while (zenum.hasMoreElements()) {
+                    ze = (ZipEntry)zenum.nextElement();
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "for every  enumerated archive name: " + ze.getName());
+                    }
+                    String individualArchive = ze.getName();
+                    RecursiveArchiveFind(dir, individualArchive, codeBase, permissions);
+                    
+                }         
+            }    
         }
-
 
     } 
 
