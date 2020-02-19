@@ -35,7 +35,7 @@ public @interface ModuleConfig {
     @Ext.Final
     String ClassProvider_cardinality_minimum();
 
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(provides.classes.for.pid=${classProviderRef})")
+    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(service.pid=${classProviderRef})")
     @Ext.Final
     String ClassProvider_target();
 
