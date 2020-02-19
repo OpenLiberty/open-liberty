@@ -202,7 +202,7 @@ public class RepositoryConfigUtils {
                         setProxyAuthenticator(proxyHost, proxyPort, proxyUser, decodedPwd);
                     } catch (InvalidPasswordDecodingException ipde) {
                         decodedPwd = proxyPwd;
-                        logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", proxyURL) + InstallUtils.NEWLINE);
+                        logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", proxyURL) + InstallUtils.NEWLINE);
                         setProxyAuthenticator(proxyHost, proxyPort, proxyUser, decodedPwd);
                     } catch (UnsupportedCryptoAlgorithmException ucae) {
                         throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.RUNTIME_EXCEPTION);
