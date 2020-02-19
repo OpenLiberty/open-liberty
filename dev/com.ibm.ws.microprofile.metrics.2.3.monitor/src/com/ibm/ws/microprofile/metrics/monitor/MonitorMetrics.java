@@ -82,7 +82,9 @@ public class MonitorMetrics {
 						.withDescription(metricData[MappingTable.METRIC_DESCRIPTION]).withType(type)
 						.withUnit(metricData[MappingTable.METRIC_UNIT]).build(), mc, metricTag);
 				metricIDSet.add(metricID);
-				Tr.debug(tc, "Registered " + metricID.toString());
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+					Tr.debug(tc, "Registered " + metricID.toString());
+				}
 			} else if (MetricType.GAUGE.equals(type)) {
 				MonitorGauge<Number> mg = metricData[MappingTable.MBEAN_SUBATTRIBUTE] == null
 						? new MonitorGauge<Number>(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE])
@@ -93,7 +95,9 @@ public class MonitorMetrics {
 						.withDescription(metricData[MappingTable.METRIC_DESCRIPTION]).withType(type)
 						.withUnit(metricData[MappingTable.METRIC_UNIT]).build(), mg, metricTag);
 				metricIDSet.add(metricID);
-				Tr.debug(tc, "Registered " + metricID.toString());
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+					Tr.debug(tc, "Registered " + metricID.toString());
+				}
 			}
 			// Only REST_Stats is using SIMPLETIMER at the moment
 			else if (MetricType.SIMPLE_TIMER.equals(type)) {
@@ -118,10 +122,14 @@ public class MonitorMetrics {
 				metricID = new MetricID(metricName, classTag, methodTag);
 				metricIDSet.add(metricID);
 				sharedMetricRegistry.associateMetricIDToApplication(metricID, appName, metricRegistry);
-
-				Tr.debug(tc, "Registered " + metricID.toString());
+				
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+					Tr.debug(tc, "Registered " + metricID.toString());
+				}
 			} else {
-				Tr.debug(tc, "Failed to register " + metricName + " because of invalid type " + type);
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+					Tr.debug(tc, "Failed to register " + metricName + " because of invalid type " + type);
+				}
 			}
 
 			// reset
@@ -225,15 +233,19 @@ public class MonitorMetrics {
 	public void unregisterMetrics(SharedMetricRegistries sharedMetricRegistry) {
 		MetricRegistry vendorRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.VENDOR.getName());
 		MetricRegistry baseRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.BASE.getName());
-		
+
 		for (MetricID metricID : vendorMetricIDs) {
 			boolean rc = vendorRegistry.remove(metricID);
-			Tr.debug(tc, "Unregistered " + metricID.toString() + " " + (rc ? "successfully" : "unsuccessfully"));
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Unregistered " + metricID.toString() + " " + (rc ? "successfully" : "unsuccessfully"));
+			}
 		}
-		
+
 		for (MetricID metricID : baseMetricIDs) {
 			boolean rc = baseRegistry.remove(metricID);
-			Tr.debug(tc, "Unregistered " + metricID.toString() + " " + (rc ? "successfully" : "unsuccessfully"));
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Unregistered " + metricID.toString() + " " + (rc ? "successfully" : "unsuccessfully"));
+			}
 		}
 		vendorMetricIDs.clear();
 		baseMetricIDs.clear();
