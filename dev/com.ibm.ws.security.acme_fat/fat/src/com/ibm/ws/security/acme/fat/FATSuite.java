@@ -13,7 +13,6 @@ package com.ibm.ws.security.acme.fat;
 import java.net.UnknownHostException;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -63,22 +62,48 @@ public class FATSuite {
 	public static void beforeClass() throws UnknownHostException {
 		final String METHOD_NAME = "beforeClass()";
 
-		String os = System.getProperty("os.name").toLowerCase();
-		Assume.assumeTrue(!os.startsWith("z/os"));
+		Log.info(FATSuite.class, METHOD_NAME, "Starting Pebble environment bring up");
+
 
 		/*
 		 * Need to expose the HTTP port that is used to answer the HTTP-01
 		 * challenge.
 		 */
-		Testcontainers.exposeHostPorts(PebbleContainer.HTTP_PORT);
+		Log.info(FATSuite.class, METHOD_NAME, "Running Testcontainers.exposeHostPorts");
+		try {
+			Testcontainers.exposeHostPorts(PebbleContainer.HTTP_PORT);
+		} catch (Exception e) {
+			Log.info(FATSuite.class, METHOD_NAME,
+					"First attempt failed on Testcontainers.exposeHostPorts, sleep and try again.");
+			Log.error(FATSuite.class, METHOD_NAME, e);
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
+
+			}
+			Testcontainers.exposeHostPorts(PebbleContainer.HTTP_PORT);
+		}
 
 		/*
 		 * Startup the challtestsrv container first. This container will serve
 		 * as a mock DNS server to the Pebble server that starts on the other
 		 * container.
 		 */
-		challtestsrv = new ChalltestsrvContainer();
-		challtestsrv.start();
+		Log.info(FATSuite.class, METHOD_NAME, "Starting ChalltestsrvContainer");
+		try {
+			challtestsrv = new ChalltestsrvContainer();
+			challtestsrv.start();
+		} catch (Exception e) {
+			Log.info(FATSuite.class, METHOD_NAME, "First attempt failed, sleep and try again.");
+			Log.error(FATSuite.class, METHOD_NAME, e);
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
+
+			}
+			challtestsrv = new ChalltestsrvContainer();
+			challtestsrv.start();
+		}
 
 		Log.info(FATSuite.class, METHOD_NAME,
 				"Challtestserv ContainerIpAddress: " + challtestsrv.getContainerIpAddress());
@@ -88,9 +113,21 @@ public class FATSuite {
 		/*
 		 * Startup the pebble server.
 		 */
-		pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT);
-		pebble.start();
+		Log.info(FATSuite.class, METHOD_NAME, "Starting PebbleContainer");
+		try {
+			pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT);
+			pebble.start();
+		} catch (Exception e) {
+			Log.info(FATSuite.class, METHOD_NAME, "First attempt failed, sleep and try again.");
+			Log.error(FATSuite.class, METHOD_NAME, e);
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
 
+			}
+			pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT);
+			pebble.start();
+		}
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerIpAddress: " + pebble.getContainerIpAddress());
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble DockerImageName:    " + pebble.getDockerImageName());
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerInfo:      " + pebble.getContainerInfo());
