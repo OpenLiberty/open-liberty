@@ -96,7 +96,7 @@ public class MissedTimerActionBean implements MissedTimerAction {
                 assertEquals("getNextTimeout() interval not expected", INTERVAL, interval);
                 nextExpected = nextTimeout.getTime();
             }
-        } else if ("ONCE".equals(missedTimerAction) || "NONE".equals(missedTimerAction)) {
+        } else if ("ONCE".equals(missedTimerAction)) {
             long nextExpected = firstNextTimeout.getTime();
             for (int index = 0; index < nextTimeouts.size(); index++) {
                 Date nextTimeout = nextTimeouts.get(index);
