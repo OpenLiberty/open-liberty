@@ -75,7 +75,7 @@ public class EJBPersistentTimerRuntimeImpl implements EJBPersistentTimerRuntime 
      * Enumeration of the timerService.missedPersistentTimerAction configuration allowed options.
      */
     enum MissedTimerAction {
-        ALL, ONCE, NONE
+        ALL, ONCE
     }
 
     private final AtomicServiceReference<EJBTimerRuntime> ejbTimerRuntimeServiceRef = new AtomicServiceReference<EJBTimerRuntime>(REFERENCE_EJB_TIMER_RUNTIME);

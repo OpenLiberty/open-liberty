@@ -22,7 +22,9 @@ src: \
 	test-applications/NoDBProgrammaticTimerEJB.jar/src, \
 	test-applications/NoDBProgrammaticTimerWeb.war/src, \
 	test-applications/PersistentTimerCoreEJB.jar/src, \
-	test-applications/PersistentTimerCoreWeb.war/src
+	test-applications/PersistentTimerCoreWeb.war/src, \
+	test-applications/RestartMissedTimerActionEJB.jar/src, \
+	test-applications/RestartMissedTimerActionWeb.war/src
 
 fat.project: true
 
