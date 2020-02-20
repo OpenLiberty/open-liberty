@@ -11,15 +11,22 @@
 package com.ibm.ws.app.manager.module.internal;
 
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
@@ -28,6 +35,7 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ManifestClassPathUtils;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
+import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.AltDDEntryGetter;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
@@ -431,6 +439,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
     }
 
     public ExtendedApplicationInfo appInfo;
+    private ServiceRegistration<ApplicationInfo> appInfoRegistration;
     public final List<DeployedModuleInfoImpl> modulesDeployed = new ArrayList<DeployedModuleInfoImpl>();
     public boolean starting;
     public boolean started;
@@ -549,6 +558,28 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
     public boolean postDeployApp(Future<Boolean> result) {
         started = true;
         try {
+            // Register ApplicationInfo for started applications as a service component that other services can depend on via declarative services.
+            final Hashtable<String, Object> props = new Hashtable<String, Object>();
+            NestedConfigHelper config = appInfo.getConfigHelper();
+            if (config != null) {
+                Object value;
+                props.put("service.pid", config.get("service.pid"));
+                if (null != (value = config.get("id")))
+                    props.put("id", value);
+                if (null != (value = config.get("location")))
+                    props.put("location", value);
+                if (null != (value = config.get("type")))
+                    props.put("type", value);
+
+                appInfoRegistration = AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration<ApplicationInfo>>() {
+                    @Override
+                    public ServiceRegistration<ApplicationInfo> run() {
+                        BundleContext bundleContext = FrameworkUtil.getBundle(SimpleDeployedAppInfoBase.class).getBundleContext();
+                        return bundleContext.registerService(ApplicationInfo.class, appInfo, props);
+                    }
+                });
+            }
+
             stateChangeService.fireApplicationStarted(appInfo);
         } catch (Throwable ex) {
             uninstallApp();
@@ -615,6 +646,21 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                 FFDCFilter.processException(t, getClass().getName(), "fireApplicationStopping", this);
                 success = false;
             }
+        }
+        if (appInfoRegistration != null) {
+            try {
+                AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                    @Override
+                    public Void run() {
+                        appInfoRegistration.unregister();
+                        return null;
+                    }
+                });
+            } catch (Throwable t) {
+                // auto FFDC
+                success = false;
+            }
+            appInfoRegistration = null;
         }
         List<DeployedModuleInfoImpl> deployedModules = modulesDeployed;
         for (DeployedModuleInfoImpl deployedModule : deployedModules) {

@@ -124,7 +124,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
 
             @Override
             public String ClassProvider_target() {
-                return "(provides.classes.for.pid=${classProviderRef})";
+                return "(service.pid=${classProviderRef})";
             }
 
             @Override

@@ -56,16 +56,7 @@ Service-Component: \
     optional:='changeListener'; \
     multiple:='changeListener'; \
     dynamic:='changeListener'; \
-    properties:='service.vendor=IBM',\
-  com.ibm.ws.security.jaas.common.internal.ClassProviderCoordinator; \
-    implementation:=com.ibm.ws.security.jaas.common.internal.ClassProviderCoordinator; \
-    configuration-policy:=ignore; \
-    immediate:=true; \
-    classProvider=com.ibm.wsspi.application.Application; \
-    dynamic:='classProvider'; \
-    greedy:='classProvider'; \
-    multiple:='classProvider'; \
-    optional:='classProvider'
+    properties:='service.vendor=IBM'
 
 -dsannotations: \
   com.ibm.ws.security.jaas.common.JAASConfigurationFactory, \
@@ -87,6 +78,7 @@ instrument.classesExcludes: com/ibm/ws/security/jaas/common/internal/resources/*
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.config,\
+	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
 	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.kernel.service,\
