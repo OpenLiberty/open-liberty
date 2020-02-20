@@ -8,14 +8,21 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Server for testing PushBuilder">
+<server description="Server for testing the Cookie SameSite attribute">
 
-  	<include location="../fatTestPorts.xml"/>
+	<include location="../fatTestCommon.xml"/>
 
   	<featureManager>
         <feature>servlet-4.0</feature>
         <feature>jsp-2.3</feature>
   	</featureManager>
+
+    <!-- FAT framework expects to start with the usual port  -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+    </httpEndpoint>
   
   	<!-- Automatically expand WAR files and EAR files -->
   	<applicationManager autoExpand="true"/>

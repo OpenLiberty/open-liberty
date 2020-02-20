@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package samesite.servlet;
+package samesite.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;

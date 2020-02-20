@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package samesite.servlet;
+package samesite.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,7 +18,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * A Servlet that will for a HttpSession to be created so we can verify if the
@@ -37,7 +36,7 @@ public class SameSiteSessionCreationServlet extends HttpServlet {
 
         // Trigger a session to be created. We should see a jsessionid cookie SET-COOKIE header
         // in the response.
-        HttpSession session = req.getSession(true);
+        req.getSession(true);
 
     }
 
