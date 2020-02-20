@@ -145,7 +145,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         ssoCookie.setMaxAge(-1);
         //The path has to be "/" so we will not have multiple cookies in the same domain
         ssoCookie.setPath("/");
-        ssoCookie.setSecure(isSecure);
         ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
 
         String domainName = getSSODomainName(req, config.getSSODomainList(), config.getSSOUseDomainFromURL());
@@ -153,9 +152,14 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             ssoCookie.setDomain(domainName);
         }
         String sameSite = config.getSameSiteCookie();
-        // call WebContainerRequestState code to set the attribute SameSite
+       
         WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
         requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
+        if ("None".equals(sameSite)) {
+            ssoCookie.setSecure(true);
+        } else {
+            ssoCookie.setSecure(isSecure);
+        }
 
         return ssoCookie;
     }

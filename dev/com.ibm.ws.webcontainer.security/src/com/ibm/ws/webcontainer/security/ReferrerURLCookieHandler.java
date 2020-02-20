@@ -100,13 +100,16 @@ public class ReferrerURLCookieHandler extends URLHandler {
         if (enableHttpOnly && webAppSecConfig.getHttpOnlyCookies()) {
             c.setHttpOnly(true);
         }
-        if (webAppSecConfig.getSSORequiresSSL()) {
-            c.setSecure(true);
-        }
+       
         String sameSite = webAppSecConfig.getSameSiteCookie();
-        // call WebContainer code to set the attribute SameSite
         WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
         requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
+        if ("None".equals(sameSite)) {
+            c.setSecure(true);
+        } else if (webAppSecConfig.getSSORequiresSSL()) {
+            c.setSecure(true);
+        } 
+
         return c;
     }
 
