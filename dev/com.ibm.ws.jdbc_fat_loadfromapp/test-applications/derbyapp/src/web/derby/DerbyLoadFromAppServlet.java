@@ -12,7 +12,6 @@ package web.derby;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -26,7 +25,6 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
@@ -88,17 +86,14 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     }
 
     /**
-     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application CANNOT be used to authenticate
+     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application can be used to authenticate
      * to a data source when its resource reference specifies to use that login module.
      */
-    @AllowedFFDC({ "javax.security.auth.login.LoginException", "javax.resource.ResourceException" }) // TODO remove if we decide to enable this scenario
     @Test
     public void testLoginModuleFromWebApp() throws Exception {
         try (Connection con = sldsLoginModuleFromWebApp.getConnection()) {
             DatabaseMetaData metadata = con.getMetaData();
-            fail("authenticated as user " + metadata.getUserName());
-            // TODO if we decide to enable this path, then switch to the following assert and remove the catch block
-            // assertEquals("webappuser", metadata.getUserName());
+            assertEquals("webappuser", metadata.getUserName());
         } catch (SQLException x) {
             Throwable cause = x;
             while (cause != null && !(cause instanceof LoginException))

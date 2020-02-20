@@ -92,8 +92,7 @@ public class JDBCLoadFromAppTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKE0701E.*JAASLoginModuleConfigImpl", // TODO remove this if we enable loading login modules from web applications
-                          "SRVE9967W.*derbyLocale" // ignore missing Derby locales
+        server.stopServer("SRVE9967W.*derbyLocale" // ignore missing Derby locales
         );
     }
 }
