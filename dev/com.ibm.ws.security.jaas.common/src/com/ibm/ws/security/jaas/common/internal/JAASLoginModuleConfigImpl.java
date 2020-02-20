@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.security.jaas.common.internal;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,14 +19,23 @@ import java.util.Map;
 
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.security.LoginModuleProxy;
 import com.ibm.ws.kernel.service.util.JavaInfo;
@@ -33,6 +43,7 @@ import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
 import com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy;
 import com.ibm.wsspi.classloading.ClassLoadingService;
+import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
 
 @Component(configurationPid = "com.ibm.ws.security.authentication.internal.jaas.jaasLoginModuleConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = "service.vendor=IBM")
@@ -65,7 +76,15 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     private LoginModuleControlFlag controlFlag = null;
     private Map<String, Object> options = Collections.emptyMap();
 
-    /** The required shared library */
+    /**
+     * Application info for the application, if in started state, that provides the JAAS login module.
+     * Always null if classProviderRef is not specified.
+     */
+    private ApplicationInfo classProviderAppInfo;
+
+    /**
+     * The shared library, if specified.
+     */
     private Library sharedLibrary;
 
     private ClassLoadingService classLoadingService;
@@ -91,20 +110,52 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             Class<?> cl = getTargetClassForName(target);
             options.put(LoginModuleProxy.KERNEL_DELEGATE, cl);
         } else {
-            options = processDelegateOptions(options, originalLoginModuleClassName, classLoadingService, sharedLibrary, false);
+            options = processDelegateOptions(options, originalLoginModuleClassName, classProviderAppInfo, classLoadingService, sharedLibrary, false);
         }
         this.options = options;
     }
 
     @FFDCIgnore(ClassNotFoundException.class)
-    public static Map<String, Object> processDelegateOptions(Map<String, Object> inOptions, String originalLoginModuleClassName, ClassLoadingService classLoadingService,
+    public static Map<String, Object> processDelegateOptions(Map<String, Object> inOptions, String originalLoginModuleClassName,
+                                                             ApplicationInfo classProviderAppInfo, ClassLoadingService classLoadingService,
                                                              Library sharedLibrary, boolean jaasConfigFile) {
         Map<String, Object> options = new HashMap<String, Object>();
         options.putAll(inOptions);
         String target = getTargetClassName(originalLoginModuleClassName, options);
         options.put(LoginModuleProxy.KERNEL_DELEGATE, WSLOGIN_MODULE_PROXY_CLASS);
         if (target != null) {
-            ClassLoader loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
+            // TODO error path if neither libraryRef nor classProviderRef are specified
+            // For now, while this function is internal, this is unreachable because libraryRef is still mandatory
+
+            ClassLoader loader;
+            if (classProviderAppInfo == null)
+                loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
+            else if (classProviderAppInfo instanceof EARApplicationInfo)
+                // load from an enterprise application (EAR) which might contain an embedded resource adapter
+                loader = ((EARApplicationInfo) classProviderAppInfo).getApplicationClassLoader();
+            else {
+                NestedConfigHelper config = classProviderAppInfo.getConfigHelper();
+                if ("rar".equals(config.get("type"))) {
+                    // load from a standalone resource adapter (RAR)
+                    String classProviderId = (String) classProviderAppInfo.getConfigHelper().get("id");
+                    String classProviderFilter = "(&"
+                                                 + FilterUtils.createPropertyFilter("objectClass", ClassProvider.class.getName())
+                                                 + FilterUtils.createPropertyFilter("id", classProviderId)
+                                                 + ")";
+
+                    BundleContext bundleContext = FrameworkUtil.getBundle(JAASLoginModuleConfigImpl.class).getBundleContext();
+                    Collection<ServiceReference<ClassProvider>> classProviderRefs;
+                    try {
+                        classProviderRefs = bundleContext.getServiceReferences(ClassProvider.class, classProviderFilter);
+                    } catch (InvalidSyntaxException x) {
+                        throw new RuntimeException(x); // should be unreachable
+                    }
+                    ClassProvider classProvider = bundleContext.getService(classProviderRefs.iterator().next()); // TODO error checking
+                    loader = classProvider.getDelegateLoader();
+                } else
+                    throw new IllegalArgumentException(); // TODO error message for unsupported application type, cannot load class
+            }
+
             Class<?> cl = null;
             try {
                 if (isIBMJdk18Lower() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
@@ -218,6 +269,11 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     @Override
     public Map<String, ?> getOptions() {
         return options;
+    }
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    protected void setClassProvider(ApplicationInfo classProviderAppInfo) {
+        this.classProviderAppInfo = classProviderAppInfo;
     }
 
     /** Set required service, will be called before activate */
