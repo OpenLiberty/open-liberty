@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,8 +54,7 @@ public class BrowserStateTest {
     private final WebAppSecurityConfig webAppSecConfig = context.mock(WebAppSecurityConfig.class);
 
     @Before
-    public void setUp() {
-    }
+    public void setUp() {}
 
     /*
      * test getOriginalBrowserState method with no cookie.
@@ -105,6 +104,8 @@ public class BrowserStateTest {
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 one(response).addCookie(with(any(Cookie.class)));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         BrowserState browserState = new BrowserState();
