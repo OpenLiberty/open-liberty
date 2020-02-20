@@ -223,6 +223,9 @@ public class JavaScriptUtils {
             String sameSite = webAppSecurityConfig.getSameSiteCookie();
             if (sameSite != null) {
                 cookieProperties.put("SameSite", sameSite);
+                if ("None".equalsIgnoreCase(sameSite)) {
+                    cookieProperties.put("secure", null);
+                }
             }
         }
         return cookieProperties;
