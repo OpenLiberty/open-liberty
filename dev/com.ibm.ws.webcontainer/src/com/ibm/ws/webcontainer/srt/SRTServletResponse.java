@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -148,7 +149,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>();
     private static String formatStr = "EEE, dd MMM yyyy HH:mm:ss z";
     private static TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
-
+    
     /**
      * 
      */
@@ -905,14 +906,15 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         //
         // Note: this method is overwritten in servlet 4.0
         //
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"addCookie", "Adding cookie --> " + cookie.getName(),"["+this+"]");
+        String cookieName = cookie.getName();
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+            logger.logp(Level.FINE, CLASS_NAME,"addCookie", "Adding cookie --> " + cookieName,"["+this+"]");
         }
         // d151464 - check the include flag
         WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext) getRequest().getWebAppDispatcherContext();
         if (dispatchContext.isInclude() == true) {
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
-                logger.logp(Level.FINE, CLASS_NAME,"addCookie", nls.getString("Illegal.from.included.servlet", "Illegal from included servlet"), "addCookie cookie --> " + cookie.getName());  //311717
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  
+                logger.logp(Level.FINE, CLASS_NAME,"addCookie", nls.getString("Illegal.from.included.servlet", "Illegal from included servlet"), "addCookie cookie --> " + cookieName);  //311717
         }
         else {
             if (!_ignoreStateErrors && isCommitted()) {
@@ -925,8 +927,13 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 }
             }
             else {
+                prepSameSiteAttribute(cookie);
                 _response.addCookie(cookie);
             }
+        }
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+            logger.exiting(CLASS_NAME,"addCookie");
         }
     }
 
@@ -2607,5 +2614,26 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             logger.logp(Level.FINE, CLASS_NAME,"alertOSFirstFlush", "exit");
         
     }
+    
+    public void prepSameSiteAttribute(Cookie cookie) {
+        String ssAttValue;
+        String cookieName = cookie.getName();
+        Map<String, String> sameSiteCookiesMap = getRequest().getWebAppDispatcherContext().getWebApp().getConfiguration().getSameSiteCookiesMap();
+        if (sameSiteCookiesMap != null && !sameSiteCookiesMap.isEmpty()) {
+            ssAttValue = sameSiteCookiesMap.get(cookieName);
+            if (ssAttValue == null)
+                ssAttValue = sameSiteCookiesMap.get("*");
 
+            if (ssAttValue != null) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
+                    logger.logp(Level.FINE, CLASS_NAME, "prepSameSiteAttribute", "adding SameSite attribute [" + ssAttValue + "]");
+                }
+
+                WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
+                reqState.setCookieAttribute(cookieName, "SameSite="+ssAttValue);
+                if (ssAttValue.equals("None"))
+                    cookie.setSecure(true);
+            }
+        }  
+    }
 }
