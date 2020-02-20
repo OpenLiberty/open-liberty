@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,9 @@ import componenttest.app.FATDatabaseServlet;
 public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     @Resource
     private DataSource defaultDataSource;
+
+    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromWebApp;
 
     // Use a data source with generic properties element where the dataSource's jdbcDriver
     // specifies a data source class name, but is configured without any library,
@@ -63,6 +66,18 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     @Test
     public void testLoadDerbyClass() throws Exception {
         Class.forName("org.apache.derby.jdbc.EmbeddedDataSource");
+    }
+
+    /**
+     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application is used to authenticate
+     * to a data source when its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromWebApp() throws Exception {
+        try (Connection con = sldsLoginModuleFromWebApp.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            assertEquals("webappuser", metadata.getUserName());
+        }
     }
 
     // Obtain a connection with a user/password that is unique to this method and a corresponding method

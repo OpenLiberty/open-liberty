@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
@@ -36,7 +35,6 @@ import componenttest.topology.utils.MvnUtils;
  * tests as if they were running as simplicity junit FAT tests in the standard
  * location.
  */
-@Mode(TestMode.EXPERIMENTAL)
 @RunWith(FATRunner.class)
 public class FaultToleranceTck21Launcher {
 
@@ -69,39 +67,33 @@ public class FaultToleranceTck21Launcher {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMFT5001E", // CWMFT0001E: No free capacity is available in the bulkhead
+        server.stopServer("CWMFT0001E", // CWMFT0001E: No free capacity is available in the bulkhead
+                          // does not have a return type of Future
+                          "CWMFT5001E", // CWMFT5001E: The asynchronous method
+                          // org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.BulkheadClientForValidationAsynchQueue.serviceA()
+                          // does not have a return type of Future.
                           "CWMFT5003E", // CWMFT5003E: The fallback method fallbackForServiceB with parameter types
                           // matching method serviceB was not found in class class
                           // org.eclipse.microprofile.fault.tolerance.tck.illegalConfig.FallbackMethodWithArgsClient.
-                          "CWMFT5020E", // CWMFT5020E: The {0} asynchronous method does not have a return type of either java.util.concurrent.Future or java.util.concurrent.CompletionStage.
-                          "CWMFT0001E", // CWMFT5009E: The Fallback policy for the method
-                          // org.eclipse.microprofile.fault.tolerance.tck.illegalConfig.FallbackClientWithBothFallbacks.serviceB()
-                          // is not valid because both FallbackHandler class class
-                          // org.eclipse.microprofile.fault.tolerance.tck.illegalConfig.IncompatibleFallbackHandler
-                          // and fallbackMethod serviceBFallback were specified.
                           "CWMFT5010E", // CWMFT5010E: The Retry policy parameter jitter value -1 for
                           // org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.RetryClientForValidationJitter.serviceA
                           // is not valid
-                          "CWMFT0013E", // CWMFT5013E: The CircuitBreaker policy parameter failureRatio value -1 for the
+                          "CWMFT5013E", // CWMFT5013E: The CircuitBreaker policy parameter failureRatio value -1 for the
                           // org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.CircuitBreakerClientForValidationDelay.serviceA
                           // is not valid, because the value must be between 0 and 1,
-                          "CWMFT0014E", // CWMFT5014E: The CircuitBreaker policy parameter requestVolumeThreshold value
-                          // -1 for the
+                          "CWMFT5014E", // CWMFT5014E: The CircuitBreaker policy parameter requestVolumeThreshold value -1 for the
                           // org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.CircuitBreakerClientForValidationReqVolNeg.serviceA
                           // is not valid, because the parameter must not be a negative number.
-                          "CWMFT0015E", // CWMFT5015E: The CircuitBreaker policy parameter successThreshold value 0 for
-                          // the
+                          "CWMFT5015E", // CWMFT5015E: The CircuitBreaker policy parameter successThreshold value 0 for the
                           // org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.CircuitBreakerClientForValidationSuccessNeg.serviceA
                           // is not valid, because the parameter must not be a negative number.
-                          "CWMFT0016E", // CWMFT5016E: The Bulkhead policy parameter value value -1....
+                          "CWMFT5016E", // CWMFT5016E: The Bulkhead policy parameter value value -1....
                           "CWMFT5017E", // CWMFT5017E: The Retry policy maximum duration of 500 Millis for the
                           // org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.RetryClientForValidationDelayDuration.serviceA
-                          // target is not valid as it must be greater than the delay duration of 1,000
-                          // Millis.
+                          // target is not valid as it must be greater than the delay duration of 1,000 Millis.
                           "CWMFT5019W", //CWMFT5019W: The Retry policy jitter delay of 200 Millis for the
                           //org.eclipse.microprofile.fault.tolerance.tck.bulkhead.clientserver.BulkheadRapidRetry55ClassAsynchBean target
                           //is not valid because the jitter delay must be less than the delay duration of 1 Micros.
-                          "CWMFT5021E", // CWMFT5021E: The fallback method {0} with parameter and return types matching method {1} was not found in the class hierarchy of {2}.
                           "CWWKZ0002E");// CWWKZ0002E: An exception occurred while starting the application
                                         // ftInvalidCB5. The exception message was:
                                         // com.ibm.ws.container.service.state.StateChangeException:

@@ -272,5 +272,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Informa\u010dn\u00ed zpr\u00
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Nezbytn\u00fd atribut konfigurace [{0}] chyb\u00ed nebo je pr\u00e1zdn\u00fd a nen\u00ed zad\u00e1na v\u00fdchoz\u00ed hodnota. Ov\u011b\u0159te, zda je tento atribut nakonfigurovan\u00fd nebo zji\u0161t\u011bn od poskytovatele, \u017ee nen\u00ed pr\u00e1zdn\u00fd a neobsahuje pouze pr\u00e1zdn\u00e9 znaky.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Uveden\u00fd atribut konfigurace by mohl v konfiguraci serveru chyb\u011bt. Je-li zad\u00e1na n\u011bjak\u00e1 hodnota, odeberou se p\u0159i zpracov\u00e1n\u00ed hodnoty pr\u00e1zdn\u00e1 m\u00edsta na za\u010d\u00e1tku a konci hodnoty, tak\u017ee hodnota v konfiguraci by mohla b\u00fdt pr\u00e1zdn\u00e1 nebo obsahovat pouze pr\u00e1zdn\u00e9 mezery. Je-li uveden koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed pro z\u00edsk\u00e1n\u00ed t\u00e9to hodnoty atributu od poskytovatele, pak m\u016f\u017ee m\u00edt zji\u0161\u0165ov\u00e1n\u00ed probl\u00e9m.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Zkontrolujte, zda je uveden\u00fd atribut konfigurace nakonfigurovan\u00fd, \u017ee nen\u00ed pr\u00e1zdn\u00fd a neobsahuje pouze pr\u00e1zdn\u00e9 znaky. Pokud je koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed konfigurov\u00e1n tak, aby z\u00edskal tyto informace, pak se ujist\u011bte, \u017ee s po\u017eadavkem na zji\u0161\u0165ov\u00e1n\u00ed nejsou \u017e\u00e1dn\u00e9 chyby.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: V\u00edce ne\u017e jedna konfigurace klienta OpenID Connect ur\u010duje stejn\u00fd filtr ov\u011b\u0159en\u00ed [{0}]. To m\u016f\u017ee zp\u016fsobit neur\u010dit\u00e9 chov\u00e1n\u00ed.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=V\u00edce ne\u017e jedna konfigurace klienta OpenID Connect obsahuje atribut authFilterRef, kter\u00fd odkazuje na stejn\u00fd filtr. Kter\u00fdkoli z t\u011bchto klient\u016f m\u016f\u017ee zpracovat po\u017eadavek, kter\u00fd odpov\u00edd\u00e1 filtru, co\u017e vede k neur\u010den\u00e9mu chov\u00e1n\u00ed. 
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Zkontrolujte soubor server.xml a opravte konfiguraci.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: V\u00edce ne\u017e jeden filtr ov\u011b\u0159en\u00ed klienta OpenID Connect odpov\u00edd\u00e1 po\u017eadavku na adresu URL [{0}]. Odpov\u00eddaj\u00edc\u00ed filtry byly [{1}]. To m\u016f\u017ee zp\u016fsobit neur\u010dit\u00e9 chov\u00e1n\u00ed.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=V\u00edce ne\u017e jeden filtr ov\u011b\u0159en\u00ed odpov\u00edd\u00e1 p\u0159\u00edchoz\u00edm po\u017eadavk\u016fm. Ka\u017ed\u00fd klient, kter\u00fd pou\u017e\u00edv\u00e1 n\u011bkter\u00fd z t\u011bchto filtr\u016f, by mohl zpracovat po\u017eadavek, co\u017e vede k neur\u010den\u00e9mu chov\u00e1n\u00ed. 
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Zkontrolujte soubor server.xml a opravte konfiguraci.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

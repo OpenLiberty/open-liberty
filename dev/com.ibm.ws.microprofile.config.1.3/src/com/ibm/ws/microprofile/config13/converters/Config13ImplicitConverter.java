@@ -45,8 +45,6 @@ public class Config13ImplicitConverter extends BuiltInConverter {
      *
      *
      * @param converterType The class to convert using
-     * @param useCtorFirst if true, prefer a String constructor to a static valueOf(String) method
-     * @param useIllegalArgumentException if true, rethrow all conversion exceptions as IllegalArgumentExceptions
      */
     public Config13ImplicitConverter(Class<?> converterType) {
         super(converterType);

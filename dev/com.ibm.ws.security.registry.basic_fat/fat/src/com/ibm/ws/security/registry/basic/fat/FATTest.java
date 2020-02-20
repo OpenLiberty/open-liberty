@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2013 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.topology.impl.LibertyServer;
@@ -211,5 +212,43 @@ public class FATTest {
             server.waitForStringInLog("CWWKG0017I");
             serverConfigurationFile = serverXML;
         }
+    }
+
+    /**
+     * Validate fix for OLGH10461, where a PatternSyntaxException (unclosed group near index N)
+     * was thrown when a single paren was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getUsersWithSingleParen() throws Exception {
+        Log.info(c, "getUsersWithParenthesis", "Check getUsers with single paren patterns");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getUsers("*(contrac*", 0);
+        assertEquals(1, result.getList().size());
+
+        result = servlet.getUsers("*tractor)*", 0);
+        assertEquals(1, result.getList().size());
+    }
+
+    /**
+     * Validate fix for OLGH10461, where a PatternSyntaxException (unclosed group near index N)
+     * was thrown when a single paren was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getGroupsWithSingleParen() throws Exception {
+        Log.info(c, "getGroupsWithSingleParen", "Check getGroups with single paren patterns");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getGroups("*(contrac*", 0);
+        assertEquals(1, result.getList().size());
+
+        result = servlet.getGroups("*tractors)*", 0);
+        assertEquals(1, result.getList().size());
     }
 }

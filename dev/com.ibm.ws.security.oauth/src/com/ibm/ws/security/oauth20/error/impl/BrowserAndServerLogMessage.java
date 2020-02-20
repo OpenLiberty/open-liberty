@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.lang.LocalesModifier;
 
 /**
  * Small helper class to obtain an NLS message in both the locale of the browser and the locale of the server. This is meant
@@ -34,7 +35,7 @@ public class BrowserAndServerLogMessage {
     }
 
     public String getBrowserErrorMessage() {
-        return Tr.formatMessage(tc, requestLocales, msgKey, inserts);
+        return Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(requestLocales), msgKey, inserts);
     }
 
     public String getServerErrorMessage() {
@@ -44,5 +45,4 @@ public class BrowserAndServerLogMessage {
     public void setLocales(Enumeration<Locale> requestLocales) {
         this.requestLocales = requestLocales;
     }
-
 }

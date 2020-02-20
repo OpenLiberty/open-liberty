@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -423,5 +423,36 @@ public class HttpConfigConstants {
     //Section 5.3.1 defines this as:
     //qvalue = ( "0" [ "." 0*3DIGIT ] ) / ( "1" [ "." 0*3("0") ] )
     public static final String DEFAULT_QVALUE_REGEX = "^((0(\\.\\d{0,3})?)|1(\\.0{0,3})?)$";
+    /**
+     * Specifies the maximum ratio of decompressed to compressed request body payload. This ratio is verified as the body is read by the HTTP channel, and if the
+     * decompressionTolerance is reached, the request is ended.
+     */
+    public static final String PROPNAME_DECOMPRESSION_RATIO_LIMIT = "decompressionRatioLimit";
+    /** Specifies the maximum number of times the HTTP channel can hit the decompressionRatioLimit as the request body is decompressed before the request is ended. */
+    public static final String PROPNAME_DECOMPRESSION_TOLERANCE = "decompressionTolerance";
 
+    public static final String PROPNAME_SAMESITE = "sameSiteInternal";
+
+    public static final String PROPNAME_SAMESITE_LAX = "sameSiteLaxInternal";
+
+    public static final String PROPNAME_SAMESITE_NONE = "sameSiteNoneInternal";
+
+    public static final String PROPNAME_SAMESITE_STRICT = "sameSiteStrictInternal";
+
+    public static final String WILDCARD_CHAR = "*";
+
+    public static enum SameSite {
+        LAX("Lax"),
+        NONE("None"),
+        STRICT("Strict");
+        SameSite(String name) {
+            this.name = name;
+        }
+
+        private String name;
+
+        public String getName() {
+            return this.name;
+        }
+    }
 }

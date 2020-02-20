@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.Servlet;
@@ -297,7 +299,7 @@ public class VmmServiceServlet extends HttpServlet {
 
                 IdentifierType id = new IdentifierType();
                 id.setUniqueName(req.getParameter("uniqueName"));
-                
+
                 PersonAccount entity = new PersonAccount();
                 entity.setIdentifier(id);
 
@@ -315,7 +317,7 @@ public class VmmServiceServlet extends HttpServlet {
                 root = vmmServ.search(root);
             } else if ("searchUserBadExpression".equals(method)) {
 
-            	PersonAccount entity = new PersonAccount();
+                PersonAccount entity = new PersonAccount();
 
                 PropertyControl properties = new PropertyControl();
                 SearchControl search = new SearchControl();
@@ -945,9 +947,8 @@ public class VmmServiceServlet extends HttpServlet {
                 root = vmmServ.get(root);
             } else if (method.equals("getBasicUserNotFound")) {
                 IdentifierType id = new IdentifierType();
-                 id.setUniqueId(req.getParameter("uniqueName"));
+                id.setUniqueId(req.getParameter("uniqueName"));
                 id.setRepositoryId("basic");
-                
 
                 PersonAccount entity = new PersonAccount();
                 entity.setIdentifier(id);
@@ -969,16 +970,16 @@ public class VmmServiceServlet extends HttpServlet {
                 IdentifierType id = new IdentifierType();
                 id.setUniqueName(req.getParameter("uniqueName"));
                 id.setExternalId("vmmuser1");
-                
+
                 if (method.equals("getBasicUser") || (method.equals("updateBasicUser"))) {
-                	id.setRepositoryId("SampleBasicRealm");
+                    id.setRepositoryId("SampleBasicRealm");
                 }
-                
+
                 if (method.equals("updateBasicUser")) {
-                	id.setUniqueName("uid=vmmuser1,o=SampleBasicRealm");
-                	id.setUniqueId(req.getParameter("uniqueName"));
+                    id.setUniqueName("uid=vmmuser1,o=SampleBasicRealm");
+                    id.setUniqueId(req.getParameter("uniqueName"));
                     id.setExternalName("vmmuser1");
-                    
+
                 }
 
                 PersonAccount entity = new PersonAccount();
@@ -992,22 +993,22 @@ public class VmmServiceServlet extends HttpServlet {
 
                 ExternalNameControl eCtrl = new ExternalNameControl();
                 root.getControls().add(eCtrl);
-                
+
                 Context c = new Context();
-                
+
                 if (method.equals("getBasicUser")) {
-                	root = vmmServ.get(root);
+                    root = vmmServ.get(root);
                 } else if (method.equals("createBasicUser")) {
-                	root = vmmServ.create(root);
+                    root = vmmServ.create(root);
                 } else if (method.equals("deleteBasicUser")) {
-                	root = vmmServ.delete(root);
+                    root = vmmServ.delete(root);
                 } else if (method.equals("updateBasicUser")) {
-                	
+
                     c.setKey("trustEntityType");
                     c.setValue("true");
 
                     root.getContexts().add(c);
-                	root = vmmServ.update(root);
+                    root = vmmServ.update(root);
                 } else {
                     pw.println("Unknown method name: " + method);
                 }
@@ -1192,12 +1193,28 @@ public class VmmServiceServlet extends HttpServlet {
                 }
             } else if ("ping".equals(method)) {
                 response = "PING";
+            } else if ("searchWithExpression".equals(method)) {
+                PersonAccount person = new PersonAccount();
+
+                PropertyControl properties = new PropertyControl();
+                SearchControl search = new SearchControl();
+                search.setExpression(req.getParameter("expression"));
+
+                Root root = new Root();
+                root.getEntities().add(person);
+                root.getControls().add(properties);
+                root.getControls().add(search);
+                root = vmmServ.search(root);
+
+                List<String> ids = new ArrayList<String>();
+                for (Entity entity : root.getEntities()) {
+                    ids.add(entity.getIdentifier().getExternalName());
+                }
+                response = ids.toString();
             } else {
                 pw.println("Bad method name: " + method + " .Usage: url?method=name&paramName=paramValue&...");
             }
-        } catch (
-
-        NullPointerException npe) {
+        } catch (NullPointerException npe) {
             pw.println("Hit NPE");
             npe.printStackTrace();
             response = npe.toString();

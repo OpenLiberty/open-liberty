@@ -6,7 +6,8 @@
 		<feature>jndi-1.0</feature>
 		<feature>timedexit-1.0</feature>
 		<feature>txtest-1.0</feature>
-		<feature>cdi-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
 	</featureManager>
 	<httpEndpoint httpPort="9988" httpsPort="9989"
 		id="defaultHttpEndpoint" />

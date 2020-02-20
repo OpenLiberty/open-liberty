@@ -12,6 +12,7 @@ package com.ibm.ws.jpa.management;
 
 import static com.ibm.ws.jpa.management.JPAConstants.JNDI_NAMESPACE_JAVA_APP_ENV;
 import static com.ibm.ws.jpa.management.JPAConstants.JNDI_NAMESPACE_JAVA_COMP_ENV;
+import static com.ibm.ws.jpa.management.JPAConstants.JPABYTECODE_TRACE_GROUP;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
@@ -60,8 +61,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
     private static final TraceComponent tc = Tr.register(JPAPUnitInfo.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
     private static final TraceComponent tcTransformer = Tr.register(CLASS_NAME + "_Transformer", JPAPUnitInfo.class, JPA_TRACE_GROUP + ".Transformer", JPA_RESOURCE_BUNDLE_NAME);
-    private static final TraceComponent tcBytecodeCapture = Tr.register(CLASS_NAME + "_BytecodeCapture", JPAPUnitInfo.class, JPA_TRACE_GROUP + ".BytecodeCapture",
-                                                                        JPA_RESOURCE_BUNDLE_NAME);
+    private static final TraceComponent tcBytecodeCapture = Tr.register(CLASS_NAME + "_BytecodeCapture", JPAPUnitInfo.class, JPABYTECODE_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
 
     private static final ThreadContextAccessor svThreadContextAccessor = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction()); // PM27213
 

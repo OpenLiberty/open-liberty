@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.webcontainer.security.internal.URLHandler;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 
 /**
  * Contains all WASReqURL Cookie related functions required by WAS.security.
@@ -102,6 +103,10 @@ public class ReferrerURLCookieHandler extends URLHandler {
         if (webAppSecConfig.getSSORequiresSSL()) {
             c.setSecure(true);
         }
+        String sameSite = webAppSecConfig.getSameSiteCookie();
+        // call WebContainer code to set the attribute SameSite
+        WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+        requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
         return c;
     }
 

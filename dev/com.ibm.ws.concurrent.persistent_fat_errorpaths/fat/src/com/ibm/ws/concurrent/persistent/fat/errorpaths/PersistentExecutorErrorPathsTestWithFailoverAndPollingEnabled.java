@@ -34,6 +34,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -102,6 +104,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         persistentExecutor.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         persistentExecutor.setMissedTaskThreshold("5s");
         persistentExecutor.setPollInterval("3s");
+        persistentExecutor.setInitialPollDelay("1s");
 
         PersistentExecutor belowMinMissedTaskThresholdExecutor = new PersistentExecutor();
         belowMinMissedTaskThresholdExecutor.setId("belowMinMissedTaskThresholdExecutor");
@@ -139,15 +142,15 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         exceedsMaxPollIntervalExecutor.setInitialPollDelay("-1");
         config.getPersistentExecutors().add(exceedsMaxPollIntervalExecutor);
 
-        PersistentExecutor retryIntervalBelowMissedTaskThresholdExecutor = new PersistentExecutor();
-        retryIntervalBelowMissedTaskThresholdExecutor.setId("retryIntervalBelowMissedTaskThresholdExecutor");
-        retryIntervalBelowMissedTaskThresholdExecutor.setJndiName("concurrent/retryIntervalBelowMissedTaskThreshold");
-        retryIntervalBelowMissedTaskThresholdExecutor.setTaskStoreRef("DBTaskStore");
-        retryIntervalBelowMissedTaskThresholdExecutor.setMissedTaskThreshold("1m45s");
-        retryIntervalBelowMissedTaskThresholdExecutor.setPollInterval("28m");
-        retryIntervalBelowMissedTaskThresholdExecutor.setRetryInterval("14s");
-        retryIntervalBelowMissedTaskThresholdExecutor.setInitialPollDelay("-1");
-        config.getPersistentExecutors().add(retryIntervalBelowMissedTaskThresholdExecutor);
+        PersistentExecutor retryIntervalAndMissedTaskThresholdBothEnabledExecutor = new PersistentExecutor();
+        retryIntervalAndMissedTaskThresholdBothEnabledExecutor.setId("retryIntervalAndMissedTaskThresholdBothEnabled");
+        retryIntervalAndMissedTaskThresholdBothEnabledExecutor.setJndiName("concurrent/retryIntervalAndMissedTaskThresholdBothEnabled");
+        retryIntervalAndMissedTaskThresholdBothEnabledExecutor.setTaskStoreRef("DBTaskStore");
+        retryIntervalAndMissedTaskThresholdBothEnabledExecutor.setMissedTaskThreshold("145s");
+        retryIntervalAndMissedTaskThresholdBothEnabledExecutor.setPollInterval("28m");
+        retryIntervalAndMissedTaskThresholdBothEnabledExecutor.setRetryInterval("3m14s");
+        retryIntervalAndMissedTaskThresholdBothEnabledExecutor.setInitialPollDelay("-1");
+        config.getPersistentExecutors().add(retryIntervalAndMissedTaskThresholdBothEnabledExecutor);
 
         config.getDataSources().getById("SchedDB").getConnectionManagers().get(0).setMaxPoolSize("10");
         server.updateServerConfiguration(config);
@@ -195,7 +198,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     /**
      * Verify that pending/active task ids, plus other helpful information, appears in the server dump output.
      */
-    // TODO switch to full mode after we are further along
+    @Mode(TestMode.FULL)
     @Test
     public void testIntrospectorWithFailOverEnabled() throws Exception {
         // schedule some tasks that will remain active while the introspector output is recorded
@@ -429,16 +432,16 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     }
 
     /**
-     * testRetryIntervalBelowMissedTaskThreshold - attempt to use a persistent executor where the retryInterval value is less than
-     * the missedTaskThreshold. Expect IllegalArgumentException with a translatable message.
+     * testRetryIntervalAndMissedTaskThresholdBothEnabled - attempt to use a persistent executor where the retryInterval and
+     * the missedTaskThreshold are both configured. Expect IllegalArgumentException with a translatable message.
      */
     @Test
-    public void testRetryIntervalBelowMissedTaskThreshold() throws Exception {
+    public void testRetryIntervalAndMissedTaskThresholdBothEnabled() throws Exception {
         server.setMarkToEndOfLog();
 
-        runInServlet("testRetryIntervalBelowMissedTaskThreshold");
+        runInServlet("testRetryIntervalAndMissedTaskThresholdBothEnabled");
 
-        List<String> errorMessages = server.findStringsInLogsUsingMark("CWWKE0701E.*14s", server.getConsoleLogFile());
+        List<String> errorMessages = server.findStringsInLogsUsingMark("CWWKE0701E.*CWWKC1521E", server.getConsoleLogFile());
         if (errorMessages.isEmpty())
             throw new Exception("Error message not found in log.");
 
@@ -447,11 +450,11 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         if (!errorMessage.contains("IllegalArgumentException")
                 || !errorMessage.contains("CWWKC1521E")
                 || !errorMessage.contains("retryInterval")
-                || !errorMessage.contains("missedTaskThreshold")
-                || !errorMessage.contains("105s"))
+                || !errorMessage.contains("missedTaskThreshold"))
             throw new Exception("Problem with substitution parameters in message " + errorMessage);
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testShutDownDerbyBeforeTaskExecutionFEWithPolling() throws Exception {
         runInServlet("testShutDownDerbyBeforeTaskExecution");
@@ -492,11 +495,13 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         runInServlet("testSkipRunFailsOnOnlyExecutionAttemptNoAutoPurge");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutFEWithPolling() throws Exception {
         runInServlet("testTransactionTimeout");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutSuspendedTransactionFEWithPolling() throws Exception {
         runInServlet("testTransactionTimeoutSuspendedTransaction");

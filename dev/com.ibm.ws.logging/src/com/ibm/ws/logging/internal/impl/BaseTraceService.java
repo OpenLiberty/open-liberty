@@ -398,10 +398,13 @@ public class BaseTraceService implements TrService {
         commonConsoleLogHandlerUpdates();
 
         /*
-         * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
+         * If messageFormat has been configured to 'basic' OR if messageFormat is neither basic nor json (default to basic)
+         * - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
          */
-        if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
+        if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) ||
+            (!consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) &&
+             !consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT))) {
             if (messageLogHandler != null) {
                 messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
                 messageLogHandler.modified(new ArrayList<String>());
@@ -412,10 +415,14 @@ public class BaseTraceService implements TrService {
         }
 
         /*
-         * If consoleFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
+         * If consoleFormat has been configured to 'basic' OR if consoleFormat is neither basic nor json (default to basic)
+         * - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
          */
-        if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT)) {
+
+        if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) ||
+            (!consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) &&
+             !consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT))) {
             if (consoleLogHandler != null) {
                 consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
                 ArrayList<String> filteredList = new ArrayList<String>();

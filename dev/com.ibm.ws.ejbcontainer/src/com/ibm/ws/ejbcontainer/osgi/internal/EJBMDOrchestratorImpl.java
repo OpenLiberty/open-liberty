@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
 
     private static final TraceComponent tc = Tr.register(EJBMDOrchestratorImpl.class);
-    private static final TraceComponent tcContainer = Tr.register(EJBMDOrchestratorImpl.class,
+    private static final TraceComponent tcContainer = Tr.register(EJBMDOrchestratorImpl.class.getName(),
+                                                                  EJBMDOrchestratorImpl.class,
                                                                   "EJBContainer",
                                                                   "com.ibm.ejs.container.container");
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef;
@@ -95,9 +96,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
         return (ModuleInitDataImpl) mid;
     }
 
-    private void processEJBBindings(EJBModuleMetaDataImpl mmd, EJBJarBnd ejbJarBinding)
-                    throws EJBConfigurationException
-    {
+    private void processEJBBindings(EJBModuleMetaDataImpl mmd, EJBJarBnd ejbJarBinding) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         // Load the binding names for configuration files (ie. non-container default bindings
@@ -146,9 +145,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
         }
     }
 
-    private void processMessageDestinationBindingDefault(ModuleInitData mid, EJBModuleMetaDataImpl mmd)
-                    throws EJBException
-    {
+    private void processMessageDestinationBindingDefault(ModuleInitData mid, EJBModuleMetaDataImpl mmd) throws EJBException {
         if (mid.ivEJBJar != null) {
             for (EnterpriseBean eb : mid.ivEJBJar.getEnterpriseBeans()) {
                 if (eb.getKindValue() == EnterpriseBean.KIND_MESSAGE_DRIVEN) {
@@ -202,11 +199,10 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
 
     /**
      * Cast an EJBApplicationMetaData to a OSGiApplicationMetaData.
-     * 
+     *
      * @return OSGiEJBApplicationMetaData
      */
-    private OSGiEJBApplicationMetaData getOSGiApplicationMetaData(EJBModuleMetaDataImpl mmd)
-    {
+    private OSGiEJBApplicationMetaData getOSGiApplicationMetaData(EJBModuleMetaDataImpl mmd) {
         return (OSGiEJBApplicationMetaData) mmd.getEJBApplicationMetaData();
     }
 
@@ -243,13 +239,13 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
      * message-driven bean. The default name follows the same convention
      * as is defined in the EJB specification for business interfaces bound
      * in the java:global name context (excluding the interface name). <p>
-     * 
+     *
      * [<app-name>]/<module-name>/<bean-name>
-     * 
+     *
      * <app-name> only applies if the bean is packaged within an .ear file.
      * It defaults to the base name of the .ear file with no filename extension,
      * unless specified by the application.xml deployment descriptor.
-     * 
+     *
      * <module-name> is the name of the module in which the bean is packaged.
      * In a stand-alone ejb-jar file or .war file, the <module-name> defaults
      * to the base name of the module with any filename extension removed.
@@ -257,13 +253,13 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
      * with any filename extension removed, but with any directory names included.
      * The default <module-name> can be overridden using the module-name element
      * of ejb-jar.xml (for ejb-jar files) or web.xml (for .war files).
-     * 
+     *
      * <bean-name> is the ejb-name of the enterprise bean. For enterprise beans
      * defined via annotation, it defaults to the unqualified name of the session
      * bean class, unless specified in the contents of the MessageDriven annotation
      * name() attribute. For enterprise beans defined via ejb-jar.xml, itâ€™s
      * specified in the <ejb-name> deployment descriptor element.
-     * 
+     *
      * In full profile, the activation specification jndi name is required in
      * the binding file, however, in the Liberty profile a default is provided
      * so that a customer can avoid including an ibm-ejb-jar-bnd.xml file.
@@ -284,20 +280,27 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
         return sb.toString();
     }
 
-    private void processSessionBeanBinding(BeanMetaData bmd, com.ibm.ws.javaee.dd.ejbbnd.Session sessionBinding)
-                    throws EJBException, EJBConfigurationException
-    {
+    private void processSessionBeanBinding(BeanMetaData bmd, com.ibm.ws.javaee.dd.ejbbnd.Session sessionBinding) throws EJBException, EJBConfigurationException {
         String ejbName = bmd.enterpriseBeanName;
         EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
 
         // Set the component-id override for default binding names.
-        bmd.ivComponent_Id = sessionBinding.getComponentID();
+        String componentID = sessionBinding.getComponentID();
+        if (componentID != null) {
+            if (componentID.trim().length() == 0) {
+                Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
+                         new Object[] { ejbName, mmd.ivName });
+                throw new EJBException("The " + ejbName +
+                                       " bean or home in the " + mmd.ivName +
+                                       " module contains a blank string value for the" +
+                                       " Java Naming and Directory Interface (JNDI) binding name.");
+            }
+            bmd.ivComponent_Id = componentID.trim();
+        }
 
         String localHomeBindingName = sessionBinding.getLocalHomeBindingName();
-        if (localHomeBindingName != null)
-        {
-            if (localHomeBindingName.length() == 0)
-            {
+        if (localHomeBindingName != null) {
+            if (localHomeBindingName.trim().length() == 0) {
                 Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
                          new Object[] { ejbName, mmd.ivName });
                 throw new EJBException("The " + ejbName +
@@ -306,14 +309,12 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                        " Java Naming and Directory Interface (JNDI) binding name.");
             }
 
-            bmd.localHomeJndiBindingName = localHomeBindingName;
+            bmd.localHomeJndiBindingName = localHomeBindingName.trim();
         }
 
         String remoteHomeBindingName = sessionBinding.getRemoteHomeBindingName();
-        if (remoteHomeBindingName != null)
-        {
-            if (remoteHomeBindingName.length() == 0)
-            {
+        if (remoteHomeBindingName != null) {
+            if (remoteHomeBindingName.trim().length() == 0) {
                 Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
                          new Object[] { ejbName, mmd.ivName });
                 throw new EJBException("The " + ejbName +
@@ -322,7 +323,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                        " Java Naming and Directory Interface (JNDI) binding name.");
             }
 
-            bmd.remoteHomeJndiBindingName = remoteHomeBindingName;
+            bmd.remoteHomeJndiBindingName = remoteHomeBindingName.trim();
         }
 
         // If there are business interface bindings we need to save them,
@@ -331,14 +332,11 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
         // also need to check that the binding name is not an empty
         // string.
         List<Interface> interfaceBindings = sessionBinding.getInterfaces();
-        if (!interfaceBindings.isEmpty())
-        {
+        if (!interfaceBindings.isEmpty()) {
             bmd.businessInterfaceJndiBindingNames = new HashMap<String, String>();
-            for (Interface interfaceBinding : interfaceBindings)
-            {
+            for (Interface interfaceBinding : interfaceBindings) {
                 String interfaceBindingName = interfaceBinding.getBindingName();
-                if (interfaceBindingName.length() == 0)
-                {
+                if (interfaceBindingName.trim().length() == 0) {
                     Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
                              new Object[] { ejbName, mmd.ivName });
                     throw new EJBException("The " + ejbName +
@@ -354,14 +352,12 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                 // convert it to the bean class. Blank is the value that will be
                 // generated by the tooling, but if the customer enters the
                 // class manually, that is also supported.                 F743-1756.3
-                if (interfaceClassName.equals(""))
-                {
+                if (interfaceClassName.equals("")) {
                     interfaceClassName = bmd.enterpriseBeanClassName;
                 }
 
                 String oldInterfaceBindingName = bmd.businessInterfaceJndiBindingNames.put(interfaceClassName, interfaceBindingName);
-                if (oldInterfaceBindingName != null)
-                {
+                if (oldInterfaceBindingName != null) {
                     Tr.error(tcContainer, "MULTIPLE_JNDI_BINDING_NAMES_CNTR0139E",
                              new Object[] { ejbName, mmd.ivName, interfaceClassName });
                     throw new EJBException("The " + ejbName +
@@ -384,17 +380,14 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
 
     private void processSimpleBindingName(BeanMetaData bmd,
                                           com.ibm.ws.javaee.dd.ejbbnd.Session ejbBinding,
-                                          boolean hasSpecificBinding)
-    {
+                                          boolean hasSpecificBinding) {
         String ejbName = bmd.enterpriseBeanName;
         EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
 
         // Process simple binding name.
         String simpleJndiBindingName = ejbBinding.getSimpleBindingName();
-        if (simpleJndiBindingName != null)
-        {
-            if (simpleJndiBindingName.length() == 0)
-            {
+        if (simpleJndiBindingName != null) {
+            if (simpleJndiBindingName.trim().length() == 0) {
                 Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
                          new Object[] { ejbName, mmd.ivName });
                 throw new EJBException("The " + ejbName +
@@ -403,8 +396,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                        " Java Naming and Directory Interface (JNDI) binding name.");
             }
 
-            if (hasSpecificBinding)
-            {
+            if (hasSpecificBinding) {
                 Tr.error(tcContainer, "INVALID_JNDI_BINDING_COMBINATION_CNTR0130E",
                          new Object[] { ejbName, mmd.ivName });
                 throw new EJBException("When a simple Java Naming and Directory Interface (JNDI)" +
@@ -415,17 +407,22 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                        " module either must use a simple JNDI binding name" +
                                        " or specific JNDI bindings, but not use both options.");
             }
+            if (simpleJndiBindingName.contains(":")) {
+                Tr.error(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E",
+                         new Object[] { ejbName, mmd.ivName, simpleJndiBindingName });
+                throw new EJBException("The " + ejbName +
+                                       " bean or home in the " + mmd.ivName +
+                                       " module contains a namespace in the string value for the" +
+                                       " Java Naming and Directory Interface (JNDI) binding name.");
+            }
+            bmd.simpleJndiBindingName = simpleJndiBindingName.trim();
         }
-
-        bmd.simpleJndiBindingName = simpleJndiBindingName;
-
     }
 
     private static final String EJBLOCAL_BINDING_PREFIX = "ejblocal:"; // d456907
 
     private void validateEJBBindings(BeanMetaData bmd) // F743-36290.1
-    throws EJBConfigurationException
-    {
+                    throws EJBConfigurationException {
         // Check out the binding(s) that have been specified for this bean and/or it's home.
         //
         // When business interface bindings are supplied there needs to be a matching business interface
@@ -435,33 +432,42 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
         // If a home binding has been specified, there needs to be a matcthing home interface.  Also,
         // local home bindings must begin with "ejblocal:", and remote home bindings must NOT begin with "ejblocal:".
         //
+        // Besides local home bindings beginning with "ejblocal:" we do not allow any other namespaces (nested or otherwise)
+        //
         // Since all of the checks in this section only apply to EJB3 beans so we will throw an exception
         // and fail application start if any of the listed configuration errors are detected.
 
-        if (bmd.businessInterfaceJndiBindingNames != null)
-        {
-            for (Map.Entry<String, String> entry : bmd.businessInterfaceJndiBindingNames.entrySet())
-            {
+        if (bmd.ivComponent_Id != null) {
+            if (bmd.ivComponent_Id.contains(":")) {
+                Tr.error(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E",
+                         new Object[] { bmd.enterpriseBeanName,
+                                        bmd._moduleMetaData.ivName,
+                                        bmd.ivComponent_Id });
+                throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                    " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                    " module contains a namespace in the string value for the" +
+                                                    " Java Naming and Directory Interface (JNDI) binding name.");
+            }
+        }
+
+        if (bmd.businessInterfaceJndiBindingNames != null) {
+            for (Map.Entry<String, String> entry : bmd.businessInterfaceJndiBindingNames.entrySet()) {
                 String bindingInterface = entry.getKey();
                 String bindingValue = entry.getValue();
                 boolean matchFound = false;
 
                 String[] localBusinessInterfaces = bmd.ivBusinessLocalInterfaceClassNames;
-                if (localBusinessInterfaces != null)
-                {
-                    for (String localBusinessInterface : localBusinessInterfaces)
-                    {
-                        if (bindingInterface.equals(localBusinessInterface))
-                        {
+                if (localBusinessInterfaces != null) {
+                    for (String localBusinessInterface : localBusinessInterfaces) {
+                        if (bindingInterface.equals(localBusinessInterface)) {
                             matchFound = true;
 
                             // Also, make sure binding for this local business interface begins with ejblocal:
-                            if (!bindingValue.startsWith(EJBLOCAL_BINDING_PREFIX))
-                            {
-                                Tr.error(tc, "IMPROPER_LOCAL_JNDI_BINDING_PREFIX_CNTR0136E",
+                            if (!bindingValue.startsWith(EJBLOCAL_BINDING_PREFIX)) {
+                                Tr.error(tcContainer, "IMPROPER_LOCAL_JNDI_BINDING_PREFIX_CNTR0136E",
                                          new Object[] { bmd.enterpriseBeanName,
-                                                       bmd._moduleMetaData.ivName,
-                                                       bindingValue });
+                                                        bmd._moduleMetaData.ivName,
+                                                        bindingValue });
                                 throw new EJBConfigurationException("The specific Java Naming and Directory Interface (JNDI)" +
                                                                     " binding name provided for a local bean does not begin with" +
                                                                     " ejblocal:. The " + bindingValue +
@@ -469,32 +475,57 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                                                     " bean in the " + bmd._moduleMetaData.ivName +
                                                                     " module does not begin with ejblocal:.");
                             }
+                            String trimmedBindingValue = bindingValue.substring(EJBLOCAL_BINDING_PREFIX.length());
+                            if (trimmedBindingValue.trim().length() == 0) {
+                                Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
+                                         new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
+                                throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                                    " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                                    " module contains a blank string value for the" +
+                                                                    " Java Naming and Directory Interface (JNDI) binding name.");
+                            }
+                            if (trimmedBindingValue.contains(":")) {
+                                Tr.error(tcContainer, "NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E",
+                                         new Object[] { bmd.enterpriseBeanName,
+                                                        bmd._moduleMetaData.ivName,
+                                                        bindingValue });
+                                throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                                    " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                                    " module contains a namespace in the string value for the" +
+                                                                    " Java Naming and Directory Interface (JNDI) binding name.");
+                            }
                         }
                     }
                 }
 
                 String[] remoteBusinessInterfaces = bmd.ivBusinessRemoteInterfaceClassNames;
-                if (remoteBusinessInterfaces != null)
-                {
-                    for (String remoteBusinessInterface : remoteBusinessInterfaces)
-                    {
-                        if (bindingInterface.equals(remoteBusinessInterface))
-                        {
+                if (remoteBusinessInterfaces != null) {
+                    for (String remoteBusinessInterface : remoteBusinessInterfaces) {
+                        if (bindingInterface.equals(remoteBusinessInterface)) {
                             matchFound = true;
 
                             // Also, make sure binding for this remote business interface does NOT begin with ejblocal:
-                            if (bindingValue.startsWith(EJBLOCAL_BINDING_PREFIX))
-                            {
-                                Tr.error(tc, "IMPROPER_REMOTE_JNDI_BINDING_PREFIX_CNTR0137E",
+                            if (bindingValue.startsWith(EJBLOCAL_BINDING_PREFIX)) {
+                                Tr.error(tcContainer, "IMPROPER_REMOTE_JNDI_BINDING_PREFIX_CNTR0137E",
                                          new Object[] { bmd.enterpriseBeanName,
-                                                       bmd._moduleMetaData.ivName,
-                                                       bindingValue });
+                                                        bmd._moduleMetaData.ivName,
+                                                        bindingValue });
                                 throw new EJBConfigurationException("The specific Java Naming and Directory Interface (JNDI)" +
                                                                     " binding name that is provided for a remote" +
                                                                     " bean begins with ejblocal:.  The " + bindingValue +
                                                                     " remote binding name that is specified for the " + bmd.enterpriseBeanName +
                                                                     " bean in the " + bmd._moduleMetaData.ivName +
                                                                     " module cannot begin with ejblocal:.");
+                            }
+                            if (bindingValue.contains(":")) {
+                                Tr.error(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E",
+                                         new Object[] { bmd.enterpriseBeanName,
+                                                        bmd._moduleMetaData.ivName,
+                                                        bindingValue });
+                                throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                                    " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                                    " module contains a namespace in the string value for the" +
+                                                                    " Java Naming and Directory Interface (JNDI) binding name.");
                             }
                         }
                     }
@@ -507,12 +538,11 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                         matchFound = true;
 
                         // Also, make sure binding for this local interface begins with ejblocal:
-                        if (!bindingValue.startsWith(EJBLOCAL_BINDING_PREFIX))
-                        {
-                            Tr.error(tc, "IMPROPER_LOCAL_JNDI_BINDING_PREFIX_CNTR0136E",
+                        if (!bindingValue.startsWith(EJBLOCAL_BINDING_PREFIX)) {
+                            Tr.error(tcContainer, "IMPROPER_LOCAL_JNDI_BINDING_PREFIX_CNTR0136E",
                                      new Object[] { bmd.enterpriseBeanName,
-                                                   bmd._moduleMetaData.ivName,
-                                                   bindingValue });
+                                                    bmd._moduleMetaData.ivName,
+                                                    bindingValue });
                             throw new EJBConfigurationException("The specific Java Naming and Directory Interface (JNDI)" +
                                                                 " binding name provided for a local bean does not begin with" +
                                                                 " ejblocal:. The " + bindingValue +
@@ -520,15 +550,33 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                                                 " bean in the " + bmd._moduleMetaData.ivName +
                                                                 " module does not begin with ejblocal:.");
                         }
+                        String trimmedBindingValue = bindingValue.substring(EJBLOCAL_BINDING_PREFIX.length());
+                        if (trimmedBindingValue.trim().length() == 0) {
+                            Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
+                                     new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
+                            throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                                " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                                " module contains a blank string value for the" +
+                                                                " Java Naming and Directory Interface (JNDI) binding name.");
+                        }
+                        if (trimmedBindingValue.contains(":")) {
+                            Tr.error(tcContainer, "NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E",
+                                     new Object[] { bmd.enterpriseBeanName,
+                                                    bmd._moduleMetaData.ivName,
+                                                    bmd.localHomeJndiBindingName });
+                            throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                                " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                                " module contains a namespace in the string value for the" +
+                                                                " Java Naming and Directory Interface (JNDI) binding name.");
+                        }
                     }
                 }
 
-                if (!matchFound)
-                {
-                    Tr.error(tc, "JNDI_BINDING_HAS_NO_CORRESPONDING_BUSINESS_INTERFACE_CLASS_CNTR0140E",
+                if (!matchFound) {
+                    Tr.error(tcContainer, "JNDI_BINDING_HAS_NO_CORRESPONDING_BUSINESS_INTERFACE_CLASS_CNTR0140E",
                              new Object[] { bmd.enterpriseBeanName,
-                                           bmd._moduleMetaData.ivName,
-                                           bindingInterface });
+                                            bmd._moduleMetaData.ivName,
+                                            bindingInterface });
                     throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
                                                         " bean in the " + bmd._moduleMetaData.ivName +
                                                         " module has specified the [" + bindingInterface +
@@ -538,11 +586,9 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
             }
         }
 
-        if (bmd.localHomeJndiBindingName != null)
-        {
-            if (bmd.localHomeInterfaceClassName == null)
-            {
-                Tr.error(tc, "JNDI_BINDING_HAS_NO_CORRESPONDING_HOME_INTERFACE_CLASS_CNTR0141E",
+        if (bmd.localHomeJndiBindingName != null) {
+            if (bmd.localHomeInterfaceClassName == null) {
+                Tr.error(tcContainer, "JNDI_BINDING_HAS_NO_CORRESPONDING_HOME_INTERFACE_CLASS_CNTR0141E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
                                                     " bean in the " + bmd._moduleMetaData.ivName +
@@ -550,12 +596,11 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                                     " binding. The binding does not have a matching home interface class.");
             }
 
-            if (!bmd.localHomeJndiBindingName.startsWith(EJBLOCAL_BINDING_PREFIX))
-            {
-                Tr.error(tc, "IMPROPER_LOCAL_JNDI_BINDING_PREFIX_CNTR0136E",
+            if (!bmd.localHomeJndiBindingName.startsWith(EJBLOCAL_BINDING_PREFIX)) {
+                Tr.error(tcContainer, "IMPROPER_LOCAL_JNDI_BINDING_PREFIX_CNTR0136E",
                          new Object[] { bmd.enterpriseBeanName,
-                                       bmd._moduleMetaData.ivName,
-                                       bmd.localHomeJndiBindingName });
+                                        bmd._moduleMetaData.ivName,
+                                        bmd.localHomeJndiBindingName });
                 throw new EJBConfigurationException("The specific Java Naming and Directory Interface (JNDI)" +
                                                     " binding name provided for a local home does not begin with" +
                                                     " ejblocal:. The " + bmd.localHomeJndiBindingName +
@@ -563,13 +608,30 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                                     " bean in the " + bmd._moduleMetaData.ivName +
                                                     " module does not begin with ejblocal:.");
             }
+            String trimmedBindingValue = bmd.localHomeJndiBindingName.substring(EJBLOCAL_BINDING_PREFIX.length());
+            if (trimmedBindingValue.trim().length() == 0) {
+                Tr.error(tcContainer, "BLANK_JNDI_BINDING_NAME_CNTR0138E",
+                         new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
+                throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                    " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                    " module contains a blank string value for the" +
+                                                    " Java Naming and Directory Interface (JNDI) binding name.");
+            }
+            if (trimmedBindingValue.contains(":")) {
+                Tr.error(tcContainer, "NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E",
+                         new Object[] { bmd.enterpriseBeanName,
+                                        bmd._moduleMetaData.ivName,
+                                        bmd.localHomeJndiBindingName });
+                throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                    " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                    " module contains a namespace in the string value for the" +
+                                                    " Java Naming and Directory Interface (JNDI) binding name.");
+            }
         }
 
-        if (bmd.remoteHomeJndiBindingName != null)
-        {
-            if (bmd.homeInterfaceClassName == null)
-            {
-                Tr.error(tc, "JNDI_BINDING_HAS_NO_CORRESPONDING_HOME_INTERFACE_CLASS_CNTR0141E",
+        if (bmd.remoteHomeJndiBindingName != null) {
+            if (bmd.homeInterfaceClassName == null) {
+                Tr.error(tcContainer, "JNDI_BINDING_HAS_NO_CORRESPONDING_HOME_INTERFACE_CLASS_CNTR0141E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
                                                     " bean in the " + bmd._moduleMetaData.ivName +
@@ -577,18 +639,27 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                                                     " binding. The binding does not have a matching home interface class.");
             }
 
-            if (bmd.remoteHomeJndiBindingName.startsWith(EJBLOCAL_BINDING_PREFIX))
-            {
-                Tr.error(tc, "IMPROPER_REMOTE_JNDI_BINDING_PREFIX_CNTR0137E",
+            if (bmd.remoteHomeJndiBindingName.startsWith(EJBLOCAL_BINDING_PREFIX)) {
+                Tr.error(tcContainer, "IMPROPER_REMOTE_JNDI_BINDING_PREFIX_CNTR0137E",
                          new Object[] { bmd.enterpriseBeanName,
-                                       bmd._moduleMetaData.ivName,
-                                       bmd.remoteHomeJndiBindingName });
+                                        bmd._moduleMetaData.ivName,
+                                        bmd.remoteHomeJndiBindingName });
                 throw new EJBConfigurationException("The specific Java Naming and Directory Interface (JNDI)" +
                                                     " binding name that is provided for a remote" +
                                                     " home begins with ejblocal:.  The " + bmd.remoteHomeJndiBindingName +
                                                     " remote binding name that is specified for the home of " + bmd.enterpriseBeanName +
                                                     " bean in the " + bmd._moduleMetaData.ivName +
                                                     " module cannot begin with ejblocal:.");
+            }
+            if (bmd.remoteHomeJndiBindingName.contains(":")) {
+                Tr.error(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E",
+                         new Object[] { bmd.enterpriseBeanName,
+                                        bmd._moduleMetaData.ivName,
+                                        bmd.remoteHomeJndiBindingName });
+                throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
+                                                    " bean or home in the " + bmd._moduleMetaData.ivName +
+                                                    " module contains a namespace in the string value for the" +
+                                                    " Java Naming and Directory Interface (JNDI) binding name.");
             }
         }
     }
@@ -597,10 +668,8 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
     {
         List<MessageDestination> mdBindings = ejbJarBinding.getMessageDestinations();
 
-        if (!mdBindings.isEmpty())
-        {
-            for (MessageDestination mdBinding : mdBindings)
-            {
+        if (!mdBindings.isEmpty()) {
+            for (MessageDestination mdBinding : mdBindings) {
                 String name = mdBinding.getName();
                 String bindingName = mdBinding.getBindingName();
                 mmd.ivMessageDestinationBindingMap.put(name, bindingName);
@@ -626,9 +695,9 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                     if (!bmd.passivationCapable && activationPolicy != BeanCache.ActivationPolicyTypeEnum.ONCE) {
                         Tr.warning(tcContainer, "ACTIVATION_POLICY_IGNORED_NOT_PASSIVATION_CAPABLE_CNTR0332W",
                                    new Object[] { activationPolicy,
-                                                 bmd.enterpriseBeanName,
-                                                 bmd._moduleMetaData.ivName,
-                                                 bmd._moduleMetaData.ivAppName });
+                                                  bmd.enterpriseBeanName,
+                                                  bmd._moduleMetaData.ivName,
+                                                  bmd._moduleMetaData.ivAppName });
 
                         activationPolicy = BeanCache.ActivationPolicyTypeEnum.ONCE;
                     }
@@ -990,9 +1059,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
     protected void populateBindings(BeanMetaData bmd,
                                     Map<JNDIEnvironmentRefType, Map<String, String>> allBindings,
                                     Map<String, String> envEntryValues,
-                                    ResourceRefConfigList resRefList)
-                    throws EJBConfigurationException
-    {
+                                    ResourceRefConfigList resRefList) throws EJBConfigurationException {
         WCCMMetaDataImpl wccm = getWASWCCMMetaData(bmd);
 
         RefBindingsGroup beanBinding = wccm.refBindingsGroup;
@@ -1010,21 +1077,17 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
 
         InterceptorMetaData imd = bmd.ivInterceptorMetaData;
 
-        if (imd != null)
-        {
+        if (imd != null) {
             // There are interceptor methods, which might be just in the EJB itself.
             // So check if there are any interceptor classes.
             Class<?> interceptorClasses[] = imd.ivInterceptorClasses;
-            if (interceptorClasses != null)
-            {
+            if (interceptorClasses != null) {
                 if (interceptorBindings != null) {
-                    for (Class<?> interceptorClass : interceptorClasses)
-                    {
+                    for (Class<?> interceptorClass : interceptorClasses) {
                         String interceptorClassName = interceptorClass.getName();
                         com.ibm.ws.javaee.dd.commonbnd.Interceptor interceptorBnd = interceptorBindings.get(interceptorClassName);
 
-                        if (interceptorBnd != null)
-                        {
+                        if (interceptorBnd != null) {
                             OSGiJNDIEnvironmentRefBindingHelper.processBndAndExt(allBindings, envEntryValues, resRefList, interceptorBnd, null);
                         }
                     }

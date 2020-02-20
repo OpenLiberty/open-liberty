@@ -11,6 +11,8 @@
 
 	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
 
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
 	<application
 		type="war"
 		id="microProfileSessionScopedClaimInjectLong"

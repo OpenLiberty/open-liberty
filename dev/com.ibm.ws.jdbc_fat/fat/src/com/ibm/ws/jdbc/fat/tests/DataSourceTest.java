@@ -12,7 +12,6 @@ package com.ibm.ws.jdbc.fat.tests;
 
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
-import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.fail;
 
@@ -24,7 +23,6 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -57,7 +55,6 @@ public class DataSourceTest extends FATServletClient {
     private static final String dsdfat = "dsdfat";
     private static final String dsdfat_global_lib = "dsdfat_global_lib";
 
-    @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     //Server used for ConfigTest.java and DataSourceTest.java
@@ -66,6 +63,13 @@ public class DataSourceTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Need to set the default number of prepared transactions if working with Postgres
+        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Postgres) {
+            testContainer.withCommand("postgres -c max_prepared_transactions=5");
+        }
+
+        testContainer.start(); // Start the test container
+
         // Delete the Derby database that might be left over from last run
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
@@ -82,7 +86,7 @@ public class DataSourceTest extends FATServletClient {
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         //**** jdbcServer apps ****
-        // Dropin app - setupfat.war 
+        // Dropin app - setupfat.war
         ShrinkHelper.defaultDropinApp(server, setupfat, "setupfat");
 
         // Default app - dsdfat.war and dsdfat_global_lib.war
@@ -110,6 +114,7 @@ public class DataSourceTest extends FATServletClient {
                           "WTRN0062E", //expected by testEnableSharingForDirectLookupsFalse
                           "J2CA0030E", //expected by testEnableSharingForDirectLookupsFalse
                           "CWWKE0701E"); //expected by testReapTimeUnsupportedValue
+        testContainer.stop(); // Stop the test container
     }
 
     /**
@@ -185,10 +190,9 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfSysProp({
-                     DB_Postgres, //TODO figure out why test fails with Postgres
-                     DB_SQLServer //TODO figure out why test stalls using SQLServer
-    })
+    @SkipIfSysProp({ DB_SQLServer }) // TODO
+    // This test does not work for SQLServer yet.  It might be a problem with the Docker version of SQLServer
+    // So we have opened up an issue with Microsoft to investigate further -> https://github.com/microsoft/mssql-docker/issues/554
     public void testLastParticipant() throws Exception {
         runTest();
     }
@@ -282,10 +286,9 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfSysProp({
-                     DB_Postgres, //TODO figure out why test fails with Postgres
-                     DB_SQLServer //TODO figure out why test stalls using SQLServer
-    })
+    @SkipIfSysProp({ DB_SQLServer }) //TODO figure out why test stalls using SQLServer
+    // This test does not work for SQLServer yet.  It might be a problem with the Docker version of SQLServer
+    // So we have opened up an issue with Microsoft to investigate further -> https://github.com/microsoft/mssql-docker/issues/554
     public void testTwoPhaseCommit() throws Exception {
         runTest();
     }
@@ -320,10 +323,7 @@ public class DataSourceTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.transaction.xa.XAException" })
-    @SkipIfSysProp({
-                     DB_Oracle,
-                     DB_Postgres //TODO figure out why test fails with Postgres
-    })
+    @SkipIfSysProp(DB_Oracle)
     public void testXARecovery() throws Exception {
         runTest();
     }
@@ -335,7 +335,6 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfSysProp(DB_Postgres) //TODO figure out why test fails with Postgres
     public void testXAWithMultipleDatabases() throws Exception {
         runTest();
     }
@@ -395,8 +394,8 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @AllowedFFDC({ "javax.resource.spi.ResourceAllocationException" })
     @Mode(TestMode.FULL)
+    @AllowedFFDC({ "javax.resource.spi.ResourceAllocationException" })
     public void testInterruptedWaiters() throws Exception {
         runTest();
     }

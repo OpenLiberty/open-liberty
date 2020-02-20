@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,52 +79,52 @@ public class JSF23UISelectManyTests {
      */
     @Test
     public void testUISelectMany_Enum() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxEnum.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxEnum.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectManyCheckbox: Enum"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectManyCheckbox: Enum"));
 
-        // Get the checkboxs
-        HtmlCheckBoxInput checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
-        HtmlCheckBoxInput checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
-        HtmlCheckBoxInput checkbox4 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:4");
-        // Mark them as checked
-        checkbox0.setChecked(true);
-        checkbox2.setChecked(true);
-        checkbox4.setChecked(true);
+            // Get the checkboxs
+            HtmlCheckBoxInput checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
+            HtmlCheckBoxInput checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
+            HtmlCheckBoxInput checkbox4 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:4");
+            // Mark them as checked
+            checkbox0.setChecked(true);
+            checkbox2.setChecked(true);
+            checkbox4.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the checkboxs again after submitting the form
-        checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
-        checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
-        checkbox4 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:4");
+            // Get the checkboxs again after submitting the form
+            checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
+            checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
+            checkbox4 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:4");
 
-        // Verify that they remained checked
-        assertTrue("Checkbox 0 is not checked.", checkbox0.isChecked());
-        assertTrue("Checkbox 2 is not checked.", checkbox2.isChecked());
-        assertTrue("Checkbox 4 is not checked.", checkbox4.isChecked());
+            // Verify that they remained checked
+            assertTrue("Checkbox 0 is not checked.", checkbox0.isChecked());
+            assertTrue("Checkbox 2 is not checked.", checkbox2.isChecked());
+            assertTrue("Checkbox 4 is not checked.", checkbox4.isChecked());
 
-        assertTrue("Selected values were not found.", resultingPage.contains("Selected Values: [A, C, E]"));
-
+            assertTrue("Selected values were not found.", resultingPage.contains("Selected Values: [A, C, E]"));
+        }
     }
 
     /**
@@ -136,48 +136,48 @@ public class JSF23UISelectManyTests {
      */
     @Test
     public void testUISelectMany_SelectItems() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxSelectItems.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxSelectItems.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectManyCheckbox: selectItems"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectManyCheckbox: selectItems"));
 
-        // Get the checkboxs
-        HtmlCheckBoxInput checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
-        HtmlCheckBoxInput checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
-        // Mark them as checked
-        checkbox1.setChecked(true);
-        checkbox2.setChecked(true);
+            // Get the checkboxs
+            HtmlCheckBoxInput checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
+            HtmlCheckBoxInput checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
+            // Mark them as checked
+            checkbox1.setChecked(true);
+            checkbox2.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the checkboxs again after submitting the form
-        checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
-        checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
+            // Get the checkboxs again after submitting the form
+            checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
+            checkbox2 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:2");
 
-        // Verify that they remained checked
-        assertTrue("Checkbox 1 is not checked.", checkbox1.isChecked());
-        assertTrue("Checkbox 2 is not checked.", checkbox2.isChecked());
+            // Verify that they remained checked
+            assertTrue("Checkbox 1 is not checked.", checkbox1.isChecked());
+            assertTrue("Checkbox 2 is not checked.", checkbox2.isChecked());
 
-        assertTrue("Selected items were not found.", resultingPage.contains("Selected Items: [Item2, Item3]"));
-
+            assertTrue("Selected items were not found.", resultingPage.contains("Selected Items: [Item2, Item3]"));
+        }
     }
 
     /**
@@ -189,52 +189,51 @@ public class JSF23UISelectManyTests {
      */
     @Test
     public void testUISelectMany_Static() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxStatic.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxStatic.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectManyCheckbox: Static"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectManyCheckbox: Static"));
 
-        // Get the checkboxs
-        HtmlCheckBoxInput checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
-        HtmlCheckBoxInput checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
-        HtmlCheckBoxInput checkbox3 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:3");
-        // Mark them as checked
-        checkbox0.setChecked(true);
-        checkbox1.setChecked(true);
-        checkbox3.setChecked(true);
+            // Get the checkboxs
+            HtmlCheckBoxInput checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
+            HtmlCheckBoxInput checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
+            HtmlCheckBoxInput checkbox3 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:3");
+            // Mark them as checked
+            checkbox0.setChecked(true);
+            checkbox1.setChecked(true);
+            checkbox3.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the checkboxs again after submitting the form
-        checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
-        checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
-        checkbox3 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:3");
+            // Get the checkboxs again after submitting the form
+            checkbox0 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:0");
+            checkbox1 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:1");
+            checkbox3 = (HtmlCheckBoxInput) testPage.getElementById("checkboxId:3");
 
-        // Verify that they remained checked
-        assertTrue("Checkbox 0 is not checked.", checkbox0.isChecked());
-        assertTrue("Checkbox 1 is not checked.", checkbox1.isChecked());
-        assertTrue("Checkbox 3 is not checked.", checkbox3.isChecked());
+            // Verify that they remained checked
+            assertTrue("Checkbox 0 is not checked.", checkbox0.isChecked());
+            assertTrue("Checkbox 1 is not checked.", checkbox1.isChecked());
+            assertTrue("Checkbox 3 is not checked.", checkbox3.isChecked());
 
-        assertTrue("Static selected items were not found.", resultingPage.contains("Static Selected Items: [1, 2, 4]"));
-
+            assertTrue("Static selected items were not found.", resultingPage.contains("Static Selected Items: [1, 2, 4]"));
+        }
     }
-
 }

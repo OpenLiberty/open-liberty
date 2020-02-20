@@ -39,15 +39,14 @@ public class WCServletPathForDefaultMappingDefault extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         LOG.info("Setup : add ServletPathDefaultMapping.war to the server if not already present.");
 
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), "ServletPathDefaultMapping.war", false,
                                                   "servletpathdefaultmapping.war.servlets");
 
         SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart("ServletPathDefaultMapping", WCServletPathForDefaultMappingDefault.class.getName(), 
-            SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("ServletPathDefaultMapping", WCServletPathForDefaultMappingDefault.class.getName(),
+                                            SHARED_SERVER.getLibertyServer());
         LOG.info("Setup : complete, ready for Tests");
     }
 

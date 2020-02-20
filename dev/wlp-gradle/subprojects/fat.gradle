@@ -49,6 +49,7 @@ dependencies {
   jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
 		'org.postgresql:postgresql:42.2.5',
 		'com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8',
+		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
 
@@ -69,37 +70,38 @@ dependencies {
 }
 
 task addRequiredLibraries(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.requiredLibs
   into new File(autoFvtDir, 'lib')
 }
 
 task addDerby(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.derby
   into new File(autoFvtDir, 'publish/shared/resources/derby')
   rename 'derby-.*.jar', 'derby.jar'
 }
 
 task copyJdbcDrivers(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.jdbcDrivers
   into new File(autoFvtDir, 'publish/shared/resources/jdbc')
-  rename 'derby.*.jar', 'derby.jar'
   rename 'jcc.*.jar', 'jcc.jar'
-  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
-  rename 'postgresql.*.jar', 'postgresql.jar'
+  rename 'derby-.*.jar', 'derby.jar'
+  rename 'derbyclient-.*.jar', 'derbyclient.jar'
   rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
+  rename 'postgresql.*.jar', 'postgresql.jar'
+  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
 }
 
 task copyDatabaseRotationDrivers(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.databaseRotationDrivers
   into new File(autoFvtDir, 'lib')
 }
 
 task copyFattestDatabases {
-  shouldRunAfter jar
+  mustRunAfter jar
   
   doLast{
     copy {
@@ -111,7 +113,7 @@ task copyFattestDatabases {
 }
 
 task copyFeatureBundles {
-  shouldRunAfter assemble
+  mustRunAfter assemble
   enabled project.file('test-bundles').exists()
   doLast {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->
@@ -203,7 +205,7 @@ task autoFVT {
     // Create a fat.bnd.properties file that contains metadata about the FAT
     def bndProps = new Properties()
     
-    // By default, load up all properties with certain prefixes
+    // By default, load up all properties with certain prefixes from bndWorkspace
     bndWorkspace.getProject(project.getProjectDir()).getProperties().each { k, v ->
       if(k.startsWith("test.") || k.startsWith("fat."))
         bndProps.setProperty(k, v);
@@ -214,14 +216,31 @@ task autoFVT {
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
     bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
     
-    File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
-    def writer = new FileWriter(propsFile)
+    File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
+    def bndWriter = new FileWriter(bndPropsFile)
     try {
-    	bndProps.store(writer, null)
+    	bndProps.store(bndWriter, null)
     } finally {
-      writer.close()
+      bndWriter.close()
     }
     
+    // Create a fat.sys.properties file that contains metadata about the FAT
+    def sysProps = new Properties()
+    
+    // By default, load up all properties with certain prefixes from System
+    System.getProperties().each { k, v ->
+      if(k.startsWith("test.") || k.startsWith("fat."))
+        sysProps.setProperty(k, v);
+    }
+    
+    File sysPropsFile = new File(autoFvtDir, 'fat.sys.properties')
+    def sysWriter = new FileWriter(sysPropsFile)
+    try {
+    	sysProps.store(sysWriter, null)
+    } finally {
+      sysWriter.close()
+    }
+
     // Copy the component test libs
     // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
     copy {
@@ -360,9 +379,8 @@ if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
 
 task runfat(type: Exec) {
   dependsOn cleanBeforeRun
-  shouldRunAfter build
-  shouldRunAfter cleanBeforeRun
-  System.setProperty("fat.test.localrun", "true");
+  mustRunAfter buildfat
+  mustRunAfter cleanBeforeRun
   environment System.getProperties()
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
@@ -371,7 +389,12 @@ task runfat(type: Exec) {
     executable "ant"
     args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
+
   doLast {
+    //This should be set during the execution phase and not the configuration stage
+    //Only set this property to true if the runfat task is called (which should only happen when calling buildandrun)
+    System.setProperty("fat.test.localrun", "true");
+    
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
@@ -427,9 +450,10 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
   //Staging area parent folder to enable copying all subfolders.
   File gitReposDir = new File(project.buildDir, 'gitRepos')
 
-  // If running locally use git directly
-  if( System.properties['fat.test.localrun'] ){
-
+  // Intended Behavior: If running locally use git directly
+  // TODO add conditional here once EBC cloning is implemented.
+  // Suggestion: !isAutomatedBuild - do not use [fat.test.localrun] as this is only know at runtime and not build time. 
+  if( true ) { 
     File repoDir = new File(gitReposDir, folder)
     String into = repoDir.getAbsolutePath()
      
@@ -444,7 +468,7 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
     proc.err.eachLine { line -> println cmd + ':\n' + line }
     proc.waitFor()
     
-  } else {
+  } else { // TODO Non-local cloning is not implemented for now 
     // Make use of the EBC clone mechanism
     project.logger.lifecycle('ebc clone')
     ebcClone(url) 
@@ -457,11 +481,10 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
       into gitReposDir
     }
   }
-  
 }
 
 def ebcClone(String url, String branch, String repoPath){
-  // Non-local cloning is not implemented for now  
+  // TODO Non-local cloning is not implemented for now  
 }
 
 build {

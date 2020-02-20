@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,7 +113,7 @@ public class CommsLPServlet extends FATServlet {
       createConnectionandSendMessage();
     } catch (JMSException e) {
       Util.CODEPATH();
-      if (e.getCause().getClass().getName().equals("com.ibm.websphere.sib.core.exception.SIConnectionDroppedException")) {
+      if (e.getCause().getClass().getName().endsWith(".SIConnectionDroppedException")) {
         Util.CODEPATH();
         try {
           createConnectionandSendMessage();
@@ -129,7 +129,7 @@ public class CommsLPServlet extends FATServlet {
       
     if (except instanceof JMSException
         &&null!=except.getCause()
-        &&except.getCause().getClass().getName().equals("com.ibm.websphere.sib.exception.SIResourceException")) {
+        &&except.getCause().getClass().getName().endsWith(".SIResourceException")) {
       Util.ALWAYS("SIResourceException was correctly thrown");
     } else {
       Util.TRACE(except);

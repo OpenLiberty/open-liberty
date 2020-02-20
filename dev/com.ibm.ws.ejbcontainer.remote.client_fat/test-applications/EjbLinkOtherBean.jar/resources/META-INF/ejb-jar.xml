@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+      metadata-complete="false" version="3.1">
+      <display-name>EjbLinkOtherBean</display-name>
+      <module-name>logicalOther</module-name>
+      <enterprise-beans>
+         <session id="OtherJarBean">
+            <ejb-name>OtherJarBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbo.OtherJarBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="DupBean">
+            <ejb-name>DupBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbo.DupBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="TestBean">
+            <ejb-name>TestBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkLocalOtherJar</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkRemoteOtherJar</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.ejblink.ejbo.TestBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+		</session>
+         
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+      </assembly-descriptor>
+   </ejb-jar>

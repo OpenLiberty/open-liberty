@@ -37,11 +37,33 @@ public class BasicClientTestServlet extends FATServlet {
     Logger LOG = Logger.getLogger(BasicClientTestServlet.class.getName());
 
     @Inject
+    private MyCdiManagedObject obj;
+
+    @Inject
     @RestClient
     private BasicServiceClient client;
 
     @Test
-    public void testSimplePostGetDelete(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testSimplePostGetDelete_injectedIntoFieldOnServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.client);
+    }
+
+    @Test
+    public void testSimplePostGetDelete_injectedIntoCtorOnCdiObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.obj.getClientFromCtor());
+    }
+
+    @Test
+    public void testSimplePostGetDelete_injectedIntoFieldOnCdiObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.obj.getClientFromField());
+    }
+
+    @Test
+    public void testSimplePostGetDelete_injectedIntoMethodOnCdiObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.obj.getClientFromMethod());
+    }
+
+    private void testSimplePostGetDelete(HttpServletRequest req, HttpServletResponse resp, BasicServiceClient client) throws Exception {
         try {
             client.createNewWidget(new Widget("Pencils", 100, 0.2));
             assertTrue("POSTed widget does not show up in query", client.getWidgetNames().contains("Pencils"));

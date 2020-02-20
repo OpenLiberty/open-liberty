@@ -19,13 +19,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.sql.DataSource;
 
 /**
@@ -33,7 +34,6 @@ import javax.sql.DataSource;
  * Using this annotation will start the timer immediately on start and will run every 30 seconds.
  */
 @Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
 public class AutomaticDatabase {
     private static final Class<AutomaticDatabase> c = AutomaticDatabase.class;
 
@@ -43,9 +43,9 @@ public class AutomaticDatabase {
     @Resource(shareable = false)
     private DataSource ds;
 
-    private int count = -1; //Incremented with each execution of timer
+    private int count = 0; //Incremented with each execution of timer
 
-    private boolean isTableCreated = false;
+    private static final String name = "DatabaseTimer";
 
     /**
      * Cancels timer execution
@@ -62,80 +62,74 @@ public class AutomaticDatabase {
         return count;
     }
 
-    /**
-     * Runs ever 30 seconds. Automatically starts when application starts.
-     */
-    @Schedule(info = "Performing Database Operations", hour = "*", minute = "*", second = "*/30", persistent = true)
-    public void run(Timer timer) {
-        if (!isTableCreated)
-            initTable();
-
-        System.out.println("Running execution " + incrementCount(timer) + " of timer " + timer.getInfo());
-    }
-
-    private void initTable() {
+    @PostConstruct
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void initTable() throws SQLException {
         final String createTable = "CREATE TABLE AUTOMATICDATABASE (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
 
         try (Connection conn = ds.getConnection()) {
-            //See if table was created by another server
+            //See if table was already created
             DatabaseMetaData md = conn.getMetaData();
             ResultSet rs = md.getTables(null, null, "AUTOMATICDATABASE", null);
             while (rs.next()) {
-                isTableCreated = rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE");
-                if (isTableCreated)
+                if (rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE")) {
+                    System.out.println("Found table AUTOMATICDATABASE. Skipping creation.");
                     return;
+                }
             }
 
             //If not, create it.
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(createTable);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
             }
 
-            isTableCreated = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+            System.out.println("Created table AUTOMATICDATABASE");
         }
     }
 
-    private void initCounter(Timer timer) {
-        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
-
-        //create count
-        count = 1;
-
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
-                pstmt.setString(1, timer.getInfo().toString());
-                pstmt.setInt(2, count);
-                pstmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            count = -1;
-            e.printStackTrace();
-            fail(c.getName() + " caught exception when creating table row: " + e.getMessage());
-        }
+    /**
+     * Runs ever 30 seconds. Automatically starts when application starts.
+     */
+    @Schedule(info = "Performing Database Operations", hour = "*", minute = "*", second = "*/30", persistent = true)
+    public void run(Timer timer) {
+        System.out.println("Running execution " + incrementCount(timer) + " of timer " + timer.getInfo());
     }
 
     /**
      * Increment count.
      */
     private int incrementCount(Timer timer) {
-        if (count == -1) {
-            this.initCounter(timer);
-            return count;
-        }
+        final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = count+1 WHERE name = ?";
+        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
+        boolean updated = false;
+        count++;
 
-        final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = ? WHERE name = ?";
-
+        //Get connection
         try (Connection conn = ds.getConnection()) {
             try (PreparedStatement pstmt = conn.prepareStatement(modifyRow)) {
-                pstmt.setInt(1, ++count);
-                pstmt.setString(2, timer.getInfo().toString());
+                pstmt.setString(1, name);
                 pstmt.executeUpdate();
+                updated = true;
+            } catch (SQLException e) {
+                updated = false;
+            }
+
+            if (!updated) {
+                //Create row
+                try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
+                    pstmt.setString(1, name);
+                    pstmt.setInt(2, count);
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    fail(c.getName() + " caught exception when creating row identified by " + name + " in table AUTOMATICDATABASE: " + e.getMessage());
+                }
+
+                System.out.println("Created row identified by " + name + " in table AUTOMATICDATABASE");
             }
         } catch (SQLException e) {
-            count--;
             e.printStackTrace();
             fail(c.getName() + " caught exception when incrementing count: " + e.getMessage());
         }

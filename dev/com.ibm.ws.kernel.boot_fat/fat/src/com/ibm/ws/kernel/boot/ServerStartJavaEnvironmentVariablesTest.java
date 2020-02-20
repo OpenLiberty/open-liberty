@@ -1,6 +1,6 @@
 package com.ibm.ws.kernel.boot;
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@ package com.ibm.ws.kernel.boot;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -67,19 +69,122 @@ public class ServerStartJavaEnvironmentVariablesTest {
         }
     }
 
+    private static final String OPENJ9_JAVA_OPTIONS = "OPENJ9_JAVA_OPTIONS";
+    private static final String IBM_JAVA_OPTIONS = "IBM_JAVA_OPTIONS";
+    private static final String XSHARECLASSES_STRING = "-Xshareclasses:";
+    private static final String XSHARECLASSES_OPTION = XSHARECLASSES_STRING + "name=test,nonfatal,cacheDirPerm=999";
+    private static final String XDUMP_OPTION = "-Xdump:what";
+
     /**
-     * Ensures that OPENJ9_JAVA_OPTIONS and IBM_JAVA_OPTIONS enviroment variables
-     * are both set and are equal to eachother
+     * Ensures that OPENJ9_JAVA_OPTIONS environment variable is set with values added in the server script and
+     * that IBM_JAVA_OPTIONS is set to the same value.
      */
     @Test
-    public void testServerStartJavaOptionsSet() throws Exception {
+    public void testServerStartOpenJ9JavaOptionsSet() throws Exception {
         Log.entering(c, testName.getMethodName());
 
+        try {
+            Properties envVars = new Properties();
+            envVars.put("CDPATH", ".");
+            envVars.put(IBM_JAVA_OPTIONS, XDUMP_OPTION);
+            envVars.put(OPENJ9_JAVA_OPTIONS, XSHARECLASSES_OPTION);
+
+            File dumpFile = runServerAndDump(envVars);
+
+            String openj9 = getEnvironmentVariable(dumpFile, OPENJ9_JAVA_OPTIONS);
+            assertNotNull("The variable " + OPENJ9_JAVA_OPTIONS + " should be found", openj9);
+
+            assertTrue("The variable " + OPENJ9_JAVA_OPTIONS + " should contain Xsharedlasses ", openj9.contains(XSHARECLASSES_STRING));
+            assertTrue("The variable " + OPENJ9_JAVA_OPTIONS + " should only containe one Xsharedclasses definition",
+                       openj9.indexOf(XSHARECLASSES_STRING) == openj9.lastIndexOf(XSHARECLASSES_STRING));
+            assertTrue("The variable " + OPENJ9_JAVA_OPTIONS + " should contain the provided value", openj9.contains(XSHARECLASSES_OPTION));
+
+            String ibmOptions = getEnvironmentVariable(dumpFile, IBM_JAVA_OPTIONS);
+            assertNotNull("The variable " + IBM_JAVA_OPTIONS + " should be found", ibmOptions);
+            assertTrue("The variable " + IBM_JAVA_OPTIONS + " should contain Xshareclasses", ibmOptions.contains(XSHARECLASSES_STRING));
+            assertFalse("The variable " + IBM_JAVA_OPTIONS + " should not contain Xdump:what ", ibmOptions.contains(XDUMP_OPTION));
+
+        } finally {
+            server.stopServer();
+        }
+    }
+
+    /**
+     * In this test we set only IBM_JAVA_OPTIONS. The value should be modified by the server script, and OPENJ9_JAVA_OPTIONS should have the same value.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testServerStartIBMJavaOptionsSet() throws Exception {
+        Log.entering(c, testName.getMethodName());
+        try {
+
+            Properties envVars = new Properties();
+            envVars.put("CDPATH", ".");
+            envVars.put(IBM_JAVA_OPTIONS, XDUMP_OPTION);
+
+            File dumpFile = runServerAndDump(envVars);
+
+            String openj9 = getEnvironmentVariable(dumpFile, OPENJ9_JAVA_OPTIONS);
+            assertNotNull("The variable " + OPENJ9_JAVA_OPTIONS + " should be found", openj9);
+
+            assertTrue("The variable " + OPENJ9_JAVA_OPTIONS + " should contain Xshareclasses ", openj9.contains(XSHARECLASSES_STRING));
+            assertTrue("The variable " + OPENJ9_JAVA_OPTIONS + " should only contain one Xshareclasses definition",
+                       openj9.indexOf(XSHARECLASSES_STRING) == openj9.lastIndexOf(XSHARECLASSES_STRING));
+            assertTrue("The variable " + OPENJ9_JAVA_OPTIONS + " should contain Xdump:what", openj9.contains(XDUMP_OPTION));
+
+            String ibmOptions = getEnvironmentVariable(dumpFile, IBM_JAVA_OPTIONS);
+            assertNotNull("The variable " + IBM_JAVA_OPTIONS + " should be found", ibmOptions);
+            assertTrue("The variable " + IBM_JAVA_OPTIONS + " should contain Xshareclasses", ibmOptions.contains(XSHARECLASSES_STRING));
+            assertTrue("The variable " + IBM_JAVA_OPTIONS + " should contain Xdump:what ", ibmOptions.contains(XDUMP_OPTION));
+
+        } finally {
+            server.stopServer();
+        }
+    }
+
+    private String getEnvironmentVariable(File dumpFile, String variable) throws Exception {
+        ZipFile zipFile = new ZipFile(dumpFile);
+        try {
+            for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+                ZipEntry entry = en.nextElement();
+                if (entry.getName().endsWith("EnvironmentVariables.txt")) {
+                    InputStream entryInputStream = zipFile.getInputStream(entry);
+                    BufferedReader entryReader = new BufferedReader(new InputStreamReader(entryInputStream));
+
+                    try {
+                        String line = null;
+                        while ((line = entryReader.readLine()) != null) {
+                            if (line.startsWith(variable + "=")) {
+                                Log.info(c, testName.getMethodName(), line);
+                                return line;
+                            }
+                        }
+
+                        return null;
+                    } finally {
+
+                        entryReader.close();
+                        entryInputStream.close();
+                    }
+                }
+            }
+        } finally {
+            try {
+                zipFile.close();
+            } catch (IOException ex) {
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param envVars
+     * @return
+     */
+    private File runServerAndDump(Properties envVars) throws Exception {
         String[] parms = new String[] { "start", SERVER_NAME };
-
-        Properties envVars = new Properties();
-        envVars.put("CDPATH", ".");
-
         ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
@@ -87,7 +192,7 @@ public class ServerStartJavaEnvironmentVariablesTest {
         server.waitForStringInLog("CWWKF0011I");
         server.resetStarted();
 
-        ProgramOutput dumpOut = server.serverDump();
+        server.serverDump();
 
         File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
 
@@ -101,43 +206,6 @@ public class ServerStartJavaEnvironmentVariablesTest {
         }
         assertTrue("The Dump File was not found", dumpFile.getPath().compareTo("") != 0);
 
-        ZipFile zipFile = new ZipFile(dumpFile);
-        try {
-            for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
-                ZipEntry entry = en.nextElement();
-                if (entry.getName().endsWith("EnvironmentVariables.txt")) {
-                    InputStream entryInputStream = zipFile.getInputStream(entry);
-                    BufferedReader entryReader = new BufferedReader(new InputStreamReader(entryInputStream));
-
-                    String[] firstLine = new String[2], secondLine = new String[2];
-                    while ((firstLine = entryReader.readLine().split("=", 2)) != null) {
-                        if (firstLine[0].startsWith("IBM_JAVA_OPTIONS")) {
-                            while ((secondLine = entryReader.readLine().split("=", 2)) != null) {
-                                if (secondLine[0].equals("OPENJ9_JAVA_OPTIONS")) {
-                                    Log.info(c, testName.getMethodName(), String.format("%-20s=%s", firstLine[0], firstLine[1]));
-                                    Log.info(c, testName.getMethodName(), String.format("%-20s=%s", secondLine[0], secondLine[1]));
-                                    assertTrue("IBM_JAVA_OPTIONS did not equal OPENJ9_JAVA OPTIONS", firstLine[1].equals(secondLine[1]));
-                                    break;
-                                }
-                            }
-                            assertTrue("OPENJ9_JAVA_OPTIONS was not found", secondLine[0].equals("OPENJ9_JAVA_OPTIONS"));
-                            break;
-                        }
-                    }
-                    assertTrue("IBM_JAVA_OPTIONS was not found", firstLine[0].equals("IBM_JAVA_OPTIONS"));
-
-                    entryReader.close();
-                    entryInputStream.close();
-                }
-            }
-        } finally {
-            try {
-                zipFile.close();
-                dumpFile.delete();
-            } catch (IOException ex) {
-            }
-        }
-
-        server.stopServer();
+        return dumpFile;
     }
 }

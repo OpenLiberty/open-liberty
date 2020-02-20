@@ -82,7 +82,7 @@ KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=Verificare che il valore API ut
 # 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=User API response string
 KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: Il valore per la chiave [{0}] nella risposta API utente Kubernetes \u00e8 previsto che sia di tipo {1}, ma il valore \u00e8 di tipo {2}. La risposta API utente completa \u00e8 [{3}].
 KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=Il valore per la chiave specificata non aveva il tipo corretto. La risposta dell'API utente potrebbe essere malformata o l'API utente ha restituito una risposta con una struttura imprevista.
-KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Controllare la struttura della risposta dall'API utente. Controllare la risposta dall'API utente per verificare se si \u00e8 verificato un errore.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Controllare la struttura della risposta dall'API utente. Controllare la risposta dall'API utente per determinare se si \u00e8 verificato un errore.
 
 # 0=Error string from user API response
 KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: L''API utente Kubernetes ha riscontrato un errore mentre stava elaborando il token di accesso. L''errore \u00e8 [{0}]
@@ -93,6 +93,31 @@ KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Controllare l'errore visualizzato 
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: La configurazione del login social [{0}] specifica [{1}] come valore per l''attributo [{2}], ma la risposta API utente non contiene una chiave [{1}]. Viene invece utilizzata la chiave [{3}], se presente nella risposta dell''API utente, per determinare il nome utente.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=La risposta dell'API utente non contiene una chiave che corrisponde al valore dell'attributo di configurazione specificato nel messaggio. La funzione login social tenta invece di utilizzare un'altra chiave.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verificare che l'attributo di configurazione specificato nel messaggio sia configurato correttamente. Assicurarsi che il valore dell'attributo di configurazione corrisponda alla voce nella risposta API utente che deve essere utilizzata come nome utente.
+
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La risposta dall''API utente account di servizio non pu\u00f2 essere elaborata: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Impossibile ottenere le informazioni sull'account di servizio perch\u00e9 si \u00e8 verificato un altro errore.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Se il messaggio contiene un altro messaggio di errore, consultare l'azione utente per tale messaggio. In alternativa, consultare i log del server per altri messaggi di errore che possono indicare dove si \u00e8 verificato l'altro errore.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: L''API utente ha restituito un codice di risposta non previsto [{0}]. Verificare che la richiesta all''API contenga tutte le informazioni richieste. La risposta dall''API \u00e8 [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=L'API utente non ha restituito il codice di stato previsto. Nella richiesta potrebbero mancare informazioni o la richiesta potrebbe non essere autorizzata.
+USER_API_RESPONSE_BAD_STATUS.useraction=Per ulteriori informazioni fare riferimento alla risposta API nel messaggio di errore. Verificare che la richiesta all'API contenga tutte le informazioni richieste. Verificare che tutti i token inclusi nella richiesta siano validi.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: Il contenuto della risposta non \u00e8 un oggetto JSON valido. La risposta completa \u00e8 {0}. {1}
+RESPONSE_NOT_JSON.explanation=La risposta deve essere un oggetto JSON valido.
+RESPONSE_NOT_JSON.useraction=Verificare che la richiesta sia stata inviata alla destinazione prevista. Assicurarsi che la destinazione prevista della richiesta sia in grado di restituire dati JSON. Controllare la risposta per verificare se sono incluse ulteriori informazioni.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: All''oggetto JSON fornito manca una chiave prevista: [{0}]. L''oggetto JSON completo \u00e8 [{1}].
+JSON_MISSING_KEY.explanation=La chiave specificata nel messaggio deve essere all'interno dei dati JSON. La chiave potrebbe essere mancante o essere in un'ubicazione non prevista.
+JSON_MISSING_KEY.useraction=Controllare i dati JSON per determinare se la chiave \u00e8 mancante.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Il valore per la chiave [{0}] nei dati JSON deve essere di tipo {1}, ma il valore \u00e8 di tipo {2}. I dati JSON sono [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=Il valore per la chiave specificata non aveva il tipo corretto. I dati JSON potrebbero avere un formato non corretto o una struttura imprevista.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Controllare la struttura dei dati JSON. Controllare i dati JSON per determinare se si \u00e8 verificato un errore.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configurazione del login social [{0}] \u00e8 stata elaborata correttamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configurazione del login social indicata \u00e8 stata elaborata correttamente.

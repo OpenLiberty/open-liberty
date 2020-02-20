@@ -25,10 +25,11 @@ task copyAnonymousDrivers(type: Copy) {
   from configurations.jdbcDrivers
   into new File(autoFvtDir, 'publish/shared/resources/anonymous')
   rename 'jcc.*.jar', 'driver0.jar'
-  rename 'derby.*.jar', 'driver1.jar'
-  rename 'ojdbc8_g.*.jar', 'driver2.jar'
-  rename 'postgresql.*.jar', 'driver3.jar'
-  rename 'mssql-jdbc.*.jar', 'driver4.jar'
+  rename 'derby-.*.jar', 'driver1.jar'
+  rename 'derbyclient-.*.jar', 'driver2.jar'
+  rename 'ojdbc8_g.*.jar', 'driver3.jar'
+  rename 'postgresql.*.jar', 'driver4.jar'
+  rename 'mssql-jdbc.*.jar', 'driver5.jar'
 }
  
 //Derby client jar
@@ -43,7 +44,7 @@ task addDerbyClient(type: Copy) {
 task copyAutomaticDerby(type: Copy) {
   shouldRunAfter jar
   from configurations.derby
-  into new File(autoFvtDir, 'publish/lib/AutomaticDerbyLibrary/')
+  into new File(autoFvtDir, 'publish/shared/resources/AutomaticDerbyLibrary/')
   rename 'derby-.*.jar', 'derby.jar'
 }
 

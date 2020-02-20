@@ -43,7 +43,10 @@
                      // BulkheadFutureTest
                      !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest") &&
                      
-                     // Note: BulkheadSynchRetryTest and BulkheadSynchTest look vulnerable to the same issues but we haven't seen them fail
+                     // BulkheadSyncRetryTest
+                     !method.getName().startsWith("testNoRetriesBulkhead") &&
+                     
+                     // Note: Other tests in BulkheadSynchRetryTest and BulkheadSynchTest look vulnerable to the same issues but we haven't seen them fail
                      
                      // RetryTest
                      !method.getName().startsWith("testRetryMaxDuration") &&

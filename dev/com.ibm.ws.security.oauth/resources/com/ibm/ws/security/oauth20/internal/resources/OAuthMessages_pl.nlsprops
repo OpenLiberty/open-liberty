@@ -457,6 +457,7 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Zainstaluj \u015brodowisko Java w wersj
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Znacznik o typie nadania [{0}] nie jest dozwolony. Dozwolone typy nadania: {1}.
 WRONG_TOKEN_GRANTTYPE.explanation=Znacznik nie jest poprawny, poniewa\u017c jego typ nadania nie jest dozwolony.
 WRONG_TOKEN_GRANTTYPE.useraction=U\u017cyj znacznika z dozwolonym typem nadania.
+
 # html title of logout page
 LOGOUT_PAGE_TITLE=Wylogowanie
 # html body of logout page

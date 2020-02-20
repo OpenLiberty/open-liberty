@@ -10,16 +10,26 @@
  *******************************************************************************/
 package mpRestClient12.headerPropagation;
 
-import javax.ws.rs.core.MultivaluedMap;
-
+import java.net.URI;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 
 public class CustomClientHeadersFactory implements ClientHeadersFactory {
 
     private static final Logger LOG = Logger.getLogger(CustomClientHeadersFactory.class.getName());
+
+    @Context
+    private UriInfo uriInfo;
+
+    @Inject
+    private Foo foo;
 
     @Override
     public MultivaluedMap<String, String> update(MultivaluedMap<String, String> incomingHeaders,
@@ -27,6 +37,17 @@ public class CustomClientHeadersFactory implements ClientHeadersFactory {
         MultivaluedMap<String, String> myHeaders = new MultivaluedHashMap<>();
         myHeaders.putSingle("HEADER_FROM_CUSTOM_CLIENTHEADERSFACTORY", "123");
         LOG.info("update - adding HEADER_FROM_CUSTOM_CLIENTHEADERSFACTORY=123");
+
+        if (uriInfo != null) {
+            URI uri = uriInfo.getAbsolutePath();
+            myHeaders.putSingle("INJECTED_URI_INFO", uri == null ? "null" : uri.toString());
+        }
+        LOG.info("UriInfo injected by @Context: " + uriInfo);
+
+        if (foo != null) {
+            myHeaders.putSingle("INJECTED_FOO", foo.getWord());
+        }
+        LOG.info("Foo injected by @Inject: " + foo);
         return myHeaders;
         
     }

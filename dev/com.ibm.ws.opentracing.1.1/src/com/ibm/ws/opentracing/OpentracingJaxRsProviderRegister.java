@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
 
     // DSR activation API ...
 
-    protected void activate(ComponentContext context) {
+    protected synchronized void activate(ComponentContext context) {
         setContainerFilter();
         setClientFilter();
     }
@@ -54,7 +54,7 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
     private OpentracingFilterHelper helper;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
+    protected synchronized void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;
         if (containerFilter != null) {
             containerFilter.setFilterHelper(helper);

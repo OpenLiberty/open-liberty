@@ -360,8 +360,10 @@ public class OidcClientHttpUtil {
     }
 
     private HttpClientBuilder createBuilder(boolean useSystemProperties) {
-        return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
+       // return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
+    
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification,
             String baUser, @Sensitive String baPassword, boolean useSystemPropertiesForHttpClientConnections) {

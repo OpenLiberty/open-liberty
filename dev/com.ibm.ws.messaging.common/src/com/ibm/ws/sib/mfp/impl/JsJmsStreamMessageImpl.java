@@ -440,7 +440,7 @@ final class JsJmsStreamMessageImpl extends JsJmsMessageImpl implements JsJmsStre
       Object item;
       int index = 0;
       StringBuilder buff = new StringBuilder();
-      String lineSeparator = System.getProperty("line.separator");
+      String lineSeparator = System.lineSeparator();
 
       /* Get the first item and append it to the buffer */
       item = getBodyList().get(index++);

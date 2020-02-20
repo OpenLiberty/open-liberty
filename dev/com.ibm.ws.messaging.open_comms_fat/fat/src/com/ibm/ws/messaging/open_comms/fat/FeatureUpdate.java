@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public class FeatureUpdate extends FATBase {
 
   @AllowedFFDC({"com.ibm.websphere.sib.exception.SIResourceException"
                ,"com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException"
+               ,"com.ibm.ws.sib.jfapchannel.JFapHeartbeatTimeoutException"
                ,"javax.resource.ResourceException"
                ,"javax.resource.spi.ResourceAllocationException"
                })
@@ -91,6 +92,7 @@ public class FeatureUpdate extends FATBase {
 
   @AllowedFFDC({"com.ibm.websphere.sib.exception.SIResourceException"
                ,"com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException"
+               ,"com.ibm.ws.sib.jfapchannel.JFapHeartbeatTimeoutException"
                ,"javax.resource.ResourceException"
                ,"javax.resource.spi.ResourceAllocationException"
                ,"com.ibm.wsspi.channelfw.exception.InvalidChainNameException"
@@ -98,6 +100,7 @@ public class FeatureUpdate extends FATBase {
   @Test
   public void testSSLFeatureUpdate() throws Exception {
     Util.TRACE_ENTRY();
+    // When the client AppServer stops it might observe FFDCs left behind by prior tests, hence the allowed FFDCs.
     client_.stopServer();
     client_.setServerConfigurationFile("SecurityDisabledClient.xml");
     client_.startServer();
@@ -126,7 +129,7 @@ public class FeatureUpdate extends FATBase {
     serv.setServerConfigurationFile(newServerXml);
 
     // wait for configuration update to complete
-    serv.waitForStringInLogUsingMark("CWWKG0017I");
+    serv.waitForStringInLogUsingMark("CWWKG001[78]I");
     Util.TRACE_EXIT();
   }
 }

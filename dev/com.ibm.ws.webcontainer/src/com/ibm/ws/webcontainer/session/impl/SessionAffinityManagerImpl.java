@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 
 import com.ibm.websphere.security.WSSecurityHelper;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.session.SameSiteCookie;
 import com.ibm.ws.session.SessionAffinityManager;
 import com.ibm.ws.session.SessionContext;
 import com.ibm.ws.session.SessionCrossoverStackTrace;
@@ -34,6 +35,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.wsspi.session.IStore;
 import com.ibm.wsspi.session.SessionAffinityContext;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
@@ -488,6 +490,13 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                                     com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.webcontainer.session.impl.SessionAffinityManagerImpl", "398", null);
                             } // end tWAS 755981 (Liberty - SCWI 135422)
                         }
+                    }
+                    // Get the appropriate SameSite value from the configuration and pass to the WebContainer using the RequestState 
+                    SameSiteCookie sessionSameSiteCookie = _smc.getSessionCookieSameSite();
+                    if (sessionSameSiteCookie != SameSiteCookie.DISABLED) {
+                        WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+                        String sameSiteCookieValue = sessionSameSiteCookie.getSameSiteCookieValue();
+                        requestState.setCookieAttribute(cookie.getName(), "SameSite=" + sameSiteCookieValue);
                     }
                     ((IExtendedResponse) response).addSessionCookie(cookie);
                 } else {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,50 +81,51 @@ public class JSF23WebSocketTests {
      */
     @Test
     public void testPushWebsocket() throws Exception {
-        WebClient webClient = new WebClient();
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
-        // Construct the URL for the test
-        String contextRoot = "WebSocket";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "PushWebSocketTest.jsf");
+            // Construct the URL for the test
+            String contextRoot = "WebSocket";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "PushWebSocketTest.jsf");
 
-        HtmlPage testPushWebSocketPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPushWebSocketPage = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testPushWebSocketPage.asText());
-        Log.info(c, name.getMethodName(), testPushWebSocketPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testPushWebSocketPage.asText());
+            Log.info(c, name.getMethodName(), testPushWebSocketPage.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(testPushWebSocketPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
-        assertTrue(testPushWebSocketPage.asText().contains("Called onopen listener"));
+            // Verify that the page contains the expected messages.
+            assertTrue(testPushWebSocketPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
+            assertTrue(testPushWebSocketPage.asText().contains("Called onopen listener"));
 
-        String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
+            String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
-        // Verify that the correct message is found in the logs
-        assertNotNull("Message not found. Channel was not opened succesfully.", result1 != null);
+            // Verify that the correct message is found in the logs
+            assertNotNull("Message not found. Channel was not opened succesfully.", result1);
 
-        // Get the form that we are dealing with
-        HtmlForm form = testPushWebSocketPage.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = testPushWebSocketPage.getFormByName("form1");
 
-        // Get the button to click
-        HtmlSubmitInput sendButton = form.getInputByName("form1:sendButton");
+            // Get the button to click
+            HtmlSubmitInput sendButton = form.getInputByName("form1:sendButton");
 
-        // Now click the button and get the resulted page.
-        HtmlPage resultPage = sendButton.click();
+            // Now click the button and get the resulted page.
+            HtmlPage resultPage = sendButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultPage.asText());
-        Log.info(c, name.getMethodName(), resultPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultPage.asText());
+            Log.info(c, name.getMethodName(), resultPage.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(resultPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
-        assertTrue(JSFUtils.waitForPageResponse(resultPage, "Message from the server via push!"));
-        assertTrue(JSFUtils.waitForPageResponse(resultPage, "Called onclose listener"));
+            // Verify that the page contains the expected messages.
+            assertTrue(resultPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
+            assertTrue(JSFUtils.waitForPageResponse(resultPage, "Message from the server via push!"));
+            assertTrue(JSFUtils.waitForPageResponse(resultPage, "Called onclose listener"));
 
-        String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
+            String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
-        // Verify that the correct message is found in the logs
-        assertNotNull("Message not found. Channel was not closed succesfully.", result2 != null);
+            // Verify that the correct message is found in the logs
+            assertNotNull("Message not found. Channel was not closed succesfully.", result2);
+        }
     }
 
     /**
@@ -136,51 +137,51 @@ public class JSF23WebSocketTests {
      */
     @Test
     public void testOpenAndCloseWebsocket() throws Exception {
-        WebClient webClient = new WebClient();
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
-        // Construct the URL for the test
-        String contextRoot = "WebSocket";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "OpenCloseWebSocketTest.jsf");
+            // Construct the URL for the test
+            String contextRoot = "WebSocket";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "OpenCloseWebSocketTest.jsf");
 
-        HtmlPage testOpenCloseWebSocketPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testOpenCloseWebSocketPage = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testOpenCloseWebSocketPage.asText());
-        Log.info(c, name.getMethodName(), testOpenCloseWebSocketPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testOpenCloseWebSocketPage.asText());
+            Log.info(c, name.getMethodName(), testOpenCloseWebSocketPage.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(testOpenCloseWebSocketPage.asText()
-                        .contains("JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false"));
+            // Verify that the page contains the expected messages.
+            assertTrue(testOpenCloseWebSocketPage.asText()
+                            .contains("JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false"));
 
-        // Get the form that we are dealing with
-        HtmlForm form = testOpenCloseWebSocketPage.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = testOpenCloseWebSocketPage.getFormByName("form1");
 
-        // Get the buttons that open and close the push connection
-        HtmlSubmitInput openButton = form.getInputByName("form1:openButton");
-        HtmlSubmitInput closeButton = form.getInputByName("form1:closeButton");
+            // Get the buttons that open and close the push connection
+            HtmlSubmitInput openButton = form.getInputByName("form1:openButton");
+            HtmlSubmitInput closeButton = form.getInputByName("form1:closeButton");
 
-        // Now click the open button and get the resulted page.
-        HtmlPage openPage = openButton.click();
-        webClient.waitForBackgroundJavaScript(5000);
+            // Now click the open button and get the resulted page.
+            HtmlPage openPage = openButton.click();
+            webClient.waitForBackgroundJavaScript(5000);
 
-        assertTrue(openPage.asText().contains("Called onopen listener"));
+            assertTrue(openPage.asText().contains("Called onopen listener"));
 
-        String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
+            String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
-        // Verify that the correct message is found in the logs
-        assertNotNull("Message not found. Channel was not opened succesfully.", result1 != null);
+            // Verify that the correct message is found in the logs
+            assertNotNull("Message not found. Channel was not opened succesfully.", result1);
 
-        // Now click the close button and get the resulted page.
-        HtmlPage closePage = closeButton.click();
-        webClient.waitForBackgroundJavaScript(5000);
+            // Now click the close button and get the resulted page.
+            HtmlPage closePage = closeButton.click();
+            webClient.waitForBackgroundJavaScript(5000);
 
-        assertTrue(closePage.asText().contains("Called onclose listener"));
+            assertTrue(closePage.asText().contains("Called onclose listener"));
 
-        String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
+            String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
-        // Verify that the correct message is found in the logs
-        assertNotNull("Message not found. Channel was not closed succesfully.", result2 != null);
+            // Verify that the correct message is found in the logs
+            assertNotNull("Message not found. Channel was not closed succesfully.", result2);
+        }
     }
-
 }

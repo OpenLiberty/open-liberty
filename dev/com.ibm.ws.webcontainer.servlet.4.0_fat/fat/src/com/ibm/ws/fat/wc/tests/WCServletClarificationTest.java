@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @Mode(TestMode.FULL)
 public class WCServletClarificationTest extends LoggingTest {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(WCServletClarificationTest.class.getName());
 
     @ClassRule
@@ -51,7 +50,6 @@ public class WCServletClarificationTest extends LoggingTest {
      */
     @Override
     protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 
@@ -65,7 +63,6 @@ public class WCServletClarificationTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         LOG.info("Setup : add TestSertvlet40 app to server if not already present");
 
         WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
@@ -79,8 +76,7 @@ public class WCServletClarificationTest extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-
-        SHARED_SERVER.getLibertyServer().stopServer(null);
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     protected String parseResponse(WebResponse wr, String beginText, String endText) {

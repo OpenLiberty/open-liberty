@@ -43,5 +43,5 @@
              maxFiles="10" 
              traceFileName="trace.log" 
              traceFormat="BASIC" 
-             traceSpecification="JPA=all:JPA_Transformer=all:JPA_BytecodeCapture=all:eclipselink=all:openjpa=all:JPAORM=all"/> 
+             traceSpecification="JPA=all:JavaPersistenceByteCode=all"/> 
 </server>

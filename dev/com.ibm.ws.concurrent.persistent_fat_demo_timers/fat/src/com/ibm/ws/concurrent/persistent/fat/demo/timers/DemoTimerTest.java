@@ -19,7 +19,6 @@ import java.sql.SQLException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -55,11 +54,20 @@ public class DemoTimerTest extends FATServletClient {
     @TestServlet(servlet = PersistentDemoTimersServlet.class, path = APP_NAME)
     public static LibertyServer server;
 
-    @ClassRule
+    // Not a ClassRule as Postgres needs to start with a specific command
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // In order to use two phase commit Postgres needs explicit permission to prepare transactions
+        // See documentation here: https://www.postgresql.org/docs/current/sql-prepare-transaction.html
+        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Postgres) {
+            testContainer.withCommand("postgres -c max_prepared_transactions=2");
+        }
+
+        //Start Database
+        testContainer.start();
+
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -69,6 +77,7 @@ public class DemoTimerTest extends FATServletClient {
         //Install App
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "ejb.timers");
 
+        //Start server
         server.startServer();
 
         //Application uses an XA datasource to perform database access.
@@ -93,5 +102,6 @@ public class DemoTimerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWWKC1501W", "CWWKC1511W");
+        testContainer.stop();
     }
 }

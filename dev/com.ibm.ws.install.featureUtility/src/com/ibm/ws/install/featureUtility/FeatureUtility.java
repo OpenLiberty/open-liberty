@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -75,6 +76,7 @@ public class FeatureUtility {
 
         this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
         Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
+        jsonsRequired.addAll(Arrays.asList("io.openliberty.features", "com.ibm.websphere.appserver.features"));
 
         this.esaFile = builder.esaFile;
         this.noCache = builder.noCache;
@@ -171,12 +173,8 @@ public class FeatureUtility {
         Set<String> featuresRequired = new HashSet<>();
 
         String openLibertyVersion = getLibertyVersion();
-        String groupId, artifactId, version, packaging;
+        String groupId, artifactId, version, packaging = null;
         for (String feature : featureNames) {
-            groupId = null;
-            artifactId = null;
-            version = null;
-            packaging = null;
             String[] mavenCoords = feature.split(":");
             switch(mavenCoords.length){
                 case 1: // artifactId
@@ -231,10 +229,10 @@ public class FeatureUtility {
         if(!"esa".equals(packaging)){
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_PACKAGING", feature));
         }
-        // block closed liberty features
-        if("com.ibm.websphere.appserver.features".equals(groupId)){
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
-        }
+//        // block closed liberty features
+//        if("com.ibm.websphere.appserver.features".equals(groupId)){
+//            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
+//        }
 
     }
 

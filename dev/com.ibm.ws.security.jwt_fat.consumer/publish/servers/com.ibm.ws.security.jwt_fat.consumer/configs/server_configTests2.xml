@@ -1,0 +1,31 @@
+
+<server>
+
+	<featureManager>
+		<feature>timedexit-1.0</feature>
+		<feature>jwt-1.0</feature>
+		<feature>jaxrs-2.0</feature>
+		
+	</featureManager>
+
+	<include location="${shared.config.dir}/fatTestPorts.xml" />
+
+	<include location="${shared.config.dir}/jwtConsumerClientApplication.xml" />
+ 
+	<jwtConsumer
+		id=""
+		issuer="testIssuer2"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKey"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="someOtherConsumer"
+		issuer="testIssuer1"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKey"
+	>
+	</jwtConsumer>
+
+</server>

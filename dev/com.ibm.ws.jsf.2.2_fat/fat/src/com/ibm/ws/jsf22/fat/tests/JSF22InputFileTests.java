@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.net.URL;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -23,13 +30,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -72,17 +72,15 @@ public class JSF22InputFileTests {
     /**
      * inputFile defect - This test copies a file to the ServerRoot (so we have a full path) and then
      * sets the file to be uploaded. It then attempts to upload the file, if it works, the word 'SUCCESS'
-     * will be present in the subsquently loaded page.
-     * 
+     * will be present in the subsequently loaded page.
+     *
      * Note: Even though we are copying the file to 'ServerRoot' that is just so we can figure out/know where
      * it is. This lets us create the path to it so it can be selected later on.
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testInputFile() throws Exception {
-        String projectRoot = System.getProperty("user.dir");
-
         jsfTestServer2.copyFileToLibertyServerRoot("JSF22InputFileCONTENT.txt");
 
         Log.info(c, name.getMethodName(), jsfTestServer2.getServerRoot());
@@ -94,17 +92,18 @@ public class JSF22InputFileTests {
             Log.info(c, name.getMethodName(), "File to Upload -->  Found file: " + fileToUpload.toString());
         }
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "fileUploadTest.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "fileUploadTest.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        HtmlFileInput fileInput = (HtmlFileInput) page.getElementById("form1:file1");
-        fileInput.setValueAttribute(fileToUpload.toString());
-        HtmlSubmitInput uploadButton = (HtmlSubmitInput) page.getElementById("form1:uploadButton");
+            HtmlFileInput fileInput = (HtmlFileInput) page.getElementById("form1:file1");
+            fileInput.setValueAttribute(fileToUpload.toString());
+            HtmlSubmitInput uploadButton = (HtmlSubmitInput) page.getElementById("form1:uploadButton");
 
-        HtmlPage page2 = uploadButton.click();
-        Log.info(c, name.getMethodName(), page2.asText());
-        assertTrue(page2.asText().contains("SUCCESS"));
+            HtmlPage page2 = uploadButton.click();
+            Log.info(c, name.getMethodName(), page2.asText());
+            assertTrue(page2.asText().contains("SUCCESS"));
+        }
     }
 }
