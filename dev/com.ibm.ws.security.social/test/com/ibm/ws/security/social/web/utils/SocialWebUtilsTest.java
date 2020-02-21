@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,6 +112,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
                 one(response).getWriter();
                 will(returnValue(writer));
                 one(webAppSecConfig).getSSORequiresSSL();
+                one(webAppSecConfig).getSameSiteCookie();
                 allowing(writer).println(with(any(String.class)));
                 allowing(response).setHeader(with(any(String.class)), with(any(String.class)));
                 one(response).setDateHeader("Expires", 0);
@@ -129,12 +130,13 @@ public class SocialWebUtilsTest extends CommonTestClass {
     public void createJavaScriptForRedirect() throws Exception {
         String scriptStart = "<script type=\"text/javascript\" language=\"javascript\">";
         String scriptEnd = "</script>";
-        String cookieRegex = scriptStart + ".*document\\.cookie=\"" + COOKIE_NAME + "=\"\\+encodeURI\\(loc\\)\\+\"; path=/;\".*" + scriptEnd;
+        String cookieRegex = scriptStart + ".*document\\.cookie=\"" + COOKIE_NAME + "=\"\\+encodeURI\\(loc\\)\\+\"; path=/;[^\"]*\".*" + scriptEnd;
         String windowReplaceRegex = scriptStart + ".*window\\.location\\.replace\\(\"" + LOGIN_URL + "\"\\).*" + scriptEnd;
 
         mockery.checking(new Expectations() {
             {
                 one(webAppSecConfig).getSSORequiresSSL();
+                one(webAppSecConfig).getSameSiteCookie();
             }
         });
 
