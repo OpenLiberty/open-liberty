@@ -66,12 +66,12 @@ class Server extends Base
       sc.bind(new InetSocketAddress("localhost",10000));
       report("Listening.");
       SocketChannel conn = sc.accept(); // blocking
-      report("A connection has been made.");
-      try { Thread.sleep(200); } catch (InterruptedException ie) {}
+      report("A connection has been made. Sleeping 1s then closing connection before write.");
+      try { Thread.sleep(1000); } catch (InterruptedException ie) {}
       report("Closing connection.");
       conn.close();
-      report("Connection closed.");
-      try { Thread.sleep(200); } catch (InterruptedException ie) {}
+      report("Connection closed. In 5s will stop listening.");
+      try { Thread.sleep(5000); } catch (InterruptedException ie) {}
       report("Stopping listening.");
       sc.close();
       report("Listening stopped.");
@@ -95,23 +95,23 @@ class Client extends Base
     Util.TRACE_ENTRY();
     try
     {
-      try { Thread.sleep(100); } catch (InterruptedException ie) {}
+      try { Thread.sleep(1000); } catch (InterruptedException ie) {}
       report("Connecting to server.");
       SocketChannel sc = SocketChannel.open();
       sc.connect(new InetSocketAddress("localhost",10000));
-      report("Connected.");
-      try { Thread.sleep(300); } catch (InterruptedException ie) {}
+      report("Connected. Waiting 3s before writing to what should be a closed socket.");
+      try { Thread.sleep(3000); } catch (InterruptedException ie) {}
       ByteBuffer b = ByteBuffer.allocate(17);
       int num_written = sc.write(b);
-      report(num_written+" byte(s) written to socket.");
-      try { Thread.sleep(200); } catch (InterruptedException ie) {}
+      report(num_written+" byte(s) written to socket. Waiting 1s before entering select.");
       sc.configureBlocking(false);
       Selector selector = Selector.open();
       SelectionKey key = sc.register(selector,SelectionKey.OP_READ);
+      try { Thread.sleep(1000); } catch (InterruptedException ie) {}
       boolean done = false;
       while (!done)
       {
-        report("Entering select.");
+        report("Entering select with 5s timeout.");
         int num_ready = selector.select(5000);
         report("Select returned "+num_ready+" ready socket channel(s).");
         if (0==num_ready) break;
