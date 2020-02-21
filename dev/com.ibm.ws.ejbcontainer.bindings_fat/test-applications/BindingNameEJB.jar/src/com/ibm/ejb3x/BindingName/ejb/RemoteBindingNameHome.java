@@ -9,16 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ejb3x.HomeBindingName.ejb;
-
-import com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBnd;
+package com.ibm.ejb3x.BindingName.ejb;
 
 /**
- * Home interface for Enterprise Bean: HomeBindingName
+ * Remote Home interface for Enterprise Bean: BindingName
  */
-public interface LocalHomeBindingNameHome extends javax.ejb.EJBLocalHome {
+public interface RemoteBindingNameHome extends javax.ejb.EJBHome {
     /**
-     * Creates a default instance of Session Bean: HomeBindingName
+     * Creates a default instance of Session Bean: BindingName
      */
-    public ComponentIDBnd create() throws javax.ejb.CreateException;
+    public BindingName create() throws javax.ejb.CreateException, java.rmi.RemoteException;
 }
