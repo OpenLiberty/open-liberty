@@ -353,31 +353,39 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
 
-        //Run libertyUberJar using java -jar command
-        Process proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
-
-        String line = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
-            line = reader.readLine();
-            Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
-            while (line != null) {
-                Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
-                if (line.contains("CWWKT0016I")) {
-                    break;
+        Process proc = null;
+        try {
+            //Run libertyUberJar using java -jar command
+            proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
+            String line = null;
+            boolean applicationStarted = false;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+                while ((line = reader.readLine()) != null) {
+                    Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
+                    if (line.contains("CWWKZ0001I")) {
+                        applicationStarted = true;
+                    } else if (line.contains("CWWKT0016I")) {
+                        break;
+                    } else if (line.contains("CWWKF0011I")) {
+                        //readline() gets hanged at the end of the log, when we do not get CWWKT0016I, so making sure that we check if the application was started before we reach this log.
+                        //CWWKF0011I: The server is ready to run a smarter planet.
+                        assertTrue("Application not started.", applicationStarted);
+                    }
                 }
-                line = reader.readLine();
+            }
+            assertTrue("Web application not available on default host", line.contains("CWWKT0016I") && line.contains("default_host"));
+
+            int start = line.indexOf("https");
+            String url = line.substring(start);
+
+            String result = sendHttpsGet(url, server);
+            assertNotNull(result);
+            assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
+        } finally {
+            if (proc != null) {
+                proc.destroy();
             }
         }
-        assertNotNull("The endpoint is not available", line);
-        assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
-
-        int start = line.indexOf("https");
-        String url = line.substring(start);
-
-        String result = sendHttpsGet(url, server);
-        assertNotNull(result);
-        assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
-        proc.destroy();
     }
 
     private String sendHttpsGet(String path, LibertyServer server) throws Exception {
@@ -428,11 +436,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
             @Override
             public void checkClientTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
 
             @Override
             public void checkServerTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
         } };
 
         return trustAllCerts;
