@@ -247,6 +247,12 @@ public final class ThreadPoolController {
     private final static int highCpu;
 
     /**
+     * The controller will not invoke hang resolution logic if the java process cpu exceeds
+     * this level.
+     */
+    private final static int lowCpu;
+
+    /**
      * The controller will not grow the pool if the ratio of the current work rate (tput) to the
      * current poolsize (threads) is below this threshold.
      */
@@ -364,6 +370,9 @@ public final class ThreadPoolController {
         String tpcHighCpu = getSystemProperty("tpcHighCpu");
         highCpu = (tpcHighCpu == null) ? 90 : Integer.parseInt(tpcHighCpu);
 
+        String tpcLowCpu = getSystemProperty("tpcLowCpu");
+        lowCpu = (tpcLowCpu == null) ? 5 : Integer.parseInt(tpcLowCpu);
+
         String tpcLowTputThreadsRatio = getSystemProperty("tpcLowTputThreadsRatio");
         lowTputThreadsRatio = (tpcLowTputThreadsRatio == null) ? 1.00 : Double.parseDouble(tpcLowTputThreadsRatio);
 
@@ -377,7 +386,7 @@ public final class ThreadPoolController {
         interval = (tpcInterval == null) ? 1500 : Integer.parseInt(tpcInterval);
 
         String tpcHangInterval = getSystemProperty("tpcHangInterval");
-        hangInterval = (tpcHangInterval == null) ? 250 : Integer.parseInt(tpcHangInterval);
+        hangInterval = (tpcHangInterval == null) ? 750 : Integer.parseInt(tpcHangInterval);
 
         String tpcCompareRange = getSystemProperty("tpcCompareRange");
         compareRange = (tpcCompareRange == null) ? 4 : Integer.parseInt(tpcCompareRange);
@@ -600,7 +609,7 @@ public final class ThreadPoolController {
      * Constructor
      *
      * @param executorServce the configured OSGi component that's associated with
-     *            the managed thread pool.
+     *                           the managed thread pool.
      */
     ThreadPoolController(ExecutorServiceImpl executorService, ThreadPoolExecutor pool) {
         this.executorService = executorService;
@@ -741,10 +750,10 @@ public final class ThreadPoolController {
      * number of active threads.
      *
      * @param activeThreads the number of active threads when the data was
-     *            collected
+     *                          collected
      *
-     * @param create whether to create and return a new throughput distribution
-     *            if none currently exists
+     * @param create        whether to create and return a new throughput distribution
+     *                          if none currently exists
      *
      * @return the data representing the throughput distribution for the
      *         specified number of active threads
@@ -766,7 +775,7 @@ public final class ThreadPoolController {
      * Determine whether or not the thread pool has been idle long enough to
      * pause the monitoring task.
      *
-     * @param threadPool a reference to the thread pool
+     * @param threadPool        a reference to the thread pool
      * @param intervalCompleted the tasks completed this interval
      *
      * @return true if the controller has been paused
@@ -794,7 +803,7 @@ public final class ThreadPoolController {
      * in the throughput distribution.
      *
      * @param distribution the throughput distribution associated with throughput
-     * @param throughput the observed throughput
+     * @param throughput   the observed throughput
      *
      * @return true if the thread pool has been reset due to an aberrant
      *         workload
@@ -878,11 +887,11 @@ public final class ThreadPoolController {
      * the current size of the pool and the number of consecutive times we've
      * observed an empty thread pool queue will cause the score to change.
      *
-     * @param poolSize the current thread pool size
-     * @param forecast the throughput forecast at the current thread pool size
+     * @param poolSize   the current thread pool size
+     * @param forecast   the throughput forecast at the current thread pool size
      * @param throughput the throughput of the current interval
-     * @param cpuHigh - whether current cpu usage exceeds the 'high' threshold
-     * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
+     * @param cpuHigh    - whether current cpu usage exceeds the 'high' threshold
+     * @param lowTput    an indicator that tput is low relative to poolsize, and queue is empty
      *
      * @return the shrink score
      */
@@ -1026,11 +1035,11 @@ public final class ThreadPoolController {
      * pool with up to compareRange more threads will have higher throughput than
      * the forecast.
      *
-     * @param poolSize the current thread pool size
-     * @param forecast the throughput forecast at the current thread pool size
+     * @param poolSize   the current thread pool size
+     * @param forecast   the throughput forecast at the current thread pool size
      * @param throughput the throughput of the current interval
-     * @param cpuHigh - whether current cpu usage exceeds the 'high' threshold
-     * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
+     * @param cpuHigh    - whether current cpu usage exceeds the 'high' threshold
+     * @param lowTput    an indicator that tput is low relative to poolsize, and queue is empty
      *
      * @return the grow score
      */
@@ -1151,10 +1160,10 @@ public final class ThreadPoolController {
      * Force an adjustment to the thread pool size if the change wouldn't shrink the
      * pool to zero or grow it beyond {@link maxThreads}.
      *
-     * @param poolSize the current pool size
+     * @param poolSize             the current pool size
      * @param calculatedAdjustment the adjustment calculated by grow and shrink scores
-     * @param intervalCompleted the number of tasks completed in the current interval
-     * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
+     * @param intervalCompleted    the number of tasks completed in the current interval
+     * @param lowTput              an indicator that tput is low relative to poolsize, and queue is empty
      *
      * @return the pool adjustment size to use
      */
@@ -1201,7 +1210,7 @@ public final class ThreadPoolController {
     /**
      * Adjust the size of the thread pool.
      *
-     * @param poolSize the current pool size
+     * @param poolSize       the current pool size
      * @param poolAdjustment the change to make to the pool
      *
      * @return the new pool size
@@ -1286,20 +1295,24 @@ public final class ThreadPoolController {
                 return "monitoring paused";
             }
 
-            if (resolveHang(deltaCompleted, queueEmpty, poolSize)) {
-                /**
-                 * Sleep the controller thread briefly after increasing the poolsize
-                 * then update task count before returning to reduce the likelihood
-                 * of a false negative hang check next cycle due to a few non-hung
-                 * tasks executing on the newly created threads
-                 */
-                try {
-                    Thread.sleep(10);
-                } catch (Exception ex) {
-                    // do nothing
+            // only invoke hang resolution logic in 'hung idle' case,
+            // not 'hung busy'
+            if (!cpuHigh && (processCpuUtil < lowCpu)) {
+                if (resolveHang(deltaCompleted, queueEmpty, poolSize)) {
+                    /**
+                     * Sleep the controller thread briefly after increasing the poolsize
+                     * then update task count before returning to reduce the likelihood
+                     * of a false negative hang check next cycle due to a few non-hung
+                     * tasks executing on the newly created threads
+                     */
+                    try {
+                        Thread.sleep(10);
+                    } catch (Exception ex) {
+                        // do nothing
+                    }
+                    completedWork = threadPool.getCompletedTaskCount();
+                    return "action take to resolve hang";
                 }
-                completedWork = threadPool.getCompletedTaskCount();
-                return "action take to resolve hang";
             }
 
             if (checkTargetPoolSize(poolSize)) {
@@ -1577,7 +1590,7 @@ public final class ThreadPoolController {
      * Evaluates a ThroughputDistribution for possible removal from the historical dataset.
      *
      * @param priorStats - ThroughputDistribution under evaluation
-     * @param forecast - expected throughput at the current poolSize
+     * @param forecast   - expected throughput at the current poolSize
      * @return - true if priorStats should be removed
      */
     private boolean pruneData(ThroughputDistribution priorStats, double forecast) {
@@ -1657,9 +1670,9 @@ public final class ThreadPoolController {
      * to shrink. The final outcome is probabilistic, not deterministic.
      *
      * @param smallerPoolSize - smaller poolSize for comparison
-     * @param largerPoolSize - larger poolSize for comparison
+     * @param largerPoolSize  - larger poolSize for comparison
      * @param smallerPoolTput - tput (historical or expected) of smaller poolSize
-     * @param largerPoolTput - tput (historical or expected) of larger poolSize
+     * @param largerPoolTput  - tput (historical or expected) of larger poolSize
      * @return - true if the ratios and coinFlips favor shrinking
      */
     private boolean leanTowardShrinking(Integer smallerPoolSize, int largerPoolSize,
