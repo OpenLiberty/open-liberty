@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,6 +124,14 @@ public class DatabaseContainerFactory {
 	                break;
 	            case Postgres:
 	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
+	            	//This allows postgres by default to participate in XA transactions (2PC). 
+	            	//Documentation on the Prepare Transaction action in postgres: https://www.postgresql.org/docs/9.3/sql-prepare-transaction.html
+
+	            	//If a test is failing that is using XA connections check to see if postgres is failing due to:
+	            	// ERROR: prepared transaction with identifier "???" does not exist STATEMENT: ROLLBACK PREPARED '???'
+	            	// then this value may need to be increased. 
+	            	Method withCommand = cont.getClass().getMethod("withCommand", String.class);
+	            	withCommand.invoke(cont, "postgres -c max_prepared_transactions=5");
 	                break;
 	            case SQLServer:
 	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
