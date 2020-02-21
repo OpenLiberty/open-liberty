@@ -2626,6 +2626,10 @@ public class LibertyServer implements LogMonitorClient {
      * Also, this will stop the server log contents being lost (over written) in a restart case.
      */
     public void postStopServerArchive() throws Exception {
+        postStopServerArchive(serverToUse, serverRoot);
+    }
+
+    public void postStopServerArchive(String serverToUse, String serverRoot) throws Exception {
         final String method = "postStopServerArchive";
         Log.entering(c, method);
 

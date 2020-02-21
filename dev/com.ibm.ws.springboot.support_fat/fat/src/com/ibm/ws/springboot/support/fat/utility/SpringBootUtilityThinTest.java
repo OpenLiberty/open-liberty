@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat.utility;
 
-import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -56,12 +56,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.springboot.support.fat.CommonWebServerTests;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@Mode(FULL)
 public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
     private static String SPRING_BOOT_20_BASE_THIN = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + SPRING_APP_TYPE;
@@ -126,6 +124,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         String methodName = testName.getMethodName();
         if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
             features.add("transportSecurity-1.0");
+            features.add("timedExit-1.0");
         }
         return features;
     }
@@ -353,31 +352,79 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
 
-        //Run libertyUberJar using java -jar command
-        Process proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
+        Process proc = null;
+        try {
+            //Run libertyUberJar using java -jar command
+            proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
 
-        String line = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
-            line = reader.readLine();
-            Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
-            while (line != null) {
-                Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
-                if (line.contains("CWWKT0016I")) {
-                    break;
-                }
-                line = reader.readLine();
+            AtomicReference<String> line = new AtomicReference<>();
+            AtomicReference<String> extractedWLPLocation = new AtomicReference<>();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+                Thread t = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String l = null;
+
+                        try {
+                            while (true) {
+                                if (!reader.ready()) {
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        break;
+                                    }
+                                } else {
+                                    l = reader.readLine();
+                                    if (l.contains("Extracting files")) {
+                                        extractedWLPLocation.set(l);
+                                    } else if (l.contains("CWWKT0016I")) {
+                                        line.set(l);
+                                        break;
+                                    }
+                                }
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                t.setDaemon(true);
+                t.start();
+                t.join(600000);
+                t.interrupt();
+            }
+
+            String WLPlocation = extractedWLPLocation.get();
+            if (WLPlocation != null) {
+                String serverLocation = WLPlocation.substring(WLPlocation.indexOf("/")) + "/" + "usr/servers";
+                saveExtractedServer(serverLocation);
+            }
+
+            String msg = line.get();
+
+            assertNotNull("Web application not available", msg);
+
+            assertTrue("Web application not available on default host", msg.contains("default_host"));
+
+            int start = msg.indexOf("https");
+            String url = msg.substring(start);
+
+            String result = sendHttpsGet(url, server);
+            assertNotNull(result);
+            assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
+
+        } finally {
+            if (proc != null) {
+                proc.destroy();
             }
         }
-        assertNotNull("The endpoint is not available", line);
-        assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
+    }
 
-        int start = line.indexOf("https");
-        String url = line.substring(start);
-
-        String result = sendHttpsGet(url, server);
-        assertNotNull(result);
-        assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
-        proc.destroy();
+    private void saveExtractedServer(String serverLocation) throws Exception {
+        server.postStopServerArchive("testDefaultHostWithAppPortRunLibertyUberJarWithSSL", serverLocation);
     }
 
     private String sendHttpsGet(String path, LibertyServer server) throws Exception {
@@ -428,11 +475,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
             @Override
             public void checkClientTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
 
             @Override
             public void checkServerTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
         } };
 
         return trustAllCerts;
@@ -565,4 +614,5 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             }
         }
     }
+
 }
