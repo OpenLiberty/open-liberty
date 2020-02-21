@@ -118,7 +118,7 @@ public class JSONFieldsTest {
         setUp(server_env_omit);
         //List<String> lines = server_env_omit.findStringsInFileInLibertyServerRoot("\"message\"", MESSAGE_LOG);
         //assertTrue("The message field name was not omitted in messages.log.", lines.size() == 0);
-        assertNull("The message field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"loglevel\""));
+        assertNotNull("The loglevel field name was not omitted in messages.log.", server_env_omit.waitForStringInLogUsingMark("^.*\"module\":((?!\"loglevel\").)*$"));
     }
 
     /*
@@ -139,7 +139,7 @@ public class JSONFieldsTest {
         setUp(server_bootstrap_omit);
         //List<String> lines = server_bootstrap_omit.findStringsInFileInLibertyServerRoot("\"loglevel\"", MESSAGE_LOG);
         //assertTrue("The message field name was not omitted in messages.log.", lines.size() == 0);
-        assertNull("The message field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"loglevel\""));
+        assertNotNull("The loglevel field name was not omitted in messages.log.", server_bootstrap_omit.waitForStringInLogUsingMark("^.*\"module\":((?!\"loglevel\").)*$"));
     }
 
     /*
@@ -173,10 +173,10 @@ public class JSONFieldsTest {
 
         setServerConfiguration(true, "ibm_datetime:", server_xml);
         server_xml.setMarkToEndOfLog();
-        assertNull("The message field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
+        assertNull("The ibm_datetime field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
 
         setServerConfiguration(true, "", server_xml);
-        assertNotNull("The message field name was not re-added in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
+        assertNotNull("The ibm_datetime field name was not re-added in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
     }
 
     @Test
@@ -269,13 +269,13 @@ public class JSONFieldsTest {
         server_xml.setMarkToEndOfLog();
 
         //check both fields are omitted
-        assertNull("The message field names were not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\".*\"ibm_datetime\""));
+        assertNull("The message and ibm_datetime field names were not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\".*\"ibm_datetime\""));
 
         //add datetime back
         setServerConfiguration(true, "message:", server_xml);
 
         //check datetime is added back
-        assertNotNull("The message field name was not re-added in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
+        assertNotNull("The ibm_datetime field name was not re-added in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
     }
 
     @Test
@@ -287,7 +287,7 @@ public class JSONFieldsTest {
         server_xml.setMarkToEndOfLog();
 
         //check datetime is removed for liberty_message
-        assertNull("The message field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"type\":\"liberty_message\".*\"ibm_datetime\""));
+        assertNull("The ibm_datetime field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"type\":\"liberty_message\".*\"ibm_datetime\""));
 
     }
 
