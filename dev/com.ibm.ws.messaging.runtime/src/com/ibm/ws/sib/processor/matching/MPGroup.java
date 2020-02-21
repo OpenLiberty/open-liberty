@@ -11,7 +11,6 @@
 package com.ibm.ws.sib.processor.matching;
 
 import java.security.Principal;
-import java.security.acl.Group;
 import java.util.List;
 import java.util.Enumeration;
 
@@ -25,7 +24,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class MPGroup extends MPPrincipal implements Group
+public class MPGroup extends MPPrincipal
 {
   private static final TraceComponent tc =
     SibTr.register(MPGroup.class, SIMPConstants.MP_TRACE_GROUP, SIMPConstants.RESOURCE_BUNDLE);
