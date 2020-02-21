@@ -16,6 +16,7 @@ Subsystem-Name: MicroProfile Metrics 2.3
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.metrics.common, \
  com.ibm.ws.microprofile.metrics.2.3, \
+ com.ibm.ws.microprofile.metrics.cdi.2.3, \
  com.ibm.ws.microprofile.metrics.private, \
  com.ibm.ws.microprofile.metrics.public
 kind=beta
