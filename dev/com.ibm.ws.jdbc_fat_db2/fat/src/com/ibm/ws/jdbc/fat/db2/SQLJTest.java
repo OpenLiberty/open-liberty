@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,11 +26,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Db2Container;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -52,12 +49,7 @@ public class SQLJTest extends FATServletClient {
     @Server("com.ibm.ws.sqlj.fat")
     public static LibertyServer server;
 
-    @ClassRule
-    public static Db2Container db2 = new Db2Container()
-                    .acceptLicense()
-                    // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
-                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25))
-                    .withLogConsumer(SQLJTest::log);
+    public static Db2Container db2 = FATSuite.db2;
 
     public static final String JEE_APP = "sqljapp";
     public static final String SERVLET_NAME = "SQLJTestServlet";
@@ -73,13 +65,6 @@ public class SQLJTest extends FATServletClient {
     private static final String EVENT_PS_EXEC = "websphere.datasource.psExecute";
 
     private static boolean threadLocalContextEnabled = false;
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(SQLJTest.class, "db2", msg);
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {

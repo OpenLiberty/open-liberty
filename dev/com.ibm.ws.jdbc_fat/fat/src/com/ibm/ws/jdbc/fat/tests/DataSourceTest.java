@@ -23,7 +23,6 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -32,6 +31,7 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.OnlyIfDataSourceProperties;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
+import com.ibm.ws.jdbc.fat.FATSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -40,7 +40,6 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
@@ -56,8 +55,7 @@ public class DataSourceTest extends FATServletClient {
     private static final String dsdfat = "dsdfat";
     private static final String dsdfat_global_lib = "dsdfat_global_lib";
 
-    @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     //Server used for ConfigTest.java and DataSourceTest.java
     @Server("com.ibm.ws.jdbc.fat")

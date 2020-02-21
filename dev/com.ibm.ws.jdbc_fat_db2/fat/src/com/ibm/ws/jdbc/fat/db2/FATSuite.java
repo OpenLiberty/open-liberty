@@ -10,11 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
 
+import java.time.Duration;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.Db2Container;
+import org.testcontainers.containers.output.OutputFrame;
 
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
@@ -23,9 +31,30 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 SQLJTest.class
 })
 public class FATSuite {
+
+    public static Db2Container db2 = new Db2Container()
+                    .acceptLicense()
+                    // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
+                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25))
+                    .withLogConsumer(FATSuite::log);
+
+    private static void log(OutputFrame frame) {
+        String msg = frame.getUtf8String();
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        Log.info(FATSuite.class, "db2", msg);
+    }
+
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+
+        db2.start();
+    }
+
+    @AfterClass
+    public static void afterSuite() {
+        db2.stop();
     }
 }

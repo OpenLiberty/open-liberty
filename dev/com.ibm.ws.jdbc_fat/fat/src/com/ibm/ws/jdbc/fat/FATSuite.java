@@ -11,16 +11,19 @@
 package com.ibm.ws.jdbc.fat;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jdbc.fat.tests.ConfigTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceJaasTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceTest;
 
+import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
@@ -30,6 +33,8 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 DataSourceJaasTest.class
 })
 public class FATSuite {
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
@@ -38,5 +43,12 @@ public class FATSuite {
         //Add TestLoginModule.jar to shared.resources.dir
         JavaArchive TestLoginModule = ShrinkHelper.buildJavaArchive("TestLoginModule", "loginmodule");
         ShrinkHelper.exportArtifact(TestLoginModule, "publish/shared/resources/loginmodule/");
+
+        testContainer.start();
+    }
+
+    @AfterClass
+    public static void afterSuite() {
+        testContainer.stop();
     }
 }
