@@ -22,9 +22,9 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <application location="derbyApp.war"/>
+    <application id="derbyApp" location="derbyApp.war"/>
 
-    <application location="otherApp.ear"/>
+    <application id="otherApp" location="otherApp.ear"/>
 
     <dataSource id="DefaultDataSource" ibm.internal.nonship.function="true">
       <jdbcDriver javax.sql.DataSource="jdbc.driver.proxy.ProxyDataSource" libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
@@ -59,21 +59,20 @@
     <library id="ibm.internal.simulate.no.library.do.not.ship"/>
 
     <!-- TODO replace with classProviderRef once implemented -->
-    <library id="temp">
-      <file name="${server.config.dir}/tempLoginModule.jar"/>
+    <library id="ignore">
+      <file name="${server.config.dir}/ignoreThisUselessLibrary.jar"/>
     </library>
-    <javaPermission codebase="${server.config.dir}/tempLoginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
 
     <jaasLoginContextEntry id="app1loginEntry" name="app1login">
-      <loginModule className="loginmod.LoadFromAppLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+      <loginModule className="loginmod.LoadFromAppLoginModule" classProviderRef="otherApp" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
     </jaasLoginContextEntry>
 
     <jaasLoginContextEntry id="webapploginEntry" name="webapplogin">
-      <loginModule className="web.derby.LoadFromWebAppLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+      <loginModule className="web.derby.LoadFromWebAppLoginModule" classProviderRef="derbyApp" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
     </jaasLoginContextEntry>
 
     <jaasLoginContextEntry id="web1loginEntry" name="web1login">
-      <loginModule className="web.other.LoadFromWebModLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+      <loginModule className="web.other.LoadFromWebModLoginModule" classProviderRef="otherApp" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
     </jaasLoginContextEntry>
 
     <!-- permissions for Derby in the app -->
@@ -101,6 +100,9 @@
 
     <!-- permissions for Mini driver to utilize dynamic proxy -->
     <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <!-- permissions for login modules -->
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
 
     <variable name="onError" value="FAIL"/>
 </server>

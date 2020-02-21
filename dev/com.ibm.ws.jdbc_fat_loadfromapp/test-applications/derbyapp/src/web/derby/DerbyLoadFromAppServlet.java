@@ -12,17 +12,21 @@ package web.derby;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
+import javax.security.auth.login.LoginException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
@@ -30,6 +34,9 @@ import componenttest.app.FATDatabaseServlet;
 public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     @Resource
     private DataSource defaultDataSource;
+
+    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromOtherApp", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromOtherApp;
 
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromWebApp;
@@ -69,14 +76,35 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     }
 
     /**
-     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application is used to authenticate
+     * testLoginModuleFromOtherApp - verify that a login module that is packaged within another application can be used to authenticate
+     * a data source that is defined in the current web application, where its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromOtherApp() throws Exception {
+        try (Connection con = sldsLoginModuleFromOtherApp.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            assertEquals("appuser", metadata.getUserName());
+        }
+    }
+
+    /**
+     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application CANNOT be used to authenticate
      * to a data source when its resource reference specifies to use that login module.
      */
+    @AllowedFFDC({ "javax.security.auth.login.LoginException", "javax.resource.ResourceException" }) // TODO remove if we decide to enable this scenario
     @Test
     public void testLoginModuleFromWebApp() throws Exception {
         try (Connection con = sldsLoginModuleFromWebApp.getConnection()) {
             DatabaseMetaData metadata = con.getMetaData();
-            assertEquals("webappuser", metadata.getUserName());
+            fail("authenticated as user " + metadata.getUserName());
+            // TODO if we decide to enable this path, then switch to the following assert and remove the catch block
+            // assertEquals("webappuser", metadata.getUserName());
+        } catch (SQLException x) {
+            Throwable cause = x;
+            while (cause != null && !(cause instanceof LoginException))
+                cause = cause.getCause();
+            if (!(cause instanceof LoginException))
+                throw x;
         }
     }
 
