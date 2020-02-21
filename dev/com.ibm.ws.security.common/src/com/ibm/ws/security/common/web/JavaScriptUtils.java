@@ -221,7 +221,7 @@ public class JavaScriptUtils {
                 cookieProperties.put("secure", null);
             }
             String sameSite = webAppSecurityConfig.getSameSiteCookie();
-            if (sameSite != null) {
+            if (sameSite != null && !"Disabled".equalsIgnoreCase(sameSite)) {
                 cookieProperties.put("SameSite", sameSite);
                 if ("None".equalsIgnoreCase(sameSite)) {
                     cookieProperties.put("secure", null);
