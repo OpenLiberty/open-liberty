@@ -56,6 +56,7 @@ public class WCSameSiteCookieAttributeTests {
 
     private static final Logger LOG = Logger.getLogger(WCSameSiteCookieAttributeTests.class.getName());
     private static final String APP_NAME = "SameSiteTest";
+    private static final String APP_NAME_DUPLICATE = "SameSiteDuplicateParamTest";
 
     @Rule
     public TestName name = new TestName();
@@ -67,6 +68,7 @@ public class WCSameSiteCookieAttributeTests {
     public static void before() throws Exception {
         // Create the SameSiteTest.war application
         ShrinkHelper.defaultDropinApp(sameSiteServer, APP_NAME + ".war", "samesite.servlets", "samesite.filters");
+        ShrinkHelper.defaultDropinApp(sameSiteServer, APP_NAME_DUPLICATE + ".war", "samesite.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         sameSiteServer.startServer(WCSameSiteCookieAttributeTests.class.getSimpleName() + ".log");
@@ -3966,6 +3968,393 @@ public class WCSameSiteCookieAttributeTests {
             assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
             assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
         }
+    }
+
+    /**
+     * Drive a requests to a Servlet that adds the following cookies:
+     *
+     * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+     * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
+     *
+     * The following context parameter is configured in the web.xml:
+     * <context-param>
+     * <param-name>SameSiteCookies_Lax</param-name>
+     * <param-value>cookieOne,cookieTwo</param-value>
+     * </context-param>
+     *
+     * Verify that the Set-Cookie header is correct.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_ContextParameter_Lax() throws Exception {
+        String expectedHeader = "Set-Cookie: cookieOne=cookieOne; SameSite=Lax";
+        String expectedHeader2 = "Set-Cookie: cookieTwo=cookieTwo; SameSite=Lax";
+        String expectedResponse = "Welcome to the SameSiteAddCookieServlet! Adding two Cookies";
+        boolean headerFound = false;
+        boolean headerFound2 = false;
+        boolean splitSameSiteHeaderFound = false;
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (headerValue.equals(expectedHeader)) {
+                    headerFound = true;
+                } else if (headerValue.equals(expectedHeader2)) {
+                    headerFound2 = true;
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                              responseText.equals(expectedResponse));
+            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader2, headerFound2);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        }
+    }
+
+    /**
+     * Drive a requests to a Servlet that adds the following cookie:
+     *
+     * Cookie cookieOne = new Cookie("cookieThree", "cookieThree");
+     *
+     * The following context-param is configured in the web.xml:
+     * <context-param>
+     * <param-name>SameSiteCookies_Strict</param-name>
+     * <param-value>cookieThree</param-value>
+     * </context-param>
+     *
+     * Verify that the Set-Cookie header is correct.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_ContextParameter_Strict() throws Exception {
+        String expectedHeader = "Set-Cookie: cookieThree=cookieThree; SameSite=Strict";
+        String expectedResponse = "Welcome to the SameSiteAddCookieServlet! Adding a Cookie with the following name: cookieThree";
+        boolean headerFound = false;
+        boolean splitSameSiteHeaderFound = false;
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieNameToAdd=cookieThree";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (headerValue.equals(expectedHeader)) {
+                    headerFound = true;
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                              responseText.equals(expectedResponse));
+            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        }
+    }
+
+    /**
+     * Drive a requests to a Servlet that adds the following cookie:
+     *
+     * Cookie cookieOne = new Cookie("cookieFour", "cookieFour");
+     *
+     * The following context-param is configured in the web.xml:
+     * <context-param>
+     * <param-name>SameSiteCookies_None</param-name>
+     * <param-value>cookieFour,*</param-value>
+     * </context-param>
+     *
+     * Verify that the Set-Cookie header is correct.
+     *
+     * Also verify that the Secure attribute is added.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_ContextParameter_None() throws Exception {
+        String expectedHeader = "Set-Cookie: cookieFour=cookieFour; Secure; SameSite=None";
+        String expectedResponse = "Welcome to the SameSiteAddCookieServlet! Adding a Cookie with the following name: cookieFour";
+        boolean headerFound = false;
+        boolean splitSameSiteHeaderFound = false;
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieNameToAdd=cookieFour";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (headerValue.equals(expectedHeader)) {
+                    headerFound = true;
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                              responseText.equals(expectedResponse));
+            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        }
+    }
+
+    /**
+     * Drive a requests to a Servlet that adds the following cookie:
+     *
+     * Cookie cookieOne = new Cookie("cookieFive", "cookieFive");
+     *
+     * The following context-param is configured in the web.xml:
+     * <context-param>
+     * <param-name>SameSiteCookies_None</param-name>
+     * <param-value>cookieFour,*</param-value>
+     * </context-param>
+     *
+     * Verify that the Set-Cookie header is correct.
+     *
+     * Also verify that the Secure attribute is added.
+     *
+     * Adding a Cookie with a name not explicitly defined in the context-param should
+     * match the wildcard that is specified.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_ContextParameter_None_Wildcard() throws Exception {
+        String expectedHeader = "Set-Cookie: cookieFive=cookieFive; Secure; SameSite=None";
+        String expectedResponse = "Welcome to the SameSiteAddCookieServlet! Adding a Cookie with the following name: cookieFive";
+        boolean headerFound = false;
+        boolean splitSameSiteHeaderFound = false;
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieNameToAdd=cookieFive";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (headerValue.equals(expectedHeader)) {
+                    headerFound = true;
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                              responseText.equals(expectedResponse));
+            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        }
+    }
+
+    /**
+     * Drive a requests to a Servlet that adds the following cookie:
+     *
+     * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+     *
+     * Configure the server to mark this Cookie as SameSite=Lax and verify.
+     * <samesite strict="cookieOne"/> -> within the <httpEndpoint/>
+     *
+     * The web.xml contains the following context-param:
+     * <context-param>
+     * <param-name>SameSiteCookies_Lax</param-name>
+     * <param-value>cookieOne,cookieTwo</param-value>
+     * </context-param>
+     *
+     * Verify that the Set-Cookie header is correct.
+     *
+     * Ensure that the context-param configuration takes priority over the
+     * <httpEndpoint/> configuration. The SameSite attribute should be set to Lax
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_ContextParameter_Priority_HttpEndpoint() throws Exception {
+        String expectedHeader = "Set-Cookie: cookieOne=cookieOne; SameSite=Lax";
+        String expectedResponse = "Welcome to the SameSiteAddCookieServlet! Adding cookieOne";
+        boolean headerFound = false;
+        boolean splitSameSiteHeaderFound = false;
+
+        sameSiteServer.saveServerConfiguration();
+
+        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+        httpEndpoint.getSameSite().setStrict("cookieOne");
+
+        sameSiteServer.setMarkToEndOfLog();
+        sameSiteServer.updateServerConfiguration(configuration);
+
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+
+        LOG.info("Updated server configuration: " + configuration);
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (headerValue.equals(expectedHeader)) {
+                    headerFound = true;
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                              responseText.equals(expectedResponse));
+            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        } finally {
+            sameSiteServer.setMarkToEndOfLog();
+            sameSiteServer.restoreServerConfiguration();
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        }
+    }
+
+    /**
+     * <!-- Defining cookieOne twice, the duplicate entry should just be ignored. -->
+     * <context-param>
+     * <param-name>SameSiteCookies_Lax</param-name>
+     * <param-value>*,cookieOne</param-value>
+     * </context-param>
+     *
+     * <context-param>
+     * <param-name>SameSiteCookies_Strict</param-name>
+     * <param-value>*,cookieOne</param-value>
+     * </context-param>
+     *
+     * <!-- Defining * twice, the duplicate entry should just be ignored. -->
+     * <context-param>
+     * <param-name>SameSiteCookies_None</param-name>
+     * <param-value>cookieOne</param-value>
+     * </context-param>
+     *
+     * Verify the following Warnings in the logs:
+     * [2/21/20, 23:59:55:818 EST] 00000060 com.ibm.ws.webcontainer.webapp W CWWWC0003W: A cookieOne cookie name with the existing SameSite attribute value Lax is configured with
+     * the None new value. No SameSite attribute is added for this cookie.
+     *
+     * [2/21/20, 23:59:55:819 EST] 00000060 com.ibm.ws.webcontainer.webapp W CWWWC0003W: A * cookie name with the existing SameSite attribute value Lax is configured with the
+     * Strict new value. No SameSite attribute is added for this cookie.
+     *
+     * [2/21/20, 23:59:55:819 EST] 00000060 com.ibm.ws.webcontainer.webapp W CWWWC0004W: A cookieOne cookie name that is configured for the Strict SameSite attribute value was
+     * previously identified as a duplicate. No SameSite attribute is added for this cookie.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_ContextParameter_Duplicates() throws Exception {
+        // TODO
+        // no need for a request
+        // we should just use the application element and add the application and remove
+        // it dynamically here otherwise we'll get warnings for every test run on the server
     }
 
     /*
