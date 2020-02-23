@@ -2308,6 +2308,15 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             }
         }
         else {
+            /*
+             * The application can specify a context-param to specify the Session Cookie name.
+             * The <httpSession cookieSameSite="Strict/Lax/None"/> can also be configured.
+             * Calling prepSameSiteAttribute will read the context-params and set the Session Cookie name
+             * with the value specified if there in the WebContainerRequestState overriding the <httpSession/>
+             * configuration that was set. In otherwords the application level configuration takes priority
+             * over the <httpSession/> server wide configuration.
+             */
+            prepSameSiteAttribute(cookie);
             _response.addCookie(cookie);
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
