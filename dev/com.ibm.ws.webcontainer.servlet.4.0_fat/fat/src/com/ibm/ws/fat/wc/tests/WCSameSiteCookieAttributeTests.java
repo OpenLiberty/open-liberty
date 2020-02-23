@@ -3543,7 +3543,7 @@ public class WCSameSiteCookieAttributeTests {
                 LOG.info("\n" + headerValue);
 
                 if (header.getName().equals("Set-Cookie") && header.getValue().contains("uniqueSessionIdCookieName=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                    LOG.info("\n" + "Set-Cookie header for uniqueSessionIdCookieName found.");
                     if (header.getValue().contains("SameSite=Lax")) {
                         headerFound = true;
                     }
@@ -3965,6 +3965,178 @@ public class WCSameSiteCookieAttributeTests {
             assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
             assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
             assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+        }
+    }
+
+    /**
+     * Drive a request to Servlet that creates a session.
+     *
+     * Configure the <httpSession sameSiteCookie="Strict"/>
+     * The following is configured in the web.xml:
+     *
+     * <context-param>
+     * <param-name>SameSiteCookies_Lax</param-name>
+     * <param-value>JSESSIONID</param-value>
+     * </context-param>
+     *
+     * Ensure that the application level configuration takes priority over the
+     * <httpSession/> configuration.
+     *
+     * Ensure that the SET-COOKIE header contains the correct SameSite Attribute
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_Context_Parameter_SessionCookieLax_HttpSession_Strict() throws Exception {
+        boolean headerFound = false;
+        boolean splitSameSiteHeaderFound = false;
+        String expectedResponse = "Welcome to the SameSiteSessionCreationServlet!";
+
+        sameSiteServer.saveServerConfiguration();
+
+        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        configuration.getHttpSession().setCookieSameSite("Strict");
+
+        sameSiteServer.setMarkToEndOfLog();
+        sameSiteServer.updateServerConfiguration(configuration);
+
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+
+        LOG.info("Updated server configuration: " + configuration);
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                    if (header.getValue().contains("SameSite=Lax")) {
+                        headerFound = true;
+                    }
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                              responseText.equals(expectedResponse));
+            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        } finally {
+            sameSiteServer.setMarkToEndOfLog();
+            sameSiteServer.restoreServerConfiguration();
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        }
+    }
+
+    /**
+     * Drive a request to Servlet that creates a session.
+     *
+     * Configure the <httpSession cookieSameSite="Strict" cookieName="uniqueSessionIdCookieName"/>
+     * The following is configured in the web.xml:
+     *
+     * <context-param>
+     * <param-name>SameSiteCookies_Lax</param-name>
+     * <param-value>uniqueSessionIdCookieName</param-value>
+     * </context-param>
+     *
+     * Ensure that the application level configuration takes priority over the
+     * <httpSession/> configuration.
+     *
+     * Ensure that the SET-COOKIE header contains the correct SameSite Attribute
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSite_Context_Parameter_SessionCookieLax_HttpSession_Strict_UniqueCookieName() throws Exception {
+        boolean headerFound = false;
+        boolean splitSameSiteHeaderFound = false;
+        String expectedResponse = "Welcome to the SameSiteSessionCreationServlet!";
+
+        sameSiteServer.saveServerConfiguration();
+
+        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        configuration.getHttpSession().setCookieSameSite("Strict");
+
+        sameSiteServer.setMarkToEndOfLog();
+        sameSiteServer.updateServerConfiguration(configuration);
+
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+
+        LOG.info("Updated server configuration: " + configuration);
+
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
+
+        LOG.info("Target host : " + target.toURI());
+
+        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+
+        LOG.info("requestUri : " + requestUri);
+
+        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+
+            String responseText = EntityUtils.toString(response.getEntity());
+            Header[] headers = response.getHeaders("Set-Cookie");
+            LOG.info("\n" + "Set-Cookie headers contained in the response:");
+
+            // Verify that the expected Set-Cookie header was found by the client.
+            String headerValue;
+            for (Header header : headers) {
+                headerValue = header.toString();
+                LOG.info("\n" + headerValue);
+                if (header.getName().equals("Set-Cookie") && header.getValue().contains("uniqueSessionIdCookieName=")) {
+                    LOG.info("\n" + "Set-Cookie header for uniqueSessionIdCookieName found.");
+                    if (header.getValue().contains("SameSite=Lax")) {
+                        headerFound = true;
+                    }
+                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                    splitSameSiteHeaderFound = true;
+                }
+            }
+
+            LOG.info("\n" + "Response Text:");
+            LOG.info("\n" + responseText);
+
+            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                              responseText.equals(expectedResponse));
+            Assert.assertTrue("The uniqueSessionIdCookieName Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
+        } finally {
+            sameSiteServer.setMarkToEndOfLog();
+            sameSiteServer.restoreServerConfiguration();
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
         }
     }
 
