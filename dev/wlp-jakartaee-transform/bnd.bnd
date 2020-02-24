@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-include= jar:${fileuri;${repo;com.ibm.ws:jakartaee-transformer;0.0.4}}!/META-INF/MANIFEST.MF
+
+-includeresource: \
+    @${repo;com.ibm.ws:jakartaee-transformer;0.0.4}!/!META-INF/maven/*
+
+Main-Class: com.ibm.ws.jakarta.transformer.JakartaTransformer
+
+Bundle-Name: Liberty Jakartaee Transformer
+Bundle-SymbolicName: wlp-jakartaeeTransformer
+Bundle-Description: Unshipped bundle that houses jakartaaee transformer for use during build
+
+Export-Package: com.ibm.ws.jakarta.transformer.*;version="1.0"
+Private-Package: \
+    com.ibm.ws.jakarta.transformer.*
+
+-plugin.build.bnd.plugins:
+-pluginpath:
+
+globalize: false
+
+instrument.disabled: true
+
+publish.wlp.jar.disabled: true
+
+tool.project: true
+
+generate.replacement: false
+
+-buildpath: \
+	com.ibm.ws:jakartaee-transformer;strategy=exact;version=0.0.4,\
+	biz.aQute.bnd:biz.aQute.bndlib;version=4.3.1,\
+    commons-cli:commons-cli;version=1.4,\
+    org.slf4j:slf4j-simple;version=1.7.29
