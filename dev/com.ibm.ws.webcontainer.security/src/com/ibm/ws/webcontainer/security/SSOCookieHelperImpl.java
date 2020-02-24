@@ -152,10 +152,13 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if (domainName != null) {
             ssoCookie.setDomain(domainName);
         }
+
         String sameSite = config.getSameSiteCookie();
-        // call WebContainerRequestState code to set the attribute SameSite
-        WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
-        requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
+        if (sameSite != null && !sameSite.equals("Disabled")) {
+            WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+            requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
+        }
+       
 
         return ssoCookie;
     }
