@@ -41,8 +41,8 @@ public class TopicAclTraversalResults
       SIMPConstants.RESOURCE_BUNDLE);
 
   // Special security Groups
-  MPGroup everyone = new MPGroup(BusSecurityConstants.EVERYONE);
-  MPGroup allAuthenticated = new MPGroup(BusSecurityConstants.ALLAUTHENTICATED);
+  private MPGroupXXX everyone = new MPGroupXXX(BusSecurityConstants.EVERYONE);
+  private MPGroupXXX allAuthenticated = new MPGroupXXX(BusSecurityConstants.ALLAUTHENTICATED);
   /**Lists of user ACLs
    */
   public List levelUsersAllowedToSubscribe = new ArrayList();
@@ -99,7 +99,7 @@ public class TopicAclTraversalResults
              accumUsersAllowedToPublish.clear();
              accumGroupAllowedToPublish.clear();
            }
-           else if(principal instanceof MPGroup)
+           else if(principal instanceof MPGroupXXX)
            {
              levelGroupAllowedToPublish.add(principal);
            }
@@ -116,7 +116,7 @@ public class TopicAclTraversalResults
                accumUsersAllowedToSubscribe.clear();
                accumGroupAllowedToSubscribe.clear();
            }
-           else if(principal instanceof MPGroup)
+           else if(principal instanceof MPGroupXXX)
            {
              levelGroupAllowedToSubscribe.add(principal);
            }
@@ -200,7 +200,7 @@ public class TopicAclTraversalResults
               Iterator itr = accumGroupAllowedToPublish.iterator();
               while (itr.hasNext())
               {
-                MPGroup group = (MPGroup)itr.next();
+                MPGroupXXX group = (MPGroupXXX)itr.next();
                 if(group.isMember(user))
                 {
                   allowed = true;
@@ -249,7 +249,7 @@ public class TopicAclTraversalResults
            
               while (itr.hasNext())
               {
-                MPGroup group = (MPGroup)itr.next();
+                MPGroupXXX group = (MPGroupXXX)itr.next();
                 if(group.isMember(user))
                 {
                   allowed = true;

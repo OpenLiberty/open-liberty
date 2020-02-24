@@ -24,10 +24,10 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class MPGroup extends MPPrincipal
+public class MPGroupXXX extends MPPrincipal
 {
   private static final TraceComponent tc =
-    SibTr.register(MPGroup.class, SIMPConstants.MP_TRACE_GROUP, SIMPConstants.RESOURCE_BUNDLE);
+    SibTr.register(MPGroupXXX.class, SIMPConstants.MP_TRACE_GROUP, SIMPConstants.RESOURCE_BUNDLE);
 
   /* Output source info */
   static {
@@ -35,13 +35,13 @@ public class MPGroup extends MPPrincipal
       SibTr.debug(tc, "Source info: @(#)SIB/ws/code/sib.processor.impl/src/com/ibm/ws/sib/processor/matching/MPGroup.java, SIB.processor, WASX.SIB, ff1246.02 1.11");
   }
 
-    public MPGroup(String nm)
+    public MPGroupXXX(String nm)
     {
       super(nm.toLowerCase());
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
       {
-        SibTr.entry(tc, "MPGroup", nm);
-        SibTr.exit(tc, "MPGroup", this);
+        SibTr.entry(tc, "MPGroupXXX", nm);
+        SibTr.exit(tc, "MPGroupXXX", this);
       }
     }
 
