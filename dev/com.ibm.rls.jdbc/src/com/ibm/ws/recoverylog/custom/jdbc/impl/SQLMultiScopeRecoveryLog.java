@@ -1280,7 +1280,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * <p>
      * This implementation of the RecoveryLog interface uses a simple counter
      * '_closesRequired' to track the number of times openLog has been called
-     * and consiquentially the number of times closeLog must be invoked to
+     * and consequentially the number of times closeLog must be invoked to
      * 'fully' close the recovery log.
      * </p>
      *
@@ -1290,7 +1290,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     public synchronized void closeLog() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "closeLog", new Object[] { _reservedConn, Integer.valueOf(_closesRequired), this });
-        boolean success = false;
+        boolean successfulSQL = false;
+        boolean successfulConnection = true;
 
         try {
             if (_closesRequired > 0) {
@@ -1300,31 +1301,49 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     // The reserved connection must not be null if the server is stopping.
                     if (_reservedConn == null) {
                         if (_serverStopping) {
-                            Tr.audit(tc, "WTRN0100E: " +
-                                         "Server stopping but no reserved connection when closing SQL RecoveryLog " + _logName + " for server " + _serverName);
-                            InternalLogException ile = new InternalLogException();
-                            throw ile;
+                            // How we react depends on whether the new locking scheme is in play and whether we are closing the home server or a peer.
+                            // In the peer case a home server may have re-acquired its logs
+                            if (_useNewLockingScheme && !Configuration.localFailureScope().equals(_failureScope)) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
+                                successfulConnection = false;
+                            } else {
+                                Tr.audit(tc, "WTRN0100E: " +
+                                             "Server stopping but no reserved connection when closing SQL RecoveryLog " + _logName + " for server " + _serverName);
+                                InternalLogException ile = new InternalLogException();
+                                throw ile;
+                            }
                         }
                     } else {
                         initialReservedConnection = true;
                         // Test whether the reserved connection is closed already.
                         if (_reservedConn.isClosed()) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Reserved Connection is already closed");
-                            // The caller has a reasonable expectation that the logs have been keypointed on a real or logical close
-                            // if that hasn't happened we really need to let them know - throw InternalLogException
-                            // we'll let the caller determin whether this is worth FFDC'ing
-                            InternalLogException ile = new InternalLogException();
-                            markFailed(ile);
-                            if (tc.isEntryEnabled())
-                                Tr.exit(tc, "closeLog called when _closesRequired is " + _closesRequired, ile);
-                            throw ile;
+                            // How we react depends on whether we are closing the home server or a peer. In the peer case a home
+                            // server may have re-acquired its logs
+                            if (_useNewLockingScheme && !Configuration.localFailureScope().equals(_failureScope)) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
+                                successfulConnection = false;
+                            } else {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Reserved Connection is already closed");
+                                // The caller has a reasonable expectation that the logs have been keypointed on a real or logical close
+                                // if that hasn't happened we really need to let them know - throw InternalLogException
+                                // we'll let the caller determin whether this is worth FFDC'ing
+                                InternalLogException ile = new InternalLogException();
+                                markFailed(ile);
+                                if (tc.isEntryEnabled())
+                                    Tr.exit(tc, "closeLog called when _closesRequired is " + _closesRequired, ile);
+                                throw ile;
+                            }
                         }
                     }
 
-                    internalKeypoint();
-                    success = true;
-                    _closesRequired--;
+                    if (successfulConnection) {
+                        internalKeypoint();
+                        successfulSQL = true;
+                        _closesRequired--;
+                    }
                 } catch (LogClosedException exc) {
                     FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.closeLog", "948", this);
                     InternalLogException ile = new InternalLogException(exc);
@@ -1383,7 +1402,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             }
 
         } finally {
-            if (!success) {
+            if (!successfulSQL) {
                 _closesRequired--;
                 if (_reservedConn != null)
                     try {
@@ -1958,6 +1977,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         Connection conn = null;
         boolean sqlSuccess = false;
+        boolean successfulConnection = true;
         SQLException currentSqlEx = null;
         Throwable nonTransientException = null;
 
@@ -1970,13 +1990,21 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (!_serverStopping)
                     conn = _theDS.getConnection();
                 else {
-                    Tr.audit(tc, "WTRN0100E: " +
-                                 "Server stopping but no reserved connection when forcing SQL RecoveryLog " + _logName + " for server " + _serverName);
-                    InternalLogException ile = new InternalLogException("Server stopping, no reserved connection", null);
-                    markFailed(ile);
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "forceSections", "InternalLogException");
-                    throw ile;
+                    // How we react depends on whether the new locking scheme is in play and whether we are closing the home server or a peer.
+                    // In the peer case a home server may have re-acquired its logs
+                    if (_useNewLockingScheme && !Configuration.localFailureScope().equals(_failureScope)) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
+                        successfulConnection = false;
+                    } else {
+                        Tr.audit(tc, "WTRN0100E: " +
+                                     "Server stopping but no reserved connection when forcing SQL RecoveryLog " + _logName + " for server " + _serverName);
+                        InternalLogException ile = new InternalLogException("Server stopping, no reserved connection", null);
+                        markFailed(ile);
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "forceSections", "InternalLogException");
+                        throw ile;
+                    }
                 }
             } else {
                 if (tc.isDebugEnabled())
@@ -1986,16 +2014,18 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             // This next piece of logic uses the HA Lock scheme to detect whether another process has taken over this server's
             // logs. Use RDBMS SELECT FOR UPDATE to lock table and access the HA Lock row in the table.
-            initialIsolation = prepareConnectionForBatch(conn);
+            if (successfulConnection) {
+                initialIsolation = prepareConnectionForBatch(conn);
 
-            // This will confirm that this server owns this log and will invalidate the log if not.
-            takeHADBLock(conn);
+                // This will confirm that this server owns this log and will invalidate the log if not.
+                takeHADBLock(conn);
 
-            // We can go ahead and write to the Database
-            executeBatchStatements(conn);
+                // We can go ahead and write to the Database
+                executeBatchStatements(conn);
 
-            conn.commit();
-            sqlSuccess = true;
+                conn.commit();
+                sqlSuccess = true;
+            }
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
@@ -2078,13 +2108,21 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Connection was NULL");
-                Tr.audit(tc, "WTRN0100E: " +
-                             "Cannot recover from SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
-                             + nonTransientException);
-                markFailed(nonTransientException);
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "forceSections", "InternalLogException");
-                throw new InternalLogException(nonTransientException);
+                // How we react depends on whether the new locking scheme is in play and whether we are closing the home server or a peer.
+                // In the peer case a home server may have re-acquired its logs
+                if (_useNewLockingScheme && !Configuration.localFailureScope().equals(_failureScope)) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
+                    successfulConnection = false;
+                } else {
+                    Tr.audit(tc, "WTRN0100E: " +
+                                 "Cannot recover from SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
+                                 + nonTransientException);
+                    markFailed(nonTransientException);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "forceSections", "InternalLogException");
+                    throw new InternalLogException(nonTransientException);
+                }
             }
 
             // Ensure that we have cleared the replayable caches
@@ -3711,6 +3749,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @see com.ibm.ws.recoverylog.spi.LivingRecoveryLog#heartBeat()
      */
     @Override
+    @FFDCIgnore({ LogClosedException.class })
     public void heartBeat() throws LogClosedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "heartBeat", new Object[] { Integer.valueOf(_closesRequired), this });
@@ -4001,11 +4040,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             Tr.debug(tc, "Timestamp is STALE for " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
                                          + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
 
-                        // Ownership is stale, claim the logs by updating the server name.
+                        // Ownership is stale, claim the logs by updating the server name and timestamp.
+                        long fir1 = System.currentTimeMillis();
                         updateString = "UPDATE " +
                                        _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
                                        " SET SERVER_NAME = '" + _currentProcessServerName +
-                                       "' WHERE RU_ID = -1";
+                                       "', RUSECTION_ID = " + fir1 +
+                                       " WHERE RU_ID = -1";
                         reportString = "Claim peer logs from a peer server using - ";
                     } else {
                         if (tc.isDebugEnabled())
