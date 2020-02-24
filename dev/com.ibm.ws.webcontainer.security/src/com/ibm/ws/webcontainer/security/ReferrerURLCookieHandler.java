@@ -107,9 +107,9 @@ public class ReferrerURLCookieHandler extends URLHandler {
         String sameSite = webAppSecConfig.getSameSiteCookie();
         if (sameSite != null && !sameSite.equals("Disabled")) {
             WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
-            requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
-        }  
-        
+            requestState.setCookieAttributes(cookieName, "SameSite=" + sameSite);
+        }
+
         return c;
     }
 
