@@ -258,7 +258,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             getRequiredConfigAttribute(props, KEY_clientId);
             getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
             getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            getRequiredConfigAttribute(props, KEY_scope);
+            //getRequiredConfigAttribute(props, KEY_scope);  // removing as not all providers require it. 
         }
     }
 
