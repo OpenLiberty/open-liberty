@@ -49,6 +49,7 @@ public class JDBCLoadFromAppTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive derbyApp = ShrinkWrap.create(WebArchive.class, "derbyApp.war")
                         .addPackage("web.derby") //
+                        .addAsWebInfResource(new File("test-applications/derbyapp/resources/WEB-INF/ibm-ejb-jar-bnd.xml"))
                         .addAsWebInfResource(new File("test-applications/derbyapp/resources/WEB-INF/ibm-web-bnd.xml"))
                         .addAsLibrary(new File("publish/shared/resources/derby/derby.jar")) //
                         .addPackage("jdbc.driver.proxy"); // delegates to the Derby JDBC driver
@@ -63,9 +64,11 @@ public class JDBCLoadFromAppTest extends FATServletClient {
                         .addPackage("jdbc.driver.proxy"); // delegates to the "mini" JDBC driver
 
         JavaArchive ejb1JAR = ShrinkWrap.create(JavaArchive.class, "ejb1.jar")
+                        .addAsManifestResource(new File("test-applications/otherapp/resources/ejb.first/META-INF/ibm-ejb-jar-bnd.xml"))
                         .addPackage("ejb.first");
 
         JavaArchive ejb2JAR = ShrinkWrap.create(JavaArchive.class, "ejb2.jar")
+                        .addAsManifestResource(new File("test-applications/otherapp/resources/ejb.second/META-INF/ibm-ejb-jar-bnd.xml"))
                         .addPackage("ejb.second");
 
         JavaArchive lmJAR = ShrinkWrap.create(JavaArchive.class, "top-level-login-modules.jar")

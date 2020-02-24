@@ -119,21 +119,20 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
         }
     }
 
-    // TODO determine expectations around loading login modules from EJBs.
-    // Currently not expecting to load login modules from EJB modules, but what about being able to load login modules
-    // that are packaged elsewhere within the application when on an EJB code path?
-
+    /**
+     * testLoginModuleFromEJBModule1 - verify that a login module that is packaged within an EJB module
+     * is used to authenticate to a data source when its resource reference specifies to use that login module.
+     */
     @Test
     public void testLoginModuleFromEJBModule1() throws Exception {
         Executor bean = InitialContext.doLookup("java:global/otherApp/ejb1/FirstBean!java.util.concurrent.Executor");
         bean.execute(() -> {
             try {
-                System.out.println("EJB1 loads: " + Class.forName("loginmod.LoadFromAppLoginModule"));
                 DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
                 try (Connection con = ds.getConnection()) {
                     DatabaseMetaData mdata = con.getMetaData();
                     String userName = mdata.getUserName();
-                    assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+                    assertEquals("ejb1user", userName);
                 }
             } catch (RuntimeException x) {
                 throw x;
@@ -143,17 +142,20 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
         });
     }
 
+    /**
+     * testLoginModuleFromEJBModule2 - verify that a login module that is packaged within an EJB module
+     * is used to authenticate to a data source when its resource reference specifies to use that login module.
+     */
     @Test
     public void testLoginModuleFromEJBModule2() throws Exception {
         Executor bean = InitialContext.doLookup("java:global/otherApp/ejb2/SecondBean!java.util.concurrent.Executor");
         bean.execute(() -> {
             try {
-                System.out.println("EJB2 loads: " + Class.forName("loginmod.LoadFromAppLoginModule"));
                 DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
                 try (Connection con = ds.getConnection()) {
                     DatabaseMetaData mdata = con.getMetaData();
                     String userName = mdata.getUserName();
-                    assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+                    assertEquals("ejb2user", userName);
                 }
             } catch (RuntimeException x) {
                 throw x;

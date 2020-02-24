@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
@@ -71,6 +72,29 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     @Test
     public void testLoadDerbyClass() throws Exception {
         Class.forName("org.apache.derby.jdbc.EmbeddedDataSource");
+    }
+
+    /**
+     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application can be used
+     * by an EJB within the web application to authenticate to a data source when its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromEJBInWebApp() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/derbyApp/BeanInWebApp!java.util.concurrent.Executor");
+        bean.execute(() -> {
+            try {
+                DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
+                try (Connection con = ds.getConnection()) {
+                    DatabaseMetaData mdata = con.getMetaData();
+                    String userName = mdata.getUserName();
+                    assertEquals("webappuser", userName);
+                }
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new RuntimeException(x);
+            }
+        });
     }
 
     /**

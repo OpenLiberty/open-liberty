@@ -10,7 +10,7 @@
  -->
 <server>
     <featureManager>
-      <feature>appSecurity-2.0</feature>
+      <feature>appSecurity-3.0</feature>
       <feature>componenttest-1.0</feature>
       <feature>ejbLite-3.2</feature>
       <feature>jca-1.7</feature>
@@ -73,6 +73,14 @@
 
     <jaasLoginContextEntry id="web1loginEntry" name="web1login">
       <loginModule className="web.other.LoadFromWebModLoginModule" classProviderRef="otherApp" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="ejb1loginEntry" name="ejb1login">
+      <loginModule className="ejb.first.FirstEJBModLoginModule" classProviderRef="otherApp" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="ejb2loginEntry" name="ejb2login">
+      <loginModule className="ejb.second.SecondEJBModLoginModule" classProviderRef="otherApp" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
     </jaasLoginContextEntry>
 
     <!-- permissions for Derby in the app -->
