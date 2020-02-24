@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
@@ -211,9 +210,12 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         sb.append("\n<SCRIPT type=\"TEXT/JAVASCRIPT\" language=\"JavaScript\">\n");
         sb.append("document.cookie = '");
         sb.append(cookieName + "=' + encodeURIComponent(window.location.href) + '; Path=/;"); // session cookie
-        JavaScriptUtils jsUtils = new JavaScriptUtils();
-        String cookieProps = jsUtils.createHtmlCookiePropertiesString(jsUtils.getWebAppSecurityConfigCookieProperties());
-        sb.append(cookieProps);
+        WebAppSecurityConfig webAppSecurityConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (webAppSecurityConfig != null) {
+            if (webAppSecurityConfig.getSSORequiresSSL()) {
+                sb.append(" secure;");
+            }
+        }
         sb.append("';\n");
         sb.append("</SCRIPT>\n");
 

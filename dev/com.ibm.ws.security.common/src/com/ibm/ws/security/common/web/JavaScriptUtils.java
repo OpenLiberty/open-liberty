@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,7 +124,7 @@ public class JavaScriptUtils {
         return wrapInJavascriptHtmlTags(javascript);
     }
 
-    public String createJavaScriptHtmlCookieString(String name, String value, Map<String, String> cookieProperties, boolean htmlEncodeNameAndValue) {
+    private String createJavaScriptHtmlCookieString(String name, String value, Map<String, String> cookieProperties, boolean htmlEncodeNameAndValue) {
         String result = "document.cookie=\"";
         if (htmlEncodeNameAndValue) {
             result += getHtmlCookieString(name, value, cookieProperties);
@@ -143,15 +143,11 @@ public class JavaScriptUtils {
             return "";
         }
         String cookieString = createHtmlCookiePropertyString(name, value, htmlEncodeNameAndValue);
-        if (cookieProperties == null) {
-            cookieProperties = new HashMap<String, String>();
-        }
-        cookieProperties.putAll(getWebAppSecurityConfigCookieProperties());
         cookieString += createHtmlCookiePropertiesString(cookieProperties);
         return cookieString;
     }
 
-    public String createHtmlCookiePropertiesString(Map<String, String> props) {
+    private String createHtmlCookiePropertiesString(Map<String, String> props) {
         String propertyString = "";
         if (props == null) {
             return propertyString;
@@ -196,49 +192,19 @@ public class JavaScriptUtils {
         if (cookieProperties == null) {
             result += createHtmlCookiePropertiesString(getDefaultCookieProperties());
         } else {
-            cookieProperties = addWebAppSecConfigPropsToCookieProperties(cookieProperties);
             result += createHtmlCookiePropertiesString(cookieProperties);
         }
         result += "\";";
         return result;
     }
 
-    public Map<String, String> getDefaultCookieProperties() {
+    private Map<String, String> getDefaultCookieProperties() {
         Map<String, String> cookieProperties = new HashMap<String, String>();
         cookieProperties.put("path", "/");
-        cookieProperties.putAll(getWebAppSecurityConfigCookieProperties());
-        return cookieProperties;
-    }
-
-    public Map<String, String> getWebAppSecurityConfigCookieProperties() {
-        return getWebAppSecurityConfigCookieProperties(getWebAppSecurityConfig());
-    }
-
-    public Map<String, String> getWebAppSecurityConfigCookieProperties(WebAppSecurityConfig webAppSecurityConfig) {
-        Map<String, String> cookieProperties = new HashMap<String, String>();
+        WebAppSecurityConfig webAppSecurityConfig = getWebAppSecurityConfig();
         if (webAppSecurityConfig != null) {
             if (webAppSecurityConfig.getSSORequiresSSL()) {
                 cookieProperties.put("secure", null);
-            }
-            String sameSite = webAppSecurityConfig.getSameSiteCookie();
-            if (sameSite != null) {
-                cookieProperties.put("SameSite", sameSite);
-                if ("None".equalsIgnoreCase(sameSite)) {
-                    cookieProperties.put("secure", null);
-                }
-            }
-        }
-        return cookieProperties;
-    }
-
-    private Map<String, String> addWebAppSecConfigPropsToCookieProperties(Map<String, String> cookieProperties) {
-        if (cookieProperties == null) {
-            cookieProperties = new HashMap<String, String>();
-        }
-        Map<String, String> webAppSecProps = getWebAppSecurityConfigCookieProperties();
-        for (Entry<String, String> entry : webAppSecProps.entrySet()) {
-            if (!cookieProperties.containsKey(entry.getKey())) {
-                cookieProperties.put(entry.getKey(), entry.getValue());
             }
         }
         return cookieProperties;
