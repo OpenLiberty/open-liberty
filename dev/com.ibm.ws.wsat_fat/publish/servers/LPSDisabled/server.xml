@@ -17,6 +17,7 @@
         heuristicRetryInterval="5"
         heuristicRetryWait="0"
         acceptHeuristicHazard="false"
+        totalTranLifetimeTimeout="30s"
     />
 	
     <logging
@@ -27,5 +28,4 @@
       traceFormat="BASIC"
     />
 	
-	<transaction totalTranLifetimeTimeout="30s"></transaction>
 </server>
