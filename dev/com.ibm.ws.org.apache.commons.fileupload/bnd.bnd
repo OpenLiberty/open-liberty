@@ -14,6 +14,8 @@
 
 instrument.disabled: true
 
+jakartaeeMe: true
+
 -buildpath: \
 	commons-fileupload:commons-fileupload;strategy=exact;version=1.3.3,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest
