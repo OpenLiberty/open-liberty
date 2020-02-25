@@ -35,121 +35,189 @@ import java.nio.ByteBuffer;
 import java.util.Set;
 import java.util.Iterator;
 
-class Base extends Thread
+class Server extends Thread
 {
-  long    base;
-  String  id;
-
-  public Base(long b,String i) 
-  {
-    base = b; 
-    id = i;
-  }
+  public boolean  cont=true;
+  public boolean  ready=false;
+  public long     base;
+  protected long  num_connections=0;
   void report(String s)
   {
-    Util.TRACE(String.format("GREPMARK %5d [%s] %s",(System.currentTimeMillis()-base),id,s));
+    Util.TRACE(String.format("GREPMARK %5d [S] %s",(System.currentTimeMillis()-base),s));
   }
-}
-class Server extends Base
-{
   public Server(long b)
   {
-    super(b,"S");
+    base = b;
   }
   public void run() 
   {
     Util.TRACE_ENTRY();
+
+    ServerSocketChannel sc = null;
+    Selector selector = null;
+    SelectionKey key = null;
     try
     {
       report("Starting server.");
-      ServerSocketChannel sc = ServerSocketChannel.open();
+      sc = ServerSocketChannel.open();
       sc.bind(new InetSocketAddress("localhost",10000));
       report("Listening.");
-      SocketChannel conn = sc.accept(); // blocking
-      report("A connection has been made. Sleeping 1s then closing connection before write.");
-      try { Thread.sleep(1000); } catch (InterruptedException ie) {}
-      report("Closing connection.");
-      conn.close();
-      report("Connection closed. In 5s will stop listening.");
-      try { Thread.sleep(5000); } catch (InterruptedException ie) {}
-      report("Stopping listening.");
-      sc.close();
-      report("Listening stopped.");
+      sc.configureBlocking(false);
+      selector = Selector.open();
+      key = sc.register(selector,SelectionKey.OP_ACCEPT);
+      ready = true;
     }
     catch (IOException ioe)
     {
       ioe.printStackTrace();
     }
+    if (null!=sc)
+    {
+      while (cont)
+      {
+        try
+        {
+          // wake every 5 seconds (or when there is a connection) so we can check the overall timeout
+          //report("selector keys:"+selector.keys().size()+", interestOps="+key.interestOps());
+          selector.selectedKeys().clear();
+          if (0!=selector.select(5000))
+          {
+            SocketChannel conn = sc.accept();
+            if (null!=conn)
+            {
+              ++num_connections;
+              //report("A connection has been made. Sleeping 100ms then closing connection before write.");
+              try { Thread.sleep(100); } catch (InterruptedException ie) {}
+              //report("Closing connection.");
+              try
+              {
+                conn.close();
+                //report("Connection closed without exception.");
+              }
+              catch (IOException ioe)
+              {
+                report("Exception on close:"+ioe);
+                conn.close();
+                cont = false;
+              }
+            }
+          }
+          else
+          {
+            report("Select timedout; cont="+cont);
+          }
+        }
+        catch (IOException ioe)
+        {
+          ioe.printStackTrace();
+        }
+        if (300000<=(System.currentTimeMillis()-base))
+        {
+          report("Timing out after 5 minutes.");
+          cont = false;
+        }
+      }
+      try
+      {
+        report("Stopping listening.");
+        selector.close();
+        sc.close();
+      }
+      catch (IOException ioe)
+      {
+        ioe.printStackTrace();
+      }
+      report("Listening stopped. "+num_connections+" connection(s) were made.");
+    }
     Util.TRACE_EXIT();
   }
 };
 
-class Client extends Base
+class Client extends Thread
 {
-  public Client(long b)
+  protected Server  server;
+
+  void report(String s)
   {
-    super(b,"C");
+    Util.TRACE(String.format("GREPMARK %5d [C] %s",(System.currentTimeMillis()-server.base),s));
+  }
+  public Client(Server s)
+  {
+    server = s;
   }
   public void run()
   {
     Util.TRACE_ENTRY();
     try
     {
-      try { Thread.sleep(1000); } catch (InterruptedException ie) {}
-      report("Connecting to server.");
-      SocketChannel sc = SocketChannel.open();
-      sc.connect(new InetSocketAddress("localhost",10000));
-      report("Connected. Waiting 3s before writing to what should be a closed socket.");
-      try { Thread.sleep(3000); } catch (InterruptedException ie) {}
-      ByteBuffer b = ByteBuffer.allocate(17);
-      int num_written = sc.write(b);
-      report(num_written+" byte(s) written to socket. Waiting 1s before entering select.");
-      sc.configureBlocking(false);
-      Selector selector = Selector.open();
-      SelectionKey key = sc.register(selector,SelectionKey.OP_READ);
-      try { Thread.sleep(1000); } catch (InterruptedException ie) {}
-      boolean done = false;
-      while (!done)
+      while (!server.ready)
       {
-        report("Entering select with 5s timeout.");
-        int num_ready = selector.select(5000);
-        report("Select returned "+num_ready+" ready socket channel(s).");
-        if (0==num_ready) break;
-        Set<SelectionKey> keys = selector.selectedKeys();
-        Iterator<SelectionKey> it = keys.iterator();
-        if (it.hasNext())
-        {
-          SelectionKey sk = it.next();
-          SocketChannel rc = (SocketChannel)sk.channel();
-          if (rc.socket().isClosed())
-          {
-            report("Ready channel is closed.");
-          }
-          else // if (sk.isReadable())
-          {
-            try
-            {
-              int num_read = rc.read(b);
-              report(num_read+" byte(s) read from socket.");
-              if (0==num_read) report("Read returned EOF - socket is closed.");
-              if (0>=num_read) { done=true; break; }
-            }
-            catch (IOException ioe)
-            {
-              report("Exception when reading: "+ioe.getMessage());
-              break;
-            }
-          }
-        }
+        try { Thread.sleep(100); } catch (InterruptedException ie) {}
       }
-      report("Client terminating.");
-      sc.close();
-      report("Client terminated.");
+      report("Server is ready, starting connection loop.");
+      while (server.cont)
+      {
+        //report("Connecting to server.");
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(new InetSocketAddress("localhost",10000));
+        //report("Connected. Waiting 200ms before writing to what should be a closed socket.");
+        try { Thread.sleep(200); } catch (InterruptedException ie) {}
+        ByteBuffer b = ByteBuffer.allocate(17);
+        int num_written = sc.write(b);
+        //report(num_written+" byte(s) written to socket.");
+        sc.configureBlocking(false);
+        Selector selector = Selector.open();
+        SelectionKey key = sc.register(selector,SelectionKey.OP_READ);
+        boolean done = false;
+        while (!done)
+        {
+          //report("Entering select with 5s timeout.");
+          selector.selectedKeys().clear();
+          int num_ready = selector.select(5000);
+          //report("Select returned "+num_ready+" ready socket channel(s).");
+          if (0==num_ready) break;
+          Set<SelectionKey> keys = selector.selectedKeys();
+          Iterator<SelectionKey> it = keys.iterator();
+          if (it.hasNext())
+          {
+            SelectionKey sk = it.next();
+            SocketChannel rc = (SocketChannel)sk.channel();
+            if (rc.socket().isClosed())
+            {
+              report("Ready channel is closed.");
+            }
+            else // if (sk.isReadable())
+            {
+              try
+              {
+                int num_read = rc.read(b);
+                //report(num_read+" byte(s) read from socket.");
+                if (0!=num_read) report("Read did not return EOF");
+                if (0>=num_read) { done=true; break; }
+              }
+              catch (IOException ioe)
+              {
+                report("Exception when reading: "+ioe.getMessage());
+                break;
+              }
+            }
+          }
+          keys.clear();
+        }
+        //report("Client closing socket.");
+        selector.close();
+        sc.close();
+        //report("Client socket closed.");
+      }
+      report("Client main loop ended; server.cont="+server.cont);
     }
     catch (IOException ioe)
     {
+      report("Client encountered exception:"+ioe);
       ioe.printStackTrace();
     }
+    report("Client finished.");
+    server.cont = false;    // make sure the server gives up when there won't be a client trying to connect
     Util.TRACE_EXIT();
   }
 };
@@ -197,7 +265,7 @@ public class WasJmsOutBoundTest extends FATBase {
     Util.TRACE_ENTRY();
     long        base = System.currentTimeMillis();
     Server      s = new Server(base);
-    Client      c = new Client(base);
+    Client      c = new Client(s);
 
     Util.TRACE("GREPMARK platform: "+System.getProperty("os.name","<unknown>"));
 
