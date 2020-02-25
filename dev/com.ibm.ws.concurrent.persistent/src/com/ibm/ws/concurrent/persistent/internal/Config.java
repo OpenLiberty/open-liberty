@@ -93,7 +93,8 @@ class Config {
         initialPollDelay = (Long) properties.get("initialPollDelay");
         missedTaskThreshold = (Long) properties.get("missedTaskThreshold");
         Long pollIntrvl = enableTaskExecution ? (Long) properties.get("pollInterval") : null;
-        pollingCoordination = missedTaskThreshold > 0 && Boolean.parseBoolean((String) properties.get("pollingCoordination.for.test.use.only")); // NOT SUPPORTED for production use
+        boolean pollCoordination = Boolean.parseBoolean((String) properties.get("pollingCoordination.for.test.use.only")); // NOT SUPPORTED for production use
+        pollingCoordination = enableTaskExecution && missedTaskThreshold > 0 && (pollIntrvl == null || pollCoordination);
         pollSize = enableTaskExecution ? (Integer) properties.get("pollSize") : null;
         Long retryIntrvl = (Long) properties.get("retryInterval");
         retryLimit = (Short) properties.get("retryLimit");
@@ -101,18 +102,11 @@ class Config {
         id = xpathId.contains("]/persistentExecutor[") ? null : (String) properties.get("id");
 
         if (pollIntrvl == null) {
-            // TODO come up with better auto-compute logic.
-            // For now, we default poll interval to a value between 5m and 30m, matching the missedTaskThreshold, or 5m if less, or 30m if higher.
-            if (enableTaskExecution && missedTaskThreshold > 0) {
-                if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(5) && !ignoreMin)
-                    pollIntrvl = TimeUnit.MINUTES.toMillis(5);
-                else if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(30))
-                    pollIntrvl = TimeUnit.SECONDS.toMillis(missedTaskThreshold);
-                else
-                    pollIntrvl = TimeUnit.MINUTES.toMillis(30);
-            } else {
+            // 59 seconds is used to avoid continually colliding with a task that runs every minute
+            if (enableTaskExecution && missedTaskThreshold > 0)
+                pollIntrvl = TimeUnit.SECONDS.toMillis(59);
+            else
                 pollIntrvl = -1l;
-            }
         }
         pollInterval = pollIntrvl;
 
@@ -160,7 +154,9 @@ class Config {
                         .append(initialPollDelay)
                         .append("ms,missedTaskThreshold=")
                         .append(missedTaskThreshold)
-                        .append("s,pollInterval=")
+                        .append("s,pollingCoordination=")
+                        .append(pollingCoordination)
+                        .append("pollInterval=")
                         .append(pollInterval)
                         .append("ms,pollSize=")
                         .append(pollSize)
