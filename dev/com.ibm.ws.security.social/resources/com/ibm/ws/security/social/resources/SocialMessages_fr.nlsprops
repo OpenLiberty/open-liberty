@@ -95,7 +95,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=La r\u00e9p
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=V\u00e9rifiez que l'attribut de configuration qui est sp\u00e9cifi\u00e9 dans le message est configur\u00e9 correctement. Assurez-vous que la valeur de l'attribut de configuration correspond \u00e0 l'entr\u00e9e figurant dans la r\u00e9ponse de l'API utilisateur qui doit \u00eatre utilis\u00e9e comme nom d'utilisateur.
 
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La r\u00e9ponse de l''API utilisateur du compte de service ne peut pas \u00eatre trait\u00e9e : {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La r\u00e9ponse suivante de l''API utilisateur ne peut pas \u00eatre trait\u00e9e : {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Les informations sur le compte de service ne peuvent pas \u00eatre obtenues car une autre erreur est survenue.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Si le message contient un autre message d'erreur, consultez les actions utilisateur de ce message. Sinon, recherchez dans les journaux serveur d'autres messages d'erreur indiquant o\u00f9 l'autre erreur est survenue.
 
@@ -118,6 +118,16 @@ JSON_MISSING_KEY.useraction=V\u00e9rifiez les donn\u00e9es JSON pour d\u00e9term
 JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: La valeur de la cl\u00e9 [{0}] dans les donn\u00e9es JSON doit \u00eatre de type {1}, mais est de type {2}. L''objet JSON est [{3}].
 JSON_ENTRY_WRONG_JSON_TYPE.explanation=Le type de la valeur de la cl\u00e9 sp\u00e9cifi\u00e9 n'est pas correct. Il se peut que les donn\u00e9es JSON soient incorrectement form\u00e9es ou que leur structure soit inattendue.
 JSON_ENTRY_WRONG_JSON_TYPE.useraction=V\u00e9rifiez la structure des donn\u00e9es JSON. V\u00e9rifiez les donn\u00e9es JSON pour d\u00e9terminer si une erreur est survenue.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: La r\u00e9ponse de l''API d''introspection de jeton ne peut pas \u00eatre trait\u00e9e : {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Les informations sur l'utilisateur authentifi\u00e9 ne peuvent pas \u00eatre obtenues car une autre erreur est survenue.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Si le message contient un autre message d'erreur, consultez les actions utilisateur de ce message. Sinon, recherchez dans les journaux serveur d'autres messages d'erreur indiquant o\u00f9 l'autre erreur est survenue.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La demande d''introspection de jeton a \u00e9chou\u00e9 car le jeton qui est inclus dans la demande n''est pas valide. La r\u00e9ponse compl\u00e8te est la suivante : {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Le serveur d'autorisation n'a pas \u00e9mis le jeton, le propri\u00e9taire de la ressource a r\u00e9voqu\u00e9 le jeton, le jeton est arriv\u00e9 \u00e0 expiration ou une autre erreur est survenue.
+INTROSPECT_USER_API_INACTIVE.useraction=Consultez la r\u00e9ponse incluse dans le message. V\u00e9rifiez que le noeud final d'introspection de jeton correct est utilis\u00e9. Assurez-vous que le jeton est valide et qu'il peut faire l'objet d'une introspection.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configuration de login social [{0}] a \u00e9t\u00e9 trait\u00e9e correctement.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configuration de login social indiqu\u00e9e a \u00e9t\u00e9 trait\u00e9e correctement.

@@ -43,6 +43,18 @@ CWWKC1503.task.failure=CWWKC1503W: Executor persistente {0} ha eseguito il roll 
 CWWKC1503.task.failure.explanation=Esecuzione attivit\u00e0 non riuscita e ne \u00e8 stato eseguito il roll back.
 CWWKC1503.task.failure.useraction=Correggere la causa dell'errore se l'errore \u00e8 imprevisto e ripianificare l'attivit\u00e0.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: La transazione \u00e8 contrassegnata per il roll back perch\u00e9 il tempo di esecuzione dell''attivit\u00e0, {0} secondi, ha superato il timeout della transazione, {1} secondi.
+CWWKC1504.tx.timeout.rollback.explanation=L'attivit\u00e0 \u00e8 durata troppo a lungo, quindi la transazione \u00e8 in fase di roll back.
+CWWKC1504.tx.timeout.rollback.useraction=Potrebbe essere necessario un timeout della transazione pi\u00f9 ampio o potrebbe essere necessario rendere pi\u00f9 breve l'attivit\u00e0.
+
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: La transazione \u00e8 contrassegnata per il roll back perch\u00e9 il tempo di esecuzione dell''attivit\u00e0, {0} secondi, ha superato il valore di missedTaskThreshold, {1} secondi.
+CWWKC1505.mtt.timeout.rollback.explanation=L'attivit\u00e0 \u00e8 durata troppo a lungo, quindi la transazione \u00e8 in fase di roll back.
+CWWKC1505.mtt.timeout.rollback.useraction=Potrebbe essere necessario un valore missedTaskThreshold pi\u00f9 ampio o potrebbe essere necessario rendere pi\u00f9 breve l'attivit\u00e0.
+
+CWWKC1506.marked.rollback.only=CWWKC1506E: La transazione \u00e8 contrassegnata per il roll back.
+CWWKC1506.marked.rollback.only.explanation=L'applicazione ha contrassegnato la transazione per il roll back con setRollbackOnly oppure un errore o un timeout ha causato il roll back.
+CWWKC1506.marked.rollback.only.useraction=Se il rollback \u00e8 imprevisto, controllare i log e l'applicazione.
+
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: L''executor persistente {0} ha interrotto l''attivit\u00e0 {1} perch\u00e9 ne \u00e8 stato eseguito il rollback oppure non \u00e8 riuscita per {2} volte consecutive.
 CWWKC1510.retry.limit.reached.rollback.explanation=L'attivit\u00e0 ha raggiunto il limite di nuovi tentativi consecutivi e non verr\u00e0 tentata nuovamente.
 CWWKC1510.retry.limit.reached.rollback.useraction=Se i rollback o l'errore sono impresisti, determinare la causa e ripianificare l'attivit\u00e0. Se i rollback e gli errori sono intermittenti, valutare un aumento del limite di nuovi tentativi.
@@ -55,9 +67,9 @@ CWWKC1520.out.of.range=CWWKC1520E: Il valore configurato {0} per {1} non \u00e8 
 CWWKC1520.out.of.range.explanation=Per la propriet\u00e0 specificata \u00e8 stato configurato un valore al di fuori dell'intervallo consentito.
 CWWKC1520.out.of.range.useraction=Configurare un valore compreso nell'intervallo consentito.
 
-CWWKC1521.less.than.min=CWWKC1521E: Il valore configurato {0} per {1} non pu\u00f2 essere inferiore al valore configurato per {2}, che \u00e8 {3}.
-CWWKC1521.less.than.min.explanation=La configurazione di un valore maggiore per retryInterval incoraggia server differenti a ritentare l'attivit\u00e0 non riuscita, invece del server su cui non \u00e8 riuscita.
-CWWKC1521.less.than.min.useraction=Configurare la propriet\u00e0 retryInterval in modo che sia superiore a missedTaskThreshold.
+CWWKC1521.not.compatible=CWWKC1521E: L''attributo di configurazione {0} non \u00e8 valido quando l''attributo di configurazione {1} \u00e8 abilitato.
+CWWKC1521.not.compatible.explanation=Gli attributi di configurazione specificati non sono compatibili.
+CWWKC1521.not.compatible.useraction=Aggiornare la configurazione per rimuovere uno degli attributi di configurazione.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Non \u00e8 possibile pianificare delle attivit\u00e0 persistenti dal contesto del thread corrente.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Pianificare delle attivit\u00e0 persistenti solo da un thread associato a un'applicazione o a una funzione con un'identit\u00e0 di programma di caricamento classe serializzabile.
