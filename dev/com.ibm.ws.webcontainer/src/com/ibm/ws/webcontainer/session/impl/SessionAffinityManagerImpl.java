@@ -496,7 +496,7 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                     if (sessionSameSiteCookie != SameSiteCookie.DISABLED) {
                         WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
                         String sameSiteCookieValue = sessionSameSiteCookie.getSameSiteCookieValue();
-                        requestState.setCookieAttribute(cookie.getName(), "SameSite=" + sameSiteCookieValue);
+                        requestState.setCookieAttributes(cookie.getName(), "SameSite=" + sameSiteCookieValue);
                     }
                     ((IExtendedResponse) response).addSessionCookie(cookie);
                 } else {
