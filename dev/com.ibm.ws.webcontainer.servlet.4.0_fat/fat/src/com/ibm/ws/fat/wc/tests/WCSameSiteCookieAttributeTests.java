@@ -364,7 +364,7 @@ public class WCSameSiteCookieAttributeTests {
      *
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      *
-     * Configure the server to mark this Cookie as SameSite=Lax and verify.
+     * Configure the server to mark this Cookie as SameSite=Lax:
      * <samesite lax="cookieOne"/> -> within the <httpEndpoint/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -443,7 +443,7 @@ public class WCSameSiteCookieAttributeTests {
      *
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      *
-     * Configure the server to mark this Cookie as SameSite=Strict and verify.
+     * Configure the server to mark this Cookie as SameSite=Strict:
      * <samesite strict="cookieOne"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -524,7 +524,7 @@ public class WCSameSiteCookieAttributeTests {
      * cookieOne.setSecure(true);
      * <samesite none="cookeOne"/>
      *
-     * Configure the server to mark this Cookie as SameSite=None and verify.
+     * Configure the server to mark this Cookie as SameSite=None.
      *
      * The server should take no additional action since the Secure attribute is set already
      *
@@ -610,7 +610,7 @@ public class WCSameSiteCookieAttributeTests {
      *
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      *
-     * Configure the server to mark this Cookie as SameSite=None and verify.
+     * Configure the server to mark this Cookie as SameSite=None:
      * <samesite none="cookieOne"/>
      *
      * Ensure that the server also adds the Secure attribute.
@@ -693,7 +693,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
      *
-     * Configure the server to mark this Cookie as SameSite=Lax and verify.
+     * Configure the server to mark this Cookie as SameSite=Lax:
      * <samesite lax="*"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -779,7 +779,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
      *
-     * Configure the server to mark this Cookie as SameSite=Lax and verify.
+     * Configure the server to mark this Cookie as SameSite=Lax:
      * <samesite lax="cookie*"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -1622,7 +1622,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
      *
-     * Configure the server to mark this Cookie as SameSite=Strict and verify.
+     * Configure the server to mark this Cookie as SameSite=Strict:
      * <samesite strict="*"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -1708,7 +1708,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
      *
-     * Configure the server to mark this Cookie as SameSite=Strict and verify.
+     * Configure the server to mark this Cookie as SameSite=Strict:
      * <samesite strict="cookie*"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -1794,7 +1794,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
      *
-     * Configure the server to mark this Cookie as SameSite=None and verify.
+     * Configure the server to mark this Cookie as SameSite=None:
      * <samesite none="*"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -1881,7 +1881,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
      *
-     * Configure the server to mark this Cookie as SameSite=None and verify.
+     * Configure the server to mark this Cookie as SameSite=None:
      * <samesite none="cookie*"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -1969,7 +1969,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
      * cookieTwo.setSecure(true);
      *
-     * Configure the server to mark this Cookie as SameSite=None and verify.
+     * Configure the server to mark this Cookie as SameSite=None:
      * <samesite none="*"/>
      *
      * Verify that the Set-Cookie header is correct.
@@ -2060,7 +2060,7 @@ public class WCSameSiteCookieAttributeTests {
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      * Cookie cookieTwo = new Cookie("cookieOne", "cookieOne");
      *
-     * Configure the server to mark this Cookie as SameSite=Lax and verify.
+     * Configure the server to mark this Cookie as SameSite=Lax:
      * <samesite lax="cookieOne"/>
      *
      * Verify that there are two Set-Cookie headers with the same values.
@@ -2129,8 +2129,6 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            assertNull("The Channel Framework incorrectly added the Secure attribute.",
-                       sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
             Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
                               responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
@@ -2153,7 +2151,7 @@ public class WCSameSiteCookieAttributeTests {
      * ((HttpServletResponse) response).setHeader("Set-Cookie", "MySameSiteCookieNameSetHeader=MySameSiteCookieValueSetHead");
      * ((HttpServletResponse) response).addHeader("Set-Cookie", "MySameSiteCookieNameAddHeader=MySameSiteCookieValueAddHeader");
      *
-     * Configure the server to mark this Cookie as SameSite=Lax and verify.
+     * Configure the server to mark this Cookie as SameSite=Lax:
      * <samesite lax="MySameSiteCookieNameSetHeader, MySameSiteCookieNameAddHeader"/>
      *
      * We also need to ensure that the response contains that header at the client with the correct SameSite attribute
@@ -2560,99 +2558,12 @@ public class WCSameSiteCookieAttributeTests {
     }
 
     /**
-     * Drive a request to Servlet that creates a session.
-     *
-     * Configure the Server to mark the Session Cookie SameSite=Lax
-     * <samesite none="*"/>
-     *
-     * Configure the httpSession to mark the Session Cookie SameSite=Strict
-     * <httpSession cookieSameSite="None"/>
-     *
-     * Ensure that the SET-COOKIE header contains the SameSite value specified by the httpSession configuration.
-     * Also ensure that the SET-COOKIE header does not contain the Secure attribute. We do this to ensure
-     * that the Channel Framework does not touch this header since it already has SameSite defined.
-     *
-     * @throws Exception
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    public void testSameSiteConfig_SessionCookie_None_SessionConfig_None() throws Exception {
-        boolean headerFound = false;
-        boolean splitSameSiteHeaderFound = false;
-        String expectedResponse = "Welcome to the SameSiteSessionCreationServlet!";
-
-        sameSiteServer.saveServerConfiguration();
-
-        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
-        LOG.info("Server configuration that was saved: " + configuration);
-
-        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
-        httpEndpoint.getSameSite().setNone("*");
-        configuration.getHttpSession().setCookieSameSite("None");
-
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
-
-        LOG.info("Updated server configuration: " + configuration);
-
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
-
-        LOG.info("Target host : " + target.toURI());
-
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
-
-        LOG.info("requestUri : " + requestUri);
-
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=None") && !header.getValue().contains("Secure")) {
-                        headerFound = true;
-                    }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
-                }
-            }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None attribute, or the Secure attribute was added by the Channel Framework.",
-                              headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
-        } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
-        }
-    }
-
-    /**
      * Drive a requests to a Servlet that adds the following cookies:
      *
      * Cookie cookieOne = new Cookie("cookieone", "cookieone");
      * Cookie cookieTwo = new Cookie("cookieOne", "cookieOne");
      *
-     * Configure the server to mark cookieOne as SameSite=Lax and verify.
+     * Configure the server to mark cookieOne as SameSite=Lax:
      * <samesite lax="cookieOne"/>
      *
      * Verify that only cookieOne has a SameSite attribute.
@@ -2719,8 +2630,6 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            assertNull("The Channel Framework incorrectly added the Secure attribute.",
-                       sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
             Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
                               responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
@@ -2739,7 +2648,7 @@ public class WCSameSiteCookieAttributeTests {
      *
      * Cookie cookieTwo = new Cookie("cookieOne", "cookieOne");
      *
-     * Configure the server to mark this Cookie as SameSite=Lax and verify.
+     * Configure the server to mark this Cookie as SameSite=Lax:
      * <samesite lax="coo*" strict="cookie*" none="*"/>
      *
      * Verify that the SameSite value is set to Strict as that is the most specific wildcard match.
@@ -2804,8 +2713,6 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            assertNull("The Channel Framework incorrectly added the Secure attribute.",
-                       sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
             Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
                               responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
@@ -2823,7 +2730,7 @@ public class WCSameSiteCookieAttributeTests {
      *
      * Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
      *
-     * Configure the server to mark this Cookie as SameSite=Strict and verify.
+     * Configure the server to mark this Cookie as SameSite=Strict:
      * <samesite strict="cookieOne" id="samesiteReferenceTest"/>
      * <httpEndpoint samesiteRef="samesiteReferenceTest"/>
      *
@@ -3060,13 +2967,13 @@ public class WCSameSiteCookieAttributeTests {
      *
      * Ensure that the SET-COOKIE header contains the correct SameSite Attribute
      *
-     * The assumption here is that the Secure attribute is added via the server's configuration
-     * as well using the cookieSecure httpSession attribute.
+     * Ensure that the SameSite attribute is set to None and the Secure attribute is also
+     * set when explicitly defined by the <httpSession/> configuration.
      *
      * @throws Exception
      */
     @Test
-    public void testSameSiteSessionCookie_None() throws Exception {
+    public void testSameSiteSessionCookie_None_Secure() throws Exception {
         boolean headerFound = false;
         boolean splitSameSiteHeaderFound = false;
         String expectedResponse = "Welcome to the SameSiteSessionCreationServlet!";
@@ -3138,8 +3045,9 @@ public class WCSameSiteCookieAttributeTests {
      *
      * Ensure that the SET-COOKIE header contains the correct SameSite Attribute
      *
-     * The assumption here is that the Secure attribute will not be added since it is
-     * not added in the httpSession configuration.
+     * Ensure that the Secure attribute is automatically added when the
+     * <httpSession cookieSameSite="None"/> and the secure attribute cookieSecure isn't
+     * set in the httpSession configuration.
      *
      * @throws Exception
      */
@@ -3185,7 +3093,7 @@ public class WCSameSiteCookieAttributeTests {
                 LOG.info("\n" + headerValue);
                 if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
                     LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=None") && !header.getValue().contains("Secure")) {
+                    if (header.getValue().contains("SameSite=None") && header.getValue().contains("Secure")) {
                         headerFound = true;
                     }
                 } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
@@ -3198,7 +3106,7 @@ public class WCSameSiteCookieAttributeTests {
 
             Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
                               responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and not the Secure attributes.", headerFound);
+            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
