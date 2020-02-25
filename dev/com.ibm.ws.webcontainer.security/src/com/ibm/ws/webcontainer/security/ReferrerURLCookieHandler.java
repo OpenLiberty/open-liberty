@@ -110,10 +110,10 @@ public class ReferrerURLCookieHandler extends URLHandler {
             requestState.setCookieAttributes(cookieName, "SameSite=" + sameSite);
 
             if (sameSite.equals("None")) {
-                ssoCookie.setSecure(true);
-            }    
-        }  
-        
+                c.setSecure(true);
+            }
+        }
+
         return c;
     }
 
