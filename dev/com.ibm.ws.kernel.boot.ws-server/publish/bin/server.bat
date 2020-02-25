@@ -529,11 +529,10 @@ goto:eof
     set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
   )
 
-  @REM Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if
-  @REM JVMs have conflicting options, and it's more important that server JVMs
-  @REM be able to use AOT.
-  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !IBM_JAVA_OPTIONS!
-  set OPENJ9_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
+  @REM Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
+  @REM shared classes cache created for client operations.
+  set IBM_JAVA_OPTIONS=-Xquickstart !IBM_JAVA_OPTIONS! -Xshareclasses:none
+  set OPENJ9_JAVA_OPTIONS=-Xquickstart !OPENJ9_JAVA_OPTIONS! -Xshareclasses:none
 goto:eof
 
 @REM
