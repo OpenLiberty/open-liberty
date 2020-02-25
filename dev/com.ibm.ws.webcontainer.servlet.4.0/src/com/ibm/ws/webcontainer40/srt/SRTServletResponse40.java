@@ -98,7 +98,6 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
                     logger.logp(Level.FINE, CLASS_NAME, "addCookie", "Cannot set header.  Response already committed.");
                 }
             } else {
-                prepSameSiteAttribute(cookie);
                 _response.addCookie(cookie);
                 if (addedCookies == null) {
                     addedCookies = new ArrayList<Cookie>();

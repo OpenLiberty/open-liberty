@@ -156,7 +156,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         String sameSite = config.getSameSiteCookie();
         if (sameSite != null && !sameSite.equals("Disabled")) {
             WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
-            requestState.setCookieAttribute(cookieName, "SameSite=" + sameSite);
+            requestState.setCookieAttributes(cookieName, "SameSite=" + sameSite);
             
             if (sameSite.equals("None")) {
                 ssoCookie.setSecure(true);

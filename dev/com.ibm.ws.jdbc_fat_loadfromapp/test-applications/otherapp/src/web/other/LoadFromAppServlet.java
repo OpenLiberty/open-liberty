@@ -16,10 +16,12 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
+import javax.security.auth.login.LoginException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,6 +29,7 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
@@ -211,15 +214,24 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
     }
 
     /**
-     * testLoginModuleFromWebModuleInEAR - verify that a login module that is packaged within the web module is used to authenticate
+     * testLoginModuleFromWebModuleInEAR - verify that a login module that is packaged within the web module CANNOT be used to authenticate
      * to a data source when its resource reference specifies to use that login module.
-     * // TODO will the login module be available from the web module when packaged within an EAR?
      */
+    @AllowedFFDC({
+                   "javax.security.auth.login.LoginException", // no login modules for webapplogin
+                   "javax.resource.ResourceException" // chains the LoginException
+    })
     @Test
     public void testLoginModuleFromWebModuleInEAR() throws Exception {
         try (Connection con = sldsLoginModuleFromWebModuleInApp.getConnection()) {
             DatabaseMetaData metadata = con.getMetaData();
-            assertEquals("webuser", metadata.getUserName());
+            fail("authenticated as user " + metadata.getUserName());
+        } catch (SQLException x) {
+            Throwable cause = x;
+            while (cause != null && !(cause instanceof LoginException))
+                cause = cause.getCause();
+            if (!(cause instanceof LoginException))
+                throw x;
         }
     }
 

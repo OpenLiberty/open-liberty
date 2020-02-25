@@ -116,6 +116,7 @@ public class RolesAllowedTest extends FATServletClient {
 
         baseURL = "http://localhost:" + server1.getHttpDefaultPort() + "/RolesAllowedTest";
         server1.startServer();
+        server1.waitForStringInLog("CWWKS4105I", 30000); // wait for ltpa keys to be created and service ready, which can happen after startup.
     }
 
     @AfterClass
