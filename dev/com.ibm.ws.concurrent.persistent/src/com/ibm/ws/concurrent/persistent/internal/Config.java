@@ -156,7 +156,7 @@ class Config {
                         .append(missedTaskThreshold)
                         .append("s,pollingCoordination=")
                         .append(pollingCoordination)
-                        .append("pollInterval=")
+                        .append(",pollInterval=")
                         .append(pollInterval)
                         .append("ms,pollSize=")
                         .append(pollSize)
