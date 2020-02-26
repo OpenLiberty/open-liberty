@@ -10,32 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class NameAliases {
 
     private final String[] originalNames;
     public volatile String[] aliases;
-    public volatile ArrayList<String> originalExtensions;
-    public volatile ArrayList<String> aliasesExtensions;
+    public ExtensionAliases extensionAliases;
 
     public NameAliases(String[] originalNames) {
         this.originalNames = originalNames;
         this.aliases = originalNames.clone();
-        this.originalExtensions = new ArrayList<>();
-        this.aliasesExtensions = new ArrayList<>();
+        this.extensionAliases = new ExtensionAliases();
     }
 
     public void newAliases(Map<String, String> newAliases) {
         String[] tempAliases = originalNames.clone();
-        this.originalExtensions = new ArrayList<>();
-        this.aliasesExtensions = new ArrayList<>();
+        ExtensionAliases tempExtensionAliases = new ExtensionAliases();
         for (Map.Entry<String, String> entry : newAliases.entrySet()) {
             //check if entry key is an extension or original name
-            if (entry.getKey().startsWith("ext_")) {
-                this.originalExtensions.add(entry.getKey().trim());
-                this.aliasesExtensions.add(entry.getValue().trim());
+            if (entry.getKey().trim().startsWith("ext_")) {
+                tempExtensionAliases.addExtensionAlias(entry.getKey().trim(), entry.getValue().trim());
                 continue;
             }
             for (int i = 0; i < originalNames.length; i++) {
@@ -45,6 +40,7 @@ public class NameAliases {
             }
         }
         aliases = tempAliases;
+        extensionAliases = tempExtensionAliases;
     }
 
     public void resetAliases() {
