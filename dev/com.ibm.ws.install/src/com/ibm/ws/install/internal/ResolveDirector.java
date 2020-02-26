@@ -640,7 +640,8 @@ class ResolveDirector extends AbstractDirector {
             if (InstallUtils.getIsServerXmlInstall()) {
                 Set<String> allServerFeatures = new HashSet<>(InstallUtils.getAllServerFeatures());
                 allServerFeatures.addAll(assetsToInstall);
-
+                allServerFeatures.addAll(product.getInstalledFeatures());
+                
                 log(Level.FINE, "Using resolveAsSet to resolve features");
                 installResources = resolver.resolveAsSet(allServerFeatures); // use new api
             } else {
