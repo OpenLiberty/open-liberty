@@ -531,20 +531,17 @@ public class LogTraceData extends GenericData {
     }
 
     public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
-        ArrayList<String> tempExt = null;
-        ArrayList<String> aliasesExt = null;
+        ExtensionAliases tempExt = null;
         if (isMessageEvent) {
-            tempExt = jsonLoggingNameAliasesMessages.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesMessages.aliasesExtensions;
+            tempExt = jsonLoggingNameAliasesMessages.extensionAliases;
 
         } else {
-            tempExt = jsonLoggingNameAliasesTrace.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesTrace.aliasesExtensions;
+            tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
 
         }
-        for (int i = 0; i < tempExt.size(); i++) {
-            if (tempExt.get(i).equals(extKey)) {
-                return aliasesExt.get(i);
+        for (int i = 0; i < tempExt.originalExtensions.size(); i++) {
+            if (tempExt.originalExtensions.get(i).equals(extKey)) {
+                return tempExt.aliasesExtensions.get(i);
             }
         }
         return extKey;
