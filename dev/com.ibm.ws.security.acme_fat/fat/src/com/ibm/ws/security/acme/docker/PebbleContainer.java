@@ -70,7 +70,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 	 *            Address of the DNS server to use to make DNS lookups for
 	 *            domains.
 	 */
-	public PebbleContainer(String dnsServer) {
+	public PebbleContainer(String dnsServer, Network network) {
 		super(new ImageFromDockerfile()
 				.withDockerfileFromBuilder(builder -> builder.from("letsencrypt/pebble")
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
@@ -79,7 +79,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		this.withCommand("pebble", "-dnsserver", dnsServer, "-config", "/test/config/pebble-config.json", "-strict",
 				"false");
 		this.withExposedPorts(MANAGEMENT_PORT, LISTEN_PORT);
-		this.withNetwork(Network.SHARED);
+		this.withNetwork(network);
 		this.withLogConsumer(PebbleContainer::log);
 	}
 
