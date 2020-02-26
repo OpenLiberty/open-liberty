@@ -35,10 +35,13 @@ import java.nio.ByteBuffer;
 import java.util.Set;
 import java.util.Iterator;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 class Server extends Thread
 {
-  public boolean  cont=true;
-  public boolean  ready=false;
+  public AtomicBoolean  cont=new AtomicBoolean(true);
+  public AtomicBoolean  ready=new AtomicBoolean(false);
+  public AtomicBoolean  client_closed=new AtomicBoolean(false);
   public long     base;
   protected long  num_connections=0;
   void report(String s)
@@ -61,11 +64,16 @@ class Server extends Thread
       report("Starting server.");
       sc = ServerSocketChannel.open();
       sc.bind(new InetSocketAddress("localhost",10000));
-      report("Listening.");
       sc.configureBlocking(false);
       selector = Selector.open();
       key = sc.register(selector,SelectionKey.OP_ACCEPT);
-      ready = true;
+      report("Notifying client that server is ready.");
+      ready.set(true);
+      synchronized(ready)
+      {
+        ready.notifyAll();
+      }
+      report("Listening.");
     }
     catch (IOException ioe)
     {
@@ -73,7 +81,7 @@ class Server extends Thread
     }
     if (null!=sc)
     {
-      while (cont)
+      while (cont.get())
       {
         try
         {
@@ -87,7 +95,7 @@ class Server extends Thread
             {
               ++num_connections;
               //report("A connection has been made. Sleeping 100ms then closing connection before write.");
-              try { Thread.sleep(100); } catch (InterruptedException ie) {}
+              //try { Thread.sleep(100); } catch (InterruptedException ie) {}
               //report("Closing connection.");
               try
               {
@@ -98,23 +106,35 @@ class Server extends Thread
               {
                 report("Exception on close:"+ioe);
                 conn.close();
-                cont = false;
+                cont.set(false);
               }
+              client_closed.set(true);
+              synchronized(client_closed)
+              {
+                client_closed.notifyAll();
+              }
+              //report("set client_closed and notified all.");
             }
           }
           else
           {
-            report("Select timedout; cont="+cont);
+            report("Select timedout; cont="+cont.get());
           }
         }
         catch (IOException ioe)
         {
           ioe.printStackTrace();
+          client_closed.set(true);
+          synchronized(client_closed)
+          {
+            client_closed.notifyAll();
+          }
+          report("set client_closed and notified all.");
         }
         if (300000<=(System.currentTimeMillis()-base))
         {
           report("Timing out after 5 minutes.");
-          cont = false;
+          cont.set(false);
         }
       }
       try
@@ -150,18 +170,45 @@ class Client extends Thread
     Util.TRACE_ENTRY();
     try
     {
-      while (!server.ready)
+      synchronized(server.ready)
       {
-        try { Thread.sleep(100); } catch (InterruptedException ie) {}
+        try
+        {
+          while (!server.ready.get()) server.ready.wait(1000);
+        }
+        catch (InterruptedException ie)
+        {
+          report("Interrupted.");
+          Util.TRACE_EXIT();
+          return;
+        }
       }
       report("Server is ready, starting connection loop.");
-      while (server.cont)
+      while (server.cont.get())
       {
         //report("Connecting to server.");
         SocketChannel sc = SocketChannel.open();
+        server.client_closed.set(false);
         sc.connect(new InetSocketAddress("localhost",10000));
+        synchronized(server.client_closed)
+        {
+          while (!server.client_closed.get())
+          {
+            try
+            {
+              server.client_closed.wait(1000);
+            }
+            catch (InterruptedException ie)
+            {
+              report("Wait interrupted.");
+            }
+            if (!server.cont.get()) break;
+          }
+        }
+        if (!server.cont.get()) break;
+        //report("Connected.");
         //report("Connected. Waiting 200ms before writing to what should be a closed socket.");
-        try { Thread.sleep(200); } catch (InterruptedException ie) {}
+        //try { Thread.sleep(200); } catch (InterruptedException ie) {}
         ByteBuffer b = ByteBuffer.allocate(17);
         int num_written = sc.write(b);
         //report(num_written+" byte(s) written to socket.");
@@ -169,7 +216,7 @@ class Client extends Thread
         Selector selector = Selector.open();
         SelectionKey key = sc.register(selector,SelectionKey.OP_READ);
         boolean done = false;
-        while (!done)
+        while (!done&&server.cont.get())
         {
           //report("Entering select with 5s timeout.");
           selector.selectedKeys().clear();
@@ -209,7 +256,7 @@ class Client extends Thread
         sc.close();
         //report("Client socket closed.");
       }
-      report("Client main loop ended; server.cont="+server.cont);
+      report("Client main loop ended; server.cont="+server.cont.get());
     }
     catch (IOException ioe)
     {
@@ -217,7 +264,7 @@ class Client extends Thread
       ioe.printStackTrace();
     }
     report("Client finished.");
-    server.cont = false;    // make sure the server gives up when there won't be a client trying to connect
+    server.cont.set(false);    // make sure the server gives up when there won't be a client trying to connect
     Util.TRACE_EXIT();
   }
 };
@@ -263,6 +310,7 @@ public class WasJmsOutBoundTest extends FATBase {
   public void testSocketCloseOnzOS() throws Exception
   {
     Util.TRACE_ENTRY();
+    cleanup();
     long        base = System.currentTimeMillis();
     Server      s = new Server(base);
     Client      c = new Client(s);
