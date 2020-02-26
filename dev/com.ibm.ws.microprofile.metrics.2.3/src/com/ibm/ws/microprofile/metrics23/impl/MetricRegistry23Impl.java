@@ -45,12 +45,12 @@ public class MetricRegistry23Impl extends MetricRegistryImpl {
 
     @Override
     public SimpleTimer simpleTimer(String name, Tag... tags) {
-        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.TIMER).build();
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.SIMPLE_TIMER).build();
 
         if (metadataMID.keySet().contains(name)) {
             metadata = metadataMID.get(name);
 
-            if (!metadata.getTypeRaw().equals(MetricType.TIMER)) {
+            if (!metadata.getTypeRaw().equals(MetricType.SIMPLE_TIMER)) {
                 throw new IllegalArgumentException(name + " is already used for a different type of metric");
             }
         }
