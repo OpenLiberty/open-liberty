@@ -18,6 +18,7 @@
  */
 task publishWLPJars(type: Copy) {
     dependsOn jar
+    dependsOn jakartaeeTransform
     def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
     enabled bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
     from project.buildDir

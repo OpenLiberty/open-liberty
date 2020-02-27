@@ -91,6 +91,8 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 
 instrument.disabled: true
 
+jakartaeeMe: true
+
 -buildpath: \
     com.ibm.ws.webcontainer;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
