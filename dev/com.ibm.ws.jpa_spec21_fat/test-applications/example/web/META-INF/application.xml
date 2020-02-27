@@ -16,11 +16,11 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
     id="Application_ID">
 
-    <display-name>Example</display-name>
+    <display-name>Example_WEB</display-name>
     <module id="WebModule_1">
         <web>
             <web-uri>exampleWeb.war</web-uri>
-            <context-root>example</context-root>
+            <context-root>exampleWeb</context-root>
         </web>
     </module>
 </application>

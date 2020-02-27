@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,8 @@ public class MetadataHandler implements SsoHandler {
                                                    TraceConstants.TRACE_GROUP,
                                                    TraceConstants.MESSAGE_BUNDLE);
 
-    public MetadataHandler() {}
+    public MetadataHandler() {
+    }
 
     @Override
     public Constants.SamlSsoVersion getSamlVersion() {
@@ -59,8 +60,7 @@ public class MetadataHandler implements SsoHandler {
                          " samlRequest:" + samlRequest +
                          " samlService:" + samlService +
                          " securityService:" + securityService +
-                         " authFilterId:" + authFilterId
-                            );
+                         " authFilterId:" + authFilterId);
         }
 
         try {
@@ -68,8 +68,7 @@ public class MetadataHandler implements SsoHandler {
             response.setHeader("Content-Disposition", "attachment;filename=\""
                                                       + filename + "\"");
 
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-                            response.getOutputStream(), response.getCharacterEncoding()));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), response.getCharacterEncoding()));
 
             SpMetadataBuilder spMetadataBuilder = new SpMetadataBuilder(samlService);
             String metadataData = spMetadataBuilder.buildSpMetadata(request);

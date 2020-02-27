@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import com.ibm.ws.sib.jfapchannel.Dispatchable;
 import com.ibm.ws.sib.jfapchannel.HandshakeProperties;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.JFapHeartbeatTimeoutException;
+import com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.mfp.impl.CompHandshakeFactory;
 import com.ibm.ws.sib.processor.MPCoreConnection;
@@ -142,7 +143,7 @@ public class ServerTransportReceiveListener extends CommonServerReceiveListener 
         buffer.reset(data);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            String LF = System.getProperty("line.separator");
+            String LF = System.lineSeparator();
             String debugInfo = LF + LF + "-------------------------------------------------------" + LF;
 
             debugInfo += " Segment type  : " + JFapChannelConstants.getSegmentName(segmentType) +
@@ -641,6 +642,14 @@ public class ServerTransportReceiveListener extends CommonServerReceiveListener 
         if (cause != null && cause instanceof JFapHeartbeatTimeoutException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "Error is due to heartbeat timeout");
+        } else if (exception instanceof JFapConnectionBrokenException
+                   &&null!=cause
+                   &&cause instanceof java.io.EOFException
+                  ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                SibTr.debug(this, tc, "Error is due to reaching the end of stream during a read");
+            }
+            System.out.println("Connection unexpectedly broken during read.");
         } else {
             FFDCFilter.processException(exception,
                                         CLASS_NAME + ".errorOccurred",

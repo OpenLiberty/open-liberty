@@ -9,5 +9,5 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-  <databaseStore id="defaultDatabaseStore" dataSourceRef="DefaultDataSource" service.ranking="100"/>
+  <databaseStore id="defaultDatabaseStore" dataSourceRef="DefaultDataSource" />
 </server>

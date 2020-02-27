@@ -11,29 +11,88 @@
     configfailurepolicy="continue">
 
     <test name="microprofile-faulttolerance 1.0 TCK">
+        <method-selectors>
+            <method-selector>
+                <script language="beanshell">
+                     <!-- Some tests are sensitive to timing and can spuriously fail on slow build machines. -->
+                     <!-- We exclude all of these tests, but most of them were fixed in the 2.0 TCK and we run them from the 2.0 TCK project -->
+                     <![CDATA[
+                     // All of these bulkhead tests are susceptable to timing issues or "not being parallel enough"
+                     // BulkheadAsynchTest
+                     !method.getName().startsWith("testBulkheadClassAsynchronous10") &&
+                     !method.getName().startsWith("testBulkheadMethodAsynchronous10") &&
+                     !method.getName().startsWith("testBulkheadClassAsynchronous3") &&
+                     !method.getName().startsWith("testBulkheadMethodAsynchronous3") &&
+                     !method.getName().startsWith("testBulkheadClassAsynchronousDefault") &&
+                     !method.getName().startsWith("testBulkheadMethodAsynchronousDefault") &&
+                     !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
+                     !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
+                     
+                     // BulkheadAsynchRetryTest
+                     !method.getName().startsWith("testBulkheadClassAsynchronousPassiveRetry55") &&
+                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55") &&
+                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
+                     !method.getName().startsWith("testBulkheadMethodAsynchronous55RetryOverload") &&
+                     !method.getName().startsWith("testBulkheadClassAsynchronous55RetryOverload") &&
+                     !method.getName().startsWith("testBulkheadPassiveRetryMethodAsynchronous55") &&
+                     !method.getName().startsWith("testBulkheadRetryClassAsynchronous55") &&
+                     !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures") &&
+                     !method.getName().startsWith("testNoRetriesWithoutRetryOn") &&
+                     !method.getName().startsWith("testNoRetriesWithAbortOn") &&
+                     
+                     // BulkheadFutureTest
+                     !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest") &&
+                     
+                     // BulkheadSyncRetryTest
+                     !method.getName().startsWith("testNoRetriesBulkhead") &&
+                     
+                     // Note: Other tests in BulkheadSynchRetryTest and BulkheadSynchTest look vulnerable to the same issues but we haven't seen them fail
+                     
+                     // RetryTest
+                     !method.getName().startsWith("testRetryMaxDuration") &&
+                     !method.getName().startsWith("testRetryMaxDurationSeconds") &&
+                     !method.getName().startsWith("testRetryWithDelay") &&
+                     !method.getName().startsWith("testRetryWithNoDelayAndJitter") &&
+                     !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
+                     !method.getName().startsWith("testClassLevelRetryMaxDurationSeconds") &&
+                     
+                     // CircuitBreakerTimeoutTest
+                     !method.getDeclaringClass().getSimpleName().equals("CircuitBreakerTimeoutTest") &&
+                     
+                     // CircuitBreakerRetryTest
+                     !method.getName().startsWith("testCircuitOpenWithMultiTimeouts") &&
+                     !method.getName().startsWith("testCircuitOpenWithMultiTimeoutsAsync") &&
+                     
+                     // ConfigTest
+                     !method.getName().startsWith("testConfigMaxDuration") &&
+                     !method.getName().startsWith("testClassLevelConfigMaxDuration") &&
+                     
+                     // Note: The annotation disablement tests have some timing sensitive tests for Timeout and Async, but we haven't seen them fail
+                     
+                     // FallbackTest
+                     !method.getName().startsWith("testFallbackTimeout") &&
+                     !method.getName().startsWith("testFallbacktNoTimeout") &&
+                     
+                     // BulkheadMetricTest
+                     !method.getName().startsWith("bulkheadMetricAsyncTest") &&
+                     !method.getName().startsWith("bulkheadMetricHistogramTest") &&
+                     
+                     // TimeoutMetricTest
+                     !method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") &&
+                     
+                     // RetryTimeoutTest
+                     !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest") &&
+                     
+                     // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
+                     
+                     // AsyncTimeoutTest
+                     // This specific test is broken in the FT 1.0 TCK and was fixed for FT 2.0
+                     !method.getName().startsWith("testAsyncClassLevelTimeout")
+                ]]>
+                </script>
+            </method-selector>
+        </method-selectors>
         <packages>
-            <method-selectors>
-                <method-selector>
-                    <script language="beanshell">
-                    <!-- Some of the bulkhead tests fail when the test server are super slow...
-                         There's a race condition that causes these TCK tests to occasionally fail
-                         if the execution service has threads available but is slow to start work.
-                         For information on testBulkheadMethodAsynchronousRetry55Trip see OL#2994
-                         For information on testBulkheadClassAsynchFutureDoneWithoutGet see OL#3376 
-                        testAsyncClassLevelTimeout was timing just the call to `Future.get()` which is incorrect. We should be timing from the before the call to the method until after the call to `Future.get()` This is fixed in the FT 2.0 tck. -->
-                         <![CDATA[
-                        !method.getName().startsWith("testBulkheadClassAsynchFutureDoneWithoutGet") &&
-                        !method.getName().startsWith("testBulkheadMethodAsynchFutureDoneWithoutGet") &&
-                        !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
-                        !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
-                        !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
-                        !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
-                        !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures")&&
-                        !method.getName().startsWith("testAsyncClassLevelTimeout")
-                    ]]>
-                    </script>
-                </method-selector>
-            </method-selectors>
             <package name="org.eclipse.microprofile.fault.tolerance.tck.*"></package>
         </packages>
     </test>

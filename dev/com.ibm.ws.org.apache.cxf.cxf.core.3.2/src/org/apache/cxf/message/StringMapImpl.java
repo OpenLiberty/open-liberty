@@ -54,6 +54,7 @@ public class StringMapImpl
         put(key.getName(), value);
     }
 
+
     public <T> T remove(Class<T> key) {
         return key.cast(remove(key.getName()));
     }

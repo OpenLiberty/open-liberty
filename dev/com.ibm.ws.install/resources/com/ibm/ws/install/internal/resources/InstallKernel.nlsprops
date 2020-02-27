@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: The following features cannot be uninstal
 ERROR_UNINSTALL_FAILED_USR.explanation=The specified features are user features and cannot be uninstalled.
 ERROR_UNINSTALL_FAILED_USR.useraction=Do not uninstall user features.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: One of the repositories that is specified in the configuration cannot be reached. Verify that your computer has network access and firewalls are configured correctly, then try the action again. If the connection still fails, the repository server might be temporarily unavailable.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=An error occurred when connecting to a repository.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Ensure that the system can access the internet and the appropriate repository.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=Preparing assets for installation. This process might tak
 STATE_INITIALIZING=Initializing ...
 STATE_CONTACTING_REPO=Contacting IBM WebSphere Liberty Repository ...
 STATE_DOWNLOAD_FILES_OK=\nAll assets were successfully downloaded.
+STATE_CONTACTING_MAVEN_REPO=Establishing a connection to the configured Maven repository ...\nThis process might take several minutes to complete.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Successfully connected to the configured repository.
+STATE_READING_ENV_PROPS_FILE=Reading {0}/etc/featureUtility.env...
 PROGRESS_STEP=Step {0} of {1}
 
 MSG_DOWNLOAD_SUCCESS=Successfully downloaded feature {0}.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Searching features ...
 MSG_SEARCHING_ADDONS=Searching addons ...
 MSG_SEARCHING_SAMPLES=Searching samples ...
 MSG_SEARCHING_OPENSOURCE=Searching open source integrations ...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Downloading required features ...
 FEATURE_ASSET=feature
 ADDON_ASSET=addon
 SAMPLE_ASSET=product sample
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=open source integration
 GENERAL_ASSET=asset
 
 MSG_INVALID_FOR_OS=The feature resource {0} is invalid for the current OS and will not be installed.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=The server does not require any additional features. No features were installed.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=The property name is not specified. Either specify a valid property name, or comment out the property if it is unused.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Ensure that the individual ESA file provided is v
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Unable to create a JSON file at {0} for the ESA file {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=The feature in the ESA file will not be installed.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Ensure that write access is available for the directory where the JSON file will be created.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: The configured Maven Repository cannot be reached. Verify that your computer has network access and firewalls are configured correctly, then try the action again. If the connection still fails, the repository server might be temporarily unavailable.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=An error occurred when connecting to the configured Maven Repository.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Ensure that the system can access the internet and the appropriate repository.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: The available checksums were not able to be validated for the {0} file.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=The checksum of the downloaded asset is not correct. The content of the downloaded asset is not the same as the content from the repository, so the asset cannot be installed.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Run the command again.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Incorrect credentials were provided for the {0} repository.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=The FEATURE_REPO_USER and FEATURE_REPO_PASSWORD credentials failed to authenticate with the configured repository.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Supply the correct credentials for the configured repository.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: The artifacts from the configured repository failed to download.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=The specified asset was not downloaded from the specified repository because the repository does not contain a valid version of the asset.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Ensure that the repository contains the asset, and run the command again.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: The Liberty runtime version was not able to be determined.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The {0} properties file might be missing or corrupted.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure that the properties file exists.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: The feature with a {0} Maven coordinate cannot be installed onto a {1} Liberty runtime version.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=The feature is incompatible with the Liberty runtime.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specify a valid version for the feature.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: The packaging format in feature Maven coordinate {0} is invalid. The valid packaging format is ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=The feature is incompatible with the Liberty runtime.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specify ESA for the packaging in the Maven coordinate..
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: The {0} Maven coordinate is invalid.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=The Maven coordinated that was provided is not in the correct format.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Enter a valid Maven coordinate.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: The {0} server does not exist. Enter a valid server name and try again.
+ERROR_SERVER_NOT_EXIST.explanation=The server does not exist.
+ERROR_SERVER_NOT_EXIST.useraction=Create the server and run the command again.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: The {0} group ID is invalid. Ensure that the valid group ID for the feature coordinate is provided or the system can access the internet and the configured repository.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=The features JSON file was not found on the Maven repository.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Check your network connection and ensure that the features JSON file is hosted on the Maven repository.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: The format of the {0} http_proxy environment variable is invalid. Ensure that the http_proxy variable is in the http_proxy=http://<proxy-host>:<proxy-port> format.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=The proxy environment variable format is invalid.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Reformat the http_proxy environment variable to fit the http_proxy=http://<proxy-host>:<proxy-port> format.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: The format of the {0} https_proxy environment variable is invalid. Ensure that the https_proxy variable is in the https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port> format.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=The proxy environment variable format is invalid.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Reformat the https_proxy environment variable to fit the https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port> format.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: The following features were not obtained: {0}. Ensure that the features are valid.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=The feature is not supported by Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Run featureUtility with a compatible feature.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: The following user features are specified in the server.xml and they will not be installed: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: The {0} and {1} features are incompatible with each other and they cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES.explanation=The features cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Remove one of the features and try again.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: The {0} and {1} singleton features are incompatible with each other and they cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=The features cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Remove one of the features and try again.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.

@@ -1,0 +1,2 @@
+org.apache.cxf.binding.soap.SoapBindingFactory::true
+org.apache.cxf.binding.soap.SoapTransportFactory::true

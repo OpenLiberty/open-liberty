@@ -4,7 +4,7 @@
   </jgroups>
   
   <cache-container>
-    <transport stack="jgroups-udp" />
+    <transport cluster="${infinispan.cluster.name}" stack="jgroups-udp"/>
     <replicated-cache-configuration name="com.ibm.ws.MyCache.attr"/>
     <invalidation-cache-configuration name="*.session.*.inval"/>
   </cache-container>

@@ -78,7 +78,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 ReadTimeoutTest.class,
                 RacfSdbmLdapTest.class,
                 LdapFailoverTest.class,
-                RacfSdbmLdapWithBasicTest.class
+                RacfSdbmLdapWithBasicTest.class,
+                ADNestedGroupsWithRange.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 

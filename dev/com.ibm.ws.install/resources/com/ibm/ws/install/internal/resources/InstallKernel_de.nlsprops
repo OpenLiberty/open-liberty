@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Die folgenden Features k\u00f6nnen nicht 
 ERROR_UNINSTALL_FAILED_USR.explanation=Die angegebenen Features sind Benutzerfeatures und k\u00f6nnen nicht deinstalliert werden.
 ERROR_UNINSTALL_FAILED_USR.useraction=Deinstallieren Sie keine Benutzerfeatures.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Eines der in der Konfiguration angegebenen Repositorys ist nicht erreichbar. Vergewissern Sie sich, dass der Netzzugriff und die Firewalls auf Ihrem Computer ordnungsgem\u00e4\u00df konfiguriert sind, und wiederholen Sie dann die Aktion. Wenn die Verbindung weiterhin fehlschl\u00e4gt, ist der Repository-Server m\u00f6glicherweise vor\u00fcbergehend nicht verf\u00fcgbar.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=Beim Herstellen einer Verbindung zu einem Repository ist ein Fehler aufgetreten.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Stellen Sie sicher, dass das System auf das Internet und das entsprechende Repository zugreifen kann.
@@ -559,6 +560,9 @@ STATE_PREPARING_ASSETS=Assets werden f\u00fcr die Installation vorbereitet. Die 
 STATE_INITIALIZING=Initialisierung...
 STATE_CONTACTING_REPO=Verbindung zu IBM WebSphere Liberty Repository wird hergestellt...
 STATE_DOWNLOAD_FILES_OK=\nAlle Assets wurden erfolgreich heruntergeladen.
+STATE_CONTACTING_MAVEN_REPO=Es wird eine Verbindung zum konfigurierten Maven-Repository hergestellt...\nDie Ausf\u00fchrung dieses Prozesses kann mehrere Minuten dauern.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Die Verbindung zum konfigurierten Repository wurde erfolgreich hergestellt.
+STATE_READING_ENV_PROPS_FILE={0}/etc/featureUtility.env wird gelesen...
 PROGRESS_STEP=Schritt {0} von {1}
 
 MSG_DOWNLOAD_SUCCESS=Das Feature {0} wurde erfolgreich heruntergeladen.
@@ -571,7 +575,7 @@ MSG_SEARCHING_FEATURES=Features werden gesucht...
 MSG_SEARCHING_ADDONS=Add-ons werden gesucht...
 MSG_SEARCHING_SAMPLES=Beispiele werden gesucht...
 MSG_SEARCHING_OPENSOURCE=Open-Source-Integrationen werden gesucht...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Erforderliche Features werden heruntergeladen...
 FEATURE_ASSET=Feature
 ADDON_ASSET=Add-on
 SAMPLE_ASSET=Produktbeispiel
@@ -579,6 +583,8 @@ OPENSOURCE_ASSET=Open-Source-Integration
 GENERAL_ASSET=Asset
 
 MSG_INVALID_FOR_OS=Die Featureressource {0} ist f\u00fcr das aktuelle Betriebssystem ung\u00fcltig und wird daher nicht installiert.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Der Server erfordert keine zus\u00e4tzlichen Features. Es wurden keine Features installiert.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=Der Eigenschaftsname wurde nicht angegeben. Geben Sie einen g\u00fcltigen Eigenschaftsnamen an oder setzen Sie die Eigenschaft auf Kommentar, wenn sie nicht verwendet wird.
@@ -776,6 +782,64 @@ ERROR_ESA_NOT_FOUND.useraction=Stellen Sie sicher, dass die angegebene ESA-Datei
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Es kann keine JSON-Datei unter {0} f\u00fcr die ESA-Datei {1} erstellt werden.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Das Feature in der ESA-Datei wird nicht installiert.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Stellen Sie sicher, dass Schreibzugriff f\u00fcr das Verzeichnis, in dem die JSON-Datei erstellt wird, verf\u00fcgbar ist.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: Das konfigurierte Maven-Repository kann nicht erreicht werden. Vergewissern Sie sich, dass der Netzzugriff und die Firewalls auf Ihrem Computer ordnungsgem\u00e4\u00df konfiguriert sind, und wiederholen Sie dann die Aktion. Wenn die Verbindung weiterhin fehlschl\u00e4gt, ist der Repository-Server m\u00f6glicherweise vor\u00fcbergehend nicht verf\u00fcgbar.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=Beim Herstellen einer Verbindung zum konfigurierten Maven-Repository ist ein Fehler aufgetreten.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Stellen Sie sicher, dass das System auf das Internet und das entsprechende Repository zugreifen kann.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Die verf\u00fcgbaren Kontrollsummen konnten f\u00fcr die Datei {0} nicht ausgewertet werden.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=Die Kontrollsumme des heruntergeladenen Assets ist nicht richtig. Der Inhalt des heruntergeladenen Assets stimmt nicht mit dem Inhalt aus dem Repository \u00fcberein. Daher kann das Asset nicht installiert werden.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=F\u00fchren Sie den Befehl erneut aus.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Es wurden falsche Berechtigungsnachweise f\u00fcr das Repository {0} bereitgestellt.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Eine Authentifizierung am konfigurierten Repository war mit den Berechtigungsnachweisen FEATURE_REPO_USER und FEATURE_REPO_PASSWORD nicht m\u00f6glich.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Geben Sie die richtigen Berechtigungsnachweise f\u00fcr das konfigurierte Repository an. 
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Die Artefakte aus dem konfigurierten Repository konnten nicht heruntergeladen werden.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=Das angegebene Asset wurde nicht aus dem angegebenen Repository heruntergeladen, weil das Repository keine g\u00fcltige Version des Assets enth\u00e4lt.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Stellen Sie sicher, dass das Asset im Repository vorhanden ist, und f\u00fchren Sie den Befehl erneut aus.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: Die Liberty-Laufzeitversion konnte nicht ermittelt werden.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=M\u00f6glicherweise fehlt die Eigenschaftendatei {0} oder sie ist besch\u00e4digt.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Stellen Sie sicher, dass die Eigenschaftendatei vorhanden ist.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: Das Feature mit einer {0}-Maven-Koordinate kann nicht f\u00fcr eine {1}-Liberty-Laufzeitversion installiert werden.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=Das Feature ist mit der Liberty-Laufzeit nicht kompatibel.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Geben Sie eine g\u00fcltige Version f\u00fcr das Feature an.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: Das Paketformat der Maven-Koordinate {0} des Features ist ung\u00fcltig. Das g\u00fcltige Paketformat ist ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=Das Feature ist mit der Liberty-Laufzeit nicht kompatibel.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Geben Sie die ESA f\u00fcr die Paketierung in der Maven-Koordinate an.
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: Die {0}-Maven-Koordinate ist ung\u00fcltig.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=Die bereitgestellte Maven-Koordinate hat nicht das richtige Format.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Geben Sie eine g\u00fcltige Maven-Koordinate ein.
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: Der Server {0} ist nicht vorhanden. Geben Sie einen g\u00fcltigen Servernamen ein und versuchen Sie es erneut.
+ERROR_SERVER_NOT_EXIST.explanation=Der Server ist nicht vorhanden.
+ERROR_SERVER_NOT_EXIST.useraction=Erstellen Sie den Server und f\u00fchren Sie den Befehl erneut aus. 
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: Die {0}-Gruppen-ID ist ung\u00fcltig. Stellen Sie sicher, dass die g\u00fcltige Gruppen-ID f\u00fcr die Featurekoordinate angegeben ist oder dass das System auf das Internet und das konfigurierte Repository zugreifen kann.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=Die JSON-Datei des Features wurde nicht im Maven-Repository gefunden.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=\u00dcberpr\u00fcfen Sie Ihre Netzverbindung und stellen Sie sicher, dass die JSON-Datei des Features im Maven-Repository gehostet wird.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: Das Format der http_proxy-Umgebungsvariablen {0} ist ung\u00fcltig. Stellen Sie sicher, dass die http_proxy-Variable das folgende Format hat: http_proxy=http://<Proxy-Host>:<Proxy-Port>
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=Das Format der Proxy-Umgebungsvariablen ist ung\u00fcltig.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Passen Sie das Format der http_proxy-Umgebungsvariablen an das vorgegebene Format http_proxy=http://<Proxy-Host>:<Proxy-Port> an.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: Das Format der https_proxy-Umgebungsvariablen {0} ist ung\u00fcltig. Stellen Sie sicher, dass die https_proxy-Variable das folgende Format hat: https_proxy=https://<Benutzer>:<Kennwort>@<Proxy-Host>:<Proxy-Port>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=Das Format der Proxy-Umgebungsvariablen ist ung\u00fcltig.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Passen Sie das Format der https_proxy-Umgebungsvariablen an das vorgegebene Format https_proxy=https://<Benutzer>:<Kennwort>@<Proxy-Host>:<Proxy-Port> an.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Die folgenden Features wurden nicht abgerufen: {0}. Stellen Sie sicher, dass die Features g\u00fcltig sind.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=Das Feature wird von Open Liberty nicht unterst\u00fctzt.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=F\u00fchren Sie den Befehl featureUtility mit einem kompatiblen Feature aus.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Die folgenden Benutzerfeatures sind in der Datei server.xml angegeben und werden nicht installiert: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Die Features {0} und {1} sind nicht miteinander kompatibel und sie k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Diese Features k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Entfernen Sie eines der Features und wiederholen Sie die Operation.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Die Singleton-Features {0} und {1} sind nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Diese Features k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Entfernen Sie eines der Features und wiederholen Sie die Operation.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Das Feature wurde erfolgreich heruntergeladen.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Das Feature wurde heruntergeladen.

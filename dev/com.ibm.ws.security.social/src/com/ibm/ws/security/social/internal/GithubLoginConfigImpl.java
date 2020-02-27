@@ -28,13 +28,15 @@ public class GithubLoginConfigImpl extends Oauth2LoginConfigImpl {
     public static final TraceComponent tc = Tr.register(GithubLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     @Override
-    protected void setRequiredConfigAttributes(Map<String, Object> props) {
-        this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
-        this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+    protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
+        getRequiredConfigAttribute(props, KEY_clientId);
+        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
     }
 
     @Override
-    protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+    protected void setAllConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.clientId = configUtils.getConfigAttribute(props, KEY_clientId);
+        this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
         this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
         this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
         this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);

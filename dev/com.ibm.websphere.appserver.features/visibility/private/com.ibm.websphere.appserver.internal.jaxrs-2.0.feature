@@ -27,3 +27,4 @@ Subsystem-Name: Internal Java RESTful Services 2.0
  bin/jaxrs/tools/wadl2java.jar
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.MetricListServlet;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalServlet;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -86,7 +86,6 @@ public class MetricRemovalTest {
             // Check that metrics do not exist
             assertThat(getMetricsPage(), not(containsString(TEST_METRIC)));
         } finally {
-            undeployApp(metricReporter);
             server.stopServer();
         }
 

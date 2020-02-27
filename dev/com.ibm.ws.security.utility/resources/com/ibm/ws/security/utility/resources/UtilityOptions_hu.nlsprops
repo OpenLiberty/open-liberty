@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -148,7 +148,10 @@ sslCert.option-desc.keyType=\tNem k\u00f6telez\u0151. Alap\u00e9rtelmez\u00e9sbe
 sslCert.option-key.ext=\ \ \ \ --extInfo=tan\u00fas\u00edtv\u00e1ny kiterjeszt\u00e9si inform\u00e1ci\u00f3k
 sslCert.option-desc.ext=\tA tan\u00fas\u00edtv\u00e1nyhoz hozz\u00e1adand\u00f3 tan\u00fas\u00edtv\u00e1ny kiterjeszt\u00e9si inform\u00e1ci\u00f3k.\n\
 \tAz alap\u00e9rtelmezett kiterjeszt\u00e9s egy T\u00e1rgy alternat\u00edv neve bejegyz\u00e9s, amely\n\
-\ta hosztnevet haszn\u00e1lja.
+\ta hosztnevet haszn\u00e1lja. Ez a kapcsol\u00f3 a Jave Keytool parancs -ext kapcsol\u00f3j\u00e1nak\n\
+szintaxis\u00e1t k\u00f6veti. A kapcsol\u00f3 t\u00f6bbsz\u00f6r is haszn\u00e1lhat\u00f3 a parancshoz\n\
+\ 
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

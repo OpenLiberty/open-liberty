@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="EJBJar_1060639024453" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+         
+      <enterprise-beans>
+         <session id="Session_1">
+            <ejb-name>HomeBindingName1</ejb-name>
+            <local-home>com.ibm.ejb3x.HomeBindingName.ejb.LocalHomeBindingNameHome</local-home>
+            <local>com.ibm.ejb3x.HomeBindingName.ejb.LocalHomeBindingName</local>
+            <ejb-class>com.ibm.ejb3x.HomeBindingName.ejb.HomeBindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_2">
+            <ejb-name>HomeBindingName2</ejb-name>
+            <local-home>com.ibm.ejb3x.HomeBindingName.ejb.LocalHomeBindingNameHome</local-home>
+            <local>com.ibm.ejb3x.HomeBindingName.ejb.LocalHomeBindingName</local>
+            <ejb-class>com.ibm.ejb3x.HomeBindingName.ejb.HomeBindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_3">
+            <ejb-name>HomeBindingName3</ejb-name>
+            <home>com.ibm.ejb3x.HomeBindingName.ejb.RemoteHomeBindingNameHome</home>
+            <remote>com.ibm.ejb3x.HomeBindingName.ejb.RemoteHomeBindingName</remote>
+            <ejb-class>com.ibm.ejb3x.HomeBindingName.ejb.HomeBindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_4">
+            <ejb-name>HomeBindingName4</ejb-name>
+            <home>com.ibm.ejb3x.HomeBindingName.ejb.RemoteHomeBindingNameHome</home>
+            <remote>com.ibm.ejb3x.HomeBindingName.ejb.RemoteHomeBindingName</remote>
+            <ejb-class>com.ibm.ejb3x.HomeBindingName.ejb.HomeBindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+      </enterprise-beans>
+   </ejb-jar>

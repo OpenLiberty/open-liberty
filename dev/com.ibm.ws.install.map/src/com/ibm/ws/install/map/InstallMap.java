@@ -143,8 +143,10 @@ public class InstallMap implements Map {
 
     private Locale locale;
     private ResourceBundle messagesRes;
+    private URLClassLoader loader;
 
-    public InstallMap() {}
+    public InstallMap() {
+    }
 
     private String getMessage(String key, Object... args) {
         if (messagesRes == null) {
@@ -211,11 +213,23 @@ public class InstallMap implements Map {
     }
 
     /**
-     * Unsupported operation
+     * Clears the map and closes all resources.
+     *
+     * <b>MUST</b> be used when the map is no longer needed.
+     * 
+     * Throws RuntimeException if resources could not be closed.
      */
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        installKernelMap = null;
+        data.clear();
+        if (loader != null) {
+            try {
+                loader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -318,7 +332,7 @@ public class InstallMap implements Map {
      * Sort the files depending on the comparison
      *
      * @param jarsList -abstract representation of file/directory names
-     * @param fName - name of file
+     * @param fName    - name of file
      */
     public static void sortFile(List<File> jarsList, final String fName) {
         Collections.sort(jarsList, new Comparator<File>() {
@@ -342,9 +356,9 @@ public class InstallMap implements Map {
      * The file is accepted if either min/max is null or the newly created Version is null
      *
      * @param fName - file name
-     * @param name - string value
-     * @param min - Version
-     * @param max - Version
+     * @param name  - string value
+     * @param min   - Version
+     * @param max   - Version
      * @return boolean value depending on acceptance
      */
     public static boolean accept(String fName, String name, Version min, Version max) {
@@ -535,12 +549,11 @@ public class InstallMap implements Map {
         if (jars == null) {
             return ERROR;
         }
+        loader = new URLClassLoader(jars, getClass().getClassLoader());
         try {
             installKernelMap = AccessController.doPrivileged(new PrivilegedExceptionAction<Map<String, Object>>() {
                 @Override
                 public Map<String, Object> run() throws Exception {
-                    @SuppressWarnings("resource")
-                    ClassLoader loader = new URLClassLoader(jars, getClass().getClassLoader());
                     Class<Map<String, Object>> clazz;
                     clazz = (Class<Map<String, Object>>) loader.loadClass("com.ibm.ws.install.internal.InstallKernelMap");
                     return clazz.newInstance();

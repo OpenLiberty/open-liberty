@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: D\u00e1le uveden\u00e9 funkce nelze odins
 ERROR_UNINSTALL_FAILED_USR.explanation=Ur\u010den\u00e9 funkce jsou u\u017eivatelsk\u00fdmi funkcemi, nelze je odinstalovat.
 ERROR_UNINSTALL_FAILED_USR.useraction=Neodinstalov\u00e1vejte u\u017eivatelsk\u00e9 funkce.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Jedno z \u00falo\u017ei\u0161\u0165 ur\u010den\u00fdch v konfiguraci je nedosa\u017eiteln\u00e9. Ov\u011b\u0159te, zda m\u00e1 v\u00e1\u0161 po\u010d\u00edta\u010d p\u0159\u00edstup k s\u00edti a jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny br\u00e1ny firewall, a operaci zopakujte. Pokud se nad\u00e1le neda\u0159\u00ed p\u0159ipojit, mo\u017en\u00e1 je server \u00falo\u017ei\u0161t\u011b do\u010dasn\u011b nedostupn\u00fd.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=Vyskytla se chyba p\u0159i p\u0159ipojov\u00e1n\u00ed k \u00falo\u017ei\u0161ti.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a p\u0159\u00edslu\u0161n\u00e9mu \u00falo\u017ei\u0161ti.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=P\u0159\u00edprava aktiv k instalaci. Proveden\u00ed toho
 STATE_INITIALIZING=Prob\u00edh\u00e1 inicializace...
 STATE_CONTACTING_REPO=Kontaktov\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository...
 STATE_DOWNLOAD_FILES_OK=\nV\u0161echna aktiva byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
+STATE_CONTACTING_MAVEN_REPO=Z\u0159izov\u00e1n\u00ed p\u0159ipojen\u00ed k nakonfigurovan\u00e9mu \u00falo\u017ei\u0161ti Maven...\nProveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=P\u0159ipojen\u00ed ke zkonfigurovan\u00e9mu \u00falo\u017ei\u0161ti bylo \u00fasp\u011b\u0161n\u00e9.
+STATE_READING_ENV_PROPS_FILE=\u010cten\u00ed {0}/etc/featureUtility.env...
 PROGRESS_STEP=Krok {0} z {1}
 
 MSG_DOWNLOAD_SUCCESS=Funkce {0} \u00fasp\u011b\u0161n\u011b sta\u017eena.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Vyhled\u00e1v\u00e1n\u00ed vlastnost\u00ed...
 MSG_SEARCHING_ADDONS=Vyhled\u00e1v\u00e1n\u00ed p\u0159\u00eddavn\u00fdch modul\u016f...
 MSG_SEARCHING_SAMPLES=Vyhled\u00e1v\u00e1n\u00ed uk\u00e1zek...
 MSG_SEARCHING_OPENSOURCE=Prohled\u00e1v\u00e1n\u00ed integrac\u00ed typu open source...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Stahov\u00e1n\u00ed po\u017eadovan\u00fdch funkc\u00ed...
 FEATURE_ASSET=funkce
 ADDON_ASSET=p\u0159\u00eddavn\u00fd modul
 SAMPLE_ASSET=uk\u00e1zka produktu
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=integrace typu open source
 GENERAL_ASSET=aktivum
 
 MSG_INVALID_FOR_OS=Prost\u0159edek funkce {0} je pro aktu\u00e1ln\u00ed opera\u010dn\u00ed syst\u00e9m neplatn\u00fd, a nebude nainstalov\u00e1n.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Server nevy\u017eaduje \u017e\u00e1dn\u00e9 dal\u0161\u00ed funkce. \u017d\u00e1dn\u00e9 funkce nebyly nainstalov\u00e1ny.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=Nen\u00ed zad\u00e1n n\u00e1zev vlastnosti. Bu\u010f zadejte platn\u00fd n\u00e1zev vlastnosti, nebo vlastnost ozna\u010dte jako koment\u00e1\u0159, pokud se nepou\u017e\u00edv\u00e1.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee uveden\u00fd soubor ESA
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Nelze vytvo\u0159it soubor JSON v {0} pro soubor ESA {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Funkce v souboru ESA nebude nainstalov\u00e1na.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Ujist\u011bte se, \u017ee je k dispozici p\u0159\u00edstup pro z\u00e1pis pro adres\u00e1\u0159, kde bude vytvo\u0159en soubor JSON.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: Nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b n\u00e1stroje Maven je nedosa\u017eiteln\u00e1. Ov\u011b\u0159te, zda m\u00e1 v\u00e1\u0161 po\u010d\u00edta\u010d p\u0159\u00edstup k s\u00edti a jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny br\u00e1ny firewall, a operaci zopakujte. Pokud se nad\u00e1le neda\u0159\u00ed p\u0159ipojit, mo\u017en\u00e1 je server \u00falo\u017ei\u0161t\u011b do\u010dasn\u011b nedostupn\u00fd.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=Do\u0161lo k chyb\u011b p\u0159i p\u0159ipojov\u00e1n\u00ed ke konfigurovan\u00e9mu \u00falo\u017ei\u0161ti Maven.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a p\u0159\u00edslu\u0161n\u00e9mu \u00falo\u017ei\u0161ti.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Dostupn\u00e9 kontroln\u00ed sou\u010dty nebyly schopn\u00e9 ov\u011b\u0159it soubor {0}.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=Kontroln\u00ed sou\u010det sta\u017een\u00fdch aktiv nen\u00ed spr\u00e1vn\u00fd. Obsah sta\u017een\u00fdch aktiv nen\u00ed stejn\u00fd jako obsah z \u00falo\u017ei\u0161t\u011b, tak\u017ee aktivum nelze nainstalovat.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Znovu spus\u0165te p\u0159\u00edkaz.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Byla zad\u00e1na nespr\u00e1vn\u00e1 pov\u011b\u0159en\u00ed pro \u00falo\u017ei\u0161t\u011b {0}.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Pov\u011b\u0159en\u00ed FEATURE__REPO_USER a FEATURE_REPO_PASSWORD se nezda\u0159ilo ov\u011b\u0159it s nakonfigurovan\u00fdm \u00falo\u017ei\u0161t\u011bm.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Zadejte spr\u00e1vn\u00e1 pov\u011b\u0159en\u00ed pro nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Artefakty z nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b se nezda\u0159ilo st\u00e1hnout.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=Uveden\u00e9 aktivum nebylo sta\u017eeno z uveden\u00e9ho \u00falo\u017ei\u0161t\u011b, proto\u017ee toto \u00falo\u017ei\u0161t\u011b neobsahuje platnou verzi aktiva.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Ujist\u011bte se, \u017ee dan\u00e9 \u00falo\u017ei\u0161t\u011b toto aktivum obsahuje, a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: Verze b\u011bhov\u00e9ho prost\u0159ed\u00ed Liberty nemohla b\u00fdt ur\u010dena.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=Soubor vlastnost\u00ed {0} pravd\u011bpodobn\u011b chyb\u00ed nebo je po\u0161kozen.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ujist\u011bte se, \u017ee soubor vlastnost\u00ed existuje.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: Funkci se sou\u0159adnic\u00ed Maven {0} nelze nainstalovat na verzi b\u011bhov\u00e9ho prost\u0159ed\u00ed {1} Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=Funkce je nekompatibiln\u00ed s b\u011bhov\u00fdm prost\u0159ed\u00edm Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Uve\u010fte platnou verzi pro funkci.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: Form\u00e1t balen\u00ed v sou\u0159adnici Maven funkce {0} je neplatn\u00fd. Platn\u00fd form\u00e1t balen\u00ed je ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=Funkce je nekompatibiln\u00ed s b\u011bhov\u00fdm prost\u0159ed\u00edm Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Zadejte ESA pro balen\u00ed v sou\u0159adnici Maven.
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: Sou\u0159adnice Maven {0} je neplatn\u00e1.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=Sou\u0159adnice Maven, kter\u00e1 byla poskytnuta, nen\u00ed ve spr\u00e1vn\u00e9m form\u00e1tu.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Zadejte platnou sou\u0159adnici Maven.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: Server {0} neexistuje. Zadejte platn\u00fd n\u00e1zev serveru a operaci zopakujte.
+ERROR_SERVER_NOT_EXIST.explanation=Tento server neexistuje.
+ERROR_SERVER_NOT_EXIST.useraction=Vytvo\u0159te server a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: ID skupiny {0} je neplatn\u00e9. Ujist\u011bte se, \u017ee je dod\u00e1no platn\u00e9 ID skupiny pro sou\u0159adnici funkce nebo \u017ee m\u00e1 syst\u00e9m p\u0159\u00edstup k Internetu a ke konfigurovan\u00e9mu \u00falo\u017ei\u0161ti.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=Soubor JSON funkc\u00ed nebyl nalezen v \u00falo\u017ei\u0161ti Maven.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Zkontrolujte s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed a ujist\u011bte se, \u017ee je soubor JSON funkc\u00ed hostov\u00e1n v \u00falo\u017ei\u0161ti Maven.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: Form\u00e1t prom\u011bnn\u00e9 prost\u0159ed\u00ed http_proxy {0} je neplatn\u00fd. Ujist\u011bte se, \u017ee prom\u011bnn\u00e1 http_proxy je ve form\u00e1tu http_proxy=http://<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=Form\u00e1t prom\u011bnn\u00e9 prost\u0159ed\u00ed serveru proxy je neplatn\u00fd.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Znovu naform\u00e1tujte prom\u011bnnou prost\u0159ed\u00ed http_proxy, aby vyhovovala form\u00e1tu http_proxy=http://<proxy-host>:<proxy-port>.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: Form\u00e1t prom\u011bnn\u00e9 prost\u0159ed\u00ed https_proxy {0} je neplatn\u00fd. Ujist\u011bte se, \u017ee prom\u011bnn\u00e1 https_proxy je ve form\u00e1tu https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=Form\u00e1t prom\u011bnn\u00e9 prost\u0159ed\u00ed serveru proxy je neplatn\u00fd.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Znovu naform\u00e1tujte prom\u011bnnou prost\u0159ed\u00ed https_proxy, aby vyhovovala form\u00e1tu https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: N\u00e1sleduj\u00edc\u00ed funkce nebyly z\u00edsk\u00e1ny: {0}. Ujist\u011bte se, \u017ee jsou funkce platn\u00e9.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=Funkce nen\u00ed podporov\u00e1na Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Spus\u0165te featureUtility s kompatibiln\u00ed funkc\u00ed.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: N\u00e1sleduj\u00edc\u00ed u\u017eivatelsk\u00e9 funkce jsou ur\u010deny v souboru server.xml, a nebudou nainstalov\u00e1ny: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Funkce {0} a {1} jsou vz\u00e1jemn\u011b nekompatibiln\u00ed, a nemohou b\u00fdt instalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Funkce nemohou b\u00fdt nainstalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Odeberte jednu z funkc\u00ed a zopakujte operaci.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Funkce typu singleton {0} a {1} jsou vz\u00e1jemn\u011b nekompatibiln\u00ed, a nemohou b\u00fdt instalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Funkce nemohou b\u00fdt nainstalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Odeberte jednu z funkc\u00ed a zopakujte operaci.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Funkce byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Funkce byla sta\u017eena.

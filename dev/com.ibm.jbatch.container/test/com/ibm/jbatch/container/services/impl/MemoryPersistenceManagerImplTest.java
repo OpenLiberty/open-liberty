@@ -24,13 +24,12 @@ import org.mockito.MockitoAnnotations;
 
 import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
-import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionEntity;
+import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadInstanceKey;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceKey;
 import com.ibm.jbatch.container.ws.BatchLocationService;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 
@@ -54,13 +53,13 @@ public class MemoryPersistenceManagerImplTest {
 
         this.jobInstanceEntity = service.createJobInstance("mockApp", "mockXML", "mockUser", new Date());
         this.jobExecutionEntity = service.createJobExecution(jobInstanceEntity.getInstanceId(), new Properties(), new Date());
-        RemotablePartitionEntity remotablePartition1 = service.createRemotablePartition(jobExecutionEntity.getExecutionId(), "mockStep", 0, RemotablePartitionState.QUEUED);
-        RemotablePartitionEntity remotablePartition2 = service.createRemotablePartition(jobExecutionEntity.getExecutionId(), "mockStep", 1, RemotablePartitionState.QUEUED);
+        RemotablePartitionKey remotablePartitionKey1 = new RemotablePartitionKey(jobExecutionEntity.getExecutionId(), "mockStep", 0);
+        RemotablePartitionKey remotablePartitionKey2 = new RemotablePartitionKey(jobExecutionEntity.getExecutionId(), "mockStep", 1);
+        service.createRemotablePartition(remotablePartitionKey1);
+        service.createRemotablePartition(remotablePartitionKey2);
 
         this.topLevelStepExecution = service.createTopLevelStepExecutionAndNewThreadInstance(jobExecutionEntity.getExecutionId(),
                                                                                              new TopLevelStepInstanceKey(jobInstanceEntity.getInstanceId(), "mockStep"), true);
-        service.updateRemotablePartitionInternalState(jobExecutionEntity.getExecutionId(), "mockStep", 0, RemotablePartitionState.CONSUMED);
-        service.updateRemotablePartitionInternalState(jobExecutionEntity.getExecutionId(), "mockStep", 1, RemotablePartitionState.CONSUMED);
 
         this.partition1 = service.createPartitionStepExecutionAndNewThreadInstance(jobExecutionEntity.getExecutionId(),
                                                                                    new StepThreadInstanceKey(jobInstanceEntity.getInstanceId(), "mockStep", 1), true);

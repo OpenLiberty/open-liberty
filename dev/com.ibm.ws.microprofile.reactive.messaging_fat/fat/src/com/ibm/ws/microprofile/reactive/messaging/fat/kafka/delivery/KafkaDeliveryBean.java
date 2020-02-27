@@ -20,7 +20,7 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractDeliveryBean;
 
 @ApplicationScoped
-public class KafkaDeliveryBean extends AbstractDeliveryBean {
+public class KafkaDeliveryBean extends AbstractDeliveryBean<String> {
 
     public final static String CHANNEL_NAME = "delivery-test-output";
 

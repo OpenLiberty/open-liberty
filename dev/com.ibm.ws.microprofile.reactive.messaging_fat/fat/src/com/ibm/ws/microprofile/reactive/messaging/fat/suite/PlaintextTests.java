@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,10 @@ import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.flatmap.KafkaFlatMapTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.ConsumerRecordTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.UseConfiguredTopicTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.UseProducerRecordTopicTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions.KafkaPartitionTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCustomKeySerializerTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCustomSerializerTest;
@@ -32,17 +36,21 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                BadConnectorIDTest.class,
                 BasicReactiveMessagingTest.class,
+                ConsumerRecordTest.class,
                 KafkaMessagingTest.class,
                 KafkaAcknowledgementTest.class,
                 KafkaAutoAckTest.class,
                 KafkaCustomSerializerTest.class,
                 KafkaCustomKeySerializerTest.class,
+                KafkaFlatMapTest.class,
                 KafkaPartitionTest.class,
                 KafkaSharedLibTest.class,
-                ReactiveStreamsTckTest.class,
-                BadConnectorIDTest.class,
                 MissingGroupIDTest.class,
+                ReactiveStreamsTckTest.class,
+                UseConfiguredTopicTest.class,
+                UseProducerRecordTopicTest.class,
 })
 public class PlaintextTests {
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,18 @@ CWWKC1503.task.failure=CWWKC1503W: Trval\u00fd prov\u00e1d\u011bc\u00ed modul {0
 CWWKC1503.task.failure.explanation=Proveden\u00ed \u00falohy se nezda\u0159ilo a bylo odvol\u00e1no.
 CWWKC1503.task.failure.useraction=Pokud se jedn\u00e1 o neo\u010dek\u00e1van\u00e9 selh\u00e1n\u00ed, opravte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a p\u0159epl\u00e1nujte \u00falohu.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: Transakce je ozna\u010dena k odvol\u00e1n\u00ed, proto\u017ee doba prov\u00e1d\u011bn\u00ed \u00falohy, {0} sekund, p\u0159ekro\u010dila \u010dasov\u00fd limit transakce, {1} sekund.
+CWWKC1504.tx.timeout.rollback.explanation=Zpracov\u00e1n\u00ed \u00falohy trvalo p\u0159\u00edli\u0161 dlouho, tak\u017ee transakce se odvol\u00e1v\u00e1.
+CWWKC1504.tx.timeout.rollback.useraction=Je mo\u017en\u00e9, \u017ee bude zapot\u0159eb\u00ed v\u011bt\u0161\u00ed \u010dasov\u00fd limit transakce, nebo m\u016f\u017ee b\u00fdt t\u0159eba prov\u00e9st krat\u0161\u00ed \u00falohy.
+
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: Transakce je ozna\u010dena k odvol\u00e1n\u00ed, proto\u017ee doba prov\u00e1d\u011bn\u00ed \u00falohy, {0} sekund, p\u0159ekro\u010dila prahovou hodnotu missedTaskThreshol, {1} sekund.
+CWWKC1505.mtt.timeout.rollback.explanation=Zpracov\u00e1n\u00ed \u00falohy trvalo p\u0159\u00edli\u0161 dlouho, tak\u017ee transakce se odvol\u00e1v\u00e1.
+CWWKC1505.mtt.timeout.rollback.useraction=Je mo\u017en\u00e9, \u017ee bude zapot\u0159eb\u00ed v\u011bt\u0161\u00ed prahov\u00e1 hodnota missedTaskThreshol, nebo m\u016f\u017ee b\u00fdt t\u0159eba prov\u00e9st krat\u0161\u00ed \u00falohy.
+
+CWWKC1506.marked.rollback.only=CWWKC1506E: Transakce je ozna\u010dena k odvol\u00e1n\u00ed.
+CWWKC1506.marked.rollback.only.explanation=Aplikace ozna\u010dila transakci k odvol\u00e1n\u00ed pomoc\u00ed setRollbackOnly, nebo do\u0161lo k chyb\u011b nebo vypr\u0161en\u00ed \u010dasov\u00e9ho limitu zp\u016fsobilo odvol\u00e1n\u00ed.
+CWWKC1506.marked.rollback.only.useraction=Je-li odvol\u00e1n\u00ed neo\u010dek\u00e1van\u00e9, zkontrolujte protokoly a aplikaci.
+
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Trval\u00fd prov\u00e1d\u011bc\u00ed modul {0} p\u0159ed\u010dasn\u011b ukon\u010dil \u00falohu {1}, proto\u017ee byla odvol\u00e1na nebo se nezda\u0159ila {2}kr\u00e1t po sob\u011b.
 CWWKC1510.retry.limit.reached.rollback.explanation=\u00daloha dos\u00e1hla limitu n\u00e1sledn\u00fdch opakovan\u00fdch pokus\u016f a nebude d\u00e1le opakov\u00e1na.
 CWWKC1510.retry.limit.reached.rollback.useraction=Pokud jsou tato odvol\u00e1n\u00ed nebo selh\u00e1n\u00ed neo\u010dek\u00e1van\u00e1, ur\u010dete p\u0159\u00ed\u010dinu a p\u0159epl\u00e1nujte \u00falohu. Jsou-li tato odvol\u00e1n\u00ed a selh\u00e1n\u00ed ob\u010dasn\u00e1, zva\u017ete zv\u00fd\u0161en\u00ed limitu opakov\u00e1n\u00ed. 
@@ -50,6 +62,14 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Pokud jsou tato odvol\u00e1n\u
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Trval\u00fd prov\u00e1d\u011bc\u00ed modul {0} p\u0159ed\u010dasn\u011b ukon\u010dil \u00falohu {1}, proto\u017ee byla odvol\u00e1na nebo se nezda\u0159ila {2}kr\u00e1t po sob\u011b. Posledn\u00ed selh\u00e1n\u00ed je {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=\u00daloha dos\u00e1hla limitu n\u00e1sledn\u00fdch opakovan\u00fdch pokus\u016f a nebude d\u00e1le opakov\u00e1na.
 CWWKC1511.retry.limit.reached.failed.useraction=Pokud jsou tato selh\u00e1n\u00ed nebo odvol\u00e1n\u00ed neo\u010dek\u00e1van\u00e1, ur\u010dete p\u0159\u00ed\u010dinu a p\u0159epl\u00e1nujte \u00falohu. Jsou-li tato odvol\u00e1n\u00ed a selh\u00e1n\u00ed ob\u010dasn\u00e1, zva\u017ete zv\u00fd\u0161en\u00ed limitu opakov\u00e1n\u00ed. 
+
+CWWKC1520.out.of.range=CWWKC1520E: Konfigurovan\u00e1 hodnota {0} pro {1} nen\u00ed v rozsahu od {2} do {3}.
+CWWKC1520.out.of.range.explanation=Hodnota, kter\u00e1 je mimo povolen\u00fd rozsah, je nakonfigurov\u00e1na pro uvedenou vlastnost.
+CWWKC1520.out.of.range.useraction=Nakonfigurujte hodnotu v povolen\u00e9m rozsahu.
+
+CWWKC1521.not.compatible=CWWKC1521E: Atribut konfigurace {0} nen\u00ed platn\u00fd, kdy\u017e je povolen atribut konfigurace {1}.
+CWWKC1521.not.compatible.explanation=Uveden\u00e9 atributy konfigurace nejsou kompatibiln\u00ed.
+CWWKC1521.not.compatible.useraction=Aktualizujte konfiguraci, abyste odebrali jeden z atribut\u016f konfigurace.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Z kontextu aktu\u00e1ln\u00edho podprocesu nem\u016f\u017eete napl\u00e1novat trval\u00e9 \u00falohy.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Trval\u00e9 \u00falohy pl\u00e1nujte pouze z takov\u00e9ho podprocesu, kter\u00fd je p\u0159idru\u017een k aplikaci, nebo funkce s identitou zavad\u011b\u010de serializovateln\u00e9 t\u0159\u00eddy.

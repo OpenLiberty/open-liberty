@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.ProtectionDomain;
 import java.util.Arrays;
 
 import com.ibm.ws.jaxws.tools.internal.JaxWsToolsConstants;
@@ -28,7 +27,7 @@ public class WsImport {
     private static final PrintStream err = System.err;
 
     public static void main(String[] args) {
-        if (isTargetRequired(args)) {
+        if (WsToolsUtils.isTargetRequired(args)) {
             String errMsg = JaxWsToolsUtil.formatMessage(JaxWsToolsConstants.ERROR_PARAMETER_TARGET_MISSED_KEY);
             err.println(errMsg);
             System.exit(1);
@@ -43,7 +42,7 @@ public class WsImport {
 
         //Pass in the JWS and JAX-B APIs as a -classpath arg when Java 9 or above.
         //Otherwise the javac process started by the tooling doesn't contain these APIs.
-        if (getMajorJavaVersion() > 8) {
+        if (WsToolsUtils.getMajorJavaVersion() > 8) {
             String classpathValue = null;
             Class<?> JAXB = null;
             Class<?> WebService = null;
@@ -57,9 +56,9 @@ public class WsImport {
                 System.exit(2);
             }
 
-            classpathValue = getJarFileOfClass(JAXB);
-            classpathValue = classpathValue + File.pathSeparator + getJarFileOfClass(WebService);
-            classpathValue = classpathValue + File.pathSeparator + getJarFileOfClass(Service);
+            classpathValue = WsToolsUtils.getJarFileOfClass(JAXB);
+            classpathValue = classpathValue + File.pathSeparator + WsToolsUtils.getJarFileOfClass(WebService);
+            classpathValue = classpathValue + File.pathSeparator + WsToolsUtils.getJarFileOfClass(Service);
 
             if (classpathValue != null) {
                 boolean classpathSet = false;
@@ -85,43 +84,4 @@ public class WsImport {
         System.exit(new WsimportTool(System.out).run(args) ? 0 : 1);
     }
 
-    private static boolean isTargetRequired(String[] args) {
-        boolean helpExisted = false;
-        boolean versionExisted = false;
-        boolean targetExisted = false;
-
-        for (String arg : args) {
-            if (arg.equals(JaxWsToolsConstants.PARAM_HELP)) {
-                helpExisted = true;
-            } else if (arg.equals(JaxWsToolsConstants.PARAM_VERSION)) {
-                versionExisted = true;
-            } else if (arg.equals(JaxWsToolsConstants.PARAM_TARGET)) {
-                targetExisted = true;
-            }
-
-            continue;
-        }
-
-        return args.length > 0 && !helpExisted && !versionExisted && !targetExisted;
-    }
-
-    private static String getJarFileOfClass(final Class<?> javaClass) {
-        ProtectionDomain protectionDomain = AccessController.doPrivileged(
-                                                                          new PrivilegedAction<ProtectionDomain>() {
-                                                                              @Override
-                                                                              public ProtectionDomain run() {
-                                                                                  return javaClass.getProtectionDomain();
-                                                                              }
-                                                                          });
-
-        return protectionDomain.getCodeSource().getLocation().getPath();
-
-    }
-
-    private static int getMajorJavaVersion() {
-        String version = System.getProperty("java.version");
-        String[] versionElements = version.split("\\D");
-        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
-        return Integer.valueOf(versionElements[i]);
-    }
 }

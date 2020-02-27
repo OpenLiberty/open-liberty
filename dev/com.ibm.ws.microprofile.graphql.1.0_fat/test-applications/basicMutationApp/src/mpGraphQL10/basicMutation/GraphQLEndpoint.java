@@ -49,4 +49,12 @@ public class GraphQLEndpoint {
         allWidgets.add(newWidget);
         return newWidget;
     }
+
+    @Mutation
+    public List<Widget> setQuantityOnAllWidgets(int newQuantity) {
+        for (Widget w : allWidgets) {
+            w.setQuantity(newQuantity);
+        }
+        return allWidgets;
+    }
 }

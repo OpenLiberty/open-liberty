@@ -2,11 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/common/src"/>
+	<classpathentry kind="src" path="test-applications/example/src"/>
+	<classpathentry kind="src" path="test-applications/olgh8014/src"/>
 	<classpathentry kind="src" path="test-applications/olgh8294/src"/>
 	<classpathentry kind="src" path="test-applications/olgh8461/src"/>
-	<classpathentry kind="src" path="test-applications/olgh9035/src"/>
 	<classpathentry kind="src" path="test-applications/olgh8950/src"/>
-	<classpathentry kind="src" path="test-applications/example/src"/>
+	<classpathentry kind="src" path="test-applications/olgh9018/src"/>
+	<classpathentry kind="src" path="test-applications/olgh9035/src"/>
 	<classpathentry kind="src" path="test-applications/helpers/DatabaseManagement/src"/>
 	<classpathentry kind="src" path="test-framework/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

@@ -17,11 +17,12 @@ src: \
   test-applications/classSubResApp/src,\
   test-applications/formApp/src,\
   test-applications/jsonbapp/src,\
+  test-applications/jsonbCharsetApp/src,\
   test-applications/jsonbContextResolverApp/src,\
   test-applications/mutableHeadersApp/src,\
   test-applications/patchapp/src,\
   test-applications/providerPriorityApp/src,\
-  test-applications/subResourceApp
+  test-applications/subResourceApp/src
 
 fat.project: true
 tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0

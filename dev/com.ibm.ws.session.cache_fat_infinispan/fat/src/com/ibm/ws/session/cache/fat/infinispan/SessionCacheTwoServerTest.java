@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,6 +48,13 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appA = new SessionCacheApp(serverA, true, "session.cache.infinispan.web"); // no HttpSessionListeners are registered by this app
         appB = new SessionCacheApp(serverB, true, "session.cache.infinispan.web", "session.cache.infinispan.web.cdi", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();
+        String rand = UUID.randomUUID().toString();
+        Map<String, String> options = serverA.getJvmOptionsAsMap();
+        options.put("-Dinfinispan.cluster.name", rand);
+        serverA.setJvmOptions(options);
+        options = serverB.getJvmOptionsAsMap();
+        options.put("-Dinfinispan.cluster.name", rand);
+        serverB.setJvmOptions(options);
 
         serverA.startServer();
 

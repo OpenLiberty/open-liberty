@@ -1,0 +1,156 @@
+<server>
+
+	<jwtBuilder id="emptyConfig" />
+
+	<jwtBuilder id="" />
+
+	<jwtBuilder
+		id="specificExpiry"
+		expiry="1h" />
+		
+	<jwtBuilder
+		id="specificExpirySeconds"
+		expiry="1h" 
+		expiresInSeconds="1800s"/>
+
+	<jwtBuilder
+		id="specificAudiences"
+		audiences="Client02, Client03" />
+
+	<jwtBuilder
+		id="specificScopes"
+		scope="myScope yourScope" />
+
+	<jwtBuilder
+		id="specificJti"
+		jti="true" />
+
+	<jwtBuilder
+		id="specificIssuer"
+		issuer="someSpecificIssuer" />
+
+	<jwtBuilder
+		id="emptyClaims"
+		claims="" />
+
+	<jwtBuilder
+		id="specificClaims_allSet"
+		claims="uid, cn, sn" />
+
+	<jwtBuilder
+		id="specificClaims_someNotSet"
+		claims="uid, cn, sn, yourClaim" />
+
+	<jwtBuilder
+		id="key_x509"
+		key="x509" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS256_noKeyRef"
+		signatureAlgorithm="RS256" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS256"
+		signatureAlgorithm="RS256"
+		keyStoreRef="configServerDefault" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS256_goodKeyAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="configServerDefault"
+		keyAlias="configserverdefault" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS256_goodKeyAlias_global"
+		signatureAlgorithm="RS256"
+		keyAlias="rsacert" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS256_badKeyAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="configServerDefault"
+		keyAlias="badAlias" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS256_badKeyAlias_global"
+		signatureAlgorithm="RS256"
+		keyAlias="badAlias" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS256_badKeyStoreRef"
+		signatureAlgorithm="RS256"
+		keyStoreRef="doesntExist" />
+
+	<jwtBuilder
+		id="key_sigAlg_HS256_with_sharedKey"
+		signatureAlgorithm="HS256"
+		sharedKey="someKeyvalue" />
+
+	<jwtBuilder
+		id="key_sigAlg_HS256_with_xor_sharedKey"
+		signatureAlgorithm="HS256"
+		sharedKey="{xor}LDAyOhQ6Jik+Myo6" />
+
+	<jwtBuilder
+		id="key_sigAlg_HS256_without_sharedKey"
+		signatureAlgorithm="HS256" />
+		    
+	<jwtBuilder
+		id="jwkEnabled"
+		tokenEndpointEnabled="true"
+		jwkEnabled="true" />
+		
+	<jwtBuilder
+		id="jwkEnabledNoTokenEndpoint"		
+		jwkEnabled="true" />		
+
+    <jwtBuilder
+		id="jwkFromServerX509"
+		jwkEnabled="false" />
+
+    <jwtBuilder
+		id="jwkFromKeyStoreX509"
+		keyStoreRef="configServerDefault"
+		keyAlias="configserverdefault" />
+
+	<jwtBuilder
+		id="jwkEnabled_size_1024"
+		jwkEnabled="true"
+		jwkSigningKeySize="1024" />
+
+	<jwtBuilder
+		id="jwkEnabled_size_2048"
+		jwkEnabled="true"
+		jwkSigningKeySize="2048" />
+
+	<jwtBuilder
+		id="jwkEnabled_size_4096"
+		jwkEnabled="true"
+		jwkSigningKeySize="4096" />
+
+	<jwtBuilder
+		id="jwkEnabled_size_invalid"
+		jwkEnabled="true"
+		jwkSigningKeySize="2000" />
+
+	<jwtBuilder
+		id="jwkEnabled_HS256"
+		jwkEnabled="true"
+		signatureAlgorithm="HS256"
+		sharedKey="someKeyvalue" />
+		
+
+
+	<jwtBuilder
+		id="jwkEnabled_HS256_xor"
+		jwkEnabled="true"
+		signatureAlgorithm="HS256"
+		sharedKey="{xor}LDAyOhQ6Jik+Myo6" />
+
+	<jwtBuilder
+		id="jwkEnabled_RS256"
+		jwkEnabled="true"
+		signatureAlgorithm="RS256"
+		keyStoreRef="configServerDefault" />
+
+</server>

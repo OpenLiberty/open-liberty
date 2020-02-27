@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 /**
- * @version 1.3
+ * @version 1.4
  */
-@org.osgi.annotation.versioning.Version("1.3")
+@org.osgi.annotation.versioning.Version("1.4")
 package com.ibm.websphere.security.web;

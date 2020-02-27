@@ -37,6 +37,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.ras.Traceable;
+
 import org.apache.aries.util.ManifestHeaderUtils;
 import org.apache.aries.util.VersionRange;
 import org.osgi.framework.Constants;
@@ -191,7 +193,7 @@ public class ManifestHeaderProcessor
     /**
      * List of Name/Value
      */
-    public static class NameValueList extends ArrayList<NameValuePair> implements NameValueCollection, List<NameValuePair> {
+    public static class NameValueList extends ArrayList<NameValuePair> implements NameValueCollection, List<NameValuePair>, Traceable {
         private static final long serialVersionUID = 1808636823825029983L;
 
         @Override
@@ -212,6 +214,11 @@ public class ManifestHeaderProcessor
             }
             sb.append("}");
             return sb.toString();
+        }
+
+        @Override
+        public String toTraceString() {
+            return toString();
         }
     }
 

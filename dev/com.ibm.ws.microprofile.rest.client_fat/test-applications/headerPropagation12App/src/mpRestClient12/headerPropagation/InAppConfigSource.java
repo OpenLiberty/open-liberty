@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,10 @@ public class InAppConfigSource implements ConfigSource {
         PROPERTIES.put(baseUriProperty, baseUriValue);
         
         PROPERTIES.put("org.eclipse.microprofile.rest.client.propagateHeaders", "Authorization,MyCustomHeader");
+    }
+
+    public static String getUriForClient(Class<?> clientIntfClass) {
+        return PROPERTIES.get(clientIntfClass.getName() + "/mp-rest/uri");
     }
 
     @Override

@@ -29,6 +29,7 @@ import com.ibm.ws.jaxrs20.fat.client.ClientTest;
 import com.ibm.ws.jaxrs20.fat.context.ContextTest;
 import com.ibm.ws.jaxrs20.fat.contextresolver.DepartmentTest;
 import com.ibm.ws.jaxrs20.fat.exceptionmappers.ExceptionMappersTest;
+import com.ibm.ws.jaxrs20.fat.exceptionmappingWithOT.ExceptionMappingWithOTTest;
 import com.ibm.ws.jaxrs20.fat.extraproviders.ExtraProvidersTest;
 import com.ibm.ws.jaxrs20.fat.getClasses_getSingletons.SameClassInGetClassesAndGetSingletonsTest;
 import com.ibm.ws.jaxrs20.fat.helloworld.HelloWorldTest;
@@ -46,6 +47,7 @@ import com.ibm.ws.jaxrs20.fat.providercache.ProviderCacheTest;
 import com.ibm.ws.jaxrs20.fat.readerwriterprovider.ReaderWriterProvidersTest;
 import com.ibm.ws.jaxrs20.fat.resourcealgorithm.SearchPolicyTest;
 import com.ibm.ws.jaxrs20.fat.response.ResponseAPITest;
+import com.ibm.ws.jaxrs20.fat.restmetrics.RestMetricsTest;
 import com.ibm.ws.jaxrs20.fat.security.annotations.SecurityAnnotationsTest;
 import com.ibm.ws.jaxrs20.fat.security.ssl.SecuritySSLTest;
 import com.ibm.ws.jaxrs20.fat.securitycontext.SecurityContextTest;
@@ -72,6 +74,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ContextTest.class,
                 DepartmentTest.class,
                 ExceptionMappersTest.class,
+                ExceptionMappingWithOTTest.class,
                 ExceptionsSubresourcesTest.class,
                 ExtraProvidersTest.class,
                 HelloWorldTest.class,
@@ -96,6 +99,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ProviderCacheTest.class,
                 ReaderWriterProvidersTest.class,
                 ResponseAPITest.class,
+                RestMetricsTest.class,
                 SameClassAsProviderAndResourceTest.class,
                 SameClassInGetClassesAndGetSingletonsTest.class,
                 SearchPolicyTest.class,

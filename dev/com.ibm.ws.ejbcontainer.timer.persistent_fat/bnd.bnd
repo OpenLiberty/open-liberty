@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,13 +14,17 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/InitTxRecoveryLogEJB.jar/src, \
+	test-applications/MissedTimerActionEJB.jar/src, \
+	test-applications/MissedTimerActionWeb.war/src, \
 	test-applications/NoDBNonPersistAutoTimerEJB.jar/src, \
 	test-applications/NoDBNonPersistAutoTimerWeb.war/src, \
 	test-applications/NoDBPersistAutoTimerEJB.jar/src, \
 	test-applications/NoDBProgrammaticTimerEJB.jar/src, \
 	test-applications/NoDBProgrammaticTimerWeb.war/src, \
 	test-applications/PersistentTimerCoreEJB.jar/src, \
-	test-applications/PersistentTimerCoreWeb.war/src
+	test-applications/PersistentTimerCoreWeb.war/src, \
+	test-applications/RestartMissedTimerActionEJB.jar/src, \
+	test-applications/RestartMissedTimerActionWeb.war/src
 
 fat.project: true
 

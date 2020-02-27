@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,3 +141,39 @@ duplicateAlias.useraction=Stellen Sie sicher, dass alle in der Datei server.xml 
 context.root.changed=CWWKT0028I: Die Webanwendung wurde verschoben ({0}): {1}
 context.root.changed.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 context.root.changed.useraction=Es ist keine Aktion erforderlich.
+
+compression.duplicateType=CWWKT0029W: Es wurde versucht, den Typ {0} doppelt hinzuzuf\u00fcgen. Es wird stattdessen die Standardkonfiguration {1} verwendet. 
+compression.duplicateType.explanation=Der angegebene Wert ist bereits als zul\u00e4ssiger Inhaltstyp f\u00fcr die Komprimierung registriert.
+compression.duplicateType.useraction=Wenn Sie den Wert zul\u00e4ssiger Codierungen definieren, m\u00fcssen Sie sicherstellen, dass jeder Wert eindeutig ist. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: Es wurde versucht, die {0}-Codierung doppelt zu entfernen. Es wird stattdessen die Standardkonfiguration {1} verwendet.
+compression.duplicateTypeRemoval.explanation=Der angegebene Wert ist bereits als ausgeschlossener Inhaltstyp f\u00fcr die Komprimierung registriert.
+compression.duplicateTypeRemoval.useraction=Wenn Sie die Option zum Entfernen (-) verwenden, stellen Sie sicher, dass der angegebene Wert nicht bereits als ausgeschlossener Inhaltstyp registriert ist.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: Es wurde versucht, denselben Inhaltstyp {0} hinzuzuf\u00fcgen und zu entfernen. Es wird stattdessen die Standardkonfiguration {1} verwendet.
+compression.duplicateTypeAddRemove.explanation=Der angegebene Wert wird durch die Konfigurationsoptionen '+/-' hinzugef\u00fcgt und entfernt.
+compression.duplicateTypeAddRemove.useraction=F\u00fcgen Sie nicht denselben Inhaltstyp hinzu (+) und entfernen Sie nicht denselben Inhaltstyp (-).
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Es wurde versucht, die Standardkonfiguration f\u00fcr die Komprimierung zu \u00fcberschreiben, und die Option zum Hinzuf\u00fcgen (+) wurde f\u00fcr andere Inhaltstypen verwendet. Es wird stattdessen die Standardkonfiguration {0} verwendet.
+compression.duplicateOverwriteAndAdd.explanation=Die Konfiguration versucht, den Standardwert zu \u00fcberschreiben, w\u00e4hrend gleichzeitig auch die Option zum Hinzuf\u00fcgen (+) verwendet wird. Die Option zum Hinzuf\u00fcgen darf nicht verwendet werden, wenn Sie Standardwert \u00fcberschreiben.
+compression.duplicateOverwriteAndAdd.useraction=Wenn die Standardkonfiguration \u00fcberschrieben werden muss, verwenden Sie nicht die Option zum Hinzuf\u00fcgen (+). F\u00fcgen Sie weitere gew\u00fcnschte Inhaltstypen mithilfe der Option zum Hinzfu\u00fcgen (+) hinzu, wenn die Standardkonfiguration nicht \u00fcberschrieben werden muss.
+
+compression.unsupportedAlgorithm=CWWKT0033W: Es wurde versucht, {0} als bevorzugten Algorithmus f\u00fcr den Server zu konfigurieren. Zu den unterst\u00fctzten Werten geh\u00f6ren gzip, x-gzip, zlib, deflate, identity und none. Die Standardkonfiguration {1} wird stattdessen verwendet.
+compression.unsupportedAlgorithm.explanation=Die Konfiguration versucht, einen nicht unterst\u00fctzten Algorithmus als bevorzugten Algorithmus f\u00fcr die Komprimierung zu verwenden. 
+compression.unsupportedAlgorithm.useraction= Wenn Sie den Wert definieren, stellen Sie sicher, dass er auf gzip, x-gzip, deflate, zlib, identity oder none gesetzt ist.
+
+decompression.tolerance.reached=CWWKT0034E: Der HTTP-Kanal hat versucht, einen Hauptteil mit einem h\u00f6heren nicht tolerierten Faktor zu dekomprimieren.
+decompression.tolerance.reached.explanation=Die maximale Anzahl der Dekomprimierungszyklen wurde erreicht, sodass eine h\u00f6herer Dekomprimierungsfaktor als der konfigurierte Grenzwert erzielt wurde. Der Dekomprimierungsgrenzwert wird \u00fcber das http-Option-Attribut decompressionRatioLimit definiert.
+decompression.tolerance.reached.useraction=Wenn diese Ausnahme bei einem g\u00fcltigen Anforderungshauptteil auftritt, rekonfigurieren Sie die httpOption-Attribute decompressionTolerance und decompressionRatioLimit, um die entsprechenden Dekomprimierungsergebnisse zu erhalten.
+
+cookies.samesite.duplicateName=CWWKT0035W: Ein doppelter Cookiename oder doppeltes Muster [{0}] wurde in der SameSite-Konfiguration [{1}] gefunden. Der Cookiename [{0}] bzw. das Muster wird f\u00fcr alle Konfigurationslisten ignoriert. Alle Cookienamen oder Muster, die in den Konfigurationen ''Lax'', ''None'' und ''Strict'' enthalten sind, k\u00f6nnen nur in einer einzigen dieser drei Konfigurationen definiert sein. 
+cookies.samesite.duplicateName.explanation=Der angegebene Wert wurde bereits in der Konfiguration gefunden und einem SameSite-Wert zugeordnet.
+cookies.samesite.duplicateName.useraction=Stellen Sie sicher, dass Cookienamen und Muster in den Konfigurationslisten 'Lax', 'None' und 'Strict' eindeutig sind.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: Es wurde eine nicht unterst\u00fctzte Verwendung f\u00fcr das Platzhalterzeichen mit dem Wert [{0}] festgestellt. Die SameSite-Konfiguration ist nicht f\u00fcr diesen Wert definiert.
+cookies.samesite.unsupportedWildcard.explanation=Die festgestellte Verwendung des Platzhalterzeichens (*) wird nicht unterst\u00fctzt. Die Unterst\u00fctzung gilt f\u00fcr ein einzelnes Platzhalterzeichen (*), das als eigenst\u00e4ndiger Wert oder im Anschluss einer beliebigen Anzahl von Cookienamenspr\u00e4fixen verwendet wird.
+cookies.samesite.unsupportedWildcard.useraction=Stellen Sie sicher, dass nur ein einziges Platzhalterzeichen (*) gem\u00e4\u00df dem Muster in den Listen f\u00fcr 'Lax', 'None' und 'Strict' verwendet wird. Au\u00dferdem wir die Verwendung dieses Zeichens nur unter den folgenden beiden Bedingungen unterst\u00fctzt: als eigenst\u00e4ndiger Wert oder im Anschluss an Cookienamenspr\u00e4fixen.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: Ein Cookiename oder Muster [{0}], das als Duplikat markiert wurde, wurde in der SameSite-Konfiguration [{1}] gefunden. Der Cookiename bzw. das Muster [{0}] wird ignoriert. Alle Cookienamen oder Muster, die in den Konfigurationen ''Lax'', ''None'' und ''Strict'' enthalten sind, k\u00f6nnen nur in einer einzigen dieser drei Konfigurationen definiert sein. 
+cookies.samesite.knownDuplicateName.explanation=Der angegebene Wert wurde bereits in der Konfiguration gefunden und einem SameSite-Wert zugeordnet.
+cookies.samesite.knownDuplicateName.useraction=Stellen Sie sicher, dass Cookienamen und Muster in den Konfigurationslisten 'Lax', 'None' und 'Strict' eindeutig sind.

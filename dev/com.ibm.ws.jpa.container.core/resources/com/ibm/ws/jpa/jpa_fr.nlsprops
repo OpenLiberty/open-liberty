@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -301,6 +301,10 @@ JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Aucune action n'est requise.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: L''impl\u00e9mentation {0}, {1}, n''est pas conforme \u00e0 la sp\u00e9cification JPA 2.1 et ne peut pas \u00eatre utilis\u00e9e. Obtenez une version plus r\u00e9cente du fournisseur de persistance JPA qui impl\u00e9mente la sp\u00e9cification JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Le fournisseur de persistance JPA ne peut pas \u00eatre utilis\u00e9 car il lui manque des m\u00e9thodes d'impl\u00e9mentation qui sont requises par la sp\u00e9cification JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtenez une version plus r\u00e9cente du fournisseur de persistance JPA qui soit conforme \u00e0 la sp\u00e9cification JPA 2.1.
+
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Une erreur est survenue lors de la tentative de transformation de la classe Java {0}. Les d\u00e9tails suivants relatifs \u00e0 l''\u00e9chec ont \u00e9t\u00e9 rassembl\u00e9s : {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Une erreur inattendue est survenue lors de la transformation de la classe Java. En g\u00e9n\u00e9ral, elle est due \u00e0 un bytecode Java non valide.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Il se peut que le cache de classe soit endommag\u00e9 ou que l'application ait \u00e9t\u00e9 conditionn\u00e9e incorrectement. Tout d'abord, effacez le cache de classe. Si cette action ne r\u00e9sout pas le probl\u00e8me, examinez l'archive d'application pour identifier toute erreur de conditionnement.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

@@ -27,11 +27,17 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 import suite.r80.base.common.datamodel.entities.*;
 
 public class QueryLockModeTestLogic extends AbstractTestLogic {
+    @SuppressWarnings("deprecation")
     private java.util.Date javaUtilDate1 = new java.util.Date(50, 19, 20);
+    @SuppressWarnings("deprecation")
     private java.util.Date javaUtilDate2 = new java.util.Date(50, 20, 21);
+    @SuppressWarnings("deprecation")
     private java.util.Date javaUtilDate3 = new java.util.Date(50, 21, 22);
+    @SuppressWarnings("deprecation")
     private java.sql.Date javaSqlDate1 = new java.sql.Date(51, 20, 21);
+    @SuppressWarnings("deprecation")
     private java.sql.Date javaSqlDate2 = new java.sql.Date(51, 21, 22);
+    @SuppressWarnings("deprecation")
     private java.sql.Date javaSqlDate3 = new java.sql.Date(51, 22, 23);
 
     private static byte ByteOffset = 123;
@@ -116,19 +122,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
             return;
         }
 
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
             return;
         }
 
-        final Class delegateClass = jpaResource.getEm().getDelegate().getClass();
+        final Class<?> delegateClass = jpaResource.getEm().getDelegate().getClass();
         final String delegateClassStr = delegateClass.getName().toLowerCase();
         final boolean isOpenJPA = delegateClassStr.contains("org.apache.openjpa") || delegateClassStr.contains("com.ibm.websphere.persistence")
                                   || delegateClassStr.contains("com.ibm.ws.persistence");
@@ -197,16 +197,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0001 = (Entity0001) selectEntity0001.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0001);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0001);
-                        if (findEntity0001 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0001));
-                            Assert.assertEquals("Assert for the entity id", findEntity0001.getEntity0001_id(), (byte) 01);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0001.getEntity0001_string01(), "ENTITY0001_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0001.getEntity0001_string02(), "ENTITY0001_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0001.getEntity0001_string03(), "ENTITY0001_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0001));
+                        Assert.assertEquals("Assert for the entity id", findEntity0001.getEntity0001_id(), (byte) 01);
+                        Assert.assertEquals("Assert for the entity fields", "ENTITY0001_STRING01", findEntity0001.getEntity0001_string01());
+                        Assert.assertEquals("Assert for the entity fields", "ENTITY0001_STRING02", findEntity0001.getEntity0001_string02());
+                        Assert.assertEquals("Assert for the entity fields", "ENTITY0001_STRING03", findEntity0001.getEntity0001_string03());
+
                         //
                         // Update, commit, verify
                         //
@@ -226,16 +224,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0001 = (Entity0001) selectEntity0001.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0001);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0001);
-                        if (findEntity0001 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0001));
-                            Assert.assertEquals("Assert for the entity id", findEntity0001.getEntity0001_id(), (byte) 01);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0001.getEntity0001_string01(), "ENTITY0001_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0001.getEntity0001_string02(), "ENTITY0001_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0001.getEntity0001_string03(), "ENTITY0001_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0001));
+                        Assert.assertEquals("Assert for the entity id", findEntity0001.getEntity0001_id(), (byte) 01);
+                        Assert.assertEquals("Assert for the entity fields", "ENTITY0001_STRING01_UPDATED", findEntity0001.getEntity0001_string01());
+                        Assert.assertEquals("Assert for the entity fields", "ENTITY0001_STRING02", findEntity0001.getEntity0001_string02());
+                        Assert.assertEquals("Assert for the entity fields", "ENTITY0001_STRING03_UPDATED", findEntity0001.getEntity0001_string03());
                         break;
 
                     case Entity0401:
@@ -244,16 +239,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0401 findEntity0401 = (Entity0401) selectEntity0401.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0401);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0401);
-                        if (findEntity0401 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0401));
-                            Assert.assertEquals("Assert for the entity id", findEntity0401.getEntity0401_id().getEntity0001_id(), (byte) 01);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string01(), "ENTITY0401_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string02(), "ENTITY0401_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string03(), "ENTITY0401_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0401));
+                        Assert.assertEquals("Assert for the entity id", findEntity0401.getEntity0401_id().getEntity0001_id(), (byte) 01);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string01(), "ENTITY0401_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string02(), "ENTITY0401_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string03(), "ENTITY0401_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -268,16 +260,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0401 = (Entity0401) selectEntity0401.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0401);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0401);
-                        if (findEntity0401 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0401));
-                            Assert.assertEquals("Assert for the entity id", findEntity0401.getEntity0401_id().getEntity0001_id(), (byte) 01);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string01(), "ENTITY0401_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string02(), "ENTITY0401_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string03(), "ENTITY0401_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0401));
+                        Assert.assertEquals("Assert for the entity id", findEntity0401.getEntity0401_id().getEntity0001_id(), (byte) 01);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string01(), "ENTITY0401_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string02(), "ENTITY0401_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0401.getEntity0401_string03(), "ENTITY0401_STRING03_UPDATED");
                         break;
 
                     case Entity0002:
@@ -286,16 +275,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0002 = (Entity0002) selectEntity0002.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0002);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0002);
-                        if (findEntity0002 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0002));
-                            Assert.assertEquals("Assert for the entity id", (byte) findEntity0002.getEntity0002_id(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string01(), "ENTITY0002_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string02(), "ENTITY0002_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string03(), "ENTITY0002_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0002));
+                        Assert.assertEquals("Assert for the entity id", (byte) findEntity0002.getEntity0002_id(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string01(), "ENTITY0002_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string02(), "ENTITY0002_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string03(), "ENTITY0002_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -315,16 +301,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0002 = (Entity0002) selectEntity0002.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0002);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0002);
-                        if (findEntity0002 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0002));
-                            Assert.assertEquals("Assert for the entity id", (byte) findEntity0002.getEntity0002_id(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string01(), "ENTITY0002_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string02(), "ENTITY0002_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string03(), "ENTITY0002_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0002));
+                        Assert.assertEquals("Assert for the entity id", (byte) findEntity0002.getEntity0002_id(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string01(), "ENTITY0002_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string02(), "ENTITY0002_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0002.getEntity0002_string03(), "ENTITY0002_STRING03_UPDATED");
                         break;
 
                     case Entity0402:
@@ -333,16 +316,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0402 findEntity0402 = (Entity0402) selectEntity0402.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0402);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0402);
-                        if (findEntity0402 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0402));
-                            Assert.assertEquals("Assert for the entity id", (byte) findEntity0402.getEntity0402_id().getEntity0002_id(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string01(), "ENTITY0402_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string02(), "ENTITY0402_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string03(), "ENTITY0402_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0402));
+                        Assert.assertEquals("Assert for the entity id", (byte) findEntity0402.getEntity0402_id().getEntity0002_id(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string01(), "ENTITY0402_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string02(), "ENTITY0402_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string03(), "ENTITY0402_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -355,16 +335,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0402 = (Entity0402) selectEntity0402.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0402);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0402);
-                        if (findEntity0402 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0402));
-                            Assert.assertEquals("Assert for the entity id", (byte) findEntity0402.getEntity0402_id().getEntity0002_id(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string01(), "ENTITY0402_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string02(), "ENTITY0402_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string03(), "ENTITY0402_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0402));
+                        Assert.assertEquals("Assert for the entity id", (byte) findEntity0402.getEntity0402_id().getEntity0002_id(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string01(), "ENTITY0402_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string02(), "ENTITY0402_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0402.getEntity0402_string03(), "ENTITY0402_STRING03_UPDATED");
                         break;
 
                     case Entity0003:
@@ -373,16 +350,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0003 = (Entity0003) selectEntity0003.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0003);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0003);
-                        if (findEntity0003 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0003));
-                            Assert.assertEquals("Assert for the entity id", findEntity0003.getEntity0003_id(), '3');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string01(), "ENTITY0003_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string02(), "ENTITY0003_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string03(), "ENTITY0003_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0003));
+                        Assert.assertEquals("Assert for the entity id", findEntity0003.getEntity0003_id(), '3');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string01(), "ENTITY0003_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string02(), "ENTITY0003_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string03(), "ENTITY0003_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -402,16 +376,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0003 = (Entity0003) selectEntity0003.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0003);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0003);
-                        if (findEntity0003 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0003));
-                            Assert.assertEquals("Assert for the entity id", findEntity0003.getEntity0003_id(), '3');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string01(), "ENTITY0003_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string02(), "ENTITY0003_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string03(), "ENTITY0003_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0003));
+                        Assert.assertEquals("Assert for the entity id", findEntity0003.getEntity0003_id(), '3');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string01(), "ENTITY0003_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string02(), "ENTITY0003_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0003.getEntity0003_string03(), "ENTITY0003_STRING03_UPDATED");
                         break;
 
                     case Entity0403:
@@ -420,16 +391,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0403 findEntity0403 = (Entity0403) selectEntity0403.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0403);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0403);
-                        if (findEntity0403 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0403));
-                            Assert.assertEquals("Assert for the entity id", findEntity0403.getEntity0403_id().getEntity0003_id(), '3');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string01(), "ENTITY0403_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string02(), "ENTITY0403_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string03(), "ENTITY0403_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0403));
+                        Assert.assertEquals("Assert for the entity id", findEntity0403.getEntity0403_id().getEntity0003_id(), '3');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string01(), "ENTITY0403_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string02(), "ENTITY0403_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string03(), "ENTITY0403_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -442,16 +410,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0403 = (Entity0403) selectEntity0403.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0403);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0403);
-                        if (findEntity0403 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0403));
-                            Assert.assertEquals("Assert for the entity id", findEntity0403.getEntity0403_id().getEntity0003_id(), '3');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string01(), "ENTITY0403_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string02(), "ENTITY0403_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string03(), "ENTITY0403_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0403));
+                        Assert.assertEquals("Assert for the entity id", findEntity0403.getEntity0403_id().getEntity0003_id(), '3');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string01(), "ENTITY0403_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string02(), "ENTITY0403_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0403.getEntity0403_string03(), "ENTITY0403_STRING03_UPDATED");
                         break;
 
                     case Entity0004:
@@ -460,16 +425,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0004 = (Entity0004) selectEntity0004.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0004);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0004);
-                        if (findEntity0004 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0004));
-                            Assert.assertEquals("Assert for the entity id", findEntity0004.getEntity0004_id(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string01(), "ENTITY0004_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string02(), "ENTITY0004_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string03(), "ENTITY0004_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0004));
+                        Assert.assertEquals("Assert for the entity id", findEntity0004.getEntity0004_id(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string01(), "ENTITY0004_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string02(), "ENTITY0004_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string03(), "ENTITY0004_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -489,16 +451,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0004 = (Entity0004) selectEntity0004.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0004);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0004);
-                        if (findEntity0004 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0004));
-                            Assert.assertEquals("Assert for the entity id", findEntity0004.getEntity0004_id(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string01(), "ENTITY0004_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string02(), "ENTITY0004_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string03(), "ENTITY0004_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0004));
+                        Assert.assertEquals("Assert for the entity id", findEntity0004.getEntity0004_id(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string01(), "ENTITY0004_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string02(), "ENTITY0004_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0004.getEntity0004_string03(), "ENTITY0004_STRING03_UPDATED");
                         break;
 
                     case Entity0404:
@@ -507,16 +466,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0404 findEntity0404 = (Entity0404) selectEntity0404.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0404);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0404);
-                        if (findEntity0404 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0404));
-                            Assert.assertEquals("Assert for the entity id", findEntity0404.getEntity0404_id().getEntity0004_id(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string01(), "ENTITY0404_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string02(), "ENTITY0404_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string03(), "ENTITY0404_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0404));
+                        Assert.assertEquals("Assert for the entity id", findEntity0404.getEntity0404_id().getEntity0004_id(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string01(), "ENTITY0404_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string02(), "ENTITY0404_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string03(), "ENTITY0404_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -529,16 +485,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0404 = (Entity0404) selectEntity0404.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0404);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0404);
-                        if (findEntity0404 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0404));
-                            Assert.assertEquals("Assert for the entity id", findEntity0404.getEntity0404_id().getEntity0004_id(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string01(), "ENTITY0404_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string02(), "ENTITY0404_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string03(), "ENTITY0404_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0404));
+                        Assert.assertEquals("Assert for the entity id", findEntity0404.getEntity0404_id().getEntity0004_id(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string01(), "ENTITY0404_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string02(), "ENTITY0404_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0404.getEntity0404_string03(), "ENTITY0404_STRING03_UPDATED");
                         break;
 
                     case Entity0005:
@@ -547,16 +500,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0005 = (Entity0005) selectEntity0005.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0005);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0005);
-                        if (findEntity0005 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0005));
-                            Assert.assertEquals("Assert for the entity id", findEntity0005.getEntity0005_id(), "ENTITY0005_ID");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string01(), "ENTITY0005_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string02(), "ENTITY0005_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string03(), "ENTITY0005_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0005));
+                        Assert.assertEquals("Assert for the entity id", findEntity0005.getEntity0005_id(), "ENTITY0005_ID");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string01(), "ENTITY0005_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string02(), "ENTITY0005_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string03(), "ENTITY0005_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -576,16 +526,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0005 = (Entity0005) selectEntity0005.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0005);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0005);
-                        if (findEntity0005 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0005));
-                            Assert.assertEquals("Assert for the entity id", findEntity0005.getEntity0005_id(), "ENTITY0005_ID");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string01(), "ENTITY0005_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string02(), "ENTITY0005_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string03(), "ENTITY0005_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0005));
+                        Assert.assertEquals("Assert for the entity id", findEntity0005.getEntity0005_id(), "ENTITY0005_ID");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string01(), "ENTITY0005_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string02(), "ENTITY0005_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0005.getEntity0005_string03(), "ENTITY0005_STRING03_UPDATED");
                         break;
 
                     case Entity0405:
@@ -594,16 +541,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0405 findEntity0405 = (Entity0405) selectEntity0405.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0405);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0405);
-                        if (findEntity0405 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0405));
-                            Assert.assertEquals("Assert for the entity id", findEntity0405.getEntity0405_id().getEntity0005_id(), "ENTITY0005_ID");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string01(), "ENTITY0405_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string02(), "ENTITY0405_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string03(), "ENTITY0405_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0405));
+                        Assert.assertEquals("Assert for the entity id", findEntity0405.getEntity0405_id().getEntity0005_id(), "ENTITY0005_ID");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string01(), "ENTITY0405_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string02(), "ENTITY0405_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string03(), "ENTITY0405_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -616,16 +560,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0405 = (Entity0405) selectEntity0405.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0405);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0405);
-                        if (findEntity0405 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0405));
-                            Assert.assertEquals("Assert for the entity id", findEntity0405.getEntity0405_id().getEntity0005_id(), "ENTITY0005_ID");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string01(), "ENTITY0405_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string02(), "ENTITY0405_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string03(), "ENTITY0405_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0405));
+                        Assert.assertEquals("Assert for the entity id", findEntity0405.getEntity0405_id().getEntity0005_id(), "ENTITY0005_ID");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string01(), "ENTITY0405_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string02(), "ENTITY0405_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0405.getEntity0405_string03(), "ENTITY0405_STRING03_UPDATED");
                         break;
 
                     case Entity0006:
@@ -634,16 +575,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0006 = (Entity0006) selectEntity0006.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0006);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0006);
-                        if (findEntity0006 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0006));
-                            Assert.assertEquals("Assert for the entity id", findEntity0006.getEntity0006_id(), 0006.0006D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string01(), "ENTITY0006_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string02(), "ENTITY0006_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string03(), "ENTITY0006_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0006));
+                        Assert.assertEquals("Assert for the entity id", findEntity0006.getEntity0006_id(), 0006.0006D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string01(), "ENTITY0006_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string02(), "ENTITY0006_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string03(), "ENTITY0006_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -663,16 +601,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0006 = (Entity0006) selectEntity0006.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0006);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0006);
-                        if (findEntity0006 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0006));
-                            Assert.assertEquals("Assert for the entity id", findEntity0006.getEntity0006_id(), 0006.0006D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string01(), "ENTITY0006_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string02(), "ENTITY0006_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string03(), "ENTITY0006_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0006));
+                        Assert.assertEquals("Assert for the entity id", findEntity0006.getEntity0006_id(), 0006.0006D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string01(), "ENTITY0006_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string02(), "ENTITY0006_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0006.getEntity0006_string03(), "ENTITY0006_STRING03_UPDATED");
                         break;
 
                     case Entity0406:
@@ -681,16 +616,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0406 findEntity0406 = (Entity0406) selectEntity0406.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0406);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0406);
-                        if (findEntity0406 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0406));
-                            Assert.assertEquals("Assert for the entity id", findEntity0406.getEntity0406_id().getEntity0006_id(), 0006.0006D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string01(), "ENTITY0406_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string02(), "ENTITY0406_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string03(), "ENTITY0406_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0406));
+                        Assert.assertEquals("Assert for the entity id", findEntity0406.getEntity0406_id().getEntity0006_id(), 0006.0006D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string01(), "ENTITY0406_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string02(), "ENTITY0406_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string03(), "ENTITY0406_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -703,16 +635,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0406 = (Entity0406) selectEntity0406.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0406);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0406);
-                        if (findEntity0406 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0406));
-                            Assert.assertEquals("Assert for the entity id", findEntity0406.getEntity0406_id().getEntity0006_id(), 0006.0006D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string01(), "ENTITY0406_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string02(), "ENTITY0406_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string03(), "ENTITY0406_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0406));
+                        Assert.assertEquals("Assert for the entity id", findEntity0406.getEntity0406_id().getEntity0006_id(), 0006.0006D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string01(), "ENTITY0406_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string02(), "ENTITY0406_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0406.getEntity0406_string03(), "ENTITY0406_STRING03_UPDATED");
                         break;
 
                     case Entity0007:
@@ -721,16 +650,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0007 = (Entity0007) selectEntity0007.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0007);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0007);
-                        if (findEntity0007 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0007));
-                            Assert.assertEquals("Assert for the entity id", findEntity0007.getEntity0007_id(), 0007.0007D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string01(), "ENTITY0007_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string02(), "ENTITY0007_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string03(), "ENTITY0007_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0007));
+                        Assert.assertEquals("Assert for the entity id", findEntity0007.getEntity0007_id(), 0007.0007D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string01(), "ENTITY0007_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string02(), "ENTITY0007_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string03(), "ENTITY0007_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -750,16 +676,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0007 = (Entity0007) selectEntity0007.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0007);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0007);
-                        if (findEntity0007 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0007));
-                            Assert.assertEquals("Assert for the entity id", findEntity0007.getEntity0007_id(), 0007.0007D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string01(), "ENTITY0007_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string02(), "ENTITY0007_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string03(), "ENTITY0007_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0007));
+                        Assert.assertEquals("Assert for the entity id", findEntity0007.getEntity0007_id(), 0007.0007D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string01(), "ENTITY0007_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string02(), "ENTITY0007_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0007.getEntity0007_string03(), "ENTITY0007_STRING03_UPDATED");
                         break;
 
                     case Entity0407:
@@ -768,16 +691,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0407 findEntity0407 = (Entity0407) selectEntity0407.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0407);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0407);
-                        if (findEntity0407 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0407));
-                            Assert.assertEquals("Assert for the entity id", findEntity0407.getEntity0407_id().getEntity0007_id(), 0007.0007D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string01(), "ENTITY0407_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string02(), "ENTITY0407_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string03(), "ENTITY0407_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0407));
+                        Assert.assertEquals("Assert for the entity id", findEntity0407.getEntity0407_id().getEntity0007_id(), 0007.0007D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string01(), "ENTITY0407_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string02(), "ENTITY0407_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string03(), "ENTITY0407_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -790,16 +710,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0407 = (Entity0407) selectEntity0407.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0407);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0407);
-                        if (findEntity0407 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0407));
-                            Assert.assertEquals("Assert for the entity id", findEntity0407.getEntity0407_id().getEntity0007_id(), 0007.0007D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string01(), "ENTITY0407_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string02(), "ENTITY0407_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string03(), "ENTITY0407_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0407));
+                        Assert.assertEquals("Assert for the entity id", findEntity0407.getEntity0407_id().getEntity0007_id(), 0007.0007D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string01(), "ENTITY0407_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string02(), "ENTITY0407_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0407.getEntity0407_string03(), "ENTITY0407_STRING03_UPDATED");
                         break;
 
                     case Entity0008:
@@ -808,16 +725,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0008 = (Entity0008) selectEntity0008.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0008);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0008);
-                        if (findEntity0008 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0008));
-                            Assert.assertEquals("Assert for the entity id", findEntity0008.getEntity0008_id(), 0008.0008F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0008.getEntity0008_string01(), "ENTITY0008_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0008.getEntity0008_string02(), "ENTITY0008_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0008.getEntity0008_string03(), "ENTITY0008_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0008));
+                        Assert.assertEquals("Assert for the entity id", findEntity0008.getEntity0008_id(), 0008.0008F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0008.getEntity0008_string01(), "ENTITY0008_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0008.getEntity0008_string02(), "ENTITY0008_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0008.getEntity0008_string03(), "ENTITY0008_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -830,17 +744,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0008 = (Entity0008) selectEntity0008.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0008);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0008);
-//                          if (findEntity0008 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0008));
-//                              Assert.assertEquals    ( "Assert for the entity id",     findEntity0008.getEntity0008_id(), 0008.0008F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0008.getEntity0008_string01(), "ENTITY0008_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0008.getEntity0008_string02(), "ENTITY0008_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0008.getEntity0008_string03(), "ENTITY0008_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0008));
+//                          Assert.assertEquals    ( "Assert for the entity id",     findEntity0008.getEntity0008_id(), 0008.0008F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0008.getEntity0008_string01(), "ENTITY0008_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0008.getEntity0008_string02(), "ENTITY0008_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0008.getEntity0008_string03(), "ENTITY0008_STRING03_UPDATED");
                         break;
 
                     case Entity0408:
@@ -849,16 +759,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0408 findEntity0408 = (Entity0408) selectEntity0408.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0408);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0408);
-                        if (findEntity0408 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0408));
-                            Assert.assertEquals("Assert for the entity id", findEntity0408.getEntity0408_id().getEntity0008_id(), 0008.0008F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0408.getEntity0408_string01(), "ENTITY0408_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0408.getEntity0408_string02(), "ENTITY0408_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0408.getEntity0408_string03(), "ENTITY0408_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0408));
+                        Assert.assertEquals("Assert for the entity id", findEntity0408.getEntity0408_id().getEntity0008_id(), 0008.0008F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0408.getEntity0408_string01(), "ENTITY0408_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0408.getEntity0408_string02(), "ENTITY0408_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0408.getEntity0408_string03(), "ENTITY0408_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -871,17 +778,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0408 = (Entity0408) selectEntity0408.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0408);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0408);
-//                          if (findEntity0408 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform child verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0408));
-//                              Assert.assertEquals    ( "Assert for the entity id",     findEntity0408.getEntity0408_id().getEntity0008_id(), 0008.0008F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0408.getEntity0408_string01(), "ENTITY0408_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0408.getEntity0408_string02(), "ENTITY0408_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0408.getEntity0408_string03(), "ENTITY0408_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform child verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0408));
+//                          Assert.assertEquals    ( "Assert for the entity id",     findEntity0408.getEntity0408_id().getEntity0008_id(), 0008.0008F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0408.getEntity0408_string01(), "ENTITY0408_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0408.getEntity0408_string02(), "ENTITY0408_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0408.getEntity0408_string03(), "ENTITY0408_STRING03_UPDATED");
                         break;
 
                     case Entity0009:
@@ -890,16 +793,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0009 = (Entity0009) selectEntity0009.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0009);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0009);
-                        if (findEntity0009 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0009));
-                            Assert.assertEquals("Assert for the entity id", findEntity0009.getEntity0009_id(), 0009.0009F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0009.getEntity0009_string01(), "ENTITY0009_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0009.getEntity0009_string02(), "ENTITY0009_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0009.getEntity0009_string03(), "ENTITY0009_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0009));
+                        Assert.assertEquals("Assert for the entity id", findEntity0009.getEntity0009_id(), 0009.0009F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0009.getEntity0009_string01(), "ENTITY0009_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0009.getEntity0009_string02(), "ENTITY0009_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0009.getEntity0009_string03(), "ENTITY0009_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -912,17 +812,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0009 = (Entity0009) selectEntity0009.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0009);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0009);
-//                          if (findEntity0009 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0009));
-//                              Assert.assertEquals    ( "Assert for the entity id",     findEntity0009.getEntity0009_id(), 0009.0009F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0009.getEntity0009_string01(), "ENTITY0009_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0009.getEntity0009_string02(), "ENTITY0009_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0009.getEntity0009_string03(), "ENTITY0009_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0009));
+//                          Assert.assertEquals    ( "Assert for the entity id",     findEntity0009.getEntity0009_id(), 0009.0009F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0009.getEntity0009_string01(), "ENTITY0009_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0009.getEntity0009_string02(), "ENTITY0009_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0009.getEntity0009_string03(), "ENTITY0009_STRING03_UPDATED");
                         break;
 
                     case Entity0409:
@@ -931,16 +827,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0409 findEntity0409 = (Entity0409) selectEntity0409.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0409);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0409);
-                        if (findEntity0409 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0409));
-                            Assert.assertEquals("Assert for the entity id", findEntity0409.getEntity0409_id().getEntity0009_id(), 0009.0009F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0409.getEntity0409_string01(), "ENTITY0409_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0409.getEntity0409_string02(), "ENTITY0409_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0409.getEntity0409_string03(), "ENTITY0409_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0409));
+                        Assert.assertEquals("Assert for the entity id", findEntity0409.getEntity0409_id().getEntity0009_id(), 0009.0009F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0409.getEntity0409_string01(), "ENTITY0409_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0409.getEntity0409_string02(), "ENTITY0409_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0409.getEntity0409_string03(), "ENTITY0409_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -953,17 +846,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0409 = (Entity0409) selectEntity0409.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0409);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0409);
-//                          if (findEntity0409 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform child verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0409));
-//                              Assert.assertEquals    ( "Assert for the entity id",     findEntity0409.getEntity0409_id().getEntity0009_id(), 0009.0009F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0409.getEntity0409_string01(), "ENTITY0409_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0409.getEntity0409_string02(), "ENTITY0409_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0409.getEntity0409_string03(), "ENTITY0409_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform child verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0409));
+//                          Assert.assertEquals    ( "Assert for the entity id",     findEntity0409.getEntity0409_id().getEntity0009_id(), 0009.0009F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0409.getEntity0409_string01(), "ENTITY0409_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0409.getEntity0409_string02(), "ENTITY0409_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0409.getEntity0409_string03(), "ENTITY0409_STRING03_UPDATED");
                         break;
 
                     case Entity0010:
@@ -972,16 +861,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0010 = (Entity0010) selectEntity0010.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0010);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0010);
-                        if (findEntity0010 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0010));
-                            Assert.assertEquals("Assert for the entity id", findEntity0010.getEntity0010_id(), 10);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string01(), "ENTITY0010_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string02(), "ENTITY0010_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string03(), "ENTITY0010_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0010));
+                        Assert.assertEquals("Assert for the entity id", findEntity0010.getEntity0010_id(), 10);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string01(), "ENTITY0010_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string02(), "ENTITY0010_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string03(), "ENTITY0010_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1001,16 +887,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0010 = (Entity0010) selectEntity0010.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0010);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0010);
-                        if (findEntity0010 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0010));
-                            Assert.assertEquals("Assert for the entity id", findEntity0010.getEntity0010_id(), 10);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string01(), "ENTITY0010_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string02(), "ENTITY0010_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string03(), "ENTITY0010_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0010));
+                        Assert.assertEquals("Assert for the entity id", findEntity0010.getEntity0010_id(), 10);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string01(), "ENTITY0010_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string02(), "ENTITY0010_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0010.getEntity0010_string03(), "ENTITY0010_STRING03_UPDATED");
                         break;
 
                     case Entity0410:
@@ -1019,16 +902,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0410 findEntity0410 = (Entity0410) selectEntity0410.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0410);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0410);
-                        if (findEntity0410 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0410));
-                            Assert.assertEquals("Assert for the entity id", findEntity0410.getEntity0410_id().getEntity0010_id(), 10);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string01(), "ENTITY0410_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string02(), "ENTITY0410_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string03(), "ENTITY0410_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0410));
+                        Assert.assertEquals("Assert for the entity id", findEntity0410.getEntity0410_id().getEntity0010_id(), 10);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string01(), "ENTITY0410_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string02(), "ENTITY0410_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string03(), "ENTITY0410_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1041,16 +921,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0410 = (Entity0410) selectEntity0410.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0410);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0410);
-                        if (findEntity0410 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0410));
-                            Assert.assertEquals("Assert for the entity id", findEntity0410.getEntity0410_id().getEntity0010_id(), 10);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string01(), "ENTITY0410_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string02(), "ENTITY0410_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string03(), "ENTITY0410_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0410));
+                        Assert.assertEquals("Assert for the entity id", findEntity0410.getEntity0410_id().getEntity0010_id(), 10);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string01(), "ENTITY0410_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string02(), "ENTITY0410_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0410.getEntity0410_string03(), "ENTITY0410_STRING03_UPDATED");
                         break;
 
                     case Entity0011:
@@ -1059,16 +936,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0011 = (Entity0011) selectEntity0011.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0011);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0011);
-                        if (findEntity0011 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0011));
-                            Assert.assertEquals("Assert for the entity id", (int) findEntity0011.getEntity0011_id(), 11);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string01(), "ENTITY0011_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string02(), "ENTITY0011_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string03(), "ENTITY0011_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0011));
+                        Assert.assertEquals("Assert for the entity id", (int) findEntity0011.getEntity0011_id(), 11);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string01(), "ENTITY0011_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string02(), "ENTITY0011_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string03(), "ENTITY0011_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1088,16 +962,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0011 = (Entity0011) selectEntity0011.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0011);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0011);
-                        if (findEntity0011 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0011));
-                            Assert.assertEquals("Assert for the entity id", (int) findEntity0011.getEntity0011_id(), 11);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string01(), "ENTITY0011_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string02(), "ENTITY0011_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string03(), "ENTITY0011_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0011));
+                        Assert.assertEquals("Assert for the entity id", (int) findEntity0011.getEntity0011_id(), 11);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string01(), "ENTITY0011_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string02(), "ENTITY0011_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0011.getEntity0011_string03(), "ENTITY0011_STRING03_UPDATED");
                         break;
 
                     case Entity0411:
@@ -1106,16 +977,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0411 findEntity0411 = (Entity0411) selectEntity0411.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0411);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0411);
-                        if (findEntity0411 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0411));
-                            Assert.assertEquals("Assert for the entity id", (int) findEntity0411.getEntity0411_id().getEntity0011_id(), 11);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string01(), "ENTITY0411_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string02(), "ENTITY0411_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string03(), "ENTITY0411_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0411));
+                        Assert.assertEquals("Assert for the entity id", (int) findEntity0411.getEntity0411_id().getEntity0011_id(), 11);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string01(), "ENTITY0411_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string02(), "ENTITY0411_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string03(), "ENTITY0411_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1128,16 +996,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0411 = (Entity0411) selectEntity0411.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0411);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0411);
-                        if (findEntity0411 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0411));
-                            Assert.assertEquals("Assert for the entity id", (int) findEntity0411.getEntity0411_id().getEntity0011_id(), 11);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string01(), "ENTITY0411_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string02(), "ENTITY0411_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string03(), "ENTITY0411_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0411));
+                        Assert.assertEquals("Assert for the entity id", (int) findEntity0411.getEntity0411_id().getEntity0011_id(), 11);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string01(), "ENTITY0411_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string02(), "ENTITY0411_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0411.getEntity0411_string03(), "ENTITY0411_STRING03_UPDATED");
                         break;
 
                     case Entity0012:
@@ -1146,16 +1011,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0012 = (Entity0012) selectEntity0012.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0012);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0012);
-                        if (findEntity0012 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0012));
-                            Assert.assertEquals("Assert for the entity id", findEntity0012.getEntity0012_id(), 12L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string01(), "ENTITY0012_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string02(), "ENTITY0012_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string03(), "ENTITY0012_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0012));
+                        Assert.assertEquals("Assert for the entity id", findEntity0012.getEntity0012_id(), 12L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string01(), "ENTITY0012_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string02(), "ENTITY0012_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string03(), "ENTITY0012_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1175,16 +1037,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0012 = (Entity0012) selectEntity0012.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0012);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0012);
-                        if (findEntity0012 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0012));
-                            Assert.assertEquals("Assert for the entity id", findEntity0012.getEntity0012_id(), 12L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string01(), "ENTITY0012_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string02(), "ENTITY0012_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string03(), "ENTITY0012_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0012));
+                        Assert.assertEquals("Assert for the entity id", findEntity0012.getEntity0012_id(), 12L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string01(), "ENTITY0012_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string02(), "ENTITY0012_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0012.getEntity0012_string03(), "ENTITY0012_STRING03_UPDATED");
                         break;
 
                     case Entity0412:
@@ -1193,16 +1052,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0412 findEntity0412 = (Entity0412) selectEntity0412.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0412);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0412);
-                        if (findEntity0412 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0412));
-                            Assert.assertEquals("Assert for the entity id", findEntity0412.getEntity0412_id().getEntity0012_id(), 12L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string01(), "ENTITY0412_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string02(), "ENTITY0412_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string03(), "ENTITY0412_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0412));
+                        Assert.assertEquals("Assert for the entity id", findEntity0412.getEntity0412_id().getEntity0012_id(), 12L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string01(), "ENTITY0412_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string02(), "ENTITY0412_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string03(), "ENTITY0412_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1215,16 +1071,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0412 = (Entity0412) selectEntity0412.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0412);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0412);
-                        if (findEntity0412 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0412));
-                            Assert.assertEquals("Assert for the entity id", findEntity0412.getEntity0412_id().getEntity0012_id(), 12L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string01(), "ENTITY0412_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string02(), "ENTITY0412_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string03(), "ENTITY0412_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0412));
+                        Assert.assertEquals("Assert for the entity id", findEntity0412.getEntity0412_id().getEntity0012_id(), 12L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string01(), "ENTITY0412_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string02(), "ENTITY0412_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0412.getEntity0412_string03(), "ENTITY0412_STRING03_UPDATED");
                         break;
 
                     case Entity0013:
@@ -1233,16 +1086,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0013 = (Entity0013) selectEntity0013.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0013);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0013);
-                        if (findEntity0013 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0013));
-                            Assert.assertEquals("Assert for the entity id", (long) findEntity0013.getEntity0013_id(), 13L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string01(), "ENTITY0013_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string02(), "ENTITY0013_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string03(), "ENTITY0013_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0013));
+                        Assert.assertEquals("Assert for the entity id", (long) findEntity0013.getEntity0013_id(), 13L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string01(), "ENTITY0013_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string02(), "ENTITY0013_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string03(), "ENTITY0013_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1262,16 +1112,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0013 = (Entity0013) selectEntity0013.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0013);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0013);
-                        if (findEntity0013 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0013));
-                            Assert.assertEquals("Assert for the entity id", (long) findEntity0013.getEntity0013_id(), 13L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string01(), "ENTITY0013_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string02(), "ENTITY0013_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string03(), "ENTITY0013_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0013));
+                        Assert.assertEquals("Assert for the entity id", (long) findEntity0013.getEntity0013_id(), 13L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string01(), "ENTITY0013_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string02(), "ENTITY0013_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0013.getEntity0013_string03(), "ENTITY0013_STRING03_UPDATED");
                         break;
 
                     case Entity0413:
@@ -1280,16 +1127,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0413 findEntity0413 = (Entity0413) selectEntity0413.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0413);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0413);
-                        if (findEntity0413 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0413));
-                            Assert.assertEquals("Assert for the entity id", (long) findEntity0413.getEntity0413_id().getEntity0013_id(), 13L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string01(), "ENTITY0413_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string02(), "ENTITY0413_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string03(), "ENTITY0413_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0413));
+                        Assert.assertEquals("Assert for the entity id", (long) findEntity0413.getEntity0413_id().getEntity0013_id(), 13L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string01(), "ENTITY0413_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string02(), "ENTITY0413_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string03(), "ENTITY0413_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1302,16 +1146,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0413 = (Entity0413) selectEntity0413.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0413);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0413);
-                        if (findEntity0413 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0413));
-                            Assert.assertEquals("Assert for the entity id", (long) findEntity0413.getEntity0413_id().getEntity0013_id(), 13L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string01(), "ENTITY0413_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string02(), "ENTITY0413_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string03(), "ENTITY0413_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0413));
+                        Assert.assertEquals("Assert for the entity id", (long) findEntity0413.getEntity0413_id().getEntity0013_id(), 13L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string01(), "ENTITY0413_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string02(), "ENTITY0413_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0413.getEntity0413_string03(), "ENTITY0413_STRING03_UPDATED");
                         break;
 
                     case Entity0014:
@@ -1320,16 +1161,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0014 = (Entity0014) selectEntity0014.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0014);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0014);
-                        if (findEntity0014 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0014));
-                            Assert.assertEquals("Assert for the entity id", findEntity0014.getEntity0014_id(), (short) 14);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string01(), "ENTITY0014_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string02(), "ENTITY0014_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string03(), "ENTITY0014_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0014));
+                        Assert.assertEquals("Assert for the entity id", findEntity0014.getEntity0014_id(), (short) 14);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string01(), "ENTITY0014_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string02(), "ENTITY0014_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string03(), "ENTITY0014_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1349,16 +1187,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0014 = (Entity0014) selectEntity0014.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0014);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0014);
-                        if (findEntity0014 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0014));
-                            Assert.assertEquals("Assert for the entity id", findEntity0014.getEntity0014_id(), (short) 14);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string01(), "ENTITY0014_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string02(), "ENTITY0014_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string03(), "ENTITY0014_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0014));
+                        Assert.assertEquals("Assert for the entity id", findEntity0014.getEntity0014_id(), (short) 14);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string01(), "ENTITY0014_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string02(), "ENTITY0014_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0014.getEntity0014_string03(), "ENTITY0014_STRING03_UPDATED");
                         break;
 
                     case Entity0414:
@@ -1367,16 +1202,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0414 findEntity0414 = (Entity0414) selectEntity0414.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0414);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0414);
-                        if (findEntity0414 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0414));
-                            Assert.assertEquals("Assert for the entity id", findEntity0414.getEntity0414_id().getEntity0014_id(), (short) 14);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string01(), "ENTITY0414_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string02(), "ENTITY0414_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string03(), "ENTITY0414_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0414));
+                        Assert.assertEquals("Assert for the entity id", findEntity0414.getEntity0414_id().getEntity0014_id(), (short) 14);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string01(), "ENTITY0414_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string02(), "ENTITY0414_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string03(), "ENTITY0414_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1389,16 +1221,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0414 = (Entity0414) selectEntity0414.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0414);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0414);
-                        if (findEntity0414 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0414));
-                            Assert.assertEquals("Assert for the entity id", findEntity0414.getEntity0414_id().getEntity0014_id(), (short) 14);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string01(), "ENTITY0414_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string02(), "ENTITY0414_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string03(), "ENTITY0414_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0414));
+                        Assert.assertEquals("Assert for the entity id", findEntity0414.getEntity0414_id().getEntity0014_id(), (short) 14);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string01(), "ENTITY0414_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string02(), "ENTITY0414_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0414.getEntity0414_string03(), "ENTITY0414_STRING03_UPDATED");
                         break;
 
                     case Entity0015:
@@ -1407,16 +1236,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0015 = (Entity0015) selectEntity0015.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0015);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0015);
-                        if (findEntity0015 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0015));
-                            Assert.assertEquals("Assert for the entity id", (short) findEntity0015.getEntity0015_id(), (short) 15);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string01(), "ENTITY0015_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string02(), "ENTITY0015_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string03(), "ENTITY0015_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0015));
+                        Assert.assertEquals("Assert for the entity id", (short) findEntity0015.getEntity0015_id(), (short) 15);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string01(), "ENTITY0015_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string02(), "ENTITY0015_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string03(), "ENTITY0015_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1436,16 +1262,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0015 = (Entity0015) selectEntity0015.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0015);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0015);
-                        if (findEntity0015 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0015));
-                            Assert.assertEquals("Assert for the entity id", (short) findEntity0015.getEntity0015_id(), (short) 15);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string01(), "ENTITY0015_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string02(), "ENTITY0015_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string03(), "ENTITY0015_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0015));
+                        Assert.assertEquals("Assert for the entity id", (short) findEntity0015.getEntity0015_id(), (short) 15);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string01(), "ENTITY0015_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string02(), "ENTITY0015_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0015.getEntity0015_string03(), "ENTITY0015_STRING03_UPDATED");
                         break;
 
                     case Entity0415:
@@ -1454,16 +1277,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0415 findEntity0415 = (Entity0415) selectEntity0415.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0415);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0415);
-                        if (findEntity0415 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0415));
-                            Assert.assertEquals("Assert for the entity id", (short) findEntity0415.getEntity0415_id().getEntity0015_id(), (short) 15);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string01(), "ENTITY0415_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string02(), "ENTITY0415_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string03(), "ENTITY0415_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0415));
+                        Assert.assertEquals("Assert for the entity id", (short) findEntity0415.getEntity0415_id().getEntity0015_id(), (short) 15);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string01(), "ENTITY0415_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string02(), "ENTITY0415_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string03(), "ENTITY0415_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1476,16 +1296,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0415 = (Entity0415) selectEntity0415.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0415);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0415);
-                        if (findEntity0415 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0415));
-                            Assert.assertEquals("Assert for the entity id", (short) findEntity0415.getEntity0415_id().getEntity0015_id(), (short) 15);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string01(), "ENTITY0415_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string02(), "ENTITY0415_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string03(), "ENTITY0415_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0415));
+                        Assert.assertEquals("Assert for the entity id", (short) findEntity0415.getEntity0415_id().getEntity0015_id(), (short) 15);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string01(), "ENTITY0415_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string02(), "ENTITY0415_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0415.getEntity0415_string03(), "ENTITY0415_STRING03_UPDATED");
                         break;
 
                     case Entity0016:
@@ -1494,16 +1311,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0016 = (Entity0016) selectEntity0016.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0016);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0016);
-                        if (findEntity0016 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0016));
-                            Assert.assertTrue("Assert for the entity id", findEntity0016.getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string01(), "ENTITY0016_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string02(), "ENTITY0016_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string03(), "ENTITY0016_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0016));
+                        Assert.assertTrue("Assert for the entity id", findEntity0016.getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string01(), "ENTITY0016_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string02(), "ENTITY0016_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string03(), "ENTITY0016_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1523,16 +1337,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0016 = (Entity0016) selectEntity0016.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0016);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0016);
-                        if (findEntity0016 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0016));
-                            Assert.assertTrue("Assert for the entity id", findEntity0016.getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string01(), "ENTITY0016_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string02(), "ENTITY0016_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string03(), "ENTITY0016_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0016));
+                        Assert.assertTrue("Assert for the entity id", findEntity0016.getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string01(), "ENTITY0016_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string02(), "ENTITY0016_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0016.getEntity0016_string03(), "ENTITY0016_STRING03_UPDATED");
                         break;
 
                     case Entity0416:
@@ -1541,19 +1352,16 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0416 findEntity0416 = (Entity0416) selectEntity0416.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0416);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0416);
-                        if (findEntity0416 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0416));
-                            Assert.assertTrue("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
-                            Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string01(), "ENTITY0016_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string02(), "ENTITY0016_STRING02");
-                            Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string03(), "ENTITY0016_STRING03_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string01(), "ENTITY0416_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string02(), "ENTITY0416_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string03(), "ENTITY0416_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0416));
+                        Assert.assertTrue("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
+                        Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string01(), "ENTITY0016_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string02(), "ENTITY0016_STRING02");
+                        Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string03(), "ENTITY0016_STRING03_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string01(), "ENTITY0416_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string02(), "ENTITY0416_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string03(), "ENTITY0416_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1566,19 +1374,16 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0416 = (Entity0416) selectEntity0416.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0416);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0416);
-                        if (findEntity0416 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0416));
-                            Assert.assertTrue("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
-                            Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string01(), "ENTITY0016_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string02(), "ENTITY0016_STRING02");
-                            Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string03(), "ENTITY0016_STRING03_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string01(), "ENTITY0416_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string02(), "ENTITY0416_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string03(), "ENTITY0416_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0416));
+                        Assert.assertTrue("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_id().compareTo(new BigDecimal("0016.001616")) == 0);
+                        Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string01(), "ENTITY0016_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string02(), "ENTITY0016_STRING02");
+                        Assert.assertEquals("Assert for the entity id", findEntity0416.getEntity0416_id().getEntity0016_string03(), "ENTITY0016_STRING03_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string01(), "ENTITY0416_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string02(), "ENTITY0416_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0416.getEntity0416_string03(), "ENTITY0416_STRING03_UPDATED");
                         break;
 
                     case Entity0017:
@@ -1587,16 +1392,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0017 = (Entity0017) selectEntity0017.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0017);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0017);
-                        if (findEntity0017 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0017));
-                            Assert.assertEquals("Assert for the entity id", findEntity0017.getEntity0017_id(), new BigInteger("00170017"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string01(), "ENTITY0017_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string02(), "ENTITY0017_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string03(), "ENTITY0017_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0017));
+                        Assert.assertEquals("Assert for the entity id", findEntity0017.getEntity0017_id(), new BigInteger("00170017"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string01(), "ENTITY0017_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string02(), "ENTITY0017_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string03(), "ENTITY0017_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1616,16 +1418,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0017 = (Entity0017) selectEntity0017.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0017);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0017);
-                        if (findEntity0017 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0017));
-                            Assert.assertEquals("Assert for the entity id", findEntity0017.getEntity0017_id(), new BigInteger("00170017"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string01(), "ENTITY0017_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string02(), "ENTITY0017_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string03(), "ENTITY0017_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0017));
+                        Assert.assertEquals("Assert for the entity id", findEntity0017.getEntity0017_id(), new BigInteger("00170017"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string01(), "ENTITY0017_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string02(), "ENTITY0017_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0017.getEntity0017_string03(), "ENTITY0017_STRING03_UPDATED");
                         break;
 
                     case Entity0417:
@@ -1634,16 +1433,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0417 findEntity0417 = (Entity0417) selectEntity0417.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0417);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0417);
-                        if (findEntity0417 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0417));
-                            Assert.assertEquals("Assert for the entity id", findEntity0417.getEntity0417_id().getEntity0017_id(), new BigInteger("00170017"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string01(), "ENTITY0417_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string02(), "ENTITY0417_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string03(), "ENTITY0417_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0417));
+                        Assert.assertEquals("Assert for the entity id", findEntity0417.getEntity0417_id().getEntity0017_id(), new BigInteger("00170017"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string01(), "ENTITY0417_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string02(), "ENTITY0417_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string03(), "ENTITY0417_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1656,16 +1452,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0417 = (Entity0417) selectEntity0417.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0417);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0417);
-                        if (findEntity0417 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0417));
-                            Assert.assertEquals("Assert for the entity id", findEntity0417.getEntity0417_id().getEntity0017_id(), new BigInteger("00170017"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string01(), "ENTITY0417_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string02(), "ENTITY0417_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string03(), "ENTITY0417_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0417));
+                        Assert.assertEquals("Assert for the entity id", findEntity0417.getEntity0417_id().getEntity0017_id(), new BigInteger("00170017"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string01(), "ENTITY0417_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string02(), "ENTITY0417_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0417.getEntity0417_string03(), "ENTITY0417_STRING03_UPDATED");
                         break;
 
                     case Entity0018:
@@ -1674,16 +1467,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0018 = (Entity0018) selectEntity0018.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0018);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0018);
-                        if (findEntity0018 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0018));
-                            Assert.assertTrue("Assert for the entity id", findEntity0018.getEntity0018_id().compareTo(javaUtilDate1) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string01(), "ENTITY0018_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string02(), "ENTITY0018_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string03(), "ENTITY0018_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0018));
+                        Assert.assertTrue("Assert for the entity id", findEntity0018.getEntity0018_id().compareTo(javaUtilDate1) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string01(), "ENTITY0018_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string02(), "ENTITY0018_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string03(), "ENTITY0018_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1703,16 +1493,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0018 = (Entity0018) selectEntity0018.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0018);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0018);
-                        if (findEntity0018 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0018));
-                            Assert.assertTrue("Assert for the entity id", findEntity0018.getEntity0018_id().compareTo(javaUtilDate1) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string01(), "ENTITY0018_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string02(), "ENTITY0018_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string03(), "ENTITY0018_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0018));
+                        Assert.assertTrue("Assert for the entity id", findEntity0018.getEntity0018_id().compareTo(javaUtilDate1) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string01(), "ENTITY0018_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string02(), "ENTITY0018_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0018.getEntity0018_string03(), "ENTITY0018_STRING03_UPDATED");
                         break;
 
                     case Entity0418:
@@ -1721,19 +1508,16 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0418 findEntity0418 = (Entity0418) selectEntity0418.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0418);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0418);
-                        if (findEntity0418 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0418));
-                            Assert.assertTrue("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_id().compareTo(javaUtilDate1) == 0);
-                            Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string01(), "ENTITY0018_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string02(), "ENTITY0018_STRING02");
-                            Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string03(), "ENTITY0018_STRING03_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string01(), "ENTITY0418_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string02(), "ENTITY0418_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string03(), "ENTITY0418_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0418));
+                        Assert.assertTrue("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_id().compareTo(javaUtilDate1) == 0);
+                        Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string01(), "ENTITY0018_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string02(), "ENTITY0018_STRING02");
+                        Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string03(), "ENTITY0018_STRING03_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string01(), "ENTITY0418_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string02(), "ENTITY0418_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string03(), "ENTITY0418_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1746,19 +1530,16 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0418 = (Entity0418) selectEntity0418.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0418);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0418);
-                        if (findEntity0418 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0418));
-                            Assert.assertTrue("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_id().compareTo(javaUtilDate1) == 0);
-                            Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string01(), "ENTITY0018_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string02(), "ENTITY0018_STRING02");
-                            Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string03(), "ENTITY0018_STRING03_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string01(), "ENTITY0418_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string02(), "ENTITY0418_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string03(), "ENTITY0418_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0418));
+                        Assert.assertTrue("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_id().compareTo(javaUtilDate1) == 0);
+                        Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string01(), "ENTITY0018_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string02(), "ENTITY0018_STRING02");
+                        Assert.assertEquals("Assert for the entity id", findEntity0418.getEntity0418_id().getEntity0018_string03(), "ENTITY0018_STRING03_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string01(), "ENTITY0418_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string02(), "ENTITY0418_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0418.getEntity0418_string03(), "ENTITY0418_STRING03_UPDATED");
                         break;
 
                     case Entity0019:
@@ -1767,16 +1548,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0019 = (Entity0019) selectEntity0019.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0019);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0019);
-                        if (findEntity0019 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0019));
-                            Assert.assertTrue("Assert for the entity id", findEntity0019.getEntity0019_id().compareTo(javaSqlDate1) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string01(), "ENTITY0019_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string02(), "ENTITY0019_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string03(), "ENTITY0019_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0019));
+                        Assert.assertTrue("Assert for the entity id", findEntity0019.getEntity0019_id().compareTo(javaSqlDate1) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string01(), "ENTITY0019_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string02(), "ENTITY0019_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string03(), "ENTITY0019_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1796,16 +1574,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0019 = (Entity0019) selectEntity0019.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0019);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0019);
-                        if (findEntity0019 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0019));
-                            Assert.assertTrue("Assert for the entity id", findEntity0019.getEntity0019_id().compareTo(javaSqlDate1) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string01(), "ENTITY0019_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string02(), "ENTITY0019_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string03(), "ENTITY0019_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0019));
+                        Assert.assertTrue("Assert for the entity id", findEntity0019.getEntity0019_id().compareTo(javaSqlDate1) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string01(), "ENTITY0019_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string02(), "ENTITY0019_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0019.getEntity0019_string03(), "ENTITY0019_STRING03_UPDATED");
                         break;
 
                     case Entity0419:
@@ -1814,16 +1589,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0419 findEntity0419 = (Entity0419) selectEntity0419.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0419);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0419);
-                        if (findEntity0419 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0419));
-                            Assert.assertTrue("Assert for the entity id", findEntity0419.getEntity0419_id().getEntity0019_id().compareTo(javaSqlDate1) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string01(), "ENTITY0419_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string02(), "ENTITY0419_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string03(), "ENTITY0419_STRING03");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0419));
+                        Assert.assertTrue("Assert for the entity id", findEntity0419.getEntity0419_id().getEntity0019_id().compareTo(javaSqlDate1) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string01(), "ENTITY0419_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string02(), "ENTITY0419_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string03(), "ENTITY0419_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1836,16 +1608,13 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0419 = (Entity0419) selectEntity0419.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0419);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0419);
-                        if (findEntity0419 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform child verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0419));
-                            Assert.assertTrue("Assert for the entity id", findEntity0419.getEntity0419_id().getEntity0019_id().compareTo(javaSqlDate1) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string01(), "ENTITY0419_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string02(), "ENTITY0419_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string03(), "ENTITY0419_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform child verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0419));
+                        Assert.assertTrue("Assert for the entity id", findEntity0419.getEntity0419_id().getEntity0019_id().compareTo(javaSqlDate1) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string01(), "ENTITY0419_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string02(), "ENTITY0419_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0419.getEntity0419_string03(), "ENTITY0419_STRING03_UPDATED");
                         break;
 
                     case Entity0101:
@@ -1856,17 +1625,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0101 findEntity0101 = (Entity0101) selectEntity0101.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0101);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0101);
-                        if (findEntity0101 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0101));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0101.getEntity0101_id1(), (byte) 101);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0101.getEntity0101_id2(), (byte) 102);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string01(), "ENTITY0101_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string02(), "ENTITY0101_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string03(), "ENTITY0101_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0101));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0101.getEntity0101_id1(), (byte) 101);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0101.getEntity0101_id2(), (byte) 102);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string01(), "ENTITY0101_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string02(), "ENTITY0101_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string03(), "ENTITY0101_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1879,17 +1645,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0101 = (Entity0101) selectEntity0101.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0101);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0101);
-                        if (findEntity0101 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0101));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0101.getEntity0101_id1(), (byte) 101);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0101.getEntity0101_id2(), (byte) 102);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string01(), "ENTITY0101_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string02(), "ENTITY0101_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string03(), "ENTITY0101_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0101));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0101.getEntity0101_id1(), (byte) 101);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0101.getEntity0101_id2(), (byte) 102);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string01(), "ENTITY0101_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string02(), "ENTITY0101_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0101.getEntity0101_string03(), "ENTITY0101_STRING03_UPDATED");
                         break;
 
                     case Entity0102:
@@ -1900,17 +1663,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0102 findEntity0102 = (Entity0102) selectEntity0102.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0102);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0102);
-                        if (findEntity0102 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0102));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0102.getEntity0102_id1(), (byte) 102);
-                            Assert.assertEquals("Assert for the entity id2", (byte) findEntity0102.getEntity0102_id2(), (byte) 103);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string01(), "ENTITY0102_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string02(), "ENTITY0102_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string03(), "ENTITY0102_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0102));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0102.getEntity0102_id1(), (byte) 102);
+                        Assert.assertEquals("Assert for the entity id2", (byte) findEntity0102.getEntity0102_id2(), (byte) 103);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string01(), "ENTITY0102_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string02(), "ENTITY0102_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string03(), "ENTITY0102_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1923,17 +1683,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0102 = (Entity0102) selectEntity0102.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0102);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0102);
-                        if (findEntity0102 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0102));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0102.getEntity0102_id1(), (byte) 102);
-                            Assert.assertEquals("Assert for the entity id2", (byte) findEntity0102.getEntity0102_id2(), (byte) 103);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string01(), "ENTITY0102_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string02(), "ENTITY0102_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string03(), "ENTITY0102_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0102));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0102.getEntity0102_id1(), (byte) 102);
+                        Assert.assertEquals("Assert for the entity id2", (byte) findEntity0102.getEntity0102_id2(), (byte) 103);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string01(), "ENTITY0102_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string02(), "ENTITY0102_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0102.getEntity0102_string03(), "ENTITY0102_STRING03_UPDATED");
                         break;
 
                     case Entity0103:
@@ -1944,17 +1701,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0103 findEntity0103 = (Entity0103) selectEntity0103.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0103);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0103);
-                        if (findEntity0103 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0103));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0103.getEntity0103_id1(), '3');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0103.getEntity0103_id2(), '4');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string01(), "ENTITY0103_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string02(), "ENTITY0103_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string03(), "ENTITY0103_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0103));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0103.getEntity0103_id1(), '3');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0103.getEntity0103_id2(), '4');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string01(), "ENTITY0103_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string02(), "ENTITY0103_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string03(), "ENTITY0103_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -1967,17 +1721,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0103 = (Entity0103) selectEntity0103.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0103);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0103);
-                        if (findEntity0103 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0103));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0103.getEntity0103_id1(), '3');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0103.getEntity0103_id2(), '4');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string01(), "ENTITY0103_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string02(), "ENTITY0103_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string03(), "ENTITY0103_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0103));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0103.getEntity0103_id1(), '3');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0103.getEntity0103_id2(), '4');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string01(), "ENTITY0103_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string02(), "ENTITY0103_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0103.getEntity0103_string03(), "ENTITY0103_STRING03_UPDATED");
                         break;
 
                     case Entity0104:
@@ -1988,17 +1739,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0104 findEntity0104 = (Entity0104) selectEntity0104.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0104);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0104);
-                        if (findEntity0104 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0104));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0104.getEntity0104_id1(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0104.getEntity0104_id2(), new Character('5'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string01(), "ENTITY0104_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string02(), "ENTITY0104_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string03(), "ENTITY0104_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0104));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0104.getEntity0104_id1(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0104.getEntity0104_id2(), new Character('5'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string01(), "ENTITY0104_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string02(), "ENTITY0104_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string03(), "ENTITY0104_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2011,17 +1759,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0104 = (Entity0104) selectEntity0104.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0104);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0104);
-                        if (findEntity0104 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0104));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0104.getEntity0104_id1(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0104.getEntity0104_id2(), new Character('5'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string01(), "ENTITY0104_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string02(), "ENTITY0104_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string03(), "ENTITY0104_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0104));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0104.getEntity0104_id1(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0104.getEntity0104_id2(), new Character('5'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string01(), "ENTITY0104_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string02(), "ENTITY0104_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0104.getEntity0104_string03(), "ENTITY0104_STRING03_UPDATED");
                         break;
 
                     case Entity0105:
@@ -2032,17 +1777,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0105 findEntity0105 = (Entity0105) selectEntity0105.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0105);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0105);
-                        if (findEntity0105 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0105));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0105.getEntity0105_id1(), "ENTITY0105_ID1");
-                            Assert.assertEquals("Assert for the entity id2", findEntity0105.getEntity0105_id2(), "ENTITY0105_ID2");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string01(), "ENTITY0105_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string02(), "ENTITY0105_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string03(), "ENTITY0105_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0105));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0105.getEntity0105_id1(), "ENTITY0105_ID1");
+                        Assert.assertEquals("Assert for the entity id2", findEntity0105.getEntity0105_id2(), "ENTITY0105_ID2");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string01(), "ENTITY0105_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string02(), "ENTITY0105_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string03(), "ENTITY0105_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2055,17 +1797,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0105 = (Entity0105) selectEntity0105.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0105);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0105);
-                        if (findEntity0105 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0105));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0105.getEntity0105_id1(), "ENTITY0105_ID1");
-                            Assert.assertEquals("Assert for the entity id2", findEntity0105.getEntity0105_id2(), "ENTITY0105_ID2");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string01(), "ENTITY0105_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string02(), "ENTITY0105_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string03(), "ENTITY0105_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0105));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0105.getEntity0105_id1(), "ENTITY0105_ID1");
+                        Assert.assertEquals("Assert for the entity id2", findEntity0105.getEntity0105_id2(), "ENTITY0105_ID2");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string01(), "ENTITY0105_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string02(), "ENTITY0105_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0105.getEntity0105_string03(), "ENTITY0105_STRING03_UPDATED");
                         break;
 
                     case Entity0106:
@@ -2076,17 +1815,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0106 findEntity0106 = (Entity0106) selectEntity0106.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0106);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0106);
-                        if (findEntity0106 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0106));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0106.getEntity0106_id1(), 0106.0106D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0106.getEntity0106_id2(), 0107.0107D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string01(), "ENTITY0106_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string02(), "ENTITY0106_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string03(), "ENTITY0106_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0106));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0106.getEntity0106_id1(), 0106.0106D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0106.getEntity0106_id2(), 0107.0107D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string01(), "ENTITY0106_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string02(), "ENTITY0106_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string03(), "ENTITY0106_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2099,17 +1835,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0106 = (Entity0106) selectEntity0106.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0106);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0106);
-                        if (findEntity0106 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0106));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0106.getEntity0106_id1(), 0106.0106D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0106.getEntity0106_id2(), 0107.0107D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string01(), "ENTITY0106_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string02(), "ENTITY0106_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string03(), "ENTITY0106_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0106));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0106.getEntity0106_id1(), 0106.0106D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0106.getEntity0106_id2(), 0107.0107D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string01(), "ENTITY0106_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string02(), "ENTITY0106_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0106.getEntity0106_string03(), "ENTITY0106_STRING03_UPDATED");
                         break;
 
                     case Entity0107:
@@ -2120,17 +1853,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0107 findEntity0107 = (Entity0107) selectEntity0107.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0107);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0107);
-                        if (findEntity0107 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0107));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0107.getEntity0107_id1(), 0107.0107D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0107.getEntity0107_id2(), 0108.0108D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string01(), "ENTITY0107_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string02(), "ENTITY0107_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string03(), "ENTITY0107_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0107));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0107.getEntity0107_id1(), 0107.0107D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0107.getEntity0107_id2(), 0108.0108D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string01(), "ENTITY0107_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string02(), "ENTITY0107_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string03(), "ENTITY0107_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2143,17 +1873,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0107 = (Entity0107) selectEntity0107.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0107);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0107);
-                        if (findEntity0107 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0107));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0107.getEntity0107_id1(), 0107.0107D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0107.getEntity0107_id2(), 0108.0108D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string01(), "ENTITY0107_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string02(), "ENTITY0107_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string03(), "ENTITY0107_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0107));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0107.getEntity0107_id1(), 0107.0107D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0107.getEntity0107_id2(), 0108.0108D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string01(), "ENTITY0107_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string02(), "ENTITY0107_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0107.getEntity0107_string03(), "ENTITY0107_STRING03_UPDATED");
                         break;
 
                     case Entity0108:
@@ -2164,17 +1891,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0108 findEntity0108 = (Entity0108) selectEntity0108.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0108);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0108);
-                        if (findEntity0108 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0108));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0108.getEntity0108_id1(), 0108.0108F, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0108.getEntity0108_id2(), 0109.0109F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0108.getEntity0108_string01(), "ENTITY0108_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0108.getEntity0108_string02(), "ENTITY0108_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0108.getEntity0108_string03(), "ENTITY0108_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0108));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0108.getEntity0108_id1(), 0108.0108F, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0108.getEntity0108_id2(), 0109.0109F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0108.getEntity0108_string01(), "ENTITY0108_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0108.getEntity0108_string02(), "ENTITY0108_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0108.getEntity0108_string03(), "ENTITY0108_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2187,18 +1911,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0108 = (Entity0108) selectEntity0108.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0108);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0108);
-//                          if (findEntity0108 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0108));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0108.getEntity0108_id1(), 0108.0108F);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0108.getEntity0108_id2(), 0109.0109F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0108.getEntity0108_string01(), "ENTITY0108_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0108.getEntity0108_string02(), "ENTITY0108_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0108.getEntity0108_string03(), "ENTITY0108_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0108));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0108.getEntity0108_id1(), 0108.0108F);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0108.getEntity0108_id2(), 0109.0109F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0108.getEntity0108_string01(), "ENTITY0108_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0108.getEntity0108_string02(), "ENTITY0108_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0108.getEntity0108_string03(), "ENTITY0108_STRING03_UPDATED");
                         break;
 
                     case Entity0109:
@@ -2209,17 +1929,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0109 findEntity0109 = (Entity0109) selectEntity0109.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0109);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0109);
-                        if (findEntity0109 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0109));
-                            Assert.assertEquals("Assert for the entity id", findEntity0109.getEntity0109_id1(), 0109.0109F, 0.1);
-                            Assert.assertEquals("Assert for the entity id", findEntity0109.getEntity0109_id2(), 0110.0110F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0109.getEntity0109_string01(), "ENTITY0109_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0109.getEntity0109_string02(), "ENTITY0109_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0109.getEntity0109_string03(), "ENTITY0109_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0109));
+                        Assert.assertEquals("Assert for the entity id", findEntity0109.getEntity0109_id1(), 0109.0109F, 0.1);
+                        Assert.assertEquals("Assert for the entity id", findEntity0109.getEntity0109_id2(), 0110.0110F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0109.getEntity0109_string01(), "ENTITY0109_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0109.getEntity0109_string02(), "ENTITY0109_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0109.getEntity0109_string03(), "ENTITY0109_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2232,18 +1949,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0109 = (Entity0109) selectEntity0109.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0109);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0109);
-//                          if (findEntity0109 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0109));
-//                              Assert.assertEquals    ( "Assert for the entity id",     findEntity0109.getEntity0109_id1(), 0109.0109F);
-//                              Assert.assertEquals    ( "Assert for the entity id",     findEntity0109.getEntity0109_id2(), 0110.0110F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0109.getEntity0109_string01(), "ENTITY0109_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0109.getEntity0109_string02(), "ENTITY0109_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0109.getEntity0109_string03(), "ENTITY0109_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0109));
+//                          Assert.assertEquals    ( "Assert for the entity id",     findEntity0109.getEntity0109_id1(), 0109.0109F);
+//                          Assert.assertEquals    ( "Assert for the entity id",     findEntity0109.getEntity0109_id2(), 0110.0110F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0109.getEntity0109_string01(), "ENTITY0109_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0109.getEntity0109_string02(), "ENTITY0109_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0109.getEntity0109_string03(), "ENTITY0109_STRING03_UPDATED");
                         break;
 
                     case Entity0110:
@@ -2254,17 +1967,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0110 findEntity0110 = (Entity0110) selectEntity0110.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0110);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0110);
-                        if (findEntity0110 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0110));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0110.getEntity0110_id1(), 110);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0110.getEntity0110_id2(), 111);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string01(), "ENTITY0110_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string02(), "ENTITY0110_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string03(), "ENTITY0110_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0110));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0110.getEntity0110_id1(), 110);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0110.getEntity0110_id2(), 111);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string01(), "ENTITY0110_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string02(), "ENTITY0110_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string03(), "ENTITY0110_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2277,17 +1987,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0110 = (Entity0110) selectEntity0110.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0110);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0110);
-                        if (findEntity0110 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0110));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0110.getEntity0110_id1(), 110);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0110.getEntity0110_id2(), 111);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string01(), "ENTITY0110_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string02(), "ENTITY0110_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string03(), "ENTITY0110_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0110));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0110.getEntity0110_id1(), 110);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0110.getEntity0110_id2(), 111);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string01(), "ENTITY0110_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string02(), "ENTITY0110_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0110.getEntity0110_string03(), "ENTITY0110_STRING03_UPDATED");
                         break;
 
                     case Entity0111:
@@ -2298,17 +2005,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0111 findEntity0111 = (Entity0111) selectEntity0111.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0111);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0111);
-                        if (findEntity0111 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0111));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0111.getEntity0111_id1(), 111);
-                            Assert.assertEquals("Assert for the entity id2", (int) findEntity0111.getEntity0111_id2(), 112);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string01(), "ENTITY0111_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string02(), "ENTITY0111_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string03(), "ENTITY0111_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0111));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0111.getEntity0111_id1(), 111);
+                        Assert.assertEquals("Assert for the entity id2", (int) findEntity0111.getEntity0111_id2(), 112);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string01(), "ENTITY0111_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string02(), "ENTITY0111_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string03(), "ENTITY0111_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2321,17 +2025,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0111 = (Entity0111) selectEntity0111.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0111);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0111);
-                        if (findEntity0111 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0111));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0111.getEntity0111_id1(), 111);
-                            Assert.assertEquals("Assert for the entity id2", (int) findEntity0111.getEntity0111_id2(), 112);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string01(), "ENTITY0111_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string02(), "ENTITY0111_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string03(), "ENTITY0111_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0111));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0111.getEntity0111_id1(), 111);
+                        Assert.assertEquals("Assert for the entity id2", (int) findEntity0111.getEntity0111_id2(), 112);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string01(), "ENTITY0111_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string02(), "ENTITY0111_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0111.getEntity0111_string03(), "ENTITY0111_STRING03_UPDATED");
                         break;
 
                     case Entity0112:
@@ -2342,17 +2043,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0112 findEntity0112 = (Entity0112) selectEntity0112.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0112);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0112);
-                        if (findEntity0112 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0112));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0112.getEntity0112_id1(), 112L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0112.getEntity0112_id2(), 113L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string01(), "ENTITY0112_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string02(), "ENTITY0112_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string03(), "ENTITY0112_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0112));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0112.getEntity0112_id1(), 112L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0112.getEntity0112_id2(), 113L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string01(), "ENTITY0112_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string02(), "ENTITY0112_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string03(), "ENTITY0112_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2365,17 +2063,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0112 = (Entity0112) selectEntity0112.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0112);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0112);
-                        if (findEntity0112 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0112));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0112.getEntity0112_id1(), 112L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0112.getEntity0112_id2(), 113L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string01(), "ENTITY0112_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string02(), "ENTITY0112_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string03(), "ENTITY0112_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0112));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0112.getEntity0112_id1(), 112L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0112.getEntity0112_id2(), 113L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string01(), "ENTITY0112_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string02(), "ENTITY0112_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0112.getEntity0112_string03(), "ENTITY0112_STRING03_UPDATED");
                         break;
 
                     case Entity0113:
@@ -2386,17 +2081,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0113 findEntity0113 = (Entity0113) selectEntity0113.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0113);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0113);
-                        if (findEntity0113 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0113));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0113.getEntity0113_id1(), 113L);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0113.getEntity0113_id2(), 114L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string01(), "ENTITY0113_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string02(), "ENTITY0113_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string03(), "ENTITY0113_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0113));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0113.getEntity0113_id1(), 113L);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0113.getEntity0113_id2(), 114L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string01(), "ENTITY0113_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string02(), "ENTITY0113_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string03(), "ENTITY0113_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2409,17 +2101,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0113 = (Entity0113) selectEntity0113.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0113);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0113);
-                        if (findEntity0113 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0113));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0113.getEntity0113_id1(), 113L);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0113.getEntity0113_id2(), 114L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string01(), "ENTITY0113_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string02(), "ENTITY0113_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string03(), "ENTITY0113_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0113));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0113.getEntity0113_id1(), 113L);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0113.getEntity0113_id2(), 114L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string01(), "ENTITY0113_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string02(), "ENTITY0113_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0113.getEntity0113_string03(), "ENTITY0113_STRING03_UPDATED");
                         break;
 
                     case Entity0114:
@@ -2430,17 +2119,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0114 findEntity0114 = (Entity0114) selectEntity0114.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0114);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0114);
-                        if (findEntity0114 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0114));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0114.getEntity0114_id1(), (short) 114);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0114.getEntity0114_id2(), (short) 115);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string01(), "ENTITY0114_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string02(), "ENTITY0114_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string03(), "ENTITY0114_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0114));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0114.getEntity0114_id1(), (short) 114);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0114.getEntity0114_id2(), (short) 115);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string01(), "ENTITY0114_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string02(), "ENTITY0114_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string03(), "ENTITY0114_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2453,17 +2139,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0114 = (Entity0114) selectEntity0114.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0114);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0114);
-                        if (findEntity0114 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0114));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0114.getEntity0114_id1(), (short) 114);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0114.getEntity0114_id2(), (short) 115);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string01(), "ENTITY0114_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string02(), "ENTITY0114_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string03(), "ENTITY0114_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0114));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0114.getEntity0114_id1(), (short) 114);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0114.getEntity0114_id2(), (short) 115);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string01(), "ENTITY0114_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string02(), "ENTITY0114_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0114.getEntity0114_string03(), "ENTITY0114_STRING03_UPDATED");
                         break;
 
                     case Entity0115:
@@ -2474,17 +2157,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0115 findEntity0115 = (Entity0115) selectEntity0115.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0115);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0115);
-                        if (findEntity0115 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0115));
-                            Assert.assertEquals("Assert for the entity id1", (short) findEntity0115.getEntity0115_id1(), (short) 115);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0115.getEntity0115_id2(), (short) 116);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string01(), "ENTITY0115_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string02(), "ENTITY0115_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string03(), "ENTITY0115_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0115));
+                        Assert.assertEquals("Assert for the entity id1", (short) findEntity0115.getEntity0115_id1(), (short) 115);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0115.getEntity0115_id2(), (short) 116);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string01(), "ENTITY0115_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string02(), "ENTITY0115_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string03(), "ENTITY0115_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2497,17 +2177,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0115 = (Entity0115) selectEntity0115.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0115);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0115);
-                        if (findEntity0115 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0115));
-                            Assert.assertEquals("Assert for the entity id1", (short) findEntity0115.getEntity0115_id1(), (short) 115);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0115.getEntity0115_id2(), (short) 116);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string01(), "ENTITY0115_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string02(), "ENTITY0115_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string03(), "ENTITY0115_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0115));
+                        Assert.assertEquals("Assert for the entity id1", (short) findEntity0115.getEntity0115_id1(), (short) 115);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0115.getEntity0115_id2(), (short) 116);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string01(), "ENTITY0115_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string02(), "ENTITY0115_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0115.getEntity0115_string03(), "ENTITY0115_STRING03_UPDATED");
                         break;
 
                     case Entity0116:
@@ -2518,17 +2195,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0116 findEntity0116 = (Entity0116) selectEntity0116.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0116);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0116);
-                        if (findEntity0116 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0116));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0116.getEntity0116_id1().compareTo(new BigDecimal("0116.011616")) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0116.getEntity0116_id2().compareTo(new BigDecimal("0117.011717")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string01(), "ENTITY0116_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string02(), "ENTITY0116_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string03(), "ENTITY0116_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0116));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0116.getEntity0116_id1().compareTo(new BigDecimal("0116.011616")) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0116.getEntity0116_id2().compareTo(new BigDecimal("0117.011717")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string01(), "ENTITY0116_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string02(), "ENTITY0116_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string03(), "ENTITY0116_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2541,17 +2215,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0116 = (Entity0116) selectEntity0116.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0116);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0116);
-                        if (findEntity0116 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0116));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0116.getEntity0116_id1().compareTo(new BigDecimal("0116.011616")) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0116.getEntity0116_id2().compareTo(new BigDecimal("0117.011717")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string01(), "ENTITY0116_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string02(), "ENTITY0116_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string03(), "ENTITY0116_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0116));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0116.getEntity0116_id1().compareTo(new BigDecimal("0116.011616")) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0116.getEntity0116_id2().compareTo(new BigDecimal("0117.011717")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string01(), "ENTITY0116_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string02(), "ENTITY0116_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0116.getEntity0116_string03(), "ENTITY0116_STRING03_UPDATED");
                         break;
 
                     case Entity0117:
@@ -2562,17 +2233,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0117 findEntity0117 = (Entity0117) selectEntity0117.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0117);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0117);
-                        if (findEntity0117 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0117));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0117.getEntity0117_id1(), new BigInteger("01170117"));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0117.getEntity0117_id2(), new BigInteger("01180118"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string01(), "ENTITY0117_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string02(), "ENTITY0117_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string03(), "ENTITY0117_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0117));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0117.getEntity0117_id1(), new BigInteger("01170117"));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0117.getEntity0117_id2(), new BigInteger("01180118"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string01(), "ENTITY0117_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string02(), "ENTITY0117_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string03(), "ENTITY0117_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2585,17 +2253,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0117 = (Entity0117) selectEntity0117.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0117);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0117);
-                        if (findEntity0117 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0117));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0117.getEntity0117_id1(), new BigInteger("01170117"));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0117.getEntity0117_id2(), new BigInteger("01180118"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string01(), "ENTITY0117_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string02(), "ENTITY0117_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string03(), "ENTITY0117_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0117));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0117.getEntity0117_id1(), new BigInteger("01170117"));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0117.getEntity0117_id2(), new BigInteger("01180118"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string01(), "ENTITY0117_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string02(), "ENTITY0117_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0117.getEntity0117_string03(), "ENTITY0117_STRING03_UPDATED");
                         break;
 
                     case Entity0118:
@@ -2606,17 +2271,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0118 findEntity0118 = (Entity0118) selectEntity0118.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0118);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0118);
-                        if (findEntity0118 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0118));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0118.getEntity0118_id1().compareTo(javaUtilDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0118.getEntity0118_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string01(), "ENTITY0118_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string02(), "ENTITY0118_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string03(), "ENTITY0118_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0118));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0118.getEntity0118_id1().compareTo(javaUtilDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0118.getEntity0118_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string01(), "ENTITY0118_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string02(), "ENTITY0118_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string03(), "ENTITY0118_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2629,17 +2291,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0118 = (Entity0118) selectEntity0118.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0118);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0118);
-                        if (findEntity0118 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0118));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0118.getEntity0118_id1().compareTo(javaUtilDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0118.getEntity0118_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string01(), "ENTITY0118_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string02(), "ENTITY0118_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string03(), "ENTITY0118_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0118));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0118.getEntity0118_id1().compareTo(javaUtilDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0118.getEntity0118_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string01(), "ENTITY0118_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string02(), "ENTITY0118_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0118.getEntity0118_string03(), "ENTITY0118_STRING03_UPDATED");
                         break;
 
                     case Entity0119:
@@ -2650,17 +2309,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0119 findEntity0119 = (Entity0119) selectEntity0119.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0119);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0119);
-                        if (findEntity0119 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0119));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0119.getEntity0119_id1().compareTo(javaSqlDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0119.getEntity0119_id2().compareTo(javaSqlDate2) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string01(), "ENTITY0119_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string02(), "ENTITY0119_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string03(), "ENTITY0119_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0119));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0119.getEntity0119_id1().compareTo(javaSqlDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0119.getEntity0119_id2().compareTo(javaSqlDate2) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string01(), "ENTITY0119_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string02(), "ENTITY0119_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string03(), "ENTITY0119_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2673,17 +2329,14 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0119 = (Entity0119) selectEntity0119.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0119);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0119);
-                        if (findEntity0119 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0119));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0119.getEntity0119_id1().compareTo(javaSqlDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0119.getEntity0119_id2().compareTo(javaSqlDate2) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string01(), "ENTITY0119_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string02(), "ENTITY0119_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string03(), "ENTITY0119_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0119));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0119.getEntity0119_id1().compareTo(javaSqlDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0119.getEntity0119_id2().compareTo(javaSqlDate2) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string01(), "ENTITY0119_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string02(), "ENTITY0119_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0119.getEntity0119_string03(), "ENTITY0119_STRING03_UPDATED");
                         break;
 
                     case Entity0201:
@@ -2695,18 +2348,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0201 findEntity0201 = (Entity0201) selectEntity0201.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0201);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0201);
-                        if (findEntity0201 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0201));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0201.getEntity0201_id1(), (byte) (201 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0201.getEntity0201_id2(), (byte) (202 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0201.getEntity0201_id3(), (byte) (203 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string01(), "ENTITY0201_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string02(), "ENTITY0201_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string03(), "ENTITY0201_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0201));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0201.getEntity0201_id1(), (byte) (201 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0201.getEntity0201_id2(), (byte) (202 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0201.getEntity0201_id3(), (byte) (203 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string01(), "ENTITY0201_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string02(), "ENTITY0201_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string03(), "ENTITY0201_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2719,18 +2369,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0201 = (Entity0201) selectEntity0201.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0201);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0201);
-                        if (findEntity0201 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0201));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0201.getEntity0201_id1(), (byte) (201 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0201.getEntity0201_id2(), (byte) (202 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0201.getEntity0201_id3(), (byte) (203 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string01(), "ENTITY0201_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string02(), "ENTITY0201_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string03(), "ENTITY0201_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0201));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0201.getEntity0201_id1(), (byte) (201 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0201.getEntity0201_id2(), (byte) (202 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0201.getEntity0201_id3(), (byte) (203 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string01(), "ENTITY0201_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string02(), "ENTITY0201_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0201.getEntity0201_string03(), "ENTITY0201_STRING03_UPDATED");
                         break;
 
                     case Entity0202:
@@ -2742,18 +2389,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0202 findEntity0202 = (Entity0202) selectEntity0202.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0202);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0202);
-                        if (findEntity0202 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0202));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0202.getEntity0202_id1(), (byte) (202 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id2", (byte) findEntity0202.getEntity0202_id2(), (byte) (203 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id3", (byte) findEntity0202.getEntity0202_id3(), (byte) (204 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string01(), "ENTITY0202_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string02(), "ENTITY0202_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string03(), "ENTITY0202_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0202));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0202.getEntity0202_id1(), (byte) (202 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id2", (byte) findEntity0202.getEntity0202_id2(), (byte) (203 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id3", (byte) findEntity0202.getEntity0202_id3(), (byte) (204 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string01(), "ENTITY0202_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string02(), "ENTITY0202_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string03(), "ENTITY0202_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2766,18 +2410,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0202 = (Entity0202) selectEntity0202.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0202);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0202);
-                        if (findEntity0202 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0202));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0202.getEntity0202_id1(), (byte) (202 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id2", (byte) findEntity0202.getEntity0202_id2(), (byte) (203 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity id3", (byte) findEntity0202.getEntity0202_id3(), (byte) (204 - ByteOffset));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string01(), "ENTITY0202_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string02(), "ENTITY0202_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string03(), "ENTITY0202_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0202));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0202.getEntity0202_id1(), (byte) (202 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id2", (byte) findEntity0202.getEntity0202_id2(), (byte) (203 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity id3", (byte) findEntity0202.getEntity0202_id3(), (byte) (204 - ByteOffset));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string01(), "ENTITY0202_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string02(), "ENTITY0202_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0202.getEntity0202_string03(), "ENTITY0202_STRING03_UPDATED");
                         break;
 
                     case Entity0203:
@@ -2789,18 +2430,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0203 findEntity0203 = (Entity0203) selectEntity0203.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0203);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0203);
-                        if (findEntity0203 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0203));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0203.getEntity0203_id1(), '3');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0203.getEntity0203_id2(), '4');
-                            Assert.assertEquals("Assert for the entity id3", findEntity0203.getEntity0203_id3(), '5');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string01(), "ENTITY0203_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string02(), "ENTITY0203_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string03(), "ENTITY0203_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0203));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0203.getEntity0203_id1(), '3');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0203.getEntity0203_id2(), '4');
+                        Assert.assertEquals("Assert for the entity id3", findEntity0203.getEntity0203_id3(), '5');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string01(), "ENTITY0203_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string02(), "ENTITY0203_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string03(), "ENTITY0203_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2813,18 +2451,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0203 = (Entity0203) selectEntity0203.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0203);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0203);
-                        if (findEntity0203 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0203));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0203.getEntity0203_id1(), '3');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0203.getEntity0203_id2(), '4');
-                            Assert.assertEquals("Assert for the entity id3", findEntity0203.getEntity0203_id3(), '5');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string01(), "ENTITY0203_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string02(), "ENTITY0203_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string03(), "ENTITY0203_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0203));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0203.getEntity0203_id1(), '3');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0203.getEntity0203_id2(), '4');
+                        Assert.assertEquals("Assert for the entity id3", findEntity0203.getEntity0203_id3(), '5');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string01(), "ENTITY0203_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string02(), "ENTITY0203_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0203.getEntity0203_string03(), "ENTITY0203_STRING03_UPDATED");
                         break;
 
                     case Entity0204:
@@ -2836,18 +2471,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0204 findEntity0204 = (Entity0204) selectEntity0204.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0204);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0204);
-                        if (findEntity0204 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0204));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0204.getEntity0204_id1(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0204.getEntity0204_id2(), new Character('5'));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0204.getEntity0204_id3(), new Character('6'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string01(), "ENTITY0204_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string02(), "ENTITY0204_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string03(), "ENTITY0204_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0204));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0204.getEntity0204_id1(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0204.getEntity0204_id2(), new Character('5'));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0204.getEntity0204_id3(), new Character('6'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string01(), "ENTITY0204_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string02(), "ENTITY0204_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string03(), "ENTITY0204_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2860,18 +2492,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0204 = (Entity0204) selectEntity0204.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0204);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0204);
-                        if (findEntity0204 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0204));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0204.getEntity0204_id1(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0204.getEntity0204_id2(), new Character('5'));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0204.getEntity0204_id3(), new Character('6'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string01(), "ENTITY0204_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string02(), "ENTITY0204_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string03(), "ENTITY0204_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0204));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0204.getEntity0204_id1(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0204.getEntity0204_id2(), new Character('5'));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0204.getEntity0204_id3(), new Character('6'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string01(), "ENTITY0204_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string02(), "ENTITY0204_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0204.getEntity0204_string03(), "ENTITY0204_STRING03_UPDATED");
                         break;
 
                     case Entity0205:
@@ -2883,18 +2512,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0205 findEntity0205 = (Entity0205) selectEntity0205.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0205);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0205);
-                        if (findEntity0205 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0205));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0205.getEntity0205_id1(), "ENTITY0205_ID1");
-                            Assert.assertEquals("Assert for the entity id2", findEntity0205.getEntity0205_id2(), "ENTITY0205_ID2");
-                            Assert.assertEquals("Assert for the entity id3", findEntity0205.getEntity0205_id3(), "ENTITY0205_ID3");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string01(), "ENTITY0205_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string02(), "ENTITY0205_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string03(), "ENTITY0205_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0205));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0205.getEntity0205_id1(), "ENTITY0205_ID1");
+                        Assert.assertEquals("Assert for the entity id2", findEntity0205.getEntity0205_id2(), "ENTITY0205_ID2");
+                        Assert.assertEquals("Assert for the entity id3", findEntity0205.getEntity0205_id3(), "ENTITY0205_ID3");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string01(), "ENTITY0205_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string02(), "ENTITY0205_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string03(), "ENTITY0205_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2907,18 +2533,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0205 = (Entity0205) selectEntity0205.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0205);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0205);
-                        if (findEntity0205 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0205));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0205.getEntity0205_id1(), "ENTITY0205_ID1");
-                            Assert.assertEquals("Assert for the entity id2", findEntity0205.getEntity0205_id2(), "ENTITY0205_ID2");
-                            Assert.assertEquals("Assert for the entity id3", findEntity0205.getEntity0205_id3(), "ENTITY0205_ID3");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string01(), "ENTITY0205_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string02(), "ENTITY0205_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string03(), "ENTITY0205_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0205));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0205.getEntity0205_id1(), "ENTITY0205_ID1");
+                        Assert.assertEquals("Assert for the entity id2", findEntity0205.getEntity0205_id2(), "ENTITY0205_ID2");
+                        Assert.assertEquals("Assert for the entity id3", findEntity0205.getEntity0205_id3(), "ENTITY0205_ID3");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string01(), "ENTITY0205_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string02(), "ENTITY0205_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0205.getEntity0205_string03(), "ENTITY0205_STRING03_UPDATED");
                         break;
 
                     case Entity0206:
@@ -2930,18 +2553,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0206 findEntity0206 = (Entity0206) selectEntity0206.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0206);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0206);
-                        if (findEntity0206 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0206));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0206.getEntity0206_id1(), 0206.0206D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0206.getEntity0206_id2(), 0207.0207D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0206.getEntity0206_id3(), 0208.0208D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string01(), "ENTITY0206_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string02(), "ENTITY0206_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string03(), "ENTITY0206_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0206));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0206.getEntity0206_id1(), 0206.0206D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0206.getEntity0206_id2(), 0207.0207D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0206.getEntity0206_id3(), 0208.0208D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string01(), "ENTITY0206_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string02(), "ENTITY0206_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string03(), "ENTITY0206_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -2954,18 +2574,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0206 = (Entity0206) selectEntity0206.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0206);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0206);
-                        if (findEntity0206 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0206));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0206.getEntity0206_id1(), 0206.0206D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0206.getEntity0206_id2(), 0207.0207D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0206.getEntity0206_id3(), 0208.0208D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string01(), "ENTITY0206_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string02(), "ENTITY0206_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string03(), "ENTITY0206_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0206));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0206.getEntity0206_id1(), 0206.0206D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0206.getEntity0206_id2(), 0207.0207D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0206.getEntity0206_id3(), 0208.0208D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string01(), "ENTITY0206_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string02(), "ENTITY0206_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0206.getEntity0206_string03(), "ENTITY0206_STRING03_UPDATED");
                         break;
 
                     case Entity0207:
@@ -2977,18 +2594,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0207 findEntity0207 = (Entity0207) selectEntity0207.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0207);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0207);
-                        if (findEntity0207 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0207));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0207.getEntity0207_id1(), 0207.0207D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0207.getEntity0207_id2(), 0208.0208D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0207.getEntity0207_id3(), 0209.0209D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string01(), "ENTITY0207_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string02(), "ENTITY0207_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string03(), "ENTITY0207_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0207));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0207.getEntity0207_id1(), 0207.0207D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0207.getEntity0207_id2(), 0208.0208D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0207.getEntity0207_id3(), 0209.0209D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string01(), "ENTITY0207_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string02(), "ENTITY0207_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string03(), "ENTITY0207_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3001,18 +2615,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0207 = (Entity0207) selectEntity0207.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0207);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0207);
-                        if (findEntity0207 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0207));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0207.getEntity0207_id1(), 0207.0207D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0207.getEntity0207_id2(), 0208.0208D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0207.getEntity0207_id3(), 0209.0209D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string01(), "ENTITY0207_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string02(), "ENTITY0207_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string03(), "ENTITY0207_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0207));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0207.getEntity0207_id1(), 0207.0207D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0207.getEntity0207_id2(), 0208.0208D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0207.getEntity0207_id3(), 0209.0209D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string01(), "ENTITY0207_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string02(), "ENTITY0207_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0207.getEntity0207_string03(), "ENTITY0207_STRING03_UPDATED");
                         break;
 
                     case Entity0208:
@@ -3024,18 +2635,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0208 findEntity0208 = (Entity0208) selectEntity0208.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0208);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0208);
-                        if (findEntity0208 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0208));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0208.getEntity0208_id1(), 0208.0208F, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0208.getEntity0208_id2(), 0209.0209F, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0208.getEntity0208_id3(), 0210.0210F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0208.getEntity0208_string01(), "ENTITY0208_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0208.getEntity0208_string02(), "ENTITY0208_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0208.getEntity0208_string03(), "ENTITY0208_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0208));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0208.getEntity0208_id1(), 0208.0208F, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0208.getEntity0208_id2(), 0209.0209F, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0208.getEntity0208_id3(), 0210.0210F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0208.getEntity0208_string01(), "ENTITY0208_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0208.getEntity0208_string02(), "ENTITY0208_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0208.getEntity0208_string03(), "ENTITY0208_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3048,19 +2656,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0208 = (Entity0208) selectEntity0208.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0208);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0208);
-//                          if (findEntity0208 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0208));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0208.getEntity0208_id1(), 0208.0208F);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0208.getEntity0208_id2(), 0209.0209F);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0208.getEntity0208_id3(), 0210.0210F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0208.getEntity0208_string01(), "ENTITY0208_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0208.getEntity0208_string02(), "ENTITY0208_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0208.getEntity0208_string03(), "ENTITY0208_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0208));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0208.getEntity0208_id1(), 0208.0208F);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0208.getEntity0208_id2(), 0209.0209F);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0208.getEntity0208_id3(), 0210.0210F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0208.getEntity0208_string01(), "ENTITY0208_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0208.getEntity0208_string02(), "ENTITY0208_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0208.getEntity0208_string03(), "ENTITY0208_STRING03_UPDATED");
                         break;
 
                     case Entity0209:
@@ -3072,18 +2676,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0209 findEntity0209 = (Entity0209) selectEntity0209.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0209);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0209);
-                        if (findEntity0209 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0209));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0209.getEntity0209_id1(), 0209.0209F, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0209.getEntity0209_id2(), 0210.0210F, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0209.getEntity0209_id3(), 0211.0211F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0209.getEntity0209_string01(), "ENTITY0209_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0209.getEntity0209_string02(), "ENTITY0209_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0209.getEntity0209_string03(), "ENTITY0209_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0209));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0209.getEntity0209_id1(), 0209.0209F, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0209.getEntity0209_id2(), 0210.0210F, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0209.getEntity0209_id3(), 0211.0211F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0209.getEntity0209_string01(), "ENTITY0209_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0209.getEntity0209_string02(), "ENTITY0209_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0209.getEntity0209_string03(), "ENTITY0209_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3096,19 +2697,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0208 = (Entity0208) selectEntity0208.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0209);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0209);
-//                          if (findEntity0209 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0209));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0209.getEntity0209_id1(), 0209.0209F);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0209.getEntity0209_id2(), 0210.0210F);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0209.getEntity0209_id3(), 0211.0211F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0209.getEntity0209_string01(), "ENTITY0209_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0209.getEntity0209_string02(), "ENTITY0209_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0209.getEntity0209_string03(), "ENTITY0209_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0209));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0209.getEntity0209_id1(), 0209.0209F);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0209.getEntity0209_id2(), 0210.0210F);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0209.getEntity0209_id3(), 0211.0211F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0209.getEntity0209_string01(), "ENTITY0209_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0209.getEntity0209_string02(), "ENTITY0209_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0209.getEntity0209_string03(), "ENTITY0209_STRING03_UPDATED");
                         break;
 
                     case Entity0210:
@@ -3120,18 +2717,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0210 findEntity0210 = (Entity0210) selectEntity0210.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0210);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0210);
-                        if (findEntity0210 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0210));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0210.getEntity0210_id1(), 210);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0210.getEntity0210_id2(), 211);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0210.getEntity0210_id3(), 212);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string01(), "ENTITY0210_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string02(), "ENTITY0210_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string03(), "ENTITY0210_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0210));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0210.getEntity0210_id1(), 210);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0210.getEntity0210_id2(), 211);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0210.getEntity0210_id3(), 212);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string01(), "ENTITY0210_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string02(), "ENTITY0210_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string03(), "ENTITY0210_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3144,18 +2738,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0210 = (Entity0210) selectEntity0210.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0210);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0210);
-                        if (findEntity0210 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0210));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0210.getEntity0210_id1(), 210);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0210.getEntity0210_id2(), 211);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0210.getEntity0210_id3(), 212);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string01(), "ENTITY0210_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string02(), "ENTITY0210_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string03(), "ENTITY0210_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0210));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0210.getEntity0210_id1(), 210);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0210.getEntity0210_id2(), 211);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0210.getEntity0210_id3(), 212);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string01(), "ENTITY0210_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string02(), "ENTITY0210_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0210.getEntity0210_string03(), "ENTITY0210_STRING03_UPDATED");
                         break;
 
                     case Entity0211:
@@ -3167,18 +2758,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0211 findEntity0211 = (Entity0211) selectEntity0211.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0211);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0211);
-                        if (findEntity0211 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0211));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0211.getEntity0211_id1(), 211);
-                            Assert.assertEquals("Assert for the entity id2", (int) findEntity0211.getEntity0211_id2(), 212);
-                            Assert.assertEquals("Assert for the entity id3", (int) findEntity0211.getEntity0211_id3(), 213);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string01(), "ENTITY0211_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string02(), "ENTITY0211_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string03(), "ENTITY0211_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0211));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0211.getEntity0211_id1(), 211);
+                        Assert.assertEquals("Assert for the entity id2", (int) findEntity0211.getEntity0211_id2(), 212);
+                        Assert.assertEquals("Assert for the entity id3", (int) findEntity0211.getEntity0211_id3(), 213);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string01(), "ENTITY0211_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string02(), "ENTITY0211_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string03(), "ENTITY0211_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3191,18 +2779,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0211 = (Entity0211) selectEntity0211.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0211);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0211);
-                        if (findEntity0211 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0211));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0211.getEntity0211_id1(), 211);
-                            Assert.assertEquals("Assert for the entity id2", (int) findEntity0211.getEntity0211_id2(), 212);
-                            Assert.assertEquals("Assert for the entity id3", (int) findEntity0211.getEntity0211_id3(), 213);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string01(), "ENTITY0211_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string02(), "ENTITY0211_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string03(), "ENTITY0211_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0211));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0211.getEntity0211_id1(), 211);
+                        Assert.assertEquals("Assert for the entity id2", (int) findEntity0211.getEntity0211_id2(), 212);
+                        Assert.assertEquals("Assert for the entity id3", (int) findEntity0211.getEntity0211_id3(), 213);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string01(), "ENTITY0211_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string02(), "ENTITY0211_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0211.getEntity0211_string03(), "ENTITY0211_STRING03_UPDATED");
                         break;
 
                     case Entity0212:
@@ -3214,18 +2799,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0212 findEntity0212 = (Entity0212) selectEntity0212.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0212);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0212);
-                        if (findEntity0212 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0212));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0212.getEntity0212_id1(), 212L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0212.getEntity0212_id2(), 213L);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0212.getEntity0212_id3(), 214L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string01(), "ENTITY0212_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string02(), "ENTITY0212_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string03(), "ENTITY0212_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0212));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0212.getEntity0212_id1(), 212L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0212.getEntity0212_id2(), 213L);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0212.getEntity0212_id3(), 214L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string01(), "ENTITY0212_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string02(), "ENTITY0212_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string03(), "ENTITY0212_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3238,18 +2820,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0212 = (Entity0212) selectEntity0212.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0212);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0212);
-                        if (findEntity0212 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0212));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0212.getEntity0212_id1(), 212L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0212.getEntity0212_id2(), 213L);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0212.getEntity0212_id3(), 214L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string01(), "ENTITY0212_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string02(), "ENTITY0212_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string03(), "ENTITY0212_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0212));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0212.getEntity0212_id1(), 212L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0212.getEntity0212_id2(), 213L);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0212.getEntity0212_id3(), 214L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string01(), "ENTITY0212_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string02(), "ENTITY0212_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0212.getEntity0212_string03(), "ENTITY0212_STRING03_UPDATED");
                         break;
 
                     case Entity0213:
@@ -3261,18 +2840,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0213 findEntity0213 = (Entity0213) selectEntity0213.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0213);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0213);
-                        if (findEntity0213 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0213));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0213.getEntity0213_id1(), 213L);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0213.getEntity0213_id2(), 214L);
-                            Assert.assertEquals("Assert for the entity id3", (long) findEntity0213.getEntity0213_id3(), 215L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string01(), "ENTITY0213_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string02(), "ENTITY0213_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string03(), "ENTITY0213_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0213));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0213.getEntity0213_id1(), 213L);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0213.getEntity0213_id2(), 214L);
+                        Assert.assertEquals("Assert for the entity id3", (long) findEntity0213.getEntity0213_id3(), 215L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string01(), "ENTITY0213_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string02(), "ENTITY0213_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string03(), "ENTITY0213_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3285,18 +2861,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0213 = (Entity0213) selectEntity0213.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0213);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0213);
-                        if (findEntity0213 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0213));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0213.getEntity0213_id1(), 213L);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0213.getEntity0213_id2(), 214L);
-                            Assert.assertEquals("Assert for the entity id3", (long) findEntity0213.getEntity0213_id3(), 215L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string01(), "ENTITY0213_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string02(), "ENTITY0213_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string03(), "ENTITY0213_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0213));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0213.getEntity0213_id1(), 213L);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0213.getEntity0213_id2(), 214L);
+                        Assert.assertEquals("Assert for the entity id3", (long) findEntity0213.getEntity0213_id3(), 215L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string01(), "ENTITY0213_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string02(), "ENTITY0213_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0213.getEntity0213_string03(), "ENTITY0213_STRING03_UPDATED");
                         break;
 
                     case Entity0214:
@@ -3308,18 +2881,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0214 findEntity0214 = (Entity0214) selectEntity0214.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0214);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0214);
-                        if (findEntity0214 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0214));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0214.getEntity0214_id1(), (short) 214);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0214.getEntity0214_id2(), (short) 215);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0214.getEntity0214_id3(), (short) 216);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string01(), "ENTITY0214_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string02(), "ENTITY0214_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string03(), "ENTITY0214_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0214));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0214.getEntity0214_id1(), (short) 214);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0214.getEntity0214_id2(), (short) 215);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0214.getEntity0214_id3(), (short) 216);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string01(), "ENTITY0214_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string02(), "ENTITY0214_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string03(), "ENTITY0214_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3332,18 +2902,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0214 = (Entity0214) selectEntity0214.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0214);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0214);
-                        if (findEntity0214 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0214));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0214.getEntity0214_id1(), (short) 214);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0214.getEntity0214_id2(), (short) 215);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0214.getEntity0214_id3(), (short) 216);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string01(), "ENTITY0214_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string02(), "ENTITY0214_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string03(), "ENTITY0214_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0214));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0214.getEntity0214_id1(), (short) 214);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0214.getEntity0214_id2(), (short) 215);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0214.getEntity0214_id3(), (short) 216);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string01(), "ENTITY0214_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string02(), "ENTITY0214_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0214.getEntity0214_string03(), "ENTITY0214_STRING03_UPDATED");
                         break;
 
                     case Entity0215:
@@ -3355,18 +2922,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0215 findEntity0215 = (Entity0215) selectEntity0215.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0215);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0215);
-                        if (findEntity0215 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0215));
-                            Assert.assertEquals("Assert for the entity id1", (short) findEntity0215.getEntity0215_id1(), (short) 215);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0215.getEntity0215_id2(), (short) 216);
-                            Assert.assertEquals("Assert for the entity id3", (short) findEntity0215.getEntity0215_id3(), (short) 217);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string01(), "ENTITY0215_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string02(), "ENTITY0215_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string03(), "ENTITY0215_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0215));
+                        Assert.assertEquals("Assert for the entity id1", (short) findEntity0215.getEntity0215_id1(), (short) 215);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0215.getEntity0215_id2(), (short) 216);
+                        Assert.assertEquals("Assert for the entity id3", (short) findEntity0215.getEntity0215_id3(), (short) 217);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string01(), "ENTITY0215_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string02(), "ENTITY0215_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string03(), "ENTITY0215_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3379,18 +2943,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0215 = (Entity0215) selectEntity0215.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0215);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0215);
-                        if (findEntity0215 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0215));
-                            Assert.assertEquals("Assert for the entity id1", (short) findEntity0215.getEntity0215_id1(), (short) 215);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0215.getEntity0215_id2(), (short) 216);
-                            Assert.assertEquals("Assert for the entity id3", (short) findEntity0215.getEntity0215_id3(), (short) 217);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string01(), "ENTITY0215_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string02(), "ENTITY0215_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string03(), "ENTITY0215_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0215));
+                        Assert.assertEquals("Assert for the entity id1", (short) findEntity0215.getEntity0215_id1(), (short) 215);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0215.getEntity0215_id2(), (short) 216);
+                        Assert.assertEquals("Assert for the entity id3", (short) findEntity0215.getEntity0215_id3(), (short) 217);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string01(), "ENTITY0215_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string02(), "ENTITY0215_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0215.getEntity0215_string03(), "ENTITY0215_STRING03_UPDATED");
                         break;
 
                     case Entity0216:
@@ -3402,18 +2963,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0216 findEntity0216 = (Entity0216) selectEntity0216.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0216);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0216);
-                        if (findEntity0216 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0216));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0216.getEntity0216_id1().compareTo(new BigDecimal("0216.021616")) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0216.getEntity0216_id2().compareTo(new BigDecimal("0217.021717")) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0216.getEntity0216_id3().compareTo(new BigDecimal("0218.021818")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string01(), "ENTITY0216_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string02(), "ENTITY0216_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string03(), "ENTITY0216_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0216));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0216.getEntity0216_id1().compareTo(new BigDecimal("0216.021616")) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0216.getEntity0216_id2().compareTo(new BigDecimal("0217.021717")) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0216.getEntity0216_id3().compareTo(new BigDecimal("0218.021818")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string01(), "ENTITY0216_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string02(), "ENTITY0216_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string03(), "ENTITY0216_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3426,18 +2984,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0216 = (Entity0216) selectEntity0216.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0216);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0216);
-                        if (findEntity0216 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0216));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0216.getEntity0216_id1().compareTo(new BigDecimal("0216.021616")) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0216.getEntity0216_id2().compareTo(new BigDecimal("0217.021717")) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0216.getEntity0216_id3().compareTo(new BigDecimal("0218.021818")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string01(), "ENTITY0216_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string02(), "ENTITY0216_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string03(), "ENTITY0216_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0216));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0216.getEntity0216_id1().compareTo(new BigDecimal("0216.021616")) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0216.getEntity0216_id2().compareTo(new BigDecimal("0217.021717")) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0216.getEntity0216_id3().compareTo(new BigDecimal("0218.021818")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string01(), "ENTITY0216_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string02(), "ENTITY0216_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0216.getEntity0216_string03(), "ENTITY0216_STRING03_UPDATED");
                         break;
 
                     case Entity0217:
@@ -3449,18 +3004,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0217 findEntity0217 = (Entity0217) selectEntity0217.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0217);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0217);
-                        if (findEntity0217 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0217));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0217.getEntity0217_id1(), new BigInteger("02170217"));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0217.getEntity0217_id2(), new BigInteger("02180218"));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0217.getEntity0217_id3(), new BigInteger("02190219"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string01(), "ENTITY0217_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string02(), "ENTITY0217_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string03(), "ENTITY0217_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0217));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0217.getEntity0217_id1(), new BigInteger("02170217"));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0217.getEntity0217_id2(), new BigInteger("02180218"));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0217.getEntity0217_id3(), new BigInteger("02190219"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string01(), "ENTITY0217_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string02(), "ENTITY0217_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string03(), "ENTITY0217_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3473,18 +3025,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0217 = (Entity0217) selectEntity0217.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0217);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0217);
-                        if (findEntity0217 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0217));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0217.getEntity0217_id1(), new BigInteger("02170217"));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0217.getEntity0217_id2(), new BigInteger("02180218"));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0217.getEntity0217_id3(), new BigInteger("02190219"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string01(), "ENTITY0217_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string02(), "ENTITY0217_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string03(), "ENTITY0217_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0217));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0217.getEntity0217_id1(), new BigInteger("02170217"));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0217.getEntity0217_id2(), new BigInteger("02180218"));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0217.getEntity0217_id3(), new BigInteger("02190219"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string01(), "ENTITY0217_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string02(), "ENTITY0217_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0217.getEntity0217_string03(), "ENTITY0217_STRING03_UPDATED");
                         break;
 
                     case Entity0218:
@@ -3496,18 +3045,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0218 findEntity0218 = (Entity0218) selectEntity0218.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0218);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0218);
-                        if (findEntity0218 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0218));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0218.getEntity0218_id1().compareTo(javaUtilDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0218.getEntity0218_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0218.getEntity0218_id3().compareTo(javaUtilDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string01(), "ENTITY0218_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string02(), "ENTITY0218_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string03(), "ENTITY0218_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0218));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0218.getEntity0218_id1().compareTo(javaUtilDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0218.getEntity0218_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0218.getEntity0218_id3().compareTo(javaUtilDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string01(), "ENTITY0218_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string02(), "ENTITY0218_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string03(), "ENTITY0218_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3520,18 +3066,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0218 = (Entity0218) selectEntity0218.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0218);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0218);
-                        if (findEntity0218 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0218));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0218.getEntity0218_id1().compareTo(javaUtilDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0218.getEntity0218_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0218.getEntity0218_id3().compareTo(javaUtilDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string01(), "ENTITY0218_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string02(), "ENTITY0218_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string03(), "ENTITY0218_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0218));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0218.getEntity0218_id1().compareTo(javaUtilDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0218.getEntity0218_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0218.getEntity0218_id3().compareTo(javaUtilDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string01(), "ENTITY0218_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string02(), "ENTITY0218_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0218.getEntity0218_string03(), "ENTITY0218_STRING03_UPDATED");
                         break;
 
                     case Entity0219:
@@ -3543,18 +3086,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0219 findEntity0219 = (Entity0219) selectEntity0219.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0219);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0219);
-                        if (findEntity0219 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0219));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0219.getEntity0219_id1().compareTo(javaSqlDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0219.getEntity0219_id2().compareTo(javaSqlDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0219.getEntity0219_id3().compareTo(javaSqlDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string01(), "ENTITY0219_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string02(), "ENTITY0219_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string03(), "ENTITY0219_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0219));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0219.getEntity0219_id1().compareTo(javaSqlDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0219.getEntity0219_id2().compareTo(javaSqlDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0219.getEntity0219_id3().compareTo(javaSqlDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string01(), "ENTITY0219_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string02(), "ENTITY0219_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string03(), "ENTITY0219_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3567,18 +3107,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0219 = (Entity0219) selectEntity0219.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0219);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0219);
-                        if (findEntity0219 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0219));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0219.getEntity0219_id1().compareTo(javaSqlDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0219.getEntity0219_id2().compareTo(javaSqlDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0219.getEntity0219_id3().compareTo(javaSqlDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string01(), "ENTITY0219_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string02(), "ENTITY0219_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string03(), "ENTITY0219_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0219));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0219.getEntity0219_id1().compareTo(javaSqlDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0219.getEntity0219_id2().compareTo(javaSqlDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0219.getEntity0219_id3().compareTo(javaSqlDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string01(), "ENTITY0219_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string02(), "ENTITY0219_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0219.getEntity0219_string03(), "ENTITY0219_STRING03_UPDATED");
                         break;
 
                     case Entity0301:
@@ -3590,18 +3127,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0301 findEntity0301 = (Entity0301) selectEntity0301.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0301);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0301);
-                        if (findEntity0301 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0301));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0301.getEntity0301_id1(), (byte) 01);
-                            Assert.assertEquals("Assert for the entity id2", (byte) findEntity0301.getEntity0301_id2(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0301.getEntity0301_id3(), '3');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string01(), "ENTITY0301_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string02(), "ENTITY0301_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string03(), "ENTITY0301_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0301));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0301.getEntity0301_id1(), (byte) 01);
+                        Assert.assertEquals("Assert for the entity id2", (byte) findEntity0301.getEntity0301_id2(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0301.getEntity0301_id3(), '3');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string01(), "ENTITY0301_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string02(), "ENTITY0301_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string03(), "ENTITY0301_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3614,18 +3148,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0301 = (Entity0301) selectEntity0301.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0301);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0301);
-                        if (findEntity0301 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0301));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0301.getEntity0301_id1(), (byte) 01);
-                            Assert.assertEquals("Assert for the entity id2", (byte) findEntity0301.getEntity0301_id2(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0301.getEntity0301_id3(), '3');
-                            Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string01(), "ENTITY0301_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string02(), "ENTITY0301_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string03(), "ENTITY0301_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0301));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0301.getEntity0301_id1(), (byte) 01);
+                        Assert.assertEquals("Assert for the entity id2", (byte) findEntity0301.getEntity0301_id2(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0301.getEntity0301_id3(), '3');
+                        Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string01(), "ENTITY0301_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string02(), "ENTITY0301_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0301.getEntity0301_string03(), "ENTITY0301_STRING03_UPDATED");
                         break;
 
                     case Entity0302:
@@ -3637,18 +3168,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0302 findEntity0302 = (Entity0302) selectEntity0302.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0302);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0302);
-                        if (findEntity0302 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0302));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0302.getEntity0302_id1(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0302.getEntity0302_id2(), '3');
-                            Assert.assertEquals("Assert for the entity id3", findEntity0302.getEntity0302_id3(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string01(), "ENTITY0302_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string02(), "ENTITY0302_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string03(), "ENTITY0302_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0302));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0302.getEntity0302_id1(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0302.getEntity0302_id2(), '3');
+                        Assert.assertEquals("Assert for the entity id3", findEntity0302.getEntity0302_id3(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string01(), "ENTITY0302_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string02(), "ENTITY0302_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string03(), "ENTITY0302_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3661,18 +3189,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0302 = (Entity0302) selectEntity0302.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0302);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0302);
-                        if (findEntity0302 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0302));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0302.getEntity0302_id1(), (byte) 02);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0302.getEntity0302_id2(), '3');
-                            Assert.assertEquals("Assert for the entity id3", findEntity0302.getEntity0302_id3(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string01(), "ENTITY0302_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string02(), "ENTITY0302_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string03(), "ENTITY0302_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0302));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0302.getEntity0302_id1(), (byte) 02);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0302.getEntity0302_id2(), '3');
+                        Assert.assertEquals("Assert for the entity id3", findEntity0302.getEntity0302_id3(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string01(), "ENTITY0302_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string02(), "ENTITY0302_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0302.getEntity0302_string03(), "ENTITY0302_STRING03_UPDATED");
                         break;
 
                     case Entity0303:
@@ -3684,18 +3209,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0303 findEntity0303 = (Entity0303) selectEntity0303.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0303);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0303);
-                        if (findEntity0303 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0303));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0303.getEntity0303_id1(), '3');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0303.getEntity0303_id2(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0303.getEntity0303_id3(), "ENTITY0303_ID3");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string01(), "ENTITY0303_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string02(), "ENTITY0303_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string03(), "ENTITY0303_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0303));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0303.getEntity0303_id1(), '3');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0303.getEntity0303_id2(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0303.getEntity0303_id3(), "ENTITY0303_ID3");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string01(), "ENTITY0303_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string02(), "ENTITY0303_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string03(), "ENTITY0303_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3708,18 +3230,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0303 = (Entity0303) selectEntity0303.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0303);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0303);
-                        if (findEntity0303 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0303));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0303.getEntity0303_id1(), '3');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0303.getEntity0303_id2(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0303.getEntity0303_id3(), "ENTITY0303_ID3");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string01(), "ENTITY0303_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string02(), "ENTITY0303_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string03(), "ENTITY0303_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0303));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0303.getEntity0303_id1(), '3');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0303.getEntity0303_id2(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0303.getEntity0303_id3(), "ENTITY0303_ID3");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string01(), "ENTITY0303_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string02(), "ENTITY0303_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0303.getEntity0303_string03(), "ENTITY0303_STRING03_UPDATED");
                         break;
 
                     case Entity0304:
@@ -3731,18 +3250,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0304 findEntity0304 = (Entity0304) selectEntity0304.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0304);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0304);
-                        if (findEntity0304 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0304));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0304.getEntity0304_id1(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0304.getEntity0304_id2(), "ENTITY0304_ID2");
-                            Assert.assertEquals("Assert for the entity id3", findEntity0304.getEntity0304_id3(), 0304.0304D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string01(), "ENTITY0304_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string02(), "ENTITY0304_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string03(), "ENTITY0304_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0304));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0304.getEntity0304_id1(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0304.getEntity0304_id2(), "ENTITY0304_ID2");
+                        Assert.assertEquals("Assert for the entity id3", findEntity0304.getEntity0304_id3(), 0304.0304D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string01(), "ENTITY0304_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string02(), "ENTITY0304_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string03(), "ENTITY0304_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3755,18 +3271,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0304 = (Entity0304) selectEntity0304.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0304);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0304);
-                        if (findEntity0304 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0304));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0304.getEntity0304_id1(), new Character('4'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0304.getEntity0304_id2(), "ENTITY0304_ID2");
-                            Assert.assertEquals("Assert for the entity id3", findEntity0304.getEntity0304_id3(), 0304.0304D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string01(), "ENTITY0304_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string02(), "ENTITY0304_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string03(), "ENTITY0304_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0304));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0304.getEntity0304_id1(), new Character('4'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0304.getEntity0304_id2(), "ENTITY0304_ID2");
+                        Assert.assertEquals("Assert for the entity id3", findEntity0304.getEntity0304_id3(), 0304.0304D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string01(), "ENTITY0304_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string02(), "ENTITY0304_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0304.getEntity0304_string03(), "ENTITY0304_STRING03_UPDATED");
                         break;
 
                     case Entity0305:
@@ -3778,18 +3291,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0305 findEntity0305 = (Entity0305) selectEntity0305.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0305);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0305);
-                        if (findEntity0305 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0305));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0305.getEntity0305_id1(), "ENTITY0305_ID1");
-                            Assert.assertEquals("Assert for the entity id2", findEntity0305.getEntity0305_id2(), 0305.0305D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0305.getEntity0305_id3(), 0306.0306D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string01(), "ENTITY0305_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string02(), "ENTITY0305_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string03(), "ENTITY0305_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0305));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0305.getEntity0305_id1(), "ENTITY0305_ID1");
+                        Assert.assertEquals("Assert for the entity id2", findEntity0305.getEntity0305_id2(), 0305.0305D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0305.getEntity0305_id3(), 0306.0306D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string01(), "ENTITY0305_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string02(), "ENTITY0305_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string03(), "ENTITY0305_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3802,18 +3312,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0305 = (Entity0305) selectEntity0305.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0305);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0305);
-                        if (findEntity0305 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0305));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0305.getEntity0305_id1(), "ENTITY0305_ID1");
-                            Assert.assertEquals("Assert for the entity id2", findEntity0305.getEntity0305_id2(), 0305.0305D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0305.getEntity0305_id3(), 0306.0306D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string01(), "ENTITY0305_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string02(), "ENTITY0305_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string03(), "ENTITY0305_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0305));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0305.getEntity0305_id1(), "ENTITY0305_ID1");
+                        Assert.assertEquals("Assert for the entity id2", findEntity0305.getEntity0305_id2(), 0305.0305D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0305.getEntity0305_id3(), 0306.0306D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string01(), "ENTITY0305_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string02(), "ENTITY0305_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0305.getEntity0305_string03(), "ENTITY0305_STRING03_UPDATED");
                         break;
 
                     case Entity0306:
@@ -3825,18 +3332,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0306 findEntity0306 = (Entity0306) selectEntity0306.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0306);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0306);
-                        if (findEntity0306 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0306));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0306.getEntity0306_id1(), 0306.0306D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0306.getEntity0306_id2(), 0307.0307D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0306.getEntity0306_id3(), 0308.0308F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0306.getEntity0306_string01(), "ENTITY0306_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0306.getEntity0306_string02(), "ENTITY0306_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0306.getEntity0306_string03(), "ENTITY0306_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0306));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0306.getEntity0306_id1(), 0306.0306D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0306.getEntity0306_id2(), 0307.0307D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0306.getEntity0306_id3(), 0308.0308F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0306.getEntity0306_string01(), "ENTITY0306_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0306.getEntity0306_string02(), "ENTITY0306_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0306.getEntity0306_string03(), "ENTITY0306_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3849,19 +3353,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0306 = (Entity0306) selectEntity0306.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0306);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0306);
-//                          if (findEntity0306 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0306));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0306.getEntity0306_id1(), 0306.0306D);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0306.getEntity0306_id2(), 0307.0307D);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0306.getEntity0306_id3(), 0308.0308F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0306.getEntity0306_string01(), "ENTITY0306_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0306.getEntity0306_string02(), "ENTITY0306_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0306.getEntity0306_string03(), "ENTITY0306_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0306));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0306.getEntity0306_id1(), 0306.0306D);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0306.getEntity0306_id2(), 0307.0307D);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0306.getEntity0306_id3(), 0308.0308F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0306.getEntity0306_string01(), "ENTITY0306_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0306.getEntity0306_string02(), "ENTITY0306_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0306.getEntity0306_string03(), "ENTITY0306_STRING03_UPDATED");
                         break;
 
                     case Entity0307:
@@ -3873,18 +3373,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0307 findEntity0307 = (Entity0307) selectEntity0307.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0307);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0307);
-                        if (findEntity0307 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0307));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0307.getEntity0307_id1(), 0307.0307D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0307.getEntity0307_id2(), 0308.0308F, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0307.getEntity0307_id3(), 0309.0309F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0307.getEntity0307_string01(), "ENTITY0307_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0307.getEntity0307_string02(), "ENTITY0307_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0307.getEntity0307_string03(), "ENTITY0307_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0307));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0307.getEntity0307_id1(), 0307.0307D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0307.getEntity0307_id2(), 0308.0308F, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0307.getEntity0307_id3(), 0309.0309F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0307.getEntity0307_string01(), "ENTITY0307_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0307.getEntity0307_string02(), "ENTITY0307_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0307.getEntity0307_string03(), "ENTITY0307_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3897,19 +3394,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0307 = (Entity0307) selectEntity0307.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0307);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0307);
-//                          if (findEntity0307 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0307));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0307.getEntity0307_id1(), 0307.0307D);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0307.getEntity0307_id2(), 0308.0308F);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0307.getEntity0307_id3(), 0309.0309F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0307.getEntity0307_string01(), "ENTITY0307_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0307.getEntity0307_string02(), "ENTITY0307_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0307.getEntity0307_string03(), "ENTITY0307_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0307));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0307.getEntity0307_id1(), 0307.0307D);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0307.getEntity0307_id2(), 0308.0308F);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0307.getEntity0307_id3(), 0309.0309F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0307.getEntity0307_string01(), "ENTITY0307_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0307.getEntity0307_string02(), "ENTITY0307_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0307.getEntity0307_string03(), "ENTITY0307_STRING03_UPDATED");
                         break;
 
                     case Entity0308:
@@ -3921,18 +3414,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0308 findEntity0308 = (Entity0308) selectEntity0308.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0308);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0308);
-                        if (findEntity0308 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0308));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0308.getEntity0308_id1(), 0308.0308F, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0308.getEntity0308_id2(), 0309.0309F, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0308.getEntity0308_id3(), 310);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0308.getEntity0308_string01(), "ENTITY0308_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0308.getEntity0308_string02(), "ENTITY0308_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0308.getEntity0308_string03(), "ENTITY0308_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0308));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0308.getEntity0308_id1(), 0308.0308F, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0308.getEntity0308_id2(), 0309.0309F, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0308.getEntity0308_id3(), 310);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0308.getEntity0308_string01(), "ENTITY0308_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0308.getEntity0308_string02(), "ENTITY0308_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0308.getEntity0308_string03(), "ENTITY0308_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3945,19 +3435,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0308 = (Entity0308) selectEntity0308.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0308);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0308);
-//                          if (findEntity0308 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0308));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0308.getEntity0308_id1(), 0308.0308F);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0308.getEntity0308_id2(), 0309.0309F);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0308.getEntity0308_id3(), 310);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0308.getEntity0308_string01(), "ENTITY0308_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0308.getEntity0308_string02(), "ENTITY0308_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0308.getEntity0308_string03(), "ENTITY0308_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0308));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0308.getEntity0308_id1(), 0308.0308F);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0308.getEntity0308_id2(), 0309.0309F);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0308.getEntity0308_id3(), 310);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0308.getEntity0308_string01(), "ENTITY0308_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0308.getEntity0308_string02(), "ENTITY0308_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0308.getEntity0308_string03(), "ENTITY0308_STRING03_UPDATED");
                         break;
 
                     case Entity0309:
@@ -3969,18 +3455,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0309 findEntity0309 = (Entity0309) selectEntity0309.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0309);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0309);
-                        if (findEntity0309 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0309));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0309.getEntity0309_id1(), 0309.0309F, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0309.getEntity0309_id2(), 310);
-                            Assert.assertEquals("Assert for the entity id3", (int) findEntity0309.getEntity0309_id3(), 311);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0309.getEntity0309_string01(), "ENTITY0309_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0309.getEntity0309_string02(), "ENTITY0309_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0309.getEntity0309_string03(), "ENTITY0309_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0309));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0309.getEntity0309_id1(), 0309.0309F, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0309.getEntity0309_id2(), 310);
+                        Assert.assertEquals("Assert for the entity id3", (int) findEntity0309.getEntity0309_id3(), 311);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0309.getEntity0309_string01(), "ENTITY0309_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0309.getEntity0309_string02(), "ENTITY0309_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0309.getEntity0309_string03(), "ENTITY0309_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -3993,19 +3476,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0309 = (Entity0309) selectEntity0309.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0309);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0309);
-//                          if (findEntity0309 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0309));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0309.getEntity0309_id1(), 0309.0309F);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0309.getEntity0309_id2(), 310);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0309.getEntity0309_id3(), 311);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0309.getEntity0309_string01(), "ENTITY0309_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0309.getEntity0309_string02(), "ENTITY0309_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0309.getEntity0309_string03(), "ENTITY0309_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0309));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0309.getEntity0309_id1(), 0309.0309F);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0309.getEntity0309_id2(), 310);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0309.getEntity0309_id3(), 311);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0309.getEntity0309_string01(), "ENTITY0309_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0309.getEntity0309_string02(), "ENTITY0309_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0309.getEntity0309_string03(), "ENTITY0309_STRING03_UPDATED");
                         break;
 
                     case Entity0310:
@@ -4017,18 +3496,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0310 findEntity0310 = (Entity0310) selectEntity0310.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0310);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0310);
-                        if (findEntity0310 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0310));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0310.getEntity0310_id1(), 310);
-                            Assert.assertEquals("Assert for the entity id2", (int) findEntity0310.getEntity0310_id2(), 311);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0310.getEntity0310_id3(), 312L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string01(), "ENTITY0310_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string02(), "ENTITY0310_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string03(), "ENTITY0310_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0310));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0310.getEntity0310_id1(), 310);
+                        Assert.assertEquals("Assert for the entity id2", (int) findEntity0310.getEntity0310_id2(), 311);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0310.getEntity0310_id3(), 312L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string01(), "ENTITY0310_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string02(), "ENTITY0310_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string03(), "ENTITY0310_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4041,18 +3517,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0310 = (Entity0310) selectEntity0310.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0310);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0310);
-                        if (findEntity0310 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0310));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0310.getEntity0310_id1(), 310);
-                            Assert.assertEquals("Assert for the entity id2", (int) findEntity0310.getEntity0310_id2(), 311);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0310.getEntity0310_id3(), 312L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string01(), "ENTITY0310_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string02(), "ENTITY0310_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string03(), "ENTITY0310_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0310));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0310.getEntity0310_id1(), 310);
+                        Assert.assertEquals("Assert for the entity id2", (int) findEntity0310.getEntity0310_id2(), 311);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0310.getEntity0310_id3(), 312L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string01(), "ENTITY0310_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string02(), "ENTITY0310_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0310.getEntity0310_string03(), "ENTITY0310_STRING03_UPDATED");
                         break;
 
                     case Entity0311:
@@ -4064,18 +3537,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0311 findEntity0311 = (Entity0311) selectEntity0311.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0311);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0311);
-                        if (findEntity0311 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0311));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0311.getEntity0311_id1(), 311);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0311.getEntity0311_id2(), 312L);
-                            Assert.assertEquals("Assert for the entity id3", (long) findEntity0311.getEntity0311_id3(), 313L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string01(), "ENTITY0311_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string02(), "ENTITY0311_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string03(), "ENTITY0311_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0311));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0311.getEntity0311_id1(), 311);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0311.getEntity0311_id2(), 312L);
+                        Assert.assertEquals("Assert for the entity id3", (long) findEntity0311.getEntity0311_id3(), 313L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string01(), "ENTITY0311_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string02(), "ENTITY0311_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string03(), "ENTITY0311_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4088,18 +3558,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0311 = (Entity0311) selectEntity0311.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0311);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0311);
-                        if (findEntity0311 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0311));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0311.getEntity0311_id1(), 311);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0311.getEntity0311_id2(), 312L);
-                            Assert.assertEquals("Assert for the entity id3", (long) findEntity0311.getEntity0311_id3(), 313L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string01(), "ENTITY0311_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string02(), "ENTITY0311_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string03(), "ENTITY0311_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0311));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0311.getEntity0311_id1(), 311);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0311.getEntity0311_id2(), 312L);
+                        Assert.assertEquals("Assert for the entity id3", (long) findEntity0311.getEntity0311_id3(), 313L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string01(), "ENTITY0311_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string02(), "ENTITY0311_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0311.getEntity0311_string03(), "ENTITY0311_STRING03_UPDATED");
                         break;
 
                     case Entity0312:
@@ -4111,18 +3578,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0312 findEntity0312 = (Entity0312) selectEntity0312.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0312);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0312);
-                        if (findEntity0312 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0312));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0312.getEntity0312_id1(), 312L);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0312.getEntity0312_id2(), 313L);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0312.getEntity0312_id3(), (short) 314);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string01(), "ENTITY0312_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string02(), "ENTITY0312_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string03(), "ENTITY0312_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0312));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0312.getEntity0312_id1(), 312L);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0312.getEntity0312_id2(), 313L);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0312.getEntity0312_id3(), (short) 314);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string01(), "ENTITY0312_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string02(), "ENTITY0312_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string03(), "ENTITY0312_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4135,18 +3599,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0312 = (Entity0312) selectEntity0312.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0312);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0312);
-                        if (findEntity0312 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0312));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0312.getEntity0312_id1(), 312L);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0312.getEntity0312_id2(), 313L);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0312.getEntity0312_id3(), (short) 314);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string01(), "ENTITY0312_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string02(), "ENTITY0312_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string03(), "ENTITY0312_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0312));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0312.getEntity0312_id1(), 312L);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0312.getEntity0312_id2(), 313L);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0312.getEntity0312_id3(), (short) 314);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string01(), "ENTITY0312_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string02(), "ENTITY0312_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0312.getEntity0312_string03(), "ENTITY0312_STRING03_UPDATED");
                         break;
 
                     case Entity0313:
@@ -4158,18 +3619,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0313 findEntity0313 = (Entity0313) selectEntity0313.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0313);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0313);
-                        if (findEntity0313 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0313));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0313.getEntity0313_id1(), 313L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0313.getEntity0313_id2(), (short) 314);
-                            Assert.assertEquals("Assert for the entity id3", (short) findEntity0313.getEntity0313_id3(), (short) 315);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string01(), "ENTITY0313_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string02(), "ENTITY0313_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string03(), "ENTITY0313_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0313));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0313.getEntity0313_id1(), 313L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0313.getEntity0313_id2(), (short) 314);
+                        Assert.assertEquals("Assert for the entity id3", (short) findEntity0313.getEntity0313_id3(), (short) 315);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string01(), "ENTITY0313_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string02(), "ENTITY0313_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string03(), "ENTITY0313_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4182,18 +3640,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0313 = (Entity0313) selectEntity0313.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0313);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0313);
-                        if (findEntity0313 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0313));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0313.getEntity0313_id1(), 313L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0313.getEntity0313_id2(), (short) 314);
-                            Assert.assertEquals("Assert for the entity id3", (short) findEntity0313.getEntity0313_id3(), (short) 315);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string01(), "ENTITY0313_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string02(), "ENTITY0313_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string03(), "ENTITY0313_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0313));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0313.getEntity0313_id1(), 313L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0313.getEntity0313_id2(), (short) 314);
+                        Assert.assertEquals("Assert for the entity id3", (short) findEntity0313.getEntity0313_id3(), (short) 315);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string01(), "ENTITY0313_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string02(), "ENTITY0313_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0313.getEntity0313_string03(), "ENTITY0313_STRING03_UPDATED");
                         break;
 
                     case Entity0314:
@@ -4205,18 +3660,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0314 findEntity0314 = (Entity0314) selectEntity0314.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0314);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0314);
-                        if (findEntity0314 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0314));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0314.getEntity0314_id1(), (short) 314);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0314.getEntity0314_id2(), (short) 315);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0314.getEntity0314_id3().compareTo(new BigDecimal("0316.031616")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string01(), "ENTITY0314_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string02(), "ENTITY0314_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string03(), "ENTITY0314_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0314));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0314.getEntity0314_id1(), (short) 314);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0314.getEntity0314_id2(), (short) 315);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0314.getEntity0314_id3().compareTo(new BigDecimal("0316.031616")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string01(), "ENTITY0314_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string02(), "ENTITY0314_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string03(), "ENTITY0314_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4229,18 +3681,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0314 = (Entity0314) selectEntity0314.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0314);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0314);
-                        if (findEntity0314 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0314));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0314.getEntity0314_id1(), (short) 314);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0314.getEntity0314_id2(), (short) 315);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0314.getEntity0314_id3().compareTo(new BigDecimal("0316.031616")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string01(), "ENTITY0314_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string02(), "ENTITY0314_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string03(), "ENTITY0314_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0314));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0314.getEntity0314_id1(), (short) 314);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0314.getEntity0314_id2(), (short) 315);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0314.getEntity0314_id3().compareTo(new BigDecimal("0316.031616")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string01(), "ENTITY0314_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string02(), "ENTITY0314_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0314.getEntity0314_string03(), "ENTITY0314_STRING03_UPDATED");
                         break;
 
                     case Entity0315:
@@ -4252,18 +3701,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0315 findEntity0315 = (Entity0315) selectEntity0315.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0315);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0315);
-                        if (findEntity0315 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0315));
-                            Assert.assertEquals("Assert for the entity id1", (short) findEntity0315.getEntity0315_id1(), (short) 315);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0315.getEntity0315_id2().compareTo(new BigDecimal("0316.031616")) == 0);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0315.getEntity0315_id3(), new BigInteger("03170317"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string01(), "ENTITY0315_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string02(), "ENTITY0315_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string03(), "ENTITY0315_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0315));
+                        Assert.assertEquals("Assert for the entity id1", (short) findEntity0315.getEntity0315_id1(), (short) 315);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0315.getEntity0315_id2().compareTo(new BigDecimal("0316.031616")) == 0);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0315.getEntity0315_id3(), new BigInteger("03170317"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string01(), "ENTITY0315_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string02(), "ENTITY0315_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string03(), "ENTITY0315_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4276,18 +3722,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0315 = (Entity0315) selectEntity0315.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0315);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0315);
-                        if (findEntity0315 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0315));
-                            Assert.assertEquals("Assert for the entity id1", (short) findEntity0315.getEntity0315_id1(), (short) 315);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0315.getEntity0315_id2().compareTo(new BigDecimal("0316.031616")) == 0);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0315.getEntity0315_id3(), new BigInteger("03170317"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string01(), "ENTITY0315_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string02(), "ENTITY0315_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string03(), "ENTITY0315_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0315));
+                        Assert.assertEquals("Assert for the entity id1", (short) findEntity0315.getEntity0315_id1(), (short) 315);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0315.getEntity0315_id2().compareTo(new BigDecimal("0316.031616")) == 0);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0315.getEntity0315_id3(), new BigInteger("03170317"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string01(), "ENTITY0315_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string02(), "ENTITY0315_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0315.getEntity0315_string03(), "ENTITY0315_STRING03_UPDATED");
                         break;
 
                     case Entity0316:
@@ -4299,18 +3742,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0316 findEntity0316 = (Entity0316) selectEntity0316.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0316);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0316);
-                        if (findEntity0316 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0316));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0316.getEntity0316_id1().compareTo(new BigDecimal("0316.031616")) == 0);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0316.getEntity0316_id2(), new BigInteger("03170317"));
-                            Assert.assertTrue("Assert for the entity id3", findEntity0316.getEntity0316_id3().compareTo(javaUtilDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string01(), "ENTITY0316_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string02(), "ENTITY0316_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string03(), "ENTITY0316_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0316));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0316.getEntity0316_id1().compareTo(new BigDecimal("0316.031616")) == 0);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0316.getEntity0316_id2(), new BigInteger("03170317"));
+                        Assert.assertTrue("Assert for the entity id3", findEntity0316.getEntity0316_id3().compareTo(javaUtilDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string01(), "ENTITY0316_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string02(), "ENTITY0316_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string03(), "ENTITY0316_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4323,18 +3763,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0316 = (Entity0316) selectEntity0316.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0316);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0316);
-                        if (findEntity0316 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0316));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0316.getEntity0316_id1().compareTo(new BigDecimal("0316.031616")) == 0);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0316.getEntity0316_id2(), new BigInteger("03170317"));
-                            Assert.assertTrue("Assert for the entity id3", findEntity0316.getEntity0316_id3().compareTo(javaUtilDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string01(), "ENTITY0316_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string02(), "ENTITY0316_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string03(), "ENTITY0316_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0316));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0316.getEntity0316_id1().compareTo(new BigDecimal("0316.031616")) == 0);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0316.getEntity0316_id2(), new BigInteger("03170317"));
+                        Assert.assertTrue("Assert for the entity id3", findEntity0316.getEntity0316_id3().compareTo(javaUtilDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string01(), "ENTITY0316_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string02(), "ENTITY0316_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0316.getEntity0316_string03(), "ENTITY0316_STRING03_UPDATED");
                         break;
 
                     case Entity0317:
@@ -4346,18 +3783,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0317 findEntity0317 = (Entity0317) selectEntity0317.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0317);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0317);
-                        if (findEntity0317 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0317));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0317.getEntity0317_id1(), new BigInteger("03170317"));
-                            Assert.assertTrue("Assert for the entity id2", findEntity0317.getEntity0317_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0317.getEntity0317_id3().compareTo(javaSqlDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string01(), "ENTITY0317_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string02(), "ENTITY0317_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string03(), "ENTITY0317_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0317));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0317.getEntity0317_id1(), new BigInteger("03170317"));
+                        Assert.assertTrue("Assert for the entity id2", findEntity0317.getEntity0317_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0317.getEntity0317_id3().compareTo(javaSqlDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string01(), "ENTITY0317_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string02(), "ENTITY0317_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string03(), "ENTITY0317_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4370,18 +3804,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0317 = (Entity0317) selectEntity0317.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0317);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0317);
-                        if (findEntity0317 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0317));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0317.getEntity0317_id1(), new BigInteger("03170317"));
-                            Assert.assertTrue("Assert for the entity id2", findEntity0317.getEntity0317_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0317.getEntity0317_id3().compareTo(javaSqlDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string01(), "ENTITY0317_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string02(), "ENTITY0317_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string03(), "ENTITY0317_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0317));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0317.getEntity0317_id1(), new BigInteger("03170317"));
+                        Assert.assertTrue("Assert for the entity id2", findEntity0317.getEntity0317_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0317.getEntity0317_id3().compareTo(javaSqlDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string01(), "ENTITY0317_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string02(), "ENTITY0317_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0317.getEntity0317_string03(), "ENTITY0317_STRING03_UPDATED");
                         break;
 
                     case Entity0318:
@@ -4393,18 +3824,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0318 findEntity0318 = (Entity0318) selectEntity0318.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0318);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0318);
-                        if (findEntity0318 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0318));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0318.getEntity0318_id1().compareTo(javaUtilDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0318.getEntity0318_id2().compareTo(javaSqlDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0318.getEntity0318_id3().compareTo(javaUtilDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string01(), "ENTITY0318_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string02(), "ENTITY0318_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string03(), "ENTITY0318_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0318));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0318.getEntity0318_id1().compareTo(javaUtilDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0318.getEntity0318_id2().compareTo(javaSqlDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0318.getEntity0318_id3().compareTo(javaUtilDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string01(), "ENTITY0318_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string02(), "ENTITY0318_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string03(), "ENTITY0318_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4417,18 +3845,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0318 = (Entity0318) selectEntity0318.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0318);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0318);
-                        if (findEntity0318 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0318));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0318.getEntity0318_id1().compareTo(javaUtilDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0318.getEntity0318_id2().compareTo(javaSqlDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0318.getEntity0318_id3().compareTo(javaUtilDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string01(), "ENTITY0318_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string02(), "ENTITY0318_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string03(), "ENTITY0318_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0318));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0318.getEntity0318_id1().compareTo(javaUtilDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0318.getEntity0318_id2().compareTo(javaSqlDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0318.getEntity0318_id3().compareTo(javaUtilDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string01(), "ENTITY0318_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string02(), "ENTITY0318_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0318.getEntity0318_string03(), "ENTITY0318_STRING03_UPDATED");
                         break;
 
                     case Entity0319:
@@ -4440,18 +3865,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0319 findEntity0319 = (Entity0319) selectEntity0319.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0319);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0319);
-                        if (findEntity0319 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0319));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0319.getEntity0319_id1().compareTo(javaSqlDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0319.getEntity0319_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0319.getEntity0319_id3().compareTo(javaSqlDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string01(), "ENTITY0319_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string02(), "ENTITY0319_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string03(), "ENTITY0319_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0319));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0319.getEntity0319_id1().compareTo(javaSqlDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0319.getEntity0319_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0319.getEntity0319_id3().compareTo(javaSqlDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string01(), "ENTITY0319_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string02(), "ENTITY0319_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string03(), "ENTITY0319_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4464,18 +3886,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0319 = (Entity0319) selectEntity0319.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0319);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0319);
-                        if (findEntity0319 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0319));
-                            Assert.assertTrue("Assert for the entity id1", findEntity0319.getEntity0319_id1().compareTo(javaSqlDate1) == 0);
-                            Assert.assertTrue("Assert for the entity id2", findEntity0319.getEntity0319_id2().compareTo(javaUtilDate2) == 0);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0319.getEntity0319_id3().compareTo(javaSqlDate3) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string01(), "ENTITY0319_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string02(), "ENTITY0319_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string03(), "ENTITY0319_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0319));
+                        Assert.assertTrue("Assert for the entity id1", findEntity0319.getEntity0319_id1().compareTo(javaSqlDate1) == 0);
+                        Assert.assertTrue("Assert for the entity id2", findEntity0319.getEntity0319_id2().compareTo(javaUtilDate2) == 0);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0319.getEntity0319_id3().compareTo(javaSqlDate3) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string01(), "ENTITY0319_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string02(), "ENTITY0319_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0319.getEntity0319_string03(), "ENTITY0319_STRING03_UPDATED");
                         break;
 
                     case Entity0320:
@@ -4487,18 +3906,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0320 findEntity0320 = (Entity0320) selectEntity0320.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0320);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0320);
-                        if (findEntity0320 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0320));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0320.getEntity0320_id1(), (byte) 20);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0320.getEntity0320_id2(), '1');
-                            Assert.assertEquals("Assert for the entity id3", findEntity0320.getEntity0320_id3(), "ENTITY0320_ID3");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string01(), "ENTITY0320_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string02(), "ENTITY0320_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string03(), "ENTITY0320_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0320));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0320.getEntity0320_id1(), (byte) 20);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0320.getEntity0320_id2(), '1');
+                        Assert.assertEquals("Assert for the entity id3", findEntity0320.getEntity0320_id3(), "ENTITY0320_ID3");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string01(), "ENTITY0320_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string02(), "ENTITY0320_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string03(), "ENTITY0320_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4511,18 +3927,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0320 = (Entity0320) selectEntity0320.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0320);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0320);
-                        if (findEntity0320 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0320));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0320.getEntity0320_id1(), (byte) 20);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0320.getEntity0320_id2(), '1');
-                            Assert.assertEquals("Assert for the entity id3", findEntity0320.getEntity0320_id3(), "ENTITY0320_ID3");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string01(), "ENTITY0320_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string02(), "ENTITY0320_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string03(), "ENTITY0320_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0320));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0320.getEntity0320_id1(), (byte) 20);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0320.getEntity0320_id2(), '1');
+                        Assert.assertEquals("Assert for the entity id3", findEntity0320.getEntity0320_id3(), "ENTITY0320_ID3");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string01(), "ENTITY0320_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string02(), "ENTITY0320_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0320.getEntity0320_string03(), "ENTITY0320_STRING03_UPDATED");
                         break;
 
                     case Entity0321:
@@ -4534,18 +3947,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0321 findEntity0321 = (Entity0321) selectEntity0321.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0321);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0321);
-                        if (findEntity0321 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0321));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0321.getEntity0321_id1(), (byte) 21);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0321.getEntity0321_id2(), new Character('2'));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0321.getEntity0321_id3(), 0323.0323D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string01(), "ENTITY0321_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string02(), "ENTITY0321_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string03(), "ENTITY0321_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0321));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0321.getEntity0321_id1(), (byte) 21);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0321.getEntity0321_id2(), new Character('2'));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0321.getEntity0321_id3(), 0323.0323D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string01(), "ENTITY0321_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string02(), "ENTITY0321_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string03(), "ENTITY0321_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4558,18 +3968,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0321 = (Entity0321) selectEntity0321.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0321);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0321);
-                        if (findEntity0321 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0321));
-                            Assert.assertEquals("Assert for the entity id1", (byte) findEntity0321.getEntity0321_id1(), (byte) 21);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0321.getEntity0321_id2(), new Character('2'));
-                            Assert.assertEquals("Assert for the entity id3", findEntity0321.getEntity0321_id3(), 0323.0323D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string01(), "ENTITY0321_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string02(), "ENTITY0321_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string03(), "ENTITY0321_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0321));
+                        Assert.assertEquals("Assert for the entity id1", (byte) findEntity0321.getEntity0321_id1(), (byte) 21);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0321.getEntity0321_id2(), new Character('2'));
+                        Assert.assertEquals("Assert for the entity id3", findEntity0321.getEntity0321_id3(), 0323.0323D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string01(), "ENTITY0321_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string02(), "ENTITY0321_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0321.getEntity0321_string03(), "ENTITY0321_STRING03_UPDATED");
                         break;
 
                     case Entity0322:
@@ -4581,18 +3988,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0322 findEntity0322 = (Entity0322) selectEntity0322.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0322);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0322);
-                        if (findEntity0322 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0322));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0322.getEntity0322_id1(), '2');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0322.getEntity0322_id2(), "ENTITY0322_ID2");
-                            Assert.assertEquals("Assert for the entity id3", findEntity0322.getEntity0322_id3(), 0323.0323D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string01(), "ENTITY0322_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string02(), "ENTITY0322_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string03(), "ENTITY0322_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0322));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0322.getEntity0322_id1(), '2');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0322.getEntity0322_id2(), "ENTITY0322_ID2");
+                        Assert.assertEquals("Assert for the entity id3", findEntity0322.getEntity0322_id3(), 0323.0323D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string01(), "ENTITY0322_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string02(), "ENTITY0322_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string03(), "ENTITY0322_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4605,18 +4009,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0322 = (Entity0322) selectEntity0322.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0322);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0322);
-                        if (findEntity0322 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0322));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0322.getEntity0322_id1(), '2');
-                            Assert.assertEquals("Assert for the entity id2", findEntity0322.getEntity0322_id2(), "ENTITY0322_ID2");
-                            Assert.assertEquals("Assert for the entity id3", findEntity0322.getEntity0322_id3(), 0323.0323D, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string01(), "ENTITY0322_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string02(), "ENTITY0322_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string03(), "ENTITY0322_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0322));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0322.getEntity0322_id1(), '2');
+                        Assert.assertEquals("Assert for the entity id2", findEntity0322.getEntity0322_id2(), "ENTITY0322_ID2");
+                        Assert.assertEquals("Assert for the entity id3", findEntity0322.getEntity0322_id3(), 0323.0323D, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string01(), "ENTITY0322_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string02(), "ENTITY0322_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0322.getEntity0322_string03(), "ENTITY0322_STRING03_UPDATED");
                         break;
 
                     case Entity0323:
@@ -4628,18 +4029,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0323 findEntity0323 = (Entity0323) selectEntity0323.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0323);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0323);
-                        if (findEntity0323 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0323));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0323.getEntity0323_id1(), new Character('3'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0323.getEntity0323_id2(), 0324.0324D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0323.getEntity0323_id3(), 0325.0325F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string01(), "ENTITY0323_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string02(), "ENTITY0323_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string03(), "ENTITY0323_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0323));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0323.getEntity0323_id1(), new Character('3'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0323.getEntity0323_id2(), 0324.0324D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0323.getEntity0323_id3(), 0325.0325F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string01(), "ENTITY0323_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string02(), "ENTITY0323_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string03(), "ENTITY0323_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4652,18 +4050,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0323 = (Entity0323) selectEntity0323.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0323);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0323);
-                        if (findEntity0323 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0323));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0323.getEntity0323_id1(), new Character('3'));
-                            Assert.assertEquals("Assert for the entity id2", findEntity0323.getEntity0323_id2(), 0324.0324D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0323.getEntity0323_id3(), 0325.0325F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string01(), "ENTITY0323_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string02(), "ENTITY0323_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string03(), "ENTITY0323_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0323));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0323.getEntity0323_id1(), new Character('3'));
+                        Assert.assertEquals("Assert for the entity id2", findEntity0323.getEntity0323_id2(), 0324.0324D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0323.getEntity0323_id3(), 0325.0325F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string01(), "ENTITY0323_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string02(), "ENTITY0323_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0323.getEntity0323_string03(), "ENTITY0323_STRING03_UPDATED");
                         break;
 
                     case Entity0324:
@@ -4675,18 +4070,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0324 findEntity0324 = (Entity0324) selectEntity0324.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0324);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0324);
-                        if (findEntity0324 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0324));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0324.getEntity0324_id1(), "ENTITY0324_ID1");
-                            Assert.assertEquals("Assert for the entity id2", findEntity0324.getEntity0324_id2(), 0324.0324D, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0324.getEntity0324_id3(), 0325.0325F, 0.1);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0324.getEntity0324_string01(), "ENTITY0324_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0324.getEntity0324_string02(), "ENTITY0324_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0324.getEntity0324_string03(), "ENTITY0324_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0324));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0324.getEntity0324_id1(), "ENTITY0324_ID1");
+                        Assert.assertEquals("Assert for the entity id2", findEntity0324.getEntity0324_id2(), 0324.0324D, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0324.getEntity0324_id3(), 0325.0325F, 0.1);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0324.getEntity0324_string01(), "ENTITY0324_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0324.getEntity0324_string02(), "ENTITY0324_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0324.getEntity0324_string03(), "ENTITY0324_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4699,19 +4091,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0324 = (Entity0324) selectEntity0324.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0324);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0324);
-//                          if (findEntity0324 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0324));
-//                              Assert.assertEquals( "Assert for the entity id1",    findEntity0324.getEntity0324_id1(), "ENTITY0324_ID1");
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0324.getEntity0324_id2(), 0324.0324D);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0324.getEntity0324_id3(), 0325.0325F);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0324.getEntity0324_string01(), "ENTITY0324_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0324.getEntity0324_string02(), "ENTITY0324_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0324.getEntity0324_string03(), "ENTITY0324_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0324));
+//                          Assert.assertEquals( "Assert for the entity id1",    findEntity0324.getEntity0324_id1(), "ENTITY0324_ID1");
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0324.getEntity0324_id2(), 0324.0324D);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0324.getEntity0324_id3(), 0325.0325F);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0324.getEntity0324_string01(), "ENTITY0324_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0324.getEntity0324_string02(), "ENTITY0324_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0324.getEntity0324_string03(), "ENTITY0324_STRING03_UPDATED");
                         break;
 
                     case Entity0325:
@@ -4723,18 +4111,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0325 findEntity0325 = (Entity0325) selectEntity0325.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0325);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0325);
-                        if (findEntity0325 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0325));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0325.getEntity0325_id1(), 0325.0325D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0325.getEntity0325_id2(), 0326.0326F, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0325.getEntity0325_id3(), 327);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0325.getEntity0325_string01(), "ENTITY0325_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0325.getEntity0325_string02(), "ENTITY0325_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0325.getEntity0325_string03(), "ENTITY0325_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0325));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0325.getEntity0325_id1(), 0325.0325D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0325.getEntity0325_id2(), 0326.0326F, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0325.getEntity0325_id3(), 327);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0325.getEntity0325_string01(), "ENTITY0325_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0325.getEntity0325_string02(), "ENTITY0325_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0325.getEntity0325_string03(), "ENTITY0325_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4747,19 +4132,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0307 = (Entity0307) selectEntity0307.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0325);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0325);
-//                          if (findEntity0325 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0325));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0325.getEntity0325_id1(), 0325.0325D);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0325.getEntity0325_id2(), 0326.0326F);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0325.getEntity0325_id3(), 327);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0325.getEntity0325_string01(), "ENTITY0325_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0325.getEntity0325_string02(), "ENTITY0325_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0325.getEntity0325_string03(), "ENTITY0325_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0325));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0325.getEntity0325_id1(), 0325.0325D);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0325.getEntity0325_id2(), 0326.0326F);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0325.getEntity0325_id3(), 327);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0325.getEntity0325_string01(), "ENTITY0325_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0325.getEntity0325_string02(), "ENTITY0325_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0325.getEntity0325_string03(), "ENTITY0325_STRING03_UPDATED");
                         break;
 
                     case Entity0326:
@@ -4771,18 +4152,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0326 findEntity0326 = (Entity0326) selectEntity0326.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0326);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0326);
-                        if (findEntity0326 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0326));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0326.getEntity0326_id1(), 0326.0326D, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0326.getEntity0326_id2(), 0327.0327F, 0.1);
-                            Assert.assertEquals("Assert for the entity id3", (int) findEntity0326.getEntity0326_id3(), 328);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0326.getEntity0326_string01(), "ENTITY0326_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0326.getEntity0326_string02(), "ENTITY0326_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0326.getEntity0326_string03(), "ENTITY0326_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0326));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0326.getEntity0326_id1(), 0326.0326D, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0326.getEntity0326_id2(), 0327.0327F, 0.1);
+                        Assert.assertEquals("Assert for the entity id3", (int) findEntity0326.getEntity0326_id3(), 328);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0326.getEntity0326_string01(), "ENTITY0326_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0326.getEntity0326_string02(), "ENTITY0326_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0326.getEntity0326_string03(), "ENTITY0326_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4795,19 +4173,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0326 = (Entity0326) selectEntity0326.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0326);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0326);
-//                          if (findEntity0326 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0326));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0326.getEntity0326_id1(), 0326.0326D);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0326.getEntity0326_id2(), 0327.0327F);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0326.getEntity0326_id3(), 328);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0326.getEntity0326_string01(), "ENTITY0326_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0326.getEntity0326_string02(), "ENTITY0326_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0326.getEntity0326_string03(), "ENTITY0326_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0326));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0326.getEntity0326_id1(), 0326.0326D);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0326.getEntity0326_id2(), 0327.0327F);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0326.getEntity0326_id3(), 328);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0326.getEntity0326_string01(), "ENTITY0326_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0326.getEntity0326_string02(), "ENTITY0326_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0326.getEntity0326_string03(), "ENTITY0326_STRING03_UPDATED");
                         break;
 
                     case Entity0327:
@@ -4819,18 +4193,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0327 findEntity0327 = (Entity0327) selectEntity0327.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0327);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0327);
-                        if (findEntity0327 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0327));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0327.getEntity0327_id1(), 0327.0327F, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0327.getEntity0327_id2(), 328);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0327.getEntity0327_id3(), 329L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0327.getEntity0327_string01(), "ENTITY0327_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0327.getEntity0327_string02(), "ENTITY0327_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0327.getEntity0327_string03(), "ENTITY0327_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0327));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0327.getEntity0327_id1(), 0327.0327F, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0327.getEntity0327_id2(), 328);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0327.getEntity0327_id3(), 329L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0327.getEntity0327_string01(), "ENTITY0327_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0327.getEntity0327_string02(), "ENTITY0327_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0327.getEntity0327_string03(), "ENTITY0327_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4843,19 +4214,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0327 = (Entity0327) selectEntity0327.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0327);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0327);
-//                          if (findEntity0327 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0327));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0327.getEntity0327_id1(), 0327.0327F);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0327.getEntity0327_id2(), 328);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0327.getEntity0327_id3(), 329L);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0327.getEntity0327_string01(), "ENTITY0327_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0327.getEntity0327_string02(), "ENTITY0327_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0327.getEntity0327_string03(), "ENTITY0327_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0327));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0327.getEntity0327_id1(), 0327.0327F);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0327.getEntity0327_id2(), 328);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0327.getEntity0327_id3(), 329L);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0327.getEntity0327_string01(), "ENTITY0327_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0327.getEntity0327_string02(), "ENTITY0327_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0327.getEntity0327_string03(), "ENTITY0327_STRING03_UPDATED");
                         break;
 
                     case Entity0328:
@@ -4867,18 +4234,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0328 findEntity0328 = (Entity0328) selectEntity0328.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0328);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0328);
-                        if (findEntity0328 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0328));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0328.getEntity0328_id1(), 0328.0328F, 0.1);
-                            Assert.assertEquals("Assert for the entity id2", (int) findEntity0328.getEntity0328_id2(), 329);
-                            Assert.assertEquals("Assert for the entity id3", (long) findEntity0328.getEntity0328_id3(), 330L);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0328.getEntity0328_string01(), "ENTITY0328_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0328.getEntity0328_string02(), "ENTITY0328_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0328.getEntity0328_string03(), "ENTITY0328_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0328));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0328.getEntity0328_id1(), 0328.0328F, 0.1);
+                        Assert.assertEquals("Assert for the entity id2", (int) findEntity0328.getEntity0328_id2(), 329);
+                        Assert.assertEquals("Assert for the entity id3", (long) findEntity0328.getEntity0328_id3(), 330L);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0328.getEntity0328_string01(), "ENTITY0328_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0328.getEntity0328_string02(), "ENTITY0328_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0328.getEntity0328_string03(), "ENTITY0328_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4891,19 +4255,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
 //                          findEntity0328 = (Entity0328) selectEntity0328.getSingleResult();
 //                          System.out.println("Object returned by find: " + findEntity0328);
 //                          Assert.assertNotNull("Assert that the find operation did not return null", findEntity0328);
-//                          if (findEntity0328 == null) {
-//                              Assert.fail("find" + entity + " == null");
-//                          }
-//                          else {
-//                              System.out.println     ( "Perform parent verifications...");
-//                              Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0328));
-//                              Assert.assertEquals    ( "Assert for the entity id1",    findEntity0328.getEntity0328_id1(), 0328.0328F);
-//                              Assert.assertEquals    ( "Assert for the entity id2",    findEntity0328.getEntity0328_id2(), 329);
-//                              Assert.assertEquals    ( "Assert for the entity id3",    findEntity0328.getEntity0328_id3(), 330L);
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0328.getEntity0328_string01(), "ENTITY0328_STRING01_UPDATED");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0328.getEntity0328_string02(), "ENTITY0328_STRING02");
-//                              Assert.assertEquals( "Assert for the entity fields", findEntity0328.getEntity0328_string03(), "ENTITY0328_STRING03_UPDATED");
-//                          }
+//
+//                          System.out.println     ( "Perform parent verifications...");
+//                          Assert.assertTrue  ( "Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0328));
+//                          Assert.assertEquals    ( "Assert for the entity id1",    findEntity0328.getEntity0328_id1(), 0328.0328F);
+//                          Assert.assertEquals    ( "Assert for the entity id2",    findEntity0328.getEntity0328_id2(), 329);
+//                          Assert.assertEquals    ( "Assert for the entity id3",    findEntity0328.getEntity0328_id3(), 330L);
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0328.getEntity0328_string01(), "ENTITY0328_STRING01_UPDATED");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0328.getEntity0328_string02(), "ENTITY0328_STRING02");
+//                          Assert.assertEquals( "Assert for the entity fields", findEntity0328.getEntity0328_string03(), "ENTITY0328_STRING03_UPDATED");
                         break;
 
                     case Entity0329:
@@ -4915,18 +4275,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0329 findEntity0329 = (Entity0329) selectEntity0329.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0329);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0329);
-                        if (findEntity0329 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0329));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0329.getEntity0329_id1(), 329);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0329.getEntity0329_id2(), 330L);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0329.getEntity0329_id3(), (short) 331);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string01(), "ENTITY0329_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string02(), "ENTITY0329_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string03(), "ENTITY0329_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0329));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0329.getEntity0329_id1(), 329);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0329.getEntity0329_id2(), 330L);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0329.getEntity0329_id3(), (short) 331);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string01(), "ENTITY0329_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string02(), "ENTITY0329_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string03(), "ENTITY0329_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4939,18 +4296,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0329 = (Entity0329) selectEntity0329.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0329);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0329);
-                        if (findEntity0329 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0329));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0329.getEntity0329_id1(), 329);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0329.getEntity0329_id2(), 330L);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0329.getEntity0329_id3(), (short) 331);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string01(), "ENTITY0329_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string02(), "ENTITY0329_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string03(), "ENTITY0329_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0329));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0329.getEntity0329_id1(), 329);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0329.getEntity0329_id2(), 330L);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0329.getEntity0329_id3(), (short) 331);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string01(), "ENTITY0329_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string02(), "ENTITY0329_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0329.getEntity0329_string03(), "ENTITY0329_STRING03_UPDATED");
                         break;
 
                     case Entity0330:
@@ -4962,18 +4316,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0330 findEntity0330 = (Entity0330) selectEntity0330.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0330);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0330);
-                        if (findEntity0330 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0330));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0330.getEntity0330_id1(), 330);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0330.getEntity0330_id2(), 331L);
-                            Assert.assertEquals("Assert for the entity id3", (short) findEntity0330.getEntity0330_id3(), (short) 332);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string01(), "ENTITY0330_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string02(), "ENTITY0330_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string03(), "ENTITY0330_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0330));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0330.getEntity0330_id1(), 330);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0330.getEntity0330_id2(), 331L);
+                        Assert.assertEquals("Assert for the entity id3", (short) findEntity0330.getEntity0330_id3(), (short) 332);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string01(), "ENTITY0330_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string02(), "ENTITY0330_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string03(), "ENTITY0330_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -4986,18 +4337,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0330 = (Entity0330) selectEntity0330.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0330);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0330);
-                        if (findEntity0330 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0330));
-                            Assert.assertEquals("Assert for the entity id1", (int) findEntity0330.getEntity0330_id1(), 330);
-                            Assert.assertEquals("Assert for the entity id2", (long) findEntity0330.getEntity0330_id2(), 331L);
-                            Assert.assertEquals("Assert for the entity id3", (short) findEntity0330.getEntity0330_id3(), (short) 332);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string01(), "ENTITY0330_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string02(), "ENTITY0330_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string03(), "ENTITY0330_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0330));
+                        Assert.assertEquals("Assert for the entity id1", (int) findEntity0330.getEntity0330_id1(), 330);
+                        Assert.assertEquals("Assert for the entity id2", (long) findEntity0330.getEntity0330_id2(), 331L);
+                        Assert.assertEquals("Assert for the entity id3", (short) findEntity0330.getEntity0330_id3(), (short) 332);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string01(), "ENTITY0330_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string02(), "ENTITY0330_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0330.getEntity0330_string03(), "ENTITY0330_STRING03_UPDATED");
                         break;
 
                     case Entity0331:
@@ -5009,18 +4357,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0331 findEntity0331 = (Entity0331) selectEntity0331.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0331);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0331);
-                        if (findEntity0331 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0331));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0331.getEntity0331_id1(), 331L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0331.getEntity0331_id2(), (short) 332);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0331.getEntity0331_id3().compareTo(new BigDecimal("0333.033333")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string01(), "ENTITY0331_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string02(), "ENTITY0331_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string03(), "ENTITY0331_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0331));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0331.getEntity0331_id1(), 331L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0331.getEntity0331_id2(), (short) 332);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0331.getEntity0331_id3().compareTo(new BigDecimal("0333.033333")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string01(), "ENTITY0331_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string02(), "ENTITY0331_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string03(), "ENTITY0331_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -5033,18 +4378,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0331 = (Entity0331) selectEntity0331.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0331);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0331);
-                        if (findEntity0331 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0331));
-                            Assert.assertEquals("Assert for the entity id1", findEntity0331.getEntity0331_id1(), 331L);
-                            Assert.assertEquals("Assert for the entity id2", findEntity0331.getEntity0331_id2(), (short) 332);
-                            Assert.assertTrue("Assert for the entity id3", findEntity0331.getEntity0331_id3().compareTo(new BigDecimal("0333.033333")) == 0);
-                            Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string01(), "ENTITY0331_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string02(), "ENTITY0331_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string03(), "ENTITY0331_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0331));
+                        Assert.assertEquals("Assert for the entity id1", findEntity0331.getEntity0331_id1(), 331L);
+                        Assert.assertEquals("Assert for the entity id2", findEntity0331.getEntity0331_id2(), (short) 332);
+                        Assert.assertTrue("Assert for the entity id3", findEntity0331.getEntity0331_id3().compareTo(new BigDecimal("0333.033333")) == 0);
+                        Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string01(), "ENTITY0331_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string02(), "ENTITY0331_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0331.getEntity0331_string03(), "ENTITY0331_STRING03_UPDATED");
                         break;
 
                     case Entity0332:
@@ -5056,18 +4398,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         Entity0332 findEntity0332 = (Entity0332) selectEntity0332.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0332);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0332);
-                        if (findEntity0332 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0332));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0332.getEntity0332_id1(), 332L);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0332.getEntity0332_id2(), (short) 333);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0332.getEntity0332_id3(), new BigInteger("03340334"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string01(), "ENTITY0332_STRING01");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string02(), "ENTITY0332_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string03(), "ENTITY0332_STRING03");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0332));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0332.getEntity0332_id1(), 332L);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0332.getEntity0332_id2(), (short) 333);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0332.getEntity0332_id3(), new BigInteger("03340334"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string01(), "ENTITY0332_STRING01");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string02(), "ENTITY0332_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string03(), "ENTITY0332_STRING03");
                         //
                         // Update, commit, verify
                         //
@@ -5080,18 +4419,15 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
                         findEntity0332 = (Entity0332) selectEntity0332.getSingleResult();
                         System.out.println("Object returned by find: " + findEntity0332);
                         Assert.assertNotNull("Assert that the find operation did not return null", findEntity0332);
-                        if (findEntity0332 == null) {
-                            Assert.fail("find" + entity + " == null");
-                        } else {
-                            System.out.println("Perform parent verifications...");
-                            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0332));
-                            Assert.assertEquals("Assert for the entity id1", (long) findEntity0332.getEntity0332_id1(), 332L);
-                            Assert.assertEquals("Assert for the entity id2", (short) findEntity0332.getEntity0332_id2(), (short) 333);
-                            Assert.assertEquals("Assert for the entity id3", findEntity0332.getEntity0332_id3(), new BigInteger("03340334"));
-                            Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string01(), "ENTITY0332_STRING01_UPDATED");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string02(), "ENTITY0332_STRING02");
-                            Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string03(), "ENTITY0332_STRING03_UPDATED");
-                        }
+
+                        System.out.println("Perform parent verifications...");
+                        Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(findEntity0332));
+                        Assert.assertEquals("Assert for the entity id1", (long) findEntity0332.getEntity0332_id1(), 332L);
+                        Assert.assertEquals("Assert for the entity id2", (short) findEntity0332.getEntity0332_id2(), (short) 333);
+                        Assert.assertEquals("Assert for the entity id3", findEntity0332.getEntity0332_id3(), new BigInteger("03340334"));
+                        Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string01(), "ENTITY0332_STRING01_UPDATED");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string02(), "ENTITY0332_STRING02");
+                        Assert.assertEquals("Assert for the entity fields", findEntity0332.getEntity0332_string03(), "ENTITY0332_STRING03_UPDATED");
                         break;
 
                     default:
@@ -5111,5 +4447,4 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
             System.out.println("QueryLockModeTestLogic.testScenario01(): End");
         }
     }
-
 }

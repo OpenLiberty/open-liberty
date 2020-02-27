@@ -122,6 +122,7 @@ connectionpool.waitTime.total.description=Timpul total de a\u015fteptare pe toat
 connectionpool.inUseTime.total.description=Timpul total \u00een care toate conexiunile sunt folosite de la pornirea serverului.
 connectionpool.usedConnections.total.description=Num\u0103rul total de cereri de conexiune care au a\u015fteptat din cauza pool-ului de conexiuni plin sau care nu au trebuit s\u0103 a\u015ftepte de la pornirea serverului. Orice conexiuni care sunt momentan folosite nu sunt incluse \u00een acest total.
 connectionpool.queuedRequests.total.description=Num\u0103rul total de cereri de conexiune care au trebuit s\u0103 a\u015ftepte din cauza pool-ului de conexiuni plin de la pornirea serverului. 
+
 session.create.total.description=Num\u0103rul de sesiuni care s-au logat de la activarea acestui indice de m\u0103surare.
 session.liveSessions.description=Num\u0103rul de utilizatori care sunt loga\u0163i curent.
 session.activeSessions.description=Num\u0103rul de sesiuni active concurente. (O sesiune este activ\u0103 dac\u0103 produsul este proceseaz\u0103 curent o cerere care utilizeaz\u0103 acea sesiune de utilizator).

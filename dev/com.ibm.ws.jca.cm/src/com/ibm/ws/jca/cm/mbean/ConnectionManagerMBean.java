@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,11 +89,11 @@ public interface ConnectionManagerMBean {
      * this Connection Manager.
      *
      * @param doImmediately The priority to be used to purge the connection pool.
-     *            Priority may be <code>"immediate"</code>, <code>"abort"</code> or <code>null</code>.
-     *            Immediate sets the total connection count to 0 and purges the pool
-     *            as quickly as possible but waits for transactions to complete.
-     *            Abort purges the pool by aborting connections without waiting for transactions to complete.
-     *            The default behavior if no value is specified is to purge the pool with normal priority.
+     *                          Priority may be <code>"immediate"</code>, <code>"abort"</code> or <code>null</code>.
+     *                          Immediate sets the total connection count to 0 and purges the pool
+     *                          as quickly as possible but waits for transactions to complete.
+     *                          Abort purges the pool by aborting connections without waiting for transactions to complete.
+     *                          The default behavior if no value is specified is to purge the pool with normal priority.
      * @throws MBeanException
      */
     public void purgePoolContents(String doImmediately) throws MBeanException;
@@ -109,4 +109,41 @@ public interface ConnectionManagerMBean {
      *
      */
     public String showPoolContents();
+
+    /**
+     * Returns the JNDI name of the first data source or connection factory that used the connection manager.
+     * If the first data source or connection factory that used the connection manager does not have a JNDI name,
+     * then the String value <code>none</code> is returned.
+     *
+     * @return A non-localized string displaying a JNDI name or the text <code>none</code>.
+     *
+     */
+    public String getJndiName();
+
+    /**
+     * Displays the maximum size of the connection pool associated with
+     * this Connection Manager as a human readable string.
+     *
+     * @return A long that is maximum size of the connection pool
+     *
+     */
+    public long getMaxSize();
+
+    /**
+     * Displays the size of the connection pool associated with
+     * this Connection Manager as a human readable string.
+     *
+     * @return A long that is the size of the connection pool
+     *
+     */
+    public long getSize();
+
+    /**
+     * Displays the free space of the connection pool associated with
+     * this Connection Manager as a human readable string.
+     *
+     * @return A long that is the free space of the connection pool
+     *
+     */
+    public long getAvailable();
 }

@@ -9,3 +9,4 @@ Subsystem-Name: Java Web Services API 2.2
  com.ibm.websphere.javaee.jaxws.2.2; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

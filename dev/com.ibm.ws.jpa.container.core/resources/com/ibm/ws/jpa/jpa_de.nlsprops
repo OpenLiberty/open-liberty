@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -283,6 +283,10 @@ JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Es ist keine Aktion erforderlich
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: Die {0}-Implementierung, {1}, ist nicht kompatibel mit der JPA-2.1-Spezifikation und kann daher nicht verwendet werden. Verwenden Sie eine neuere Version des JPA-Persistenzproviders, der JPA 2.1 implementiert.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Der JPA-Persistenzprovider kann nicht verwendet werden, da er nicht die von der JPA-2.1-Spezifikation erforderlichen Implementierungsmethoden enth\u00e4lt.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Verwenden Sie eine neuere Version des JPA-Persistenzproviders, der mit der JPA-2.1-Spezifikation kompatibel ist.
+
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Beim Versuch, die Java-Klasse {0} zu transformieren, ist ein Fehler aufgetreten. Das folgende Fehlerdetail wurde erfasst: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Beim Transformieren der Java-Klasse ist ein unerwarteter Fehler aufgetreten. Dieser Fehler wird in der Regel durch einen ung\u00fcltigen Java-Bytecode verursacht.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Der Klassencache ist m\u00f6glicherweise besch\u00e4digt oder die Anwendung wurde m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df gepackt. L\u00f6schen Sie zuerst den Klassencache. Wenn mit dieser Aktion das Problem nicht behoben ist, \u00fcberpr\u00fcfen Sie das Anwendungsarchiv auf Fehler beim Packen.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.http.AuthUtils;
 import com.ibm.ws.security.common.web.WebUtils;
@@ -145,21 +146,27 @@ public class TAIWebUtils {
         return hostAndPort;
     }
 
-    public String getBearerAccessToken(HttpServletRequest req, Oauth2LoginConfigImpl clientConfig) {
+    @Sensitive
+    public String getBearerAccessToken(HttpServletRequest req, SocialLoginConfig clientConfig) {
         String headerName = clientConfig.getAccessTokenHeaderName();
         if (headerName != null) {
-            return getBearerTokenFromCustomHeader(req, headerName);
+            String bearerToken = getBearerTokenFromCustomHeader(req, headerName);
+            if (bearerToken == null) {
+                Tr.warning(tc, "CUSTOM_ACCESS_TOKEN_HEADER_MISSING", Oauth2LoginConfigImpl.KEY_accessTokenHeaderName, clientConfig.getUniqueId(), headerName);
+            }
+            return bearerToken;
         } else {
             return getBearerTokenFromAuthzHeaderOrRequestBody(req);
         }
     }
 
+    @Sensitive
     String getBearerTokenFromCustomHeader(HttpServletRequest req, String headerName) {
         String hdrValue = authUtils.getBearerTokenFromHeader(req, headerName);
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, headerName + " content=", hdrValue);
-        }
         if (hdrValue != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Header value is not null");
+            }
             return hdrValue.trim();
         } else {
             return getBearerTokenFromCustomHeaderSegments(req, headerName);
@@ -167,6 +174,7 @@ public class TAIWebUtils {
     }
 
     @FFDCIgnore(Exception.class)
+    @Sensitive
     String getBearerTokenFromCustomHeaderSegments(HttpServletRequest req, String headerName) {
         String headerSegments = req.getHeader(headerName + JWT_SEGMENTS);
         if (headerSegments == null) {
@@ -187,6 +195,7 @@ public class TAIWebUtils {
         return hdrValue;
     }
 
+    @Sensitive
     String buildBearerTokenFromCustomHeaderSegments(HttpServletRequest req, String headerName, int numberOfSegments) {
         StringBuffer tokenStringBuilder = new StringBuffer();
         for (int i = 1; i < numberOfSegments + 1; i++) {
@@ -198,11 +207,9 @@ public class TAIWebUtils {
         return tokenStringBuilder.toString();
     }
 
+    @Sensitive
     String getBearerTokenFromAuthzHeaderOrRequestBody(HttpServletRequest req) {
         String hdrValue = authUtils.getBearerTokenFromHeader(req);
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Authorization header=", hdrValue);
-        }
         if (hdrValue == null) {
             String reqMethod = req.getMethod();
             if (ClientConstants.REQ_METHOD_POST.equalsIgnoreCase(reqMethod)) {

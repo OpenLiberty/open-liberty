@@ -51,7 +51,7 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
 
-@Component(service = WebSphereCDIExtension.class, immediate = true)
+@Component(service = WebSphereCDIExtension.class, immediate = true, property = { "service.vendor=IBM", "application.bdas.visible=true" })
 public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(FaultToleranceCDIExtension.class);
@@ -183,7 +183,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                         AsynchronousConfig asynchronous = annotationConfigFactory.createAsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
                         asynchronous.validate();
                     } else if (annotation.annotationType() == Fallback.class) {
-                        FallbackConfig fallback = new FallbackConfig(javaMethod, clazz, (Fallback) annotation);
+                        FallbackConfig fallback = annotationConfigFactory.createFallbackConfig(javaMethod, clazz, (Fallback) annotation);
                         fallback.validate();
                     } else if (annotation.annotationType() == Retry.class) {
                         RetryConfig retry = new RetryConfig(javaMethod, clazz, (Retry) annotation);

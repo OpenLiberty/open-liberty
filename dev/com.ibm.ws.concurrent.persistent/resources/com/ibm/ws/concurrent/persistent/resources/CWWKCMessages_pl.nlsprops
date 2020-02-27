@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,15 @@ CWWKC1503.task.failure=CWWKC1503W: Trwa\u0142y program wywo\u0142uj\u0105cy {0} 
 CWWKC1503.task.failure.explanation=Wykonanie zadania nie powiod\u0142o si\u0119 i zosta\u0142o wycofane.
 CWWKC1503.task.failure.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia, je\u015bli niepowodzenie by\u0142o nieoczekiwane, i ponownie zaplanuj zadanie.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: Transakcja jest oznaczona jako przeznaczona do wycofania, poniewa\u017c czas wykonania zadania ({0} s) przekroczy\u0142 limit czasu transakcji ({1} s).
+CWWKC1504.tx.timeout.rollback.explanation=Wykonywanie zadania trwa\u0142o zbyt d\u0142ugo, dlatego transakcja jest wycofywana.
+CWWKC1504.tx.timeout.rollback.useraction=Mo\u017ce by\u0107 konieczne zwi\u0119kszenie limitu czasu transakcji lub skr\u00f3cenie zadania.
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: Transakcja jest oznaczona jako przeznaczona do wycofania, poniewa\u017c czas wykonywania zadania ({0} s) przekroczy\u0142 pr\u00f3g missedTaskThreshold ({1} s).
+CWWKC1505.mtt.timeout.rollback.explanation=Wykonywanie zadania trwa\u0142o zbyt d\u0142ugo, dlatego transakcja jest wycofywana.
+CWWKC1505.mtt.timeout.rollback.useraction=Mo\u017ce by\u0107 konieczne zwi\u0119kszenie progu missedTaskThreshold lub skr\u00f3cenie zadania. 
+CWWKC1506.marked.rollback.only=CWWKC1506E: Transakcja jest oznaczona jako przeznaczona do wycofania.
+CWWKC1506.marked.rollback.only.explanation=Aplikacja oznaczy\u0142a transakcj\u0119 jako przeznaczon\u0105 do wycofania przy u\u017cyciu metody setRollbackOnly albo wyst\u0105pi\u0142 b\u0142\u0105d lub przekroczenie limitu czasu spowodowa\u0142o wycofanie transakcji.
+CWWKC1506.marked.rollback.only.useraction=Je\u015bli wycofanie jest nieoczekiwane, przejrzyj dzienniki i sprawd\u017a aplikacj\u0119.
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Trwa\u0142y program wykonuj\u0105cy {0} przerwa\u0142 zadanie {1}, poniewa\u017c zosta\u0142o ono wycofane lub nie powiod\u0142o si\u0119 {2} razy pod rz\u0105d.
 CWWKC1510.retry.limit.reached.rollback.explanation=Zadanie osi\u0105gn\u0119\u0142o limit kolejnych pr\u00f3b i nie b\u0119dzie wi\u0119cej uruchamiane.
 CWWKC1510.retry.limit.reached.rollback.useraction=Je\u015bli wycofywanie zmian lub niepowodzenia s\u0105 nieoczekiwane, okre\u015bl przyczyn\u0119 i ponownie zaplanuj zadanie. Je\u015bli operacje wycofywania zmian i niepowodzenia powtarzaj\u0105 si\u0119, rozwa\u017c zwi\u0119kszenie limitu liczby pr\u00f3b.
@@ -51,6 +60,13 @@ CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Trwa\u0142y program wykonuj\u01
 CWWKC1511.retry.limit.reached.failed.explanation=Zadanie osi\u0105gn\u0119\u0142o limit kolejnych pr\u00f3b i nie b\u0119dzie wi\u0119cej uruchamiane.
 CWWKC1511.retry.limit.reached.failed.useraction=Je\u015bli operacje wycofywania zmian lub niepowodzenia s\u0105 nieoczekiwane, okre\u015bl przyczyn\u0119 i ponownie zaplanuj zadanie. Je\u015bli operacje wycofywania zmian i niepowodzenia powtarzaj\u0105 si\u0119, rozwa\u017c zwi\u0119kszenie limitu liczby pr\u00f3b.
 
+CWWKC1520.out.of.range=CWWKC1520E: Skonfigurowana warto\u015b\u0107 {0} w\u0142a\u015bciwo\u015bci {1} nie mie\u015bci si\u0119 w zakresie od {2} do {3}.
+CWWKC1520.out.of.range.explanation=Dla okre\u015blonej w\u0142a\u015bciwo\u015bci skonfigurowana jest warto\u015b\u0107 spoza dozwolonego zakresu.
+CWWKC1520.out.of.range.useraction=Skonfiguruj warto\u015b\u0107 nale\u017c\u0105c\u0105 do dozwolonego zakresu.
+
+CWWKC1521.not.compatible=CWWKC1521E: Atrybut konfiguracyjny {0} nie jest poprawny, gdy w\u0142\u0105czony jest atrybut konfiguracyjny {1}.
+CWWKC1521.not.compatible.explanation=Podane atrybuty konfiguracyjne nie s\u0105 zgodne.
+CWWKC1521.not.compatible.useraction=Zmie\u0144 konfiguracj\u0119, usuwaj\u0105c jeden z atrybut\u00f3w.
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Nie mo\u017cna planowa\u0107 zada\u0144 trwa\u0142ych z kontekstu bie\u017c\u0105cego w\u0105tku.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Zadania trwa\u0142e mo\u017cna planowa\u0107 tylko z w\u0105tku, kt\u00f3ry jest powi\u0105zany z aplikacj\u0105 lub sk\u0142adnikiem o to\u017csamo\u015bci programu \u0142aduj\u0105cego klasy, kt\u00f3ry mo\u017cna przekszta\u0142ca\u0107 do postaci szeregowej.
 CWWKC1540.thread.cannot.submit.tasks.useraction=Podczas planowania zada\u0144 upewnij si\u0119, \u017ce kontekst dla aplikacji lub sk\u0142adnika jest obecny w w\u0105tku.

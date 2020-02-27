@@ -11,9 +11,12 @@
 package mpRestClient10.basicCdi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.sql.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -34,11 +37,33 @@ public class BasicClientTestServlet extends FATServlet {
     Logger LOG = Logger.getLogger(BasicClientTestServlet.class.getName());
 
     @Inject
+    private MyCdiManagedObject obj;
+
+    @Inject
     @RestClient
     private BasicServiceClient client;
 
     @Test
-    public void testSimplePostGetDelete(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testSimplePostGetDelete_injectedIntoFieldOnServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.client);
+    }
+
+    @Test
+    public void testSimplePostGetDelete_injectedIntoCtorOnCdiObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.obj.getClientFromCtor());
+    }
+
+    @Test
+    public void testSimplePostGetDelete_injectedIntoFieldOnCdiObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.obj.getClientFromField());
+    }
+
+    @Test
+    public void testSimplePostGetDelete_injectedIntoMethodOnCdiObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        testSimplePostGetDelete(req, resp, this.obj.getClientFromMethod());
+    }
+
+    private void testSimplePostGetDelete(HttpServletRequest req, HttpServletResponse resp, BasicServiceClient client) throws Exception {
         try {
             client.createNewWidget(new Widget("Pencils", 100, 0.2));
             assertTrue("POSTed widget does not show up in query", client.getWidgetNames().contains("Pencils"));
@@ -87,17 +112,43 @@ public class BasicClientTestServlet extends FATServlet {
     @Test
     public void testFiltersInvoked(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try {
-            MyFilter.requestFilterInvoked = false;
-            MyFilter.responseFilterInvoked = false;
+            MyFilter.requestFilterInvocationCount = 0;
+            MyFilter.responseFilterInvocationCount = 0;
 
             client.createNewWidget(new Widget("Erasers", 10, 0.8));
-            assertTrue("Request filter was not invoked", MyFilter.requestFilterInvoked);
-            assertTrue("Response filter was not invoked", MyFilter.responseFilterInvoked);
+            assertEquals("Request filter was not invoked or invoked more than once", 1, MyFilter.requestFilterInvocationCount);
+            assertEquals("Response filter was not invoked or invoked more than once", 1, MyFilter.responseFilterInvocationCount);
             assertTrue("POSTed widget does not show up in query", client.getWidgetNames().contains("Erasers"));
 
         } finally {
             //ensure we delete so as to not throw off other tests
             client.removeWidget("Erasers");
         }
+    }
+
+    @Test
+    public void testSqlDateTypeAndFiltersInvokedCorrectly(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        // this test is not applicable to MP Rest Client 1.0 or 1.1 - if we are running these older versions, just abort the test
+        try {
+            Class.forName("org.eclipse.microprofile.rest.client.annotation.ClientHeadersParam");
+        } catch (Throwable t) {
+            LOG.log(Level.INFO, "Could not load MP Rest Client 1.2+ class - skipping test - expected in MP Rest Client 1.0 or 1.1", t);
+            return;
+        }
+        MyFilter.requestFilterInvocationCount = 0;
+        MyFilter.responseFilterInvocationCount = 0;
+        
+        Date currentDate = client.getCurrentDate();
+        LOG.info("Client received from getCurrentDate(): " + currentDate);
+        assertNotNull("Date returned was null", currentDate);
+        assertEquals("Request filter was not invoked or invoked more than once", 1, MyFilter.requestFilterInvocationCount);
+        assertEquals("Response filter was not invoked or invoked more than once", 1, MyFilter.responseFilterInvocationCount);
+
+        Date echoedDate = client.echoDate(currentDate);
+        LOG.info("Client received from echoDate(" + currentDate + "): " + echoedDate);
+        assertNotNull("Date returned was null", echoedDate);
+        assertEquals("Echoed date does not match passed-in date", currentDate.getTime(), echoedDate.getTime());
+        assertEquals("Request filter was not invoked or invoked more than once", 2, MyFilter.requestFilterInvocationCount);
+        assertEquals("Response filter was not invoked or invoked more than once", 2, MyFilter.responseFilterInvocationCount);
     }
 }

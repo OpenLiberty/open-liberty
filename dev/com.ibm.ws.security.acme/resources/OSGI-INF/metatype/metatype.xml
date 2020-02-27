@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -15,22 +15,35 @@
                    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
- <Designate factoryPid="com.ibm.ws.security.acme.config">
+ <Designate pid="com.ibm.ws.security.acme.config">
   <Object ocdref="com.ibm.ws.security.acme.config.metatype"/>
  </Designate>
 
- <OCD id="com.ibm.ws.security.acme.config.metatype" ibm:alias="acmeconfig" name="internal" description="internal use only">
-  <AD id="configParm1"                  type="String"  name="internal" description="internal use only"/>
-  <AD id="configParm2"                  type="String"  name="internal" description="internal use only"/>
- </OCD>
+ <OCD id="com.ibm.ws.security.acme.config.metatype" ibm:alias="acmeCA" name="internal" description="internal use only">
+ 
+  <AD id="directoryURI"         name="internal" description="internal use only" type="String"  required="true" />
 
- <Designate factoryPid="com.ibm.ws.security.acme.config.property">
-  <Object ocdref="com.ibm.ws.security.acme.config.property.metatype" />
- </Designate>   
-    
- <OCD id="com.ibm.ws.security.acme.config.property.metatype" name="internal" description="internal use only">
-  <AD id="name" type="String" required="true" name="internal" description="internal use only"/>
-  <AD id="value" type="String" required="true" name="internal" description="internal use only"/>
+  <!-- CSR related fields. -->
+  <AD id="domain"               name="internal" description="internal use only" type="String"  required="true"  cardinality="2147483647" />
+  <AD id="validFor"             name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" />
+  <AD id="country"              name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="locality"             name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="state"                name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="organization"         name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="organizationalUnit"   name="internal" description="internal use only" type="String"  required="false" />
+  
+  <!-- Challenge and order related fields. -->
+  <AD id="challengeRetries"     name="internal" description="internal use only" type="Integer" required="false" default="10" />
+  <AD id="challengeRetryWait"   name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="5s" />
+  <AD id="orderRetries"         name="internal" description="internal use only" type="Integer" required="false" default="10" />
+  <AD id="orderRetryWait"       name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="3s" />
+
+  <!-- ACME account related fields. -->
+  <AD id="accountKeyFile"       name="internal" description="internal use only" type="String"  required="false" default="${server.config.dir}/resources/security/acmeAccountKey.pem" />
+  <AD id="accountContact"       name="internal" description="internal use only" type="String"  required="false" cardinality="2147483647" />
+  <AD id="acceptTermsOfService" name="internal" description="internal use only" type="Boolean" required="false" default="false" />
+  <AD id="domainKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.config.dir}/resources/security/acmeDomainKey.pem" />
+
  </OCD>
 
 </metatype:MetaData>

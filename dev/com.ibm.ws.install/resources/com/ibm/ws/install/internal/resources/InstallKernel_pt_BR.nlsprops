@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Os recursos a seguir n\u00e3o podem ser d
 ERROR_UNINSTALL_FAILED_USR.explanation=Os recursos especificados s\u00e3o recursos do usu\u00e1rio e n\u00e3o podem ser desinstalados.
 ERROR_UNINSTALL_FAILED_USR.useraction=N\u00e3o desinstale recursos do usu\u00e1rio.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Um dos reposit\u00f3rios que \u00e9 especificado na configura\u00e7\u00e3o n\u00e3o pode ser alcan\u00e7ado. Verifique se o seu computador tem acesso \u00e0 rede e se os firewalls est\u00e3o configurados corretamente, em seguida, tente a a\u00e7\u00e3o novamente. Se a conex\u00e3o ainda falhar, o servidor de reposit\u00f3rio pode estar indispon\u00edvel temporariamente.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=Ocorreu um erro ao se conectar a um reposit\u00f3rio.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Assegure que o sistema possa acessar a Internet e o reposit\u00f3rio apropriado.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=Preparando ativos para instala\u00e7\u00e3o. Esse process
 STATE_INITIALIZING=Inicializando ...
 STATE_CONTACTING_REPO=Entrando em contato com o IBM WebSphere Liberty Repository...
 STATE_DOWNLOAD_FILES_OK=\n Todos os ativos foram transferidos por download com sucesso.
+STATE_CONTACTING_MAVEN_REPO=Estabelecendo uma conex\u00e3o com o reposit\u00f3rio Maven configurado...\nEsse processo pode levar v\u00e1rios minutos para ser conclu\u00eddo.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Conectado com \u00eaxito ao reposit\u00f3rio configurado.
+STATE_READING_ENV_PROPS_FILE=Lendo {0}/etc/featureUtility.env...
 PROGRESS_STEP=Etapa {0} de {1}
 
 MSG_DOWNLOAD_SUCCESS=Recurso transferido por download com sucesso {0}.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Procurando recursos ...
 MSG_SEARCHING_ADDONS=Procurando complementos ...
 MSG_SEARCHING_SAMPLES=Procurando amostras ...
 MSG_SEARCHING_OPENSOURCE=Procurando integra\u00e7\u00f5es de software livre ...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Fazendo download dos recursos necess\u00e1rios ...
 FEATURE_ASSET=recurso
 ADDON_ASSET=addon
 SAMPLE_ASSET=amostra do produto
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=integra\u00e7\u00e3o de software livre
 GENERAL_ASSET=ativo
 
 MSG_INVALID_FOR_OS=O recurso da vari\u00e1vel {0} \u00e9 inv\u00e1lido para o S.O. atual e n\u00e3o ser\u00e1 instalado.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=O servidor n\u00e3o exige quaisquer recursos adicionais. Nenhum recurso foi instalado.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=O nome da propriedade n\u00e3o est\u00e1 especificado. Especifique um nome de propriedade v\u00e1lido ou comente a propriedade se ela n\u00e3o for utilizada.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Certifique-se de que o arquivo ESA individual for
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: N\u00e3o \u00e9 poss\u00edvel criar um arquivo JSON em {0} para o arquivo ESA {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=O recurso no arquivo ESA n\u00e3o ser\u00e1 instalado.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Certifique-se de que o acesso de grava\u00e7\u00e3o esteja dispon\u00edvel para o diret\u00f3rio no qual o arquivo JSON ser\u00e1 criado.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: O reposit\u00f3rio maven configurado n\u00e3o pode ser alcan\u00e7ado. Verifique se o seu computador tem acesso \u00e0 rede e se os firewalls est\u00e3o configurados corretamente, em seguida, tente a a\u00e7\u00e3o novamente. Se a conex\u00e3o ainda falhar, o servidor de reposit\u00f3rio pode estar indispon\u00edvel temporariamente.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=Ocorreu um erro ao se conectar com o reposit\u00f3rio maven configurado.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Assegure que o sistema possa acessar a Internet e o reposit\u00f3rio apropriado.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: As somas de verifica\u00e7\u00e3o dispon\u00edveis n\u00e3o puderam ser validadas para o arquivo {0}.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=A soma de verifica\u00e7\u00e3o do ativo transferido por download n\u00e3o est\u00e1 correto. O conte\u00fado do ativo transferido por download n\u00e3o \u00e9 igual ao conte\u00fado do reposit\u00f3rio, assim, o ativo n\u00e3o pode ser instalado.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Execute novamente o comando.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Credenciais incorretas fornecidas para o reposit\u00f3rio {0}.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Falha na autentica\u00e7\u00e3o das credenciais FEATURE_REPO_USER e FEATURE_REPO_PASSWORD com o reposit\u00f3rio configurado.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Forne\u00e7a as credenciais corretas para o reposit\u00f3rio configurado.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Falha no download dos artefatos do reposit\u00f3rio configurado.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=O ativo especificado n\u00e3o foi transferido por download do reposit\u00f3rio especificado porque os reposit\u00f3rios n\u00e3o cont\u00eam uma vers\u00e3o v\u00e1lida do ativo.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Assegure-se de que o reposit\u00f3rio contenha o ativo e execute o comando novamente.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: N\u00e3o foi poss\u00edvel determinar a vers\u00e3o de runtime do Liberty.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=O arquivo de propriedades {0} pode estar ausente ou corrompido.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Assegure-se de que o arquivo de propriedades exista.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: O recurso com uma coordenada Maven {0} n\u00e3o pode ser instalado em uma vers\u00e3o de runtime {1} do Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=O recurso \u00e9 incompat\u00edvel com a vers\u00e3o de runtime do Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Especifique uma vers\u00e3o v\u00e1lida para o recurso.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: O formato do pacote na coordenada Maven {0} do recurso \u00e9 inv\u00e1lido. O formato de pacote v\u00e1lido \u00e9 ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=O recurso \u00e9 incompat\u00edvel com a vers\u00e3o de runtime do Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Especifique ESA como o pacote na coordenada Maven.
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: A coordenada Maven {0} \u00e9 inv\u00e1lida.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=A coordenada Maven fornecida n\u00e3o est\u00e1 no formato correto.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Insira uma coordenada Maven v\u00e1lida.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: O servidor {0} n\u00e3o existe. Digite um nome de servidor v\u00e1lido e tente novamente.
+ERROR_SERVER_NOT_EXIST.explanation=O servidor n\u00e3o existe.
+ERROR_SERVER_NOT_EXIST.useraction=Crie o servidor e execute o comando novamente.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: O ID do grupo {0} \u00e9 inv\u00e1lido. Assegure-se de que o ID de grupo v\u00e1lido para a coordenada de recurso seja fornecido ou que o sistema possa acessar a Internet e o reposit\u00f3rio configurado.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=O arquivo JSON de recursos n\u00e3o foi localizado no reposit\u00f3rio maven.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Verifique a conex\u00e3o de rede e assegure-se de que o arquivo JSON de recursos esteja hospedado no reposit\u00f3rio maven.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: O formato da vari\u00e1vel de ambiente http_proxy {0} \u00e9 inv\u00e1lido. Assegure-se de que a vari\u00e1vel http_proxy esteja no formato http_proxy=http://<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=O formato da vari\u00e1vel de ambiente de proxy \u00e9 inv\u00e1lido.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Reformate a vari\u00e1vel de ambiente http_proxy para que se ajuste ao formato http_proxy=http://<proxy-host>:<proxy-port>.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: O formato da vari\u00e1vel de ambiente https_proxy {0} \u00e9 inv\u00e1lido. Assegure-se de que a vari\u00e1vel https_proxy esteja no formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=O formato da vari\u00e1vel de ambiente de proxy \u00e9 inv\u00e1lido.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Reformate a vari\u00e1vel de ambiente https_proxy para que se ajuste ao formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Os recursos a seguir n\u00e3o foram obtidos: {0}. Assegure-se de que os recursos sejam v\u00e1lidos.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=O recurso n\u00e3o \u00e9 suportado pelo Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Execute o featureUtility com um recurso compat\u00edvel.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Os recursos de usu\u00e1rio a seguir est\u00e3o especificados em server.xml e n\u00e3o ser\u00e3o instalados: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Os recursos {0} e {1} s\u00e3o incompat\u00edveis entre si e n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Os recursos n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Remova um dos recursos e tente novamente.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Os recursos singleton {0} e {1} s\u00e3o incompat\u00edveis entre si e n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Os recursos n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Remova um dos recursos e tente novamente.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: O recurso foi transferido por download com sucesso.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=O recurso foi transferido por download.

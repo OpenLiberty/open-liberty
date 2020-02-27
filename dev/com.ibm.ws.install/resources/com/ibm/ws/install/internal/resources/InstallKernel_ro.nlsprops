@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Urm\u0103toarele caracteristici nu pot fi
 ERROR_UNINSTALL_FAILED_USR.explanation=Caracteristicile specificate sunt caracteristici de utilizator \u015fi nu pot fi dezinstalate.
 ERROR_UNINSTALL_FAILED_USR.useraction=Nu dezinstala\u0163i caracteristici de utilizator.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Nu se poate ajunge la una din magaziile care este specificat\u0103 \u00een configura\u0163ie. Verifica\u0163i c\u0103 computerul dumneavoastr\u0103 are acces la re\u0163ea \u015fi c\u0103 firewall-urile sunt configurate corect, apoi \u00eencerca\u0163i ac\u0163iunea din nou. Dac\u0103 conexiunea \u00eenc\u0103 e\u015fueaz\u0103, serverul magazie ar putea fi temporar indisponibil.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=A ap\u0103rut o eroare la conectarea la o magazie.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi magazia corespunz\u0103toare.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=Preg\u0103tirea aseturilor pentru instalare. Acest proces
 STATE_INITIALIZING=Se ini\u0163ializeaz\u0103 ...
 STATE_CONTACTING_REPO=Se contacteaz\u0103 IBM WebSphere Liberty Repository...
 STATE_DOWNLOAD_FILES_OK=\nToate aseturile au fost desc\u0103rcate cu succes.
+STATE_CONTACTING_MAVEN_REPO=Stabilirea unei conexiuni la o magazie Maven configurat\u0103...\nAcest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=S-a f\u0103cut conexiunea la magazia configurat\u0103.
+STATE_READING_ENV_PROPS_FILE=Se cite\u015fte {0}/etc/featureUtility.env...
 PROGRESS_STEP=Pasul {0} din {1}
 
 MSG_DOWNLOAD_SUCCESS=S-a desc\u0103rcat cu succes caracteristica {0}.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Se caut\u0103 caracteristici ...
 MSG_SEARCHING_ADDONS=Se caut\u0103 add-on-uri ...
 MSG_SEARCHING_SAMPLES=Se caut\u0103 exemple ...
 MSG_SEARCHING_OPENSOURCE=Se caut\u0103 integr\u0103ri cu surs\u0103 deschis\u0103...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Se descarc\u0103 caracteristicile necesare...
 FEATURE_ASSET=caracteristic\u0103
 ADDON_ASSET=addon
 SAMPLE_ASSET=e\u015fantion de produs
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=integrare cu surs\u0103 deschis\u0103
 GENERAL_ASSET=aset
 
 MSG_INVALID_FOR_OS=Resursa de caracteristic\u0103 {0} nu este valid\u0103 pentru sistemul de operare curent \u015fi nu va fi instalat\u0103.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Serverul nu are nevoie de nicio caracteristic\u0103 suplimentar\u0103. Nu a fost instalat\u0103 nicio caracteristic\u0103.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=Nu este specificat numele propriet\u0103\u0163ii. Fie specifica\u0163i un nume de proprietate valid, fie comenta\u0163i proprietatea dac\u0103 este neutilizat\u0103.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul ESA 
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Nu s-a putut crea un fi\u015fier JSON la {0} pentru fi\u015fierul ESA {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Caracteristica din fi\u015fierul ESA nu va fi instalat\u0103.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil accesul de scriere pentru directorul unde fi\u015fierul JSON va fi creat.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: Nu se poate ajunge la magazia Maven configurat\u0103. Verifica\u0163i c\u0103 computerul dumneavoastr\u0103 are acces la re\u0163ea \u015fi c\u0103 firewall-urile sunt configurate corect, apoi \u00eencerca\u0163i ac\u0163iunea din nou. Dac\u0103 conexiunea \u00eenc\u0103 e\u015fueaz\u0103, serverul magazie ar putea fi temporar indisponibil.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=A ap\u0103rut o eroare \u00een timpul conect\u0103rii la magazia Maven configurat\u0103.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi magazia corespunz\u0103toare.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Sumele de control nu au putut fi validate pentru fi\u015fierul {0}.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=Suma de control a asetului desc\u0103rcat nu este corect\u0103. Con\u0163inutul asetului desc\u0103rcat nu este acela\u015fi cu con\u0163inutul de la magazie, a\u015fa c\u0103 asetul nu poate fi instalat.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Rula\u0163i comanda din nou.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Au fost furnizate acredit\u0103ri invalide pentru magazia {0}.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Acredit\u0103rile FEATURE_REPO_USER \u015fi FEATURE_REPO_PASSWORD nu au putut fi autentificate cu magazia configurat\u0103.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Furniza\u0163i acredit\u0103ri corecte pentru magazia configurat\u0103.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Nu s-au putut desc\u0103rca artefactele de la magazia configurat\u0103.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=Asetul specificat nu a fost desc\u0103rcat din magazia specificat\u0103, deoarece magazia nu con\u0163ine o versiune valid\u0103 a asetului.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine asetul, apoi rula\u0163i din nou comanda.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: Nu a putut fi determinat\u0103 versiunea de runtime Liberty.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=Fi\u015fierul de propriet\u0103\u0163i {0} lipse\u015fte sau este corupt.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 fi\u015fierul de propriet\u0103\u0163i.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: Caracteristica cu o coordonat\u0103 Maven {0} nu poate fi instalat\u0103 pe o versiune de runtime Liberty {1}.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=Caracteristica este incompatibil\u0103 cu runtime-ul Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specifica\u0163i o versiune valid\u0103 pentru caracteristic\u0103.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: Formatul de \u00eempachetare \u00een coordonata Maven {0} a caracteristicii este invalid. Formatul de \u00eempachetare valid este ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=Caracteristica este incompatibil\u0103 cu runtime-ul Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specifica\u0163i ESA pentru \u00eempachetare \u00een coordonata Maven.
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: Coordonata Maven {0} este invalid\u0103.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=Coordonata Maven furnizat\u0103 nu este \u00een formatul corect.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Introduce\u0163i o coordonat\u0103 Maven valid\u0103.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: Serverul {0} nu exist\u0103. Introduce\u0163i un nume de server valid \u015fi \u00eencerca\u0163i din nou.
+ERROR_SERVER_NOT_EXIST.explanation=Serverul nu exist\u0103.
+ERROR_SERVER_NOT_EXIST.useraction=Crea\u0163i serverul \u015fi rula\u0163i comanda din nou.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: ID-ul de grup {0} este invalid. Asigura\u0163i-v\u0103 c\u0103 este furnizat ID-ul de grup valid pentru coordonata caracteristicii \u015fi c\u0103 sistemul poate accesa Internetul \u015fi magazia configurat\u0103.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=Nu a fost g\u0103sit \u00een magazia Maven fi\u015fierul JSON de caracteristici.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Verifica\u0163i conexiunea de re\u0163ea \u015fi asigura\u0163i-v\u0103 c\u0103 fi\u015fierul JSON de caracteristici este g\u0103zduit pe magazia Maven.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: Formatul variabilei de mediu http_proxy {0} este invalid. Asigura\u0163i-v\u0103 c\u0103 variabila http_proxy este \u00een formatul http_proxy=http://<gazd\u0103-proxy>:<port-proxy>.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=Formatul variabilei de mediu proxy este invalid.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Reformata\u0163i variabila de mediu http_proxy pentru a se potrivi cu formatul http_proxy=http://<gazd\u0103-proxy>:<port-proxy>.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: Formatul variabilei de mediu https_proxy {0} este invalid. Asigura\u0163i-v\u0103 c\u0103 variabila https_proxy este \u00een formatul https_proxy=https://<utilizator>:<parol\u0103>@<gazd\u0103-proxy>:<port-proxy>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=Formatul variabilei de mediu proxy este invalid.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Reformata\u0163i variabila de mediu https_proxy pentru a se potrivi cu formatul https_proxy=https://<utilizator>:<parol\u0103>@<gazd\u0103-proxy>:<port-proxy>.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Nu au fost ob\u0163inute urm\u0103toarele caracteristici: {0}. Asigura\u0163i-v\u0103 c\u0103 aceste caracteristici sunt valide.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=Caracteristica nu este suportat\u0103 de Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Rula\u0163i featureUtility cu o caracteristic\u0103 compatibil\u0103.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Urm\u0103toarele caracteristici de utilizator sunt specificate \u00een server.xml \u015fi ele nu vor fi instalate: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Caracteristicile {0} \u015fi {1} sunt incompatibile \u00eentre ele \u015fi ele nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Caracteristicile nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES.useraction=\u00cenl\u0103tura\u0163i una dintre caracteristici \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Caracteristicile singleton {0} \u015fi {1} sunt incompatibile \u00eentre ele \u015fi ele nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Caracteristicile nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=\u00cenl\u0103tura\u0163i una dintre caracteristici \u015fi \u00eencerca\u0163i din nou.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Caracteristica a fost desc\u0103rcat\u0103 cu succes.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Caracteristica a fost desc\u0103rcat\u0103.

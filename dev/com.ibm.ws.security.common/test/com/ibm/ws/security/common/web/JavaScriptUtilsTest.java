@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,8 @@ public class JavaScriptUtilsTest extends CommonTestClass {
     static final String WINDOW_LOCATION_REPLACE_START = "window.location.replace(\"";
     static final String WINDOW_LOCATION_REPLACE_END = "\");";
     static final String VALID_URL = "https://localhost:8010/myApp";
+    static final String SAME_SITE_ATTR_VALUE = "SameSiteValue";
+    static final String SAME_SITE_PROP = "SameSite=" + SAME_SITE_ATTR_VALUE + ";";
 
     final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
@@ -195,7 +197,9 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "some value";
             String value = "some value";
 
-            final String expectedCookieString = name + "=" + value + ";";
+            final String expectedCookieString = name + "=" + value + "; " + SAME_SITE_PROP;
+
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             String result = utils.getJavaScriptHtmlCookieString(name, value);
 
@@ -219,7 +223,9 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String value = "some value";
             Map<String, String> cookieProps = new HashMap<String, String>();
 
-            final String expectedCookieString = name + "=" + value + ";";
+            final String expectedCookieString = name + "=" + value + "; " + SAME_SITE_PROP;
+
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
 
@@ -245,10 +251,14 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             cookieProps.put("key1", "value1");
             cookieProps.put("key2", "value2");
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
 
             final String expectedCookieString = name + "=" + value + ";";
             verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+
+            cookieProps.put("SameSite", SAME_SITE_ATTR_VALUE);
             verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
@@ -317,9 +327,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "<cookie name\"'>";
             String value = null;
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
 
-            String expectedCookieString = name + ";";
+            String expectedCookieString = name + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -340,9 +352,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "<cookie name\"'>";
             String value = "";
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
 
-            String expectedCookieString = name + "=;";
+            String expectedCookieString = name + "=; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -363,9 +377,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "<cookie name\"'>";
             String value = ">cookie'<\" value ";
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
 
-            String expectedCookieString = name + "=" + value + ";";
+            String expectedCookieString = name + "=" + value + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -386,6 +402,8 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "<cookie name\"'>";
             String value = ">cookie'<\" value ";
             Map<String, String> cookieProps = new HashMap<String, String>();
+
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value, cookieProps);
 
@@ -413,10 +431,14 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             cookieProps.put("key1", "value1");
             cookieProps.put("key2", "value2");
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value, cookieProps);
 
             String expectedCookieString = DOCUMENT_COOKIE_START + name + "=" + value + ";";
             verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+
+            cookieProps.put("SameSite", SAME_SITE_ATTR_VALUE);
             verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
@@ -571,9 +593,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "some value";
             String value = null;
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getHtmlCookieString(name, value);
 
-            String expectedCookieString = name + ";";
+            String expectedCookieString = name + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -594,9 +618,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "some value";
             String value = "";
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getHtmlCookieString(name, value);
 
-            String expectedCookieString = name + "=" + ";";
+            String expectedCookieString = name + "=" + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -617,9 +643,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "some value";
             String value = "some value";
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getHtmlCookieString(name, value);
 
-            String expectedCookieString = name + "=" + value + ";";
+            String expectedCookieString = name + "=" + value + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -640,11 +668,13 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = ">\"name,";
             String value = "&value<";
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getHtmlCookieString(name, value);
 
             String htmlEncodedName = "&gt;&quot;name,";
             String htmlEncodedValue = "&amp;value&lt;";
-            String expectedCookieString = htmlEncodedName + "=" + htmlEncodedValue + ";";
+            String expectedCookieString = htmlEncodedName + "=" + htmlEncodedValue + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -665,9 +695,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String value = "a value";
             Map<String, String> cookieProps = new HashMap<String, String>();
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getHtmlCookieString(name, value, cookieProps);
 
-            String expectedCookieString = name + "=" + value + ";";
+            String expectedCookieString = name + "=" + value + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -695,10 +727,14 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             cookieProps.put("NullValue", null);
             cookieProps.put("EmptyValue", "");
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getHtmlCookieString(name, value, cookieProps);
 
             String expectedCookieNameAndValue = name + "=" + value + ";";
             verifyPattern(result, Pattern.quote(expectedCookieNameAndValue), "Expected cookie name and value did not appear in the result.");
+
+            cookieProps.put("SameSite", SAME_SITE_ATTR_VALUE);
             verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
@@ -765,9 +801,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "some value";
             String value = null;
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedHtmlCookieString(name, value);
 
-            String expectedCookieString = name + ";";
+            String expectedCookieString = name + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -788,9 +826,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "& some<\"name,";
             String value = "";
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedHtmlCookieString(name, value);
 
-            String expectedCookieString = name + "=;";
+            String expectedCookieString = name + "=; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -811,9 +851,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = ">\"name,";
             String value = "&value<";
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedHtmlCookieString(name, value);
 
-            String expectedCookieString = name + "=" + value + ";";
+            String expectedCookieString = name + "=" + value + "; " + SAME_SITE_PROP;
             verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
@@ -834,6 +876,8 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "<cookie name\"'>";
             String value = ">cookie'<\" value ";
             Map<String, String> cookieProps = new HashMap<String, String>();
+
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             String result = utils.getUnencodedHtmlCookieString(name, value, cookieProps);
 
@@ -861,10 +905,14 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             cookieProps.put("key1", "value1");
             cookieProps.put("key2", "value2");
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getUnencodedHtmlCookieString(name, value, cookieProps);
 
             String expectedCookieString = name + "=" + value + ";";
             verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+
+            cookieProps.put("SameSite", SAME_SITE_ATTR_VALUE);
             verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
@@ -1006,12 +1054,7 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String requestUrlCookieName = "some cookie name";
             String redirectUrl = VALID_URL;
 
-            mockery.checking(new Expectations() {
-                {
-                    one(webAppConfig).getSSORequiresSSL();
-                    will(returnValue(false));
-                }
-            });
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
 
@@ -1040,12 +1083,7 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String requestUrlCookieName = "some cookie name";
             String redirectUrl = VALID_URL;
 
-            mockery.checking(new Expectations() {
-                {
-                    one(webAppConfig).getSSORequiresSSL();
-                    will(returnValue(true));
-                }
-            });
+            getWebAppSecurityConfigCookiePropertiesExpectations(true);
 
             String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
 
@@ -1073,12 +1111,7 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String requestUrlCookieName = "some cookie name";
             String redirectUrl = VALID_URL + "?test=value";
 
-            mockery.checking(new Expectations() {
-                {
-                    one(webAppConfig).getSSORequiresSSL();
-                    will(returnValue(false));
-                }
-            });
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             try {
                 String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
@@ -1107,12 +1140,7 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String requestUrlCookieName = "a'cookie \"name<with> HTML&chars";
             String redirectUrl = VALID_URL;
 
-            mockery.checking(new Expectations() {
-                {
-                    one(webAppConfig).getSSORequiresSSL();
-                    will(returnValue(false));
-                }
-            });
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
 
@@ -1143,6 +1171,8 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String redirectUrl = VALID_URL;
 
             Map<String, String> cookieProps = new HashMap<String, String>();
+
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
 
             String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl, cookieProps);
 
@@ -1178,8 +1208,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             cookieProps.put("NullValue", null);
             cookieProps.put("EmptyValue", "");
 
+            getWebAppSecurityConfigCookiePropertiesExpectations(false);
+
             String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl, cookieProps);
 
+            cookieProps.put("SameSite", SAME_SITE_ATTR_VALUE);
             verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl, cookieProps);
 
         } catch (Throwable t) {
@@ -1294,6 +1327,17 @@ public class JavaScriptUtilsTest extends CommonTestClass {
     private Pattern getExpectedCookieNameAndValuePattern(String cookieName) {
         String expectedCookieVal = Pattern.quote("\"+encodeURI(") + "[a-zA-Z0-9]+" + Pattern.quote(")+\"");
         return Pattern.compile(Pattern.quote(DOCUMENT_COOKIE_START + WebUtils.htmlEncode(cookieName) + "=") + expectedCookieVal + Pattern.quote(";"));
+    }
+
+    private void getWebAppSecurityConfigCookiePropertiesExpectations(final boolean ssoRequiresSsl) {
+        mockery.checking(new Expectations() {
+            {
+                one(webAppConfig).getSSORequiresSSL();
+                will(returnValue(ssoRequiresSsl));
+                one(webAppConfig).getSameSiteCookie();
+                will(returnValue(SAME_SITE_ATTR_VALUE));
+            }
+        });
     }
 
 }

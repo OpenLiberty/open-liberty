@@ -681,9 +681,9 @@ public class H2InboundLink extends HttpInboundLink {
                 }
 
                 if ((linkStatus != LINK_STATUS.CLOSING) && (linkStatus != LINK_STATUS.GOAWAY_SENDING)) {
-
                     doRead = true;
                 }
+
             }
 
             if (doRead) {
@@ -1195,8 +1195,21 @@ public class H2InboundLink extends HttpInboundLink {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "close(vc,e): close on link called with exception: " + e);
                 }
+
                 // do the close immediately on this thread
                 connTimeout.run();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close(vc,e): initLock count is : " + initLock.getCount());
+                }
+
+                // if we are waiting on connection initialization and an error occurred, release the latch
+                if (0 < initLock.getCount()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close(vc,e): wake up the initLock countDownLatch");
+                    }
+                    initLock.countDown();
+                }
             }
         }
     }

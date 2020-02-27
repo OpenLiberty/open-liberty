@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package web;
+
+import java.util.concurrent.Phaser;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
@@ -51,6 +53,15 @@ public class SelfRemovingTask extends DBIncrementTask {
 
             if (!persistentExecutor.remove(taskId))
                 throw new Exception("Task failed to remove itself. Task id is: " + taskId);
+
+            // coordinate timing with certain test cases
+            Phaser phaser = SchedulerFATServlet.phaserRef.get();
+            if (phaser != null) {
+                int phase = phaser.arrive();
+                int nextPhase = phaser.awaitAdvance(phase + 1);
+                if (nextPhase != phase + 2)
+                    throw new Exception("Expected next phase " + (phase + 2) + ". Instead, next phase is: " + nextPhase);
+            }
         }
         return numUpdates;
     }

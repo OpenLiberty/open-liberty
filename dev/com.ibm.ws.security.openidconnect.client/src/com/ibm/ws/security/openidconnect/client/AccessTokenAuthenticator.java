@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client;
 
@@ -31,6 +31,7 @@ import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 
+import com.google.gson.JsonParser;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -46,6 +47,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
@@ -115,10 +117,8 @@ public class AccessTokenAuthenticator {
 
         String validationMethod = clientConfig.getValidationMethod();
 
-        // if there are 2 or more "." in the token - it's pretty safe to assume we have a JWT
-        String[] parts = accessToken.split("\\.");
-        if (parts.length > 1) {
-            // found a jwt token
+        if (isTokenJWT(accessToken)) {
+            // accessToken is a JWT Token
             validationMethod = ClientConstants.VALIDATION_LOCAL;
             oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
         }
@@ -167,6 +167,28 @@ public class AccessTokenAuthenticator {
             Tr.debug(tc, "Token is owned by '" + oidcResult.getUserName() + "'");
         }
         return oidcResult;
+    }
+
+    @FFDCIgnore({ Exception.class })
+    protected boolean isTokenJWT(String token) {
+
+        String[] parts = token.split("\\."); // split out the "parts" (header, payload and signature)
+        if (parts.length > 1) {
+            try {
+                JsonParser parser = new JsonParser();
+                try {
+                    parser.parse(JsonTokenUtil.fromBase64ToJsonString(parts[0])).getAsJsonObject();
+                    return true;
+                } catch (Exception e1) {
+                    parser.parse(JsonTokenUtil.fromBase64ToJsonString(parts[1])).getAsJsonObject();
+                    return true;
+                }
+            } catch (Exception e2) {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     ProviderAuthenticationResult fixSubject(ProviderAuthenticationResult oidcResult) {

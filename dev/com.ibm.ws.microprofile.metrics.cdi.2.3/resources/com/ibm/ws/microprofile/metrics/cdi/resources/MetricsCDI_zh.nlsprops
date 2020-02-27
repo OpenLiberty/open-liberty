@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics CDI Impl -  range is 3000-4999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Cannot resolve forwarding gauge.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: \u65e0\u6cd5\u89e3\u6790\u6807\u5c3a\u6307\u6807 {0} \u7684\u503c\u3002
+cannot.resolve.metric.warning.CWMMC3000W.explanation=\u65e0\u6cd5\u89e3\u6790\u6807\u5c3a\u7684\u5e95\u5c42\u65b9\u6cd5\u3002\u8fd9\u901a\u5e38\u662f\u56e0\u4e3a\u5728\u5df2\u5378\u8f7d\u5e94\u7528\u7a0b\u5e8f\u7684\u4f4d\u7f6e\u8bbf\u95ee\u6307\u6807\u800c\u5bfc\u81f4\u7684\u3002
+cannot.resolve.metric.warning.CWMMC3000W.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u7cfb\u7edf\u5c06\u81ea\u52a8\u6ce8\u9500\u8be5\u6807\u5c3a\u3002

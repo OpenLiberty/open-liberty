@@ -25,10 +25,9 @@ Import-Package: \
         org.eclipse.microprofile.config.spi;version="[1.0,2)", \
 	*
 
-Export-Package: com.ibm.ws.microprofile.config.cdi
-
-Private-Package: \
-	com.ibm.ws.microprofile.config.cdi.resources
+Export-Package: \
+        com.ibm.ws.microprofile.config.cdi, \
+        com.ibm.ws.microprofile.config.cdi.resources;version=1.0
 
 WS-TraceGroup: APPCONFIG
 

@@ -1,0 +1,29 @@
+<server>
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>wsAtomicTransaction-1.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>jdbc-4.0</feature>
+		<feature>txtest-1.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+	
+	<jdbcDriver id="derbyDriver">
+        <library name="derbyLib">
+            <file name="${server.config.dir}/derby/derby.jar"/>
+        </library>
+    </jdbcDriver>
+    <dataSource id="derbyConnection0" jndiName="jdbc/wsatDataSource0" jdbcDriverRef="derbyDriver" type="javax.sql.XADataSource">
+        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    	is required beyond a single server start, configure the databaseName with a file location such as:
+    	databaseName="${shared.config.dir}/data/derbydb" -->
+    	<properties.derby.embedded createDatabase="create" databaseName="memory:WsatDatabase0"></properties.derby.embedded>
+    </dataSource>
+    <logging traceSpecification="*=info: wsat=all: Transaction=all"></logging>
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/dropins/wsatApp.war" className="java.security.AllPermission"/>
+</server>

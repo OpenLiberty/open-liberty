@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,3 +141,39 @@ duplicateAlias.useraction=Ensure that all host aliases defined as virtual host e
 context.root.changed=CWWKT0028I: Web application moved ({0}): {1}
 context.root.changed.explanation=This message is for informational purposes only.
 context.root.changed.useraction=No action is required.
+
+compression.duplicateType=CWWKT0029W: A duplicate add of the {0} type was attempted. The {1} default configuration is used instead. 
+compression.duplicateType.explanation=The specified value is already registered as an acceptable content type for compression.
+compression.duplicateType.useraction=When defining the value of acceptable encodings, ensure that each value is unique. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: A duplicate removal of the {0} encoding was attempted. The {1} default configuration is used instead.
+compression.duplicateTypeRemoval.explanation=The specified value is already registered as an excluded content type for compression.
+compression.duplicateTypeRemoval.useraction=When using the remove option (-), ensure that the specified value is not already registered as an excluded content type.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: An attempt was made to both add and remove the same {0} content type. The {1} default configuration is used instead.
+compression.duplicateTypeAddRemove.explanation=The specified value is being both added and removed by the configuration '+/-' options.
+compression.duplicateTypeAddRemove.useraction=Do not add (+) and remove (-) the same content type.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: An attempt was made to overwrite the compression default configuration but also use the add (+) option on other content type(s). The {0} default configuration is used instead.
+compression.duplicateOverwriteAndAdd.explanation=The configuration is attempting to overwrite the default value while also using the add (+) option. The add option cannot be used if you are overwriting the default values.
+compression.duplicateOverwriteAndAdd.useraction=If the default configuration must be overwritten, do not use the add (+) option. If the default does not need to be overwritten, include any other desired content types by using the add (+) option.
+
+compression.unsupportedAlgorithm=CWWKT0033W: An attempt was made to configure {0} as the server-preferred algorithm. The supported values are gzip, x-gzip, zlib, deflate, identity, and none. The default configuration {1} is used instead.
+compression.unsupportedAlgorithm.explanation=The configuration is attempting to set an unsupported algorithm as the server-preferred algorithm to use for compression. 
+compression.unsupportedAlgorithm.useraction= When defining the value, ensure that it is set to gzip, x-gzip, deflate, zlib, identity, or none.
+
+decompression.tolerance.reached=CWWKT0034E: The HTTP channel attempted to decompress a body with a larger than tolerated ratio.
+decompression.tolerance.reached.explanation=The maximum number of decompression cycles has reached, resulting in a decompression ratio larger than the configured limit. The decompression limit is defined by the decompressionRatioLimit httpOption attribute.
+decompression.tolerance.reached.useraction=When this exception happens on a valid request body, reconfigure the decompressionTolerance and decompressionRatioLimit httpOption attributes to achieve the appropriate decompression results.
+
+cookies.samesite.duplicateName=CWWKT0035W: A duplicate cookie name or pattern [{0}] was found in the SameSite [{1}] configuration. The [{0}] cookie name or pattern is ignored for all configuration lists. Any cookie name or pattern that is defined by the 'lax', 'none', and 'strict' configurations can be defined in only one of the three configurations. 
+cookies.samesite.duplicateName.explanation=The specified value was already found by the configuration and mapped to a SameSite value.
+cookies.samesite.duplicateName.useraction=Ensure that cookie names and patterns are unique across the 'lax', 'none', and 'strict' configuration lists.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: An unsupported use of the wildcard character was attempted by the value [{0}]. The SameSite configuration is not set for this value.
+cookies.samesite.unsupportedWildcard.explanation=The wildcard (*) character was used in an unsupported way. Support consists of a single wildcard (*) character that is used as a stand-alone value, or following any number of cookie name prefixes.
+cookies.samesite.unsupportedWildcard.useraction=Ensure that only a single wildcard (*) character is used per pattern in the 'lax', 'none', and 'strict' lists. Additionally, use of this character is supported only under the following two conditions: as a stand-alone value or following cookie name prefixes.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: A cookie name or pattern [{0}], which is marked as a duplicate, was found in the SameSite [{1}] configuration. The [{0}] cookie name or pattern is ignored. Any cookie name or pattern that is defined by the 'lax', 'none', and 'strict' configurations can be defined in only one of the three configurations. 
+cookies.samesite.knownDuplicateName.explanation=The specified value was already found by the configuration and mapped to a SameSite value.
+cookies.samesite.knownDuplicateName.useraction=Ensure that cookie names and patterns are unique across the 'lax', 'none', and 'strict' configuration lists.

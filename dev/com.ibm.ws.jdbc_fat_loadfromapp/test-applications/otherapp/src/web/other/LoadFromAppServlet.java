@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,12 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.concurrent.Executor;
 
+import javax.annotation.Resource;
 import javax.naming.InitialContext;
+import javax.security.auth.login.LoginException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,13 +29,25 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/LoadFromAppServlet")
 public class LoadFromAppServlet extends FATDatabaseServlet {
+    // TODO this turned out to be a good test of loading a JDBC driver from the app in combination with a login module. Cannot enable it yet because that function isn't complete.
+    //@Resource(name = "java:app/env/jdbc/ddsLoadFromAppWithWebModLoginModule")
+    //private DataSource loadedFromAppDataSourceWithWebModLoginModule;
+
+    @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromTopLevelJarInApp", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromTopLevelJarInApp;
+
+    @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromWebModuleInApp", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromWebModuleInApp;
+
     @Override
-    public void init(ServletConfig config) throws ServletException {}
+    public void init(ServletConfig config) throws ServletException {
+    }
 
     // This basic test verifies that the application cannot load Derby classes because it does not package a Derby library.
     @Test
@@ -100,6 +116,122 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
             assertEquals("dsuser1", mdata.getUserName());
         } finally {
             con.close();
+        }
+    }
+
+    // TODO determine expectations around loading login modules from EJBs.
+    // Currently not expecting to load login modules from EJB modules, but what about being able to load login modules
+    // that are packaged elsewhere within the application when on an EJB code path?
+
+    @Test
+    public void testLoginModuleFromEJBModule1() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/otherApp/ejb1/FirstBean!java.util.concurrent.Executor");
+        bean.execute(() -> {
+            try {
+                System.out.println("EJB1 loads: " + Class.forName("loginmod.LoadFromAppLoginModule"));
+                DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
+                try (Connection con = ds.getConnection()) {
+                    DatabaseMetaData mdata = con.getMetaData();
+                    String userName = mdata.getUserName();
+                    assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+                }
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new RuntimeException(x);
+            }
+        });
+    }
+
+    @Test
+    public void testLoginModuleFromEJBModule2() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/otherApp/ejb2/SecondBean!java.util.concurrent.Executor");
+        bean.execute(() -> {
+            try {
+                System.out.println("EJB2 loads: " + Class.forName("loginmod.LoadFromAppLoginModule"));
+                DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
+                try (Connection con = ds.getConnection()) {
+                    DatabaseMetaData mdata = con.getMetaData();
+                    String userName = mdata.getUserName();
+                    assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+                }
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new RuntimeException(x);
+            }
+        });
+    }
+
+    /**
+     * testLoginModuleFromTopLevelJarInAppLoaded - verify that a login module that is packaged within a JAR at the top level
+     * is used to authenticate to a data source when its resource reference specifies to use that login module.
+     * Attempt this from the web module and both EJB modules.
+     */
+    @Test
+    public void testLoginModuleFromTopLevelJarInApp() throws Exception {
+        // from web module
+        try (Connection con = sldsLoginModuleFromTopLevelJarInApp.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            assertEquals("appuser", metadata.getUserName());
+        }
+
+        // from the first EJB module
+        Executor bean = InitialContext.doLookup("java:global/otherApp/ejb1/FirstBean!java.util.concurrent.Executor");
+        bean.execute(() -> {
+            // the following runs in the EJB module
+            try {
+                DataSource ds = (DataSource) InitialContext.doLookup("java:app/env/jdbc/sldsLoginModuleFromTopLevelJarInApp");
+                try (Connection con = ds.getConnection()) {
+                    DatabaseMetaData mdata = con.getMetaData();
+                    String userName = mdata.getUserName();
+                    assertEquals("appuser", userName);
+                }
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new RuntimeException(x);
+            }
+        });
+
+        // from the second EJB module
+        bean = InitialContext.doLookup("java:global/otherApp/ejb2/SecondBean!java.util.concurrent.Executor");
+        bean.execute(() -> {
+            try {
+                // the following runs in the EJB module
+                DataSource ds = (DataSource) InitialContext.doLookup("java:app/env/jdbc/sldsLoginModuleFromTopLevelJarInApp");
+                try (Connection con = ds.getConnection()) {
+                    DatabaseMetaData mdata = con.getMetaData();
+                    String userName = mdata.getUserName();
+                    assertEquals("appuser", userName);
+                }
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new RuntimeException(x);
+            }
+        });
+    }
+
+    /**
+     * testLoginModuleFromWebModuleInEAR - verify that a login module that is packaged within the web module CANNOT be used to authenticate
+     * to a data source when its resource reference specifies to use that login module.
+     */
+    @AllowedFFDC({
+                   "javax.security.auth.login.LoginException", // no login modules for webapplogin
+                   "javax.resource.ResourceException" // chains the LoginException
+    })
+    @Test
+    public void testLoginModuleFromWebModuleInEAR() throws Exception {
+        try (Connection con = sldsLoginModuleFromWebModuleInApp.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            fail("authenticated as user " + metadata.getUserName());
+        } catch (SQLException x) {
+            Throwable cause = x;
+            while (cause != null && !(cause instanceof LoginException))
+                cause = cause.getCause();
+            if (!(cause instanceof LoginException))
+                throw x;
         }
     }
 

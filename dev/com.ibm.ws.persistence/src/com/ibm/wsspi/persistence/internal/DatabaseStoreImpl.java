@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -296,7 +296,11 @@ public class DatabaseStoreImpl implements DatabaseStore {
             }
 
             if ((Boolean) properties.get("createTables"))
-                createTables(persistenceServiceUnit);
+                if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)
+                    ; // ignore table creation for extra PersistenceServiceUnit that persistent executor creates to allow TRANSACTION_READ_UNCOMMITTED
+                      // TODO is there a better way to accomplish this?
+                else
+                    createTables(persistenceServiceUnit);
 
             if (deactivated) {
                 if (trace && tc.isEntryEnabled())
@@ -403,165 +407,187 @@ public class DatabaseStoreImpl implements DatabaseStore {
             Tr.entry(this, tc, "createOrmFileContentsForBatch");
 
         StringBuilder orm = new StringBuilder(4 * tablePrefixLength + schemaLength + 2000) // Wild guess.
-                        .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(EOLN)
+        .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(EOLN)
                         .append("<entity-mappings xmlns=\"http://xmlns.jcp.org/xml/ns/persistence/orm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd\" version=\"2.1\">").append(EOLN);
         if (schemaLength >= 0)
             orm.append(" <schema>").append(schema).append("</schema>").append(EOLN);
+
+        // JOBEXECUTION - V1 entity - UNCONDITIONAL (v1, v2, or v3)
         orm
-        .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity\">").append(EOLN)
-        .append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\">").append(EOLN)
-        //adding index
-        .append(" <index name=\"").append(tablePrefix).append("JE_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>")
-        //end index
-        .append(EOLN).append("  </table>").append(EOLN)
-        .append("  <inheritance strategy=\"SINGLE_TABLE\"/>").append(EOLN)
-        .append("  <class-extractor class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityExtractor\"/>").append(EOLN);
+                        .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity\">").append(EOLN)
+                        .append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\">").append(EOLN)
+                        .append("    <index name=\"").append(tablePrefix).append("JE_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>")
+                        .append(EOLN).append("  </table>").append(EOLN)
+                        .append("  <inheritance strategy=\"SINGLE_TABLE\"/>").append(EOLN)
+                        .append("  <class-extractor class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityExtractor\"/>").append(EOLN);
         if (!"IDENTITY".equals(strategy)) {
             orm
-            .append("  <attributes>").append(EOLN)
-            .append("   <id name=\"jobExecId\">").append(EOLN)
-            .append("    <column name=\"JOBEXECID\" nullable=\"false\"/>").append(EOLN)
-            .append("    <generated-value generator=\"JOBEXECIDGEN\" strategy=\"").append(strategy).append("\"/>").append(EOLN);
+                            .append("  <attributes>").append(EOLN)
+                            .append("   <id name=\"jobExecId\">").append(EOLN)
+                            .append("    <column name=\"JOBEXECID\" nullable=\"false\"/>").append(EOLN)
+                            .append("    <generated-value generator=\"JOBEXECIDGEN\" strategy=\"").append(strategy).append("\"/>").append(EOLN);
             if ("TABLE".equals(strategy)) {
                 orm
-                .append("    <table-generator name=\"JOBEXECIDGEN\" table=\"").append(tablePrefix).append("GEN\"");
+                                .append("    <table-generator name=\"JOBEXECIDGEN\" table=\"").append(tablePrefix).append("GEN\"");
                 if (schema != null)
                     orm.append(" schema=\"").append(schema).append('"');
                 orm.append("/>").append(EOLN);
             } else
                 orm
-                .append("    <sequence-generator name=\"JOBEXECIDGEN\" sequence-name=\"").append(tablePrefix).append("SEQ\"/>").append(EOLN);
+                                .append("    <sequence-generator name=\"JOBEXECIDGEN\" sequence-name=\"").append(tablePrefix).append("SEQ\"/>").append(EOLN);
             orm
-            .append("   </id>").append(EOLN)
-            .append("  </attributes>").append(EOLN);
+                            .append("   </id>").append(EOLN)
+                            .append("  </attributes>").append(EOLN);
         }
         orm
-        .append(" </entity>").append(EOLN);
-        if (Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV2")) {
+                        .append(" </entity>").append(EOLN);
+
+        // JOBEXECUTION - V2 entity - CONDITIONAL (v2 or v3)
+        if ( Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV2") ||
+             Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV3") ) {
             orm
-            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV2\">").append(EOLN)
-            //.append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\"/>").append(EOLN);
-            .append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\">").append(EOLN)
-            //adding index
-            .append("  <index name=\"").append(tablePrefix).append("JE_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>")
-            //end index
-            .append(EOLN).append("  </table>").append(EOLN)
-            .append("  <attributes>").append(EOLN)
-            .append("   <element-collection name=\"jobParameterElements\" target-class=\"com.ibm.jbatch.container.persistence.jpa.JobParameter\">").append(EOLN)
-            .append("    <collection-table name=\"").append(tablePrefix).append("JOBPARAMETER\">").append(EOLN)
-            .append("     <join-column name=\"FK_JOBEXECID\"/>").append(EOLN)
-            .append("     <index name=\"").append(tablePrefix).append("JP_FKJOBEXECID_IX\" column-list=\"FK_JOBEXECID\" unique=\"false\"/>").append(EOLN)
-            .append("    </collection-table>").append(EOLN)
-            .append("   </element-collection>").append(EOLN)
-            .append("  </attributes>").append(EOLN)
-            .append(" </entity>").append(EOLN);
+                            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV2\">").append(EOLN)
+                            .append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\">").append(EOLN)
+                            .append("  <index name=\"").append(tablePrefix).append("JE_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>")
+                            .append(EOLN).append("  </table>").append(EOLN)
+                            .append("  <attributes>").append(EOLN)
+                            .append("   <element-collection name=\"jobParameterElements\" target-class=\"com.ibm.jbatch.container.persistence.jpa.JobParameter\">").append(EOLN)
+                            .append("    <collection-table name=\"").append(tablePrefix).append("JOBPARAMETER\">").append(EOLN)
+                            .append("     <join-column name=\"FK_JOBEXECID\"/>").append(EOLN)
+                            .append("     <index name=\"").append(tablePrefix).append("JP_FKJOBEXECID_IX\" column-list=\"FK_JOBEXECID\" unique=\"false\"/>").append(EOLN)
+                            .append("    </collection-table>").append(EOLN)
+                            .append("   </element-collection>").append(EOLN)
+                            .append("  </attributes>").append(EOLN)
+                            .append(" </entity>").append(EOLN);
         }
+        // JOBEXECUTION - V3 entity - CONDITIONAL (v3 only)
+        if ( Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV3")) {
+            orm
+                            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV3\">").append(EOLN)
+                            .append("  <table name=\"").append(tablePrefix).append("JOBEXECUTION\">").append(EOLN)
+                            .append("  </table>").append(EOLN)
+                            .append(" </entity>").append(EOLN);
+
+        }
+
+        // JOBINSTANCE - V1 entity - UNCONDITIONAL (v1, v2, or v3)
         orm
-        .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity\">").append(EOLN)
-        .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
-        .append("  <inheritance strategy=\"SINGLE_TABLE\"/>").append(EOLN)
-        .append("  <class-extractor class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityExtractor\"/>").append(EOLN);
+                        .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity\">").append(EOLN)
+                        .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
+                        .append("  <inheritance strategy=\"SINGLE_TABLE\"/>").append(EOLN)
+                        .append("  <class-extractor class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityExtractor\"/>").append(EOLN);
         if (!"IDENTITY".equals(strategy)) {
             orm
-            .append("  <attributes>").append(EOLN)
-            .append("   <id name=\"instanceId\">").append(EOLN)
-            .append("    <column name=\"JOBINSTANCEID\" nullable=\"false\"/>").append(EOLN)
-            .append("    <generated-value generator=\"JOBINSTANCEIDGEN\" strategy=\"").append(strategy).append("\"/>").append(EOLN);
+                            .append("  <attributes>").append(EOLN)
+                            .append("   <id name=\"instanceId\">").append(EOLN)
+                            .append("    <column name=\"JOBINSTANCEID\" nullable=\"false\"/>").append(EOLN)
+                            .append("    <generated-value generator=\"JOBINSTANCEIDGEN\" strategy=\"").append(strategy).append("\"/>").append(EOLN);
             if ("TABLE".equals(strategy)) {
                 orm
-                .append("    <table-generator name=\"JOBINSTANCEIDGEN\" table=\"").append(tablePrefix).append("GEN\"");
+                                .append("    <table-generator name=\"JOBINSTANCEIDGEN\" table=\"").append(tablePrefix).append("GEN\"");
                 if (schema != null)
                     orm.append(" schema=\"").append(schema).append('"');
                 orm.append("/>").append(EOLN);
             } else
                 orm
-                .append("    <sequence-generator name=\"JOBINSTANCEIDGEN\" sequence-name=\"").append(tablePrefix).append("SEQ\"/>").append(EOLN);
+                                .append("    <sequence-generator name=\"JOBINSTANCEIDGEN\" sequence-name=\"").append(tablePrefix).append("SEQ\"/>").append(EOLN);
             orm
-            .append("   </id>").append(EOLN)
-            .append("  </attributes>").append(EOLN);
+                            .append("   </id>").append(EOLN)
+                            .append("  </attributes>").append(EOLN);
         }
         orm
-        .append(" </entity>").append(EOLN);
+                        .append(" </entity>").append(EOLN);
+
+        // JOBINSTANCE - V2 entity - CONDITIONAL (v2 only)
         if (Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV2")) {
             orm
-            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV2\">").append(EOLN)
-            .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
-            .append(" </entity>").append(EOLN);
+                            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV2\">").append(EOLN)
+                            .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
+                            .append(" </entity>").append(EOLN);
         }
+        // JOBINSTANCE - V2 and V3 entities - CONDITIONAL (v3 only)
         if (Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV3")) {
             orm
-            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV2\">").append(EOLN)
-            .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
-            .append(" </entity>").append(EOLN)
-            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV3\">").append(EOLN)
-            .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
-            .append("  <attributes>").append(EOLN)
-            .append("   <element-collection name=\"groupNames\" target-class=\"java.lang.String\">").append(EOLN)
-            .append("    <collection-table name=\"").append(tablePrefix).append("GROUPASSOCIATION\">").append(EOLN)
-            .append("     <join-column name=\"FK_JOBINSTANCEID\"/>").append(EOLN)
-            .append("     <index name=\"").append(tablePrefix).append("GA_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>").append(EOLN)
-            .append("    </collection-table>").append(EOLN)
-            .append("   </element-collection>").append(EOLN)
-            .append("  </attributes>").append(EOLN)
-            .append(" </entity>").append(EOLN);
+                            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV2\">").append(EOLN)
+                            .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
+                            .append(" </entity>").append(EOLN)
+                            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV3\">").append(EOLN)
+                            .append("  <table name=\"").append(tablePrefix).append("JOBINSTANCE\"/>").append(EOLN)
+                            .append("  <attributes>").append(EOLN)
+                            .append("   <element-collection name=\"groupNames\" target-class=\"java.lang.String\">").append(EOLN)
+                            .append("    <collection-table name=\"").append(tablePrefix).append("GROUPASSOCIATION\">").append(EOLN)
+                            .append("     <join-column name=\"FK_JOBINSTANCEID\"/>").append(EOLN)
+                            .append("     <index name=\"").append(tablePrefix).append("GA_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>").append(EOLN)
+                            .append("    </collection-table>").append(EOLN)
+                            .append("   </element-collection>").append(EOLN)
+                            .append("  </attributes>").append(EOLN)
+                            .append(" </entity>").append(EOLN);
 
         }
+        // STEPTHREADEXECUTION - V1 entity - UNCONDITIONAL (v1 or v2)
         orm
-        .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity\">").append(EOLN)
-        .append("  <table name=\"").append(tablePrefix).append("STEPTHREADEXECUTION\">").append(EOLN)
-        .append("   <unique-constraint>").append(EOLN)
-        .append("    <column-name>FK_JOBEXECID</column-name>").append(EOLN)
-        .append("    <column-name>STEPNAME</column-name>").append(EOLN)
-        .append("    <column-name>PARTNUM</column-name>").append(EOLN)
-        .append("   </unique-constraint>").append(EOLN)
-        //adding indexes
-        .append(" <index name=\"").append(tablePrefix).append("STE_FKJOBEXECID_IX\" column-list=\"FK_JOBEXECID\" unique=\"false\"/>").append(EOLN)
-        .append(" <index name=\"").append(tablePrefix).append("STE_FKTLSTEPEID_IX\" column-list=\"FK_TOPLVL_STEPEXECID\" unique=\"false\"/>").append(EOLN)
-        //end indexes
-        .append("  </table>").append(EOLN);
+                        .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity\">").append(EOLN)
+                        .append("  <table name=\"").append(tablePrefix).append("STEPTHREADEXECUTION\">").append(EOLN)
+                        .append("   <unique-constraint>").append(EOLN)
+                        .append("    <column-name>FK_JOBEXECID</column-name>").append(EOLN)
+                        .append("    <column-name>STEPNAME</column-name>").append(EOLN)
+                        .append("    <column-name>PARTNUM</column-name>").append(EOLN)
+                        .append("   </unique-constraint>").append(EOLN)
+                        //adding indexes
+                        .append(" <index name=\"").append(tablePrefix).append("STE_FKJOBEXECID_IX\" column-list=\"FK_JOBEXECID\" unique=\"false\"/>").append(EOLN)
+                        .append(" <index name=\"").append(tablePrefix).append("STE_FKTLSTEPEID_IX\" column-list=\"FK_TOPLVL_STEPEXECID\" unique=\"false\"/>").append(EOLN)
+                        //end indexes
+                        .append("  </table>").append(EOLN);
         if (!"IDENTITY".equals(strategy)) {
             orm
-            .append("  <attributes>").append(EOLN)
-            .append("   <id name=\"stepExecutionId\">").append(EOLN)
-            .append("    <column name=\"STEPEXECID\" nullable=\"false\"/>").append(EOLN)
-            .append("    <generated-value generator=\"STEPEXECIDGEN\" strategy=\"").append(strategy).append("\"/>").append(EOLN);
+                            .append("  <attributes>").append(EOLN)
+                            .append("   <id name=\"stepExecutionId\">").append(EOLN)
+                            .append("    <column name=\"STEPEXECID\" nullable=\"false\"/>").append(EOLN)
+                            .append("    <generated-value generator=\"STEPEXECIDGEN\" strategy=\"").append(strategy).append("\"/>").append(EOLN);
             if ("TABLE".equals(strategy)) {
                 orm
-                .append("    <table-generator name=\"STEPEXECIDGEN\" table=\"").append(tablePrefix).append("GEN\"");
+                                .append("    <table-generator name=\"STEPEXECIDGEN\" table=\"").append(tablePrefix).append("GEN\"");
                 if (schema != null)
                     orm.append(" schema=\"").append(schema).append('"');
                 orm.append("/>").append(EOLN);
             } else
                 orm
-                .append("    <sequence-generator name=\"STEPEXECIDGEN\" sequence-name=\"").append(tablePrefix).append("SEQ\"/>").append(EOLN);
+                                .append("    <sequence-generator name=\"STEPEXECIDGEN\" sequence-name=\"").append(tablePrefix).append("SEQ\"/>").append(EOLN);
             orm
-            .append("   </id>").append(EOLN)
-            .append("  </attributes>").append(EOLN);
+                            .append("   </id>").append(EOLN)
+                            .append("  </attributes>").append(EOLN);
         }
         orm
-        .append(" </entity>").append(EOLN)
+                        .append(" </entity>").append(EOLN);
 
-        .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.StepThreadInstanceEntity\">").append(EOLN)
-        .append("  <table name=\"").append(tablePrefix).append("STEPTHREADINSTANCE\">").append(EOLN)
-        //adding indexes
-        .append("   <index name=\"").append(tablePrefix).append("STI_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>").append(EOLN)
-        .append("   <index name=\"").append(tablePrefix).append("STI_FKLATEST_SEI_IX\" column-list=\"FK_LATEST_STEPEXECID\" unique=\"false\"/>").append(EOLN)
-        //end indexes
-        .append("  </table>").append(EOLN)
-        .append(" </entity>").append(EOLN);
-
-        if (Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.RemotablePartitionEntity")) {
-            orm.append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.RemotablePartitionEntity\">").append(EOLN)
-               .append("  <table name=\"").append(tablePrefix).append("REMOTABLEPARTITION\">").append(EOLN)
-               .append("   <unique-constraint>").append(EOLN)
-               .append("    <column-name>FK_JOBEXECUTIONID</column-name>").append(EOLN)
-               .append("    <column-name>STEPNAME</column-name>").append(EOLN)
-               .append("    <column-name>PARTNUM</column-name>").append(EOLN)
-               .append("   </unique-constraint>").append(EOLN)
-               .append("  </table>").append(EOLN)
-               .append(" </entity>").append(EOLN);
+        // STEPTHREADEXECUTION - V2 entity - CONDITIONAL (v2 only)
+        if (Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntityV2")) {
+            orm
+                            .append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntityV2\">").append(EOLN)
+                            .append("  <table name=\"").append(tablePrefix).append("STEPTHREADEXECUTION\">").append(EOLN)
+                            .append("  </table>").append(EOLN)
+                            .append(" </entity>").append(EOLN);
         }
 
+        // STEPTHREADINSTANCE - V1 entity - UNCONDITIONAL
+        orm.append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.StepThreadInstanceEntity\">").append(EOLN)
+                        .append("  <table name=\"").append(tablePrefix).append("STEPTHREADINSTANCE\">").append(EOLN)
+                        //adding indexes
+                        .append("   <index name=\"").append(tablePrefix).append("STI_FKINSTANCEID_IX\" column-list=\"FK_JOBINSTANCEID\" unique=\"false\"/>").append(EOLN)
+                        .append("   <index name=\"").append(tablePrefix).append("STI_FKLATEST_SEI_IX\" column-list=\"FK_LATEST_STEPEXECID\" unique=\"false\"/>").append(EOLN)
+                        //end indexes
+                        .append("  </table>").append(EOLN)
+                        .append(" </entity>").append(EOLN);
+
+        // REMOTABLEPARTITION - V1 entity - CONDITIONAL (on presence of RemotablePartitionEntity only)
+        if (Arrays.asList(entityClassNames).contains("com.ibm.jbatch.container.persistence.jpa.RemotablePartitionEntity")) {
+            orm.append(" <entity class=\"com.ibm.jbatch.container.persistence.jpa.RemotablePartitionEntity\">").append(EOLN)
+                               .append("  <table name=\"").append(tablePrefix).append("REMOTABLEPARTITION\">").append(EOLN)
+                               .append("  </table>").append(EOLN)
+                               .append(" </entity>").append(EOLN);
+        }
+
+        // ALL DONE
         orm.append("</entity-mappings>").append(EOLN);
 
         if (trace && tc.isDebugEnabled())

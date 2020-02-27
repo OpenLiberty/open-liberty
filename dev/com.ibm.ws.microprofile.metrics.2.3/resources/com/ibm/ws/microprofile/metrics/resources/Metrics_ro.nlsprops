@@ -1,0 +1,140 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 20120 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Accept Header not acceptable.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: Formatul antetului de acceptare {0} este incorect.
+notAcceptable.info.CWMMC0000I.explanation=Antetul de acceptare folose\u015fte un format nesuportat.
+notAcceptable.info.CWMMC0000I.useraction=Utiliza\u0163i anteturi corespunz\u0103toare.
+
+#Method Not Allowed
+requestType.info.CWMMC0001I=CWMMC0001I: Tipul de cerere al metodei trebuie s\u0103 fie GET sau OPTIONS.
+requestType.info.CWMMC0001I.explanation=Tipul de cerere nu este suportat. Tipul trebuie s\u0103 fie GET sau OPTIONS.
+requestType.info.CWMMC0001I.useraction=Face\u0163i cereri GET sau OPTIONS.
+
+#Metric was not found.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: Nu a fost g\u0103sit numele indicelui de m\u0103surare {0}.
+metricNotFound.info.CWMMC0002I.explanation=Indicele de m\u0103surare nu exist\u0103.
+metricNotFound.info.CWMMC0002I.useraction=Introduce\u0163i numele corect de indice de m\u0103surare.
+
+#Registry was not found.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: Nu a fost g\u0103sit registrul {0}.
+registryNotFound.info.CWMMC0003I.explanation=Registrul nu exist\u0103.
+registryNotFound.info.CWMMC0003I.useraction=Introduce\u0163i numele corect de registru.
+
+#Registry is empty.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: Registrul {0} nu are con\u0163inut.
+emptyRegistry.info.CWMMC0004I.explanation=Registrul este gol.
+emptyRegistry.info.CWMMC0004I.useraction=Popula\u0163i registrul cu indici de m\u0103surare.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMMC0005E=CWMMC0005E: A ap\u0103rut o eroare intern\u0103: {0}
+internal.error.CWMMC0005E.explanation=Serverul de aplica\u0163ii a avut o eroare intern\u0103.
+internal.error.CWMMC0005E.useraction=Str\u00e2nge\u0163i un set de urme \u015fi deschide\u0163i o problem\u0103 nou\u0103 asociat\u0103 serverului dumneavoastr\u0103 de aplica\u0163ii.
+
+#Generic error for internal failures. 
+internal.error.CWMMC0006E=CWMMC0006E: A ap\u0103rut o eroare intern\u0103.
+internal.error.CWMMC0006E.explanation=Serverul de aplica\u0163ii a avut o eroare intern\u0103.
+internal.error.CWMMC0006E.useraction=Str\u00e2nge\u0163i un set de urme \u015fi deschide\u0163i o problem\u0103 nou\u0103 asociat\u0103 serverului dumneavoastr\u0103 de aplica\u0163ii.
+
+#Memory usedHeap message
+memory.usedHeap.description=Afi\u015feaz\u0103 cantitatea de memorie heap utilizat\u0103 \u00een octe\u0163i.
+
+#Memory committedHeap message
+memory.committedHeap.description=Afi\u015feaz\u0103 cantitatea de memorie \u00een octe\u0163i care este angajat\u0103 pentru utilizare de c\u0103tre ma\u015fina virtual\u0103 Java. Aceast\u0103 cantitatea de memorie este garantat\u0103 pentru utilizare de c\u0103tre ma\u015fina virtual\u0103 Java.
+
+#Memory maxHeap message
+memory.maxHeap.description=Afi\u015feaz\u0103 cantitatea maxim\u0103 de memorie heap \u00een octe\u0163i care poate fi utilizat\u0103 pentru gestiunea memoriei. Acest atribut afi\u015feaz\u0103 -1 dac\u0103 dimensiunea heap maxim\u0103 de memorie este nedefinit\u0103. Aceast\u0103 cantitatea de memorie nu este garantat\u0103 s\u0103 fie disponibil\u0103 pentru gestionarea memoriei dac\u0103 este mai mare dec\u00e2t cantitatea de memorie angajat\u0103. E posibil ca ma\u015fina virtual\u0103 Java s\u0103 e\u015fueze alocarea memoriei, chiar c\u00e2nd cantitatea de memorie utilizat\u0103 nu dep\u0103\u015fe\u015fte aceast\u0103 dimensiune maxim\u0103.
+
+#Jvm uptime message
+jvm.uptime.description=Afi\u015feaz\u0103 ora de \u00eencepere a ma\u015finii virtuale Java \u00een milisecunde. Acest atribut afi\u015feaz\u0103 ora aproximativ\u0103 c\u00e2nd porne\u015fte ma\u015fina virtual\u0103 Java.
+
+#Thread count message
+thread.count.description=Afi\u015feaz\u0103 num\u0103rul curent de fire de execu\u0163ie live, inclusiv firele de execu\u0163ie daemon \u015fi non-daemon.
+
+#Thread daemon count message
+thread.daemon.count.description=Afi\u015feaz\u0103 num\u0103rul curent de fire de execu\u0163ie live daemon.
+
+#Thread max count message
+thread.max.count.description=Afi\u015feaz\u0103 num\u0103rul maxim de fire de execu\u0163ie live de c\u00e2nd a pornit ma\u015fina virtual\u0103 Java sau maximul a fost resetat. Aceasta include fire de execu\u0163ie daemon sau non-daemon.
+
+#Classloader currentLoadedClass count message
+classloader.currentLoadedClass.count.description=Afi\u015feaz\u0103 num\u0103rul de clase care sunt momentan \u00eenc\u0103rcate \u00een ma\u015fina virtual\u0103 Java.
+
+#Classloader totalLoadedClass count message
+classloader.totalLoadedClass.count.description=Afi\u015feaz\u0103 num\u0103rul total de clase care au fost \u00eenc\u0103rcate de c\u00e2nd ma\u015fina virtual\u0103 Java a \u00eenceput execu\u0163ia.
+
+#Classloader totalUnloadedClass count message
+classloader.totalUnloadedClass.count.description=Afi\u015feaz\u0103 num\u0103rul total de clase care au fost \u00eenc\u0103rcate de c\u00e2nd ma\u015fina virtual\u0103 Java a \u00eenceput execu\u0163ia.
+
+#Cpu availableProcessors message
+cpu.availableProcessors.description=Afi\u015feaz\u0103 num\u0103rul de procesoare disponibile pentru ma\u015fina virtual\u0103 Java. Aceast\u0103 valoare se poate modifica \u00een timpul unei anumite invoc\u0103ri a ma\u015finii virtuale.
+
+#Cpu systemLoadAverage message
+cpu.systemLoadAverage.description=Afi\u015feaz\u0103 valoarea medie a \u00eenc\u0103rc\u0103rii sistemului pentru ultimul minut. Valoarea medie a \u00eenc\u0103rc\u0103rii sistemului este suma num\u0103rului de entit\u0103\u0163i executabile puse \u00een coad\u0103 la procesoarele disponibile \u015fi num\u0103rul de entit\u0103\u0163i executabile care ruleaz\u0103 pe procesoarele disponibile mediate \u00eentr-o perioad\u0103 de timp. Modul \u00een care este calculat\u0103 media de \u00eenc\u0103rcare este specific\u0103 sistemului de operare dar este de obicei o medie dependent\u0103 de timp. Dac\u0103 media de \u00eenc\u0103rcare nu este disponibil\u0103, este afi\u015fat\u0103 o valoare negativ\u0103. Acest atribut este proiectat pentru a furniza o indica\u0163ie despre \u00eenc\u0103rcarea sistemului \u015fi poate fi interogat frecvent. \u00cenc\u0103rcarea medie ar putea fi indisponibil\u0103 pe o platform unde este scump\u0103 implementarea acestei metode.
+
+#Cpu processCpuLoad message
+cpu.processCpuLoad.description=Afi\u015feaz\u0103 'utilizare recent\u0103 cpu' pentru procesul Java Virtual Machine.
+
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Afi\u015feaz\u0103 timpul CPU utilizat de procesul pe care ruleaz\u0103 JVM (ma\u015fina virtual\u0103 Java).
+
+#Garbage collection count message
+garbageCollectionCount.description=Afi\u015feaz\u0103 num\u0103rul total de colec\u0163ii care au ap\u0103rut. Acest atribut listeaz\u0103 -1 dac\u0103 num\u0103rul de colec\u0163ie nu este definit pentru acest colector.
+
+#Garbage collection time message
+garbageCollectionTime.description=Afi\u015feaz\u0103 timpul aproximativ scurs pentru colectarea acumulat\u0103 \u00een milisecunde. Acest atribut afi\u015feaz\u0103 -1 dac\u0103 timpul scurs de colectare este nedefinit pentru acest colector. Implementarea ma\u015finii virtuale Java ar putea utiliza un cronometru de rezolu\u0163ie \u00eenalt\u0103 pentru a m\u0103sura timpul scurs. Acest atribut ar putea afi\u015fa aceea\u015fi valoare chiar dac\u0103 num\u0103rul de colec\u0163ie a fost incrementat dac\u0103 intervalul de colectare este foarte scurt.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Num\u0103rul de fire de execu\u0163ie care ruleaz\u0103 taskuri.
+threadpool.size.description=Dimensiunea pool-ului de fire.
+
+servlet.request.total.description=Num\u0103rul de vizite la acest servlet de la pornirea serverului.
+servlet.responseTime.total.description=Timpul total de r\u0103spuns al acestui servlet de la pornirea serverului.
+
+connectionpool.create.total.description=Num\u0103rul total de conexiuni gestionate care au fost create de la crearea pool-ului.
+connectionpool.destroy.total.description=Num\u0103rul total de conexiuni gestionate care au fost distruse de la crearea pool-ului.
+connectionpool.managedConnections.description=Num\u0103rul total de conexiuni gestionate \u00een pool-urile libere, partajate \u015fi nepartajate.
+connectionpool.connectionHandles.description=Num\u0103rul de conexiuni care sunt \u00een uz. Acest num\u0103r poate include mai multe conexiuni care sunt partajate de la o singur\u0103 conexiune gestionat\u0103.
+connectionpool.freeConnections.description=Num\u0103rul total de conexiuni gestionate \u00een pool-ul liber.
+
+session.create.total.description=Num\u0103rul de sesiuni care s-au logat de la activarea acestui indice de m\u0103surare.
+session.liveSessions.description=Num\u0103rul de utilizatori care sunt loga\u0163i curent.
+session.activeSessions.description=Num\u0103rul de sesiuni active concurente. (O sesiune este activ\u0103 dac\u0103 produsul este proceseaz\u0103 curent o cerere care utilizeaz\u0103 acea sesiune de utilizator).
+session.invalidated.total.description=Num\u0103rul de sesiuni care s-au delogat de la activarea acestui indice de m\u0103surare.
+session.invalidatedbyTimeout.total.description=Num\u0103rul de sesiuni care s-au delogat prin timeout de la activarea acestui indice de m\u0103surare.
+
+
+REST.request.description=Num\u0103rul de invoc\u0103ri \u015fi timpul total de r\u0103spuns al acestei metode de resurs\u0103 RESTful de la pornirea serverului.
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Metrics error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Metrics API error has occurred: {0}
+temporary.CWMMC9999E=CWMMC9999E: A ap\u0103rut o eroare de API Metrics: {0}
+temporary.CWMMC9999E.explanation=O eroare de API Metrics \u00eempiedic\u0103 func\u0163ionarea normal\u0103.
+temporary.CWMMC9999E.useraction=Examina\u0163i istoricele FFDC \u015fi textul excep\u0163iei pentru a identifica problema.

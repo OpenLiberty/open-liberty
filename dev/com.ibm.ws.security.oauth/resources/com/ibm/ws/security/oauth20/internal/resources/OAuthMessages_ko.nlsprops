@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -452,6 +452,11 @@ JAVA8_REQUIRED.useraction=Java \ubc84\uc804 8 \uc774\uc0c1\uc744 \uc124\uce58\ud
 JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: {0} OpenID Connect \uc81c\uacf5\uc790\uc5d0 {2} \uc54c\uace0\ub9ac\uc998\uc744 \uc0ac\uc6a9\ud558\ub3c4\ub85d \uc124\uc815\ub41c {1} \uad6c\uc131 \uc18d\uc131\uc774 \uc788\uc73c\uba70 \uc5ec\uae30\uc5d0\ub294 Java 8 \uc774\uc0c1\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. \uc9c0\uc815\ub41c OpenID Connect \uc81c\uacf5\uc790\uac00 {3} \uc124\uc815\uc744 \ubb34\uc2dc\ud569\ub2c8\ub2e4.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=\uc0ac\uc6a9 \uc911\uc778 Java \ubc84\uc804\uc774 8 \uc774\uc0c1\uc774 \uc544\ub2d9\ub2c8\ub2e4.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=\uc5b8\uae09\ub41c \uad6c\uc131 \uc635\uc158\uc744 \uc0ac\uc6a9\ud558\ub824\uba74 Java \ubc84\uc804 8 \uc774\uc0c1\uc744 \uc124\uce58\ud558\uc2ed\uc2dc\uc624.
+
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: \uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc774 [{0}]\uc778 \ud1a0\ud070\uc740 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud5c8\uc6a9\ub41c \uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc740 {1}\uc785\ub2c8\ub2e4.
+WRONG_TOKEN_GRANTTYPE.explanation=\uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc73c\ubbc0\ub85c \ud1a0\ud070\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+WRONG_TOKEN_GRANTTYPE.useraction=\ud5c8\uc6a9\ub418\ub294 \uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc758 \ud1a0\ud070\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=\ub85c\uadf8\uc544\uc6c3

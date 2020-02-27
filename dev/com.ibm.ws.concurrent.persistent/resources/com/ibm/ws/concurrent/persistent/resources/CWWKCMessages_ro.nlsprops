@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,18 @@ CWWKC1503.task.failure=CWWKC1503W: Executorul persistent {0} a derulat \u00eenap
 CWWKC1503.task.failure.explanation=Execu\u0163ia taskului a e\u015fuat \u015fi a fost derulat\u0103 \u00eenapoi.
 CWWKC1503.task.failure.useraction=Corecta\u0163i cauaza e\u015fecului, dac\u0103 e\u015fecul este nea\u015fteptat, \u015fi replanifica\u0163i taskul.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: Tranzac\u0163ia este marcat\u0103 pentru derulare \u00eenapoi deoarece timpul de execu\u0163ie al taskului, {0} secunde, a dep\u0103\u015fit timeout-ul de tranzac\u0163ie, {1} secunde.
+CWWKC1504.tx.timeout.rollback.explanation=Taskul a durat prea mult la rulare, astfel \u00eenc\u00e2t tranzac\u0163ia este derulat\u0103 \u00eenapoi.
+CWWKC1504.tx.timeout.rollback.useraction=Ar putea fi necesar un timeout de tranzac\u0163ie mai mare sau ca taskul s\u0103 fie f\u0103cut mai scurt.
+
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: Tranzac\u0163ia este marcat\u0103 pentru derulare \u00eenapoi deoarece timpul de execu\u0163ie al taskului, {0} secunde, a dep\u0103\u015fit missedTaskThreshold, {1} secunde.
+CWWKC1505.mtt.timeout.rollback.explanation=Taskul a durat prea mult la rulare, astfel \u00eenc\u00e2t tranzac\u0163ia este derulat\u0103 \u00eenapoi.
+CWWKC1505.mtt.timeout.rollback.useraction=Ar putea fi necesar un missedTaskThreshold mai mare sau ca taskul s\u0103 fie f\u0103cut mai scurt.
+
+CWWKC1506.marked.rollback.only=CWWKC1506E: Tranzac\u0163ia este marcat\u0103 pentru derulare \u00eenapoi.
+CWWKC1506.marked.rollback.only.explanation=Aplica\u0163ia a marcat tranzac\u0163ia pentru derulare \u00eenapoi cu setRollbackOnly, sau o eroare sau un timeout a cauzat derularea \u00eenapoi.
+CWWKC1506.marked.rollback.only.useraction=Dac\u0103 derularea \u00eenapoi este nea\u015fteptat\u0103, verifica\u0163i istoricele \u015fi aplica\u0163ia.
+
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Executorul persistent {0} a renun\u0163at la taskul {1}, deoarece l-a derulat \u00eenapoi sau a e\u015fuat de {2} ori consecutiv.
 CWWKC1510.retry.limit.reached.rollback.explanation=Taskul a atins limita re\u00eencerc\u0103rilor consecutive \u015fi nu va mai fi \u00eencercat.
 CWWKC1510.retry.limit.reached.rollback.useraction=Dac\u0103 derul\u0103rile \u00eenapoi sau e\u015fecurile sunt nea\u015fteptate, determina\u0163i cauza \u015fi replanifica\u0163i taskul. Dac\u0103 derul\u0103rile \u00eenapoi \u015fi e\u015fecurile sunt intermitente, lua\u0163i \u00een considerare cre\u015fterea limitei de re\u00eencerc\u0103ri. 
@@ -50,6 +62,14 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Dac\u0103 derul\u0103rile \u00
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Executorul persistent {0} a renun\u0163at la taskul {1}, deoarece l-a derulat \u00eenapoi sau a e\u015fuat de {2} ori consecutiv. E\u015fecul final este {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=Taskul a atins limita re\u00eencerc\u0103rilor consecutive \u015fi nu va mai fi \u00eencercat.
 CWWKC1511.retry.limit.reached.failed.useraction=Dac\u0103 e\u015fu\u0103rile sau derul\u0103rile \u00eenapoi sunt nea\u015fteptate, determina\u0163i cauza \u015fi replanifica\u0163i taskul. Dac\u0103 derul\u0103rile \u00eenapoi \u015fi e\u015fecurile sunt intermitente, lua\u0163i \u00een considerare cre\u015fterea limitei de re\u00eencerc\u0103ri. 
+
+CWWKC1520.out.of.range=CWWKC1520E: Valoarea configurat\u0103 {0} pentru {1} nu este \u00een intervalul de la {2} la {3}.
+CWWKC1520.out.of.range.explanation=Este configurat\u0103 pentru proprietatea specificat\u0103 o valoare care este \u00een afara intervalului permis.
+CWWKC1520.out.of.range.useraction=Configura\u0163i o valoare \u00een intervalul permis.
+
+CWWKC1521.not.compatible=CWWKC1521E: Atributul de configura\u0163ie {0} nu este valid c\u00e2nd atributul de configura\u0163ie {1} este activat.
+CWWKC1521.not.compatible.explanation=Atributele de configura\u0163ie specificate nu sunt compatibile.
+CWWKC1521.not.compatible.useraction=Actualiza\u0163i configura\u0163ia pentru a \u00eenl\u0103tura unul din atributele de configura\u0163ie.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Nu pute\u0163i planifica taskuri persistente din contextul firului de execu\u0163ie curent.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Planifica\u0163i taskuri persistente numai de la un fir de execu\u0163ie care este asociat cu o aplica\u0163ie sau caracteristic\u0103 cu o identitate de \u00eenc\u0103rc\u0103tor de clas\u0103 serializabil\u0103.

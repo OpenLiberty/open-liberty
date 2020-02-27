@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,23 +169,9 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         BeanMetaData bmd = hr.getBeanMetaData();
-        String bindingName = bmd.simpleJndiBindingName;
-
-        // Clean up names with multiple namespaces in front.
-        boolean endsInNamespace = bindingName.endsWith(":");
-        String[] lookupArray = bindingName.split(":");
-        if (endsInNamespace) {
-            bindingName = lookupArray[lookupArray.length - 1] + ":";
-        } else if (lookupArray.length > 1) {
-            bindingName = lookupArray[lookupArray.length - 2] + ":" + lookupArray[lookupArray.length - 1];
-        }
-
-        if (isTraceOn && tc.isDebugEnabled()) {
-            Tr.debug(tc, "cleaned up simpleBindingName: " + bindingName);
-        }
 
         if (local) {
-            bindLocalSimpleBindingName(bindingObject, hr, bindingName);
+            bindLocalSimpleBindingName(bindingObject, hr, bmd.simpleJndiBindingName);
         }
         // TODO: bind simpleBindingName remote issue #8786
 
@@ -204,19 +190,14 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         BeanMetaData bmd = hr.getBeanMetaData();
         boolean priorToVersion3 = bmd.ivModuleVersion < BeanMetaData.J2EE_EJB_VERSION_3_0;
 
-        // only bind to local: if EJB2.X binding and the simpleBindingName did not specify ejblocal
-        if (priorToVersion3 && !bindingName.startsWith("ejblocal:")) {
+        // only bind to local: if EJB2.X binding
+        if (priorToVersion3) {
             if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "binding to local:");
             }
 
-            // add ejb/ in front of binding unless they specifically did jndiName="local:<name>"
-            String localColonBindingName = bindingName;
-            if (localColonBindingName.startsWith("local:")) {
-                localColonBindingName = localColonBindingName.substring(6);
-            } else {
-                localColonBindingName = "ejb/" + localColonBindingName;
-            }
+            // add ejb/ in front of binding
+            String localColonBindingName = "ejb/" + bindingName;
 
             localColonNamingHelper.bind(bindingObject, localColonBindingName);
 
@@ -226,23 +207,35 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             sendBindingMessage(bindingObject.interfaceName, "local:" + localColonBindingName, bmd);
         }
 
-        // don't bind to ejblocal: if simpleBindingName specified local:
-        if (!bindingName.startsWith("local:")) {
-            if (isTraceOn && tc.isDebugEnabled()) {
-                Tr.debug(tc, "binding to ejblocal:");
-            }
-
-            if (bindingName.startsWith("ejblocal:")) {
-                bindingName = bindingName.substring(9);
-            }
-
-            ejbLocalNamingHelper.bind(bindingObject, bindingName);
-
-            BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
-            bh.ivEJBLocalBindings.add(bindingName);
-
-            sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingName, bmd);
+        if (isTraceOn && tc.isDebugEnabled()) {
+            Tr.debug(tc, "binding to ejblocal:");
         }
+
+        ejbLocalNamingHelper.bind(bindingObject, bindingName);
+
+        BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
+        bh.ivEJBLocalBindings.add(bindingName);
+
+        sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingName, bmd);
+    }
+
+    /**
+     * Binds the localHomeBindingName custom binding
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    @Override
+    public void bindLocalHomeBindingName(EJBBinding bindingObject, HomeRecord hr) {
+        BeanMetaData bmd = hr.getBeanMetaData();
+        String bindingName = bmd.localHomeJndiBindingName;
+
+        ejbLocalNamingHelper.bind(bindingObject, bindingName);
+
+        BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
+        bh.ivEJBLocalBindings.add(bindingName);
+
+        sendBindingMessage(bindingObject.interfaceName, bindingName, bmd);
     }
 
     private void sendBindingMessage(String interfaceName, String jndiName, BeanMetaData bmd) {
@@ -278,16 +271,26 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
 
         if (ContainerProperties.customBindingsEnabledBeta) {
             BeanMetaData bmd = hr.getBeanMetaData();
+            boolean hasCustomBindings = false;
 
-            if (bmd.simpleJndiBindingName == null || bmd.simpleJndiBindingName.isEmpty()) {
-                // Bind defaults
-                if (local) {
-                    bindDefaultEJBLocal(bindingObject, hr);
-                }
-            } else {
+            if (bmd.simpleJndiBindingName != null) {
+                hasCustomBindings = true;
                 bindSimpleBindingName(bindingObject, hr, local);
             }
 
+            // if the interface Index is -1 it is a home interface
+            if (bmd.localHomeJndiBindingName != null && bindingObject.isLocal && bindingObject.interfaceIndex == -1) {
+                hasCustomBindings = true;
+                bindLocalHomeBindingName(bindingObject, hr);
+            }
+
+            // bind default traditional specific JNDI bindings
+            if (!hasCustomBindings) {
+
+                if (local) {
+                    bindDefaultEJBLocal(bindingObject, hr);
+                }
+            }
         }
     }
 

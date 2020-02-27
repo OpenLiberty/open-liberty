@@ -29,8 +29,8 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 /**
  * Test that the kafka connector acknowledges messages and commits partition offsets correctly
@@ -45,14 +45,14 @@ public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
     @Test
     public void testMyData() throws Exception {
 
-        SimpleKafkaReader<MyData> reader = readerFor(MyDataMessagingBean.OUT_CHANNEL);
-        SimpleKafkaWriter<MyData> writer = writerFor(MyDataMessagingBean.IN_CHANNEL);
+        KafkaReader<String, MyData> reader = readerFor(MyDataMessagingBean.OUT_CHANNEL);
+        KafkaWriter<String, MyData> writer = writerFor(MyDataMessagingBean.IN_CHANNEL);
 
         try {
             writer.sendMessage(new MyData("abc", "123"));
             writer.sendMessage(new MyData("xyz", "456"));
 
-            List<MyData> msgs = reader.waitForMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+            List<MyData> msgs = reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
             assertThat(msgs, contains(new MyData("cba", "321"), new MyData("zyx", "654")));
         } finally {
@@ -65,38 +65,38 @@ public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
     }
 
     /**
-     * Obtain a SimpleKafkaReader for the given topic name
+     * Obtain a KafkaReader for the given topic name
      * <p>
      * The returned reader expects String messages and uses the {@value #TEST_GROUPID} consumer group
      *
      * @param topicName the topic to read from
      * @return the reader
      */
-    public SimpleKafkaReader<MyData> readerFor(String topicName) {
+    public KafkaReader<String, MyData> readerFor(String topicName) {
         Map<String, Object> consumerConfig = new HashMap<>();
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBootstrap());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         KafkaConsumer<String, MyData> kafkaConsumer = new KafkaConsumer<>(consumerConfig, new StringDeserializer(), new MyDataDeserializer());
-        SimpleKafkaReader<MyData> reader = new SimpleKafkaReader<MyData>(kafkaConsumer, topicName);
+        KafkaReader<String, MyData> reader = new KafkaReader<String, MyData>(kafkaConsumer, topicName);
         return reader;
     }
 
     /**
-     * Obtain a SimpleKafkaWriter for the given topic name
+     * Obtain a KafkaWriter for the given topic name
      * <p>
      * The returned writer writes String messages.
      *
      * @param topicName the topic to write to
      * @return the writer
      */
-    public SimpleKafkaWriter<MyData> writerFor(String topicName) {
+    public KafkaWriter<String, MyData> writerFor(String topicName) {
         Map<String, Object> producerConfig = new HashMap<>();
         producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBootstrap());
 
         KafkaProducer<String, MyData> kafkaProducer = new KafkaProducer<>(producerConfig, new StringSerializer(), new MyDataSerializer());
-        SimpleKafkaWriter<MyData> writer = new SimpleKafkaWriter<MyData>(kafkaProducer, topicName);
+        KafkaWriter<String, MyData> writer = new KafkaWriter<String, MyData>(kafkaProducer, topicName);
         return writer;
     }
 

@@ -1202,7 +1202,7 @@ public class InstallUtils {
     }
 
     
-    protected static void setIsServerXmlInstall(Set<String> allServerFeatures) {
+    public static void setIsServerXmlInstall(Set<String> allServerFeatures) {
         isServerXmlInstallation = true;
         serverFeatures = allServerFeatures;
 
@@ -1213,7 +1213,7 @@ public class InstallUtils {
      *
      * @return
      */
-    protected static boolean getIsServerXmlInstall() {
+    public static boolean getIsServerXmlInstall() {
         return isServerXmlInstallation;
     }
 
@@ -1223,7 +1223,7 @@ public class InstallUtils {
      *
      * @return
      */
-    protected static Set<String> getAllServerFeatures() {
+    public static Set<String> getAllServerFeatures() {
         return serverFeatures;
     }
 

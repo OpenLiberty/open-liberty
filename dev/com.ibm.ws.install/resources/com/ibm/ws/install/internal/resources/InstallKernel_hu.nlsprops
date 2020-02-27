@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00
 ERROR_UNINSTALL_FAILED_USR.explanation=A megadott szolg\u00e1ltat\u00e1sok felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok, \u00e9s nem t\u00e1vol\u00edthat\u00f3k el.
 ERROR_UNINSTALL_FAILED_USR.useraction=Ne t\u00e1vol\u00edtson el felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sokat.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: A konfigur\u00e1ci\u00f3ban megadott lerakatok egyike nem \u00e9rhet\u0151 el. Ellen\u0151rizze, hogy a sz\u00e1m\u00edt\u00f3g\u00e9pe rendelkezik h\u00e1l\u00f3zati hozz\u00e1f\u00e9r\u00e9ssel, a t\u0171zfalak megfelel\u0151en vannak be\u00e1ll\u00edtva, majd pr\u00f3b\u00e1lja ism\u00e9t v\u00e9grehajtani a m\u0171veletet. Ha tov\u00e1bbra sem siker\u00fcl csatlakozni, akkor el\u0151fordulhat, hogy a lerakatkiszolg\u00e1l\u00f3 ideiglenesen el\u00e9rhetetlen.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=Hiba t\u00f6rt\u00e9nt a csatlakoz\u00e1skor egy lerakathoz.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendszer k\u00e9pes el\u00e9rni az Internetet \u00e9s a megfelel\u0151 lerakatot.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=Eszk\u00f6z\u00f6k el\u0151k\u00e9sz\u00edt\u00e9se a tel
 STATE_INITIALIZING=Inicializ\u00e1l\u00e1s...
 STATE_CONTACTING_REPO=Kapcsolatfelv\u00e9tel az IBM WebSphere Liberty lerakattal...
 STATE_DOWNLOAD_FILES_OK=\nMinden eszk\u00f6z sikeresen let\u00f6lt\u00e9sre ker\u00fclt.
+STATE_CONTACTING_MAVEN_REPO=Kapcsolat l\u00e9tes\u00edt\u00e9se a konfigur\u00e1lt Maven lerakattal ...\nEz a folyamat ak\u00e1r t\u00f6bb percet is ig\u00e9nybe vehet.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Sikeresen csatlakozott a be\u00e1ll\u00edtott lerakathoz.
+STATE_READING_ENV_PROPS_FILE={0}/etc/featureUtility.env beolvas\u00e1sa ...
 PROGRESS_STEP={0} / {1} l\u00e9p\u00e9s
 
 MSG_DOWNLOAD_SUCCESS={0} szolg\u00e1ltat\u00e1s sikeresen let\u00f6ltve.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Szolg\u00e1ltat\u00e1sok keres\u00e9se...
 MSG_SEARCHING_ADDONS=Kieg\u00e9sz\u00edt\u0151k keres\u00e9se...
 MSG_SEARCHING_SAMPLES=Mint\u00e1k keres\u00e9se...
 MSG_SEARCHING_OPENSOURCE=Ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3k keres\u00e9se...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok let\u00f6lt\u00e9se ...
 FEATURE_ASSET=\u00f6sszetev\u0151
 ADDON_ASSET=kieg\u00e9sz\u00edt\u0151
 SAMPLE_ASSET=term\u00e9kminta
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3
 GENERAL_ASSET=eszk\u00f6z
 
 MSG_INVALID_FOR_OS=A(z) {0} szolg\u00e1ltat\u00e1s er\u0151forr\u00e1s \u00e9rv\u00e9nytelen az aktu\u00e1lis oper\u00e1ci\u00f3s rendszerhez, ez\u00e9rt nem lesz telep\u00edtve.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=A kiszolg\u00e1l\u00f3 nem ig\u00e9nyel tov\u00e1bbi szolg\u00e1ltat\u00e1sokat. Nem ker\u00fcltek szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9sre.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=A tulajdons\u00e1g neve nincs megadva. Hat\u00e1rozzon meg egy \u00e9rv\u00e9nyes tulajdons\u00e1gnevet, vagy ha nem haszn\u00e1lja, alak\u00edtsa megjegyz\u00e9ss\u00e9 a tulajdons\u00e1got.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a me
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: A(z) {0} ponton nem hozhat\u00f3 l\u00e9tre JSON f\u00e1jl a(z) {1} ESA f\u00e1jlra vonatkoz\u00f3an.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Az \u00f6sszetev\u0151 az ESA f\u00e1jlb\u00f3l nem lesz telep\u00edtve.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00edr\u00e1si hozz\u00e1f\u00e9r\u00e9ssel rendelkezik ahhoz a k\u00f6nyvt\u00e1rhoz, ahov\u00e1 a JSON f\u00e1jl l\u00e9trehoz\u00e1sra ker\u00fcl.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: A konfigur\u00e1lt Maven lerakat nem \u00e9rhet\u0151 el. Ellen\u0151rizze, hogy a sz\u00e1m\u00edt\u00f3g\u00e9pe rendelkezik h\u00e1l\u00f3zati hozz\u00e1f\u00e9r\u00e9ssel, a t\u0171zfalak megfelel\u0151en vannak be\u00e1ll\u00edtva, majd pr\u00f3b\u00e1lja ism\u00e9t v\u00e9grehajtani a m\u0171veletet. Ha tov\u00e1bbra sem siker\u00fcl csatlakozni, akkor el\u0151fordulhat, hogy a lerakatkiszolg\u00e1l\u00f3 ideiglenesen el\u00e9rhetetlen.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=Hiba t\u00f6rt\u00e9nt a konfigur\u00e1lt Maven lerakathoz val\u00f3 csatlakoz\u00e1s k\u00f6zben.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendszer k\u00e9pes el\u00e9rni az Internetet \u00e9s a megfelel\u0151 lerakatot.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Az el\u00e9rhet\u0151 ellen\u0151rz\u0151 \u00f6sszegek \u00e9rv\u00e9nyes\u00edt\u00e9se a(z) {0} f\u00e1jl eset\u00e9n meghi\u00fasult.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=A let\u00f6lt\u00f6tt eszk\u00f6z ellen\u0151rz\u0151 \u00f6sszege helytelen. A let\u00f6lt\u00f6tt eszk\u00f6z tartalma nem egyezik a lerakatban tal\u00e1lhat\u00f3 tartalommal, ez\u00e9rt az eszk\u00f6z nem telep\u00edthet\u0151.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Futtassa \u00fajra a parancsot.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Helytelen hiteles\u00edt\u00e9si adatok lettek megadva a(z) {0} lerakathoz.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=A FEATURE_REPO_USER \u00e9s a FEATURE_REPO_PASSWORD hiteles\u00edt\u00e9si adatok nem lettek hiteles\u00edtve a konfigur\u00e1lt lerakatban.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Adja meg a konfigur\u00e1lt lerakat helyes hiteles\u00edt\u00e9si adatait.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: A m\u0171term\u00e9kek let\u00f6lt\u00e9se a konfigur\u00e1lt lerakatb\u00f3l meghi\u00fasult.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=A megadott eszk\u00f6z nem lett let\u00f6ltve a megadott lerakatb\u00f3l, mivel a lerakat nem tartalmazza az eszk\u00f6z \u00e9rv\u00e9nyes v\u00e1ltozat\u00e1t.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lerakat tartalmazza az eszk\u00f6zt, majd futtassa \u00fajra a parancsot.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: A Liberty fut\u00e1si k\u00f6rnyezet v\u00e1ltozat nem \u00e1llap\u00edthat\u00f3 meg.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=Lehets\u00e9ges, hogy a(z) {0} tulajdons\u00e1gf\u00e1jl hi\u00e1nyzik vagy megs\u00e9r\u00fclt.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1gf\u00e1jl l\u00e9tezik.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: A(z) {0} Maven koordin\u00e1t\u00e1val rendelkez\u0151 szolg\u00e1ltat\u00e1s nem telep\u00edthet\u0151 egy {1} Liberty fut\u00e1si k\u00f6rnyezet v\u00e1ltozatba.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=A szolg\u00e1ltat\u00e1s nem kompatibilis a Liberty fut\u00e1si k\u00f6rnyezettel.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Adjon meg egy \u00e9rv\u00e9nyes v\u00e1ltozatot a szolg\u00e1ltat\u00e1shoz.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: A(z) {0} szolg\u00e1ltat\u00e1s Maven koordin\u00e1t\u00e1ban l\u00e9v\u0151 csomagol\u00e1si form\u00e1tum \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes csomagol\u00e1s form\u00e1tum ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=A szolg\u00e1ltat\u00e1s nem kompatibilis a Liberty fut\u00e1si k\u00f6rnyezettel.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Adja meg az ESA \u00e9rt\u00e9ket a csomagol\u00e1shoz a Maven koordin\u00e1t\u00e1ban.
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: A(z) {0} Maven koordin\u00e1ta \u00e9rv\u00e9nytelen.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=A megadott Maven koordin\u00e1ta form\u00e1tuma helytelen.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Adjon meg egy \u00e9rv\u00e9nyes Maven koordin\u00e1t\u00e1t.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: A(z) {0} kiszolg\u00e1l\u00f3 nem l\u00e9tezik. Adjon meg egy \u00e9rv\u00e9nyes kiszolg\u00e1l\u00f3nevet \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+ERROR_SERVER_NOT_EXIST.explanation=A kiszolg\u00e1l\u00f3 nem l\u00e9tezik.
+ERROR_SERVER_NOT_EXIST.useraction=Hozza l\u00e9tre a kiszolg\u00e1l\u00f3t, majd futtassa \u00fajra a parancsot.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: A(z) {0} csoportazonos\u00edt\u00f3 \u00e9rv\u00e9nytelen. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szolg\u00e1ltat\u00e1s koordin\u00e1ta csoportazonos\u00edt\u00f3ja \u00e9rv\u00e9nyes, vagy a rendszer el\u00e9ri az Internetet \u00e9s a be\u00e1ll\u00edtott lerakatot.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=A features JSON f\u00e1jl nem tal\u00e1lhat\u00f3 a Maven lerakatban.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Ellen\u0151rizze a h\u00e1l\u00f3zati kapcsolatot, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a features JSON f\u00e1jl megtal\u00e1lhat\u00f3 a Maven lerakatban.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: A(z) {0} http_proxy k\u00f6rnyezeti v\u00e1ltoz\u00f3 form\u00e1tuma \u00e9rv\u00e9nytelen. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a http_proxy v\u00e1ltoz\u00f3 a http_proxy=http://<proxy-hoszt>:<proxy-port> form\u00e1tumban van.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=A proxy k\u00f6rnyezeti v\u00e1ltoz\u00f3 form\u00e1tuma \u00e9rv\u00e9nytelen.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Form\u00e1zza \u00fajra a http_proxy k\u00f6rnyezeti v\u00e1ltoz\u00f3t, hogy megfeleljen a http_proxy=http://<proxy-hoszt>:<proxy-port> form\u00e1tumnak.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: A(z) {0} https_proxy k\u00f6rnyezeti v\u00e1ltoz\u00f3 form\u00e1tuma \u00e9rv\u00e9nytelen. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a https_proxy v\u00e1ltoz\u00f3 a https_proxy=https://<felhaszn\u00e1l\u00f3>:<jelsz\u00f3>@<proxy-hoszt>:<proxy-port> form\u00e1tumban van.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=A proxy k\u00f6rnyezeti v\u00e1ltoz\u00f3 form\u00e1tuma \u00e9rv\u00e9nytelen.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Form\u00e1zza \u00fajra a https_proxy k\u00f6rnyezeti v\u00e1ltoz\u00f3t, hogy megfeleljen a https_proxy=https://<felhaszn\u00e1l\u00f3>:<jelsz\u00f3>@<proxy-hoszt>:<proxy-port> form\u00e1tumnak.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok beszerz\u00e9se meghi\u00fasult: {0}. Gy\u0151z\u0151dj\u00f6n meg a szolg\u00e1ltat\u00e1sok \u00e9rv\u00e9nyess\u00e9g\u00e9r\u0151l.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=Az Open Liberty nem t\u00e1mogatja a szolg\u00e1ltat\u00e1st.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Futtassa a featureUtility parancsot egy kompatibilis szolg\u00e1ltat\u00e1ssal.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: A server.xml f\u00e1jlban a k\u00f6vetkez\u0151 felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok vannak megadva, \u00e9s ezek nem lesznek telep\u00edtve: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: A(z) {0} \u00e9s {1} szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES.explanation=A szolg\u00e1ltat\u00e1sok nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES.useraction=T\u00e1vol\u00edtsa el az egyik szolg\u00e1ltat\u00e1st, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: A(z) {0} \u00e9s {1} singleton szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=A szolg\u00e1ltat\u00e1sok nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=T\u00e1vol\u00edtsa el az egyik szolg\u00e1ltat\u00e1st, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: A szolg\u00e1ltat\u00e1s let\u00f6lt\u00e9se siker\u00fclt.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=A szolg\u00e1ltat\u00e1s le lett t\u00f6ltve.

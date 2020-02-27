@@ -43,23 +43,26 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
-import com.ibm.ws.concurrent.persistent.controller.Controller;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * We are simulating a controller within a single server (where there can be multiple persistent executors
  * all pointing at the same database) because it's convenient to let declarative services do all of the
  * coordination for us. That's all implementation detail for the test. The important piece here is
- * exercising the interfaces in persistent executor that would be needed for a controller to some day be
- * added in Liberty to make persistent executor highly available.
+ * exercising the operations in persistent executor that are usable via the PersistentExecutorMBean.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-public class SimulatedController implements Controller {
+public class SimulatedController {
     // How often (in milliseconds) to look for persistent executors to which tasks can be reassigned.
-    private static final long INTERVAL = TimeUnit.SECONDS.toMillis(1);
+    private static final long
+        EXEC_DISABLED_INSTANCES_POLL_INTERVAL_MS = TimeUnit.SECONDS.toMillis(10),
+        RETRY_INTERVAL = TimeUnit.SECONDS.toMillis(1);
 
-    // Map of executor to partition id
+    // Map of execution-enabled executors to their partition id
     private final ConcurrentHashMap<PersistentExecutor, Long> executors = new ConcurrentHashMap<PersistentExecutor, Long>();
+
+    // Map of execution-disabled executors to their partition id
+    private final ConcurrentHashMap<PersistentExecutor, Long> executorsWithExecDisabled = new ConcurrentHashMap<PersistentExecutor, Long>();
 
     // Futures that allow us to cancel the finder tasks during server shutdown
     private final ConcurrentLinkedQueue<ScheduledFuture<?>> finderTaskFutures = new ConcurrentLinkedQueue<ScheduledFuture<?>>();
@@ -85,7 +88,7 @@ public class SimulatedController implements Controller {
         System.out.println("Controller deactivated");
     }
 
-    // Returns an entry for an activate partition, if any.
+    // Returns an entry for an active partition, if any.
     // This uses an inefficient way to cycle through active instances, but this is only test code.
     private Entry<PersistentExecutor, Long> getActivePartitionEntry() {
         Entry<PersistentExecutor, Long> entry = null;
@@ -101,83 +104,75 @@ public class SimulatedController implements Controller {
         return entry;
     }
 
-    // Returns the partition id of an activate partition, if any.
-    @Override
-    public Long getActivePartitionId() {
-        Entry<PersistentExecutor, Long> entry = getActivePartitionEntry();
-        System.out.println("Controller found active partition " + entry);
-        return entry == null ? null : entry.getValue();
-    }
-
-    // Notifies the controller that another persistent executor instance has been assigned a task.
-    @Override
-    public void notifyOfTaskAssignment(long partitionId, long newTaskId, long expectedExecTime, short binaryFlags, int txTimeout) {
-        System.out.println("Controller looking for executor with partition " + partitionId + " to notify");
-        for (Map.Entry<PersistentExecutor, Long> entry : executors.entrySet())
-            if (entry.getValue() == partitionId)
-                try {
-                    PersistentExecutor executor = entry.getKey();
-                    executor.getClass().getMethod("notifyOfTaskAssignment", long.class, long.class, short.class, int.class).invoke(executor, newTaskId, expectedExecTime,
-                                                                                                                                   binaryFlags, txTimeout);
-                } catch (RuntimeException x) {
-                    throw x;
-                } catch (Exception x) {
-                    throw new RuntimeException(x);
-                }
-    }
-
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setPersistentExecutor(PersistentExecutor executor, Map<String, Object> props) throws Exception {
+        String name = (String) props.get("config.displayId");
+        String id = (String) props.get("id");
+
+        Method getPartitionId = executor.getClass().getDeclaredMethod("getPartitionId");
+        getPartitionId.setAccessible(true);
+        getPartitionId.invoke(executor);
+
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName obn = new ObjectName("WebSphere:type=PersistentExecutorMBean,*,name=" + name + "*");
+        Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
+        ObjectInstance bean = s.iterator().next();
+        Object obj = mbs.invoke(bean.getObjectName(), "findPartitionInfo", new Object[] { null, null, null, id },
+                                new String[] { "java.lang.String", "java.lang.String", "java.lang.String", "java.lang.String" });
+        String[][] records = (String[][]) obj;
+        long partition = -1;
+        for (String[] record : records) {
+            if (record[4].equals(id))
+                partition = Long.valueOf(record[0]);
+        }
+
         if ((Boolean) props.get("enableTaskExecution")) {
-            String name = (String) props.get("config.displayId");
-            String id = (String) props.get("id");
-
-            Method getPartitionId = executor.getClass().getDeclaredMethod("getPartitionId");
-            getPartitionId.setAccessible(true);
-            getPartitionId.invoke(executor);
-
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            ObjectName obn = new ObjectName("WebSphere:type=PersistentExecutorMBean,*,name=" + name + "*");
-            Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
-            ObjectInstance bean = s.iterator().next();
-            Object obj = mbs.invoke(bean.getObjectName(), "findPartitionInfo", new Object[] { null, null, null, id },
-                                    new String[] { "java.lang.String", "java.lang.String", "java.lang.String", "java.lang.String" });
-            String[][] records = (String[][]) obj;
-            long partition = -1;
-            for (String[] record : records) {
-                if (record[4].equals(id))
-                    partition = Long.valueOf(record[0]);
-            }
-
-            System.out.println("Controller notified of active instance [" + partition + "]: " + executor);
+            System.out.println("Controller notified of instance than can run tasks [" + partition + "]: " + executor);
             executors.put(executor, partition);
-            System.out.println("Active instances are: " + executors);
-        } else
-            System.out.println("Controller notified of instance that cannot run tasks: " + executor);
+            System.out.println("Execution-enabled instances are: " + executors);
+        } else {
+            System.out.println("Controller notified of instance that cannot run tasks [" + partition + "]: " + executor);
+            executorsWithExecDisabled.put(executor, partition);
+            System.out.println("Execution-disabled instances are: " + executorsWithExecDisabled);
+
+            if (scheduledExecutor != null) {
+                FinderTask finder = new FinderTask(partition, EXEC_DISABLED_INSTANCES_POLL_INTERVAL_MS);
+                finderTaskFutures.add(scheduledExecutor.schedule(finder, EXEC_DISABLED_INSTANCES_POLL_INTERVAL_MS, TimeUnit.MILLISECONDS));
+            }
+        }
     }
 
     @Reference(target = "(id=DefaultManagedScheduledExecutorService)")
     protected void setScheduledExecutor(ScheduledExecutorService executor) {
         scheduledExecutor = executor;
+
+        for (Long partition : executorsWithExecDisabled.values()) {
+            FinderTask finder = new FinderTask(partition, EXEC_DISABLED_INSTANCES_POLL_INTERVAL_MS);
+            finderTaskFutures.add(scheduledExecutor.schedule(finder, EXEC_DISABLED_INSTANCES_POLL_INTERVAL_MS, TimeUnit.MILLISECONDS));
+        }
     }
 
     protected void unsetPersistentExecutor(PersistentExecutor executor) {
         Long partition = executors.remove(executor);
         if (partition != null) {
             System.out.println("Controller notified of instance going down [" + partition + "]: " + executor);
-            System.out.println("Active instances are: " + executors);
+            System.out.println("Active instances that can run tasks are: " + executors);
 
             ScheduledExecutorService schedExecutor = scheduledExecutor;
             if (schedExecutor == null || FrameworkState.isStopping())
                 System.out.println("In shutdown, not scheduling FinderTask");
             else {
-                FinderTask finder = new FinderTask(partition);
-                ScheduledFuture<Void> future = schedExecutor.schedule(finder, INTERVAL, TimeUnit.MILLISECONDS);
+                FinderTask finder = new FinderTask(partition, -1);
+                ScheduledFuture<Void> future = schedExecutor.schedule(finder, 1, TimeUnit.SECONDS);
                 finder.future.set(future);
                 finderTaskFutures.add(future);
             }
+        } else {
+            partition = executorsWithExecDisabled.remove(executor);
+            System.out.println("Controller notified of instance going down [" + partition + "]: " + executor);
+            System.out.println("Active instances that cannot run tasks are: " + executors);
         }
     }
 
@@ -188,10 +183,12 @@ public class SimulatedController implements Controller {
      */
     private class FinderTask implements Callable<Void> {
         private final AtomicReference<ScheduledFuture<Void>> future = new AtomicReference<ScheduledFuture<Void>>();
+        private final long interval; // -1 to run once only
         private final long partition;
 
-        private FinderTask(long partition) {
+        private FinderTask(long partition, long interval) {
             this.partition = partition;
+            this.interval = interval;
         }
 
         @Override
@@ -252,15 +249,16 @@ public class SimulatedController implements Controller {
                     System.out.println("Controller is done looking for tasks");
                 }
             } finally {
-                if (!successful) {
-                    System.out.println("Controller was unable to transfer tasks at this time.");
+                if (interval > 0 || !successful) {
+                    if (!successful)
+                        System.out.println("Controller was unable to transfer tasks at this time.");
 
                     ScheduledExecutorService schedExecutor = scheduledExecutor;
                     if (schedExecutor == null || FrameworkState.isStopping())
                         System.out.println("In shutdown, not rescheduling FinderTask");
                     else {
                         ScheduledFuture<Void> previous = future.get();
-                        ScheduledFuture<Void> f = schedExecutor.schedule(this, INTERVAL, TimeUnit.MILLISECONDS);
+                        ScheduledFuture<Void> f = schedExecutor.schedule(this, successful ? interval : RETRY_INTERVAL, TimeUnit.MILLISECONDS);
                         future.set(f);
                         finderTaskFutures.add(f);
                         finderTaskFutures.remove(previous);

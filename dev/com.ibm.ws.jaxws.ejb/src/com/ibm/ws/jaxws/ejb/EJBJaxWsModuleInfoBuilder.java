@@ -15,6 +15,7 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
@@ -69,9 +70,16 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
             return null;
         }
 
-        InfoStore infoStore = containerToAdapt.adapt(ModuleAnnotations.class).getInfoStore();
+        ModuleAnnotations moduleAnnotations = AnnotationsBetaHelper.getModuleAnnotations(containerToAdapt); // throws UnableToAdaptException
+        InfoStore infoStore = moduleAnnotations.getInfoStore(); // throws UnableToAdaptException
+
         try {
-            infoStore.open();
+            infoStore.open(); // throws InfoStoreException
+        } catch (InfoStoreException e) {
+            throw new IllegalStateException(e);
+        }
+
+        try {
             JaxWsServerMetaData jaxWsServerMetaData = JaxWsMetaDataManager.getJaxWsServerMetaData(moduleMetaData);
 
             EndpointInfoBuilderContext endpointInfoBuilderContext = new EndpointInfoBuilderContext(infoStore, containerToAdapt);
@@ -91,15 +99,11 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
 
             return createWebRouterModule(containerToAdapt, jaxWsModuleInfo.getContextRoot());
 
-        } catch (InfoStoreException e) {
-            throw new IllegalStateException(e);
         } finally {
-            if (infoStore != null) {
-                try {
-                    infoStore.close();
-                } catch (InfoStoreException e) {
-                    throw new IllegalStateException(e);
-                }
+            try {
+                infoStore.close();
+            } catch (InfoStoreException e) {
+                throw new IllegalStateException(e);
             }
         }
     }

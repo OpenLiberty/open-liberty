@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corporation and others.
+* Copyright (c) 2017, 2020 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,8 +39,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  */
 @Component(service = SharedMetricRegistries.class, immediate = true)
 public class SharedMetricRegistries {
-
-    private ConfigProviderResolver configResolver;
+    protected ConfigProviderResolver configResolver;
 
     protected static final ConcurrentMap<String, MetricRegistry> REGISTRIES = new ConcurrentHashMap<String, MetricRegistry>();
 
@@ -62,7 +62,7 @@ public class SharedMetricRegistries {
     public MetricRegistry getOrCreate(String name) {
         final MetricRegistry existing = SharedMetricRegistries.REGISTRIES.get(name);
         if (existing == null) {
-            final MetricRegistry created = new MetricRegistryImpl(configResolver);
+            final MetricRegistry created = createNewMetricRegsitry(configResolver);
             final MetricRegistry raced = add(name, created);
             if (raced == null) {
                 return created;
@@ -72,9 +72,21 @@ public class SharedMetricRegistries {
         return existing;
     }
 
+    public void associateMetricIDToApplication(MetricID metricID, String appName, MetricRegistry registry) {
+        if (MetricRegistryImpl.class.isInstance(registry)) {
+            MetricRegistryImpl metricRegistryImpl = (MetricRegistryImpl) registry;
+            metricRegistryImpl.addNameToApplicationMap(metricID, appName);
+        }
+
+    }
+
     @Reference(service = ConfigProviderResolver.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setConfigProvider(ConfigProviderResolver configResolver) {
         this.configResolver = configResolver;
+    }
+
+    protected MetricRegistry createNewMetricRegsitry(ConfigProviderResolver configResolver) {
+        return new MetricRegistryImpl(configResolver);
     }
 
 }

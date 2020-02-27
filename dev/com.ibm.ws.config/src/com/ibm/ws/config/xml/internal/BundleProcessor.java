@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,10 +64,8 @@ import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
-import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
-import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 /**
@@ -257,9 +255,15 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
             boolean isFeatureBundle = b.getLocation().startsWith(XMLConfigConstants.BUNDLE_LOC_FEATURE_TAG);
             if (type == BundleEvent.RESOLVED) {
                 if (isFeatureBundle) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding feature bundle {0}", b);
+                    }
                     //add it to the queue for processing later
                     addFeatureBundles.add(b);
                 } else {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding bundle {0}", b);
+                    }
                     //process non-feature bundles immediately
                     addBundles(Arrays.asList(b));
                 }
@@ -352,6 +356,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                         addBundles(bundlesToProcess);
                     }
                     notification.setResult(true);
+
                 }
 
                 @Override
@@ -926,34 +931,6 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
             // is already stopping: not an exceptional condition, as we
             // want to shutdown anyway.
         }
-    }
-
-    /**
-     * @return
-     */
-    private OnError getOnError(VariableRegistry variableRegistry) {
-        OnError onError;
-        String onErrorVar = "${" + OnErrorUtil.CFG_KEY_ON_ERROR + "}";
-        String onErrorVal = variableRegistry.resolveString(onErrorVar);
-
-        if ((onErrorVal.equals(onErrorVar))) {
-            onError = OnErrorUtil.OnError.WARN; // Default value if not set
-        } else {
-            String onErrorFormatted = onErrorVal.trim().toUpperCase();
-            try {
-                onError = Enum.valueOf(OnErrorUtil.OnError.class, onErrorFormatted);
-                // Correct the variable registry with a validated entry if needed
-                if (!onErrorVal.equals(onErrorFormatted))
-                    variableRegistry.replaceVariable(OnErrorUtil.CFG_KEY_ON_ERROR, onErrorFormatted);
-            } catch (IllegalArgumentException err) {
-                if (tc.isWarningEnabled()) {
-                    Tr.warning(tc, "warn.config.invalid.value", OnErrorUtil.CFG_KEY_ON_ERROR, onErrorVal, OnErrorUtil.CFG_VALID_OPTIONS);
-                }
-                onError = OnErrorUtil.OnError.WARN; // Default value if error
-                variableRegistry.replaceVariable(OnErrorUtil.CFG_KEY_ON_ERROR, OnErrorUtil.OnError.WARN.toString());
-            }
-        }
-        return onError;
     }
 
     private void handleConfigUpdateException(ConfigUpdateException e) {

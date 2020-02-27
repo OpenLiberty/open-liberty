@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,8 @@ import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIRuntimeException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.util.ThreadContextAccessor;
+
+import org.jboss.weld.bean.proxy.ProxyObject;
 
 /**
  * Common constants and utility methods
@@ -398,8 +400,7 @@ public class CDIUtils {
      * @return true if it is a proxy
      */
     public static boolean isWeldProxy(Class<?> clazz) {
-        boolean result = clazz.getSimpleName().contains(PROXY_CLASS_SIGNATURE);
-        return result;
+        return ProxyObject.class.isAssignableFrom(clazz);
     }
 
     /**

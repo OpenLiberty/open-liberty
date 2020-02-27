@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="test-applications/basic/src"/>
 	<classpathentry kind="src" path="test-applications/beanvalidation/src"/>
 	<classpathentry kind="src" path="test-applications/complex/src"/>
+        <classpathentry kind="src" path="test-applications/contextandCDI/src"/>
 	<classpathentry kind="src" path="test-applications/contextandclient/src"/>
 	<classpathentry kind="src" path="test-applications/disable/src"/>
 	<classpathentry kind="src" path="test-applications/lifecyclemethod/src"/>

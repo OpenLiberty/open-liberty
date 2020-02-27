@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_id" xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+    metadata-complete="false" version="3.0">
+
+    <enterprise-beans>
+        <!-- Stateful Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+        <session>
+            <ejb-name>OrderColumnSFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ordercolumns.ejblocal.OrderColumnSFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ordercolumns.ejblocal.OrderColumnSFEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+                <bean-method>
+                    <method-name>release</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Bean</transaction-type>
+        </session>
+
+        <!-- Stateful Session Bean, PC: CM-ES -->
+        <session>
+            <ejb-name>OrderColumnSFEXEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ordercolumns.ejblocal.OrderColumnSFEXEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ordercolumns.ejblocal.OrderColumnSFEXEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+                <bean-method>
+                    <method-name>release</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Bean</transaction-type>
+        </session>
+
+        <!-- Stateless Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+        <session>
+            <ejb-name>OrderColumnSLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ordercolumns.ejblocal.OrderColumnSLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ordercolumns.ejblocal.OrderColumnSLEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+        </session>
+    </enterprise-beans>
+</ejb-jar>

@@ -12,15 +12,15 @@
  *******************************************************************************/
 -->
 <application xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
-	id="Application_ID">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
+    id="Application_ID">
 
-	<display-name>QueryLockModeWeb</display-name>
-	<module id="WebModule_1">
+    <display-name>QueryLockMode_WEB</display-name>
+    <module id="WebModule_1">
         <web>
-            <web-uri>QueryLockModeWeb.war</web-uri>
-            <context-root>QueryLockModeWeb</context-root>
+            <web-uri>querylockmodeWeb.war</web-uri>
+            <context-root>querylockmodeWeb</context-root>
         </web>
     </module>
 </application>

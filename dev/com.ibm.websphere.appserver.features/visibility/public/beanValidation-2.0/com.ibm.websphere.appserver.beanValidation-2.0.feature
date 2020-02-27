@@ -32,3 +32,4 @@ IBM-API-Package: \
   com.ibm.ws.com.fasterxml.classmate
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

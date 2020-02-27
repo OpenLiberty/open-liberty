@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -981,6 +981,7 @@ NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W.useraction=Determine a causa da falha do 
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I=CNTR0180I: O bean acionado por mensagens {0} no m\u00f3dulo {1} do aplicativo {2} est\u00e1 ligado \u00e0 especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {3}.
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I.explanation=Quando o bean acionado por mensagens \u00e9 iniciado, a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o especificada ser\u00e1 usada para ativar o terminal de mensagens.
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: O gerenciador do cron\u00f4metro utilizado pelo servi\u00e7o de cron\u00f4metro do EJB n\u00e3o p\u00f4de ser obtido.\n\
@@ -1579,11 +1580,28 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Enterprise beans de entidade declarad
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Remova o uso do enterprise bean da entidade do aplicativo ou empacote o bean em um aplicativo vers\u00e3o 6 ou mais antigo.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: A interface {0} do bean {1} no m\u00f3dulo {2} do aplicativo {3} j\u00e1 foi ligada ao local de nome {4}. A interface {5} do bean {6} no m\u00f3dulo {7} do aplicativo {8} j\u00e1 est\u00e1 ligada ao local do nome {4}. O local do nome {4} n\u00e3o est\u00e1 acess\u00edvel.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Cada interface de enterprise bean deve especificar um local de liga\u00e7\u00e3o exclusivo.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corrija o arquivo de liga\u00e7\u00e3o de uma dessas duas interfaces de bean para que cada interface tenha um local de liga\u00e7\u00e3o exclusivo.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: A interface {0} do bean {1} no m\u00f3dulo {2} do aplicativo {3} j\u00e1 foi ligada ao local de nome {4}. A interface {5} do bean {6} no m\u00f3dulo {7} do aplicativo {8} j\u00e1 est\u00e1 ligada ao local do nome {4}. O local do nome {4} n\u00e3o est\u00e1 acess\u00edvel.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Cada interface de enterprise bean deve especificar um local de liga\u00e7\u00e3o exclusivo.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corrija o arquivo de liga\u00e7\u00e3o de uma dessas duas interfaces de bean para que cada interface tenha um local de liga\u00e7\u00e3o exclusivo.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: O nome da liga\u00e7\u00e3o JNDI (Java Naming and Directory Interface) {2} para o bean {0} ou a interface inicial no m\u00f3dulo {1} cont\u00e9m um namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=Os nomes de liga\u00e7\u00f5es JNDI n\u00e3o devem conter o caractere de dois pontos (:), que denota um namespace. A sequ\u00eancia inteira, antes e incluindo o caractere de dois pontos (:), \u00e9 considerada um namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=Corrija o arquivo de liga\u00e7\u00f5es ibm-ejb-jar-bnd.xml para fornecer a este bean um nome de liga\u00e7\u00e3o JNDI v\u00e1lido, removendo o namespace.
+
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: O nome da liga\u00e7\u00e3o JNDI (Java Naming and Directory Interface) {2} para o bean {0} ou a interface local no m\u00f3dulo {1} cont\u00e9m um namespace que n\u00e3o \u00e9 v\u00e1lido.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=O nome da liga\u00e7\u00e3o local pode conter apenas um namespace e ele deve iniciar com ejblocal:. Os namespaces s\u00e3o denotados pelo caractere de dois pontos (:). A sequ\u00eancia inteira, antes e incluindo o caractere de dois pontos (:), \u00e9 considerada um namespace.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Corrija o arquivo de liga\u00e7\u00f5es ibm-ejb-jar-bnd.xml para fornecer a este bean um nome de liga\u00e7\u00e3o JNDI v\u00e1lido, removendo o namespace inv\u00e1lido.
 
 #-------------------------------------------------------------------------------
 #

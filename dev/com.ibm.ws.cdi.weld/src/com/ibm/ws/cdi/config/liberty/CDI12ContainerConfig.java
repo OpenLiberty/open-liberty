@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.cdi.config.liberty;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -72,23 +71,23 @@ public class CDI12ContainerConfig implements CDIContainerConfig {
      */
 
     private static final TraceComponent tc = Tr.register(CDI12ContainerConfig.class);
-    private static final AtomicReference<CDI12ContainerConfig> INSTANCE = new AtomicReference<CDI12ContainerConfig>();
+
+    private static final String ENABLE_IMPLICIT_BEAN_ARCHIVES = "enableImplicitBeanArchives";
 
     private final Map<String, Object> properties = new HashMap<String, Object>();
 
-    private boolean hasLoggedNoImplicitMsg = false;
+    private boolean enableImplicitBeanArchives = true;
 
     /**
      * DS method to activate this component
      *
      * @param compcontext the context of this component
-     * @param properties the new configuration properties
+     * @param properties  the new configuration properties
      */
     protected void activate(ComponentContext compcontext, Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Activating " + this);
         }
-        INSTANCE.set(this);
         this.updateConfiguration(properties);
     }
 
@@ -101,14 +100,13 @@ public class CDI12ContainerConfig implements CDIContainerConfig {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Deactivating " + this);
         }
-        INSTANCE.compareAndSet(this, null);
     }
 
     /**
      * DS method to modify the configuration of this component
      *
      * @param compcontext the context of this component
-     * @param properties the updated configuration properties
+     * @param properties  the updated configuration properties
      */
     @Modified
     protected void modified(ComponentContext compcontext, Map<String, Object> properties) {
@@ -127,6 +125,13 @@ public class CDI12ContainerConfig implements CDIContainerConfig {
         if (properties != null) {
             this.properties.clear();
             this.properties.putAll(properties);
+
+            //we actually only care about one property so read it here
+            this.enableImplicitBeanArchives = (Boolean) this.properties.get(ENABLE_IMPLICIT_BEAN_ARCHIVES);
+
+            if (tc.isWarningEnabled() && !this.enableImplicitBeanArchives) {
+                Tr.warning(tc, "implicit.bean.scanning.disabled.CWOWB1009W");
+            }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Current Properties: " + this.properties);
@@ -141,13 +146,6 @@ public class CDI12ContainerConfig implements CDIContainerConfig {
      */
     @Override
     public boolean isImplicitBeanArchivesScanningDisabled() {
-        boolean enableImplicitBeanArchivesValue = (Boolean) this.properties.get("enableImplicitBeanArchives");
-
-        if (tc.isWarningEnabled() && !hasLoggedNoImplicitMsg && !enableImplicitBeanArchivesValue) {
-            hasLoggedNoImplicitMsg = true;
-            Tr.warning(tc, "implicit.bean.scanning.disabled.CWOWB1009W");
-        }
-
-        return !enableImplicitBeanArchivesValue;
+        return !this.enableImplicitBeanArchives;
     }
 }

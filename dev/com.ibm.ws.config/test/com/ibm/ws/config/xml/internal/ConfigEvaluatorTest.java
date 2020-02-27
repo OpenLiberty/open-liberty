@@ -837,13 +837,13 @@ public class ConfigEvaluatorTest {
 
         EvaluationResult result = evaluator.evaluate(entry, loggingRE);
         Dictionary<String, Object> dictionary = result.getProperties();
-        assertEquals("${one}", dictionary.get("id"));
+        assertEquals("replacedValue", dictionary.get("id"));
         assertEquals("replacedValue", dictionary.get("logDirectory"));
 
         ConfigElement singleton = serverConfig.getSingleton(singletonPid, "singleton");
         result = evaluator.evaluate(singleton, singletonRE);
         dictionary = result.getProperties();
-        assertEquals("${one}", dictionary.get("id"));
+        assertEquals("replacedValue", dictionary.get("id"));
         assertEquals("replacedValue", dictionary.get("someAttribute"));
 
         assertTrue("We should get a warning messages about variables in ID fields",

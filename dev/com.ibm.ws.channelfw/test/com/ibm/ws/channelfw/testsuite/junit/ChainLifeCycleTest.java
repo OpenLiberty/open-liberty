@@ -23,8 +23,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.ws.channelfw.internal.ChannelDataImpl;
@@ -56,6 +54,8 @@ import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.channelfw.exception.IncoherentChainException;
 import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 import com.ibm.wsspi.channelfw.exception.InvalidRuntimeStateException;
+
+import test.common.SharedOutputManager;
 
 /**
  * Test the lifecycle of chains.
@@ -522,53 +522,45 @@ public class ChainLifeCycleTest {
 
             ChannelFrameworkImpl framework = new ChannelFrameworkImpl();
 
-            TestEventListener testListener = new TestEventListener()
-            {
+            TestEventListener testListener = new TestEventListener() {
                 @Override
-                public synchronized void chainInitialized(ChainData chainData)
-                {
+                public synchronized void chainInitialized(ChainData chainData) {
                     System.out.println(chainData.getName() + " intitialized");
                     notifyAll();
                 }
 
                 @Override
-                public synchronized void chainStarted(ChainData chainData)
-                {
+                public synchronized void chainStarted(ChainData chainData) {
                     System.out.println(chainData.getName() + " started");
                     notifyAll();
                 }
 
                 @Override
-                public synchronized void chainStopped(ChainData chainData)
-                {
+                public synchronized void chainStopped(ChainData chainData) {
                     System.out.println(chainData.getName() + " stopped");
                     notifyAll();
                 }
 
                 @Override
-                public synchronized void chainQuiesced(ChainData chainData)
-                {
+                public synchronized void chainQuiesced(ChainData chainData) {
                     System.out.println(chainData.getName() + " quiesced");
                     notifyAll();
                 }
 
                 @Override
-                public synchronized void chainDestroyed(ChainData chainData)
-                {
+                public synchronized void chainDestroyed(ChainData chainData) {
                     System.out.println(chainData.getName() + " destroyed");
                     notifyAll();
                 }
 
                 @Override
-                public synchronized void chainUpdated(ChainData chainData)
-                {
+                public synchronized void chainUpdated(ChainData chainData) {
                     System.out.println(chainData.getName() + " updated");
                     notifyAll();
                 }
 
                 @Override
-                public synchronized void waitForEvent() throws InterruptedException
-                {
+                public synchronized void waitForEvent() throws InterruptedException {
                     this.wait(5 * 1000); // max wait of 5 seconds
                 }
             };

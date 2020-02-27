@@ -1,0 +1,15 @@
+<server>
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>wsAtomicTransaction-1.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
+		<feature>txtest-1.0</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+
+	<logging traceSpecification="*=info: wsat=all: Transaction=all"></logging>
+</server>

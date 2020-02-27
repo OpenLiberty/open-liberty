@@ -1152,6 +1152,50 @@ public class ClientAuthenticationTest {
     }
 
     /**
+     * verify that when this method detects mismatch between supplied id and
+     * security id, it sets a request attribute to the security id so the 
+     * token(s) will be built with the correct id.
+     */
+    @Test
+    public void verify_validateResourceOwnerCredentialSetsUserNameAttribute() {
+        final String methodName = "verify_validateResourceOwnerCredentialSetsUserNameAttribute";
+        ClientAuthentication testClientAuth = new ClientAuthentication() {
+            @Override
+            protected UserRegistry getUserRegistry() {
+                return mockInterface.mockGetUserRegistry();
+            }
+        };
+
+        try {
+
+            mock.checking(new Expectations() {
+                {
+                    allowing(provider).isROPCPreferUserSecurityName();
+                    will(returnValue(true));
+                    allowing(request).getParameterValues(OAuth20Constants.RESOURCE_OWNER_USERNAME);
+                    will(returnValue(new String[] { "user" }));
+                    allowing(request).getParameterValues(OAuth20Constants.RESOURCE_OWNER_PASSWORD);
+                    will(returnValue(new String[] { "password" }));
+
+                    allowing(ur).checkPassword("user", "password");
+                    will(returnValue("ok"));
+                    allowing(mockInterface).mockGetUserRegistry();
+                    will(returnValue(ur));
+                    allowing(ur).getUserSecurityName("user");
+                    will(returnValue("newuser")); // switch
+                    // check that switched value is set as attrib.
+                    one(request).setAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME, "newuser");
+
+                }
+            });
+
+            testClientAuth.validateResourceOwnerCredential(provider, request, response, EndpointType.token);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    /**
      * Tests verify method with following conditions:
      * - EndpointType is EndpointType.discovery.
      * 1. Request does not have Authorization header.
@@ -1197,6 +1241,12 @@ public class ClientAuthenticationTest {
             expectProviderCache(tokencache);
             expectCacheReturnsTokens(uid);
             expectTokenData(uid);
+            mock.checking(new Expectations() {
+                {
+                    allowing(provider).isROPCPreferUserSecurityName();
+                    will(returnValue(false));
+                }
+            });
             assertTrue(testClientAuth.verify(provider, request, response, endpoint));
 
         } catch (Throwable t) {

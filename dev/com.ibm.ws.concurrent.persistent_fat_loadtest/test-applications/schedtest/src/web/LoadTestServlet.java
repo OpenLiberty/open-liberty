@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskState;
 import com.ibm.websphere.concurrent.persistent.TaskStatus;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -95,6 +95,10 @@ public class LoadTestServlet extends FATServlet {
      * Schedule a batch of single-run tasks, and ensure that they all complete.
      */
     @Test
+    @AllowedFFDC({
+        "javax.transaction.RollbackException", // under load, task executions sometimes roll back due to the 4 second transaction timeout that is used by the test
+        "javax.persistence.PersistenceException" // can wrap the RollbackException
+    })
     public void testShortRun() throws Exception {
         // Clear results to start.
         taskResultStore.clear();
@@ -136,7 +140,11 @@ public class LoadTestServlet extends FATServlet {
      */
     @Test
     @Mode(TestMode.FULL)
-    @ExpectedFFDC("java.lang.Exception")
+    @AllowedFFDC({
+        "java.lang.Exception",
+        "javax.transaction.RollbackException", // under load, task executions sometimes roll back due to the 4 second transaction timeout that is used by the test
+        "javax.persistence.PersistenceException" // can wrap the RollbackException
+    })
     public void testFiveMinuteRun() throws Exception {
         // Clear results to start.
         taskResultStore.clear();

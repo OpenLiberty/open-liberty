@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.KeyStore;
+import com.ibm.websphere.simplicity.config.ORB;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.MaximumJavaLevel;
@@ -55,6 +56,10 @@ public class JavaeeFeatureTests15 extends AbstractSpringTests {
 
     @Override
     public void modifyServerConfiguration(ServerConfiguration config) {
+        ORB orb = config.getOrb();
+        orb.setId("defaultOrb");
+        orb.setOrbSSLInitTimeout("30");
+
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();
 
