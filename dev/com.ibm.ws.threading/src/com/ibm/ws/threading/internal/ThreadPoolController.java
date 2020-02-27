@@ -887,15 +887,16 @@ public final class ThreadPoolController {
      * the current size of the pool and the number of consecutive times we've
      * observed an empty thread pool queue will cause the score to change.
      *
-     * @param poolSize   the current thread pool size
-     * @param forecast   the throughput forecast at the current thread pool size
-     * @param throughput the throughput of the current interval
-     * @param cpuHigh    - whether current cpu usage exceeds the 'high' threshold
-     * @param lowTput    an indicator that tput is low relative to poolsize, and queue is empty
+     * @param poolSize    the current thread pool size
+     * @param forecast    the throughput forecast at the current thread pool size
+     * @param throughput  the throughput of the current interval
+     * @param cpuHigh     true if current cpu usage exceeds the 'high' threshold
+     * @param lowTput     true if tput is low relative to poolsize, and queue is empty
+     * @param systemCpuNA true if systemCpu is not available/valid
      *
      * @return the shrink score
      */
-    double getShrinkScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput) {
+    double getShrinkScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput, boolean systemCpuNA) {
         double shrinkScore = 0.0;
         double shrinkMagic = 0.0;
         boolean flippedCoin = false;
@@ -977,7 +978,7 @@ public final class ThreadPoolController {
 
             // lean toward shrinking if cpuUtil is high
             if ((shrinkScore < 0.5) && (poolSize > hangBufferPoolSize) && (!smallPool)) {
-                if (cpuHigh) {
+                if (cpuHigh || (flippedCoin && systemCpuNA)) {
                     shrinkScore = (flipCoin()) ? 0.7 : shrinkScore;
                 } else {
                     if (flippedCoin) {
@@ -1035,15 +1036,16 @@ public final class ThreadPoolController {
      * pool with up to compareRange more threads will have higher throughput than
      * the forecast.
      *
-     * @param poolSize   the current thread pool size
-     * @param forecast   the throughput forecast at the current thread pool size
-     * @param throughput the throughput of the current interval
-     * @param cpuHigh    - whether current cpu usage exceeds the 'high' threshold
-     * @param lowTput    an indicator that tput is low relative to poolsize, and queue is empty
+     * @param poolSize    the current thread pool size
+     * @param forecast    the throughput forecast at the current thread pool size
+     * @param throughput  the throughput of the current interval
+     * @param cpuHigh     true if current cpu usage exceeds the 'high' threshold
+     * @param lowTput     true if tput is low relative to poolsize, and queue is empty
+     * @param systemCpuNA true if systemCpu is not available/valid
      *
      * @return the grow score
      */
-    double getGrowScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput) {
+    double getGrowScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput, boolean systemCpuNA) {
         double growScore = 0.0;
         boolean flippedCoin = false;
         int upwardCompareSpan = 0;
@@ -1096,8 +1098,8 @@ public final class ThreadPoolController {
                 }
             }
 
-            // grow less eagerly based on no data when cpuUtil is high
-            if (cpuHigh && growScore > 0.0 && flippedCoin) {
+            // grow less eagerly based on no data when cpuUtil is high or systemCpu is not available/valid
+            if ((cpuHigh || systemCpuNA) && growScore > 0.0 && flippedCoin) {
                 if (poolSize > hangBufferPoolSize) {
                     growScore = (flipCoin()) ? growScore : 0.0;
                 }
@@ -1280,15 +1282,12 @@ public final class ThreadPoolController {
             }
 
             // update cpu utilization info
-            boolean cpuHigh = false;
-
             processCpuUtil = CpuInfo.getJavaCpuUsage();
             systemCpuUtil = CpuInfo.getSystemCpuUsage();
             cpuUtil = Math.max(systemCpuUtil, processCpuUtil);
 
-            if (cpuUtil > highCpu) {
-                cpuHigh = true;
-            }
+            boolean cpuHigh = (cpuUtil > highCpu);
+            boolean systemCpuNA = (systemCpuUtil < 0);
 
             // Handle pausing the task if the pool has been idle
             if (manageIdlePool(threadPool, deltaCompleted)) {
@@ -1350,8 +1349,8 @@ public final class ThreadPoolController {
             setPoolIncrementDecrement(poolSize);
 
             double forecast = currentStats.getMovingAverage();
-            double shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowTput);
-            double growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowTput);
+            double shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowTput, systemCpuNA);
+            double growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowTput, systemCpuNA);
 
             // Adjust the poolsize only if one of the scores is both larger than the scoreFilterLevel
             // and sufficiently larger than the other score. These conditions reduce poolsize fluctuation
