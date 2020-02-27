@@ -503,6 +503,7 @@ public class JNDINameTestServlet extends FATServlet {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.out);
                     fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                 }
             } else {
@@ -512,6 +513,7 @@ public class JNDINameTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
                 fail("lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
             } else {
                 // expected to fail in other cases
@@ -532,6 +534,7 @@ public class JNDINameTestServlet extends FATServlet {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.out);
                     fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                 }
             } else {
@@ -541,6 +544,7 @@ public class JNDINameTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
                 fail("lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
             } else {
                 // expected to fail in other cases
