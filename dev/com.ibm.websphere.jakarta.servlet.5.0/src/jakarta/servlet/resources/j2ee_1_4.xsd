@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+  **  This is the J2EE 1.4 XSD with only the required elements to support an implementation.
+  **  Please see http://java.sun.com/xml/ns/j2ee/j2ee_1_4.xsd for a fully documented and latest
+  **  XSD. 
+-->
+
+<xsd:schema targetNamespace="http://java.sun.com/xml/ns/j2ee"
+            xmlns:j2ee="http://java.sun.com/xml/ns/j2ee" 
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            elementFormDefault="qualified" 
+            attributeFormDefault="unqualified" 
+            version="1.4">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd" />
+    <xsd:include schemaLocation="http://www.ibm.com/webservices/xsd/j2ee_web_services_client_1_1.xsd" />
+    <xsd:group name="descriptionGroup">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="display-name" type="j2ee:display-nameType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="icon" type="j2ee:iconType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:group>
+    <xsd:complexType name="descriptionType">
+        <xsd:simpleContent>
+            <xsd:extension base="j2ee:xsdStringType">
+                <xsd:attribute ref="xml:lang" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="dewey-versionType">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="display-nameType">
+        <xsd:simpleContent>
+            <xsd:extension base="j2ee:string">
+                <xsd:attribute ref="xml:lang" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="ejb-linkType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="ejb-local-refType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ejb-ref-name" type="j2ee:ejb-ref-nameType" />
+            <xsd:element name="ejb-ref-type" type="j2ee:ejb-ref-typeType" />
+            <xsd:element name="local-home" type="j2ee:local-homeType" />
+            <xsd:element name="local" type="j2ee:localType" />
+            <xsd:element name="ejb-link" type="j2ee:ejb-linkType" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="ejb-ref-nameType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:jndi-nameType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="ejb-ref-typeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="Entity" />
+                <xsd:enumeration value="Session" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="ejb-refType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ejb-ref-name" type="j2ee:ejb-ref-nameType" />
+            <xsd:element name="ejb-ref-type" type="j2ee:ejb-ref-typeType" />
+            <xsd:element name="home" type="j2ee:homeType" />
+            <xsd:element name="remote" type="j2ee:remoteType" />
+            <xsd:element name="ejb-link" type="j2ee:ejb-linkType" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="emptyType">
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="env-entry-type-valuesType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="java.lang.Boolean" />
+                <xsd:enumeration value="java.lang.Byte" />
+                <xsd:enumeration value="java.lang.Character" />
+                <xsd:enumeration value="java.lang.String" />
+                <xsd:enumeration value="java.lang.Short" />
+                <xsd:enumeration value="java.lang.Integer" />
+                <xsd:enumeration value="java.lang.Long" />
+                <xsd:enumeration value="java.lang.Float" />
+                <xsd:enumeration value="java.lang.Double" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="env-entryType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="env-entry-name" type="j2ee:jndi-nameType"></xsd:element>
+            <xsd:element name="env-entry-type" type="j2ee:env-entry-type-valuesType" />
+            <xsd:element name="env-entry-value" type="j2ee:xsdStringType" minOccurs="0"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="fully-qualified-classType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="generic-booleanType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+                <xsd:enumeration value="yes" />
+                <xsd:enumeration value="no" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="homeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:fully-qualified-classType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="iconType">
+        <xsd:sequence>
+            <xsd:element name="small-icon" type="j2ee:pathType" minOccurs="0"></xsd:element>
+            <xsd:element name="large-icon" type="j2ee:pathType" minOccurs="0"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute ref="xml:lang" />
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="java-identifierType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:pattern value="($|_|\p{L})(\p{L}|\p{Nd}|_|$)*" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="java-typeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:pattern value="[^\p{Z}]*" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="jndi-nameType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:group name="jndiEnvironmentRefsGroup">
+        <xsd:sequence>
+            <xsd:element name="env-entry" type="j2ee:env-entryType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ejb-ref" type="j2ee:ejb-refType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ejb-local-ref" type="j2ee:ejb-local-refType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:group ref="j2ee:service-refGroup" />
+            <xsd:element name="resource-ref" type="j2ee:resource-refType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="resource-env-ref" type="j2ee:resource-env-refType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="message-destination-ref" type="j2ee:message-destination-refType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:group>
+    <xsd:complexType name="listenerType">
+        <xsd:sequence>
+            <xsd:group ref="j2ee:descriptionGroup" />
+            <xsd:element name="listener-class" type="j2ee:fully-qualified-classType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="local-homeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:fully-qualified-classType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="localType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:fully-qualified-classType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="message-destination-linkType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="message-destination-refType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="message-destination-ref-name" type="j2ee:jndi-nameType"></xsd:element>
+            <xsd:element name="message-destination-type" type="j2ee:message-destination-typeType" />
+            <xsd:element name="message-destination-usage" type="j2ee:message-destination-usageType" />
+            <xsd:element name="message-destination-link" type="j2ee:message-destination-linkType" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="message-destination-typeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:fully-qualified-classType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="message-destination-usageType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="Consumes" />
+                <xsd:enumeration value="Produces" />
+                <xsd:enumeration value="ConsumesProduces" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="message-destinationType">
+        <xsd:sequence>
+            <xsd:group ref="j2ee:descriptionGroup" />
+            <xsd:element name="message-destination-name" type="j2ee:string"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="param-valueType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="param-name" type="j2ee:string"></xsd:element>
+            <xsd:element name="param-value" type="j2ee:xsdStringType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="pathType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="remoteType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:fully-qualified-classType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="res-authType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="Application" />
+                <xsd:enumeration value="Container" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="res-sharing-scopeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="Shareable" />
+                <xsd:enumeration value="Unshareable" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="resource-env-refType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="resource-env-ref-name" type="j2ee:jndi-nameType"></xsd:element>
+            <xsd:element name="resource-env-ref-type" type="j2ee:fully-qualified-classType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="resource-refType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="res-ref-name" type="j2ee:jndi-nameType"></xsd:element>
+            <xsd:element name="res-type" type="j2ee:fully-qualified-classType"></xsd:element>
+            <xsd:element name="res-auth" type="j2ee:res-authType" />
+            <xsd:element name="res-sharing-scope" type="j2ee:res-sharing-scopeType" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="role-nameType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="run-asType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="role-name" type="j2ee:role-nameType" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="security-role-refType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="role-name" type="j2ee:role-nameType"></xsd:element>
+            <xsd:element name="role-link" type="j2ee:role-nameType" minOccurs="0"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="security-roleType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="role-name" type="j2ee:role-nameType" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="string">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:token">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="true-falseType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:xsdBooleanType">
+                <xsd:pattern value="(true|false)" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="url-patternType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdAnyURIType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:anyURI">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdBooleanType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:boolean">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdIntegerType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:integer">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdNMTOKENType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:NMTOKEN">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdNonNegativeIntegerType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:nonNegativeInteger">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdPositiveIntegerType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:positiveInteger">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdQNameType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:QName">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdStringType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+</xsd:schema>
