@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.NameAliases.ExtensionAliases;
 import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
@@ -706,12 +707,7 @@ public class LogTraceData extends GenericData {
             tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
 
         }
-        for (int i = 0; i < tempExt.originalExtensions.size(); i++) {
-            if (tempExt.originalExtensions.get(i).equals(extKey)) {
-                return tempExt.aliasesExtensions.get(i);
-            }
-        }
-        return extKey;
+        return tempExt.getAlias(extKey);
 
     }
 

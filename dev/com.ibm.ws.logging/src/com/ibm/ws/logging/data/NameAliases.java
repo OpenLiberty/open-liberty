@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class NameAliases {
@@ -45,6 +46,31 @@ public class NameAliases {
 
     public void resetAliases() {
         aliases = originalNames.clone();
+        extensionAliases = new ExtensionAliases();
+    }
+
+    static class ExtensionAliases {
+        public ArrayList<String> originalExtensions;
+        public ArrayList<String> aliasesExtensions;
+
+        public ExtensionAliases() {
+            this.originalExtensions = new ArrayList<String>();
+            this.aliasesExtensions = new ArrayList<String>();
+        }
+
+        public void addExtensionAlias(String originalName, String alias) {
+            originalExtensions.add(originalName);
+            aliasesExtensions.add(alias);
+        }
+
+        public String getAlias(String original) {
+            for (int i = 0; i < originalExtensions.size(); i++) {
+                if (originalExtensions.get(i).equals(original)) {
+                    return aliasesExtensions.get(i);
+                }
+            }
+            return original;
+        }
     }
 
 }
