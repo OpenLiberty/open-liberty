@@ -58,6 +58,8 @@ Include-Resource: \
 -dsannotations: \
   com.ibm.ws.session.SessionManagerMBeanImpl
 
+jakartaeeMe: true
+
 instrument.disabled: true
 
 -buildpath: \
