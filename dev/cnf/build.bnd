@@ -50,6 +50,8 @@ instrument.ffdc: true
 instrument.taskInjection: false
 -buildpath.instrument: ${if;${instrument.disabled};;com.ibm.ws.ras.instrument\\;version=latest}
 
+jakartaeeMe: false
+
 # Don't upload sources or javadoc unless bundle overrides
 -maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
 -groupid: ${if;${test.project};test;dev}
