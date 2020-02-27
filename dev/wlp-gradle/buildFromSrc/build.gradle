@@ -1,0 +1,80 @@
+configurations {
+  build
+}
+
+repositories {
+  mavenCentral() {
+    metadataSources {
+      mavenPom()
+      artifact()
+    }
+  }
+}
+
+dependencies {
+  file("central.maven").text.eachLine {
+    if (!"#".equals(it[0])) {
+      build "$it:sources"
+      build "$it@pom"
+    }
+  }
+}
+
+task copyMavenLibs(type: Copy) {
+    from configurations.build
+    into project.file('mavenlibs')
+}
+
+task unzipSources() {
+  doLast {
+    HashSet<String> artifacts = new HashSet<String>()
+    configurations.build.each {
+
+      String name = it.getName()
+      if (name.endsWith("-sources.jar")) {
+        name = name.substring(0, name.length()-"-sources.jar".length())
+        String artifact = name.substring(0, name.lastIndexOf("-"))
+        String outputTo = "mavenlibs/" + artifact + "/src/main/java"
+        def copyFrom = zipTree(it.getPath())
+
+        project.copy {
+          from copyFrom
+          into outputTo
+        }
+        
+      } else if (name.endsWith(".pom")) {
+        String artifact = name.substring(0, name.lastIndexOf("-"))
+        String outputTo = "mavenlibs/" + artifact
+        def copyFrom = it.getPath()
+
+        project.copy {
+          from copyFrom
+          into outputTo
+          rename '.*', 'pom.xml'
+        }
+      }
+    }
+
+  }
+}
+
+task buildProjectsFromSrc() {
+  doLast {
+
+    configurations.build.each {
+      
+      String name = it.getName()
+      if (name.endsWith("-sources.jar")) {
+
+        name = name.substring(0, name.length()-"-sources.jar".length())
+        String artifact = name.substring(0, name.lastIndexOf("-"))
+
+        project.exec {
+          workingDir project.file('mavenlibs/' + artifact)
+          commandLine = ["mvn", "package"]
+        }
+      }
+    }
+
+  }
+}
