@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1603,3 +1603,14 @@ exception.occurred.while.running.ServletContainerInitializers.onStartup.useracti
 no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: Nebyla nalezena \u017e\u00e1dn\u00e1 definice servletu pro n\u00e1zev servletu {0} v mapov\u00e1n\u00ed filtru {1}.
 no.servlet.defined.for.servlet.filter.name.mapping.explanation=N\u00e1zev servletu se pou\u017e\u00edv\u00e1 v mapov\u00e1n\u00ed filtru, ale jeho definice nebyla definov\u00e1na.
 no.servlet.defined.for.servlet.filter.name.mapping.useraction=Nadefinujte servlet, kter\u00fd se pou\u017eije v mapov\u00e1n\u00ed filtru n\u00e1zvu servletu.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: N\u00e1zev souboru cookie {0} s existuj\u00edc\u00ed hodnotou atributu SameSite {1} je konfigurov\u00e1n s pou\u017eit\u00edm nov\u00e9 hodnoty {2}. Pro tento soubor cookie nen\u00ed p\u0159id\u00e1n \u017e\u00e1dn\u00fd atribut SameSite.
+duplicate.samesite.attribute.for.cookie.name.explanation=N\u00e1zev souboru cookie nem\u016f\u017ee b\u00fdt konfigurov\u00e1n pro v\u00edce hodnot atributu SameSite. Atribut nebyl p\u0159id\u00e1n pro soubor cookie.
+duplicate.samesite.attribute.for.cookie.name.useraction=Zkontrolujte konfiguraci deskriptoru implementace a ujist\u011bte se, \u017ee n\u00e1zev souboru cookie je nakonfigurov\u00e1n pouze pro jednu z n\u00e1sleduj\u00edc\u00edch hodnot atributu SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' nebo 'SameSiteUCookies_SURI'. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: N\u00e1zev souboru cookie {0}, kter\u00fd je nakonfigurov\u00e1n pro hodnotu atributu {1} SameSite, byl d\u0159\u00edve identifikov\u00e1n jako duplicitn\u00ed. Pro tento soubor cookie nen\u00ed p\u0159id\u00e1n \u017e\u00e1dn\u00fd atribut SameSite.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=N\u00e1zev souboru cookie nem\u016f\u017ee b\u00fdt konfigurov\u00e1n pro v\u00edce hodnot atributu SameSite. Tento n\u00e1zev souboru cookie ji\u017e byl identifikov\u00e1n jako duplicitn\u00ed.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=Zkontrolujte konfiguraci deskriptoru implementace a ujist\u011bte se, \u017ee n\u00e1zev souboru cookie je nakonfigurov\u00e1n pouze pro jednu z n\u00e1sleduj\u00edc\u00edch hodnot atributu SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' nebo 'SameSiteUCookies_SURI'. 
