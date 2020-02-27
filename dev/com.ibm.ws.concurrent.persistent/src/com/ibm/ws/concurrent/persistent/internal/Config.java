@@ -101,12 +101,15 @@ class Config {
         xpathId = (String) properties.get("config.displayId");
         id = xpathId.contains("]/persistentExecutor[") ? null : (String) properties.get("id");
 
+        boolean pollIntervalDefaulted = false;
         if (pollIntrvl == null) {
             // 59 seconds is used to avoid continually colliding with a task that runs every minute
-            if (enableTaskExecution && missedTaskThreshold > 0)
+            if (enableTaskExecution && missedTaskThreshold > 0) {
                 pollIntrvl = TimeUnit.SECONDS.toMillis(59);
-            else
+                pollIntervalDefaulted = true;
+            } else {
                 pollIntrvl = -1l;
+            }
         }
         pollInterval = pollIntrvl;
 
@@ -127,7 +130,7 @@ class Config {
                                                                 toString(missedTaskThreshold, TimeUnit.SECONDS), "missedTaskThreshold", "100s", "2h30m"));
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
-        if (pollInterval < -1 || missedTaskThreshold > 0 && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
+        if (pollInterval < -1 || missedTaskThreshold > 0 && !pollIntervalDefaulted && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
                                                                 toString(pollInterval, TimeUnit.MILLISECONDS), "pollInterval", "100s", "2h30m"));
         if (retryInterval < 0 && missedTaskThreshold == -1)
