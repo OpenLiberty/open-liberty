@@ -137,6 +137,10 @@ public class JAASLoginModuleConfigImplTestWithMock {
                 return null;
             }
 
+            public String SharedLib_cardinality_minimum() {
+                return "1";
+            }
+
             @Override
             public String SharedLib_target() {
                 return null;
