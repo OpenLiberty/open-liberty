@@ -23,12 +23,13 @@ testsrc: test/src
 
 Export-Package: \
     com.ibm.ws.microprofile.config13.impl,\
-    com.ibm.ws.microprofile.config13.converters
+    com.ibm.ws.microprofile.config13.converters, \
+    com.ibm.ws.microprofile.config13.sources
 
 Private-Package: \
         com.ibm.ws.microprofile.config13.resources, \
-        com.ibm.ws.microprofile.config13.interfaces, \
-        com.ibm.ws.microprofile.config13.sources
+        com.ibm.ws.microprofile.config13.interfaces
+        
 
 Import-Package: \
         org.eclipse.microprofile.config;version="[1.0.1,2)", \

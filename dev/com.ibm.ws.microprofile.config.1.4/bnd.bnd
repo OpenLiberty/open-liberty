@@ -26,7 +26,8 @@ Export-Package: \
         com.ibm.ws.microprofile.config14.converters
     
 Private-Package: \
-        com.ibm.ws.microprofile.config14.resources
+        com.ibm.ws.microprofile.config14.resources, \
+        com.ibm.ws.microprofile.config14.sources
 
 Import-Package: \
         org.eclipse.microprofile.config;version="[1.0.1,2)", \
