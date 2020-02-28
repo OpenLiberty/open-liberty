@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +31,12 @@ public class SystemConfig14Source extends SystemConfigSource {
 
     public SystemConfig14Source(ScheduledExecutorService scheduledExecutorService) {
         super();
-        scheduledExecutorService.scheduleAtFixedRate(() -> updateSystemPropertyMap(), 0, DELAY, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService executor = scheduledExecutorService;
+        if (executor == null) {
+            executor = Executors.newScheduledThreadPool(1);
+        }
+
+        executor.scheduleAtFixedRate(() -> updateSystemPropertyMap(), 0, DELAY, TimeUnit.MILLISECONDS);
     }
 
     public void updateSystemPropertyMap() {

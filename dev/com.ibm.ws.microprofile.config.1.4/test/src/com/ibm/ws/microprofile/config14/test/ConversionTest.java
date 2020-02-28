@@ -47,13 +47,15 @@ public class ConversionTest extends AbstractConfigTest {
     }
 
     @Test
-    public void testConverterCache() {
+    public void testConverterCache() throws InterruptedException {
         Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().withConverter(TestType.class, 100, new TestTypeConverter()).build();
         String key = "testConverterCache";
 
         String rawString = "This is the RAW String 1";
         String expected = rawString + " - 1";
         System.setProperty(key, rawString);
+
+        Thread.sleep(600);
 
         TestType value = config.getValue(key, TestType.class);
         assertEquals(expected, value.toString());
@@ -65,6 +67,8 @@ public class ConversionTest extends AbstractConfigTest {
         //raw string changed so should now get reconverted
         expected = rawString + " - 2";
         System.setProperty(key, rawString);
+
+        Thread.sleep(600);
 
         value = config.getValue(key, TestType.class);
         assertEquals(expected, value.toString());
