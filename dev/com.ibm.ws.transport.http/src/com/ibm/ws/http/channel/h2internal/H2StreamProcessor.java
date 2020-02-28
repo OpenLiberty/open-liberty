@@ -1050,6 +1050,10 @@ public class H2StreamProcessor {
         }
 
         if (direction == Constants.Direction.READ_IN) {
+            if (currentFrame.flagEndStreamSet()) {
+                endStream = true;
+                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+            }
             if (frameType == FrameTypes.DATA) {
                 getBodyFromFrame();
                 if (currentFrame.flagEndStreamSet()) {
@@ -1070,10 +1074,6 @@ public class H2StreamProcessor {
                 } else {
                     muxLink.setContinuationExpected(true);
                 }
-            }
-            if (currentFrame.flagEndStreamSet()) {
-                endStream = true;
-                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
             }
 
         } else {
