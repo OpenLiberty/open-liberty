@@ -74,7 +74,7 @@ public class SystemConfigSource extends InternalConfigSource implements StaticCo
     }
 
     @Trivial
-    private static Properties getSystemProperties() {
+    protected static Properties getSystemProperties() {
         Properties prop = AccessController.doPrivileged(new PrivilegedAction<Properties>() {
             @Override
             @Trivial

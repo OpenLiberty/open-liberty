@@ -70,7 +70,7 @@ public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBu
     protected SortedSources getSources() {
         SortedSources sources = new SortedSourcesImpl(getUserSources());
         if (addDefaultSourcesFlag()) {
-            sources.addAll(Config14DefaultSources.getDefaultSources(getClassLoader()));
+            sources.addAll(Config14DefaultSources.getDefaultSources(getClassLoader(), getScheduledExecutorService()));
         }
         if (addDiscoveredSourcesFlag()) {
             sources.addAll(Config14DefaultSources.getDiscoveredSources(getClassLoader()));
