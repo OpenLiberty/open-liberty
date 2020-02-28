@@ -2283,7 +2283,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
          * Using the persistent store, coordinates with other instances to partition out the responsibility for polling at the desired interval.
          *
          * @param config persistent executor configuration, including the desired poll interval.
-         * @return the computed time (millis) at which this task should pull again.
+         * @return the computed time (millis) at which this task should poll again.
          */
         private long coordinateNextPoll(Config config) {
             final boolean trace = TraceComponent.isAnyTracingEnabled();
