@@ -76,6 +76,7 @@
             ibmui:group="performance" 
             required="false" type="String"        default="ONLY_UPDATED_ATTRIBUTES">
             <Option label="%write.contents.updated" value="ONLY_UPDATED_ATTRIBUTES"/>
+            <Option label="%write.contents.getset"  value="GET_AND_SET_ATTRIBUTES"/>
             <Option label="%write.contents.all"     value="ALL_SESSION_ATTRIBUTES"/>
         </AD>
             
