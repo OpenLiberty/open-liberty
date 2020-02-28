@@ -78,6 +78,11 @@
       <loginModule className="ejb.second.SecondEJBModLoginModule" classProviderRef="otherApp"/>
     </jaasLoginContextEntry>
 
+    <jaasLoginContextEntry id="system.WEB_INBOUND" name="system.WEB_INBOUND" loginModuleRef="webInboundLoginModule, hashtable"/>
+    <jaasLoginModule id="webInboundLoginModule" controlFlag="REQUIRED" className="loginmod.WebInboundLoginModule" classProviderRef="otherApp">
+      <options city="Rochester" state="MN" zip="55901"/>
+    </jaasLoginModule>
+
     <!-- permissions for Derby in the app -->
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.properties" actions="read"/>
