@@ -384,7 +384,7 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	}
 	
 	/**
-	 * testAdd10RemoveRandomPersistentExecs - Add 10 persistent executors, then remove a random (2-8) number of them,
+	 * testAdd10Remove5PersistentExecs - Add 10 persistent executors, then disable 5 of them,
 	 * and verify the polling interval is set correctly.
 	 */
 	// When more than one Persistent Executor tries to request a unique Partition ID at the same time the following Derby error occurs:   
@@ -394,7 +394,7 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	@AllowedFFDC("javax.transaction.xa.XAException")
 	@Test
 	@Mode(TestMode.FULL)
-	public void testAdd10RemoveRandomPersistentExecs() throws Exception {
+	public void testAdd10Remove5PersistentExecs() throws Exception {
 		PersistentExecutor persistentExecs[] = new PersistentExecutor[10];
 
 		// Create 10 persistent executors.
@@ -427,10 +427,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 
 		System.out.println("Scheduled task " + taskId);
 		
-		// Disable between 2 and 8 persistent executors.
-		int random = ThreadLocalRandom.current().nextInt(2, 9);
+		// Disable 5 persistent executors.
 		ConfigElementList<PersistentExecutor> executors = config.getPersistentExecutors();
-		for (int i = random; i < executors.size(); i++) {
+		for (int i = 5; i < executors.size(); i++) {
 			executors.get(i).setEnableTaskExecution("false");
 		}
 		server.setMarkToEndOfLog();
@@ -443,7 +442,7 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 		
 		// Verify the polling delay of the persistent executors.
 		try {
-			result = runTestWithResponse(server, APP_NAME + "/AutonomicalPolling1ServerTestServlet", "testPersistentExecPolling&numPersistentExecs=" + random);
+			result = runTestWithResponse(server, APP_NAME + "/AutonomicalPolling1ServerTestServlet", "testPersistentExecPolling&numPersistentExecs=5");
 			assertTrue("testPersistentExecPolling failed with delay results of (values should be sequential starting with 0): " + result.toString(), 
 					result.indexOf("PASSED") > -1);
 		} finally {
@@ -473,23 +472,29 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 
 		// Add 3 persistent executors.
 		ServerConfiguration config = originalConfig.clone();
-		for (int i = 4; i < 7; i++) {
+		for (int i = 0; i < 3; i++) {
 			persistentExecs[i] = new PersistentExecutor();
-			persistentExecs[i].setId("persistentExec" + i);
-			persistentExecs[i].setJndiName("persistent/exec" + i);
+			if (i == 0) {
+				persistentExecs[0].setId("persistentExec" + 0);
+				persistentExecs[0].setJndiName("persistent/exec" + 0);
+			} else {
+				persistentExecs[i].setId("taskExecutionWillBeDisabled" + i);
+				persistentExecs[i].setJndiName("persistent/taskExecutionWillBeDisabled" + i);
+			}
 			persistentExecs[i].setPollInterval("1s");
 			persistentExecs[i].setMissedTaskThreshold("3s");
 			persistentExecs[i].setExtraAttribute("ignore.minimum.for.test.use.only", "true");
 			persistentExecs[i].setExtraAttribute("pollingCoordination.for.test.use.only", "true");
 			config.getPersistentExecutors().add(persistentExecs[i]);
 		}
+
 		server.setMarkToEndOfLog();
 		server.updateServerConfiguration(config);
 		server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
 		
 		// Schedule a repeating task to run.
 		StringBuilder result = runTestWithResponse(server, APP_NAME + "/AutonomicalPolling1ServerTestServlet",
-				"testScheduleRepeatingTask&jndiName=persistent/exec4&initialDelayMS=0&delayMS=1900&test=testPersistentExecPolling[1]");
+				"testScheduleRepeatingTask&jndiName=persistent/exec0&initialDelayMS=0&delayMS=1900&test=testPersistentExecPolling[1]");
 
 		int start = result.indexOf(TASK_ID_MESSAGE);
 		if (start < 0)
@@ -499,10 +504,8 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 		System.out.println("Scheduled task " + taskId);
 		
 		// Disable all but one.
-		ConfigElementList<PersistentExecutor> executors = config.getPersistentExecutors();
-		for (int i = 0; i < executors.size(); i++) {
-			if(!"persistent/exec4".equals(executors.get(i).getJndiName()))
-				executors.get(i).setEnableTaskExecution("false");
+		for (int i = 1; i < 3; i++) {
+			persistentExecs[i].setEnableTaskExecution("false");
 		}
 		server.setMarkToEndOfLog();
 		server.updateServerConfiguration(config);
@@ -512,7 +515,7 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 		Thread.sleep(3000);
 		
 		// Add 4 persistent executors.
-		for (int i = 0; i < 4; i++) {
+		for (int i = 1; i < 5; i++) {
 			persistentExecs[i] = new PersistentExecutor();
 			persistentExecs[i].setId("persistentExec" + i);
 			persistentExecs[i].setJndiName("persistent/exec" + i);
