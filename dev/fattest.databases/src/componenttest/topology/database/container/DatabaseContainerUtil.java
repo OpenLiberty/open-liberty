@@ -131,6 +131,7 @@ public final class DatabaseContainerUtil {
         	Class<?> clazz = type.getContainerClass();
         	Method getSid = clazz.getMethod("getSid");
         	props.setDatabaseName((String) getSid.invoke(cont));
+        	props.setExtraAttribute("driverType", "thin");
         }
     	
     	for(DataSource ds : datasources) {
