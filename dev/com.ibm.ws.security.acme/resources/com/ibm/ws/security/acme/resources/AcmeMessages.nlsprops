@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2019,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,19 +10,36 @@
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security.acme/resources/com/ibm/ws/security/acme/resources/AcmeMessages.nlsprops
-#COMPONENTPREFIX CWWKX
+#COMPONENTPREFIX CWPKI
 #COMPONENTNAMEFOR WebSphere ACME
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-
-# TODO: Get the correct Message Prefix block for ACME feature
-# liberty wiki should have a list of the Message Prefix
-# Message prefix block: CWWKJ0200 - CWWKJ0299
-
+# Message prefix block: CWPKI2000 - CWPKI2299
 #-----  ACME messages
 
-CWWKX0000I=CWWKX0000I: Test message
-CWWKX0000I.explanation= Test message description
-CWWKX0000I.useraction= No action is necessary at this time
+CWPKI2000I=CWPKI2000I: Test message
+CWPKI2000I.explanation= Test message description
+CWPKI2000I.useraction= No action is necessary at this time
+
+# {0} The URI of the certificate authority, such as https://sampleCAProvider.org/directory
+CWPKI2001E=CWPKI2001E: The certificate authority at {0} responded that the authorization challenge failed for domain {1} with status {2}.
+CWPKI2001E.explanation=
+CWPKI2001E.useraction=
+
+CWPKI2002E=CWPKI2002E: Timed out waiting for a successful authorization challenge for domain {0} from the certificate authority at {1}. The status is {2}.
+CWPKI2002E.explanation=The certificate authority challenge request did not complete in the alloted time and a certificate was not received.
+CWPKI2002E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback.
+
+CWPKI2003E=CWPKI2003E: The certificate authority at {0} responded that the order failed for domains {1}  with status {2}.
+CWPKI2003E.explanation=
+CWPKI2003E.useraction=
+
+CWPKI2004E=CWPKI2004E: Timed out waiting for a successful order for domains {0} from the certificate authority at {1}. The status is {2}.
+CWPKI2004E.explanation=The certificate authority domain order request did not complete in the alloted time and an order was not received.
+CWPKI2004E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback.
+
+CWPKI2005E=CWPKI2005E: The authorization returned from the certificate authority at {0} did not included a valid challenge type. Expected a challenge type of {1}.
+CWPKI2005E.explanation=The certificate authority returned an unsupported challenge type.
+CWPKI2005E.useraction=Configure the correct challenge type or configure a certificate authority that provides a supported challenge type.
