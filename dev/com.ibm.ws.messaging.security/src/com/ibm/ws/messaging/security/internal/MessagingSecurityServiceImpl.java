@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,7 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
                                                             MSTraceConstants.MESSAGING_SECURITY_RESOURCE_BUNDLE);
 
     // Absolute class name along with the package name, used for tracing
-    private static final String CLASS_NAME = "com.ibm.ws.messaging.security.internal.MessagingSecurityServiceImpl";
+    private static final String CLASS_NAME = "com.ibm.ws.messaging.security.internal.MessagingSecurityServiceImpl.";
 
     // Liberty Security Service
     private SecurityService securityService = null;
@@ -172,7 +172,7 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
 
     /*
      * Delay this service from starting until LTPAConfiguration is available.
-     * See RTC 269100: Ltpa2 key generation may on occasion take some time; if not available when e.g. an MDB runs an exception
+     * See RTC 269685: Ltpa2 key generation may on occasion take some time; if not available when e.g. an MDB runs an exception
      * is raised during authentication resulting in an FFDC dump.
      * This function is a "dummy" that will influence OSGi's running of this bundle, delaying until the service can be resolved.
      */
