@@ -18,15 +18,18 @@ import static org.junit.Assert.assertNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
+@RunWith(FATRunner.class)
 public class FATTest {
     private static final String DEFAULT_CONFIG_FILE = "basic.server.xml.orig";
     private static final String ALTERNATE_BASIC_REGISTRY_CONFIG = "alternateBasicRegistry.xml";
@@ -250,5 +253,43 @@ public class FATTest {
 
         result = servlet.getGroups("*tractors)*", 0);
         assertEquals(1, result.getList().size());
+    }
+
+    /**
+     * Validate fix for OLGH11052, where a PatternSyntaxException (illegal repetition near index N)
+     * was thrown when a brace was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getUsersWithBraces() throws Exception {
+        Log.info(c, "getUsersWithBraces", "Check getUsers with braces");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getUsers("*{*", 0);
+        assertEquals("Expected 1 user with '{'.", 1, result.getList().size());
+
+        result = servlet.getUsers("*}*", 0);
+        assertEquals("Expected 1 user with '}'.", 1, result.getList().size());
+    }
+
+    /**
+     * Validate fix for OLGH11052, where a PatternSyntaxException (illegal repetition near index N)
+     * was thrown when a brace was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getGroupsWithBraces() throws Exception {
+        Log.info(c, "getGroupsWithBraces", "Check getGroups with braces");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getGroups("*{*", 0);
+        assertEquals("Expected 1 group with '{'.", 1, result.getList().size());
+
+        result = servlet.getGroups("*}*", 0);
+        assertEquals("Expected 1 group with '}'.", 1, result.getList().size());
     }
 }

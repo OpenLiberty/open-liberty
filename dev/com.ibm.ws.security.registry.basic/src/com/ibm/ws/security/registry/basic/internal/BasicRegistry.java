@@ -463,6 +463,8 @@ public class BasicRegistry implements UserRegistry {
      * <li>? -> .</li>
      * <li>( -> \(</li>
      * <li>) -> \)</li>
+     * <li>{ -> \{</li>
+     * <li>} -> \}</li>
      * </ul>
      *
      * @param pattern
@@ -479,10 +481,12 @@ public class BasicRegistry implements UserRegistry {
         }
 
         /*
-         * Replace any * with .* and escape any parentheses that might be interpreted as a
-         * group capture.
+         * Replace any * with .* and escape any characters that might have special meaning
+         * in a regular expression.
          */
-        pattern = pattern.replace("*", ".*").replace("(", "\\(").replace(")", "\\)");
+        pattern = pattern.replace("*", ".*");
+        pattern = pattern.replace("(", "\\(").replace(")", "\\)");
+        pattern = pattern.replace("{", "\\{").replace("}", "\\}");
 
         /*
          * Add the ignore case control back on if we removed it.
