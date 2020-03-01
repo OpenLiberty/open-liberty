@@ -205,6 +205,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
         ModuleConfig moduleConfig = moduleConfig();
 
         JAASLoginModuleConfigImpl jaasLoginModuleConfig = new JAASLoginModuleConfigImpl();
+        jaasLoginModuleConfig.setSharedLib(sharedLibrary);
         jaasLoginModuleConfig.activate(moduleConfig, orops);
 
         assertEquals("Should have two options", 2, jaasLoginModuleConfig.getOptions().size());
