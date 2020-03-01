@@ -35,6 +35,7 @@ import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.security.LoginModuleProxy;
@@ -42,6 +43,9 @@ import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
 import com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy;
+import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
@@ -135,7 +139,7 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
                 loader = ((EARApplicationInfo) classProviderAppInfo).getApplicationClassLoader();
             else {
                 NestedConfigHelper config = classProviderAppInfo.getConfigHelper();
-                if ("rar".equals(config.get("type"))) {
+                if ("rar".equals(config.get("type"))) { // the resourceAdapter metatype hard codes the type to "rar"
                     // load from a standalone resource adapter (RAR)
                     String classProviderId = (String) classProviderAppInfo.getConfigHelper().get("id");
                     String classProviderFilter = "(&"
@@ -152,8 +156,27 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
                     }
                     ClassProvider classProvider = bundleContext.getService(classProviderRefs.iterator().next()); // TODO error checking
                     loader = classProvider.getDelegateLoader();
-                } else
-                    throw new IllegalArgumentException(); // TODO error message for unsupported application type, cannot load class
+                } else {
+                    // load from single-module applications such as web applications,
+                    Container container = classProviderAppInfo.getContainer();
+                    NonPersistentCache cache;
+                    if (container == null)
+                        cache = null;
+                    else
+                        try {
+                            cache = container.adapt(NonPersistentCache.class);
+                        } catch (UnableToAdaptException x) {
+                            throw new IllegalStateException(classProviderAppInfo.getName(), x); // should be unreachable
+                        }
+                    ModuleInfo moduleInfo = cache == null ? null : (ModuleInfo) cache.getFromCache(ModuleInfo.class);
+                    if (moduleInfo != null) {
+                        loader = moduleInfo.getClassLoader();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "loading from standalone module " + moduleInfo.getName(), loader);
+                    } else {
+                        throw new IllegalArgumentException(); // TODO error message for unsupported application type, cannot load class
+                    }
+                }
             }
 
             Class<?> cl = null;
