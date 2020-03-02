@@ -13,11 +13,13 @@ package web.derby;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -27,12 +29,14 @@ import javax.naming.InitialContext;
 import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
@@ -43,6 +47,9 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
 
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromOtherApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromOtherApp;
+
+    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromEnterpriseAppNotFoundInWebApp", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromOtherAppNotFound;
 
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromWebApp;
@@ -113,6 +120,29 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
         try (Connection con = sldsLoginModuleFromOtherApp.getConnection()) {
             DatabaseMetaData metadata = con.getMetaData();
             assertEquals("appuser", metadata.getUserName());
+        }
+    }
+
+    /**
+     * testLoginModuleFromOtherAppNotFoundInWebApp - verify that a login module that is packaged within a separate enterprise application
+     * that does not match the classProviderRef CANNOT be used to authenticate to a data source when its resource reference
+     * specifies to use that login module.
+     */
+    @AllowedFFDC({
+                   "javax.security.auth.login.LoginException", // no login modules for notFoundInWebAppLogin
+                   "javax.resource.ResourceException" // chains the LoginException
+    })
+    @Test
+    public void testLoginModuleFromOtherAppNotFoundInWebApp() throws Exception {
+        try (Connection con = sldsLoginModuleFromOtherAppNotFound.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            fail("authenticated as user " + metadata.getUserName());
+        } catch (SQLException x) {
+            Throwable cause = x;
+            while (cause != null && !(cause instanceof LoginException))
+                cause = cause.getCause();
+            if (!(cause instanceof LoginException))
+                throw x;
         }
     }
 

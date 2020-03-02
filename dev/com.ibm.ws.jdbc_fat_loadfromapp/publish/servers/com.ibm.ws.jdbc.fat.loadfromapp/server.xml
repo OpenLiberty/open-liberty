@@ -70,6 +70,16 @@
       <loginModule className="web.other.LoadFromWebModLoginModule" classProviderRef="otherApp"/>
     </jaasLoginContextEntry>
 
+    <jaasLoginContextEntry id="notFoundInEarLoginEntry" name="notFoundInEarLogin">
+      <!-- otherApp does not contain this class; it is in the derbyApp and should not be found -->
+      <loginModule className="web.derby.LoadFromWebAppLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="notFoundInWebAppLoginEntry" name="notFoundInWebAppLogin">
+      <!-- derbyApp does not contain this class; it is in the otherApp and should not be found -->
+      <loginModule className="loginmod.LoadFromAppLoginModule" classProviderRef="derbyApp"/>
+    </jaasLoginContextEntry>
+
     <jaasLoginContextEntry id="ejb1loginEntry" name="ejb1login">
       <loginModule className="ejb.first.FirstEJBModLoginModule" classProviderRef="otherApp"/>
     </jaasLoginContextEntry>
