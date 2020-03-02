@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ import com.ibm.ws.microprofile.config.impl.SourcedValueImpl;
 import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
+import com.ibm.ws.microprofile.config14.sources.ConfigString;
+import com.ibm.ws.microprofile.config14.sources.ExtendedConfigSource;
 
 public class Config14Impl extends AbstractConfig implements WebSphereConfig {
 
@@ -111,11 +113,23 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
     private SourcedValue getRawValue(String key) {
         SourcedValue raw = null;
         for (ConfigSource source : getConfigSources()) {
-            String value = source.getValue(key);
-            if (value != null || getPropertyNames(source).contains(key)) {
-                String sourceID = source.getName();
-                raw = new SourcedValueImpl(key, value, String.class, sourceID);
-                break;
+            if (source instanceof ExtendedConfigSource) {
+                // ExtendedConfigSource allows us to differentiate between null as a value and value not being present
+                ConfigString configString = ((ExtendedConfigSource) source).getConfigString(key);
+                if (configString.isPresent()) {
+                    String sourceID = source.getName();
+                    raw = new SourcedValueImpl(key, configString.getValue(), String.class, sourceID);
+                    break;
+                }
+            } else {
+                // For a standard config source, we have to check both getValue and then getPropertyNames
+                // to tell the difference between the key not being present and the key being associated with a null value
+                String value = source.getValue(key);
+                if (value != null || source.getPropertyNames().contains(key)) {
+                    String sourceID = source.getName();
+                    raw = new SourcedValueImpl(key, value, String.class, sourceID);
+                    break;
+                }
             }
         }
         return raw;
