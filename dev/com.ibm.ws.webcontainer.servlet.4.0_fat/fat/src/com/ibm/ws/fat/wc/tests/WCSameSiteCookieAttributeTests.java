@@ -10,12 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.hc.core5.http.ClassicHttpRequest;
@@ -28,6 +33,14 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 import org.apache.hc.core5.http.protocol.BasicHttpContext;
 import org.apache.hc.core5.util.Timeout;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -55,7 +68,8 @@ import junit.framework.Assert;
 public class WCSameSiteCookieAttributeTests {
 
     private static final Logger LOG = Logger.getLogger(WCSameSiteCookieAttributeTests.class.getName());
-    private static final String APP_NAME = "SameSiteTest";
+    private static final String APP_NAME_SAMESITE = "SameSiteTest";
+    private static final String APP_NAME_SAMESITE_SECURITY = "SameSiteSecurityTest";
 
     @Rule
     public TestName name = new TestName();
@@ -66,7 +80,7 @@ public class WCSameSiteCookieAttributeTests {
     @BeforeClass
     public static void before() throws Exception {
         // Create the SameSiteTest.war application
-        ShrinkHelper.defaultDropinApp(sameSiteServer, APP_NAME + ".war", "samesite.servlets", "samesite.filters");
+        ShrinkHelper.defaultDropinApp(sameSiteServer, APP_NAME_SAMESITE + ".war", "samesite.servlets", "samesite.filters");
 
         // Start the server and use the class name so we can find logs easily.
         sameSiteServer.startServer(WCSameSiteCookieAttributeTests.class.getSimpleName() + ".log");
@@ -124,7 +138,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestSetCookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -191,7 +205,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestSetCookie?testIncorrectSameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testIncorrectSameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -258,7 +272,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestSetCookie?testDuplicateSameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testDuplicateSameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -325,7 +339,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestSetCookie?testEmptySameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testEmptySameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -384,6 +398,7 @@ public class WCSameSiteCookieAttributeTests {
 
         ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Server configuration that was saved: " + configuration);
+        LOG.info("Server configuration that was saved: " + sameSiteServer.getServerConfigurationFile().toString());
 
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("cookieOne");
@@ -391,7 +406,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -401,7 +416,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -436,7 +451,8 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfigurationFile());
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -470,7 +486,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -480,7 +496,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -515,7 +531,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -557,7 +573,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -567,7 +583,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie_secure";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie_secure";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -604,7 +620,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -640,7 +656,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -650,7 +666,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -685,7 +701,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -723,7 +739,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -733,7 +749,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -771,7 +787,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -809,7 +825,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -819,7 +835,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -857,7 +873,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -896,7 +912,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -906,7 +922,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -946,7 +962,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -983,7 +999,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -993,7 +1009,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1028,7 +1044,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1065,7 +1081,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1075,7 +1091,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1110,7 +1126,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1151,7 +1167,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1161,7 +1177,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1201,7 +1217,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1238,7 +1254,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1248,7 +1264,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1280,7 +1296,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1317,7 +1333,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1327,7 +1343,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1359,7 +1375,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1408,7 +1424,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1418,7 +1434,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1456,7 +1472,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1494,7 +1510,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1504,7 +1520,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1536,7 +1552,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1572,7 +1588,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1582,7 +1598,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1614,7 +1630,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1652,7 +1668,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1662,7 +1678,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1700,7 +1716,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1738,7 +1754,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1748,7 +1764,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1786,7 +1802,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1824,7 +1840,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1834,7 +1850,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1872,7 +1888,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -1910,7 +1926,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -1920,7 +1936,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -1958,7 +1974,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2002,7 +2018,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2012,7 +2028,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_secure";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_secure";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2052,7 +2068,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2090,7 +2106,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2100,7 +2116,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_same_cookie_twice";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_same_cookie_twice";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2139,7 +2155,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2179,7 +2195,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2189,7 +2205,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestSetCookie?testSameSiteConfigSetAddHeader=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testSameSiteConfigSetAddHeader=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2226,7 +2242,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2258,7 +2274,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2268,7 +2284,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2306,7 +2322,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2338,7 +2354,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2348,7 +2364,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2386,7 +2402,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2422,7 +2438,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2432,7 +2448,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2470,7 +2486,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2506,7 +2522,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2516,7 +2532,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2554,7 +2570,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2591,7 +2607,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2601,7 +2617,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_different_case";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_different_case";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2639,7 +2655,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2676,7 +2692,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2686,7 +2702,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2721,7 +2737,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2764,7 +2780,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2774,7 +2790,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2809,7 +2825,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2854,7 +2870,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2864,7 +2880,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2901,7 +2917,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -2948,7 +2964,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -2958,7 +2974,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestSetCookie?testDuplicateSameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testDuplicateSameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -2995,7 +3011,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3042,7 +3058,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -3052,7 +3068,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3089,7 +3105,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3136,7 +3152,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -3146,7 +3162,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestSetCookie?testEmptySameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testEmptySameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3183,7 +3199,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3231,7 +3247,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         LOG.info("Updated server configuration: " + configuration);
 
@@ -3241,7 +3257,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3282,7 +3298,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3311,7 +3327,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3319,7 +3335,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3357,7 +3373,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3386,7 +3402,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3394,7 +3410,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3432,7 +3448,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3464,7 +3480,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3472,7 +3488,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3510,7 +3526,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3542,7 +3558,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3550,7 +3566,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3588,7 +3604,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3615,7 +3631,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3623,7 +3639,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3658,7 +3674,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3684,7 +3700,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3745,7 +3761,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3753,7 +3769,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3790,7 +3806,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3823,7 +3839,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3831,7 +3847,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3869,7 +3885,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3901,7 +3917,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3909,7 +3925,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -3948,7 +3964,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -3978,7 +3994,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3986,7 +4002,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSessionCreationServlet";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -4024,7 +4040,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), true);
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
 
@@ -4056,7 +4072,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/SameSiteSetCookie.jsp";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSetCookie.jsp";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -4123,7 +4139,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -4194,7 +4210,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=false";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=false";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -4265,7 +4281,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -4332,7 +4348,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -4399,7 +4415,7 @@ public class WCSameSiteCookieAttributeTests {
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/" + APP_NAME + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
+        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
 
         LOG.info("requestUri : " + requestUri);
 
@@ -4430,6 +4446,143 @@ public class WCSameSiteCookieAttributeTests {
             assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
             assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
         }
+    }
+
+    /**
+     * Configure the server with the following:
+     * <webAppSecurity sameSiteCookie="Strict"/>
+     * <samesite lax="*"/> -> inside the httpEndpoint
+     *
+     * Drive a request to a Servlet that requires login.
+     *
+     * Login using the JSP.
+     *
+     * Verify that the LtpaToken2 cookie has a SameSite attribute of Strict as the webAppSecurity configuration
+     * should take precedence over the httpEndpoint configuration.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSameSiteConfig_Lax_WebAppSecurity_Strict() throws Exception {
+        boolean headerFound = false;
+        String expectedResponse = "Welcome to the SameSiteSecurityServlet!";
+        int status = 302;
+
+        sameSiteServer.saveServerConfiguration();
+
+        // Build and deploy the application that we need for this test
+        ShrinkHelper.defaultApp(sameSiteServer, APP_NAME_SAMESITE_SECURITY + ".war", "samesite.security.servlet");
+
+        // Use the necessary server.xml for this test.
+        ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+        sameSiteServer.setMarkToEndOfLog();
+        sameSiteServer.setServerConfigurationFile("serverConfigs/SameSiteSecurityServer.xml");
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE_SECURITY), true);
+        configuration = sameSiteServer.getServerConfiguration();
+        LOG.info("Updated server configuration: " + configuration);
+
+        /*
+         * Much of this is based on com.ibm.ws.webcontainer.security.test.servlets.FormLoginClient.
+         *
+         * Just taking the basic pieces that we need here for this simple login test.
+         */
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE_SECURITY + "/SameSiteSecurityServlet";
+        String userName = "user1";
+        String password = "user1Login";
+
+        HttpGet getMethod = new HttpGet(url);
+
+        LOG.info("accessFormLoginPage: url=" + getMethod.getURI().toString() + " request method=" + getMethod);
+        HttpResponse response = null;
+        DefaultHttpClient client = new DefaultHttpClient();
+        try {
+            response = client.execute(getMethod);
+
+            LOG.info("Form login page result: " + response.getStatusLine());
+            assertEquals("Expected " + 200 + " status code for form login page was not returned",
+                         200, response.getStatusLine().getStatusCode());
+
+            String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
+            LOG.info("Form login page content: " + content);
+            org.apache.http.util.EntityUtils.consume(response.getEntity());
+
+            // Verify we get the form login JSP
+            assertTrue("Did not find expected form login page: " + "Form Login Page",
+                       content.contains("Form Login Page"));
+
+            // login
+            LOG.info("performFormLogin: url=" + url +
+                     " user=" + userName + " password=" + password);
+
+            // Post method to login
+            HttpPost postMethod = new HttpPost(url + "/j_security_check");
+
+            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+            nvps.add(new BasicNameValuePair("j_username", userName));
+            nvps.add(new BasicNameValuePair("j_password", password));
+            postMethod.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+
+            response = client.execute(postMethod);
+
+            assertEquals("Expecting form login getStatusCode " + status, status,
+                         response.getStatusLine().getStatusCode());
+
+            // Verify that the LtpaToken2 cookie has SameSite=Strict
+            for (org.apache.http.Header cookieHeader : response.getHeaders("Set-Cookie")) {
+                String cookieHeaderValue = cookieHeader.getValue();
+                LOG.info("Header Name: " + cookieHeader.getName());
+                LOG.info("Header Value: " + cookieHeaderValue);
+
+                if (cookieHeaderValue.startsWith("LtpaToken2")) {
+                    if (cookieHeaderValue.contains("SameSite=Strict")) {
+                        headerFound = true;
+                    }
+                }
+            }
+
+            assertTrue("The LtpaToken2 Set-Cookie header did not contain SameSite=Strict.", headerFound);
+
+            // Verify redirect to the servlet
+            org.apache.http.Header header = response.getFirstHeader("Location");
+            String location = header.getValue();
+            LOG.info("Redirect location: " + location);
+
+            org.apache.http.util.EntityUtils.consume(response.getEntity());
+
+            assertEquals("Redirect location was not the original URL!",
+                         url, location);
+
+            // Access page no challenge
+
+            // Get method on form login page
+            getMethod = new HttpGet(location);
+
+            response = client.execute(getMethod);
+
+            LOG.info("getMethod status: " + response.getStatusLine());
+            assertEquals("Expected 200 status code was not returned",
+                         200, response.getStatusLine().getStatusCode());
+
+            content = org.apache.http.util.EntityUtils.toString(response.getEntity());
+            LOG.info("Servlet content: " + content);
+
+            org.apache.http.util.EntityUtils.consume(response.getEntity());
+
+            assertTrue("Response did not contain expected response: " + expectedResponse,
+                       content.equals(expectedResponse));
+
+        } catch (IOException e) {
+            LOG.severe("FAILURE: " + "Caught unexpected exception: " + e);
+            fail("Caught unexpected exception: " + e);
+        } finally {
+            sameSiteServer.setMarkToEndOfLog();
+            sameSiteServer.restoreServerConfiguration();
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
+            // Wait for the application that is still deployed to start.
+            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+        }
+
     }
 
     /*
