@@ -107,6 +107,7 @@ import componenttest.rules.repeater.RepeatTests;
                 SecurityContextTest.class,
                 SecuritySSLTest.class,
                 ServiceScopeTest.class,
+                SimpleJsonTest.class,
                 StandardProvidersTest.class,
                 UriInfoTest.class,
                 UTF8Test.class,
