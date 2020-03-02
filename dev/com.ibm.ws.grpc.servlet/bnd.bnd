@@ -31,6 +31,11 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 instrument.disabled: true
 
+javac.source: 1.8
+javac.target: 1.8
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
 -buildpath: \
   com.ibm.ws.container.service;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
@@ -47,8 +52,3 @@ instrument.disabled: true
   com.ibm.ws.grpc.common.1.0;version=latest,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:guava;version=27.0.1
-  
-javac.source: 1.8
-javac.target: 1.8
-
--fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

@@ -11,8 +11,6 @@
 
 package com.ibm.ws.grpc;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Preconditions;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.http.ee8.Http2Connection;
@@ -38,28 +36,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Server stream for a Liberty HTTP2 transport.
+ * Server stream for a Liberty HTTP/2 transport
  */
 class LibertyServerStream extends AbstractServerStream implements Http2StreamHandler {
-	private static final Logger log = Logger.getLogger(LibertyServerStream.class.getName());
+
+	private static final String CLASS_NAME = LibertyServerStream.class.getName();
+	private static final Logger logger = Logger.getLogger(CLASS_NAME);
 
 	private final Http2Stream h2sp;
 	private final Http2Connection h2connection;
-
 	private final Sink sink;
 	private final String authority;
-
 	private TransportState transportState;
+	private volatile CountDownLatch WriteWaitLatch = new CountDownLatch(1);
 
-	private volatile CountDownLatch WriteWaitLatch = new CountDownLatch(1) {};
-
+	/**
+	 * Create a server stream backed by a Liberty HTTP/2 stream
+	 * 
+	 * @param Http2Stream
+	 * @param Http2Connection
+	 */
 	public LibertyServerStream(final Http2Stream stream, final Http2Connection connection) {
-
 		super(new LibertyWritableBufferAllocator(), StatsTraceContext.NOOP);
 		this.h2sp = stream;
 		this.h2connection = connection;
 		this.authority = h2connection.getAuthority();
-
 		sink = new Sink(stream);
 		transportState = new TransportState(h2sp, Integer.MAX_VALUE, statsTraceContext(), new TransportTracer(),
 				"LibertyServerStream");
@@ -75,6 +76,44 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 		return authority;
 	}
 
+	@Override
+	public int streamId() {
+		return h2sp.getId();
+	}
+
+	@Override
+	protected TransportState transportState() {
+		return this.transportState;
+	}
+
+	@Override
+	public void headersReady() {
+	}
+
+	@Override
+	public void dataReady(WsByteBuffer buffer, boolean endOfStream) {
+		try {
+			this.onDataRead(h2sp.getId(), buffer, endOfStream);
+		} finally {
+			WriteWaitLatch.countDown();
+		}
+	}
+
+	@Override
+	public void writeHeaders(Map<String, String> headers, boolean endOfHeaders, boolean endOfStream) {
+	}
+
+	public void onDataRead(int streamId, WsByteBuffer data, boolean endOfStream) {
+		try {
+			transportState.inboundDataReceived(data, endOfStream);
+		} catch (Throwable e) {
+			Utils.createFFDC(e, CLASS_NAME, "onDataRead");
+		}
+	}
+
+	/**
+	 * A sink used for outbound write operations
+	 */
 	private class Sink implements AbstractServerStream.Sink {
 
 		final Http2Stream stream;
@@ -83,16 +122,24 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 			stream = s;
 		}
 
+		/**
+		 * Pass a complete message into the gRPC app. For now, wait for a complete
+		 * message (including EOS) to arrive.
+		 */
 		@Override
 		public void request(final int numMessages) {
 			try {
+				// wait until onDataReady() is called
 				WriteWaitLatch.await();
 				transportState.requestMessagesFromDeframer(numMessages);
 			} catch (InterruptedException e) {
-				log.log(Level.FINE, "caught InterruptedException waiting for data read", e);
+				Utils.createFFDC(e, CLASS_NAME, "Sink.request");
 			}
 		}
 
+		/**
+		 * Clean up and write out headers to the HTTP/2 channel
+		 */
 		@Override
 		public void writeHeaders(Metadata headers) {
 
@@ -115,10 +162,13 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 			stream.writeHeaders(pseudoHeaderMap, headerMap, false, true);
 		}
 
+		/**
+		 * Write gRPC data out to the HTTP/2 channel
+		 */
 		@Override
 		public void writeFrame(WritableBuffer frame, boolean flush, final int numMessages) {
 			Preconditions.checkArgument(numMessages >= 0);
-			// TODO: we're flushing immediately, should we queue?
+			// TODO: queue messages
 			if (frame == null) {
 				return;
 			}
@@ -132,6 +182,9 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 			stream.writeData(toSend, false);
 		}
 
+		/**
+		 * Write trailers (status) out to the HTTP/2 channel
+		 */
 		@Override
 		public void writeTrailers(Metadata trailers, boolean headersSent, Status status) {
 			if (trailers != null) {
@@ -152,30 +205,15 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 		}
 	}
 
-	public void onDataRead(int streamId, WsByteBuffer data, boolean endOfStream) {
-		try {
-			PerfMark.startTask("LibertyServerHandler.onDataRead", transportState.tag());
-			try {
-				transportState.inboundDataReceived(data, endOfStream);
-			} finally {
-				PerfMark.stopTask("LibertyServerHandler.onDataRead", transportState.tag());
-			}
-		} catch (Throwable e) {
-			// TODO: close stream
-			log.log(Level.FINE, "inboundDataReceived caught an excpetion", e);
-		}
-	}
-
-	/** This should only called from the transport thread. */
 	public static class TransportState extends AbstractServerStream.TransportState {
 
 		private final Http2Stream http2Stream;
 		private final Tag tag;
 
-		public TransportState(Http2Stream http2Stream, int maxMessageSize, StatsTraceContext statsTraceCtx,
+		public TransportState(Http2Stream h2s, int maxMessageSize, StatsTraceContext statsTraceCtx,
 				TransportTracer transportTracer, String methodName) {
 			super(maxMessageSize, statsTraceCtx, transportTracer);
-			this.http2Stream = checkNotNull(http2Stream, "http2Stream");
+			http2Stream = h2s;
 			this.tag = PerfMark.createTag(methodName, http2Stream.getId());
 		}
 
@@ -190,9 +228,10 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 
 		@Override
 		public void deframeFailed(Throwable cause) {
-			log.log(Level.FINE, "Error processing message", cause);
+			// TODO: warning and/or FFDC
+			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "TransportState.deframeFailed", cause.getMessage());
 			int errorCode = Status.fromThrowable(cause).getCode().value();
-			this.http2Stream.cancel(new Exception(cause), errorCode);
+			http2Stream.cancel(new Exception(cause), errorCode);
 		}
 
 		void inboundDataReceived(WsByteBuffer frame, boolean endOfStream) {
@@ -206,32 +245,5 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 		public Tag tag() {
 			return this.tag;
 		}
-	}
-
-	@Override
-	public int streamId() {
-		return h2sp.getId();
-	}
-
-	@Override
-	protected TransportState transportState() {
-		return this.transportState;
-	}
-
-	@Override
-	public void headersReady() {
-	}
-
-	@Override
-	public void dataReady(WsByteBuffer buffer, boolean endOfStream) {
-		try {
-		    this.onDataRead(h2sp.getId(), buffer, endOfStream);
-		} finally {
-			WriteWaitLatch.countDown();
-		}
-	}
-
-	@Override
-	public void writeHeaders(Map<String, String> headers, boolean endOfHeaders, boolean endOfStream) {
 	}
 }

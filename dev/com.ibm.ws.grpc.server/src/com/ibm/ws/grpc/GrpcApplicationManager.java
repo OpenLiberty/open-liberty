@@ -12,7 +12,6 @@
 package com.ibm.ws.grpc;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,13 +25,13 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.grpc.Utils;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
@@ -46,6 +45,8 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 
 	private static final String CLASS_NAME = GrpcApplicationManager.class.getName();
 	private static final Logger logger = Logger.getLogger(GrpcApplicationManager.class.getName());
+
+	private static final String BINDABLE_SERVICE_INTERFACE = "io.grpc.BindableService";
 
 	@Activate
 	protected void activate(ComponentContext cc) {
@@ -64,11 +65,16 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 	 */
 	@Override
 	public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+		Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStarting",
+				"starting application: " + appInfo.getName());
+
 		Set<String> grpcServiceClassNames = findGrpcServiceImplementors(appInfo);
 		Set<BindableService> services = initGrpcServices(appInfo, grpcServiceClassNames);
 		if (services != null && !services.isEmpty()) {
 			LibertyServerBuilder serverBuilder = new LibertyServerBuilder();
 			for (BindableService service : services) {
+				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStarting",
+						"adding service: " + service + " for application " + appInfo.getName());
 				serverBuilder.addService(service.bindService());
 			}
 			Server server = serverBuilder.build();
@@ -76,7 +82,8 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 				server.start();
 				ActiveGrpcServers.addServer(appInfo.getName(), server);
 			} catch (IOException e) {
-				logMessage(Level.FINE, "initGrpcServices",
+				Utils.createFFDC(e, CLASS_NAME, "applicationStarting");
+				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStarting",
 						"gRPC Server " + server + " could not be started ", e);
 			}
 		}
@@ -88,13 +95,16 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 
 	@Override
 	public void applicationStopping(ApplicationInfo appInfo) {
-		Collection<Server> servers = ActiveGrpcServers.getServerList();
-		for (Server s : servers) {
-			System.out.println("applicationStopping removing grpc server: " + s);
+		Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStopping",
+				"stopping application: " + appInfo.getName());
+		
+		Server s = ActiveGrpcServers.getServer(appInfo.getName());
+		if (s != null) { 
+			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStopping",
+					"shutting down gRPC server: " + s);
 			s.shutdown();
+			ActiveGrpcServers.removeServer(appInfo.getName());
 		}
-		ActiveGrpcServers.removeServer(appInfo.getName());
-		System.out.println("applicationStopping app: " + appInfo.getName());
 	}
 
 	@Override
@@ -111,9 +121,13 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 		try {
 			WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(appInfo.getContainer());
 			AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
-			return annoTargets.getAllImplementorsOf("io.grpc.BindableService");
+			Set<String> serviceClassNames = annoTargets.getAllImplementorsOf(BINDABLE_SERVICE_INTERFACE);
+			
+			// TODO: we'll ignore inner classes for now, but this should be revisited
+			serviceClassNames.removeIf((String s) -> s.contains("$"));
+			return serviceClassNames;
 		} catch (UnableToAdaptException e) {
-			// FFDC
+			Utils.createFFDC(e, CLASS_NAME, "findGrpcServiceImplementors");
 		}
 		return null;
 	}
@@ -131,11 +145,13 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 		if (grpcServiceClassNames != null && !grpcServiceClassNames.isEmpty()) {
 			Set<BindableService> services = new HashSet<BindableService>();
 
-			logMessage(Level.FINE, "initGrpcServices",
+			// TODO: info message
+			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "initGrpcServices",
 					"gRPC BindableService implementations discovered during applicationStarting: ");
 			for (String service : grpcServiceClassNames) {
-				logMessage(Level.FINE, "initGrpcServices", service);
+				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "initGrpcServices", service);
 			}
+			
 			try {
 				ClassLoader cl = null;
 				NonPersistentCache overlayCache = appInfo.getContainer().adapt(NonPersistentCache.class);
@@ -154,31 +170,16 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 						services.add(s);
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException
 							| ClassNotFoundException e) {
-						// TODO: better handle specific exception cases
-						logMessage(Level.FINE, "initGrpcServices",
+						Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "initGrpcServices",
 								"caught " + e.getClass().getName() + " attempting to load class " + serviceClassName, e);
 					}
 				}
 				return services;
 			} catch (UnableToAdaptException e) {
-				// FFDC
+				Utils.createFFDC(e, CLASS_NAME, "initGrpcServices");
 				return null;
 			}
 		}
 		return null;
-	}
-
-	private void logMessage(Level level, String method, String message) {
-		logMessage(level, method, message, null);
-	}
-
-	private void logMessage(Level level, String method, String message, Throwable exception) {
-		if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(level)) {
-			if (exception != null) {
-				logger.logp(level, CLASS_NAME, method, message, exception);
-			} else {
-				logger.logp(level, CLASS_NAME, method, message);
-			}
-		}
 	}
 }

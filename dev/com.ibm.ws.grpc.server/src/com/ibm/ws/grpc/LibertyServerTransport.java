@@ -19,7 +19,6 @@ import io.grpc.InternalChannelz.SocketStats;
 import io.grpc.InternalLogId;
 import io.grpc.Status;
 import io.grpc.internal.ServerTransport;
-import io.grpc.internal.ServerTransportListener;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -31,9 +30,8 @@ class LibertyServerTransport implements ServerTransport {
 
 	public LibertyServerTransport() {
 		logId = InternalLogId.allocate(getClass().getName(), "LibertyServer");
-
 	}
-	
+
 	@Override
 	public ScheduledExecutorService getScheduledExecutorService() {
 		return CHFWBundle.getScheduledExecutorService();
@@ -41,12 +39,10 @@ class LibertyServerTransport implements ServerTransport {
 
 	@Override
 	public void shutdown() {
-		// TODO: send goaway?
 	}
 
 	@Override
 	public void shutdownNow(Status reason) {
-		// TODO: send goaway?
 	}
 
 	@Override
@@ -56,7 +52,6 @@ class LibertyServerTransport implements ServerTransport {
 
 	@Override
 	public ListenableFuture<SocketStats> getStats() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

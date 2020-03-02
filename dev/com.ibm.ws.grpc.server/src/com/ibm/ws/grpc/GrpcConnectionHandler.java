@@ -14,6 +14,8 @@ package com.ibm.ws.grpc;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -27,13 +29,16 @@ import io.grpc.internal.ServerStream;
 import io.grpc.internal.ServerTransportListener;
 
 /**
- * HTTP/2 Connection handler for gRPC connections 
+ * HTTP/2 Connection handler for gRPC connections
  */
 public class GrpcConnectionHandler implements Http2ConnectionHandler {
-	
+
+	private static final String CLASS_NAME = GrpcConnectionHandler.class.getName();
+	private static final Logger logger = Logger.getLogger(GrpcConnectionHandler.class.getName());
+
 	private final ServerTransportListener listener;
-	
-	public GrpcConnectionHandler (ServerTransportListener l) {
+
+	public GrpcConnectionHandler(ServerTransportListener l) {
 		listener = l;
 	}
 
@@ -41,20 +46,23 @@ public class GrpcConnectionHandler implements Http2ConnectionHandler {
 	 * Pass a new gRPC request and HTTP/2 stream to gRPC
 	 */
 	@Override
-	public Http2StreamHandler onStreamCreated(HttpRequestMessage request, Http2Stream stream, Http2Connection connection) {
-				
+	public Http2StreamHandler onStreamCreated(HttpRequestMessage request, Http2Stream stream,
+			Http2Connection connection) {
+
+		Utils.traceEntryMessage(logger, CLASS_NAME, "onStreamCreated",
+				"request: " + request.getRequestURI() + " connection " + connection + " stream ID: " + stream.getId());
+
 		ServerStream grpcH2Stream = new LibertyServerStream(stream, connection);
-		
 		// grab the path and remove the leading slash
 		String path = request.getRequestURI().substring(1);
-		
+
 		// put the headers into a format usable by gRPC
-		List<HeaderField> reqHeaders =  request.getAllHeaders();
+		List<HeaderField> reqHeaders = request.getAllHeaders();
 		Metadata grpcHeaders = new Metadata();
-        for (HeaderField h : reqHeaders) {
-        	grpcHeaders.put(Metadata.Key.of(h.getName(), Metadata.ASCII_STRING_MARSHALLER), h.asString());
-        }
-        
+		for (HeaderField h : reqHeaders) {
+			grpcHeaders.put(Metadata.Key.of(h.getName(), Metadata.ASCII_STRING_MARSHALLER), h.asString());
+		}
+
 		listener.streamCreated(grpcH2Stream, path, grpcHeaders);
 		return (Http2StreamHandler) grpcH2Stream;
 	}
