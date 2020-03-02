@@ -74,6 +74,29 @@ public class ConfigIntrospection implements Introspector {
     /*
      * (non-Javadoc)
      *
+<<<<<<< HEAD
+=======
+     * @see com.ibm.wsspi.logging.IntrospectableService#getName()
+     */
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.logging.IntrospectableService#getDescription()
+     */
+    @Override
+    public String getDescription() {
+        return DESC;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+>>>>>>> Add ibm:obscure
      * @see com.ibm.wsspi.logging.IntrospectableService#introspect(java.io.OutputStream)
      */
     @Override

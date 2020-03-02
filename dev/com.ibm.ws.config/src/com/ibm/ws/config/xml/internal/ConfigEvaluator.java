@@ -980,7 +980,7 @@ class ConfigEvaluator {
             return MetatypeUtils.evaluateDuration(strVal, TimeUnit.MINUTES);
         } else if (type == MetaTypeFactory.DURATION_H_TYPE) {
             return MetatypeUtils.evaluateDuration(strVal, TimeUnit.HOURS);
-        } else if (type == MetaTypeFactory.PASSWORD_TYPE || type == MetaTypeFactory.HASHED_PASSWORD_TYPE) {
+        } else if (type == MetaTypeFactory.PASSWORD_TYPE || type == MetaTypeFactory.HASHED_PASSWORD_TYPE || attrDef.isObscured()) {
             return new SerializableProtectedString(strVal.toCharArray());
         } else if (type == MetaTypeFactory.ON_ERROR_TYPE) {
             return Enum.valueOf(OnError.class, strVal.trim().toUpperCase());
