@@ -8,4 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+@org.osgi.annotation.versioning.Version("1.0")
 package com.ibm.ws.grpc;

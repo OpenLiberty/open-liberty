@@ -21,20 +21,22 @@ import io.grpc.internal.ServerTransportListener;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class LibertyServer implements InternalServer {
 	
-	private final SocketAddress address;
+	private static final String CLASS_NAME = LibertyServer.class.getName();
+	private static final Logger logger = Logger.getLogger(LibertyServer.class.getName());
+	
 	private GrpcConnectionHandler handler;
 	private LibertyServerTransport transport;
-	
-	public LibertyServer(SocketAddress sa) {
-		address = sa;
+		
+	public LibertyServer() {
 	}
 
 	@Override
 	public void start(ServerListener listener) throws IOException {
-		//System.out.println("wtl: libertyserver start()");
 		transport = new LibertyServerTransport();
 		ServerTransportListener serverTransportListener = listener.transportCreated(transport);
 		handler = new GrpcConnectionHandler(serverTransportListener);
@@ -43,7 +45,7 @@ final class LibertyServer implements InternalServer {
 
 	@Override
 	public SocketAddress getListenSocketAddress() {
-		return address;
+		return null;
 	}
 
 	@Override
@@ -53,7 +55,8 @@ final class LibertyServer implements InternalServer {
 
 	@Override
 	public void shutdown() {
-		System.out.println("WTL: shutdown");
+		Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "shutdown",
+				"removing handler: " + handler + " and shutting down transport: " + transport);
 		Http2Consumers.removeHandler(handler);
 		transport.shutdown();
 	}

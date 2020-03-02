@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 class LibertyReadableBuffer extends AbstractReadableBuffer {
+	
 	private final WsByteBuffer buffer;
 	private boolean closed;
 
