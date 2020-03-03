@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.messaging.security.MessagingSecurityService;
+import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.comms.ClientConnectionFactory;
@@ -55,14 +57,16 @@ public class CommonServiceFacade {
     //TODO: CommsClientServiceFacade has to be loaded on demand.
     private static final AtomicServiceReference<CommsClientServiceFacadeInterface> _commsClientServiceFacaderef = new AtomicServiceReference<CommsClientServiceFacadeInterface>(
                     "CommsClientServiceFacadeInterface");
-
+    //TODO Should this be an AtomicServiceReference? and should runtimeSecurityService be activated??????????????????
+    //TODO Should really be assigned as final in a constructor.
+    private static RuntimeSecurityService runtimeSecurityService;
+    
     @Activate
     protected void activate(ComponentContext context,
                             Map<String, Object> properties) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, CLASS_NAME + "activate", new Object[] { context,
-                                                                   properties });
-        }
+        final String methodName = "activate";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, methodName, new Object[] {this, context, properties });
 
         try {
             jsAdminServiceref.activate(context);
@@ -73,9 +77,8 @@ public class CommonServiceFacade {
                                         this);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, CLASS_NAME + "activate");
-        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName);
     }
 
     @Modified
@@ -177,6 +180,22 @@ public class CommonServiceFacade {
 
     }
 
+    /**
+     * Causes startup to be delayed until the RuntimeSecurityService is available.
+     * @param runtimeSecurityService the RuntimeSecurityService
+     */
+    @Reference(cardinality = ReferenceCardinality.MANDATORY )
+    protected void setRuntimeSecurityService(RuntimeSecurityService runtimeSecurityService) {
+        final String methodName = "setRuntimeSecurityService";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+          SibTr.entry(tc, methodName, new Object[] {this, runtimeSecurityService});
+        
+        this.runtimeSecurityService = runtimeSecurityService; 
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+          SibTr.exit(tc, methodName);
+    }
+    
     // obtain ClientConnectionFactory through CommsClientServiceFacade
     public static ClientConnectionFactory getClientConnectionFactory() {
         return _commsClientServiceFacaderef.getService().getClientConnectionFactory();
@@ -191,6 +210,10 @@ public class CommonServiceFacade {
         return jsAdminServiceref.getService();
     }
 
+    public static RuntimeSecurityService getRuntimeSecurityService() {
+        return runtimeSecurityService;
+    }
+    
     //Provide implemenations thru factory interfaces, so that other OSGI bundles
     // can consume them.
 

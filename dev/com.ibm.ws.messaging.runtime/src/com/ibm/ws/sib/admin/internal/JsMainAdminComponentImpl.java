@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.messaging.service.JsMainAdminServiceImpl;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
@@ -60,7 +61,7 @@ public class JsMainAdminComponentImpl implements ConfigurationListener {
                                                             JsMainAdminComponentImpl.class, JsConstants.TRGRP_AS,
                                                             JsConstants.MSG_BUNDLE);
     private static final String CLASS_NAME = "com.ibm.ws.sib.admin.internal.JsMainAdminComponentImpl";
-    private JsMainAdminService service;
+    private final JsMainAdminService service;
 
     /**
      * ConfigAdmin service.
@@ -83,8 +84,21 @@ public class JsMainAdminComponentImpl implements ConfigurationListener {
     /**
      * JsAdminService service
      */
-    public static final AtomicServiceReference<JsAdminService> jsAdminServiceref = new AtomicServiceReference<JsAdminService>(
-                    KEY_JS_ADMIN_SERVICE);
+    public static final AtomicServiceReference<JsAdminService> jsAdminServiceref = new AtomicServiceReference<JsAdminService>(KEY_JS_ADMIN_SERVICE);
+    public static final AtomicServiceReference<RuntimeSecurityService> runtimeSecurityServiceRef = new AtomicServiceReference<RuntimeSecurityService>(
+                    "runtimeSecurityService");
+    
+    @Activate
+    public JsMainAdminComponentImpl(@Reference JsMainAdminService service) {
+        final String methodName = "JsMainAdminComponentImpl";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, methodName, new Object[] { this, service });
+        
+        this.service = service;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName);
+    }
 
     /**
      * This method is call by the declarative service when the feature is
@@ -99,13 +113,12 @@ public class JsMainAdminComponentImpl implements ConfigurationListener {
         }
 
         try {
-            service = new JsMainAdminServiceImpl();
-
             configAdminRef.activate(context);
             messageStoreRef.activate(context);
             destinationAddressFactoryRef.activate(context);
             jsAdminServiceref.activate(context);
-            service.activate(context, properties, configAdminRef.getService());
+            runtimeSecurityServiceRef.activate(context);
+            service.start(properties);
 
         } catch (Exception e) {
             SibTr.exception(tc, e);
@@ -139,12 +152,12 @@ public class JsMainAdminComponentImpl implements ConfigurationListener {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     SibTr.debug(tc, "Starting ME", service.getMeState());
                 SibTr.info(tc, "RESTART_ME_SIAS0106");
-                service.activate(context, properties, configAdminRef.getService());
+                service.start(properties);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     SibTr.debug(tc, "Modifying the configuration", service
                                     .getMeState());
-                service.modified(context, properties, configAdminRef.getService());
+                service.modify(properties);
             }
 
         } catch (Exception e) {
@@ -171,14 +184,13 @@ public class JsMainAdminComponentImpl implements ConfigurationListener {
         }
 
         try {
-            service.deactivate(context, properties);
-            // Once service.deactivate() is completed destroy the service instance
-            service = null;
+            service.stop();
 
             configAdminRef.deactivate(context);
             messageStoreRef.deactivate(context);
             destinationAddressFactoryRef.deactivate(context);
             jsAdminServiceref.deactivate(context);
+            runtimeSecurityServiceRef.deactivate(context);
 
         } catch (Exception e) {
             SibTr.exception(tc, e);
@@ -323,6 +335,40 @@ public class JsMainAdminComponentImpl implements ConfigurationListener {
     }
 
     /**
+     * Declarative Services method for setting the RuntimeSecurityService reference.
+     * 
+     * @param ref reference to the service
+     */
+    @Reference
+    protected void setRuntimeSecurityService(ServiceReference<RuntimeSecurityService> ref) {
+        final String methodName = "setRuntimeSecurityService";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            SibTr.entry(tc, methodName, new Object[] {this, ref});
+        
+        runtimeSecurityServiceRef.setReference(ref);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            SibTr.exit(tc, methodName);
+    }
+
+    /**
+     * Declarative Services method for unsetting the RuntimeSecurityService reference.
+     * 
+     * @param ref reference to the service
+     */
+    protected void unsetRuntimeSecurityService(ServiceReference<RuntimeSecurityService> ref) {
+        final String methodName = "unsetRuntimeSecurityService";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            SibTr.entry(tc, methodName, new Object[] {this, ref});
+        // TODO Change all to unsetReference();
+        runtimeSecurityServiceRef.unsetReference(ref);
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            SibTr.exit(tc, methodName);
+    }
+
+    
+    /**
      * static method for getting the SIDestinationAddressFactory instance
      * 
      * @return SIDestinationAddressFactory
@@ -359,6 +405,7 @@ public class JsMainAdminComponentImpl implements ConfigurationListener {
      */
     @Override
     public void configurationEvent(ConfigurationEvent event) {
-        service.configurationEvent(event, configAdminRef.getService());
+    //TODO DEL Changed JsMainAdminServiceImpl to a declarative service.
+    //TODO    service.configurationEvent(event, configAdminRef.getService());
     }
 }
