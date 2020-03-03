@@ -20,4 +20,20 @@
   <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefServletRequestAttributeListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
   
   <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefServletRequestListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+
+  <resource-ref name="jdbc/TestDSAuthAliasWithNormalizedJndiBinding">
+      <authentication-alias name="derbyAuth1"/>
+  </resource-ref>
+
+  <resource-ref name="java:comp/env/jdbc/TestDSAuthAliasWithDenormalizedJndiBinding">
+      <authentication-alias name="derbyAuth2"/>
+  </resource-ref>
+
+  <resource-ref name="jdbc/TestDSAuthAliasWithLookupWithNormalizedJndiBinding">
+      <authentication-alias name="derbyAuth1"/>
+  </resource-ref>
+
+  <resource-ref name="java:comp/env/jdbc/TestDSAuthAliasWithLookupWithDenormalizedJndiBinding">
+      <authentication-alias name="derbyAuth2"/>
+  </resource-ref>
 </web-bnd>
