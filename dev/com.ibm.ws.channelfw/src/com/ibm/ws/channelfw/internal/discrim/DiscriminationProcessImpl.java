@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -342,7 +342,7 @@ public class DiscriminationProcessImpl implements DiscriminationGroup {
      */
     private void addDiscriminatorNode(DiscriminatorNode dn) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "addDiscriminatorNode, weight=" + dn.weight);
+            Tr.entry(tc, "addDiscriminatorNode", "weight=" + dn.weight);
         }
         if (discriminators == null) {
             // add it as the first node
@@ -402,45 +402,51 @@ public class DiscriminationProcessImpl implements DiscriminationGroup {
     @Override
     public void removeDiscriminator(Discriminator d) throws DiscriminationProcessException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "removeDiscriminator: " + d);
+            Tr.entry(tc, "removeDiscriminator", d);
         }
-        if (status == STARTED) {
-            DiscriminationProcessException e = new DiscriminationProcessException("Should not remove form DiscriminationGroup while started!");
-            FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "401", this, new Object[] { d });
-            throw e;
-        }
-        // remove it from the list
-        if (!discAL.remove(d)) {
-            NoSuchElementException e = new NoSuchElementException("Discriminator does not exist, " + d.getChannel().getName());
-            FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "410", this, new Object[] { d });
-            throw e;
-        }
-        this.changed = true;
-        String chanName = d.getChannel().getName();
-        if (channelList == null) {
-            NoSuchElementException e = new NoSuchElementException("No Channel's exist, " + chanName);
-            FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "422", this, new Object[] { d });
-            throw e;
-        }
-        Channel[] oldList = channelList;
-        channelList = new Channel[oldList.length - 1];
-        for (int i = 0, j = 0; i < oldList.length; i++) {
-            String tempName = oldList[i].getName();
-            if (tempName != null && !(tempName.equals(chanName))) {
-                if (j >= oldList.length) {
-                    NoSuchElementException e = new NoSuchElementException("Channel does not exist, " + d.getChannel().getName());
-                    FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "440", this, new Object[] { d });
-                    throw e;
-                }
-                channelList[j++] = oldList[i];
-            } else if (chanName == null) {
-                DiscriminationProcessException e = new DiscriminationProcessException("Channel does not have a name associated with it, " + oldList[i]);
-                FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "454", this, new Object[] { oldList[i] });
+        try {
+            if (status == STARTED) {
+                DiscriminationProcessException e = new DiscriminationProcessException("Should not remove form DiscriminationGroup while started!");
+                FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "401", this, new Object[] { d });
                 throw e;
             }
+            // remove it from the list
+            if (!discAL.remove(d)) {
+                NoSuchElementException e = new NoSuchElementException("Discriminator does not exist, " + d.getChannel().getName());
+                FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "410", this, new Object[] { d });
+                throw e;
+            }
+            this.changed = true;
+            String chanName = d.getChannel().getName();
+            if (channelList == null) {
+                NoSuchElementException e = new NoSuchElementException("No Channel's exist, " + chanName);
+                FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "422", this, new Object[] { d });
+                throw e;
+            }
+            Channel[] oldList = channelList;
+            channelList = new Channel[oldList.length - 1];
+            for (int i = 0, j = 0; i < oldList.length; i++) {
+                String tempName = oldList[i].getName();
+                if (tempName != null && !(tempName.equals(chanName))) {
+                    if (j >= oldList.length) {
+                        NoSuchElementException e = new NoSuchElementException("Channel does not exist, " + d.getChannel().getName());
+                        FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "440", this, new Object[] { d });
+                        throw e;
+                    }
+                    channelList[j++] = oldList[i];
+                } else if (chanName == null) {
+                    DiscriminationProcessException e = new DiscriminationProcessException("Channel does not have a name associated with it, " + oldList[i]);
+                    FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminator", "454", this, new Object[] { oldList[i] });
+                    throw e;
+                }
+            }
+            // remove it from the node list
+            removeDiscriminatorNode(d);
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "removeDiscriminator");
+            }
         }
-        // remove it from the node list
-        removeDiscriminatorNode(d);
     }
 
     /**
@@ -451,55 +457,49 @@ public class DiscriminationProcessImpl implements DiscriminationGroup {
      */
     private void removeDiscriminatorNode(Discriminator d) throws DiscriminationProcessException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "removeDiscriminatorNode: " + d);
+            Tr.entry(tc, "removeDiscriminatorNode", d);
         }
-        if (d == null) {
-            DiscriminationProcessException e = new DiscriminationProcessException("Can't remove a null discriminator");
-            FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminatorNode", "484", this);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "removeDiscriminatorNode");
+        try {
+            if (d == null) {
+                DiscriminationProcessException e = new DiscriminationProcessException("Can't remove a null discriminator");
+                FFDCFilter.processException(e, getClass().getName() + ".removeDiscriminatorNode", "484", this);
+                throw e;
             }
-            throw e;
-        }
-        if (discriminators.disc.equals(d)) {
-            // removing the first discriminator
-            discriminators = discriminators.next;
-            if (discriminators != null) {
-                discriminators.prev = null;
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "removeDiscriminatorNode");
-            }
-            return;
-        }
-        // search through the list of discriminators
-        DiscriminatorNode thisDN = discriminators.next, lastDN = discriminators;
-        while (thisDN.next != null) {
-            if (thisDN.disc.equals(d)) {
-                thisDN.next.prev = lastDN;
-                lastDN.next = thisDN.next;
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "removeDiscriminatorNode");
+            if (discriminators.disc.equals(d)) {
+                // removing the first discriminator
+                discriminators = discriminators.next;
+                if (discriminators != null) {
+                    discriminators.prev = null;
                 }
                 return;
             }
-            // somewhere in the middle
-            lastDN = thisDN;
-            thisDN = thisDN.next;
-        }
-        if (thisDN.disc.equals(d)) {
-            // found it!
-            lastDN.next = null;
+            // search through the list of discriminators
+            DiscriminatorNode thisDN = discriminators.next, lastDN = discriminators;
+            while (thisDN.next != null) {
+                if (thisDN.disc.equals(d)) {
+                    thisDN.next.prev = lastDN;
+                    lastDN.next = thisDN.next;
+                    return;
+                }
+                // somewhere in the middle
+                lastDN = thisDN;
+                thisDN = thisDN.next;
+            }
+            if (thisDN.disc.equals(d)) {
+                // found it!
+                lastDN.next = null;
+                return;
+            }
+            // Does not exist?
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "removeDiscriminatorNode: not found");
+            }
+            throw new NoSuchElementException();
+        } finally {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "removeDiscriminatorNode");
             }
-            return;
         }
-        // Does not exist?
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "removeDiscriminatorNode: not found");
-        }
-        throw new NoSuchElementException();
     }
 
     /*

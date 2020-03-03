@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -386,8 +386,8 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                 this.cfName = _xpathId.substring(0, cmIndex);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "xpath = " + XpathId + "  jndi = " + jndiName + "cfName = " + cfName);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "xpath = " + XpathId + "  jndi = " + jndiName + "cfName = " + cfName);
         }
 
         dynamicEnlistmentSupported = false; // Will become true later if managed connection implements LazyEnlistableManagedConnection
