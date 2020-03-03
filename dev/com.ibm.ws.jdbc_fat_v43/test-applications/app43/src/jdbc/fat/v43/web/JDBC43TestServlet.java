@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,12 @@ import java.sql.ShardingKey;
 import java.sql.ShardingKeyBuilder;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -69,6 +74,8 @@ public class JDBC43TestServlet extends FATServlet {
      * Maximum amount of time to wait for an asynchronous operation to complete.
      */
     private static final long TIMEOUT_NS = TimeUnit.SECONDS.toNanos(90);
+
+    private final static Map<String, CompletableFuture<?>> completionStages = new HashMap<>();
 
     @Resource
     DataSource defaultDataSource;
@@ -166,6 +173,75 @@ public class JDBC43TestServlet extends FATServlet {
         } catch (SQLFeatureNotSupportedException ex) {
             if (!ex.getMessage().contains("DSRA9130E"))
                 throw ex;
+        }
+    }
+
+    /**
+     * Invoked by JDBC43Test as the first of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1() throws Exception {
+        final Connection con = unsharablePool1DataSource.getConnection();
+        CompletableFuture<Statement> stage = CompletableFuture
+                        .completedFuture(con.createStatement())
+                        .thenApply(s -> {
+                            try {
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Meadow Crossing Road SW', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApply(s -> {
+                            try {
+                                Thread.sleep(1000); // this encourages the current servlet request to go out of scope, if it hasn't already
+                            } catch (InterruptedException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApply(s -> {
+                            try {
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Meadow Run Drive SW', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .whenComplete((s, failure) -> {
+                            try {
+                                s.getConnection().close();
+                            } catch (SQLException x) {
+                                if (failure == null)
+                                    throw new CompletionException(x);
+                            }
+                        });
+
+        Object previous = completionStages.put("testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary", stage);
+        assertNull("Test method was invoked more the once, invalidating the test logic", previous);
+    }
+
+    /**
+     * Invoked by JDBC43Test as the second of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart2() throws Exception {
+        @SuppressWarnings("unchecked")
+        CompletableFuture<Statement> stage = (CompletableFuture<Statement>) completionStages.get("testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary");
+        Statement s = stage.join();
+        assertTrue(s.isClosed());
+
+        // confirm that the SQL command ran and committed
+        try (Connection con = unsharablePool1DataSource.getConnection();
+                        Statement st = con.createStatement();
+                        ResultSet result = st.executeQuery("SELECT NAME FROM STREETS WHERE NAME LIKE 'Meadow%'")) {
+            assertTrue(result.next());
+            String name1 = result.getString(1);
+            assertTrue("only found " + name1, result.next());
+            String name2 = result.getString(1);
+            if (result.next())
+                fail("found too many: " + name1 + ", " + name2 + ", " + result.getString(1));
+            List<String> found = Arrays.asList(name1, name2);
+            assertTrue(found.toString(), found.contains("Meadow Crossing Road SW"));
+            assertTrue(found.toString(), found.contains("Meadow Run Drive SW"));
         }
     }
 
