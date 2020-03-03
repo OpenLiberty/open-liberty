@@ -84,4 +84,20 @@ public class JDBC43Test extends FATServletClient {
         runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1");
         runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart2");
     }
+
+    /**
+     * testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary - obtains an unshared connection in
+     * one servlet method and uses it, but does not commit it or close it, instead allowing it to continue to execution
+     * operations under the same transaction asynchronously via a completion stage, which ultimately commits the transaction
+     * if successful and closes the connection. After the servlet method ends and goes out of scope, invokes a second servlet method,
+     * which under a new scope, accesses the completion stage, joins it, and checks that the operations executed successfully.
+     * This behavior is currently possible without the HandleList implementation in place to prevent it.
+     * Although we do not recommend this pattern, some users might be relying upon it, and there needs to be a way
+     * to avoid breaking these users when HandleList is put in place to clean up connections when requests go out of scope.
+     */
+    @Test
+    public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary() throws Exception {
+        runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1");
+        runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2");
+    }
 }

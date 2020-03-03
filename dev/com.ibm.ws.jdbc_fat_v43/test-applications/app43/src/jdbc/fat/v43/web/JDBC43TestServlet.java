@@ -246,6 +246,84 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
+     * Invoked by JDBC43Test as the first of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1() throws Exception {
+        final Connection con = unsharablePool1DataSource.getConnection();
+        con.setAutoCommit(false);
+        CompletableFuture<Statement> stage = CompletableFuture
+                        .completedFuture(con.createStatement())
+                        .thenApply(s -> {
+                            try {
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Century Valley Road NE', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApply(s -> {
+                            try {
+                                Thread.sleep(1000); // this encourages the current servlet request to go out of scope, if it hasn't already
+                            } catch (InterruptedException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApply(s -> {
+                            try {
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Century Hills Drive NE', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .whenComplete((s, failure) -> {
+                            try {
+                                Connection c = s.getConnection();
+                                try {
+                                    if (failure == null)
+                                        c.commit();
+                                    else
+                                        c.rollback();
+                                } finally {
+                                    c.close();
+                                }
+                            } catch (SQLException x) {
+                                if (failure == null)
+                                    throw new CompletionException(x);
+                            }
+                        });
+
+        Object previous = completionStages.put("testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary", stage);
+        assertNull("Test method was invoked more the once, invalidating the test logic", previous);
+    }
+
+    /**
+     * Invoked by JDBC43Test as the second of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2() throws Exception {
+        @SuppressWarnings("unchecked")
+        CompletableFuture<Statement> stage = (CompletableFuture<Statement>) completionStages.get("testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary");
+        Statement s = stage.join();
+        assertTrue(s.isClosed());
+
+        // confirm that the SQL command ran and committed
+        try (Connection con = unsharablePool1DataSource.getConnection();
+                        Statement st = con.createStatement();
+                        ResultSet result = st.executeQuery("SELECT NAME FROM STREETS WHERE NAME LIKE 'Century%'")) {
+            assertTrue(result.next());
+            String name1 = result.getString(1);
+            assertTrue("only found " + name1, result.next());
+            String name2 = result.getString(1);
+            if (result.next())
+                fail("found too many: " + name1 + ", " + name2 + ", " + result.getString(1));
+            List<String> found = Arrays.asList(name1, name2);
+            assertTrue(found.toString(), found.contains("Century Valley Road NE"));
+            assertTrue(found.toString(), found.contains("Century Hills Drive NE"));
+        }
+    }
+
+    /**
      * Verify that connection builder can be used on a Liberty data source that is backed by a
      * javax.sql.DataSource implementation. This test only does matching on ShardingKey.
      * It does not cover user, password, or super sharding key.
