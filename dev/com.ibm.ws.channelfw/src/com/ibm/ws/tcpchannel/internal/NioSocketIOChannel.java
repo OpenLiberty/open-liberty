@@ -288,6 +288,14 @@ public class NioSocketIOChannel extends SocketIOChannel {
             for (int retry_count=0;3>retry_count;++retry_count) {
               try {
                   if (channel != null) {
+                      // DEBUG: Write a single byte before attemting to close to try ensure select for the socket wakes
+                      //        even if the close has to be retried.  Ignore any exceptions that are thrown.
+                      ByteBuffer b = ByteBuffer.allocate(1);
+                      b.put(0,(byte)0);
+                      try {
+                        channel.write(b);
+                      } catch (Throwable t) {
+                      }
                       channel.close();
                   }
 
