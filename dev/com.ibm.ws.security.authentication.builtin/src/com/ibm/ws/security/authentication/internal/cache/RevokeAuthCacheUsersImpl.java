@@ -22,17 +22,38 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.cache.RevokeAuthCacheUsers;
 
 /**
- *
+ * The implementation of RevokeAuthCacheUsers MBean which can be used to
+ * flush the authentication cache of a Liberty Server.
  */
 @Component(configurationPolicy = ConfigurationPolicy.OPTIONAL,
            service = { RevokeAuthCacheUsers.class, DynamicMBean.class },
            immediate = true,
            property = { "service.vendor=IBM", "jmx.objectname=" + RevokeAuthCacheUsers.INSTANCE_NAME })
 public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAuthCacheUsers {
+
+    private static final TraceComponent tc = Tr.register(AuthCacheServiceImpl.class);
+
+    /********* BETA FENCING CODE. REMOVE WHEN GA (START) *******/
+    private static boolean issuedBetaMessage = false;
+
+    private static void betaFenceCheck() throws UnsupportedOperationException {
+        if (!Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+            throw new UnsupportedOperationException("This method is beta and is not avalible");
+        } else {
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + RevokeAuthCacheUsersImpl.class.getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+    }
+
+    /********* BETA FENCING CODE. REMOVE WHEN GA (END) *******/
 
     private BundleContext bContext;
 
@@ -46,8 +67,12 @@ public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAut
         super(RevokeAuthCacheUsers.class);
     }
 
+    @Deprecated
     @Override
     public void removeAllEntries() {
+
+        betaFenceCheck();
+
         if (authCacheService != null) {
             authCacheService.removeAllEntries();
         }
@@ -77,5 +102,4 @@ public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAut
     protected void unsetAuthCacheService() {
         this.authCacheService = null;
     }
-
 }
