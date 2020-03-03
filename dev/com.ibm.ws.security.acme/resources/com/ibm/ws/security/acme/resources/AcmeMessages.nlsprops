@@ -19,27 +19,31 @@
 # Message prefix block: CWPKI2000 - CWPKI2299
 #-----  ACME messages
 
-CWPKI2000I=CWPKI2000I: Test message
-CWPKI2000I.explanation= Test message description
-CWPKI2000I.useraction= No action is necessary at this time
-
 # {0} The URI of the certificate authority, such as https://sampleCAProvider.org/directory
-CWPKI2001E=CWPKI2001E: The certificate authority at {0} responded that the authorization challenge failed for domain {1} with status {2}.
-CWPKI2001E.explanation=
-CWPKI2001E.useraction=
+CWPKI2001E=CWPKI2001E: The certificate authority at URI {0} responded that the authorization challenge failed for domain {1} with status {2}.
+CWPKI2001E.explanation=The certificate authority authorization challenge failed and a certificate cannot be created. 
+CWPKI2001E.useraction=Review the provided status message.
 
-CWPKI2002E=CWPKI2002E: Timed out waiting for a successful authorization challenge for domain {0} from the certificate authority at {1}. The status is {2}.
-CWPKI2002E.explanation=The certificate authority challenge request did not complete in the alloted time and a certificate was not received.
-CWPKI2002E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback.
+CWPKI2002E=CWPKI2002E: Timed out waiting for a successful authorization challenge for domain {0} from the certificate authority at URI {1}. The status is {2}. The configured timeout is {3}.
+CWPKI2002E.explanation=The certificate authority challenge request was not validated in the configured time and a certificate cannot be created.
+CWPKI2002E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback. Review the status code.
 
-CWPKI2003E=CWPKI2003E: The certificate authority at {0} responded that the order failed for domains {1}  with status {2}.
-CWPKI2003E.explanation=
-CWPKI2003E.useraction=
+CWPKI2003E=CWPKI2003E: The certificate authority at URI {0} responded that the certificate order failed for domains {1} with status {2}.
+CWPKI2003E.explanation=The certificate authority domain certificate order request did not complete in the configured time and a certificate cannot be created.
+CWPKI2003E.useraction=Review the provided status message.
 
-CWPKI2004E=CWPKI2004E: Timed out waiting for a successful order for domains {0} from the certificate authority at {1}. The status is {2}.
-CWPKI2004E.explanation=The certificate authority domain order request did not complete in the alloted time and an order was not received.
+CWPKI2004E=CWPKI2004E: Timed out waiting for a successful order for domains {0} from the certificate authority at URI {1}. The status is {2}.  The configured timeout is {3}.
+CWPKI2004E.explanation=The certificate authority domain certificate order request did not complete in the configured time and a certificate cannot be created.
 CWPKI2004E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback.
 
-CWPKI2005E=CWPKI2005E: The authorization returned from the certificate authority at {0} did not included a valid challenge type. Expected a challenge type of {1}.
+CWPKI2005E=CWPKI2005E: The authorization returned from the certificate authority at URI {0} did not include a valid challenge type. Valid challenge types include {1}.
 CWPKI2005E.explanation=The certificate authority returned an unsupported challenge type.
-CWPKI2005E.useraction=Configure the correct challenge type or configure a certificate authority that provides a supported challenge type.
+CWPKI2005E.useraction=Select a certificate authority that provides a supported challenge type.
+
+CWPKI2006I=CWPKI2006I: The certificate authority at URI {0} provided the following terms of service: {1}
+CWPKI2006I.explanation=The certificate authority may provide terms of service. Review the terms of service provided.
+CWPKI2006I.useraction=No user action required.
+
+CWPKI2007I=CWPKI2007I: Installed a certificate signed by certificate authority at URI {0}. The expiration data is {1}.
+CWPKI2007I.explanation=Successfully retrieved and installed a certificate from the configured certificate authority.
+CWPKI2007I.useraction=No user action required.
