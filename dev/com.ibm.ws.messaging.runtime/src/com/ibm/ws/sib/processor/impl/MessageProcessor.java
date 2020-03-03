@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -269,7 +269,14 @@ public final class MessageProcessor implements JsEngineComponent,
     HashSet _localistySet = new HashSet();
 
     // Security code changes for Liberty: Sharath Start
-    private final RuntimeSecurityService runtimeSecurityService = RuntimeSecurityService.SINGLETON_INSTANCE;
+    private RuntimeSecurityService runtimeSecurityService;
+    /**
+     * @return the runtimeSecurityService
+     */
+    public final RuntimeSecurityService getRuntimeSecurityService() {
+        return runtimeSecurityService;
+    }
+
     private Authentication _authentication;
     private Authorization _authorization;
 
@@ -369,10 +376,8 @@ public final class MessageProcessor implements JsEngineComponent,
     protected SICoreConnection createConnection(Subject subject,
                                                 boolean system, Map connectionProperties)
                     throws SIResourceException {
-        if (TraceComponent.isAnyTracingEnabled()
-            && tc.isEntryEnabled())
-            SibTr.entry(tc, "createConnection", new Object[] {
-                                                              Boolean.valueOf(system), connectionProperties });
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "createConnection", new Object[] {Boolean.valueOf(system), connectionProperties });
 
         try {
             if (runtimeSecurityService.isUnauthenticated(subject)) {
@@ -1340,6 +1345,7 @@ public final class MessageProcessor implements JsEngineComponent,
         _accessChecker = new AccessChecker(this);
 
         // Security Code changes for Liberty: Sharath Start
+        runtimeSecurityService = _engine.getRuntimeSecurityservice();
         _authentication = runtimeSecurityService.getAuthenticationInstance();
         _authorization = runtimeSecurityService.getAuthorizationInstance();
         // Security Code changes for Liberty: Sharath End

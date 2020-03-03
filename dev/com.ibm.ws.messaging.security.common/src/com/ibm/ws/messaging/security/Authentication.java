@@ -42,14 +42,22 @@ public class Authentication {
 	// Absolute class name along with the package used for tracing
 	private static final String CLASS_NAME = "com.ibm.ws.messaging.security.Authentication.";
 
-	/* Authentication Service for messaging, exists only if security for
-	   messaging is enabled */
+	/* Authentication Service for messaging, exists only if security for messaging is enabled. */
 	private MessagingAuthenticationService messagingAuthenticationService = null;
 
-	/* RuntimeSecurityService is a singleton instance and used to query if
-	   Messaging Security is enabled or not */
-	private RuntimeSecurityService runtimeSecurityService = RuntimeSecurityService.SINGLETON_INSTANCE;
+	private final RuntimeSecurityService runtimeSecurityService;
 
+	Authentication (RuntimeSecurityService runtimeSecurityService) {
+	    final String methodName = "Authentication";	
+	    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.entry(tc, methodName, new Object[] { this, runtimeSecurityService });
+	    
+	    this.runtimeSecurityService = runtimeSecurityService;
+	    
+	    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, methodName);
+	}
+	
 	/**
 	 * Login method to authenticate a user based on UserName and Password sent
 	 * <ul>

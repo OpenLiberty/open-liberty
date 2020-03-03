@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,9 @@ import java.util.Vector;
 
 import javax.management.ObjectName;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsBus;
@@ -31,19 +34,10 @@ import com.ibm.ws.sib.admin.SIBExceptionBusNotFound;
 import com.ibm.ws.sib.admin.internal.JsMainImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
-/**
- * This class extends the abstract com.ibm.ws.sib.example.ExampleFactory
- * class and provides the concrete implementations of the methods for
- * creathing Examples.
- * <p>
- * The class must be public so that the abstract class static
- * initialization can create an instance of it at runtime.
- */
+@Component (service=JsAdminService.class,
+            configurationPolicy=ConfigurationPolicy.IGNORE,
+            property="service.vendor=IBM")
 public class JsAdminServiceImpl extends JsAdminService {
-
-  // @start_class_string_prolog@
-
-  // @end_class_string_prolog@
 
   private static TraceComponent tc = SibTr.register(JsAdminServiceImpl.class, JsConstants.MSG_GROUP, JsConstants.MSG_BUNDLE);
 
