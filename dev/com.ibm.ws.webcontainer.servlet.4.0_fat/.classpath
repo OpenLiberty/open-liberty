@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/TestEncoding.war/src"/>
-	<classpathentry kind="src" path="test-applications/TestServlet40.war/src"/>
-	<classpathentry kind="src" path="test-applications/TestServlet40.jar/src"/>
-	<classpathentry kind="src" path="test-applications/TestGetMapping.war/src"/>
-	<classpathentry kind="src" path="test-applications/TestAddJspFile.war/src"/>
-	<classpathentry kind="src" path="test-applications/TestPushBuilderSecurity.war/src"/>
-	<classpathentry kind="src" path="test-applications/ServletPathDefaultMapping.war/src"/>
-	<classpathentry kind="src" path="test-applications/TestGetMappingSlashStar.war/src"/>
-	<classpathentry kind="src" path="test-applications/SCIExceptionTest.jar/src"/>
-	<classpathentry kind="src" path="test-applications/SCIFilterServletNameMapping.jar/src"/>
-	<classpathentry kind="src" path="test-applications/SameSiteTest.war/src"/>
-	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="output" path="bin"/>
+    <classpathentry kind="src" path="fat/src"/>
+    <classpathentry kind="src" path="test-applications/TestEncoding.war/src"/>
+    <classpathentry kind="src" path="test-applications/TestServlet40.war/src"/>
+    <classpathentry kind="src" path="test-applications/TestServlet40.jar/src"/>
+    <classpathentry kind="src" path="test-applications/TestGetMapping.war/src"/>
+    <classpathentry kind="src" path="test-applications/TestAddJspFile.war/src"/>
+    <classpathentry kind="src" path="test-applications/TestPushBuilderSecurity.war/src"/>
+    <classpathentry kind="src" path="test-applications/ServletPathDefaultMapping.war/src"/>
+    <classpathentry kind="src" path="test-applications/TestGetMappingSlashStar.war/src"/>
+    <classpathentry kind="src" path="test-applications/SCIExceptionTest.jar/src"/>
+    <classpathentry kind="src" path="test-applications/SCIFilterServletNameMapping.jar/src"/>
+    <classpathentry kind="src" path="test-applications/SameSiteTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/SameSiteSecurityTest.war/src"/>
+    <classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+    <classpathentry kind="output" path="bin"/>
 </classpath>
