@@ -1,0 +1,82 @@
+<server description="Server for BonusPayout sample">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Enable features -->
+    <featureManager>
+        <!-- This sample can work without CDI configured, but the use of CDI is always strongly encouraged with batch. -->
+        <feature>cdi-1.2</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>batch-1.0</feature>
+        <feature>jpa-2.1</feature>
+    </featureManager>
+
+<!-- A user of the Admin Center Java Batch tool must ALSO be an administrator.  This is independent of whatever batch roles,
+     "batchAdmin", "batchSubmitter", etc. are mapped to this user. 
+     Leave this commented out for now -->
+    <administrator-role>
+      <user>bob</user>
+   </administrator-role>
+
+    <library id="DerbyLib">
+        <fileset dir="${shared.resource.dir}/derby"/>
+    </library>
+
+
+
+    <dataSource id="batchDB" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <!-- The 'derby.url' databaseName is set in bootstrap.properties -->
+        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass" />
+    </dataSource>
+
+    <!--  In this sample we'll use the same database (as the runtime DB) but use a different DS to access it.
+          Note that, while the database can be auto-created here, the application table within it needs to be
+          by first running the Maven build (so the app will fail if first run in WDT without creating the tables).
+    -->
+    <dataSource id="appDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass"/>
+    </dataSource>
+
+    <!-- 
+         Create a non-transactional datasource that can be used with a holdable cursor.  Another option
+         would be to remove the attribute:  transactional="false" and have a one-phase-only resource
+         that could be used to enlist via a "last participant" optimization -->
+    <dataSource id="appReadOnlyDB" jndiName="jdbc/ReadOnlyDS" transactional="false">
+        <!--
+           <dataSource id="appReadOnlyDB" jndiName="jdbc/ReadOnlyDS">
+         -->
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass"/>
+        <connectionManager enableSharingForDirectLookups="false"/>
+    </dataSource>
+
+    <databaseStore dataSourceRef="batchDB" id="BatchDatabaseStore" schema="JBATCH" tablePrefix=""/>
+
+    <batchPersistence jobStoreRef="BatchDatabaseStore"/>
+
+    <!--
+    <applicationMonitor updateTrigger="mbean"/>
+-->
+
+    <basicRegistry id="basic" realm="ibm/api">
+        <user name="bob" password="bobpwd"/>
+        <user name="jane" password="janepwd"/>
+        <user name="sam" password="sampwd"/>
+    </basicRegistry>
+
+    <authorization-roles id="com.ibm.ws.batch">
+        <security-role name="batchAdmin">
+            <user name="bob"/>
+        </security-role>
+        <security-role name="batchAdmin">
+            <user name="jane"/>
+        </security-role>
+        <security-role name="batchSubmitter">
+            <user name="sam"/>
+        </security-role>
+    </authorization-roles>
+    
+</server>
