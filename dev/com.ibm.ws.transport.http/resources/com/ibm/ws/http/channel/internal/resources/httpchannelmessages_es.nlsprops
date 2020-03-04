@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,39 @@ duplicateAlias.useraction=Aseg\u00farese de que todos los alias de host definido
 context.root.changed=CWWKT0028I: La aplicaci\u00f3n web se ha movido ({0}): {1}
 context.root.changed.explanation=Este mensaje es meramente informativo.
 context.root.changed.useraction=No se requiere ninguna acci\u00f3n.
+
+compression.duplicateType=CWWKT0029W: Se ha intentado una adici\u00f3n duplicada del tipo {0}. En su lugar se utiliza la configuraci\u00f3n predeterminada {1}. 
+compression.duplicateType.explanation=El valor especificado ya se ha registrado como un tipo de contenido aceptable para la compresi\u00f3n.
+compression.duplicateType.useraction=Al definir el valor de las codificaciones aceptables, aseg\u00farese de que cada valor es exclusivo. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: Se ha intentado una eliminaci\u00f3n duplicada de la codificaci\u00f3n {0}. En su lugar se utiliza la configuraci\u00f3n predeterminada {1}.
+compression.duplicateTypeRemoval.explanation=El valor especificado ya se ha registrado como un tipo de contenido excluido para la compresi\u00f3n.
+compression.duplicateTypeRemoval.useraction=Cuando utilice la opci\u00f3n de eliminaci\u00f3n (-), aseg\u00farese de que el valor especificado no se ha registrado ya como un tipo de contenido excluido.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: Se ha intentado a\u00f1adir y eliminar el mismo tipo de contenido {0}. En su lugar se utiliza la configuraci\u00f3n predeterminada {1}.
+compression.duplicateTypeAddRemove.explanation=Las opciones '+/-' de configuraci\u00f3n est\u00e1n a\u00f1adiendo y eliminando el valor especificado.
+compression.duplicateTypeAddRemove.useraction=No a\u00f1ada (+) y elimine (-) el mismo tipo de contenido.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Se ha intentado sobrescribir la configuraci\u00f3n predeterminada de compresi\u00f3n pero tambi\u00e9n utilizar la opci\u00f3n de adici\u00f3n (+) en otro(s) tipo(s) de contenido. En su lugar se utiliza la configuraci\u00f3n predeterminada {0}.
+compression.duplicateOverwriteAndAdd.explanation=La configuraci\u00f3n est\u00e1 intentando sobrescribir el valor predeterminado mientras utiliza tambi\u00e9n la opci\u00f3n de adici\u00f3n (+). La opci\u00f3n de adici\u00f3n no se puede utilizar si se est\u00e1n sobrescribiendo los valores predeterminados.
+compression.duplicateOverwriteAndAdd.useraction=Si se debe sobrescribir la configuraci\u00f3n predeterminada, no utilice la opci\u00f3n de adici\u00f3n (+). Si no es necesario sobrescribir el valor predeterminado, incluya otros tipos de contenido deseados utilizando la opci\u00f3n de adici\u00f3n (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: Se ha intentado configurar {0} como algoritmo de servidor preferido. Los valores soportados son gzip, x-gzip, zlib, deflate, identity y none. En su lugar se utiliza la configuraci\u00f3n predeterminada {1}.
+compression.unsupportedAlgorithm.explanation=La configuraci\u00f3n est\u00e1 intentando establecer un algoritmo no soportado como algoritmo de servidor preferido para utilizarlo para la compresi\u00f3n. 
+compression.unsupportedAlgorithm.useraction= Al definir el valor, aseg\u00farese de que se ha establecido en gzip, x-gzip, deflate, zlib, identity o none.
+
+decompression.tolerance.reached=CWWKT0034E: El canal HTTP ha intentado descomprimir un cuerpo con una proporci\u00f3n superior a la tolerada.
+decompression.tolerance.reached.explanation=Se ha alcanzado el n\u00famero m\u00e1ximo de ciclos de descompresi\u00f3n, lo que produce una proporci\u00f3n de descompresi\u00f3n mayor que el l\u00edmite configurado. El l\u00edmite de descompresi\u00f3n lo define el atributo decompressionRatioLimit de httpOption.
+decompression.tolerance.reached.useraction=Cuando se produzca esta excepci\u00f3n en un cuerpo de solicitud v\u00e1lido, reconfigure los atributos decompressionTolerance y decompressionRatioLimit de httpOption para alcanzar los resultados de descompresi\u00f3n apropiados.
+
+cookies.samesite.duplicateName=CWWKT0035W: Se ha encontrado un patr\u00f3n o nombre de cookie duplicado [{0}] en la configuraci\u00f3n de SameSite [{1}]. Se ignora el patr\u00f3n o nombre de cookie [{0}] para todas las listas de configuraci\u00f3n. Se puede definir cualquier patr\u00f3n o nombre de cookie definido por las configuraciones ''lax'', ''none'' y ''strict'' en s\u00f3lo una de las tres configuraciones.
+cookies.samesite.duplicateName.explanation=El valor especificado ya lo ha encontrado la configuraci\u00f3n y se ha correlacionado con un valor de SameSite.
+cookies.samesite.duplicateName.useraction=Aseg\u00farese de que los patrones y nombres de cookie son exclusivos en las listas de configuraci\u00f3n 'lax', 'none' y 'strict'.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: El valor [{0}] ha intentado un uso no soportado del car\u00e1cter comod\u00edn. La configuraci\u00f3n de SameSite no se ha establecido para este valor.
+cookies.samesite.unsupportedWildcard.explanation=El car\u00e1cter comod\u00edn (*) se ha utilizado de forma no soportada. El soporte consta de un \u00fanico car\u00e1cter comod\u00edn (*) que se utiliza como valor aut\u00f3nomo o a continuaci\u00f3n de cualquier n\u00famero de prefijos de nombre de cookie.
+cookies.samesite.unsupportedWildcard.useraction=Aseg\u00farese de que s\u00f3lo se utiliza un \u00fanico car\u00e1cter comod\u00edn (*) por patr\u00f3n en las listas 'lax', 'none' y 'strict'. Adem\u00e1s, el uso de este car\u00e1cter s\u00f3lo se soporta bajo las dos condiciones siguientes: como valor aut\u00f3nomo o a continuaci\u00f3n de prefijos de nombre de cookie.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: Se ha encontrado un patr\u00f3n o nombre de cookie [{0}], que se ha marcado como duplicado, en la configuraci\u00f3n de SameSite [{1}]. Se ignora el patr\u00f3n o nombre de cookie [{0}]. Se puede definir cualquier patr\u00f3n o nombre de cookie definido por las configuraciones ''lax'', ''none'' y ''strict'' en s\u00f3lo una de las tres configuraciones.
+cookies.samesite.knownDuplicateName.explanation=El valor especificado ya lo ha encontrado la configuraci\u00f3n y se ha correlacionado con un valor de SameSite.
+cookies.samesite.knownDuplicateName.useraction=Aseg\u00farese de que los patrones y nombres de cookie son exclusivos en las listas de configuraci\u00f3n 'lax', 'none' y 'strict'.

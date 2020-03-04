@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 20120 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,8 @@ session.activeSessions.description=\u540c\u6642\u306b\u30a2\u30af\u30c6\u30a3\u3
 session.invalidated.total.description=\u3053\u306e\u30e1\u30c8\u30ea\u30c3\u30af\u304c\u6709\u52b9\u306b\u306a\u3063\u3066\u4ee5\u964d\u306b\u30ed\u30b0\u30a2\u30a6\u30c8\u3057\u305f\u30bb\u30c3\u30b7\u30e7\u30f3\u306e\u6570\u3002
 session.invalidatedbyTimeout.total.description=\u3053\u306e\u30e1\u30c8\u30ea\u30c3\u30af\u304c\u6709\u52b9\u306b\u306a\u3063\u3066\u4ee5\u964d\u306b\u30bf\u30a4\u30e0\u30a2\u30a6\u30c8\u306b\u3088\u3063\u3066\u30ed\u30b0\u30a2\u30a6\u30c8\u3057\u305f\u30bb\u30c3\u30b7\u30e7\u30f3\u306e\u6570\u3002
 
+
+REST.request.description=\u30b5\u30fc\u30d0\u30fc\u306e\u958b\u59cb\u4ee5\u964d\u306e\u3001\u3053\u306e RESTful \u30ea\u30bd\u30fc\u30b9\u30fb\u30e1\u30bd\u30c3\u30c9\u306e\u547c\u3073\u51fa\u3057\u56de\u6570\u304a\u3088\u3073\u5408\u8a08\u5fdc\u7b54\u6642\u9593\u3002
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

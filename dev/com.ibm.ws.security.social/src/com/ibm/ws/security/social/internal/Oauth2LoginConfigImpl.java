@@ -38,13 +38,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
+import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.SslRefInfo;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.Cache;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialConfigUtils;
 import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
@@ -176,7 +176,6 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String USER_API_TYPE_BASIC = "basic";
     public static final String USER_API_TYPE_KUBE = "kube";
-    public static final String USER_API_TYPE_OPENSHIFT = "openshift";
 
     public static final String KEY_userApiType = "userApiType";
     protected String userApiType = null;
@@ -259,7 +258,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             getRequiredConfigAttribute(props, KEY_clientId);
             getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
             getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            getRequiredConfigAttribute(props, KEY_scope);
+            //getRequiredConfigAttribute(props, KEY_scope);  // removing as not all providers require it. 
         }
     }
 
@@ -634,12 +633,6 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     @Override
-    public SSLContext getSSLContext() throws SocialLoginException {
-        this.sslContext = socialConfigUtils.getSSLContext(uniqueId, sslContext, socialLoginServiceRef, sslRef);
-        return this.sslContext;
-    }
-
-    @Override
     public SSLSocketFactory getSSLSocketFactory() throws SocialLoginException {
         this.sslSocketFactory = socialConfigUtils.getSSLSocketFactory(uniqueId, sslContext, socialLoginServiceRef, sslRef);
         return this.sslSocketFactory;
@@ -799,6 +792,10 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public String getAccessTokenHeaderName() {
         return accessTokenHeaderName;
 
+    }
+
+    public long getApiResponseCacheTime() {
+        return 0;
     }
 
 }

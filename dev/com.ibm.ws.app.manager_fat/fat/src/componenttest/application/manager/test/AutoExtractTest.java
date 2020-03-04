@@ -466,6 +466,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                        line.contains("For testing this servlet"));
             con.disconnect();
 
+            server.setMarkToEndOfLog();
             // Add snoop.war to the extracted directory
             server.copyFileToLibertyServerRoot(PUBLISH_FILES, EXPANDED_DIR + "/app-j2ee.ear", SNOOP_WAR);
 
@@ -473,6 +474,10 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             assertNotNull("The web application app-j2ee did not appear to have been updated.",
                           server.waitForStringInLog("CWWKZ0003I.* app-j2ee"));
 
+            // Make sure the files are not both copied within the monitor interval
+            Thread.sleep(1000);
+
+            server.setMarkToEndOfLog();
             // copy application.xml that contains snoop.war and changes test-web1 to test-web2
             server.copyFileToLibertyServerRoot(EXPANDED_DIR + "/app-j2ee.ear/META-INF", "autoExpand/application.xml");
             // wait for update

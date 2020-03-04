@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,18 @@ CWWKC1503.task.failure=CWWKC1503W: Le programme d''ex\u00e9cution persistant {0}
 CWWKC1503.task.failure.explanation=Echec et annulation de l'ex\u00e9cution de la t\u00e2che.
 CWWKC1503.task.failure.useraction=Corrigez la cause de l'\u00e9chec (si ce dernier est inattendu) et planifiez \u00e0 nouveau la t\u00e2che.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: La transaction va \u00eatre annul\u00e9e car le temps d''ex\u00e9cution de la t\u00e2che, qui est de {0} secondes, est sup\u00e9rieur au d\u00e9lai d''expiration de transaction, qui est de {1} secondes.
+CWWKC1504.tx.timeout.rollback.explanation=L'ex\u00e9cution de la t\u00e2che a pris trop longtemps ; par cons\u00e9quent, la transaction est annul\u00e9e.
+CWWKC1504.tx.timeout.rollback.useraction=Il peut \u00eatre n\u00e9cessaire de d\u00e9finir un d\u00e9lai d'expiration de transaction plus long ou de raccourcir la t\u00e2che.
+
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: La transaction va \u00eatre annul\u00e9e car le temps d''ex\u00e9cution de la t\u00e2che, qui est de {0} secondes, est sup\u00e9rieur \u00e0 la valeur de la propri\u00e9t\u00e9 missedTaskThreshold, qui est {1} secondes.
+CWWKC1505.mtt.timeout.rollback.explanation=L'ex\u00e9cution de la t\u00e2che a pris trop longtemps ; par cons\u00e9quent, la transaction est annul\u00e9e.
+CWWKC1505.mtt.timeout.rollback.useraction=Il peut \u00eatre n\u00e9cessaire de d\u00e9finir une valeur plus \u00e9lev\u00e9e pour la propri\u00e9t\u00e9 missedTaskThreshold ou de raccourcir la t\u00e2che.
+
+CWWKC1506.marked.rollback.only=CWWKC1506E: La transaction va \u00eatre annul\u00e9e.
+CWWKC1506.marked.rollback.only.explanation=L'application a marqu\u00e9 la transaction en vue de son annulation avec la propri\u00e9t\u00e9 setRollbackOnly, ou bien une erreur ou un d\u00e9lai d'attente a entra\u00een\u00e9 l'annulation.
+CWWKC1506.marked.rollback.only.useraction=Si l'annulation est inattendue, consultez les journaux et l'application.
+
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Le programme d''ex\u00e9cution persistant {0} a abandonn\u00e9 la t\u00e2che {1} en raison de {2} annulations ou \u00e9checs cons\u00e9cutifs.
 CWWKC1510.retry.limit.reached.rollback.explanation=La t\u00e2che a atteint le nombre maximum de nouvelles tentatives cons\u00e9cutives, aucune nouvelle tentative ne sera effectu\u00e9e.
 CWWKC1510.retry.limit.reached.rollback.useraction=Si les annulations ou les \u00e9checs sont inattendus, d\u00e9terminez la cause et planifiez \u00e0 nouveau la t\u00e2che. Si les annulations et les \u00e9checs sont intermittents, pensez \u00e0 augmenter le nombre maximal de nouvelles tentatives. 
@@ -50,6 +62,14 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Si les annulations ou les \u00
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Le programme d''ex\u00e9cution persistant {0} a abandonn\u00e9 la t\u00e2che {1} en raison de {2} annulations ou \u00e9checs cons\u00e9cutifs. L''\u00e9chec final est {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=La t\u00e2che a atteint le nombre maximum de nouvelles tentatives cons\u00e9cutives, aucune nouvelle tentative ne sera effectu\u00e9e.
 CWWKC1511.retry.limit.reached.failed.useraction=Si les annulations ou les \u00e9checs sont inattendus, d\u00e9terminez la cause et planifiez \u00e0 nouveau la t\u00e2che. Si les annulations et les \u00e9checs sont intermittents, pensez \u00e0 augmenter le nombre maximal de nouvelles tentatives. 
+
+CWWKC1520.out.of.range=CWWKC1520E: La valeur {0} configur\u00e9e pour {1} n''est pas comprise entre {2} et {3}.
+CWWKC1520.out.of.range.explanation=Une valeur hors de la plage autoris\u00e9e a \u00e9t\u00e9 configur\u00e9e pour la propri\u00e9t\u00e9 sp\u00e9cifi\u00e9e.
+CWWKC1520.out.of.range.useraction=Configurez une valeur dans la plage autoris\u00e9e.
+
+CWWKC1521.not.compatible=CWWKC1521E: L''attribut de configuration {0} n''est pas valide lorsque l''attribut de configuration {1} est activ\u00e9.
+CWWKC1521.not.compatible.explanation=Les attributs de configuration sp\u00e9cifi\u00e9s ne sont pas compatibles.
+CWWKC1521.not.compatible.useraction=Mettez \u00e0 jour la configuration pour retirer l'un des attributs de configuration.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Vous ne pouvez pas planifier des t\u00e2ches persistantes depuis le contexte d'unit\u00e9 d'ex\u00e9cution actuel.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Planifiez des t\u00e2ches persistantes uniquement depuis une unit\u00e9 d'ex\u00e9cution qui est associ\u00e9e \u00e0 une application ou fonction avec une identit\u00e9 de chargeur de classe s\u00e9rialisable.

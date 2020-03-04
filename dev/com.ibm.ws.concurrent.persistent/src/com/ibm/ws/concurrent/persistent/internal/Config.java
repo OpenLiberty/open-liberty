@@ -53,6 +53,11 @@ class Config {
     final long missedTaskThreshold;
 
     /**
+     * Experimental attribute that causes a single poll interval to be coordinated across multiple instances when fail over is also enabled.
+     */
+    final boolean pollingCoordination;
+
+    /**
      * Interval between polling for tasks to run. A value of -1 means auto-compute a poll interval.
      * When fail over is disabled, the -1 value disables all polling after the initial poll.
      */
@@ -88,22 +93,20 @@ class Config {
         initialPollDelay = (Long) properties.get("initialPollDelay");
         missedTaskThreshold = (Long) properties.get("missedTaskThreshold");
         Long pollIntrvl = enableTaskExecution ? (Long) properties.get("pollInterval") : null;
+        boolean pollCoordination = Boolean.parseBoolean((String) properties.get("pollingCoordination.for.test.use.only")); // NOT SUPPORTED for production use
+        pollingCoordination = enableTaskExecution && missedTaskThreshold > 0 && (pollIntrvl == null || pollCoordination);
         pollSize = enableTaskExecution ? (Integer) properties.get("pollSize") : null;
         Long retryIntrvl = (Long) properties.get("retryInterval");
         retryLimit = (Short) properties.get("retryLimit");
         xpathId = (String) properties.get("config.displayId");
         id = xpathId.contains("]/persistentExecutor[") ? null : (String) properties.get("id");
 
+        boolean pollIntervalDefaulted = false;
         if (pollIntrvl == null) {
-            // TODO come up with better auto-compute logic.
-            // For now, we default poll interval to a value between 5m and 30m, matching the missedTaskThreshold, or 5m if less, or 30m if higher.
+            // 59 seconds is used to avoid continually colliding with a task that runs every minute
             if (enableTaskExecution && missedTaskThreshold > 0) {
-                if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(5) && !ignoreMin)
-                    pollIntrvl = TimeUnit.MINUTES.toMillis(5);
-                else if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(30))
-                    pollIntrvl = TimeUnit.SECONDS.toMillis(missedTaskThreshold);
-                else
-                    pollIntrvl = TimeUnit.MINUTES.toMillis(30);
+                pollIntrvl = TimeUnit.SECONDS.toMillis(59);
+                pollIntervalDefaulted = true;
             } else {
                 pollIntrvl = -1l;
             }
@@ -127,7 +130,7 @@ class Config {
                                                                 toString(missedTaskThreshold, TimeUnit.SECONDS), "missedTaskThreshold", "100s", "2h30m"));
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
-        if (pollInterval < -1 || missedTaskThreshold > 0 && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
+        if (pollInterval < -1 || missedTaskThreshold > 0 && !pollIntervalDefaulted && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
                                                                 toString(pollInterval, TimeUnit.MILLISECONDS), "pollInterval", "100s", "2h30m"));
         if (retryInterval < 0 && missedTaskThreshold == -1)
@@ -154,7 +157,9 @@ class Config {
                         .append(initialPollDelay)
                         .append("ms,missedTaskThreshold=")
                         .append(missedTaskThreshold)
-                        .append("s,pollInterval=")
+                        .append("s,pollingCoordination=")
+                        .append(pollingCoordination)
+                        .append(",pollInterval=")
                         .append(pollInterval)
                         .append("ms,pollSize=")
                         .append(pollSize)

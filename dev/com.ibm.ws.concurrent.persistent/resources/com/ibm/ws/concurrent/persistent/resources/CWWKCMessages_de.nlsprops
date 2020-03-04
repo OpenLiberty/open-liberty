@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,18 @@ CWWKC1503.task.failure=CWWKC1503W: Das persistente Steuerprogramm {0} hat die Ta
 CWWKC1503.task.failure.explanation=Die Taskausf\u00fchrung ist fehlgeschlagen und wurde r\u00fcckg\u00e4ngig gemacht.
 CWWKC1503.task.failure.useraction=Beheben Sie die Fehlerursache, wenn der Fehler nicht erwartet wurde, und planen Sie die Task erneut.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: Die Transaktion wurde f\u00fcr die Rollback-Operation durchf\u00fchren markiert, weil die Ausf\u00fchrungszeit der Task ({0} Sekunden) das Transaktionszeitlimit ({1} Sekunden) \u00fcberschritten hat.
+CWWKC1504.tx.timeout.rollback.explanation=Die Ausf\u00fchrung der Taks hat zu lange gedauert, daher wird die Transaktion r\u00fcckg\u00e4ngig gemacht.
+CWWKC1504.tx.timeout.rollback.useraction=Es ist m\u00f6glicherweise ein gr\u00f6\u00dferes Transaktionszeitlimit erforderlich oder die Task muss verk\u00fcrzt werden.
+
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: Die Transaktion wurde f\u00fcr die Rollback-Operation durchf\u00fchren markiert, weil die Ausf\u00fchrungszeit der Task ({0} Sekunden) den Schwellenwert f\u00fcr verpasste Tasks ({1} Sekunden) \u00fcberschritten hat.
+CWWKC1505.mtt.timeout.rollback.explanation=Die Ausf\u00fchrung der Taks hat zu lange gedauert, daher wird die Transaktion r\u00fcckg\u00e4ngig gemacht.
+CWWKC1505.mtt.timeout.rollback.useraction=Es ist m\u00f6glicherweise ein gr\u00f6\u00dferer Schwellenwert f\u00fcr verpasste Tasks erforderlich oder die Task muss verk\u00fcrzt werden.
+
+CWWKC1506.marked.rollback.only=CWWKC1506E: Die Transaktion wurde f\u00fcr eine Rollback-Operation durchf\u00fchren markiert.
+CWWKC1506.marked.rollback.only.explanation=Die Anwendung hat die Transaktion f\u00fcr eine Rollback-Operation durchf\u00fchren mit setRollbackOnly markiert oder ein Fehler oder ein Zeitlimit hat die Rollback-Operation durchf\u00fchren verursacht.
+CWWKC1506.marked.rollback.only.useraction=Wenn die Rollback-Operation unerwartet ist, \u00fcberpr\u00fcfen Sie die Protokolle und die Anwendung.
+
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Das persistente Steuerprogramm {0} hat die Task {1} abgebrochen, weil sie r\u00fcckg\u00e4ngig gemacht wurde oder {2} Mal hintereinander fehlgeschlagen ist.
 CWWKC1510.retry.limit.reached.rollback.explanation=Die Task hat die maximal zul\u00e4ssige Anzahl fortlaufender Neuversuche erreicht und wird nicht mehr ausgef\u00fchrt.
 CWWKC1510.retry.limit.reached.rollback.useraction=Wenn die Rollbacks oder Fehler nicht erwartet sind, bestimmen Sie die Ursache und planen Sie die Task erneut. Wenn die Rollbacks und Fehler tempor\u00e4r sind, sollten Sie das Wiederholungslimit erh\u00f6hen. 
@@ -50,6 +62,13 @@ CWWKC1510.retry.limit.reached.rollback.useraction=Wenn die Rollbacks oder Fehler
 CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Das persistente Steuerprogramm {0} hat die Task {1} abgebrochen, weil sie r\u00fcckg\u00e4ngig gemacht wurde oder {2} Mal hintereinander fehlgeschlagen ist. Der letzte Fehler ist {3}.
 CWWKC1511.retry.limit.reached.failed.explanation=Die Task hat die maximal zul\u00e4ssige Anzahl fortlaufender Neuversuche erreicht und wird nicht mehr ausgef\u00fchrt.
 CWWKC1511.retry.limit.reached.failed.useraction=Wenn die Rollbacks oder Fehler nicht erwartet sind, bestimmen Sie die Ursache und planen Sie die Task erneut. Wenn die Rollbacks und Fehler tempor\u00e4r sind, sollten Sie das Wiederholungslimit erh\u00f6hen. 
+
+CWWKC1520.out.of.range=CWWKC1520E: Der konfigurierte Wert {0} f\u00fcr {1} befindet sich nicht im Bereich von {2} bis {3}.
+CWWKC1520.out.of.range.explanation=Es wurde ein Wert f\u00fcr die angegebene Eigenschaft konfiguriert, der au\u00dferhalb des zul\u00e4ssigen Bereichs liegt.
+CWWKC1520.out.of.range.useraction=Konfigurieren Sie einen Wert innerhalb des zul\u00e4ssigen Bereichs. 
+CWWKC1521.not.compatible=CWWKC1521E: Das Konfigurationsattribut {0} ist nicht g\u00fcltig, wenn das Konfigurationsattribut {1} aktiviert ist.
+CWWKC1521.not.compatible.explanation=Die angegebenen Konfigurationsattribute sind nicht kompatibel.
+CWWKC1521.not.compatible.useraction=Aktualisieren Sie die Konfiguration, um eines der Konfigurationsattribute zu entfernen.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Sie k\u00f6nnen keine persistenten Tasks \u00fcber den aktuellen Threadkontext terminieren.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Terminieren Sie persistente Tasks nur \u00fcber einen Thread, der einer Anwendung oder einem Feature mit einer serialisierbaren Klasselader-ID zugeordnet ist.

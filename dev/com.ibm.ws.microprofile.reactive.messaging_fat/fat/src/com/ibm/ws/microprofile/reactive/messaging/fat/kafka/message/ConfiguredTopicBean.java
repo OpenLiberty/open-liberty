@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -26,14 +28,22 @@ public class ConfiguredTopicBean {
     public static final String PRODUCER_RECORD_KEY = TEST_PREFIX + "key";
     public static final String PRODUCER_RECORD_VALUE = TEST_PREFIX + "value";
     public static final String GROUP_ID = TEST_PREFIX + "app-group";
+    public static final String HEADER_KEY_PREFIX = TEST_PREFIX + "headerKey_";
+    public static final String HEADER_VALUE_PREFIX = TEST_PREFIX + "headerValue_";
+    public static final int NUM_HEADERS = 5;
 
     public static final String CONFIGURED_TOPIC = TEST_PREFIX + "configured-topic";
     public static final String PRODUCER_RECORD_TOPIC = TEST_PREFIX + "producer-record-topic";
 
     @Incoming(CHANNEL_IN)
     @Outgoing(CHANNEL_OUT)
-    public ProducerRecord<String, String> reverseString(String in) {
-        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(PRODUCER_RECORD_TOPIC, PRODUCER_RECORD_KEY, PRODUCER_RECORD_VALUE);
+    public ProducerRecord<String, String> reverseString(String in) throws UnsupportedEncodingException {
+
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(PRODUCER_RECORD_TOPIC, null, PRODUCER_RECORD_KEY, PRODUCER_RECORD_VALUE);
+        for (int i = 0; i < ConsumerRecordBean.NUM_TEST_HEADERS; i++) {
+            producerRecord.headers().add(HEADER_KEY_PREFIX + i, (HEADER_VALUE_PREFIX + i).getBytes("UTF-8"));
+        }
+
         return producerRecord;
     }
 

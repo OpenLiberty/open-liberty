@@ -20,7 +20,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -35,7 +34,8 @@ public class BasicCdiInEE8Test extends FATServletClient {
     public static RepeatTests r = RepeatTests.withoutModification()
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.1", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.2", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.3", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.3", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.4", SERVER_NAME));
 
 
     private static final String appName = "basicCdiClientApp";

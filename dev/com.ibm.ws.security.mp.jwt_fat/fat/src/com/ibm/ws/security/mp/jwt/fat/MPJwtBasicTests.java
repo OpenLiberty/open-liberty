@@ -14,12 +14,13 @@ import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
@@ -27,11 +28,13 @@ import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.mp.jwt.fat.actions.AuthHeaderPrefixRepeatActions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
@@ -40,6 +43,11 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
     protected static Class<?> thisClass = MPJwtBasicTests.class;
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(AuthHeaderPrefixRepeatActions.asBearerType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asTokenType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asMiscType());
 
     @Server("com.ibm.ws.security.mp.jwt.fat")
     public static LibertyServer resourceServer;
@@ -66,6 +74,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
+        bootstrapUtils.writeBootstrapProperty(server, "mpJwt_authHeaderPrefix", FATSuite.authHeaderPrefix + " ");
         deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
@@ -193,12 +202,12 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         testMainPath(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_SESSION_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_SESSION_SCOPE);
 
     }
-    
+
     /**
-     * this method accesses a protected app with a special url that causes it to 
-     * call HttpServletrequest.logout.  
-     * 
-     * It then accesses it again with the same token.  We should get an error 
+     * this method accesses a protected app with a special url that causes it to
+     * call HttpServletrequest.logout.
+     *
+     * It then accesses it again with the same token. We should get an error
      * message that the token was previously logged out.
      */
     @Mode(TestMode.LITE)
@@ -208,23 +217,23 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         String token = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
         String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, app) + "/logout";
         testUrl = SecurityFatHttpUtils.getServerUrlBase(resourceServer) + MpJwtFatConstants.MICROPROFILE_SERVLET + "/rest/" + app + "/logout";
-        
-        JwtTokenForTest jwtTokenTools = new JwtTokenForTest(token);  // ?????
+
+        JwtTokenForTest jwtTokenTools = new JwtTokenForTest(token); // ?????
         WebClient webClient = actions.createWebClient();
-        Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, token);
+        Page response = actions.invokeUrlWithAuthorizationHeaderToken(_testName, webClient, testUrl, FATSuite.authHeaderPrefix, token, HttpMethod.GET, null);
+
         Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, "SecurityContext.ApplicationScoped");
         validationUtils.validateResult(response, expectations);
-        
+
         // now try it again and we should get a 401
-        response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, token);
+        response = actions.invokeUrlWithAuthorizationHeaderToken(_testName, webClient, testUrl, FATSuite.authHeaderPrefix, token, HttpMethod.GET, null);
         int rc = response.getWebResponse().getStatusCode();
-        Assert.assertTrue("expected 401 but got " + rc , rc == 401);
+        Assert.assertTrue("expected 401 but got " + rc, rc == 401);
         expectations = new Expectations();
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, "CWWKS5527E"));
         validationUtils.validateResult(response, expectations);
-        
-    }
 
+    }
 
     /**
      * This method obtains a (mp)jwt in 2 ways (to validate that we're able to generate and consume the tokens created via various
@@ -273,10 +282,11 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
         WebClient webClient = actions.createWebClient();
 
-        Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
+//        Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
+        Page response = actions.invokeUrlWithAuthorizationHeaderToken(_testName, webClient, testUrl, FATSuite.authHeaderPrefix, builtToken, HttpMethod.GET, null);
+
         Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, className);
         validationUtils.validateResult(response, expectations);
     }
-    
 
 }

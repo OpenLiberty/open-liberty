@@ -13,7 +13,6 @@ package com.ibm.ws.security.acme.fat;
 import java.net.UnknownHostException;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -63,13 +62,14 @@ public class FATSuite {
 	public static void beforeClass() throws UnknownHostException {
 		final String METHOD_NAME = "beforeClass()";
 
-		String os = System.getProperty("os.name").toLowerCase();
-		Assume.assumeTrue(!os.startsWith("z/os"));
+		Log.info(FATSuite.class, METHOD_NAME, "Starting Pebble environment bring up");
+
 
 		/*
 		 * Need to expose the HTTP port that is used to answer the HTTP-01
 		 * challenge.
 		 */
+		Log.info(FATSuite.class, METHOD_NAME, "Running Testcontainers.exposeHostPorts");
 		Testcontainers.exposeHostPorts(PebbleContainer.HTTP_PORT);
 
 		/*
@@ -77,8 +77,9 @@ public class FATSuite {
 		 * as a mock DNS server to the Pebble server that starts on the other
 		 * container.
 		 */
-		challtestsrv = new ChalltestsrvContainer();
-		challtestsrv.start();
+		Log.info(FATSuite.class, METHOD_NAME, "Starting ChalltestsrvContainer");
+			challtestsrv = new ChalltestsrvContainer();
+			challtestsrv.start();
 
 		Log.info(FATSuite.class, METHOD_NAME,
 				"Challtestserv ContainerIpAddress: " + challtestsrv.getContainerIpAddress());
@@ -88,9 +89,10 @@ public class FATSuite {
 		/*
 		 * Startup the pebble server.
 		 */
-		pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT);
-		pebble.start();
-
+		Log.info(FATSuite.class, METHOD_NAME, "Starting PebbleContainer");
+			pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT,
+					challtestsrv.getNetwork());
+			pebble.start();
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerIpAddress: " + pebble.getContainerIpAddress());
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble DockerImageName:    " + pebble.getDockerImageName());
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerInfo:      " + pebble.getContainerInfo());

@@ -12,7 +12,6 @@ package com.ibm.ws.jdbc.fat.tests;
 
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
-import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.fail;
 
@@ -66,6 +65,7 @@ public class DataSourceTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
         // Delete the Derby database that might be left over from last run
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
@@ -185,10 +185,9 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfSysProp({
-                     DB_Postgres, //TODO figure out why test fails with Postgres
-                     DB_SQLServer //TODO figure out why test stalls using SQLServer
-    })
+    @SkipIfSysProp({ DB_SQLServer }) // TODO
+    // This test does not work for SQLServer yet.  It might be a problem with the Docker version of SQLServer
+    // So we have opened up an issue with Microsoft to investigate further -> https://github.com/microsoft/mssql-docker/issues/554
     public void testLastParticipant() throws Exception {
         runTest();
     }
@@ -282,10 +281,9 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfSysProp({
-                     DB_Postgres, //TODO figure out why test fails with Postgres
-                     DB_SQLServer //TODO figure out why test stalls using SQLServer
-    })
+    @SkipIfSysProp({ DB_SQLServer }) //TODO figure out why test stalls using SQLServer
+    // This test does not work for SQLServer yet.  It might be a problem with the Docker version of SQLServer
+    // So we have opened up an issue with Microsoft to investigate further -> https://github.com/microsoft/mssql-docker/issues/554
     public void testTwoPhaseCommit() throws Exception {
         runTest();
     }
@@ -320,10 +318,7 @@ public class DataSourceTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.transaction.xa.XAException" })
-    @SkipIfSysProp({
-                     DB_Oracle,
-                     DB_Postgres //TODO figure out why test fails with Postgres
-    })
+    @SkipIfSysProp(DB_Oracle)
     public void testXARecovery() throws Exception {
         runTest();
     }
@@ -335,7 +330,6 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfSysProp(DB_Postgres) //TODO figure out why test fails with Postgres
     public void testXAWithMultipleDatabases() throws Exception {
         runTest();
     }

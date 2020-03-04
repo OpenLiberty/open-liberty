@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,39 @@ duplicateAlias.useraction=Asigura\u0163i-v\u0103 c\u0103 toate aliasurile gazd\u
 context.root.changed=CWWKT0028I: Aplica\u0163ie Web mutat\u0103 ({0}): {1}
 context.root.changed.explanation=Acest mesaj este pur informativ.
 context.root.changed.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+compression.duplicateType=CWWKT0029W: S-a \u00eencercat o ad\u0103ugare duplicat\u0103 a tipului {0}. Este folosit\u0103 \u00een loc configura\u0163ia implicit\u0103 {1}. 
+compression.duplicateType.explanation=Valoarea specificat\u0103 este deja \u00eenregistrat\u0103 ca un tip de con\u0163inut acceptabil pentru comprimare.
+compression.duplicateType.useraction=C\u00e2nd defini\u0163i valoarea codific\u0103rilor acceptabile, asigura\u0163i-v\u0103 c\u0103 fiecare valoare este unic\u0103. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: S-a \u00eencercat o \u00eenl\u0103turare duplicat\u0103 a codific\u0103rii {0}. Este folosit\u0103 \u00een loc configura\u0163ia implicit\u0103 {1}.
+compression.duplicateTypeRemoval.explanation=Valoarea specificat\u0103 este deja \u00eenregistrat\u0103 ca un tip de con\u0163inut exclus pentru comprimare.
+compression.duplicateTypeRemoval.useraction=C\u00e2nd utiliza\u0163i op\u0163iunea de \u00eenl\u0103turare (-), asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 nu este deja \u00eenregistrat\u0103 ca un tip de con\u0163inut exclus.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: A fost f\u0103cut\u0103 o \u00eencercare de ad\u0103ugare \u015fi de \u00eenl\u0103turare a aceluia\u015fi tip de con\u0163inut {0}. Este folosit\u0103 \u00een loc configura\u0163ia implicit\u0103 {1}.
+compression.duplicateTypeAddRemove.explanation=Valoarea specificat\u0103 este at\u00e2t ad\u0103ugat\u0103, c\u00e2t \u015fi \u00eenl\u0103turat\u0103 de op\u0163iunile de configurare '+/-'.
+compression.duplicateTypeAddRemove.useraction=Nu ad\u0103uga\u0163i (+) \u015fi \u00eenl\u0103tura\u0163i (-) acela\u015fi tip de con\u0163inut.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: S-a f\u0103cut o \u00eencercare de a suprascrie configura\u0163ia implicit\u0103 de comprimare dar \u015fi de a utiliza op\u0163iunea de ad\u0103ugare (+) pe alte tipuri de con\u0163inut. Este folosit\u0103 \u00een loc configura\u0163ia implicit\u0103 {0}.
+compression.duplicateOverwriteAndAdd.explanation=Configura\u0163ia \u00eencearc\u0103 s\u0103 suprascrie valoarea implicit\u0103 \u00een timp ce se folose\u015fte \u015fi op\u0163iunea de ad\u0103ugare (+). Op\u0163iunea de ad\u0103ugare nu poate fi folosit\u0103 dac\u0103 suprascrie\u0163i valorile implicite.
+compression.duplicateOverwriteAndAdd.useraction=Dac\u0103 configura\u0163ia implicit\u0103 trebuie s\u0103 fie suprascris\u0103, nu utiliza\u0163i op\u0163iunea de ad\u0103ugare (+). Dac\u0103 valoarea implicit\u0103 nu trebuie suprascris\u0103, include\u0163i orice alt tip de con\u0163inut dorit prin utilizarea op\u0163iunii de ad\u0103ugare (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: A fost f\u0103cut\u0103 o \u00eencercare de configurare {0} ca algoritm preferat al serverului. Algoritmii de comprimare suporta\u0163i sunt: gzip, x-gzip, zlib, deflate, identity \u015fi none. Configura\u0163ia implicit\u0103 {1} este folosit\u0103 \u00een schimb.
+compression.unsupportedAlgorithm.explanation=Configura\u0163ia \u00eencearc\u0103 s\u0103 seteze un algoritm nesuportat ca algoritmul preferat de server pentru a fi folosit pentru comprimare. 
+compression.unsupportedAlgorithm.useraction= C\u00e2nd defini\u0163i valoarea, asigura\u0163i-v\u0103 c\u0103 este setat\u0103 la gzip, x-gzip, deflate, zlib, identity sau none.
+
+decompression.tolerance.reached=CWWKT0034E: Canalul HTTP a \u00eencercat s\u0103 decomprime un corp cu un raport mai mare dec\u00e2t cel tolerat.
+decompression.tolerance.reached.explanation=Num\u0103rul maxim de cicluri de decomprimare a fost atins, rezult\u00e2nd un raport de decompresie mai mare dec\u00e2t limita configurat\u0103. Limita de decomprimare este definit\u0103 de atributul descompresionRatioLimit httpOption.
+decompression.tolerance.reached.useraction=C\u00e2nd aceast\u0103 excep\u0163ie se \u00eent\u00e2mpl\u0103 pe un corp de cerere valid, reconfigura\u0163i atributele httpOption descompressionTolerance \u015fi decompresionRatioLimit pentru a ob\u0163ine rezultatele de decompresie corespunz\u0103toare.
+
+cookies.samesite.duplicateName=CWWKT0035W: Un model sau nume de cookie duplicat [{0}] a fost g\u0103sit \u00een configura\u0163ia [{1}] SameSite. Modelul sau numele de cookie [{0}] este ignorat pentru toate listele de configura\u0163ii. Orice model sau nume de cookie care este definit de configura\u0163iile ''lax'', ''none'' \u015fi ''stricte'' poate fi definit doar \u00een una din cele trei configura\u0163ii. 
+cookies.samesite.duplicateName.explanation=Valoarea specificat\u0103 a fost deja g\u0103sit\u0103 de configura\u0163ie \u015fi mapat\u0103 la o valoare SameSite.
+cookies.samesite.duplicateName.useraction=Asigura\u0163i-v\u0103 c\u0103 modelele \u015fi numele de cookie sunt unice peste listele de configura\u0163ie 'lax', 'none' \u015fi 'stricte'.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: O utilizare nesuportat\u0103 a metacaracterului a fost \u00eencercat\u0103 de valoarea [{0}]. Configura\u0163ia SameSite nu este setat\u0103 pentru aceast\u0103 valoare.
+cookies.samesite.unsupportedWildcard.explanation=Metacaracter (*) a fost folosit \u00eentr-un mod nesuportat. Este suportat un singur metacaracter (*) care este folosit ca o valoare autonom\u0103 sau care vine dup\u0103 orice num\u0103r de prefixe de nume cookie.
+cookies.samesite.unsupportedWildcard.useraction=Asigura\u0163i-v\u0103 c\u0103 este utilizat doar un singur metacaracter (*) per model \u00een listele 'lax', 'none' \u015fi 'stricte'. \u00cen plus, utilizarea acestui caracter este suportat\u0103 numai \u00een urm\u0103toarele dou\u0103 condi\u0163ii: ca o valoare autonom\u0103 sau dup\u0103 prefixele de nume cookie.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: Un model sau nume de cookie [{0}], care este marcat ca \u015fi duplicat, a fost g\u0103sit \u00een configura\u0163ia [{1}] SameSite. Modelul sau numele de cookie [{0}] este ignorat. Orice model sau nume de cookie care este definit de configura\u0163iile ''lax'', ''none'' \u015fi ''stricte'' poate fi definit doar \u00een una din cele trei configura\u0163ii. 
+cookies.samesite.knownDuplicateName.explanation=Valoarea specificat\u0103 a fost deja g\u0103sit\u0103 de configura\u0163ie \u015fi mapat\u0103 la o valoare SameSite.
+cookies.samesite.knownDuplicateName.useraction=Asigura\u0163i-v\u0103 c\u0103 modelele \u015fi numele de cookie sunt unice peste listele de configura\u0163ie 'lax', 'none' \u015fi 'stricte'.

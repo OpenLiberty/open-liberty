@@ -20,6 +20,7 @@ import com.ibm.ws.sib.mfp.util.ArrayUtil;
 import com.ibm.ws.sib.mfp.util.HexUtil;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
+import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TraceComponent;
 
 /*
@@ -43,7 +44,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * This class only officially supports SchemaIds. However, as a SchemaId is a
  * Long, it will cater for any Long in reality..
  */
-public final class SchemaSet implements ConnectionSchemaSet, Set {
+public final class SchemaSet implements ConnectionSchemaSet, Set, Traceable {
 
   private static TraceComponent tc = SibTr.register(SchemaSet.class, MfpConstants.MSG_GROUP, MfpConstants.MSG_BUNDLE);
  
@@ -362,6 +363,10 @@ public final class SchemaSet implements ConnectionSchemaSet, Set {
     return buf.toString();
   }
 
+  @Override
+  public String toTraceString() {
+      return toString();
+  }
 
   /**
    * Write a Schema Id out as a hex string.

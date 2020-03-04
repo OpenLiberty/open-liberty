@@ -9,7 +9,7 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
 
-    <databaseStore id="HowdyDatabaseStore" tablePrefix="WLP_" keyGenerationStrategy="SEQUENCE"/>
+    <databaseStore id="HowdyDatabaseStore" tablePrefix="HOWDY_" keyGenerationStrategy="SEQUENCE"/>
     <persistentExecutor id="Howdy" taskStoreRef="HowdyDatabaseStore" initialPollDelay="-1" enableTaskExecution="true" retryInterval="300s" retryLimit="-1">
         <contextService/>
     </persistentExecutor>

@@ -24,7 +24,7 @@ var messages = {
     "FALSE": "False",
     "GENERATE": "Generieren",
     "LOADING": "Wird geladen",
-    "LOGOUT": "Anmelden",
+    "LOGOUT": "Abmelden",
     "NEXT_PAGE": "Nächste Seite",
     "NO_RESULTS_FOUND": "Keine Ergebnisse gefunden",
     "PAGES": "{0} von {1} Seiten",   // {0} - current page number; {1} - total pages

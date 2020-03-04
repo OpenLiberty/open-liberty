@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -107,12 +106,6 @@ public class HttpCompressionTests {
 
     @Rule
     public TestName name = new TestName();
-
-    // Since we have tracing enabled give server longer timeout to start up.
-    private static final long SERVER_START_TIMEOUT = 30 * 1000;
-
-    // Timeout used for searching a string in log files
-    private static final long SERVER_LOG_SEARCH_TIMEOUT = 5 * 1000;
 
     private final int httpDefaultPort = server.getHttpDefaultPort();
     private HttpClient client;
@@ -808,7 +801,7 @@ public class HttpCompressionTests {
      * Test that a misconfiguration of the types attribute by attempting to add (+) the same
      * content type more than once, will result in the CWWKT0031W warning message
      *
-     * Expected Result: The CWWKT0031W is obtained from the server's trace.log file.
+     * Expected Result: The CWWKT0031W is obtained from the server's logs.
      *
      *
      * @throws Exception
@@ -821,13 +814,11 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
-
         String stringToSearchFor = "CWWKT0029W";
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+                      server.waitForStringInLog(stringToSearchFor));
 
     }
 
@@ -835,7 +826,7 @@ public class HttpCompressionTests {
      * Test that a misconfiguration of the types attribute by attempting to remove (-) the same
      * content type more than once, will result in the CWWKT0031W warning message
      *
-     * Expected Result: The CWWKT0031W is obtained from the server's trace.log file.
+     * Expected Result: The CWWKT0031W is obtained from the server's logs.
      *
      *
      * @throws Exception
@@ -848,13 +839,11 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
-
         String stringToSearchFor = "CWWKT0030W";
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+                      server.waitForStringInLog(stringToSearchFor));
 
     }
 
@@ -862,7 +851,7 @@ public class HttpCompressionTests {
      * Test that a misconfiguration of the types attribute by attempting to add (+) and remove (-)
      * the same content type, will result in the CWWKT0031W warning message
      *
-     * Expected Result: The CWWKT0031W is obtained from the server's trace.log file.
+     * Expected Result: The CWWKT0031W is obtained from the server's logs.
      *
      *
      * @throws Exception
@@ -875,13 +864,11 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
-
         String stringToSearchFor = "CWWKT0031W";
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+                      server.waitForStringInLog(stringToSearchFor));
 
     }
 
@@ -889,7 +876,7 @@ public class HttpCompressionTests {
      * Test that a misconfiguration of the types attribute by attempting to both overwrite and use
      * the add (+) option, will result in the CWWKT0032W warning message
      *
-     * Expected Result: The CWWKT0032W is obtained from the server's trace.log file.
+     * Expected Result: The CWWKT0032W is obtained from the server's logs.
      *
      *
      * @throws Exception
@@ -902,13 +889,11 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
-
         String stringToSearchFor = "CWWKT0032W";
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+                      server.waitForStringInLog(stringToSearchFor));
 
     }
 
@@ -916,7 +901,7 @@ public class HttpCompressionTests {
      * Test that a misconfiguration of the serverPreferredAlgorithm attribute will
      * result in the CWWKT0033W warning message
      *
-     * Expected Result: The CWWKT0033W is obtained from the server's trace.log file.
+     * Expected Result: The CWWKT0033W is obtained from the server's logs.
      *
      *
      * @throws Exception
@@ -929,13 +914,11 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
-
         String stringToSearchFor = "CWWKT0033W";
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+                      server.waitForStringInLog(stringToSearchFor));
 
     }
 
@@ -951,7 +934,6 @@ public class HttpCompressionTests {
      */
     private void startServer(String variation, String testName) throws Exception {
         server.setServerConfigurationFile(CONFIGURATION_FILES_DIR + variation + XML_EXTENSION);
-        server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer(testName + LOG_EXTENSION);
         server.waitForStringInLogUsingMark(APP_STARTED_MESSAGE);
     }

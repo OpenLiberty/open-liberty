@@ -38,7 +38,6 @@ public class WCServletPathForDefaultMappingFalse extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         LOG.info("Setup : add ServletPathDefaultMapping.war to the server if not already present.");
 
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), "ServletPathDefaultMapping.war", false,

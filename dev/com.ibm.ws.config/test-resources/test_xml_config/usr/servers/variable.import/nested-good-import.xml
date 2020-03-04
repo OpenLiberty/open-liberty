@@ -1,0 +1,17 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <foo5 bar="test5"/>
+
+    <variable name="import1" value="bad-value.xml"/>
+    <variable name="import2" value="bad-value.xml"/>
+    <foo6 bar="test6"/>
+</server>

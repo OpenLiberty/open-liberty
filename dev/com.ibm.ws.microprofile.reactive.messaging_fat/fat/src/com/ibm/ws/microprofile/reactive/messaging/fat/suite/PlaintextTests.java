@@ -19,6 +19,7 @@ import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.flatmap.KafkaFlatMapTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.ConsumerRecordTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.UseConfiguredTopicTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.UseProducerRecordTopicTest;
@@ -43,6 +44,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 KafkaAutoAckTest.class,
                 KafkaCustomSerializerTest.class,
                 KafkaCustomKeySerializerTest.class,
+                KafkaFlatMapTest.class,
                 KafkaPartitionTest.class,
                 KafkaSharedLibTest.class,
                 MissingGroupIDTest.class,

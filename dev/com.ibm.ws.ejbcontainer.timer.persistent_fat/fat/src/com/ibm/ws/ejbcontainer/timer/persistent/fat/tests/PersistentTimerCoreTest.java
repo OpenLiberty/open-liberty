@@ -11,6 +11,7 @@
 
 package com.ibm.ws.ejbcontainer.timer.persistent.fat.tests;
 
+import static com.ibm.ws.ejbcontainer.timer.persistent.fat.tests.PersistentTimerTestHelper.expectedFailures;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -40,7 +41,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -105,26 +105,8 @@ public class PersistentTimerCoreTest extends FATServletClient {
         // CWWKC1506E : testSLTimerServiceEJBTimeoutSessionContextCMT - Transaction is marked for rollback
         // CWWKG0032W : testMissedTimerActionBadValueNoFailover - Unexpected value [Blah]
         if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E", "CWWKG0032W.*Blah");
+            server.stopServer(expectedFailures("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E", "CWWKG0032W.*Blah"));
         }
-    }
-
-    /**
-     * Returns the test method name without the RepeatTests suffix.
-     *
-     * For example, when using RepeatTests with EE7_FEATURES, the suffix _EE7_FEATURES is added
-     * to provide unique test names for junit reporting purposes. The simple test method name
-     * dose not include the suffix.
-     *
-     * @return test method name without the RepeatTests suffix.
-     */
-    protected String getTestMethodSimpleName() {
-        String testMethodName = testName.getMethodName();
-        if (testMethodName.endsWith(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
-            testMethodName = testMethodName.substring(0, testMethodName.length() - (RepeatTestFilter.CURRENT_REPEAT_ACTION.length() + 1));
-        }
-
-        return testMethodName;
     }
 
     //-----------------------------------------------------
@@ -315,37 +297,8 @@ public class PersistentTimerCoreTest extends FATServletClient {
     }
 
     /**
-     * Test Persistent Timer missed action "ONCE" behavior when failover has not been enabled. <p>
-     *
-     * This test will confirm the following :
-     * <ol>
-     * <li> Interval timer will skip expirations missed because of a delay.
-     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
-     * </ol>
-     */
-    @Test
-    public void testMissedTimerActionNoneNoFailover() throws Exception {
-        testMissedTimerAction("NONE", false);
-    }
-
-    /**
-     * Test Persistent Timer missed action "NONE" behavior when failover has been enabled. <p>
-     *
-     * This test will confirm the following :
-     * <ol>
-     * <li> Interval timer will skip expirations missed because of a delay.
-     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
-     * </ol>
-     */
-    @Test
-    @Mode(Mode.TestMode.FULL)
-    public void testMissedTimerActionNoneWithFailover() throws Exception {
-        testMissedTimerAction("NONE", true);
-    }
-
-    /**
-     * Test Persistent Timer missed action "None" (mixed case) behavior when failover has not been enabled.
-     * The value is case insensitive and will be treated as "NONE". <p>
+     * Test Persistent Timer missed action "Once" (mixed case) behavior when failover has not been enabled.
+     * The value is case insensitive and will be treated as "ONCE". <p>
      *
      * This test will confirm the following :
      * <ol>
@@ -356,7 +309,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
     @Test
     @Mode(Mode.TestMode.FULL)
     public void testMissedTimerActionMixedCaseNoFailover() throws Exception {
-        testMissedTimerAction("None", false);
+        testMissedTimerAction("Once", false);
     }
 
     /**

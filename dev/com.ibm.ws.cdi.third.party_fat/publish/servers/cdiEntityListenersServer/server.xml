@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Liberty server">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>cdi-1.2</feature>
+    <feature>servlet-3.1</feature>
+    <feature>localConnector-1.0</feature>
+    <feature>jpa-2.1</feature>
+  </featureManager>
+ 
+  <library id="derbyJDBCLib">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  </library>
+
+  <application location="CDIInEntityListernersTest.ear">
+  </application>
+
+  <dataSource jndiName="jdbc/jpaDataSource" id="jpaDataSource">
+      <jdbcDriver libraryRef="derbyJDBCLib" />
+      <properties.derby.embedded databaseName="TestDB" createDatabase="create"/>
+  </dataSource> 
+
+    <SSLDefault/>
+    <javaPermission codebase="${server.config.dir}/apps/CDIInEntityListernersTest.ear" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

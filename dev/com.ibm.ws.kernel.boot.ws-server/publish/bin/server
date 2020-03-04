@@ -602,13 +602,13 @@ serverEnvDefaults()
     fi
   esac
 
-  # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs have conflicting
-  # options, and it's more important that the server JVMs be able to use AOT.
+  # Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
+  # shared classes cache created for client operations.
   # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach on z/OS
   
-  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS}"
+  IBM_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none"
   export IBM_JAVA_OPTIONS
-  OPENJ9_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS}"
+  OPENJ9_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none"
   export OPENJ9_JAVA_OPTIONS
 
   # Set a default file encoding if needed

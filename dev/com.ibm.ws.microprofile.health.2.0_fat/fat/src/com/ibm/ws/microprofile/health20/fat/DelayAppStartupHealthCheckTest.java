@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -119,6 +120,9 @@ public class DelayAppStartupHealthCheckTest {
                     if (e.getMessage().contains("Connection refused")) {
                         connectionExceptionEncountered = true;
                     }
+                } catch (SocketTimeoutException exception) {
+                    log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection.");
+                    continue;
                 }
 
                 // We need to ensure we get a connection refused in the case of the server not finished starting up

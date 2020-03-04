@@ -15,7 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import javax.annotation.PostConstruct;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -122,20 +124,26 @@ public class BindingsServlet extends FATServlet {
 
     private InitialContext ctx = null;
 
-    protected void setUp() throws Exception {
-        ctx = new InitialContext();
+    @PostConstruct
+    protected void setUp() {
+        try {
+            ctx = new InitialContext();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
      * testTargetOneLBIBND() Test Local Business Interface binding
      */
-    @Test
+    //@Test
     public void testTargetOneLBIBND() throws Exception {
         LocalTargetOneBiz lto1 = null;
 
         try {
             lto1 = (LocalTargetOneBiz) FATHelper.lookupJavaBinding("ejblocal:ejb/LocalTargetOneBiz");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check LocalTargetOne lookup failed");
         }
 
@@ -147,13 +155,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding
      */
-    @Test
+    //@Test
     public void testTargetOneRBIBND() throws Exception {
         RemoteTargetOneBiz rto1 = null;
 
         try {
             rto1 = (RemoteTargetOneBiz) ctx.lookup("ejb/RemoteTargetOneBiz");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetOne lookup failed");
         }
 
@@ -172,6 +181,7 @@ public class BindingsServlet extends FATServlet {
         try {
             ltoh1 = (LocalTargetOneHome) ctx.lookup("ejblocal:ejb/LocalTargetOneHome");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check LocalTargetOneHome lookup failed");
         }
 
@@ -186,13 +196,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Home Interface binding
      */
-    @Test
+    //@Test
     public void testTargetOneRHIBND() throws Exception {
         RemoteTargetOneHome rtoh1 = null;
 
         try {
             rtoh1 = (RemoteTargetOneHome) ctx.lookup("ejb/RemoteTargetOneHome");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetOneHome lookup failed");
         }
 
@@ -207,13 +218,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 1 for TargetBeanTwo
      */
-    @Test
+    //@Test
     public void testTargetTwoRBIBND1() throws Exception {
         RemoteTargetTwoBiz1 rt2b1 = null;
 
         try {
             rt2b1 = (RemoteTargetTwoBiz1) ctx.lookup("ejb/RemoteTargetTwoBiz1");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz1 lookup failed");
         }
 
@@ -225,13 +237,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 2 for TargetBeanTwo
      */
-    @Test
+    //@Test
     public void testTargetTwoRBIBND2() throws Exception {
         RemoteTargetTwoBiz2 rt2b2 = null;
 
         try {
             rt2b2 = (RemoteTargetTwoBiz2) ctx.lookup("ejb/RemoteTargetTwoBiz2");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz2 lookup failed");
         }
 
@@ -243,13 +256,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 3 for TargetBeanTwo
      */
-    @Test
+    //@Test
     public void testTargetTwoRBIBND3() throws Exception {
         RemoteTargetTwoBiz3 rt2b3 = null;
 
         try {
             rt2b3 = (RemoteTargetTwoBiz3) ctx.lookup("ejb/RemoteTargetTwoBiz3");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz3 lookup failed");
         }
 
@@ -261,13 +275,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 1 for TargetBeanThree
      */
-    @Test
+    //@Test
     public void testTargetThreeLBIBND1() throws Exception {
         LocalTargetThreeBiz1 lt3b1 = null;
 
         try {
             lt3b1 = (LocalTargetThreeBiz1) ctx.lookup("ejblocal:ejb/LocalTargetThreeBiz1");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check LocalTargetThreeBiz1 lookup failed");
         }
 
@@ -279,13 +294,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 2 for TargetBeanThree
      */
-    @Test
+    //@Test
     public void testTargetThreeLBIBND2() throws Exception {
         LocalTargetThreeBiz2 lt3b2 = null;
 
         try {
             lt3b2 = (LocalTargetThreeBiz2) ctx.lookup("ejblocal:ejb/LocalTargetThreeBiz2");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check LocalTargetThreeBiz2 lookup failed");
         }
 
@@ -297,13 +313,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 3 for TargetBeanThree
      */
-    @Test
+    //@Test
     public void testTargetThreeLBIBND3() throws Exception {
         LocalTargetThreeBiz3 lt3b3 = null;
 
         try {
             lt3b3 = (LocalTargetThreeBiz3) ctx.lookup("ejblocal:ejb/LocalTargetThreeBiz3");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check LocalTargetThreeBiz3 lookup failed");
         }
 
@@ -315,13 +332,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 1 for TargetBeanFour
      */
-    @Test
+    //@Test
     public void testTargetFourRBIBND1() throws Exception {
         RemoteTargetFourBiz1 rt4b1 = null;
 
         try {
             rt4b1 = (RemoteTargetFourBiz1) ctx.lookup("ejb/RemoteTargetFourBiz1");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetFourBiz1 lookup failed");
         }
 
@@ -333,13 +351,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 2 for TargetBeanFour
      */
-    @Test
+    //@Test
     public void testTargetFourRBIBND2() throws Exception {
         RemoteTargetFourBiz2 rt2b4 = null;
 
         try {
             rt2b4 = (RemoteTargetFourBiz2) ctx.lookup("ejb/RemoteTargetFourBiz2");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetFourBiz2 lookup failed");
         }
 
@@ -351,13 +370,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 1 for TargetBeanThree
      */
-    @Test
+    //@Test
     public void testTargetFourLBIBND1() throws Exception {
         LocalTargetFourBiz1 lt4b1 = null;
 
         try {
             lt4b1 = (LocalTargetFourBiz1) ctx.lookup("ejblocal:ejb/LocalTargetFourBiz1");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check LocalTargetFourBiz1 lookup failed");
         }
 
@@ -369,13 +389,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 2 for TargetBeanFour
      */
-    @Test
+    //@Test
     public void testTargetFourLBIBND2() throws Exception {
         LocalTargetFourBiz2 lt3b2 = null;
 
         try {
             lt3b2 = (LocalTargetFourBiz2) ctx.lookup("ejblocal:ejb/LocalTargetFourBiz2");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check LocalTargetFourBiz2 lookup failed");
         }
 
@@ -394,6 +415,7 @@ public class BindingsServlet extends FATServlet {
         try {
             slh = (SubLocalHome) ctx.lookup("ejblocal:ejb/SubLocalHome");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check SubLocalHome lookup failed");
         }
 
@@ -408,13 +430,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Home Interface binding for SubBean
      */
-    @Test
+    //@Test
     public void testSubBeanRHIBND() throws Exception {
         SubRemoteHome srh = null;
 
         try {
             srh = (SubRemoteHome) ctx.lookup("ejb/SubRemoteHome");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check SubRemoteHome lookup failed");
         }
 
@@ -436,6 +459,7 @@ public class BindingsServlet extends FATServlet {
         try {
             slh = (SupLocalHome) ctx.lookup("ejblocal:ejb/SupLocalHome");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check SupLocalHome lookup failed");
         }
 
@@ -450,13 +474,14 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Home Interface binding for SupBean
      */
-    @Test
+    //@Test
     public void testSupBeanRHIBND() throws Exception {
         SupRemoteHome srh = null;
 
         try {
             srh = (SupRemoteHome) ctx.lookup("ejb/SupRemoteHome");
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             fail("1 ---> Check SupRemoteHome lookup failed");
         }
 

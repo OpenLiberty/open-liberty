@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.web;
 
@@ -102,6 +102,8 @@ public class OidcRedirectServletTest {
                 allowing(req).getRequestURL();
                 will(returnValue(new StringBuffer(REQUEST_URL)));
                 atLeast(0).of(resp).addCookie(with(any(Cookie.class)));
+                allowing(webAppSecurityConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
 
             }
         });
@@ -299,19 +301,17 @@ public class OidcRedirectServletTest {
 
     @Test
     public void testDoPost_validCode() {
-        OidcRedirectServlet redirectServlet = new OidcRedirectServlet(); 
-            redirectServlet.activatedOidcClientImpl = oidcClientImpl;
+        OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
+        redirectServlet.activatedOidcClientImpl = oidcClientImpl;
 
-            final String OIDC_CLIENT_ID = "snoop";
-
-            
+        final String OIDC_CLIENT_ID = "snoop";
 
         try {
             final Map<String, String[]> map = new HashMap<String, String[]>();
             map.put("requestUrl", new String[] { REQUEST_URL });
             final Hashtable<String, String> table = new Hashtable<String, String>();
             table.put("requestUrl", REQUEST_URL);
-            
+
             mockParamValue(Constants.STATE, OIDC_STATE);
             mockParamValue(Constants.SESSION_STATE, OIDC_SESSION_STATE);
             mockParamValue(Constants.CODE, OIDC_CODE);
@@ -333,11 +333,7 @@ public class OidcRedirectServletTest {
                     allowing(cache).put(OidcUtil.encode(OIDC_STATE), table);
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
-                    
-                    
-                    
-                    
-                    
+
                     allowing(req).getRequestURI();
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
@@ -355,19 +351,17 @@ public class OidcRedirectServletTest {
 
     @Test
     public void testDoPost_validIdToken() {
-        OidcRedirectServlet redirectServlet = new OidcRedirectServlet(); 
+        OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         redirectServlet.activatedOidcClientImpl = oidcClientImpl;
 
-      final String OIDC_CLIENT_ID = "snoop";
-
-      
+        final String OIDC_CLIENT_ID = "snoop";
 
         try {
             final Map<String, String[]> map = new HashMap<String, String[]>();
             map.put("requestUrl", new String[] { REQUEST_URL });
             final Hashtable<String, String> table = new Hashtable<String, String>();
             table.put("requestUrl", REQUEST_URL);
-            
+
             mockParamValue(Constants.STATE, OIDC_STATE);
             mockParamValue(Constants.SESSION_STATE, OIDC_SESSION_STATE);
             mockParamValue(Constants.CODE, null);
@@ -389,10 +383,7 @@ public class OidcRedirectServletTest {
                     allowing(cache).put(OidcUtil.encode(OIDC_STATE), table);
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
-                    
-                    
-                    
-                    
+
                     allowing(req).getRequestURI();
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
@@ -410,18 +401,17 @@ public class OidcRedirectServletTest {
 
     @Test
     public void testDoPost_validCode_shortState() {
-        OidcRedirectServlet redirectServlet = new OidcRedirectServlet(); 
+        OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         redirectServlet.activatedOidcClientImpl = oidcClientImpl;
 
-      final String OIDC_CLIENT_ID = "snoop"; 
+        final String OIDC_CLIENT_ID = "snoop";
 
         try {
             final Map<String, String[]> map = new HashMap<String, String[]>();
             map.put("requestUrl", new String[] { REQUEST_URL });
             final Hashtable<String, String> table = new Hashtable<String, String>();
             table.put("requestUrl", REQUEST_URL);
-            
-            
+
             mockParamValue(Constants.STATE, OIDC_STATE_SHORT);
             mockParamValue(Constants.SESSION_STATE, OIDC_SESSION_STATE);
             mockParamValue(Constants.CODE, null);
@@ -442,10 +432,7 @@ public class OidcRedirectServletTest {
                     allowing(cache).put(OidcUtil.encode(OIDC_STATE), table);
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
-                    
-                    
-                    
-                    
+
                     allowing(req).getCookies();
                     will(returnValue(new Cookie[] { new Cookie(ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(OIDC_STATE_SHORT), REQUEST_URL) }));
                     allowing(req).getRequestURI();

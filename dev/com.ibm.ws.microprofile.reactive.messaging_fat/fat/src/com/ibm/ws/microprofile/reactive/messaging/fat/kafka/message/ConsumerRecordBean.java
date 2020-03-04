@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -31,11 +32,11 @@ public class ConsumerRecordBean {
     public static final String KEY = "test_key";
     public static final String VALUE = "hello";
     public static final int PARTITION = 9;
-    public static final long TIMESTAMP = 100L;
-    public static final int NUM_HEADERS = 5;
+    public static final int NUM_TEST_HEADERS = 5;
     public static final String HEADER_KEY_PREFIX = "headerKey";
     public static final String HEADER_VALUE_PREFIX = "headerKey";
     public static final String PASS = "PASS";
+    public static final String EXPECTED_TIMESTAMP_HEADER_KEY = "expectedTimestamp";
 
     @Incoming(CHANNEL_IN)
     @Outgoing(CHANNEL_OUT)
@@ -67,15 +68,22 @@ public class ConsumerRecordBean {
             return Message.of("Wrong ConsumerRecord Partition. Expected: " + PARTITION + " - Actual: " + incomingPartition);
         }
 
-        if (TIMESTAMP != incomingTimestamp) {
-            return Message.of("Wrong ConsumerRecord Timestamp. Expected: " + TIMESTAMP + " - Actual: " + incomingTimestamp);
+        // NUM_HEADERS test headers, plus the expected timestamp header
+        if (NUM_TEST_HEADERS + 1 != incomingHeaders.length) {
+            return Message.of("Wrong number of ConsumerRecord Headers. Expected: " + NUM_TEST_HEADERS + 1 + " - Actual: " + incomingHeaders.length);
         }
 
-        if (NUM_HEADERS != incomingHeaders.length) {
-            return Message.of("Wrong number of ConsumerRecord Headers. Expected: " + NUM_HEADERS + " - Actual: " + incomingHeaders.length);
+        Header tsHeader = consumerRecord.headers().lastHeader(EXPECTED_TIMESTAMP_HEADER_KEY);
+        if (tsHeader == null) {
+            return Message.of("Expected timestamp header not set");
         }
 
-        for (int i = 0; i < NUM_HEADERS; i++) {
+        long expectedTimestamp = ByteBuffer.wrap(tsHeader.value()).getLong();
+        if (expectedTimestamp != incomingTimestamp) {
+            return Message.of("Wrong ConsumerRecord Timestamp. Expected: " + expectedTimestamp + " - Actual: " + incomingTimestamp);
+        }
+
+        for (int i = 0; i < NUM_TEST_HEADERS; i++) {
             Header header = incomingHeaders[i];
             String incomingHeaderKey = header.key();
             String expectedHeaderKey = HEADER_KEY_PREFIX + i;

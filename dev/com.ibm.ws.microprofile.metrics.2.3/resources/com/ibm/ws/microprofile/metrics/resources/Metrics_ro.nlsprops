@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 20120 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,8 @@ session.activeSessions.description=Num\u0103rul de sesiuni active concurente. (O
 session.invalidated.total.description=Num\u0103rul de sesiuni care s-au delogat de la activarea acestui indice de m\u0103surare.
 session.invalidatedbyTimeout.total.description=Num\u0103rul de sesiuni care s-au delogat prin timeout de la activarea acestui indice de m\u0103surare.
 
+
+REST.request.description=Num\u0103rul de invoc\u0103ri \u015fi timpul total de r\u0103spuns al acestei metode de resurs\u0103 RESTful de la pornirea serverului.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

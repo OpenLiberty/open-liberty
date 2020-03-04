@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthMethod";
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
+    public static final String CFG_KEY_SAME_SITE_COOKIE = "sameSiteCookie";
 
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
@@ -100,6 +101,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String overrideHttpAuthMethod;
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
+    private final String sameSiteCookie;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -138,6 +140,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_OVERRIDE_HAM, "overrideHttpAuthMethod");
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
+            put(CFG_KEY_SAME_SITE_COOKIE, "sameSiteCookie");
+
         }
     };
 
@@ -180,6 +184,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         overrideHttpAuthMethod = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
+        sameSiteCookie = (String) newProperties.get(CFG_KEY_SAME_SITE_COOKIE);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
 
@@ -574,5 +579,10 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public WebAuthenticatorProxy createWebAuthenticatorProxy() {
         return new WebAuthenticatorProxy(this, null, securityServiceRef, null, oidcServerRef);
+    }
+
+    @Override
+    public String getSameSiteCookie() {
+        return sameSiteCookie;
     }
 }

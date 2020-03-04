@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Map;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.SSOCookieHelper;
 import com.ibm.ws.webcontainer.security.SSOCookieHelperImpl;
+import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.WebAuthenticatorProxy;
 
@@ -52,6 +53,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = true;
     private final Boolean useOnlyCustomCookieName = false;
+    private final String sameSiteCookie = "Disabled";
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -291,5 +293,15 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public String getBasicAuthRealmName() {
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getSameSiteCookie() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getSameSiteCookie();
+        else
+            return sameSiteCookie;
     }
 }

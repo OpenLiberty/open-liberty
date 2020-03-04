@@ -71,6 +71,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     public static final String KEY_MP_JWT_CONFIG = "microProfileJwtConfig";
     public static final String ATTRIBUTE_TAI_REQUEST = "MPJwtTaiRequest";
     public static final String JTI_CLAIM = "jti";
+    public static final String KEY_AUTHORIZATION_HEADER_SCHEME = "authorizationHeaderScheme";
     public static final String KEY_MP_JWT_EXTENSION_SERVICE = "mpJwtExtensionService";
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);

@@ -33,8 +33,10 @@ import java.sql.SQLNonTransientException;
 import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.Callable;
@@ -51,6 +53,8 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.UserTransaction;
@@ -125,6 +129,7 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 public class DataSourceTestServlet extends FATServlet {
     private static final String className = "DataSourceTestServlet";
+
     @Resource(name = "jdbc/dsfat0")
     DataSource ds0; // one-phase, default isolation, MatchOriginalRequest
 
@@ -154,6 +159,9 @@ public class DataSourceTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/dsfat5", shareable = false)
     DataSource ds5u; // one-phase, default isolation, unsharable, Derby only
+
+    @Resource(name = "jdbc/dsfat5ref1", lookup = "jdbc/dsfat5")
+    DataSource ds5_1; //one-phase, default isolation, Derby Only, derbyAuth1 set as authentication alias
 
     @Resource(lookup = "jdbc/dsfatmca", type = DataSource.class)
     DataSource dsmca; // one-phase, default isolation, MatchOriginalRequest, sharable, mapping config alias
@@ -197,11 +205,6 @@ public class DataSourceTestServlet extends FATServlet {
     private ExecutorService executor;
 
     /**
-     * Indicates if we have already created tables for this tests.
-     */
-    private static boolean initialized;
-
-    /**
      * Standard isolation level values.
      */
     private static final int[] ISOLATION_LEVELS = new int[] {
@@ -211,25 +214,26 @@ public class DataSourceTestServlet extends FATServlet {
                                                               Connection.TRANSACTION_READ_UNCOMMITTED
     };
 
-    /**
-     * Create the default table used by the tests.
-     */
-    private void createTable(DataSource ds) throws SQLException {
-        Connection con = ds.getConnection();
-        try {
-            Statement st = con.createStatement();
-            try {
-                st.executeUpdate("drop table cities");
-            } catch (SQLException x) {
-            }
-            String dbProductName = con.getMetaData().getDatabaseProductName().toUpperCase();
-            if (dbProductName.contains("IDS") || dbProductName.contains("INFORMIX")) // Informix JCC and JDBC
-                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30)) LOCK MODE ROW");
-            else
+    @Override
+    public void init(ServletConfig c) throws ServletException {
+        //Create table in database container
+        try (Connection con = ds1.getConnection()) {
+            try (Statement st = con.createStatement()) {
                 st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
-        } finally {
-            con.close();
+            }
+        } catch (SQLException e) {
+            //Ignore, server could have been restarted. Assume table is available.
         }
+
+        //Create table in derby database
+        try (Connection con = ds5u.getConnection()) {
+            try (Statement st = con.createStatement()) {
+                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
+            }
+        } catch (SQLException e) {
+            //Ignore, server could have been restarted. Assume table is available.
+        }
+
     }
 
     /**
@@ -250,25 +254,15 @@ public class DataSourceTestServlet extends FATServlet {
     }
 
     /**
-     * Create tables used by the tests the first time a test is run.
-     * If not the first test run, then clear the tables.
+     * clears table of all data to ensure fresh start for this test.
      *
      * @param datasource the data source to clear the table for
      */
-    public void setUpTables(DataSource datasource) throws Exception {
-
-        if (!initialized) {
-            // Create a new table in EACH of the different databases
-            createTable(ds1);
-            createTable(ds5u);
-            initialized = true;
-        }
-
-        Connection con = datasource.getConnection();
-        try {
-            con.createStatement().executeUpdate("delete from cities");
-        } finally {
-            con.close();
+    public void clearTable(DataSource datasource) throws Exception {
+        try (Connection con = datasource.getConnection()) {
+            try (Statement stmt = con.createStatement()) {
+                stmt.executeUpdate("delete from cities");
+            }
         }
 
         // End the current LTC and get a new one, so that test methods start from the correct place
@@ -280,7 +274,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Run a basic query to the database.
      */
     public void testBasicQuery() throws Exception {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection con = ds1.getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -311,7 +305,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Run batch updates.
      */
     public void testBatchUpdates() throws Exception {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection con = ds1.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
@@ -365,7 +359,7 @@ public class DataSourceTestServlet extends FATServlet {
      */
     public void testConfigChangeAuthData() throws Throwable {
 
-        Connection con = ds6_1.getConnection();
+        Connection con = ds5_1.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
             String user = metadata.getUserName();
@@ -381,7 +375,7 @@ public class DataSourceTestServlet extends FATServlet {
      */
     public void testConfigChangeAuthDataOriginalValue() throws Throwable {
 
-        Connection con = ds6_1.getConnection();
+        Connection con = ds5_1.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
             String user = metadata.getUserName();
@@ -396,7 +390,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify commitOrRollbackOnCleanup=commit
      */
     public void testConfigChangeCommitOnCleanup() throws Throwable {
-        setUpTables(ds3);
+        clearTable(ds3);
 
         Connection con = ds3.getConnection();
         try {
@@ -664,7 +658,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify commitOrRollbackOnCleanup=rollback (or defaulted to rollback for transactional=false)
      */
     public void testConfigChangeRollbackOnCleanup() throws Throwable {
-        setUpTables(ds3);
+        clearTable(ds3);
 
         Connection con = ds3.getConnection();
         try {
@@ -695,7 +689,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify configuration change that top level config (transactional=false)
      */
     public void testConfigChangeTransactionalFalse() throws Throwable {
-        setUpTables(ds1u);
+        clearTable(ds1u);
         PreparedStatement pstmt;
         Connection con = ds1u.getConnection();
         con.setAutoCommit(false);
@@ -751,7 +745,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify configuration change that sets transactional=true
      */
     public void testConfigChangeTransactionalTrue() throws Throwable {
-        setUpTables(ds1u);
+        clearTable(ds1u);
         PreparedStatement pstmt;
         Connection con = ds1u.getConnection();
         con.setAutoCommit(false);
@@ -833,7 +827,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use a data source defined with @DataSourceDefinition
      */
     public void testDataSourceDefinition() throws Throwable {
-        setUpTables(ds6);
+        clearTable(ds6);
 
         int loginTimeout = ds6.getLoginTimeout();
         if (loginTimeout != 600)
@@ -932,7 +926,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use data sources defined with @DataSourceDefinitions
      */
     public void testDataSourceDefinitions() throws Throwable {
-        setUpTables(ds7);
+        clearTable(ds7);
 
         int loginTimeout;
 
@@ -1060,7 +1054,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use a data source with a mappingConfigAlias
      */
     public void testDataSourceMappingConfigAlias() throws Throwable {
-        setUpTables(dsmca);
+        clearTable(dsmca);
 
         Connection con = dsmca.getConnection();
         try {
@@ -1128,7 +1122,7 @@ public class DataSourceTestServlet extends FATServlet {
      */
     public void testEnableSharingForDirectLookupsFalse() throws Exception {
         DataSource ds = (DataSource) new InitialContext().lookup("jdbc/dsfat1");
-        setUpTables(ds);
+        clearTable(ds);
         Connection con = null;
         Connection con2 = null;
         Statement stmt = null;
@@ -1156,7 +1150,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify that pooled connections are properly cleaned up.
      */
     public void testConnectionCleanup() throws Exception {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection con = ds1.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
@@ -1191,7 +1185,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Child JDBC resources should be closed implicitly when connection is closed.
      */
     public void testImplicitlyCloseChildren() throws Exception {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection con = ds1.getConnection();
         try {
             PreparedStatement pstmt = con.prepareStatement("insert into cities values (?, ?, ?)");
@@ -1245,7 +1239,7 @@ public class DataSourceTestServlet extends FATServlet {
     public void testIsolatedSharedLibraries() throws Throwable {
         // ds9 (DataSourceDefinition) and ds5 (a <datasource> in server.xml)
         // both use the same database.
-        setUpTables(ds5u);
+        clearTable(ds5u);
 
         // Write the value with ds9
         Connection con = ds9.getConnection();
@@ -1285,7 +1279,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Enlist a single one-phase capable resource in a global transaction with a two-phase capable resource.
      */
     public void testLastParticipant() throws Throwable {
-        setUpTables(ds1);
+        clearTable(ds1);
         // Enlist both resources and commit changes
         tran.begin();
         try {
@@ -1360,7 +1354,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Share connections for which the current state matches.
      */
     public void testMatchCurrentState() throws Throwable {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection[] cons = new Connection[2];
         try {
             cons[0] = ds1.getConnection();
@@ -1434,7 +1428,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Share connections for which the original connection request matches.
      */
     public void testMatchOriginalRequest() throws Throwable {
-        setUpTables(ds0);
+        clearTable(ds0);
         int nonDefaultIsolation;
         Connection con = ds0.getConnection();
         try {
@@ -1461,8 +1455,7 @@ public class DataSourceTestServlet extends FATServlet {
 
             DatabaseMetaData metadata = con2.getMetaData();
             if (isolation != nonDefaultIsolation
-                && !metadata.getDatabaseProductName().toUpperCase().contains("DB2") // because of isolation level switching (DB2)
-                && !metadata.getDatabaseProductName().toUpperCase().contains("IDS")) // because of isolation level switching (Informix JCC)
+                && !metadata.getDatabaseProductName().toUpperCase().contains("DB2")) // because of isolation level switching (DB2)
                 throw new Exception("Expecting non-default isolation of " + nonDefaultIsolation + " on shared connection, not " + isolation);
 
             PreparedStatement pstmt2 = con2.prepareStatement("update cities set county = ? where name = ?");
@@ -1536,7 +1529,7 @@ public class DataSourceTestServlet extends FATServlet {
      * After the agedTimeout, the pool size should drop to 0.
      */
     public void testMinPoolSize() throws Throwable {
-        setUpTables(ds5u);
+        clearTable(ds5u);
         ClassLoader loader;
         String databaseName;
         boolean testWasNotRun = false;
@@ -1720,7 +1713,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use a non-transactional data source.
      */
     public void testNonTransactional() throws Throwable {
-        setUpTables(ds3);
+        clearTable(ds3);
         PreparedStatement pstmt;
         Connection con = ds3.getConnection();
         try {
@@ -1776,7 +1769,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify than unresolved database transactions are rolled back by default.
      */
     public void testNonTransactionalCleanup() throws Throwable {
-        setUpTables(ds3);
+        clearTable(ds3);
         Connection con = ds3.getConnection();
         try {
             con.setAutoCommit(false);
@@ -1810,7 +1803,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use multiple connections from a non-transactional data source.
      */
     public void testNonTransactionalMultipleConnections() throws Throwable {
-        setUpTables(ds3);
+        clearTable(ds3);
         Connection[] cons = new Connection[2];
         try {
             tran.begin();
@@ -2037,7 +2030,7 @@ public class DataSourceTestServlet extends FATServlet {
      * The transaction manager can use the one-phase optimization (skip prepare) when we commit.
      */
     public void testOnePhaseOptimization() throws Throwable {
-        setUpTables(ds2);
+        clearTable(ds2);
         Connection con;
 
         tran.begin();
@@ -2112,7 +2105,7 @@ public class DataSourceTestServlet extends FATServlet {
      * ConfigTest contains the code to check the logs.
      */
     public void testOnErrorWARN() throws Exception {
-        setUpTables(ds5); // ensure the other data source (dsfat5) is used first
+        clearTable(ds5); // ensure the other data source (dsfat5) is used first
 
         tran.setTransactionTimeout(60);
         try {
@@ -2224,7 +2217,7 @@ public class DataSourceTestServlet extends FATServlet {
      * connection request with TRANSACTION_READ_UNCOMMITTED from the resource ref.
      */
     public void testResourceRefIsolationLevel() throws Throwable {
-        setUpTables(ds6);
+        clearTable(ds6);
 
         tran.begin();
         try {
@@ -2268,7 +2261,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use ResultSetMetaData.
      */
     public void testResultSetMetaData() throws Exception {
-        setUpTables(ds2);
+        clearTable(ds2);
 
         Connection con = ds2.getConnection();
         try {
@@ -2307,7 +2300,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Run a test to check if DataSource de/serializes correctly.
      */
     public void testSerialization() throws Exception {
-        setUpTables(ds1);
+        clearTable(ds1);
 
         DataSource testSource = ds1;
         Connection con = testSource.getConnection();
@@ -2343,7 +2336,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Serial reuse of one-phase capable connection in a global transaction.
      */
     public void testSerialReuseInGlobalTran() throws Throwable {
-        setUpTables(ds0);
+        clearTable(ds0);
         tran.begin();
         try {
             Connection con = ds0.getConnection();
@@ -2376,7 +2369,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Serial reuse of shared connection in an LTC
      */
     public void testSerialReuseInLTC() throws Throwable {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection con = ds1.getConnection();
         try {
             con.setAutoCommit(false);
@@ -2424,7 +2417,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify that sharable handles are reassociated across transaction boundaries.
      */
     public void testSharableHandleReassociation() throws Throwable {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection[] cons = new Connection[2];
         try {
             cons[0] = ds1.getConnection();
@@ -2566,7 +2559,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Share a connection in a global transaction.
      */
     public void testSharingInGlobalTran() throws Throwable {
-        setUpTables(ds0);
+        clearTable(ds0);
         tran.begin();
         try {
             Connection con0 = ds0.getConnection();
@@ -2601,7 +2594,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify that cached statements are properly cleaned up.
      */
     public void testStatementCleanup() throws Exception {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection con = ds1.getConnection();
         try {
             PreparedStatement pstmt = con.prepareStatement("insert into cities values (?, ?, ?)");
@@ -2633,7 +2626,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Unsharable data source should allow statements to remain open across transactions.
      */
     public void testStatementsAcrossTranBoundaries() throws Throwable {
-        setUpTables(ds1u);
+        clearTable(ds1u);
         Connection con = ds1u.getConnection();
         try {
             Statement stmt = con.createStatement();
@@ -2764,7 +2757,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use two-phase commit.
      */
     public void testTwoPhaseCommit() throws Throwable {
-        setUpTables(ds4);
+        clearTable(ds4);
         Connection con1, con2;
 
         // Commit some updates to the database
@@ -2843,7 +2836,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Roll one back and commit the other.
      */
     public void testTwoTransactions() throws Exception {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection[] cons = new Connection[2];
         try {
             cons[0] = ds1.getConnection();
@@ -2896,7 +2889,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Verify that sharable and unsharable connections don't share with eachother.
      */
     public void testUnsharable() throws Throwable {
-        setUpTables(ds1);
+        clearTable(ds1);
         Connection con = ds1.getConnection(); // sharable
         try {
             con.setAutoCommit(false);
@@ -2948,7 +2941,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Update a result set.
      */
     public void testUpdatableResult() throws Exception {
-        setUpTables(ds2);
+        clearTable(ds2);
         Connection con = ds2.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
@@ -3023,7 +3016,7 @@ public class DataSourceTestServlet extends FATServlet {
      * The recoveryAuthData should be used for recovery.
      */
     public void testXARecovery() throws Throwable {
-        setUpTables(ds4u_2);
+        clearTable(ds4u_2);
         Connection[] cons = new Connection[3];
         tran.begin();
         try {
@@ -3034,13 +3027,6 @@ public class DataSourceTestServlet extends FATServlet {
 
             String dbProductName = cons[0].getMetaData().getDatabaseProductName().toUpperCase();
             System.out.println("Product Name is " + dbProductName);
-            if (dbProductName.contains("INFORMIX") || dbProductName.contains("IDS")) {
-                // set lock mode to wait for 60 seconds
-                // The lock mode wait should be set on each session so we need to set it for both the connections.
-                Statement st = cons[0].createStatement();
-                st.executeUpdate("SET LOCK MODE TO WAIT 60");
-                st.close();
-            }
 
             // Verify isolation-level="TRANSACTION_READ_COMMITTED" from ibm-web-ext.xml
             int isolation = cons[0].getTransactionIsolation();
@@ -3103,14 +3089,7 @@ public class DataSourceTestServlet extends FATServlet {
 
         System.out.println("attempting to access data (only possible after recovery)");
         Connection con = ds4u_8.getConnection();
-        String dbProductName = con.getMetaData().getDatabaseProductName().toUpperCase();
-        if (dbProductName.contains("INFORMIX") || dbProductName.contains("IDS")) {
-            // set lock mode to wait for 60 seconds
-            // The lock mode wait should be set on each session so we need to set it for both the connections.
-            Statement st = con.createStatement();
-            st.executeUpdate("SET LOCK MODE TO WAIT 60");
-            st.close();
-        }
+
         int isolation = con.getTransactionIsolation();
         if (isolation != Connection.TRANSACTION_SERIALIZABLE)
             throw new Exception("The isolation-level of the resource-ref is not honored, instead: " + isolation);
@@ -3118,22 +3097,41 @@ public class DataSourceTestServlet extends FATServlet {
             ResultSet result;
             PreparedStatement pstmt = con.prepareStatement("select name, population, county from cities where name = ?");
 
-            pstmt.setString(1, "Edina");
-            result = pstmt.executeQuery();
-            if (!result.next())
-                throw new Exception("Missing first entry in database.");
+            /*
+             * Poll for results once a second for 5 seconds.
+             * Most databases will have XA recovery done by this point
+             *
+             */
+            List<String> cities = new ArrayList<>();
+            for (int count = 0; cities.size() < 3 && count < 5; Thread.sleep(1000)) {
+                if (!cities.contains("Edina")) {
+                    pstmt.setString(1, "Edina");
+                    result = pstmt.executeQuery();
+                    if (result.next())
+                        cities.add(0, "Edina");
+                }
 
-            pstmt.setString(1, "St. Louis Park");
-            result = pstmt.executeQuery();
-            if (!result.next())
-                throw new Exception("Missing second entry in database.");
+                if (!cities.contains("St. Louis Park")) {
+                    pstmt.setString(1, "St. Louis Park");
+                    result = pstmt.executeQuery();
+                    if (result.next())
+                        cities.add(1, "St. Louis Park");
+                }
 
-            pstmt.setString(1, "Moorhead");
-            result = pstmt.executeQuery();
-            if (!result.next())
-                throw new Exception("Missing third entry in database.");
+                if (!cities.contains("Moorhead")) {
+                    pstmt.setString(1, "Moorhead");
+                    result = pstmt.executeQuery();
+                    if (result.next())
+                        cities.add(2, "Moorhead");
+                }
+                count++;
+                System.out.println("Attempt " + count + " to retrieve recovered XA data. Current status: " + cities);
+            }
 
-            System.out.println("successfully accessed the data");
+            if (cities.size() < 3)
+                throw new Exception("Missing entry in database. Results: " + cities);
+            else
+                System.out.println("successfully accessed the data");
         } finally {
             con.close();
         }
@@ -3266,7 +3264,7 @@ public class DataSourceTestServlet extends FATServlet {
      * Use multiple databases in an XA transaction.
      */
     public void testXAWithMultipleDatabases() throws Throwable {
-        setUpTables(ds5u);
+        clearTable(ds5u);
         Connection con1 = ds5u.getConnection();
         try {
             // Commit updates to the database

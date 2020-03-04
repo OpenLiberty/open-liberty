@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,22 +170,20 @@ public class JwKRetriever {
         return key;
     }
 
-    protected PublicKey getJwkCache(String kid, String x5t) {
+    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t, String use, String keyText) {
+        PublicKey key = null;
         if (kid != null) {
-            return jwkSet.getPublicKeyByKid(kid);
+            key = jwkSet.getPublicKeyBySetIdAndKid(setId, kid);
         } else if (x5t != null) {
-            return jwkSet.getPublicKeyByx5t(x5t);
-        }
-        return jwkSet.getPublicKeyByKid(null);
-    }
-
-    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t, String use) {
-        if (kid != null) {
-            return jwkSet.getPublicKeyBySetIdAndKid(setId, kid);
-        } else if (x5t != null) {
-            return jwkSet.getPublicKeyBySetIdAndx5t(setId, x5t);
+            key = jwkSet.getPublicKeyBySetIdAndx5t(setId, x5t);
         } else if (use != null) {
-            return jwkSet.getPublicKeyBySetIdAndUse(setId, use);
+            key = jwkSet.getPublicKeyBySetIdAndUse(setId, use);
+        }
+        if (key != null) {
+            return key;
+        }
+        if (keyText != null) {
+            return jwkSet.getPublicKeyBySetIdAndKeyText(setId, keyText);
         }
         return jwkSet.getPublicKeyBySetId(setId);
     }
@@ -225,16 +223,16 @@ public class JwKRetriever {
             fileSystemCacheSelector = jwkFile.getCanonicalPath();
 
             synchronized (jwkSet) {
-                publicKey = getJwkFromJWKSet(fileSystemCacheSelector, kid, x5t, use); // try the cache.
+                publicKey = getJwkFromJWKSet(fileSystemCacheSelector, kid, x5t, use, null); // try the cache.
                 if (publicKey == null) {
-                    publicKey = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use);
+                    publicKey = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use, null);
                 }
                 if (publicKey == null) { // cache miss, read the jwk if we can,  &  update locationUsed
                     InputStream is = getInputStream(jwkFile, fileSystemCacheSelector, location, classLoadingCacheSelector);
                     if (is != null) {
                         keyString = getKeyAsString(is);
                         parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
-                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);
+                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use, keyString);
                     }
                 }
             }
@@ -299,10 +297,10 @@ public class JwKRetriever {
 
         if (publicKeyText != null) {
             synchronized (jwkSet) {
-                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
+                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use, publicKeyText);
                 if (publicKey == null) {
                     parseJwk(publicKeyText, null, jwkSet, sigAlg);
-                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
+                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use, publicKeyText);
                 }
                 return publicKey;
             }
@@ -346,7 +344,7 @@ public class JwKRetriever {
         PublicKey key = null;
         try {
             synchronized (jwkSet) {
-                key = getJwkFromJWKSet(locationUsed, kid, x5t, use);
+                key = getJwkFromJWKSet(locationUsed, kid, x5t, use, null);
                 if (key == null) {
                     key = doJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections);
                 }
@@ -398,7 +396,7 @@ public class JwKRetriever {
             }
         }
 
-        return getJwkFromJWKSet(locationUsed, kid, x5t, use);
+        return getJwkFromJWKSet(locationUsed, kid, x5t, use, jsonString);
     }
 
     // separate to be an independent method for unit tests
@@ -436,6 +434,9 @@ public class JwKRetriever {
         }
 
         for (JWK aJwk : jwks) {
+            if (isPEM(keyText)) {
+                jwkSet.addPemKey(location, keyText, jwk);
+            }
             if (location != null) {
                 jwkSet.add(location, aJwk);
             } else {
@@ -548,36 +549,6 @@ public class JwKRetriever {
             }
         }
         return jsonArray;
-    }
-
-    boolean jsonObjectContainsKtyForValidJwk(JSONObject entry, JWKSet jwkset, String signatureAlgorithm) {
-        if (entry == null) {
-            return false;
-        }
-
-        JWK jwk = null;
-        String kty = (String) entry.get("kty");
-        if (kty == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "JSON object is missing 'kty' entry");
-            }
-            return false;
-        }
-
-        jwk = createJwkBasedOnKty(kty, entry, signatureAlgorithm);
-        if (jwk == null) {
-            return false;
-        }
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Parsing JWK and adding it to JWK set");
-        }
-        jwk.parse();
-        jwkset.addJWK(jwk);
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "add remote key for keyid: ", jwk.getKeyID());
-        }
-        return true;
     }
 
     JWK createJwkBasedOnKty(String kty, JSONObject keyEntry, String signatureAlgorithm) {

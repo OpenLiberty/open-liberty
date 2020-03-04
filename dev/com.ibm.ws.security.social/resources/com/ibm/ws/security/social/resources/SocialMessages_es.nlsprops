@@ -94,6 +94,40 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: La configur
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=La respuesta de la API de usuario no contiene una clave que corresponde al valor del atributo de configuraci\u00f3n que se especifica en el mensaje. La caracter\u00edstica de inicio de sesi\u00f3n social intenta utilizar una clave diferente.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verifique que el atributo de configuraci\u00f3n que se especifica en el mensaje se configure correctamente. Aseg\u00farese de que el valor del atributo de configuraci\u00f3n corresponde a la entrada en la respuesta de la API de usuario que se debe utilizar como nombre de usuario.
 
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La respuesta siguiente de la API de usuario no se puede procesar: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=La informaci\u00f3n sobre la cuenta de servicio no se puede obtener porque se ha producido otro error.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Si el mensaje contiene otro mensaje de error, consulte la acci\u00f3n de usuario para dicho mensaje. De lo contrario, consulte los registros del servidor para obtener m\u00e1s mensajes de error que podr\u00edan indicar donde se ha producido el otro error.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: La API de usuario ha devuelto un c\u00f3digo de respuesta [{0}] inesperado. Verifique que la solicitud a la API contiene toda la informaci\u00f3n necesaria. La respuesta de la API es [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=La API de usuario no ha devuelto el c\u00f3digo de estado esperado. Es posible que falte informaci\u00f3n en la solicitud o que la solicitud no est\u00e9 autorizada.
+USER_API_RESPONSE_BAD_STATUS.useraction=Consulte la respuesta de la API que est\u00e1 en el mensaje de error para obtener m\u00e1s informaci\u00f3n. Verifique que la solicitud a la API contiene toda la informaci\u00f3n necesaria. Verifique que todas las se\u00f1ales que se han incluido en la solicitud son v\u00e1lidas.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: El contenido de la respuesta no es un objeto JSON v\u00e1lido. La respuesta completa es {0}. {1}
+RESPONSE_NOT_JSON.explanation=La respuesta debe ser un objeto JSON v\u00e1lido.
+RESPONSE_NOT_JSON.useraction=Verifique que la solicitud se ha enviado al destino esperado. Aseg\u00farese de que el destino previsto de la solicitud es capaz de devolver datos JSON. Compruebe la respuesta para ver si se ha incluido m\u00e1s informaci\u00f3n.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: En el objeto JSON proporcionado falta una clave esperada: [{0}]. El objeto JSON completo es [{1}].
+JSON_MISSING_KEY.explanation=La clave especificada en el mensaje debe estar en los datos JSON. Podr\u00eda faltar la clave, o podr\u00eda estar en una ubicaci\u00f3n inesperada.
+JSON_MISSING_KEY.useraction=Consulte los datos JSON para determinar si falta la clave.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: El valor para la clave [{0}] en los datos JSON debe ser del tipo {1}, pero el valor es del tipo {2}. Los datos JSON son [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=El valor para la clave especificada no ten\u00eda el tipo correcto. Es posible que los datos JSON est\u00e9n mal formados o que tengan una estructura inesperada.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Compruebe la estructura de los datos JSON. Consulte los datos JSON para ver si se ha producido un error.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: La respuesta de la API de introspecci\u00f3n de se\u00f1al no se puede procesar: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=La informaci\u00f3n sobre el usuario autenticado no se puede obtener porque se ha producido otro error.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Si el mensaje contiene otro mensaje de error, consulte la acci\u00f3n de usuario para dicho mensaje. De lo contrario, consulte los registros del servidor para obtener m\u00e1s mensajes de error que podr\u00edan indicar donde se ha producido el otro error.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La solicitud de introspecci\u00f3n de se\u00f1al ha fallado porque la se\u00f1al que se incluye en la solicitud no es v\u00e1lida. La respuesta completa es {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=El servidor de autorizaciones no ha emitido la se\u00f1al, el propietario de recurso ha revocado la se\u00f1al, la se\u00f1al ha caducado o se ha producido otro error.
+INTROSPECT_USER_API_INACTIVE.useraction=Consulte la respuesta que se incluye en el mensaje. Verifique que se ha utilizado el punto final de introspecci\u00f3n de se\u00f1al correcto. Verifique que la se\u00f1al es v\u00e1lida y que se puede hacer introspecci\u00f3n de la se\u00f1al.
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configuraci\u00f3n de Social Login de [{0}] se ha procesado correctamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configuraci\u00f3n de Social Login indicada se ha procesado correctamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No se requiere ninguna acci\u00f3n.

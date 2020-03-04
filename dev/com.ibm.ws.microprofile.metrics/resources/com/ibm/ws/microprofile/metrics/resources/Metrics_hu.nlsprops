@@ -122,6 +122,7 @@ connectionpool.waitTime.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00
 connectionpool.inUseTime.total.description=Az \u00f6sszes kapcsolat teljes haszn\u00e1lati ideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 connectionpool.usedConnections.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00e9r\u00e9s, amely megtelt kapcsolatk\u00e9szlet miatt v\u00e1rakozott, vagy nem kellett v\u00e1rakoznia a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta. Az aktu\u00e1lisan haszn\u00e1latban l\u00e9v\u0151 kapcsolatok nem ker\u00fclnek besz\u00e1m\u00edt\u00e1sra ebbe az \u00f6sszes\u00edt\u00e9sbe.
 connectionpool.queuedRequests.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00e9r\u00e9s, amelynek megtelt kapcsolatk\u00e9szlet miatt kellett v\u00e1rakoznia csatlakoz\u00e1sra a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta. 
+
 session.create.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta bejelentkezett munkamenetek sz\u00e1ma.
 session.liveSessions.description=A jelenleg bejelentkezett felhaszn\u00e1l\u00f3k sz\u00e1ma.
 session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma. (Egy munkamenet akkor akt\u00edv, ha a term\u00e9k jelenleg feldolgoz egy k\u00e9r\u00e9st, amely az adott felhaszn\u00e1l\u00f3i munkamenetet haszn\u00e1lja).

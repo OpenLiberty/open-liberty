@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -334,7 +334,7 @@ public class DerbyRAServlet extends FATServlet {
                 throw new Exception("User name doesn't match configured value on containerAuthData. Instead: " + userName);
 
             if (con.toString().contains("WSPrincipal:") == false) {
-                throw new Exception("The subject does not contain a principal.");
+                throw new Exception("The subject does not contain a principal. " + con.toString());
             }
         } finally {
             con.close();

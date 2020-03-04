@@ -5,6 +5,9 @@ update_configs:
   - package_manager: "java:maven"
     directory: "/dev/cnf/dependabot/check_this_in_if_it_changes/"
     update_schedule: "daily"
+    default_assignees:
+      - "tevans78"
+      - "aguibert"
     target_branch: "integration"
     allowed_updates:
       - match:
@@ -12,16 +15,12 @@ update_configs:
       - match:
           dependency_name: "cglib:cglib-nodep"
       - match:
-          dependency_name: "org.glassfish:javax.json:1.0.*"
+          dependency_name: "org.eclipse:yasson"
       - match:
-          dependency_name: "org.glassfish:javax.json:1.1.*"
-      - match:
-          dependency_name: "org.glassfish:javax.json:1.1.*"
+          dependency_name: "org.glassfish:javax.json"
       - match:
           dependency_name: "org.hibernate.validator:hibernate-validator"
       - match:
           dependency_name: "org.hibernate.validator:hibernate-validator-cdi"
       - match:
           dependency_name: "org.ow2.asm:asm"
-      - match:
-          dependency_name: "org.eclipse:yasson"

@@ -272,5 +272,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Mensagem informativa. Nenhum
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: O atributo de configura\u00e7\u00e3o [{0}] necess\u00e1rio est\u00e1 ausente ou vazio e um valor padr\u00e3o n\u00e3o foi fornecido. Verifique se o atributo est\u00e1 configurado ou descoberto a partir do provedor, se ele n\u00e3o est\u00e1 vazio e se ele n\u00e3o consiste somente em caracteres de espa\u00e7o em branco.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=O atributo de configura\u00e7\u00e3o especificado pode estar ausente da configura\u00e7\u00e3o do servidor. Se um valor for especificado, o espa\u00e7o em branco no in\u00edcio e no t\u00e9rmino do valor ser\u00e1 removido quando o valor for processado, portanto o valor na configura\u00e7\u00e3o poder\u00e1 estar vazio ou consistir somente em caracteres de espa\u00e7o em branco. Se o endpoint de descoberta for especificado para obter esse valor de atributo a partir do provedor, a descoberta poder\u00e1 ter um problema.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Assegure-se de que o atributo de configura\u00e7\u00e3o especificado esteja configurado, que ele n\u00e3o esteja vazio e que ele n\u00e3o consista somente em caracteres de espa\u00e7o em branco. Se o endpoint de descoberta foi configurado para obter essas informa\u00e7\u00f5es, certifique-se de que n\u00e3o haja erros com a solicita\u00e7\u00e3o de descoberta.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Mais de uma configura\u00e7\u00e3o do cliente do OpenID Connect especifica o mesmo filtro de autentica\u00e7\u00e3o [{0}]. Isso pode causar um comportamento indeterminado.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Mais de uma configura\u00e7\u00e3o do cliente do OpenID Connect cont\u00e9m um atributo authFilterRef que se refere ao mesmo filtro. Qualquer um desses clientes pode processar uma solicita\u00e7\u00e3o que corresponda ao filtro, levando a um comportamento indeterminado. 
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Revise o arquivo server.xml e corrija a configura\u00e7\u00e3o.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Mais de um filtro de autentica\u00e7\u00e3o do cliente do OpenID Connect corresponde a uma solicita\u00e7\u00e3o para a URL [{0}]. Os filtros correspondentes foram [{1}]. Isso pode causar um comportamento indeterminado.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=Mais de um filtro de autentica\u00e7\u00e3o corresponde a uma solicita\u00e7\u00e3o de entrada. Qualquer cliente que use um desses filtros poderia processar a solicita\u00e7\u00e3o, levando a um comportamento indeterminado. 
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Revise o arquivo server.xml e corrija a configura\u00e7\u00e3o.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

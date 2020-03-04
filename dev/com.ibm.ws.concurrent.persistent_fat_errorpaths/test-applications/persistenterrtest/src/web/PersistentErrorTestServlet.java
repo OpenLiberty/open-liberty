@@ -69,6 +69,14 @@ public class PersistentErrorTestServlet extends HttpServlet {
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    /**
+     * A higher limit on the maximum number of nanoseconds to wait for a task to finish,
+     * which is used when the test case intentionally causes an exception path where FFDC
+     * information is logged to disk, which can randomly take several minutes on poorly
+     * performing test infrastructure.
+     */
+    private static final long TIMEOUT_NS_FFDC_PATH = TimeUnit.MINUTES.toNanos(10);
+
     @Resource(name = "java:comp/env/concurrent/mySchedulerRef", lookup = "concurrent/myScheduler")
     private PersistentExecutor scheduler;
 
@@ -1000,7 +1008,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -1025,7 +1033,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -1044,7 +1052,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<?> status = scheduler.schedule(task, trigger);
 
-        for (long start = System.nanoTime(); !status.toString().contains("SKIPPED") && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); !status.toString().contains("SKIPPED") && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (!status.isDone() || status.isCancelled())
@@ -1073,7 +1081,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -1098,7 +1106,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -1118,7 +1126,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<?> status = scheduler.schedule(task, trigger);
 
-        for (long start = System.nanoTime(); !status.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); !status.hasResult() && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (!status.isDone() || status.isCancelled())

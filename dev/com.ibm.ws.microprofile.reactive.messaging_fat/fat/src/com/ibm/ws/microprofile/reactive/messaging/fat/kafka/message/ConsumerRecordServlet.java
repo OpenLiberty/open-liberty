@@ -13,14 +13,12 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.internals.RecordHeader;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
@@ -31,17 +29,26 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWrite
 @WebServlet("/consumerRecordTest")
 public class ConsumerRecordServlet extends AbstractKafkaTestServlet {
 
+    private static final long serialVersionUID = 1L;
+
     @Test
     public void testConsumerRecord() throws UnsupportedEncodingException {
         KafkaWriter<String, String> writer = kafkaTestClient.writerFor(ConsumerRecordBean.CHANNEL_IN);
 
-        List<Header> input_headers = new ArrayList<>();
-        for (int i = 0; i < ConsumerRecordBean.NUM_HEADERS; i++) {
-            Header header = new RecordHeader(ConsumerRecordBean.HEADER_KEY_PREFIX + i, (ConsumerRecordBean.HEADER_VALUE_PREFIX + i).getBytes("UTF-8"));
-            input_headers.add(header);
+        // Server uses the timestamp for things like message expiry, so make it approximately accurate
+        // This test relies on the following server config:
+        // * message.timestamp.type = CreateTime (default)
+        // * message.timestamp.difference.max.ms > 500 (default is MAX_LONG)
+        long timestamp = System.currentTimeMillis() + 500L;
+
+        ProducerRecord<String, String> record = new ProducerRecord<String, String>(ConsumerRecordBean.CHANNEL_IN, ConsumerRecordBean.PARTITION, timestamp, ConsumerRecordBean.KEY, ConsumerRecordBean.VALUE);
+
+        for (int i = 0; i < ConsumerRecordBean.NUM_TEST_HEADERS; i++) {
+            record.headers().add(ConsumerRecordBean.HEADER_KEY_PREFIX + i, (ConsumerRecordBean.HEADER_VALUE_PREFIX + i).getBytes("UTF-8"));
         }
 
-        ProducerRecord<String, String> record = new ProducerRecord<String, String>(ConsumerRecordBean.CHANNEL_IN, ConsumerRecordBean.PARTITION, ConsumerRecordBean.TIMESTAMP, ConsumerRecordBean.KEY, ConsumerRecordBean.VALUE, input_headers);
+        ByteBuffer timestampBuffer = ByteBuffer.allocate(Long.BYTES).putLong(timestamp);
+        record.headers().add(ConsumerRecordBean.EXPECTED_TIMESTAMP_HEADER_KEY, timestampBuffer.array());
         writer.sendMessage(record, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         KafkaReader<String, String> reader = kafkaTestClient.readerFor(ConsumerRecordBean.CHANNEL_OUT);
