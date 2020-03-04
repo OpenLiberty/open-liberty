@@ -20,7 +20,8 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -44,10 +45,22 @@ public class ServerStartAsServiceTest {
     @ClassRule
     public static final TestRule onWinRule = new OnlyRunOnWinRule();
 
-    @AfterClass
-    public static void after() throws Exception {
+    @Before
+    public void before() {
+        final String METHOD_NAME = "before";
+        if (server != null) {
+            Log.info(c, METHOD_NAME, "server variable not null at start of test; setting to null.");
+            server = null;
+        }
+    }
+
+    @After
+    public void after() throws Exception {
+        final String METHOD_NAME = "after";
         if (server != null && server.isStarted()) {
+            Log.info(c, METHOD_NAME, "stopping server (potentially again) and nulling the 'server' variable");
             server.stopServer();
+            server = null;
         }
     }
 
@@ -59,13 +72,20 @@ public class ServerStartAsServiceTest {
      */
     public void testWinServiceLifeCycle() throws Exception {
         final String METHOD_NAME = "testWinServiceLifeCycle";
-        Log.entering(c, METHOD_NAME);
+        Log.info(c, METHOD_NAME, ".. entering ..");
 
         Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME_1);
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME_1, LibertyServerFactory.WinServiceOption.ON);
 
-        Log.info(c, METHOD_NAME, "calling server.startServer()");
-        server.startServer();
+        try {
+            Log.info(c, METHOD_NAME, "calling server.startServer()");
+            server.startServer();
+        } catch (Exception e) {
+            // try to clean up the win service entry and start again
+            Log.info(c, METHOD_NAME, "server.startServer() failed in " + METHOD_NAME + ". Exception was " + e.getMessage());
+            Log.info(c, METHOD_NAME, "Attempting server.stopServer()...");
+            server.stopServer();
+        }
 
         Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
         server.waitForStringInLog("CWWKF0011I");
@@ -75,7 +95,7 @@ public class ServerStartAsServiceTest {
         Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_1);
         server.stopServer();
 
-        Log.exiting(c, METHOD_NAME);
+        Log.info(c, METHOD_NAME, ".. exiting ..");
     }
 
     @Test
@@ -87,13 +107,18 @@ public class ServerStartAsServiceTest {
      */
     public void testWinServiceAppAccess() throws Exception {
         final String METHOD_NAME = "testWinServiceAppAccess";
-        Log.entering(c, METHOD_NAME);
+        Log.info(c, METHOD_NAME, ".. entering ..");
 
         Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME_2);
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME_2, LibertyServerFactory.WinServiceOption.ON);
 
-        Log.info(c, METHOD_NAME, "calling server.startServer()");
-        server.startServer();
+        try {
+            Log.info(c, METHOD_NAME, "calling server.startServer()");
+            server.startServer();
+        } catch (Exception e) {
+            // try to clean up the win service entry
+            server.stopServer();
+        }
 
         Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
         server.waitForStringInLog("CWWKF0011I");
@@ -113,7 +138,7 @@ public class ServerStartAsServiceTest {
         Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_2);
         server.stopServer();
 
-        Log.exiting(c, METHOD_NAME);
+        Log.info(c, METHOD_NAME, ".. exiting ..");
     }
 
     /**
