@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
-import com.ibm.wsspi.http.ee8.Http2Consumers;
+import com.ibm.ws.http2.Http2Consumers;
 
 import io.grpc.Server;
 import io.grpc.internal.ServerListener;

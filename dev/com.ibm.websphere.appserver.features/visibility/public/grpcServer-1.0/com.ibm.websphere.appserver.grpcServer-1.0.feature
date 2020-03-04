@@ -11,6 +11,7 @@ IBM-ShortName: grpcServer-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC Server 1.0
 -features=\
+  com.ibm.websphere.appserver.channelfw-1.0,\
   com.ibm.websphere.appserver.internal.grpc-1.0
 -bundles=\
   com.ibm.ws.grpc.server.1.0

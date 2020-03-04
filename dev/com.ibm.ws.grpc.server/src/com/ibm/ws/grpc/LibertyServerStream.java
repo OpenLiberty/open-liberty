@@ -13,9 +13,9 @@ package com.ibm.ws.grpc;
 
 import com.google.common.base.Preconditions;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-import com.ibm.wsspi.http.ee8.Http2Connection;
-import com.ibm.wsspi.http.ee8.Http2Stream;
-import com.ibm.wsspi.http.ee8.Http2StreamHandler;
+import com.ibm.ws.http2.Http2Connection;
+import com.ibm.ws.http2.Http2Stream;
+import com.ibm.ws.http2.Http2StreamHandler;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 
 import io.grpc.InternalMetadata;

@@ -14,15 +14,14 @@ package com.ibm.ws.grpc;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
-import com.ibm.wsspi.http.ee8.Http2Connection;
-import com.ibm.wsspi.http.ee8.Http2ConnectionHandler;
-import com.ibm.wsspi.http.ee8.Http2Stream;
-import com.ibm.wsspi.http.ee8.Http2StreamHandler;
+import com.ibm.ws.http2.Http2Connection;
+import com.ibm.ws.http2.Http2ConnectionHandler;
+import com.ibm.ws.http2.Http2Stream;
+import com.ibm.ws.http2.Http2StreamHandler;
 
 import io.grpc.Metadata;
 import io.grpc.internal.ServerStream;

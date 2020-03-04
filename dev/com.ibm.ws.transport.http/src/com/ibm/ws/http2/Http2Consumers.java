@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.http.ee8;
+package com.ibm.ws.http2;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,9 +34,9 @@ public class Http2Consumers {
     }
 
     /**
-     * For now, return the first Http2ConnectionHandler that was registered.
+     * Return the set of Http2ConnectionHandlers that have been registered.
      *
-     * @return Http2ConnectionHandler
+     * @return Set<Http2ConnectionHandler> or null if the set is empty
      */
     public static Set<Http2ConnectionHandler> getHandlers() {
         if (handlers == null || handlers.isEmpty()) {

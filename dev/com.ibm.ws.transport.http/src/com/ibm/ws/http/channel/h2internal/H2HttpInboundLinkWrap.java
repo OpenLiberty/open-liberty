@@ -35,14 +35,14 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http2.Http2ConnectionHandler;
+import com.ibm.ws.http2.Http2Consumers;
+import com.ibm.ws.http2.Http2StreamHandler;
 import com.ibm.ws.http2.upgrade.H2Exception;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
-import com.ibm.wsspi.http.ee8.Http2ConnectionHandler;
-import com.ibm.wsspi.http.ee8.Http2Consumers;
-import com.ibm.wsspi.http.ee8.Http2StreamHandler;
 
 /**
  *

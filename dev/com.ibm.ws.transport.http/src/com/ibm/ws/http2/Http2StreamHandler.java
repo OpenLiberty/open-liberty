@@ -8,39 +8,29 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.http.ee8;
+package com.ibm.ws.http2;
 
 import java.util.Map;
 
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+
 /**
- * HTTP/2 stream
+ * HTTP/2 stream handler
  */
-public interface Http2Stream {
+public interface Http2StreamHandler {
+
+    /**
+     * Invoked when complete headers have been received for a stream
+     */
+    public void headersReady();
+
+    /**
+     * A complete body has been received for a stream
+     */
+    public void dataReady(WsByteBuffer buffer, boolean endOfStream);
 
     /**
      * Send headers to be written
      */
-    public void writeHeaders(Map<String, String> pseudoHeaders, Map<String, String> headers, boolean endOfHeaders, boolean endOfStream);
-
-    /**
-     * Send trailers
-     */
-    public void writeData(byte[] buffer, boolean endOfStream);
-
-    /**
-     * Send trailers
-     */
-    public void writeTrailers(Map<String, String> headers);
-
-    /**
-     * Send a RST_STREAM to terminate the stream
-     *
-     * @param reason
-     */
-    public void cancel(Exception reason, int code);
-
-    /**
-     * @return
-     */
-    public int getId();
+    public void writeHeaders(Map<String, String> headers, boolean endOfHeaders, boolean endOfStream);
 }
