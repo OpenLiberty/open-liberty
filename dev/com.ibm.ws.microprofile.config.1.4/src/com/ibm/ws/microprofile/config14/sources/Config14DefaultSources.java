@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config14.sources;
 
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -31,12 +32,12 @@ public class Config14DefaultSources extends DefaultSources {
      * @param classloader
      * @return the default sources found
      */
-    public static ArrayList<ConfigSource> getDefaultSources(ClassLoader classloader) {
+    public static ArrayList<ConfigSource> getDefaultSources(ClassLoader classloader, ScheduledExecutorService scheduledExecutorService) {
         ArrayList<ConfigSource> sources = new ArrayList<>();
 
         sources.add(new SystemConfig14Source());
         sources.add(new EnvConfig14Source());
-        sources.add(new AppPropertyConfig14Source());
+        sources.add(new AppPropertyConfig14Source(scheduledExecutorService));
         sources.add(new ServerXMLVariableConfigSource());
         sources.add(new ServerXMLDefaultVariableConfigSource());
 
