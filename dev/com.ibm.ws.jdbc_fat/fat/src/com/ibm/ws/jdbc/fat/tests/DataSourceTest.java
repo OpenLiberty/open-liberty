@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -31,7 +32,6 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.OnlyIfDataSourceProperties;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
-import com.ibm.ws.jdbc.fat.FATSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -40,6 +40,7 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
@@ -55,7 +56,8 @@ public class DataSourceTest extends FATServletClient {
     private static final String dsdfat = "dsdfat";
     private static final String dsdfat_global_lib = "dsdfat_global_lib";
 
-    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     //Server used for ConfigTest.java and DataSourceTest.java
     @Server("com.ibm.ws.jdbc.fat")
@@ -71,8 +73,9 @@ public class DataSourceTest extends FATServletClient {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/derbyfat");
 
         //Get driver type
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-        server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("ANON_DRIVER", type.getAnonymousDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
@@ -114,18 +117,18 @@ public class DataSourceTest extends FATServletClient {
      * Runs the test in the "basicfat" app
      */
     private void runTest() throws Exception {
-        runTest(server, basicfat + '/', testName);
+        runTest(server, basicfat, testName);
     }
 
     @Test
     public void testServletWorking() throws Exception {
-        runTest(server, setupfat + '/', testName);
+        runTest(server, setupfat, testName);
     }
 
     @Test
     @SkipIfDataSourceProperties(DERBY_EMBEDDED)
     public void testBootstrapDatabaseConnection() throws Throwable {
-        runTest(server, setupfat + '/', testName);
+        runTest(server, setupfat, testName);
     }
 
     @Test
@@ -158,7 +161,7 @@ public class DataSourceTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException" })
     public void testDuplicateJNDINames() throws Exception {
-        runTest(server, dsdfat + '/', testName);
+        runTest(server, dsdfat, testName);
     }
 
     @Test
