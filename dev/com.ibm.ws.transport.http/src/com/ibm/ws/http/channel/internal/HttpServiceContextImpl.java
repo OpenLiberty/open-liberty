@@ -17,12 +17,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
@@ -258,6 +260,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private int cyclesAboveDecompressionRatio = 0;
 
     protected Map<String, Float> acceptableEncodings = new HashMap<String, Float>();
+    protected Set<String> unacceptedEncodings = new HashSet<String>();
     protected boolean bStarEncodingParsed = false;
     protected String preferredEncoding = null;
 
@@ -1010,6 +1013,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             this.acceptableEncodings = null;
         }
 
+        if (null != this.unacceptedEncodings) {
+            this.unacceptedEncodings.clear();
+            this.unacceptedEncodings = null;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "destroy");
         }
@@ -1101,6 +1109,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (this.acceptableEncodings != null) {
             this.acceptableEncodings.clear();
 
+        }
+        if (this.unacceptedEncodings != null) {
+            this.unacceptedEncodings.clear();
         }
         this.bStarEncodingParsed = false;
         this.preferredEncoding = null;
@@ -2310,14 +2321,21 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
             encodingName = codingParts[0];
 
-            if ("*".equals(encodingName)) {
+            if (qualityValue == 0) {
+                this.unacceptedEncodings.add(encodingName);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Parsed a non accepted content-encoding: [" + encodingName + "]");
+                }
+            }
+
+            else if ("*".equals(encodingName)) {
                 this.bStarEncodingParsed = (qualityValue > 0f);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Parsed Wildcard - * with value: " + bStarEncodingParsed);
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Parsed Encoding - name: " + encodingName + " value: " + qualityValue);
+                    Tr.debug(tc, "Parsed Encoding - name: [" + encodingName + "] value: [" + qualityValue + "]");
                 }
                 //Save to key-value pair accept-encoding map
                 acceptableEncodings.put(encodingName, qualityValue);
@@ -2394,6 +2412,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // zlib is our keyword, but deflate is the actual compression
             // algorithm so allow both inputs
             setZlibEncoded(true);
+        } else if ("identity".equalsIgnoreCase(preferredEncoding)) {
+            setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+
         } else {
             // invalid compression, disable further attempts
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2519,7 +2540,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
                 msg.removeSpecialHeader(HttpHeaderKeys.HDR_$WSZIP);
 
-                if (this.isSupportedEncoding() && isCompressionAllowed()) {
+                if (this.isSupportedEncoding() && isCompressionAllowed() && !this.unacceptedEncodings.contains(preferredEncoding)) {
                     rc = true;
                     setCompressionFlags();
 
@@ -2537,10 +2558,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 //algorithm, check that the client accepts it and the server supports it.
                 //If so, set this to be the compression algorithm.
                 if (!"none".equalsIgnoreCase(serverPreferredEncoding) &&
-                    (acceptableEncodings.containsKey(serverPreferredEncoding) || bStarEncodingParsed)) {
+                    (acceptableEncodings.containsKey(serverPreferredEncoding) || (bStarEncodingParsed && !this.unacceptedEncodings.contains(serverPreferredEncoding)))) {
 
                     this.preferredEncoding = serverPreferredEncoding;
                     if (this.isSupportedEncoding() && isCompressionAllowed()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Setting server preferred encoding");
+                        }
                         rc = true;
                         setCompressionFlags();
                     }
@@ -2586,11 +2610,20 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     }
                     //If there aren't any explicit matches of acceptable encodings,
                     //check if the '*' character was set as acceptable. If so, default
-                    //to gzip encoding.
+                    //to gzip encoding. If not allowed, try deflate. If neither are allowed,
+                    //disable further attempts.
                     if (bStarEncodingParsed) {
-                        preferredEncoding = ContentEncodingValues.GZIP.getName();
-                        rc = true;
-                        setCompressionFlags();
+                        if (!this.unacceptedEncodings.contains(ContentEncodingValues.GZIP.getName())) {
+                            preferredEncoding = ContentEncodingValues.GZIP.getName();
+                            rc = true;
+                            setCompressionFlags();
+                        } else if (!this.unacceptedEncodings.contains(ContentEncodingValues.DEFLATE.getName())) {
+
+                            preferredEncoding = ContentEncodingValues.DEFLATE.getName();
+                            rc = true;
+                            setCompressionFlags();
+                        }
+
                     }
                 }
             }
