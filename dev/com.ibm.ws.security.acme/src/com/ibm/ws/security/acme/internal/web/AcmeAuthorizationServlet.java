@@ -42,18 +42,20 @@ public class AcmeAuthorizationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -8515248242091988849L;
 
+	public static final String APP_NAME = "com.ibm.ws.security.acme";
+
 	private static final TraceComponent tc = Tr.register(AcmeAuthorizationServlet.class);
 
 	/** Reference to the AcmeProvider service. */
 	private static final AtomicReference<AcmeProvider> acmeProviderRef = new AtomicReference<AcmeProvider>();
 
 	private static final String NOT_FOUND = "NOT FOUND";
-
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		if (tc.isDebugEnabled()) {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "Processing challenge token request '" + request.getRequestURI() + "' from '"
 					+ request.getRemoteAddr() + "'");
 		}
@@ -64,7 +66,7 @@ public class AcmeAuthorizationServlet extends HttpServlet {
 		 */
 		String token = request.getRequestURI().replace(AcmeConstants.ACME_CONTEXT_ROOT + "/", "");
 		if (token == null || token.trim().isEmpty()) {
-			if (tc.isDebugEnabled()) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "No challenge token found in URI.");
 			}
 			response.sendError(404, NOT_FOUND); // TODO 400 Bad Request?
@@ -81,7 +83,7 @@ public class AcmeAuthorizationServlet extends HttpServlet {
 			 * This should not happen, but in the case it does, return a 404 and
 			 * let the ACME server can try again later.
 			 */
-			if (tc.isDebugEnabled()) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "The servlet has no AcmeProvider.");
 			}
 			response.sendError(404, NOT_FOUND);
@@ -90,11 +92,11 @@ public class AcmeAuthorizationServlet extends HttpServlet {
 
 		try {
 			/*
-			 * Get the token
+			 * Get the authorization.
 			 */
 			String authorization = acmeProvider.getHttp01Authorization(token);
 			if (authorization == null || authorization.trim().isEmpty()) {
-				if (tc.isDebugEnabled()) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 					Tr.debug(tc,
 							"The AcmeProvider did not find an authorization for the challange token '" + token + "'.");
 				}
@@ -114,7 +116,7 @@ public class AcmeAuthorizationServlet extends HttpServlet {
 			 * 
 			 * The ACME server can try again later.
 			 */
-			if (tc.isDebugEnabled()) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "Error encountered from AcmeProvider: ", e);
 			}
 			response.sendError(404, NOT_FOUND);

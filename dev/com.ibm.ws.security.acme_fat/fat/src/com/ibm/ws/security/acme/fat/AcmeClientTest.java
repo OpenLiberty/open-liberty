@@ -33,8 +33,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.AcmeCaException;
+import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.docker.PebbleContainer;
-import com.ibm.ws.security.acme.internal.AcmeCertificate;
 import com.ibm.ws.security.acme.internal.AcmeClient;
 import com.ibm.ws.security.acme.internal.CSROptions;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
