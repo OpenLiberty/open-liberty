@@ -702,10 +702,8 @@ public class LogTraceData extends GenericData {
         ExtensionAliases tempExt = null;
         if (isMessageEvent) {
             tempExt = jsonLoggingNameAliasesMessages.extensionAliases;
-
         } else {
             tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
-
         }
         return tempExt.getAlias(extKey);
 
