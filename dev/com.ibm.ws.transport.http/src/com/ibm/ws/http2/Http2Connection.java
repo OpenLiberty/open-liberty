@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.http.ee8;
+package com.ibm.ws.http2;
 
 /**
  * HTTP/2 connection
@@ -17,7 +17,7 @@ public interface Http2Connection {
 
     /**
      * Terminate this connection
-     * 
+     *
      * @param Exception e
      */
     public void destroy(Exception e);

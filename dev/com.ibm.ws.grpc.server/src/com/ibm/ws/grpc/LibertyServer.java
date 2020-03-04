@@ -11,7 +11,7 @@
 
 package com.ibm.ws.grpc;
 
-import com.ibm.wsspi.http.ee8.Http2Consumers;
+import com.ibm.ws.http2.Http2Consumers;
 
 import io.grpc.InternalChannelz.SocketStats;
 import io.grpc.InternalInstrumented;
@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 final class LibertyServer implements InternalServer {
-	
+
 	private static final String CLASS_NAME = LibertyServer.class.getName();
 	private static final Logger logger = Logger.getLogger(LibertyServer.class.getName());
 	
