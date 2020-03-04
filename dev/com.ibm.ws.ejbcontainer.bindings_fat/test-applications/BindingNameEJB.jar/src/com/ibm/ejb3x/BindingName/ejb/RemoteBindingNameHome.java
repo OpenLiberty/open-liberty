@@ -12,11 +12,11 @@
 package com.ibm.ejb3x.BindingName.ejb;
 
 /**
- * Remote Home interface for Enterprise Bean: BindingName
+ * Remote Home interface for Enterprise Bean: RemoteBindingName
  */
 public interface RemoteBindingNameHome extends javax.ejb.EJBHome {
     /**
-     * Creates a default instance of Session Bean: BindingName
+     * Creates a default instance of Session Bean: RemoteBindingName
      */
-    public BindingName create() throws javax.ejb.CreateException, java.rmi.RemoteException;
+    public RemoteBindingName create() throws javax.ejb.CreateException, java.rmi.RemoteException;
 }

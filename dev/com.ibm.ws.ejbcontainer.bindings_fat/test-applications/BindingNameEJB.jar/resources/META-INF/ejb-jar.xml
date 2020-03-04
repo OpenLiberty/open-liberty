@@ -30,7 +30,7 @@
          <session id="Session_3">
             <ejb-name>BindingName3</ejb-name>
             <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
-            <remote>com.ibm.ejb3x.BindingName.ejb.BindingName</remote>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
             <business-remote>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-remote>
             <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
             <session-type>Stateless</session-type>
@@ -40,7 +40,7 @@
          <session id="Session_4">
             <ejb-name>BindingName4</ejb-name>
             <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
-            <remote>com.ibm.ejb3x.BindingName.ejb.BindingName</remote>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
             <business-remote>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-remote>
             <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
             <session-type>Stateless</session-type>
@@ -50,7 +50,7 @@
          <session id="Session_5">
             <ejb-name>BindingName5</ejb-name>
             <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
-            <remote>com.ibm.ejb3x.BindingName.ejb.BindingName</remote>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
             <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
             <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
             <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
@@ -63,7 +63,7 @@
          <session id="Session_6">
             <ejb-name>BindingName6</ejb-name>
             <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
-            <remote>com.ibm.ejb3x.BindingName.ejb.BindingName</remote>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
             <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
             <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
             <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
@@ -76,7 +76,7 @@
          <session id="Session_7">
             <ejb-name>BindingName7</ejb-name>
             <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
-            <remote>com.ibm.ejb3x.BindingName.ejb.BindingName</remote>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
             <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
             <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
             <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
@@ -89,7 +89,7 @@
          <session id="Session_8">
             <ejb-name>BindingName8</ejb-name>
             <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
-            <remote>com.ibm.ejb3x.BindingName.ejb.BindingName</remote>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
             <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
             <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
             <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
