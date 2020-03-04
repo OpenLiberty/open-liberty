@@ -10,38 +10,35 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config14.sources;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.ws.microprofile.config13.sources.AppPropertyConfigSource;
+import com.ibm.ws.microprofile.config14.impl.TimedCache;
 
 /**
  *
  */
 public class AppPropertyConfig14Source extends AppPropertyConfigSource {
 
-    private final AtomicReference<Map<String, String>> cachedValues = new AtomicReference<>();
-    private final AtomicLong lastUpdated = new AtomicLong();
-    private static final long CACHE_TIME = Duration.of(500, ChronoUnit.MILLIS).toNanos();
+    private static final String CACHE_KEY = "properties";
+
+    private final ScheduledExecutorService executor;
+    private final TimedCache<String, Map<String, String>> cache;
+
+    public AppPropertyConfig14Source(ScheduledExecutorService executor) {
+        this.executor = executor;
+        this.cache = new TimedCache<>(executor, 500, TimeUnit.MILLISECONDS);
+    }
 
     @Override
     public Map<String, String> getProperties() {
-        Map<String, String> result = null;
+        return cache.get(CACHE_KEY, (k -> super.getProperties()));
+    }
 
-        if (System.nanoTime() - lastUpdated.get() < CACHE_TIME) {
-            result = cachedValues.get();
-        }
-
-        if (result == null) {
-            result = super.getProperties();
-            cachedValues.set(result);
-            lastUpdated.set(System.nanoTime());
-        }
-
-        return result;
+    public void close() {
+        cache.close();
     }
 
 }

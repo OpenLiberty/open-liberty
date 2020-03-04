@@ -30,8 +30,8 @@ public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBu
     /**
      * Constructor
      *
-     * @param classLoader the classloader which scopes this config
-     * @param executor the executor to use for async update threads
+     * @param classLoader           the classloader which scopes this config
+     * @param executor              the executor to use for async update threads
      * @param internalConfigSources
      */
     public Config14BuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor, Set<ConfigSource> internalConfigSources) {
@@ -46,7 +46,7 @@ public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBu
     protected SortedSources getSources() {
         SortedSources sources = new SortedSourcesImpl(getUserSources());
         if (addDefaultSourcesFlag()) {
-            sources.addAll(Config14DefaultSources.getDefaultSources(getClassLoader()));
+            sources.addAll(Config14DefaultSources.getDefaultSources(getClassLoader(), getScheduledExecutorService()));
         }
         if (addDiscoveredSourcesFlag()) {
             sources.addAll(Config14DefaultSources.getDiscoveredSources(getClassLoader()));
