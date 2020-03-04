@@ -30,8 +30,6 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -57,8 +55,9 @@ public class ExternalDependencyDownloadTest {
         }
     }
 
-    @Mode(TestMode.QUARANTINE)
-    @Test
+//    @Mode(TestMode.QUARANTINE)
+//    @Test
+//    Test should not be hitting an external site.  Need to find a better implemenation before re-enabling.
     public void testHTTP2HTTPSRedirect() throws Exception {
         String serverName = "http2httpsRedirectGood";
         String dependencyTargetFile = "shared/lib/" + serverName + ".testfile.jar";
