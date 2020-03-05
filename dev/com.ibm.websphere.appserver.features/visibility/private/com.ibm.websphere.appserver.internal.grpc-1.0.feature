@@ -10,7 +10,6 @@ IBM-API-Package: \
   io.grpc.internal; type="internal",\
 Subsystem-Name: gRPC internal 1.0
 -bundles=\
-  com.ibm.ws.app.manager.war, \
   com.ibm.ws.grpc.common.1.0
 -features=\
   com.ibm.websphere.appserver.artifact-1.0, \
