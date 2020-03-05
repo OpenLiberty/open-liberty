@@ -641,8 +641,15 @@ class ResolveDirector extends AbstractDirector {
                 Set<String> allServerFeatures = new HashSet<>(InstallUtils.getAllServerFeatures());
                 allServerFeatures.addAll(assetsToInstall);
 
-                log(Level.FINE, "Using resolveAsSet to resolve features");
-                installResources = resolver.resolveAsSet(allServerFeatures); // use new api
+                // FIRST CALL to resolveAsSet --> this throws an error for singleton features
+                log(Level.FINE, "Calling resolveAsSet to determine conflicts");
+                resolver.resolveAsSet(allServerFeatures); // use new api
+
+
+                // SECOND CALL to resolveAsSet, including all installed features
+                log(Level.FINE, "Resolving features");
+                resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
+                installResources = resolver.resolve(allServerFeatures);
             } else {
                 log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetsToInstall);
