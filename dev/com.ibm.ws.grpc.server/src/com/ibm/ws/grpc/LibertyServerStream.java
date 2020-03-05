@@ -231,7 +231,7 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 			// TODO: warning and/or FFDC
 			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "TransportState.deframeFailed", cause.getMessage());
 			int errorCode = Status.fromThrowable(cause).getCode().value();
-			http2Stream.cancel(new Exception(cause), errorCode);
+			http2Stream.cancel(new Exception(cause), 0x2);
 		}
 
 		void inboundDataReceived(WsByteBuffer frame, boolean endOfStream) {

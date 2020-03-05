@@ -59,7 +59,11 @@ public class GrpcConnectionHandler implements Http2ConnectionHandler {
 		List<HeaderField> reqHeaders = request.getAllHeaders();
 		Metadata grpcHeaders = new Metadata();
 		for (HeaderField h : reqHeaders) {
-			grpcHeaders.put(Metadata.Key.of(h.getName(), Metadata.ASCII_STRING_MARSHALLER), h.asString());
+			if (h.getName().endsWith("-bin")) {
+				grpcHeaders.put(Metadata.Key.of(h.getName(), Metadata.BINARY_BYTE_MARSHALLER), h.asBytes());
+			} else {
+				grpcHeaders.put(Metadata.Key.of(h.getName(), Metadata.ASCII_STRING_MARSHALLER), h.asString());
+			}
 		}
 
 		listener.streamCreated(grpcH2Stream, path, grpcHeaders);
