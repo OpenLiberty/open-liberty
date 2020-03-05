@@ -18,7 +18,8 @@ Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC Server 1.0
 -features=\
   com.ibm.websphere.appserver.internal.grpc-1.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7
+  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.servlet-4.0
 -bundles=\
   com.ibm.ws.grpc.common.1.0, \
   com.ibm.ws.grpc.client.1.0, \
