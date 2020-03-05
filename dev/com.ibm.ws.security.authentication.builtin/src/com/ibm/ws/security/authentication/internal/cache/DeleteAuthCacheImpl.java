@@ -25,17 +25,17 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
-import com.ibm.ws.security.authentication.cache.RevokeAuthCacheUsers;
+import com.ibm.ws.security.authentication.cache.DeleteAuthCache;
 
 /**
- * The implementation of RevokeAuthCacheUsers MBean which can be used to
+ * The implementation of DeleteAuthCache MBean which can be used to
  * flush the authentication cache of a Liberty Server.
  */
-@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           service = { RevokeAuthCacheUsers.class, DynamicMBean.class },
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
+           service = { DeleteAuthCache.class, DynamicMBean.class },
            immediate = true,
-           property = { "service.vendor=IBM", "jmx.objectname=" + RevokeAuthCacheUsers.INSTANCE_NAME })
-public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAuthCacheUsers {
+           property = { "service.vendor=IBM", "jmx.objectname=" + DeleteAuthCache.INSTANCE_NAME })
+public class DeleteAuthCacheImpl extends StandardMBean implements DeleteAuthCache {
 
     private static final TraceComponent tc = Tr.register(AuthCacheServiceImpl.class);
 
@@ -47,7 +47,7 @@ public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAut
             throw new UnsupportedOperationException("This method is beta and is not avalible");
         } else {
             if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + RevokeAuthCacheUsersImpl.class.getName() + " for the first time.");
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + DeleteAuthCacheImpl.class.getName() + " for the first time.");
                 issuedBetaMessage = !issuedBetaMessage;
             }
         }
@@ -63,8 +63,8 @@ public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAut
      * @param mbeanInterface
      * @throws NotCompliantMBeanException
      */
-    public RevokeAuthCacheUsersImpl() throws NotCompliantMBeanException {
-        super(RevokeAuthCacheUsers.class);
+    public DeleteAuthCacheImpl() throws NotCompliantMBeanException {
+        super(DeleteAuthCacheImpl.class);
     }
 
     @Deprecated

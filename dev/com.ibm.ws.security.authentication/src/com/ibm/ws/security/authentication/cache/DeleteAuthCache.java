@@ -13,14 +13,14 @@ package com.ibm.ws.security.authentication.cache;
 /**
  * MBean to removeAllEntries in the Auth Cache.
  */
-public interface RevokeAuthCacheUsers {
+public interface DeleteAuthCache {
 
     /**
      * This is the name to be used to register and to look up the MBean.
      * It should match the <code>jmx.objectname</code> property in the
      * bnd.bnd file for the component that provides this interface.
      */
-    String INSTANCE_NAME = "WebSphere:service=com.ibm.ws.security.authentication.cache.RevokeAuthCacheUsers";
+    String INSTANCE_NAME = "WebSphere:service=com.ibm.ws.security.authentication.cache.DeleteAuthCache";
 
     public void removeAllEntries();
 
