@@ -15,6 +15,6 @@ IBM-API-Package: com.ibm.wsspi.security.tai; type="ibm-api", \
  com.ibm.ws.management.security, \
  com.ibm.ws.security.quickstart
 -jars=com.ibm.websphere.appserver.api.security; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security_1.2-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security_1.3-javadoc.zip
 kind=ga
 edition=core

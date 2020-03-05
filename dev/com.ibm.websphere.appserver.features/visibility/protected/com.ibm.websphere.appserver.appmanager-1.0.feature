@@ -23,7 +23,7 @@ IBM-Process-Types: server, \
  com.ibm.ws.app.manager.ready; start-phase:=APPLICATION
 -jars=com.ibm.websphere.appserver.api.basics; location:="dev/api/ibm/,lib/",\
  com.ibm.websphere.appserver.spi.application; location:=dev/spi/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.basics_1.3-javadoc.zip, \
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.basics_1.4-javadoc.zip, \
  dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.application_1.1-javadoc.zip
 kind=ga
 edition=core
