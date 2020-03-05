@@ -19,31 +19,148 @@
 # Message prefix block: CWPKI2000 - CWPKI2299
 #-----  ACME messages
 
-# {0} The URI of the certificate authority, such as https://sampleCAProvider.org/directory
-CWPKI2001E=CWPKI2001E: The certificate authority at URI {0} responded that the authorization challenge failed for domain {1} with status {2}.
+# General Notes:
+# The ACME referred to in these messages stands for Automatic Certificate Management Environment.
+# The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
+
+# ACME CA responded that the challenge failed for domain '"	+ authorization.getIdentifier().getDomain() + "' with status " + Status.INVALID.toString()+ ".";
+CWPKI2001E=CWPKI2001E: The ACME certificate authority at URI {0} responded that the authorization challenge failed for domain {1} with status {2}.
 CWPKI2001E.explanation=The certificate authority authorization challenge failed and a certificate cannot be created. 
 CWPKI2001E.useraction=Review the provided status message.
 
-CWPKI2002E=CWPKI2002E: Timed out waiting for a successful authorization challenge for domain {0} from the certificate authority at URI {1}. The status is {2}. The configured timeout is {3}.
+CWPKI2002E=CWPKI2002E: Timed out waiting for a successful authorization challenge for domain {0} from the ACME certificate authority at URI {1}. The status is {2}. The configured timeout is {3}.
 CWPKI2002E.explanation=The certificate authority challenge request was not validated in the configured time and a certificate cannot be created.
 CWPKI2002E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback. Review the status code.
 
-CWPKI2003E=CWPKI2003E: The certificate authority at URI {0} responded that the certificate order failed for domains {1} with status {2}.
+
+CWPKI2003E=CWPKI2003E: The ACME certificate authority at URI {0} responded that the certificate order failed for domains {1} with status {2}.
 CWPKI2003E.explanation=The certificate authority domain certificate order request did not complete in the configured time and a certificate cannot be created.
 CWPKI2003E.useraction=Review the provided status message.
 
-CWPKI2004E=CWPKI2004E: Timed out waiting for a successful order for domains {0} from the certificate authority at URI {1}. The status is {2}.  The configured timeout is {3}.
+#"Timed out waiting for successful order for domains " + csrOptions.getDomains()					+ ". Status is " + order.getStatus().toString();
+CWPKI2004E=CWPKI2004E: Timed out waiting for a successful order for domains {0} from the ACME certificate authority at URI {1}. The status is {2}.  The configured timeout is {3}.
 CWPKI2004E.explanation=The certificate authority domain certificate order request did not complete in the configured time and a certificate cannot be created.
 CWPKI2004E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback.
 
-CWPKI2005E=CWPKI2005E: The authorization returned from the certificate authority at URI {0} did not include a valid challenge type. Valid challenge types include {1}.
+# "Didn't find a " + Http01Challenge.TYPE + " challenge type."
+CWPKI2005E=CWPKI2005E: The authorization returned from the ACME certificate authority at URI {0} did not include a valid challenge type. Valid challenge types include {1}.
 CWPKI2005E.explanation=The certificate authority returned an unsupported challenge type.
 CWPKI2005E.useraction=Select a certificate authority that provides a supported challenge type.
 
-CWPKI2006I=CWPKI2006I: The certificate authority at URI {0} provided the following terms of service: {1}
+CWPKI2006I=CWPKI2006I: The ACME certificate authority at URI {0} provided the following terms of service: {1}
 CWPKI2006I.explanation=The certificate authority may provide terms of service. Review the terms of service provided.
 CWPKI2006I.useraction=No user action required.
 
-CWPKI2007I=CWPKI2007I: Installed a certificate signed by certificate authority at URI {0}. The expiration data is {1}.
+CWPKI2007I=CWPKI2007I: Installed a certificate signed by the ACME certificate authority at URI {0}. The expiration data is {1}.
 CWPKI2007I.explanation=Successfully retrieved and installed a certificate from the configured certificate authority.
 CWPKI2007I.useraction=No user action required.
+
+# "The ACME CA's directory URI must be a valid URI."
+CWPKI2008E=CWPKI2008E: The ACME certificate authority directory URI must be a valid URI. The URI received was null or empty, received '{0}'.
+CWPKI2008E.explanation=Received a null or empty URI for the ACME certificate authority directory.
+CWPKI2008E.useraction=Enter a valid ACME certificate authority directory URI in the configuration.
+
+# "Error triggering challenge to ACME server."
+CWPKI2009E=CWPKI2009E: The challenge request to the ACME certificate authority at URI {0} failed.
+CWPKI2009E.explanation=The challenge request failed and a certificate cannot be created.
+CWPKI2009E.useraction=Review the provided exception for details on the failure.
+
+# "Error updating challenge status from ACME server."
+CWPKI2010E=CWPKI2010E: The challenge update to the ACME certificate authority at URI {0} failed.
+CWPKI2010E.explanation=The challenge update failed and a certificate cannot be updated.
+CWPKI2010E.useraction=Review the provided exception for details on the failure.
+
+# "Error creating order for ACME server."
+CWPKI2011E=CWPKI2011E: Failed to create the certificate order for the ACME certificate authority at URI {0}.
+CWPKI2011E.explanation=Creating the certificate order failed and a signed certificate cannot be created.
+CWPKI2011E.useraction=Review the provided exception for details on the failure.
+
+# "Error signing the certificate signing request."
+CWPKI2012E=CWPKI2012E: Failed to sign the certificate signing request for the ACME certificate authority at URI {0}.
+CWPKI2012E.explanation=The certificate order was created, but signing the certificate signing request failed.
+CWPKI2012E.useraction=Review the provided exception for details on the failure.
+
+# "Error ordering the certificate.
+CWPKI2013E=CWPKI2013E: The certificate signing request was created and signed, but the order failed from the ACME certificate authority at URI {0}.
+CWPKI2013E.explanation=The certificate order was created and signed, but ordering the certificate failed.
+CWPKI2013E.useraction=Review the provided exception for details on the failure.
+
+#"Error getting the encoded certificate signing request."
+CWPKI2014E=CWPKI2014E: The certificate signing request for the ACME certificate authority at URI {0} was created and signed, but encoding the request failed.
+CWPKI2014E.explanation=Encoding the certificate signing request failed and a signed certificate cannot be created.
+CWPKI20014E.useraction=Review the provided exception for details on the failure.
+
+# "Error updating the order status from the ACME server."
+CWPKI2015E=CWPKI2015E: Received an exception while requesting a certificate order update from the ACME certificate authority at URI {0}.
+CWPKI2015E.explanation=A certificate order was send to the certificate authority. While requesting an status update, an exception occurred.
+CWPKI2015E.useraction=Review the provided exception for details on the failure.
+
+# "Error requesting an existing account from ACME server."
+CWPKI2016E=CWPKI2016E: Failed to request an existing account from the ACME certificate authority at URI {0}.
+CWPKI2016E.explanation=Requested an existing account, but received an exception.
+CWPKI2016E.useraction=Review the certificate authority URI provided. Verify that the URI can be successfully accessed by the calling server and the server can receive a callback.
+
+# "Error retrieving the terms of service from the ACME server."
+CWPKI2017E=CWPKI2017E: Failed to receive the terms of service from the ACME certificate authority at URI {0}.
+CWPKI2017E.explanation=Requested the terms of service from the certificate authority, but an exception occurred.
+CWPKI2017E.useraction=Review the provided exception for details on the failure. Visit the ACME certificate authority website directly to review the terms of service.
+
+# "Error creating account on ACME server."
+CWPKI2018E=CWPKI2018E: The user account could not be created on the ACME certificate authority at URI {0}.
+CWPKI2018E.explanation=The user account creation request failed.
+CWPKI2018E.useraction=Review the provided exception for details on the failure.
+
+# "URL for ACME CA account: " + account.getLocation());
+CWPKI2019I=CWPKI2019I: The account URL provided by the the ACME certificate authority is {0}.
+CWPKI2019I.explanation=The account was successfully created.
+CWPKI2019I.useraction=No user action required.
+
+#"Error reading domain key file."
+CWPKI2020E=CWPKI2020E: Failed to read the domain key file for the ACME certificate authority account at URI {0}. The file location is {1}.
+CWPKI2020E.explanation=The domain key file for the certificate authority account could not be opened.
+CWPKI2020E.useraction=Review the provided exception for details on the failure. Verify the file location is correct and has the correct file permissions.
+
+#"Error reading account key file."
+CWPKI2021E=CWPKI2021E: Failed to read the account key file for the ACME certificate authority account at URI {0}. The file location is {1}.
+CWPKI2021E.explanation=The account key file for the certificate authority account could not be opened.
+CWPKI2021E.useraction=Review the provided exception for details on the failure. Verify the file location is correct and has the correct file permissions.
+
+#"Error writing domain key file."
+CWPKI2022E=CWPKI2022E: Failed to write to the domain key file for the ACME certificate authority account at URI {0}. The file location is {1}.
+CWPKI2022E.explanation=Could not write to the domain key file for the certificate authority account.
+CWPKI2022E.useraction=Review the provided exception for details on the failure. Verify the file location is correct and has the correct file permissions.
+
+#"Error writing account key file."
+CWPKI2023E=CWPKI2023E: Failed to write the account key file for the ACME certificate authority account at URI {0}. The file location is {1}.
+CWPKI2023E.explanation=Could not write to the account key file for the certificate authority account.
+CWPKI2023E.useraction=Review the provided exception for details on the failure. Verify the file location is correct and has the correct file permissions.
+
+# "Error revoking certificate."
+CWPKI2024E=CWPKI2024E: Failed to revoke the requested certificate for the ACME certificate authority at URI {0}. The certificate that failed to revoke has serial number {1}.
+CWPKI2024E.explanation=A revoke request failed. The certificate may not be revoked.
+CWPKI2024E.useraction=Review the provided exception for details on the failure.
+
+#"Could not load account KeyPair. Revoking a certificate requires a valid account key pair."
+CWPKI2025W=CWPKI2025W: Received a certificate revoke request, but the account key pair for the ACME certificate authority at URI {0} could not be loaded.
+CWPKI2025W.explanation=Could not revoke a certificate because the account key pair could not be loaded.
+CWPKI2025W.useraction=Review the provided exception for details on the failure. Or manually review the certificate if it is still in the key store file.
+
+# Unable to find account to revoke certificate.  Revoking a certificate requires a valid account.
+CWPKI2026W=CWPKI2026W: Received a certificate revoke request, but the account was not found at the ACME certificate authority at URI {0}.
+CWPKI2026W.explanation=Could not revoke a certificate because the account was not found.
+CWPKI2026W.useraction=Review the certificate authority URI provided. Or manually review the certificate if it is still in the key store file.
+
+# "The " + type + " key file path must be valid."
+CWPKI2027E=CWPKI2027E: The ACME certificate authority key file path is invalid. The path provided is '{0}'.
+CWPKI2027E.explanation=The profile path was null or empty.
+CWPKI2027E.useraction=Provide a valid key file path in the configuration.
+		
+# "Cannot read existing " + type + " key file."
+CWPKI2028E=CWPKI2028E: Failed to read the ACME certificate authority key file path. The path provided is '{0}'.
+CWPKI2028E.explanation=Could not read the provided key file path.
+CWPKI2028E.useraction=Verify the file location is correct and has the correct file permissions.
+		
+# "Cannot write to specified  " + type + " key file."
+CWPKI2029E=CWPKI2029E: Failed to write to the ACME certificate authority key file path. The path provided is '{0}'.
+CWPKI2029E.explanation=Could not write to the provided key file path.
+CWPKI2029E.useraction=Verify the file location is correct and has the correct file permissions.
