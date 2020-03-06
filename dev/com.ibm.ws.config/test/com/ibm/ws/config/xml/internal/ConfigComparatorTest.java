@@ -33,6 +33,7 @@ import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.ws.config.xml.internal.ConfigComparator.ComparatorResult;
 import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
+import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 import test.common.SharedLocationManager;
@@ -44,6 +45,7 @@ public class ConfigComparatorTest {
     static WsLocationAdmin libertyLocation;
     static XMLConfigParser configParser;
     static SharedOutputManager outputMgr;
+    static ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -64,7 +66,8 @@ public class ConfigComparatorTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -77,11 +80,11 @@ public class ConfigComparatorTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         libertyLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(libertyLocation);
+        configParser = new XMLConfigParser(libertyLocation, variableRegistry);
     }
 
     private ServerConfiguration parseServerConfiguration(String xml) throws ConfigParserException, ConfigValidationException {
-        return configParser.parseServerConfiguration(new StringReader(xml));
+        return configParser.parseServerConfiguration(new StringReader(xml), new ServerConfiguration());
     }
 
     @Test

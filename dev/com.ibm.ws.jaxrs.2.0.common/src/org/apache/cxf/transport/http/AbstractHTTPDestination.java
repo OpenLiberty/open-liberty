@@ -657,12 +657,14 @@ public abstract class AbstractHTTPDestination
                 return null;
             }
         }
-        response.setStatus(responseCode);
         //Liberty code change start
-        if (headers == null) {
-            headers = new Headers(outMessage);
+        if (!response.isCommitted()) {
+            response.setStatus(responseCode); //Original CXF line
+            if (headers == null) {
+                headers = new Headers(outMessage);
+            }
+            headers.copyToResponse(response);
         }
-        headers.copyToResponse(response);
         //Liberty code change end
 
         outMessage.put(RESPONSE_HEADERS_COPIED, "true");

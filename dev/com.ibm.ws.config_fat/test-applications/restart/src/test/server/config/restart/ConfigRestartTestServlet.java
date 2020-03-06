@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,8 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.ws.jmx.PlatformMBeanService;
 
+import test.server.config.ServerConfigTest;
+
 @SuppressWarnings("serial")
 public class ConfigRestartTestServlet extends HttpServlet {
 
@@ -67,6 +69,10 @@ public class ConfigRestartTestServlet extends HttpServlet {
                 testAfterVariable(bundleContext, references);
             } else if ("checkImport".equals(testName)) {
                 testCheckImport(bundleContext, references);
+            } else if (ServerConfigTest.CHECK_VARIABLE_IMPORT.equals(testName)) {
+                testCheckVariableImport(bundleContext, references);
+            } else if (ServerConfigTest.CHECK_VARIABLE_IMPORT_UPDATE.equals(testName)) {
+                testCheckVariableImportAfterUpdate(bundleContext, references);
             } else if ("refresh".equals(testName)) {
                 testRefresh(bundleContext, references);
             } else {
@@ -83,6 +89,36 @@ public class ConfigRestartTestServlet extends HttpServlet {
 
         writer.flush();
         writer.close();
+    }
+
+    private void testCheckVariableImport(BundleContext ctx, List<ServiceReference> references) throws Exception {
+        ConfigurationAdmin ca = getConfigurationAdmin(ctx, references);
+
+        Configuration[] configs = null;
+        String filter = null;
+
+        filter = "(" + Constants.SERVICE_PID + "=" + "person" + ")";
+        configs = getConfiguration(ca, filter);
+        assertNotNull("There should be a configuration found for filter " + filter, configs);
+        assertEquals("There should be 1 configuration for filter " + filter, 1, configs.length);
+        assertEquals("Configuration firstName property", "Joe", configs[0].getProperties().get("firstName"));
+        assertEquals("Configuration lastName property", "Doe", configs[0].getProperties().get("lastName"));
+
+    }
+
+    private void testCheckVariableImportAfterUpdate(BundleContext ctx, List<ServiceReference> references) throws Exception {
+        ConfigurationAdmin ca = getConfigurationAdmin(ctx, references);
+
+        Configuration[] configs = null;
+        String filter = null;
+
+        filter = "(" + Constants.SERVICE_PID + "=" + "person" + ")";
+        configs = getConfiguration(ca, filter);
+        assertNotNull("There should be a configuration found for filter " + filter, configs);
+        assertEquals("There should be 1 configuration for filter " + filter, 1, configs.length);
+        assertEquals("Configuration firstName property", "Jill", configs[0].getProperties().get("firstName"));
+        assertEquals("Configuration lastName property", "Doe", configs[0].getProperties().get("lastName"));
+
     }
 
     private void testConfigurationBefore(BundleContext ctx, List<ServiceReference> references) throws Exception {

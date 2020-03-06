@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -815,8 +815,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     private boolean matches(String rpdefault, ArrayList<String> opconfig) {
+        if (opconfig == null) {
+            return rpdefault == null;
+        }
         for (String str : opconfig) {
-            if (rpdefault.equals(str)) {
+            if (rpdefault != null && rpdefault.equals(str)) {
                 return true;
             }
         }
@@ -824,6 +827,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     private boolean matches(String rpdefault, String rpconfig) {
+        if (rpconfig == null) {
+            return rpdefault == null;
+        }
         return rpconfig.equals(rpdefault);
     }
 

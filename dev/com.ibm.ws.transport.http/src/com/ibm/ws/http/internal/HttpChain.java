@@ -441,16 +441,21 @@ public class HttpChain implements ChainEventListener {
                     }
                     
                     else{
-                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, "true");
+                        
+                        boolean enableSameSite = false;
                         if(samesiteOptions.containsKey("lax")){
+                            enableSameSite=true;
                             chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, samesiteOptions.get("lax"));
                         }
                         if(samesiteOptions.containsKey("none")){
+                            enableSameSite=true;
                             chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, samesiteOptions.get("none"));
                         }
                         if(samesiteOptions.containsKey("strict")){
+                            enableSameSite=true;
                             chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, samesiteOptions.get("strict"));
                         }
+                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, enableSameSite);
                     }
 
 

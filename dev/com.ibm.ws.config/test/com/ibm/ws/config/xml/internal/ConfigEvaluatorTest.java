@@ -104,7 +104,9 @@ public class ConfigEvaluatorTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
     }
 
     private class TestConfigEvaluator extends ConfigEvaluator {

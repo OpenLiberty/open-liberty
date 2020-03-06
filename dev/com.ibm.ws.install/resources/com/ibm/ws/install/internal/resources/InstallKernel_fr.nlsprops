@@ -839,6 +839,14 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Ex\u00e9cutez featureUtility 
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Les fonctions utilisateur suivantes sont sp\u00e9cifi\u00e9es dans le fichier server.xml et ne seront pas install\u00e9es : {0}
 
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Les fonctions {0} et {1} sont incompatibles et ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Les fonctions ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Retirez l'une des fonctions et r\u00e9essayez.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Les fonctions de singleton {0} et {1} sont incompatibles et ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Les fonctions ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Retirez l'une des fonctions et r\u00e9essayez.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Le t\u00e9l\u00e9chargement de la fonction a abouti.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La fonction a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Aucune action n'est requise.

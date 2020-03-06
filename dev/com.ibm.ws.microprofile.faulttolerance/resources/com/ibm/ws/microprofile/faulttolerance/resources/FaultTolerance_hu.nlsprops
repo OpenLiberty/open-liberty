@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=N\u00f6velje a rendelkez\u00e9sre \u00
 application.shutdown.CWMFT0002W=CWMFT0002W: A(z) {0} aszinkron met\u00f3dus nem tud befejez\u0151dni, mert az azt h\u00edv\u00f3 alkalmaz\u00e1s vagy komponens le van \u00e1ll\u00edtva.
 application.shutdown.CWMFT0002W.explanation=Az aszinkron met\u00f3dusok az ind\u00edt\u00f3 komponens kontextus\u00e1ban futnak. Az aszinkron met\u00f3dust h\u00edv\u00f3 alkalmaz\u00e1s vagy komponens le\u00e1llt, ami megakad\u00e1lyozta az aszinkron met\u00f3dus befejez\u00e9s\u00e9t.
 application.shutdown.CWMFT0002W.useraction= Ez a figyelmeztet\u00e9s \u00e1ltal\u00e1ban olyankor jelenik meg, amikor egy alkalmaz\u00e1s, komponens vagy szerver le\u00e1ll. Ha minden fut\u00f3 aszinkron met\u00f3dusnak be kell fejez\u0151dnie, akkor az alkalmaz\u00e1snak vagy komponensnek a le\u00e1ll\u00e1s el\u0151tt meg kell v\u00e1rnia az eredm\u00e9nyeket.
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: A(z) {0} aszinkron met\u00f3dus null\u00e9rt\u00e9ket adott vissza. 
+asynchronous.returned.null.CWMFT0003W.explanation=Az @Asynchronous megjegyz\u00e9ssel jel\u00f6lt met\u00f3dusok nem adhatnak vissza null\u00e9rt\u00e9ket.
+asynchronous.returned.null.CWMFT0003W.useraction=Akad\u00e1lyozza meg, hogy a met\u00f3dus null\u00e9rt\u00e9ket adjon vissza.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A kiv\u00e9tel: {0}.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class MessagingSecurityUtility implements MessagingSecurityConstants {
                                                       MSTraceConstants.MESSAGING_SECURITY_RESOURCE_BUNDLE);
 
     // Absolute class name along with the package name, used for tracing
-    private static final String CLASS_NAME = "com.ibm.ws.messaging.security.utility.MessagingSecurityUtility";
+    private static final String CLASS_NAME = "com.ibm.ws.messaging.security.utility.MessagingSecurityUtility.";
 
     private static SubjectHelper subjectHelper = new SubjectHelper();
 

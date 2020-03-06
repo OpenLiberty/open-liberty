@@ -58,7 +58,6 @@ public class SameSiteAddCookieSetCookieHeaderFilter implements Filter {
             for (String header : headers) {
                 servletContext.log("***********< SameSiteAddCookieSetCookieHeaderFilter doFilter Set-Cookie header: " + header);
             }
-
         }
 
         if (testSameSiteAddCookieFirst) {

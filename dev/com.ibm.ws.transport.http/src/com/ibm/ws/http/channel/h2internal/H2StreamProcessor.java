@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,7 +188,7 @@ public class H2StreamProcessor {
      * connection setting updates, frame responses, and error processing. Note this method is synchronized.
      *
      * @param Frame
-     * @param       Direction.WRITING_OUT or Direction.READING_IN
+     * @param Direction.WRITING_OUT or Direction.READING_IN
      * @throws ProtocolException
      * @throws StreamClosedException
      */
@@ -201,6 +201,7 @@ public class H2StreamProcessor {
             Tr.debug(tc, "processNextFrame-entry:  stream: " + myID + " frame type: " + frame.getFrameType().toString() + " direction: " + direction.toString()
                          + " H2InboundLink hc: " + muxLink.hashCode());
         }
+
         // if we've already sent a reset frame on this stream , process any window size changes then ignore the new frame
         if (rstStreamSent) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -281,9 +282,9 @@ public class H2StreamProcessor {
                 muxLink.setStatusLinkToGoAwaySending();
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "processNextFrame: addFrame GOAWAY: HighestClientStreamId: " + muxLink.getHighestClientStreamId());
+                    Tr.debug(tc, "processNextFrame: addFrame GOAWAY: HighestClientStreamId: " + muxLink.getGoawayPromisedStreamId());
                 }
-                currentFrame = new FrameGoAway(0, addFrameException.getMessage().getBytes(), addFrameException.getErrorCode(), muxLink.getHighestClientStreamId(), false);
+                currentFrame = new FrameGoAway(0, addFrameException.getMessage().getBytes(), addFrameException.getErrorCode(), muxLink.getGoawayPromisedStreamId(), false);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: exception encountered.  Sending a GOAWAY frame with the error code " + addFrameException.getErrorString());
                 }
@@ -909,12 +910,12 @@ public class H2StreamProcessor {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "sendGOAWAYFrame sending a GOAWAY with Last-Stream-ID " + muxLink.getHighestClientStreamId()
+            Tr.debug(tc, "sendGOAWAYFrame sending a GOAWAY with Last-Stream-ID " + muxLink.getGoawayPromisedStreamId()
                          + " and exception " + e.toString());
         }
 
         // send out a GoAway in response;
-        Frame frame = new FrameGoAway(0, e.getMessage().getBytes(), e.getErrorCode(), muxLink.getHighestClientStreamId(), false);
+        Frame frame = new FrameGoAway(0, e.getMessage().getBytes(), e.getErrorCode(), muxLink.getGoawayPromisedStreamId(), false);
         processNextFrame(frame, Constants.Direction.WRITING_OUT);
     }
 
@@ -933,7 +934,7 @@ public class H2StreamProcessor {
         this.updateStreamState(StreamState.CLOSED);
 
         // send out a goaway in response; return the same last stream, for now
-        currentFrame = new FrameGoAway(0, new byte[0], 0, muxLink.getHighestClientStreamId(), false);
+        currentFrame = new FrameGoAway(0, new byte[0], 0, muxLink.getGoawayPromisedStreamId(), false);
 
         try {
             writeFrameSync();
@@ -1049,6 +1050,10 @@ public class H2StreamProcessor {
         }
 
         if (direction == Constants.Direction.READ_IN) {
+            if (currentFrame.flagEndStreamSet()) {
+                endStream = true;
+                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+            }
             if (frameType == FrameTypes.DATA) {
                 getBodyFromFrame();
                 if (currentFrame.flagEndStreamSet()) {
@@ -1069,10 +1074,6 @@ public class H2StreamProcessor {
                 } else {
                     muxLink.setContinuationExpected(true);
                 }
-            }
-            if (currentFrame.flagEndStreamSet()) {
-                endStream = true;
-                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
             }
 
         } else {
@@ -1308,14 +1309,14 @@ public class H2StreamProcessor {
                 // As an HTTP/2 server, and not a client, this code should not receive a PUSH_PROMISE frame
                 throw new ProtocolException("PUSH_PROMISE Frame Received on server side");
 
-                //case PING:   PING frame is not stream based.
-                //      break;
+            //case PING:   PING frame is not stream based.
+            //      break;
 
-                //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
-                //      break;
+            //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
+            //      break;
 
-                // case SETTINGS:  Setting is not stream based.
-                //      break;
+            // case SETTINGS:  Setting is not stream based.
+            //      break;
 
             case WINDOW_UPDATE:
                 if (state == StreamState.IDLE && myID != 0) {
@@ -1651,7 +1652,7 @@ public class H2StreamProcessor {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setReadyForRead entry: stream id:" + myID);
         }
-        muxLink.updateHighestStreamId(myID);
+        muxLink.updateGoawayPromisedStreamId(myID);
         if (headersCompleted) {
             ExecutorService executorService = CHFWBundle.getExecutorService();
             Http2Ready readyThread = new Http2Ready(h2HttpInboundLinkWrap);

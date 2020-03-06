@@ -171,7 +171,7 @@ public class PropertyService extends Properties {
                 entry.setValue("******");
             else if(entry.getKey() instanceof String && entry.getValue() instanceof String && ((String) entry.getKey()).toLowerCase().contains("url"))
                 entry.setValue(filterURL((String) entry.getValue()));
-            else if (entry.getKey() instanceof String && entry.getKey() instanceof String && ((String) entry.getKey()).toLowerCase().contains("connectionproperties"))
+            else if (entry.getKey() instanceof String && entry.getValue() instanceof String && ((String) entry.getKey()).toLowerCase().contains("connectionproperties"))
                 entry.setValue(filterConnectionProperties((String) entry.getValue()));
         return map;
     }

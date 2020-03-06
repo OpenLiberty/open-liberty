@@ -352,6 +352,7 @@ public class SimpleBindingNameTestServlet extends FATServlet {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.out);
                     fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                 }
             } else {
@@ -361,6 +362,7 @@ public class SimpleBindingNameTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
                 fail("lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
             } else {
                 // expected to fail in other cases
@@ -381,6 +383,7 @@ public class SimpleBindingNameTestServlet extends FATServlet {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.out);
                     fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                 }
             } else {
@@ -390,6 +393,7 @@ public class SimpleBindingNameTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
                 fail("lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
             } else {
                 // expected to fail in other cases
