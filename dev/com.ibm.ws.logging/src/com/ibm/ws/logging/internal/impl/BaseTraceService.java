@@ -219,7 +219,7 @@ public class BaseTraceService implements TrService {
 
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
-
+    private static volatile int fieldMappingVersion = 0;
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
     private static boolean isServerConfigUpdate = false;
     private static boolean isServerConfigSetup = true;
@@ -473,10 +473,15 @@ public class BaseTraceService implements TrService {
         return isServerConfigUpdate;
     }
 
+    public static int getFieldMappingVersion() {
+        return fieldMappingVersion;
+    }
+
     public static void applyJsonFields(String value, Boolean omitJsonFields) {
 
         if (!isServerConfigSetup)
-            isServerConfigUpdate = true;
+            fieldMappingVersion++;
+        //isServerConfigUpdate = true;
         else
             isServerConfigSetup = false;
 
