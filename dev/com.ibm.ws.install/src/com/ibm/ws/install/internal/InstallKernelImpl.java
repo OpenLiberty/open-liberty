@@ -631,7 +631,7 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
             this.director.reapplyFixIfNeeded();
         } finally {
             this.director.setScriptsPermission(InstallProgressEvent.POST_INSTALL);
-            this.director.cleanUp();
+//            this.director.cleanUp();
         }
         return installed;
     }
