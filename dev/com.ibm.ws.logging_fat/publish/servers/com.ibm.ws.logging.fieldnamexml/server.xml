@@ -15,4 +15,7 @@
     <featureManager>
 	   <feature>jsp-2.2</feature>
     </featureManager>
+    
+    <application location="extFields.war"/>
+    
 </server>
