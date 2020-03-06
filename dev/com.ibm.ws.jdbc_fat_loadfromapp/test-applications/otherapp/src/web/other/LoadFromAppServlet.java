@@ -50,6 +50,9 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
     @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromTopLevelJarInApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromTopLevelJarInApp;
 
+    @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromWebAppNotFoundInEAR", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromWebAppNotFound;
+
     @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromWebModuleInApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromWebModuleInApp;
 
@@ -224,16 +227,17 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
     }
 
     /**
-     * testLoginModuleFromWebModuleInEAR - verify that a login module that is packaged within the web module CANNOT be used to authenticate
-     * to a data source when its resource reference specifies to use that login module.
+     * testLoginModuleFromWebAppNotFoundInOtherApp - verify that a login module that is packaged within a separate web application
+     * that does not match the classProviderRef CANNOT be used to authenticate to a data source when its resource reference
+     * specifies to use that login module.
      */
     @AllowedFFDC({
-                   "javax.security.auth.login.LoginException", // no login modules for webapplogin
+                   "javax.security.auth.login.LoginException", // no login modules for notFoundInEarLogin
                    "javax.resource.ResourceException" // chains the LoginException
     })
     @Test
-    public void testLoginModuleFromWebModuleInEAR() throws Exception {
-        try (Connection con = sldsLoginModuleFromWebModuleInApp.getConnection()) {
+    public void testLoginModuleFromWebAppNotFoundInOtherApp() throws Exception {
+        try (Connection con = sldsLoginModuleFromWebAppNotFound.getConnection()) {
             DatabaseMetaData metadata = con.getMetaData();
             fail("authenticated as user " + metadata.getUserName());
         } catch (SQLException x) {
@@ -242,6 +246,19 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
                 cause = cause.getCause();
             if (!(cause instanceof LoginException))
                 throw x;
+        }
+    }
+
+    /**
+     * testLoginModuleFromWebModuleInEAR - verify that a login module that is packaged within a web module within an enterprise application
+     * can be used to authenticate to a data source when its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromWebModuleInEAR() throws Exception {
+        try (Connection con = sldsLoginModuleFromWebModuleInApp.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            String userName = metadata.getUserName();
+            assertEquals("webuser", userName);
         }
     }
 

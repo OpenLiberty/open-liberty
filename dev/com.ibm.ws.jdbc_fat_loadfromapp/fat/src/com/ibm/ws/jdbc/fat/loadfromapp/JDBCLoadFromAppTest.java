@@ -90,7 +90,9 @@ public class JDBCLoadFromAppTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("SRVE9967W.*derbyLocale" // ignore missing Derby locales
+        server.stopServer("CWWKS1148E(?=.*LoadFromAppLoginModule)(?=.*derbyApp)", // Intentional error: loginmod.LoadFromAppLoginModule not found in derbyApp
+                          "CWWKS1148E(?=.*LoadFromWebAppLoginModule)(?=.*otherApp)", // Intentional error: web.derby.LoadFromWebAppLoginModule not found in otherApp
+                          "SRVE9967W.*derbyLocale" // ignore missing Derby locales
         );
     }
 }
