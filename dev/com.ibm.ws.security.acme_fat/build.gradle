@@ -23,5 +23,6 @@ dependencies {
                'commons-logging:commons-logging:1.1.1',
                'org.shredzone.acme4j:acme4j-client:2.7',
                'org.shredzone.acme4j:acme4j-utils:2.7',
-               project(':com.ibm.ws.security.acme')
+               project(':com.ibm.ws.security.acme'),
+               project(':com.ibm.ws.crypto.certificateutil')
 }
