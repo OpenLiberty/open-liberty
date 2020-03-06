@@ -114,6 +114,15 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             Class<?> cl = getTargetClassForName(target);
             options.put(LoginModuleProxy.KERNEL_DELEGATE, cl);
         } else {
+            if (sharedLibrary == null && classProviderAppInfo == null) // nowhere to load the login module class from
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING",
+                                                                    originalLoginModuleClassName,
+                                                                    props.get("config.displayId")));
+            else if (sharedLibrary != null && classProviderAppInfo != null) // conflicting locations to load from
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT",
+                                                                    originalLoginModuleClassName,
+                                                                    props.get("config.displayId")));
+
             options = processDelegateOptions(options, originalLoginModuleClassName, classProviderAppInfo, classLoadingService, sharedLibrary, false);
         }
         this.options = options;
@@ -294,13 +303,14 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
         return options;
     }
 
+    /** Required if classProviderRef is configured, in which case it will be called before activate */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL)
     protected void setClassProvider(ApplicationInfo classProviderAppInfo) {
         this.classProviderAppInfo = classProviderAppInfo;
     }
 
-    /** Set required service, will be called before activate */
-    @Reference
+    /** Required if libraryRef is configured, in which case it will be called before activate */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
     protected void setSharedLib(Library svc) {
         sharedLibrary = svc;
     }

@@ -14,19 +14,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
+import javax.resource.spi.security.PasswordCredential;
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
@@ -254,5 +262,36 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
         } finally {
             con.close();
         }
+    }
+
+    /**
+     * testWebInboundLoginModule - log in with the default login module for web inbound traffic,
+     * for which the location of the login module class is configured via classProviderRef.
+     */
+    @Test
+    public void testWebInboundLoginModule() throws Exception {
+        final List<String> users = new ArrayList<String>();
+        final LoginContext loginContext = new LoginContext("system.WEB_INBOUND");
+
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+            @Override
+            public Void run() throws Exception {
+                loginContext.login();
+                try {
+                    Subject subject = loginContext.getSubject();
+                    for (PasswordCredential cred : subject.getPrivateCredentials(PasswordCredential.class)) {
+                        String user = cred.getUserName();
+                        users.add(user);
+                        if ("webInboundUser".equals(user))
+                            Assert.assertArrayEquals("webInboundPwd".toCharArray(), cred.getPassword());
+                    }
+                } finally {
+                    loginContext.logout();
+                }
+                return null;
+            }
+        });
+
+        assertTrue("Found in private credentials: " + users.toString(), users.contains("webInboundUser"));
     }
 }

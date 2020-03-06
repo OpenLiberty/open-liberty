@@ -82,11 +82,6 @@ public class JDBCLoadFromAppTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, otherApp);
 
-        // TODO remove this once libraryRef is made optional
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ignoreThisUselessLibrary.jar");
-        jar.addPackage("com.ibm.ws.jdbc.fat.loadfromapp"); // no login modules here
-        ShrinkHelper.exportToServer(server, "/", jar);
-
         server.addInstalledAppForValidation("derbyApp");
         server.addInstalledAppForValidation("otherApp");
 
