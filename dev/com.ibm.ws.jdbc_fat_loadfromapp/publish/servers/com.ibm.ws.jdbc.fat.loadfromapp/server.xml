@@ -120,6 +120,7 @@
     <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
 
     <!-- permissions for login modules -->
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
 
     <variable name="onError" value="FAIL"/>
