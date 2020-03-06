@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,9 +37,6 @@ import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.boot.internal.PasswordGenerator;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
 
-/**
- *
- */
 public class BootstrapConfig {
     /** ${} */
     final static Pattern SYMBOL_DEF = Pattern.compile("\\$\\{([^\\$\\{\\}]*?)\\}");
@@ -1208,11 +1205,6 @@ public class BootstrapConfig {
                 if (serverEnvContents != null)
                     toWrite += System.getProperty("line.separator");
                 toWrite += "keystore_password=" + new String(keystorePass);
-            }
-            if (jvmLevel >= 1.8 && (serverEnvContents == null || !serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE="))) {
-                if (serverEnvContents != null || !toWrite.isEmpty())
-                    toWrite += System.getProperty("line.separator");
-                toWrite += "WLP_SKIP_MAXPERMSIZE=true";
             }
 
             if (serverEnvContents == null)
