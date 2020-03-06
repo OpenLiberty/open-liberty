@@ -64,7 +64,7 @@ public class DeleteAuthCacheImpl extends StandardMBean implements DeleteAuthCach
      * @throws NotCompliantMBeanException
      */
     public DeleteAuthCacheImpl() throws NotCompliantMBeanException {
-        super(DeleteAuthCacheImpl.class);
+        super(DeleteAuthCache.class);
     }
 
     @Deprecated
