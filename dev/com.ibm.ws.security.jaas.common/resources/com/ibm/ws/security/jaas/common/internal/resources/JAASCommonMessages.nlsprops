@@ -90,4 +90,4 @@ CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Specify either the 
 
 CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: The {0} JAAS custom login module class is not found within the {1} {2} artifact.
 CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=The specified application or resource adapter does not contain the requested JAAS custom login module class or the JAAS custom login module class is present within the application, but in a location from which it cannot be loaded.
-CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Make sure the configured JAAS custom login module class and its package name are correct. If an application is specified, the login module class must be contained within the application, either a within top level JAR or a resource adapter module.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Make sure the configured JAAS custom login module class and its package name are correct. If an application is specified, the login module class must be contained within the application, within either a top level JAR or a resource adapter module.
