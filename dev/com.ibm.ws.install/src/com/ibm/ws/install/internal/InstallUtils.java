@@ -1045,6 +1045,28 @@ public class InstallUtils {
         return connection instanceof DirectoryRepositoryConnection;
     }
 
+
+    private static Set<String> resolveAsSetFeatures;
+    public static Set<String> getResolveAsSetFeatures() {
+        return resolveAsSetFeatures;
+    }
+
+    public static void setResolveAsSetFeatures(Set<String> resolveFeatures){
+        resolveAsSetFeatures = resolveFeatures;
+    }
+
+    public static Set<String> getResolveFeatures() {
+        return resolveFeatures;
+    }
+
+    public static void setResolveFeatures(Set<String> resolveFeatures) {
+        InstallUtils.resolveFeatures =resolveFeatures;
+    }
+
+    private static Set<String> resolveFeatures;
+
+
+
     public static File getFileDirectoryBasedRepository(RepositoryResource installResource) throws InstallException {
         RepositoryConnection connection = installResource.getRepositoryConnection();
         if (connection instanceof DirectoryRepositoryConnection) {

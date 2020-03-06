@@ -642,14 +642,44 @@ class ResolveDirector extends AbstractDirector {
                 allServerFeatures.addAll(assetsToInstall);
 
                 // FIRST CALL to resolveAsSet --> this throws an error for singleton features
-                log(Level.FINE, "Calling resolveAsSet to determine conflicts");
-                resolver.resolveAsSet(allServerFeatures); // use new api
+                log(Level.FINE, "Calling old resolver ");
+                installResources = resolver.resolveAsSet(allServerFeatures); // use new api
 
 
-                // SECOND CALL to resolveAsSet, including all installed features
-                log(Level.FINE, "Resolving features");
+                Set<String> returnedFeatureList = new HashSet<>();
+                for(List<RepositoryResource>  resList  : installResources){
+                    for(RepositoryResource res : resList) {
+                        if (res.getType().equals(ResourceType.FEATURE)) {
+                            EsaResource esa = (EsaResource) res;
+                            returnedFeatureList.add(esa.getProvideFeature());
+                        }
+                    }
+                }
+                InstallUtils.setResolveAsSetFeatures(returnedFeatureList);
+
+//                System.out.println("returned features list: " + returnedFeatureList);
+//                // now call resolveAsSET
+//
+//
+//
+//                // SECOND CALL to resolveAsSet, including all installed features
+//                log(Level.FINE, "Resolving feature with resolve as set");
                 resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
                 installResources = resolver.resolve(allServerFeatures);
+
+
+                Set<String> returnedFeatureList2 = new HashSet<>();
+                for(List<RepositoryResource>  resList  : installResources){
+                    for(RepositoryResource res : resList){
+                        EsaResource esa = (EsaResource) res;
+                        returnedFeatureList2.add(esa.getProvideFeature());
+                    }
+                }
+                InstallUtils.setResolveFeatures(returnedFeatureList2);
+
+//                System.out.println("second returned features list: " + returnedFeatureList2);
+//                System.out.println("same? " + returnedFeatureList.equals(returnedFeatureList2));
+
             } else {
                 log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetsToInstall);

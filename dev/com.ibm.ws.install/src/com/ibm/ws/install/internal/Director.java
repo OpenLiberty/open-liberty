@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipException;
 
 import com.ibm.ws.install.CancelException;
@@ -1432,6 +1434,14 @@ public class Director extends AbstractDirector {
         } else {
             this.installAssets = new ArrayList<List<InstallAsset>>(installResources.size());
         }
+
+
+        Set<String> resolveAsSetFeatures = InstallUtils.getResolveAsSetFeatures();
+        System.out.println("resolve as set features: " + resolveAsSetFeatures);
+        Pattern pattern = Pattern.compile(".*\\d+\\.\\d+-.*\\d+\\.\\d+");
+        Set<String> resolveFeatures = InstallUtils.getResolveFeatures();
+
+
         int progress = 10;
         int interval1 = installResources.size() == 0 ? 40 : 40 / installResources.size();
         for (Entry<String, List<List<RepositoryResource>>> targetList : installResources.entrySet()) {
@@ -1445,13 +1455,18 @@ public class Director extends AbstractDirector {
                         fireDownloadProgressEvent(progress, installResource);
                     progress += interval3;
                     File d = InstallUtils.getFileDirectoryBasedRepository(installResource);
+
                     if (installResource.getType().equals(ResourceType.FEATURE)) {
                         EsaResource esa = (EsaResource) installResource;
                         ESAAsset esaAsset;
                         String target = targetList.getKey();
+                        boolean useThisFeature = false;
+
+                        System.out.println("processing " + installResource.getName());
                         try {
                             if (d != null) {
                                 esaAsset = new ESAAsset(esa.getName(), esa.getProvideFeature(), InstallUtils.toExtension(target, toExtension), d, false);
+
                                 if (esaAsset.getSubsystemEntry() == null) {
                                     throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.content.no.subsystem.manifest"),
                                                                 InstallException.BAD_FEATURE_DEFINITION);
@@ -1465,7 +1480,20 @@ public class Director extends AbstractDirector {
                             } else {
                                 esaAsset = new ESAAsset(esa.getName(), esa.getProvideFeature(), InstallUtils.toExtension(target, toExtension), esa);
                             }
-                            iaList.add(esaAsset);
+
+                            if (resolveAsSetFeatures == null || ((resolveAsSetFeatures.contains(esa.getProvideFeature())))) {
+                                useThisFeature = true;
+                            } else {
+                                // determine if autofeature, NOTE that esa.isAutoFeature() doesnt work all the time!!
+
+                                Matcher matcher = pattern.matcher(esa.getProvideFeature());
+                                if(matcher.find()){
+                                    useThisFeature = true; // it is an auto feature
+                                }
+                            }
+                            if(useThisFeature) {
+                                iaList.add(esaAsset);
+                            }
                         } catch (Exception e) {
                             throw ExceptionUtils.createByKey(e, "ERROR_INVALID_ESA", esa.getName());
                         }
@@ -1509,7 +1537,9 @@ public class Director extends AbstractDirector {
      * @throws InstallException
      */
     public void checkResources() throws InstallException {
+        System.out.println("install assets begin: " + installAssets);
         getResolveDirector().checkResources();
+        System.out.println("install assets now: " + installAssets);
         if (installAssets != null) {
             for (List<InstallAsset> iaList : installAssets) {
                 for (InstallAsset ia : iaList) {
@@ -1525,6 +1555,9 @@ public class Director extends AbstractDirector {
         long free = wlpDir.getFreeSpace();
         String wlpDirSpace = castToPrintableMessage(wlpDir.getFreeSpace());
         logger.log(Level.FINEST, "Total available space is " + wlpDirSpace + ".");
+
+        System.out.println("install assets now: " + installAssets);
+
         if (free < required) {
             try {
                 throw ExceptionUtils.createByKey("ERROR_WLP_DIR_NO_SPACE", wlpDir.getCanonicalPath(), wlpDirSpace, requiredSpace);
@@ -1532,6 +1565,7 @@ public class Director extends AbstractDirector {
                 throw ExceptionUtils.create(e);
             }
         }
+
     }
 
     /**
