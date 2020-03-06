@@ -99,7 +99,7 @@ Service-Component: \
   com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl, \
   com.ibm.ws.security.authentication.internal.collective.NullCollectiveAuthenticationPlugin, \
   com.ibm.ws.security.authentication.internal.jaas.JAASConfigurationImpl, \
-  com.ibm.ws.security.authentication.internal.cache.RevokeAuthCacheUsersImpl
+  com.ibm.ws.security.authentication.internal.cache.DeleteAuthCacheImpl
 
 instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resources/*.class
 

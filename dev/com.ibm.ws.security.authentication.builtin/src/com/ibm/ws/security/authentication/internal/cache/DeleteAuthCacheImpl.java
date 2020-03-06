@@ -31,8 +31,8 @@ import com.ibm.ws.security.authentication.cache.DeleteAuthCache;
  * The implementation of DeleteAuthCache MBean which can be used to
  * flush the authentication cache of a Liberty Server.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = { DeleteAuthCache.class, DynamicMBean.class },
+@Component(service = { DeleteAuthCache.class, DynamicMBean.class },
+           configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            property = { "service.vendor=IBM", "jmx.objectname=" + DeleteAuthCache.INSTANCE_NAME })
 public class DeleteAuthCacheImpl extends StandardMBean implements DeleteAuthCache {
