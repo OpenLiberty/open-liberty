@@ -46,6 +46,7 @@ public class CollectorJsonHelpers {
     private static String startAuditJson = null;
     private static String startAuditJson1_1 = null;
     private static String startAuditJsonFields = null;
+    private static final String TYPE_FIELD_KEY = "\"type";
     private static final String TYPE_FIELD_PREPPEND = "\":\"";
     private static final String TYPE_FIELD_APPEND = "\"";
     private static final String MESSAGE_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.MESSAGES_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
@@ -498,14 +499,11 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startGCJson1_1(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (BaseTraceService.getIsServerConfigUpdate()) {
-            startGCJson1_1 = null;
-        }
-
         if (startGCJson1_1 != null) {
             sb.append(startGCJson1_1);
         } else {
             sb.append("{");
+            sb.append(TYPE_FIELD_KEY);
             sb.append(GC_JSON_TYPE_FIELD);
             addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
 
