@@ -236,14 +236,17 @@ public class OAuth20ClientMetatypeService {
 
     @Trivial
     private boolean isAttributeToIgnore(AttributeDefinition attrDef) {
+        if (attrDef.getID().equals(LibertyOAuth20Provider.KEY_CLIENT_TRUSTED_URI_PREFIXES)) {
+            return false;
+        }
         return "internal".equals(attrDef.getName()) || isUnsupportedRegistrationAttribute(attrDef);
     }
 
     @Trivial
     private boolean isUnsupportedRegistrationAttribute(AttributeDefinition attrDef) {
         String attributeId = attrDef.getID();
-        return LibertyOAuth20Provider.KEY_CLIENT_TRUSTED_URI_PREFIXES.equals(attributeId)
-                || LibertyOAuth20Provider.KEY_CLIENT_RESOURCE_IDS.equals(attributeId)
+        // LibertyOAuth20Provider.KEY_CLIENT_TRUSTED_URI_PREFIXES.equals(attributeId)
+        return LibertyOAuth20Provider.KEY_CLIENT_RESOURCE_IDS.equals(attributeId)
                 || LibertyOAuth20Provider.KEY_CLIENT_ENABLED.equals(attributeId)
                 || OIDCConstants.OIDC_SESSION_MANAGED.equals(attributeId);
     }
@@ -390,6 +393,7 @@ public class OAuth20ClientMetatypeService {
         nameMap.put(LibertyOAuth20Provider.KEY_CLIENT_FUNCTIONAL_USER_GROUPIDS, OidcBaseClient.SN_FUNCTIONAL_USER_GROUP_IDS);
         nameMap.put(LibertyOAuth20Provider.KEY_CLIENT_INTROSPECT_TOKENS, OidcBaseClient.SN_INTROSPECT_TOKENS);
         nameMap.put(LibertyOAuth20Provider.KEY_CLIENT_allowRegexpRedirects, OidcBaseClient.SN_ALLOW_REGEXP_REDIRECTS);
+        nameMap.put(LibertyOAuth20Provider.KEY_CLIENT_TRUSTED_URI_PREFIXES, OidcBaseClient.SN_TRUSTED_URI_PREFIXES);
         return nameMap;
     }
 
