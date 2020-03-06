@@ -191,7 +191,7 @@ public class JDBC43TestServlet extends FATServlet {
                             }
                             return s;
                         })
-                        .thenApply(s -> {
+                        .thenApplyAsync(s -> {
                             try {
                                 Thread.sleep(1000); // this encourages the current servlet request to go out of scope, if it hasn't already
                             } catch (InterruptedException x) {
@@ -261,9 +261,9 @@ public class JDBC43TestServlet extends FATServlet {
                             }
                             return s;
                         })
-                        .thenApply(s -> {
+                        .thenApplyAsync(s -> {
                             try {
-                                Thread.sleep(1000); // this encourages the current servlet request to go out of scope, if it hasn't already
+                                Thread.sleep(5000); // this encourages the current servlet request to go out of scope, if it hasn't already
                             } catch (InterruptedException x) {
                                 throw new CompletionException(x);
                             }
@@ -271,6 +271,7 @@ public class JDBC43TestServlet extends FATServlet {
                         })
                         .thenApply(s -> {
                             try {
+                                assertFalse(s.getConnection().getAutoCommit());
                                 s.executeUpdate("INSERT INTO STREETS VALUES ('Century Hills Drive NE', 'Rochester', 'MN')");
                             } catch (SQLException x) {
                                 throw new CompletionException(x);
@@ -313,13 +314,9 @@ public class JDBC43TestServlet extends FATServlet {
                         ResultSet result = st.executeQuery("SELECT NAME FROM STREETS WHERE NAME LIKE 'Century%'")) {
             assertTrue(result.next());
             String name1 = result.getString(1);
-            assertTrue("only found " + name1, result.next());
-            String name2 = result.getString(1);
-            if (result.next())
-                fail("found too many: " + name1 + ", " + name2 + ", " + result.getString(1));
-            List<String> found = Arrays.asList(name1, name2);
-            assertTrue(found.toString(), found.contains("Century Valley Road NE"));
-            assertTrue(found.toString(), found.contains("Century Hills Drive NE"));
+            assertFalse("Found multiple entries, " + name1 + " and " + result.getString(1)
+                        + " which means that the database local transaction was not rolled back when the servlet goes out of scope", result.next());
+            assertEquals("Century Hills Drive NE", name1);
         }
     }
 
