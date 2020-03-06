@@ -24,6 +24,7 @@ import org.test.d43.jdbc.D43Driver;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -66,7 +67,9 @@ public class JDBC43Test extends FATServletClient {
                           "DSRA0304E", // expected when invoking end on JDBC driver during an abort
                           "DSRA8790W", // expected for begin/endRequest invoked by application being ignored
                           "J2CA0081E", // TODO why does Derby think a transaction is still active?
-                          "WLTC0018E"); // TODO remove once transactions bug is fixed
+                          "WLTC0018E", // TODO remove once transactions bug is fixed
+                          "WLTC0032W", // local tran rolled back, expected when trying to keep unshared connection open across servlet boundary
+                          "WLTC0033W.*poolOf1"); // same reason as above
     }
 
     /**
@@ -91,10 +94,13 @@ public class JDBC43Test extends FATServletClient {
      * operations under the same transaction asynchronously via a completion stage, which ultimately commits the transaction
      * if successful and closes the connection. After the servlet method ends and goes out of scope, invokes a second servlet method,
      * which under a new scope, accesses the completion stage, joins it, and checks that the operations executed successfully.
+     * When the servlet goes out of scope, the unresolved database local transaction is automatically rolled back per the
+     * default action for unresolved transactions. The connection appears to be usable after this, with autocommit still false.
      * This behavior is currently possible without the HandleList implementation in place to prevent it.
-     * Although we do not recommend this pattern, some users might be relying upon it, and there needs to be a way
-     * to avoid breaking these users when HandleList is put in place to clean up connections when requests go out of scope.
+     * TODO Is it necessary to preserve this behavior of leaving the connection open for further use?
+     * It is a bad practice to ever have code that relies on the unresolved action to resolve transactions.
      */
+    @ExpectedFFDC("com.ibm.ws.LocalTransaction.RolledbackException")
     @Test
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary() throws Exception {
         runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1");
