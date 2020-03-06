@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.ssl;
 
+import java.security.Key;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
@@ -169,4 +170,21 @@ public interface KeyStoreService {
      */
     int getKeyStoreCount();
 
+    /**
+     * Assigns the given key to the given alias.
+     * <p/>
+     * If the given key is of type {@link PrivateKey}, it must be accompanied
+     * by a certificate chain certifying the corresponding public key.
+     * <p/>
+     * If the given alias already exists, the keystore information associated
+     * with it is overridden by the given key (and possibly certificate chain).
+     *
+     * @param keyStoreName The keystore's configuration ID
+     * @param alias the alias of the key to store
+     * @param key the key to store
+     * @param chain the certificate chain to store
+     * @throws KeyStoreException
+     * @throws CertificateException
+     */
+    public void setKeyEntryToKeyStore(String keyStoreName, String alias, Key key, Certificate[] chain) throws KeyStoreException, CertificateException;
 }
