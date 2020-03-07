@@ -16,7 +16,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.security.AccessController;
 import java.security.KeyPair;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Collection;
@@ -269,7 +272,7 @@ public class AcmeClient {
 		/*
 		 * Create a session to the ACME CA directory service.
 		 */
-		Session session = new Session(this.directoryURI);
+		Session session = getNewSession();
 
 		/*
 		 * Get the Account. If there is no account yet, create a new one.
@@ -743,7 +746,7 @@ public class AcmeClient {
 		/*
 		 * Create a session to the ACME CA directory service.
 		 */
-		Session session = new Session(this.directoryURI);
+		Session session = getNewSession();
 
 		/*
 		 * Get the Account.
@@ -870,6 +873,44 @@ public class AcmeClient {
 		}
 		if (file.exists() && !file.canWrite()) {
 			throw new AcmeCaException("Cannot write to specified " + type + " key file location.");
+		}
+	}
+
+	/**
+	 * Create a new session with the ACME CA server.
+	 * 
+	 * @return the session
+	 * @throws AcmeCaException
+	 *             If there was an error trying to create the new session.
+	 */
+	@FFDCIgnore({ PrivilegedActionException.class })
+	private Session getNewSession() throws AcmeCaException {
+
+		try {
+			return AccessController.doPrivileged(new PrivilegedExceptionAction<Session>() {
+
+				@Override
+				public Session run() throws Exception {
+					ClassLoader origLoader = null;
+					try {
+						/*
+						 * Acme4J tries to load the providers using
+						 * ServiceLoader, which requires the ClassLoader is for
+						 * this bundle. If it isn't, calls through our HTTP
+						 * end-points will cause Acme4J to fail to load the
+						 * providers.
+						 */
+						origLoader = Thread.currentThread().getContextClassLoader();
+						Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+
+						return new Session(AcmeClient.this.directoryURI);
+					} finally {
+						Thread.currentThread().setContextClassLoader(origLoader);
+					}
+				}
+			});
+		} catch (PrivilegedActionException e) {
+			throw new AcmeCaException("Failed to create a new session with the ACME CA server.", e.getCause());
 		}
 	}
 }

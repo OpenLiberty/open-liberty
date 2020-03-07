@@ -43,6 +43,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.ConnectionShutdownException;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpCoreContext;
@@ -52,10 +53,9 @@ import com.ibm.websphere.simplicity.config.AcmeCA;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
+import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
 import com.ibm.ws.security.acme.docker.PebbleContainer;
-import com.ibm.ws.security.acme.fat.AcmeSimpleTest;
 import com.ibm.ws.security.acme.fat.FATSuite;
 
 import componenttest.topology.impl.LibertyServer;
@@ -109,17 +109,34 @@ public class AcmeFatUtils {
 	public static CloseableHttpClient getInsecureHttpsClient() throws Exception {
 
 		HttpResponseInterceptor certificateInterceptor = (httpResponse, context) -> {
-			ManagedHttpClientConnection routedConnection = (ManagedHttpClientConnection) context
-					.getAttribute(HttpCoreContext.HTTP_CONNECTION);
-			SSLSession sslSession = routedConnection.getSSLSession();
-			if (sslSession != null) {
+			if (context != null) {
+				ManagedHttpClientConnection routedConnection = (ManagedHttpClientConnection) context
+						.getAttribute(HttpCoreContext.HTTP_CONNECTION);
+				try {
+					SSLSession sslSession = routedConnection.getSSLSession();
+					if (sslSession != null) {
 
-				// get the server certificates from the {@Link SSLSession}
-				Certificate[] certificates = sslSession.getPeerCertificates();
+						/*
+						 * Get the server certificates from the SSLSession.
+						 */
+						Certificate[] certificates = sslSession.getPeerCertificates();
 
-				// add the certificates to the context, where we can later grab
-				// it from
-				context.setAttribute(PEER_CERTIFICATES, certificates);
+						/*
+						 * Add the certificates to the context, where we can
+						 * later grab it from
+						 */
+						if (certificates != null) {
+							context.setAttribute(PEER_CERTIFICATES, certificates);
+						}
+					}
+				} catch (ConnectionShutdownException e) {
+					/*
+					 * This might occur when the request doesn't return a
+					 * payload.
+					 */
+					Log.warning(AcmeFatUtils.class,
+							"Unable to save the connection's TLS certificates to the HTTP context since the connection was closed.");
+				}
 			}
 		};
 
@@ -263,6 +280,9 @@ public class AcmeFatUtils {
 	 */
 	public static void configureDnsForDomains(String... domains) throws Exception {
 
+		Log.info(AcmeFatUtils.class, "configureDnsForDomains(String...)",
+				"Configuring DNS with the following domains: " + domains);
+
 		for (String domain : domains) {
 			/*
 			 * Disable the IPv6 responses for this domain. The Pebble CA server
@@ -284,6 +304,9 @@ public class AcmeFatUtils {
 	 */
 	public static void clearDnsForDomains(String... domains) throws Exception {
 
+		Log.info(AcmeFatUtils.class, "clearDnsForDomains(String...)",
+				"Clearning the following domains from the DNS: " + domains);
+
 		for (String domain : domains) {
 			/*
 			 * Disable the IPv6 responses for this domain. The Pebble CA server
@@ -301,8 +324,8 @@ public class AcmeFatUtils {
 	 * @param server
 	 *            The server to check.
 	 */
-	public static final void waitForLibertyToCreateCertificate(LibertyServer server) {
-		assertNotNull("ACME did not create a new keystore.",
+	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+		assertNotNull("ACME did not create a new certificate.",
 				server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
 	}
 
@@ -313,7 +336,7 @@ public class AcmeFatUtils {
 	 * @param server
 	 */
 	public static final void waitForAcmeToReplaceCertificate(LibertyServer server) {
-		assertNotNull("ACME did not update the keystore.",
+		assertNotNull("ACME did not update replace the certificate.",
 				server.waitForStringInLog("Installed new certificate from ACME CA server"));
 	}
 
@@ -451,6 +474,9 @@ public class AcmeFatUtils {
 				 */
 				Certificate[] certificates = (Certificate[]) context.getAttribute(AcmeFatUtils.PEER_CERTIFICATES);
 				Log.info(AcmeFatUtils.class, methodName, "Certificates: " + Arrays.toString(certificates));
+				assertNotNull(
+						"Expected there to be TLS certificates in the HttpContext. Did the connection abort before we could retrieve them?",
+						certificates);
 				certificates[0].verify(caCertificate.getPublicKey());
 
 				return certificates;

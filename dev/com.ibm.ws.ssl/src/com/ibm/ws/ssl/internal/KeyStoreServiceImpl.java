@@ -172,6 +172,29 @@ public class KeyStoreServiceImpl implements KeyStoreService {
 
     /** {@inheritDoc} */
     @Override
+    public Certificate[] getCertificateChainFromKeyStore(String keyStoreName, String alias) throws KeyStoreException, CertificateException {
+        try {
+            KeyStore ks = ksMgr.getJavaKeyStore(keyStoreName);
+            if (ks == null) {
+                throw new KeyStoreException("The keystore [" + keyStoreName + "] is not present in the configuration");
+            } else {
+                if (!ks.isCertificateEntry(alias) && !ks.isKeyEntry(alias)) {
+                    throw new CertificateException("The alias [" + alias + "] is not present in the KeyStore as a certificate entry");
+                } else {
+                    return ks.getCertificateChain(alias);
+                }
+            }
+        } catch (CertificateException e) {
+            throw e;
+        } catch (KeyStoreException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new KeyStoreException("Unexpected error while loading the request Certificate chain for alias [" + alias + "] from keystore: " + keyStoreName, e);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public X509Certificate getX509CertificateFromKeyStore(String keyStoreName, String alias) throws KeyStoreException, CertificateException {
         try {
             KeyStore ks = ksMgr.getJavaKeyStore(keyStoreName);

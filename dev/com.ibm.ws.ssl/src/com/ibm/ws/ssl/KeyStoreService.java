@@ -64,6 +64,18 @@ public interface KeyStoreService {
     Certificate getCertificateFromKeyStore(String keyStoreName, String alias) throws KeyStoreException, CertificateException;
 
     /**
+     * Loads the Certificate[] (chain) with the given alias from the specified
+     * keystore.
+     *
+     * @param keyStoreName The keystore's configuration ID
+     * @param alias the alias of the certificate to load
+     * @return The Certificate[] (chain) for the given alias. {@code null} is not returned.
+     * @throws KeyStoreException if the keystore does not exist in the configuration
+     * @throws CertificateException if the specified alias does not exist
+     */
+    Certificate[] getCertificateChainFromKeyStore(String keyStoreName, String alias) throws KeyStoreException, CertificateException;
+
+    /**
      * Loads the X509Certificate with the given alias from the specified
      * keystore.
      *
