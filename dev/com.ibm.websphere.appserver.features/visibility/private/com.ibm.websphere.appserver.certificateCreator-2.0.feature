@@ -6,5 +6,5 @@ Subsystem-Version: 2.0.0
 IBM-App-ForceRestart: install, \
  uninstall
 -bundles=com.ibm.ws.crypto.certificate.creator.acme
-kind=ga
-edition=core
+kind=noship
+edition=full
