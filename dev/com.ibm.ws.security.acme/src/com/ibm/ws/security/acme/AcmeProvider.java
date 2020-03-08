@@ -53,15 +53,15 @@ public interface AcmeProvider {
 	public String getHttp01Authorization(String token) throws AcmeCaException;
 
 	/**
-	 * Revoke a certificate using an existing account on the ACME server. If the
-	 * account key pair cannot be found, we will fail.
+	 * Refresh the certificate. This will force a refresh of the certificate by
+	 * first requesting a new certificate and then revoking the current
+	 * certificate.
 	 * 
-	 * @param certificate
-	 *            The certificate to revoke.
 	 * @throws AcmeCaException
-	 *             If there was an error revoking the certificate.
+	 *             If there was an error requesting a new certificate or
+	 *             revoking the old certificate.
 	 */
-	public void revoke(X509Certificate certificate) throws AcmeCaException;
+	public void refreshCertificate() throws AcmeCaException;
 
 	/**
 	 * Updates the default SSL certificate. It is expected that if the default

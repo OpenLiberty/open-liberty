@@ -75,8 +75,8 @@ public class AcmeSSLCertificateCreator implements DefaultSSLCertificateCreator {
 
     /**
      * Convenience method that will retrieve the {@link AcmeProvider}
-     * instance or throw an {@link AcmeCaException} if the
-     * {@link CertificateException} is null.
+     * instance or throw an {@link CertificateException} if the
+     * {@link AcmeProvider} is null.
      *
      * @return The {@link AcmeProvider} instance to use.
      * @throws CertificateException

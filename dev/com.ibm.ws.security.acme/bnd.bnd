@@ -51,6 +51,7 @@ Include-Resource: \
 
 -dsannotations: \
     com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet, \
+    com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler, \
     com.ibm.ws.security.acme.internal.AcmeProviderImpl
 
 # TODO Determine effect of using SLF4J 1.7.7 vs 1.7.26, which is used by Acme4J 2.7.
@@ -89,7 +90,11 @@ Include-Resource: \
 	org.bitbucket.b_c:jose4j;version=0.6.5,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
-	com.ibm.ws.crypto.certificateutil;version=latest
+	com.ibm.ws.crypto.certificateutil;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.ws.rest.handler;version=latest,\
+	com.ibm.ws.management.security;version=latest
+	
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
