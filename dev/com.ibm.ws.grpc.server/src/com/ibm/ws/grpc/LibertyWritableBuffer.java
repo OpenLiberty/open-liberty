@@ -12,6 +12,7 @@
 
 package com.ibm.ws.grpc;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 import io.grpc.internal.WritableBuffer;
@@ -20,17 +21,17 @@ class LibertyWritableBuffer implements WritableBuffer {
 
 	private final WsByteBuffer bytebuf;
 
-	LibertyWritableBuffer(WsByteBuffer bytebuf) {
+	LibertyWritableBuffer(@Sensitive WsByteBuffer bytebuf) {
 		this.bytebuf = bytebuf;
 	}
 
 	@Override
-	public void write(byte[] src, int srcIndex, int length) {
+	public void write(@Sensitive byte[] src, int srcIndex, int length) {
 		bytebuf.put(src, srcIndex, length);
 	}
 
 	@Override
-	public void write(byte b) {
+	public void write(@Sensitive byte b) {
 		bytebuf.put(b);
 	}
 

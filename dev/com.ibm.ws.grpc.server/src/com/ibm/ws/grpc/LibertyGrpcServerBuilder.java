@@ -21,23 +21,23 @@ import java.util.List;
 /**
  * A builder for Liberty-based gRPC servers.
  */
-public final class LibertyServerBuilder extends AbstractServerImplBuilder<LibertyServerBuilder> {
+public final class LibertyGrpcServerBuilder extends AbstractServerImplBuilder<LibertyGrpcServerBuilder> {
 
-	public LibertyServerBuilder() {
+	public LibertyGrpcServerBuilder() {
 	}
 
 	/**
 	 * Currently returns a single LibertyServer
 	 */
 	@Override
-	protected List<? extends LibertyServer> buildTransportServers(List<? extends Factory> streamTracerFactories) {
-		List<LibertyServer> transportServers = new ArrayList<LibertyServer>(1);
-		transportServers.add(new LibertyServer());
+	protected List<? extends LibertyGrpcServer> buildTransportServers(List<? extends Factory> streamTracerFactories) {
+		List<LibertyGrpcServer> transportServers = new ArrayList<LibertyGrpcServer>(1);
+		transportServers.add(new LibertyGrpcServer());
 		return Collections.unmodifiableList(transportServers);
 	}
 
 	@Override
-	public LibertyServerBuilder useTransportSecurity(File certChain, File privateKey) {
+	public LibertyGrpcServerBuilder useTransportSecurity(File certChain, File privateKey) {
 		return null;
 	}
 }

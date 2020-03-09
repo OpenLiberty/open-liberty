@@ -71,9 +71,9 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 		Set<String> grpcServiceClassNames = findGrpcServiceImplementors(appInfo);
 		Set<BindableService> services = initGrpcServices(appInfo, grpcServiceClassNames);
 		if (services != null && !services.isEmpty()) {
-			LibertyServerBuilder serverBuilder = new LibertyServerBuilder();
+			LibertyGrpcServerBuilder serverBuilder = new LibertyGrpcServerBuilder();
 			for (BindableService service : services) {
-				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStarting",
+				Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "applicationStarting",
 						"adding service: " + service + " for application " + appInfo.getName());
 				serverBuilder.addService(service.bindService());
 			}
@@ -145,7 +145,6 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 		if (grpcServiceClassNames != null && !grpcServiceClassNames.isEmpty()) {
 			Set<BindableService> services = new HashSet<BindableService>();
 
-			// TODO: info message
 			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "initGrpcServices",
 					"gRPC BindableService implementations discovered during applicationStarting: ");
 			for (String service : grpcServiceClassNames) {

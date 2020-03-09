@@ -84,7 +84,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 					String serviceName = service.bindService().getServiceDescriptor().getName();
 					String urlPattern = "/" + serviceName + "/*";
 					servletRegistration.addMapping(urlPattern);
-					Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup", "Registered gRPC service at URL: " + urlPattern);
+					Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup", "Registered gRPC service at URL: " + urlPattern);
 				}
 			} else {
 				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",

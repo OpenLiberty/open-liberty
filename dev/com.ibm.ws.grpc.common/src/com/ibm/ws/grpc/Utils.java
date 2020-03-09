@@ -23,7 +23,6 @@ import io.grpc.internal.GrpcUtil;
 
 public class Utils {
 
-	// TODO: non-ascii string format??
 	protected static final String STATUS_OK = "200";
 	protected static final String HTTP_METHOD = GrpcUtil.HTTP_METHOD;
 	protected static final String HTTP_GET_METHOD = "GET";

@@ -20,6 +20,7 @@ import static io.grpc.servlet.ServletServerStream.toHexString;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import io.grpc.InternalLogId;
 import io.grpc.Status;
 import io.grpc.servlet.ServletServerStream.ServletTransportState;
@@ -36,6 +37,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.ServletOutputStream;
 
 /** Handles write actions from the container thread and the application thread. */
+@Trivial
 final class AsyncServletOutputStreamWriter {
 
   private static final Logger logger =

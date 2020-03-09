@@ -24,6 +24,8 @@ import static io.grpc.internal.GrpcUtil.DEFAULT_MAX_MESSAGE_SIZE;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.grpc.ExperimentalApi;
 import io.grpc.InternalChannelz.SocketStats;
 import io.grpc.InternalInstrumented;
@@ -54,6 +56,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * are welcome to provide feedback by commenting on
  * <a href=https://github.com/grpc/grpc-java/issues/5066>the tracking issue</a>.
  */
+@Trivial
 @ExperimentalApi("https://github.com/grpc/grpc-java/issues/5066")
 //@NotThreadSafe
 public final class ServletServerBuilder extends AbstractServerImplBuilder<ServletServerBuilder> {
