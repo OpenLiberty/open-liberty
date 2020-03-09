@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
-import com.ibm.wsspi.kernel.service.utils.FileUtils;
+import com.ibm.ws.artifact.zip.internal.FileUtils;
 
 /**
  * Data for tracking a single zip file.
@@ -668,22 +668,59 @@ ZipFile [Path]
 
             @SuppressWarnings("unused")
             ZipFile oldZipFile = closeZipFile();
+
             @SuppressWarnings("unused")
-            ZipFile newZipFile = openZipFile(newZipLength, newZipLastModified); // throws IOException, ZipException
+            ZipFile newZipFile = openZipFile(newZipLength, newZipLastModified);
+            // throws IOException, ZipException
         }
 
         return zipFile;
     }
 
-    private static final long UNKNOWN_ZIP_LENGTH = -1L;
-    private static final long UNUSED_ZIP_LAST_MODIFIED = -1L;
-
+    /**
+     * Open the zip file.  Set the zip file length and last modified values.
+     *
+     * @throws IOException Thrown if the zip file could not be opened, or if the
+     *     zip file length or last modified value could not be obtained.
+     * @throws ZipException Throw if the zip file could not be opened.
+     */
     @Trivial
     protected ZipFile openZipFile() throws IOException, ZipException {
         return openZipFile(ZipFileData.UNKNOWN_ZIP_LENGTH, ZipFileData.UNUSED_ZIP_LAST_MODIFIED);
         // throws IOException, ZipException
     }
 
+    /**
+     * Control parameter: The zip file length is not yet known and must
+     * be obtained from the file system.
+     * 
+     * See {@link #openZipFile(ZipFile, long, long)}.
+     */
+    private static final long UNKNOWN_ZIP_LENGTH = -1L;
+    
+    /**
+     * Control parameter: The zip file last modified value is not yet known and
+     * must be obtained from the file system.
+     * 
+     * See {@link #openZipFile(ZipFile, long, long)}.
+     */
+    private static final long UNUSED_ZIP_LAST_MODIFIED = -1L;
+
+    /**
+     * Open the zip file.  Set the zip file length and last modified values.
+     *
+     * @param useZipLength The length of the zip file.  If set to {@link #UNKNOWN_ZIP_LENGTH},
+     *     the zip file length will be obtained from the file system.
+     * @param useZipLastModified The last modified value of the zip file.  If set
+     *     to {@link #UNKNOWN_ZIP_LAST_MODIFIED}, the last modified value will be obtained
+     *     from the file system.
+     *
+     * @return the zip file which was just opened.
+     *
+     * @throws IOException Thrown if the zip file could not be opened, or if the
+     *     zip file length or last modified value could not be obtained.
+     * @throws ZipException Throw if the zip file could not be opened.
+     */
     @Trivial
     protected ZipFile openZipFile(long useZipLength, long useZipLastModified) throws IOException, ZipException {
         String methodName = "openZipFile";
