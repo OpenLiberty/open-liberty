@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -238,9 +240,15 @@ public class DBTest extends DBTestBase {
 		client.restoreServerConfiguration();
 		server1.restoreServerConfiguration();
 		server2.restoreServerConfiguration();
-		client.waitForStringInLog("CWWKG001[78]I");
-		server1.waitForStringInLog("CWWKG001[78]I");
-		server2.waitForStringInLog("CWWKG001[78]I");
+		assertNotNull(
+			"Message was not detected in the log",
+			client.waitForStringInLog("CWWKG001[78]I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server1.waitForStringInLog("CWWKG001[78]I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server2.waitForStringInLog("CWWKG001[78]I"));
 	}
 	
 	@Test

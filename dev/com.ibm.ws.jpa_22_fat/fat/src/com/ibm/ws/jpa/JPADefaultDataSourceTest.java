@@ -90,7 +90,9 @@ public class JPADefaultDataSourceTest {
 
         try {
             server_JTA.startServer();
-            server_JTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jdbcwebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jdbcwebapp"));
 
             // Set up database tables and rows
             final String response = HttpUtils.getHttpResponseAsString(server_JTA, "jdbcwebapp/JDBCServlet");
@@ -103,7 +105,9 @@ public class JPADefaultDataSourceTest {
             jpaApp.addClass(jpadds.web.jpa.JPAServlet.class);
             ShrinkHelper.addDirectory(jpaApp, "test-applications/jpadefaultdatasource/resources/JTA");
             ShrinkHelper.exportDropinAppToServer(server_JTA, jpaApp);
-            server_JTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jpawebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jpawebapp"));
 
             // Check that the default datasource points to database #1
             String jpa_response1 = HttpUtils.getHttpResponseAsString(server_JTA, "jpawebapp/JPAServlet?targetId=1&testName=" + testName);
@@ -121,8 +125,12 @@ public class JPADefaultDataSourceTest {
             server_JTA.saveServerConfiguration();
 
             // The config chang should cause jpawebapp to restart.
-            server_JTA.waitForStringInLogUsingMark("CWWKG0017I:");
-            server_JTA.waitForStringInLogUsingMark("CWWKZ0003I: .*jpawebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA.waitForStringInLogUsingMark("CWWKG0017I"));
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA.waitForStringInLogUsingMark("CWWKZ0003I: .*jpawebapp"));
 
             //  Check that the default datasource points to database #2
             String jpa_response2 = HttpUtils.getHttpResponseAsString(server_JTA, "jpawebapp/JPAServlet?targetId=2&testName=" + testName);
@@ -132,7 +140,9 @@ public class JPADefaultDataSourceTest {
         } finally {
             if (server_JTA.isStarted()) {
                 server_JTA.stopServer(null);
-                server_JTA.waitForStringInLogUsingMark("CWWKE0036I: .*JPADefaultDataSourceServer");
+                Assert.assertNotNull(
+                    "Message was not detected in the log",
+                    server_JTA.waitForStringInLogUsingMark("CWWKE0036I: .*JPADefaultDataSourceServer"));
             }
         }
 
@@ -144,7 +154,9 @@ public class JPADefaultDataSourceTest {
 
         try {
             server_NJTA.startServer();
-            server_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jdbcwebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jdbcwebapp"));
 
             // Set up database tables and rows
             final String response = HttpUtils.getHttpResponseAsString(server_NJTA, "jdbcwebapp/JDBCServlet");
@@ -157,7 +169,9 @@ public class JPADefaultDataSourceTest {
             jpaApp.addClass(jpadds.web.jpa.JPARLServlet.class);
             ShrinkHelper.addDirectory(jpaApp, "test-applications/jpadefaultdatasource/resources/NJTA");
             ShrinkHelper.exportDropinAppToServer(server_NJTA, jpaApp);
-            server_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jpawebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jpawebapp"));
 
             // Check that the default datasource points to database #1
             String jparl_response1 = HttpUtils.getHttpResponseAsString(server_NJTA, "jpawebapp/JPARLServlet?targetId=1&testName=" + testName);
@@ -175,8 +189,12 @@ public class JPADefaultDataSourceTest {
             server_NJTA.saveServerConfiguration();
 
             // The config chang should cause jpawebapp to restart.
-            server_NJTA.waitForStringInLogUsingMark("CWWKG0017I:");
-            server_NJTA.waitForStringInLogUsingMark("CWWKZ0003I: .*jpawebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_NJTA.waitForStringInLogUsingMark("CWWKG0017I:"));
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_NJTA.waitForStringInLogUsingMark("CWWKZ0003I: .*jpawebapp"));
 
             //  Check that the default datasource points to database #2
             String jparl_response2 = HttpUtils.getHttpResponseAsString(server_NJTA, "jpawebapp/JPARLServlet?targetId=2&testName=" + testName);
@@ -186,7 +204,9 @@ public class JPADefaultDataSourceTest {
         } finally {
             if (server_NJTA.isStarted()) {
                 server_NJTA.stopServer(null);
-                server_NJTA.waitForStringInLogUsingMark("CWWKE0036I: .*JPADefaultDataSourceServer");
+                Assert.assertNotNull(
+                    "Message was not detected in the log",
+                    server_NJTA.waitForStringInLogUsingMark("CWWKE0036I: .*JPADefaultDataSourceServer"));
             }
         }
     }
@@ -197,7 +217,9 @@ public class JPADefaultDataSourceTest {
 
         try {
             server_JTA_NJTA.startServer();
-            server_JTA_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jdbcwebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jdbcwebapp"));
 
             // Set up database tables and rows
             final String response = HttpUtils.getHttpResponseAsString(server_JTA_NJTA, "jdbcwebapp/JDBCServlet");
@@ -210,7 +232,9 @@ public class JPADefaultDataSourceTest {
             jpaApp.addPackage("jpadds.web.jpa");
             ShrinkHelper.addDirectory(jpaApp, "test-applications/jpadefaultdatasource/resources/JTANJTA");
             ShrinkHelper.exportDropinAppToServer(server_JTA_NJTA, jpaApp);
-            server_JTA_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jpawebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA_NJTA.waitForStringInLogUsingMark("CWWKZ0001I: .*jpawebapp"));
 
             // Check that the default datasource points to database #1
             String jpa_response1 = HttpUtils.getHttpResponseAsString(server_JTA_NJTA, "jpawebapp/JPAServlet?targetId=1&testName=" + testName);
@@ -234,8 +258,12 @@ public class JPADefaultDataSourceTest {
             server_JTA_NJTA.saveServerConfiguration();
 
             // The config chang should cause jpawebapp to restart.
-            server_JTA_NJTA.waitForStringInLogUsingMark("CWWKG0017I:");
-            server_JTA_NJTA.waitForStringInLogUsingMark("CWWKZ0003I: .*jpawebapp");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA_NJTA.waitForStringInLogUsingMark("CWWKG0017I:"));
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server_JTA_NJTA.waitForStringInLogUsingMark("CWWKZ0003I: .*jpawebapp"));
 
             //  Check that the default datasource points to database #2
             String jpa_response2 = HttpUtils.getHttpResponseAsString(server_JTA_NJTA, "jpawebapp/JPAServlet?targetId=2&testName=" + testName);
@@ -250,7 +278,9 @@ public class JPADefaultDataSourceTest {
         } finally {
             if (server_JTA_NJTA.isStarted()) {
                 server_JTA_NJTA.stopServer("CWWJP9991W:");
-                server_JTA_NJTA.waitForStringInLogUsingMark("CWWKE0036I: .*JPADefaultDataSourceServer");
+                Assert.assertNotNull(
+                    "Message was not detected in the log",
+                    server_JTA_NJTA.waitForStringInLogUsingMark("CWWKE0036I: .*JPADefaultDataSourceServer"));
             }
         }
     }

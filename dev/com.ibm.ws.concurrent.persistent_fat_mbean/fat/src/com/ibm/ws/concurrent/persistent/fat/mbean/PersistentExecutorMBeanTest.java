@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.mbean;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -146,7 +147,9 @@ public class PersistentExecutorMBeanTest {
     public void testSwitchJndiName() throws Exception {
         runInServlet("findMBeanByJndiName", "concurrent/switchExecutor");
         server.setServerConfigurationFile("server2.xml");
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         runInServlet("findMBeanByJndiName", "concurrent/hctiwsExecutor");
 
         runInServlet("missMBeanByJndiName", "concurrent/switchExecutor");

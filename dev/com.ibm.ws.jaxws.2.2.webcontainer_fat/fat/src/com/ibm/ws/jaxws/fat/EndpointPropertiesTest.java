@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 import java.util.List;
@@ -75,7 +76,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + wsdl,
@@ -100,7 +103,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloNoWSDLService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + wsdl,
@@ -126,7 +131,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + wsdl,
@@ -152,7 +159,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloNoWSDLService?wsdl");
         assertTrue("Can not access the HelloNoWSDLService wsdl, the return result is: " + wsdl,
@@ -178,7 +187,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + wsdl,
@@ -204,7 +215,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
         String wsdl = getBaseUrl() + "/testEndpointPropertiesWeb/HelloNoWSDLService?wsdl";
         URL url = new URL(wsdl);
 
@@ -241,7 +254,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloNoWSDLService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + wsdl,
@@ -268,7 +283,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + wsdl,
@@ -295,7 +312,9 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb"));
         String wsdl = getBaseUrl() + "/testEndpointPropertiesWeb/HelloNoWSDLService?wsdl";
         URL url = new URL(wsdl);
         HelloNoWSDLService service = new HelloNoWSDLService(url);

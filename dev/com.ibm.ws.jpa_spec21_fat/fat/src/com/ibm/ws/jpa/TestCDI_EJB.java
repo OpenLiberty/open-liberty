@@ -11,6 +11,8 @@
 
 package com.ibm.ws.jpa;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -113,7 +115,9 @@ public class TestCDI_EJB extends JPAFATServletClient {
         HashSet<String> appNamesSet = new HashSet<String>();
         appNamesSet.add("TestCDISimpleEJB");
         appNamesSet.add("TestCDIWithJPALibEJB");
-        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        assertTrue(
+            "Message was not detected in the log",
+            server.waitForConfigUpdateInLogUsingMark(appNamesSet, "").isEmpty());
     }
 
     private static Application setupSimpleTestApplication() throws Exception {

@@ -102,7 +102,9 @@ public class URAPIs_MultipleLDAPsTest {
         String password = "vmmtestuserpwd";
         Log.info(c, "checkPasswordWithDuplicateLogOnId", "Checking good credentials");
         servlet.checkPassword(user, password);
-        server.waitForStringInLog("CWIML4538E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E"));
         assertTrue("Two users with same userid should cause DuplicateLogonIdException", true);
         passwordChecker.checkForPasswordInAnyFormat(password);
     }

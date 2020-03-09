@@ -118,7 +118,9 @@ public class MultipleReposTest {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             e.printStackTrace();
         }
-        server.waitForStringInLog("CWIML4538E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E"));
         assertTrue("Two users with same userid should cause DuplicateLogonIdException", true);
     }
 
@@ -166,7 +168,9 @@ public class MultipleReposTest {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             e.printStackTrace();
         }
-        server.waitForStringInLog("CWIML4538E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E"));
         assertTrue("Two users with same userid should cause EntityNotFoundException", true);
     }
 
@@ -188,7 +192,9 @@ public class MultipleReposTest {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             e.printStackTrace();
         }
-        server.waitForStringInLog("CWIML4538E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E"));
         assertTrue("Two users with same userid should cause EntityNotFoundException", true);
     }
 
@@ -282,7 +288,9 @@ public class MultipleReposTest {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             e.printStackTrace();
         }
-        server.waitForStringInLog("CWIML4538E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E"));
         assertTrue("Two users with same userid should cause EntityNotFoundException", true);
     }
 
@@ -325,7 +333,9 @@ public class MultipleReposTest {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             e.printStackTrace();
         }
-        server.waitForStringInLog("CWIML4538E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E"));
         assertTrue("Two users with same userid should cause EntityNotFoundException", true);
     }
 

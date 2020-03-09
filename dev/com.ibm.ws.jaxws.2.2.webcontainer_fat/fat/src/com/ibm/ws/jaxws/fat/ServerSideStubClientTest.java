@@ -44,7 +44,9 @@ public class ServerSideStubClientTest {
 
         server.startServer();
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*stubClient");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*stubClient"));
     }
 
     @Test

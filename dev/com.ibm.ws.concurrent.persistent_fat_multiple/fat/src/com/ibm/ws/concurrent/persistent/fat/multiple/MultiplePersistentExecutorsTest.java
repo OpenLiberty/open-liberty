@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.multiple;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collections;
 import java.util.Set;
 
@@ -109,7 +111,9 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
             PersistentExecutor executor1 = config.getPersistentExecutors().removeById("executor1");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Liberty doesn't have high availability support yet, so we need to manually trigger the failover
             runInServlet("testTransfer&jndiName=concurrent/executor2&oldExecutorId=executor1&invokedBy=testFailoverBetweenTwoInstances-2");
@@ -121,7 +125,9 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("testTaskIsRunning&jndiName=concurrent/executor1&taskId=" + taskId + "&invokedBy=testFailoverBetweenTwoInstances-4");
 
@@ -130,7 +136,9 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Liberty doesn't have high availability support yet, so we need to manually trigger the failover
             runInServlet("testTransfer&jndiName=concurrent/executor1&oldExecutorId=executor2&invokedBy=testFailoverBetweenTwoInstances-5");
@@ -142,7 +150,9 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -193,14 +203,18 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
             PersistentExecutor executor2 = config.getPersistentExecutors().removeById("executor2");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Automatic fail over is not enabled. We are testing manual fail over via the MBean.
 
             config.getPersistentExecutors().add(executor2);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Determine which tasks assigned to executor1 haven't ended yet and split them into two groups
             output = runInServlet("testFindTaskIds&jndiName=concurrent/executor3&executorId=executor1&invokedBy=testFailoverWithFourInstances-6");
@@ -241,7 +255,9 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
             server.setMarkToEndOfLog();
             config.getPersistentExecutors().removeById("executor2");
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Remove one of the partition entries
             runInServlet("testRemovePartitions&jndiName=concurrent/executor3&libertyServer=com.ibm.ws.concurrent.persistent.fat.multiple&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-14");
@@ -249,7 +265,9 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 

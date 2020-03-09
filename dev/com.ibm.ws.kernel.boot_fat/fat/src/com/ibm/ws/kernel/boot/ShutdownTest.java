@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +51,9 @@ public class ShutdownTest {
     public void after() throws Exception {
         // We stop the server by other means, so wait for that stop to finish,
         // and then call stopServer to save logs, reset log offsets, etc.
-        server.waitForStringInLog("CWWKE0036I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKE0036I"));
         server.stopServer();
     }
 
@@ -85,7 +89,9 @@ public class ShutdownTest {
                 Log.info(ShutdownTest.class, "testSystemExit", "Ignoring " + sw.toString());
             }
 
-            server.waitForStringInLog("CWWKE0084I:.*" + exitMethodName);
+            assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKE0084I:.*" + exitMethodName));
         } finally {
             Log.exiting(c, m);
         }

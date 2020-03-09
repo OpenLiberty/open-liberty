@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.health.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
@@ -71,7 +72,9 @@ public class MultipleChecksTest {
         if (!server1.isStarted()) {
             server1.startServer();
         }
-        server1.waitForStringInLog("CWWKT0016I: Web application available.*health*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("CWWKT0016I: Web application available.*health*"));
     }
 
     @AfterClass

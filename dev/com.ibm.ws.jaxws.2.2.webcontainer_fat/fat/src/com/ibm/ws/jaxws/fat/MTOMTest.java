@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -66,8 +67,12 @@ public class MTOMTest {
 
         server.startServer("MTOMTest.log");
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*testMTOMClient");
-        server.waitForStringInLog("CWWKZ0001I.*testMTOM");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testMTOMClient"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testMTOM"));
     }
 
     @AfterClass

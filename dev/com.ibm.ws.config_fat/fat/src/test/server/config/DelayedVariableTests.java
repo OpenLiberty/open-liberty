@@ -11,6 +11,7 @@
 package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -56,11 +57,17 @@ public class DelayedVariableTests extends ServletRunner {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("delayedVar/cycle.xml");
         //CWWKG0011W: The configuration validation did not succeed. Variable evaluation loop detected: [${cycle2}, ${cycle3}, ${cycle1}andSomeText]
-        server.waitForStringInLog("CWWKG0011W.*[${cycle2}, ${cycle3}, ${cycle1}andSomeText]");
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0011W.*[${cycle2}, ${cycle3}, ${cycle1}andSomeText]"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("delayedVar/original.xml");
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
     }
 
     @BeforeClass

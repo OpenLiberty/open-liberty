@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,7 +64,11 @@ public class MPConcurrentTxTest extends FATServletClient {
         // This test involves an asynchronous transaction timeout, which can continue logging FFDC and error messages on another
         // thread after the test's servlet method completes. Wait for the FFDC and error messages to appear in the logs
         // in order to prevent it from overlapping subsequent tests where it would be considered a test failure.
-        server.waitForStringInLogUsingMark("FFDC1015I.*IllegalStateException");
-        server.waitForStringInLogUsingMark("DSRA0302E.*XA_RBROLLBACK");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("FFDC1015I.*IllegalStateException"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("DSRA0302E.*XA_RBROLLBACK"));
     }
 }

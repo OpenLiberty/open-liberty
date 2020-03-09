@@ -203,7 +203,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().remove(featureToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
 
             //Test that cloudant elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
@@ -230,7 +232,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().add(featureToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
         }
     }
 
@@ -246,7 +250,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().removeAll(featuresToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
 
             //Test that JCA and JMS elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
@@ -277,7 +283,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().addAll(featuresToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
         }
     }
 
@@ -293,7 +301,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().remove(featureToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
 
             //Test that JDBC elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
@@ -324,7 +334,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().add(featureToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
         }
     }
 
@@ -340,7 +352,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().removeAll(featuresToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
 
             //Test that JMS elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
@@ -371,7 +385,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             config.getFeatureManager().getFeatures().addAll(featuresToDisable);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null, true).isEmpty());
         }
     }
 

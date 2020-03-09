@@ -1859,7 +1859,9 @@ public class HttpXForwardedAndForwardedHeaderTests {
         server.setServerConfigurationFile("remoteIPConfig/" + variation + "-server.xml");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer(variation + ".log");
-        server.waitForStringInLogUsingMark("CWWKT0016I:.*EndpointInformation.*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKT0016I:.*EndpointInformation.*"));
     }
 
     /**

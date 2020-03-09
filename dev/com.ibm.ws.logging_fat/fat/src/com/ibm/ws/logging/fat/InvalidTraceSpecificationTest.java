@@ -12,6 +12,7 @@ package com.ibm.ws.logging.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -69,7 +70,9 @@ public class InvalidTraceSpecificationTest {
         loggingObj.setTraceSpecification(invalidTraceSpec1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         //Test 1: Check if TRAS0040I Message appears for invalid trace spec
         checkOnlyOneInvalidTraceSpecEntryExists();
@@ -86,7 +89,9 @@ public class InvalidTraceSpecificationTest {
         loggingObj.setTraceSpecification(validTraceSpec1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         checkNoInvalidTraceSpecEntryExists();
 
     }
@@ -116,7 +121,9 @@ public class InvalidTraceSpecificationTest {
         loggingObj.setTraceSpecification(existingTraceString + ":" + validTraceSpec1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         checkOnlyOneInvalidTraceSpecEntryExists();
 
     }
@@ -135,7 +142,9 @@ public class InvalidTraceSpecificationTest {
         loggingObj.setTraceSpecification(invalidTraceSpec1 + ":" + invalidTraceSpec2);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0040I", MESSAGE_LOG);
         assertEquals("Expecting multiple invalid trace spec message, but not found ", 1, lines.size());

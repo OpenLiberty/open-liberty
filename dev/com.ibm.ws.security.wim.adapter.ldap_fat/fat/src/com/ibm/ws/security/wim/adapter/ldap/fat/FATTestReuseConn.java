@@ -100,7 +100,9 @@ public class FATTestReuseConn {
             // Wait for CWWKG0017I and CWWKZ0003I to appear in logs after we started the config update
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            server.waitForStringInLogUsingMark("CWWKG0017I"); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark("CWWKG0017I")); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
             //server.waitForStringInLogUsingMark("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
 
             serverConfigurationFile = serverXML;

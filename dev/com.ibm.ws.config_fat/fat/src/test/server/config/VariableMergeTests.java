@@ -11,6 +11,7 @@
 package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -51,7 +52,9 @@ public class VariableMergeTests extends ServletRunner {
     public void testMergedVariables() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(ALL_IN_ONE_SERVER);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         test(server);
 
@@ -61,7 +64,9 @@ public class VariableMergeTests extends ServletRunner {
     public void testMergedIncludesReplace() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(REPLACE_SERVER);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         test(server);
     }
@@ -70,7 +75,9 @@ public class VariableMergeTests extends ServletRunner {
     public void testMergedIncludesIgnore() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(IGNORE_SERVER);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         test(server);
     }
@@ -79,7 +86,9 @@ public class VariableMergeTests extends ServletRunner {
     public void testMergedIncludesMerge() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(MERGE_SERVER);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         test(server);
     }

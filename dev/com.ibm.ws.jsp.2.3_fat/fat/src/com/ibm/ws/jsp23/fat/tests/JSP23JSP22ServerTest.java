@@ -11,6 +11,7 @@
 package com.ibm.ws.jsp23.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,7 +102,9 @@ public class JSP23JSP22ServerTest extends LoggingTest {
         List<String> jsp22Feature = new ArrayList<String>();
         jsp22Feature.add("jsp-2.2");
         SHARED_SERVER.getLibertyServer().changeFeatures(jsp22Feature);
-        SHARED_SERVER.getLibertyServer().waitForConfigUpdateInLogUsingMark(Collections.singleton("TestJspFeatureChange"), true, new String[0]);
+        assertTrue(
+            "Message was not detected in the log",
+            !SHARED_SERVER.getLibertyServer().waitForConfigUpdateInLogUsingMark(Collections.singleton("TestJspFeatureChange"), true, new String[0]).isEmpty());
 
         LOG.info("Requesting JSP with jsp-2.2 feature enabled");
         response = wc.getResponse(request);

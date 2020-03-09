@@ -11,6 +11,7 @@
 package com.ibm.ws.request.probe.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -254,7 +255,9 @@ public class RequestProbeTestDynamicFeatureChange {
     }
 
     private boolean isRequestTimingRemoved() throws Exception {
-        server.waitForStringInLogUsingLastOffset("CWWKF0013I", 60000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingLastOffset("CWWKF0013I", 60000));
         List<String> lines = server.findStringsInFileInLibertyServerRoot("CWWKF0013I", MESSAGE_LOG);
         boolean removed = false;
         for (String line : lines) {
@@ -278,10 +281,16 @@ public class RequestProbeTestDynamicFeatureChange {
 
     private void waitForFeatureAddition() throws Exception {
         Thread.sleep(2000);
-        server.waitForStringInLogUsingMark("CWWKG0017I", 30000);
-        server.waitForStringInLogUsingMark("CWWKF0012I", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKG0017I", 30000));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0012I", 30000));
         printMessageToFATlog("CWWKF0012I");
-        server.waitForStringInLogUsingMark("CWWKF0008I", 60000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0008I", 60000));
         printMessageToFATlog("CWWKF0008I");
     }
 
@@ -296,8 +305,12 @@ public class RequestProbeTestDynamicFeatureChange {
 
     private void waitForFeatureRemoval() throws Exception {
         Thread.sleep(2000);
-        server.waitForStringInLogUsingMark("CWWKG0017I", 30000); //server config updated message
-        server.waitForStringInLogUsingMark("CWWKF0013I", 30000); // feature removed message
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKG0017I", 30000)); //server config updated message
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0013I", 30000)); // feature removed message
     }
 
     @After

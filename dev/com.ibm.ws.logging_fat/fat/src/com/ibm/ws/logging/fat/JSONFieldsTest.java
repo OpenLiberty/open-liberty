@@ -282,7 +282,9 @@ public class JSONFieldsTest {
         }
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            server.waitForConfigUpdateInLogUsingMark(null) != null);
     }
 
 }

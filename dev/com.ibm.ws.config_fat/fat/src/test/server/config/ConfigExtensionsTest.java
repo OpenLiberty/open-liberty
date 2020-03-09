@@ -64,7 +64,9 @@ public class ConfigExtensionsTest {
         extensionsServer.setServerConfigurationFile("extensions/server.xml");
         extensionsServer.startServer();
         //make sure the URL is available
-        extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT);
+        assertNotNull(
+          "Message was not detected in the log",
+          extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT));
     }
 
     @AfterClass
@@ -211,7 +213,9 @@ public class ConfigExtensionsTest {
             extensionsServer.setMarkToEndOfLog();
             extensionsServer.setServerConfigurationFile("extensions/serverB2.xml");
             //wait for our test app to be available
-            extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT);
+            assertNotNull(
+              "Message was not detected in the log",
+              extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT));
             String servicePid = servicePidName + "=test.config.extensions.super";
             //now check that the super got a call for the sub defined in the other bundle
             HttpUtils.findStringInUrl(extensionsServer, CONTEXT_ROOT + "/test?id=test.config.extensions.different.bundle.config&" + servicePid, PID_PASS);
@@ -224,7 +228,9 @@ public class ConfigExtensionsTest {
             //and finally restart the server
             extensionsServer.startServer();
             //make sure the URL is available
-            extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT);
+            assertNotNull(
+              "Message was not detected in the log",
+              extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT));
         }
     }
 
@@ -262,7 +268,9 @@ public class ConfigExtensionsTest {
             //and finally restart the server
             extensionsServer.startServer();
             //make sure the URL is available
-            extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT);
+            assertNotNull(
+              "Message was not detected in the log",
+              extensionsServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT));
         }
     }
 

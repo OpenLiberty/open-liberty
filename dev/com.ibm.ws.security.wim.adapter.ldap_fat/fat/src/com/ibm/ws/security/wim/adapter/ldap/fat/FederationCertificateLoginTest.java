@@ -119,7 +119,9 @@ public class FederationCertificateLoginTest {
             myServer.setServerConfigurationFile("/" + serverXML);
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            myServer.waitForStringInLogUsingMark("CWWKG0017I");
+            assertNotNull(
+                "Message was not detected in the log",
+                myServer.waitForStringInLogUsingMark("CWWKG0017I"));
             serverConfigurationFile = serverXML;
         }
     }
@@ -314,7 +316,9 @@ public class FederationCertificateLoginTest {
 
         client = setupClient(user1InvalidCertFile, true);
         client.access("/SimpleServlet", 403);
-        myServer.waitForStringInLog("CWIML4537E:", 2000);
+        assertNotNull(
+            "Message was not detected in the log",
+            myServer.waitForStringInLog("CWIML4537E:", 2000));
         Log.info(c, methodName, "Exiting test " + methodName);
     }
 }

@@ -622,15 +622,23 @@ public class MultiRecoveryTest {
         //restart server in three modes
         if(startServer.equals("server1")){
         		restartServer(server);
-                server.waitForStringInTrace(str);
+                assertNotNull(
+                    "Message was not detected in the log",
+                    server.waitForStringInTrace(str));
         } else if(startServer.equals("server2")){
         		restartServer(server2);
-                server2.waitForStringInTrace(str);
+                assertNotNull(
+                    "Message was not detected in the log",
+                    server2.waitForStringInTrace(str));
         } else if(startServer.equals("both")){
         		restartServer(server);
             	restartServer(server2);
-                server.waitForStringInTrace(str);
-                server2.waitForStringInTrace(str);
+                assertNotNull(
+                    "Message was not detected in the log",
+                    server.waitForStringInTrace(str));
+                assertNotNull(
+                    "Message was not detected in the log",
+                    server2.waitForStringInTrace(str));
         }
         System.out.println(logKeyword + "restarted server: " + startServer);
 
@@ -761,7 +769,9 @@ public class MultiRecoveryTest {
 	
 	private boolean restartServer(LibertyServer server) throws Exception{
 		final String method = "recoveryTest";
-		server.waitForStringInLog("Dump State:");
+		assertNotNull(
+		    "Message was not detected in the log",
+		    server.waitForStringInLog("Dump State:"));
 		System.out.println("Restart Server " + server.getServerName());
 		server.stopServer(true, true);
 		ProgramOutput po = server.startServerAndValidate(false, true, true);

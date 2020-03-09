@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -114,7 +116,9 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("Dump State:"));
 
         // Now re-start cloud1
         ProgramOutput po = server1.startServerAndValidate(false, true, true);
@@ -128,7 +132,9 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        server1.waitForStringInTrace("Performed recovery for cloud001");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInTrace("Performed recovery for cloud001"));
 
         // Lastly stop server1
         // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
@@ -163,7 +169,9 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("Dump State:"));
 
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
@@ -178,7 +186,9 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
-        server2.waitForStringInTrace("Performed recovery for cloud001");
+        assertNotNull(
+            "Message was not detected in the log",
+            server2.waitForStringInTrace("Performed recovery for cloud001"));
         // "CWWKE0701E" error message is allowed
         server2.stopServer("CWWKE0701E");
 
@@ -221,7 +231,9 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("Dump State:"));
 
         // Defect 209842: Pull in a jvm.options file that ensures that we have a long (5 minute) timeout
         // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
@@ -260,7 +272,9 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-        server2.waitForStringInTrace("Performed recovery for cloud001");
+        assertNotNull(
+            "Message was not detected in the log",
+            server2.waitForStringInTrace("Performed recovery for cloud001"));
         // "CWWKE0701E" error message is allowed
         server2.stopServer("CWWKE0701E");
 

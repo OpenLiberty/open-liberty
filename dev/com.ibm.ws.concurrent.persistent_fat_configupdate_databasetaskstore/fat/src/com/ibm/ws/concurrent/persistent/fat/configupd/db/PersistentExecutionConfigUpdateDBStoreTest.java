@@ -11,6 +11,8 @@
 package com.ibm.ws.concurrent.persistent.fat.configupd.db;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,7 +76,9 @@ public class PersistentExecutionConfigUpdateDBStoreTest extends CommonUtils {
         server.updateServerConfiguration(originalConfig);
 
         server.startServer(PersistentExecutionConfigUpdateDBStoreTest.class.getSimpleName() + ".log");
-        server.waitForStringInLog("CWWKF0011I:.*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I:.*"));
         System.out.println("Server started");
     }
 
@@ -113,7 +117,9 @@ public class PersistentExecutionConfigUpdateDBStoreTest extends CommonUtils {
             authA.setPassword("invalidPW");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             output = runInServlet("test=testScheduledPersistedTaskStart&invokedBy=testNestedAuth[2]");
             int start = output.indexOf(TASK_ID_SEARCH_TEXT);
@@ -124,7 +130,9 @@ public class PersistentExecutionConfigUpdateDBStoreTest extends CommonUtils {
         } finally {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -159,13 +167,17 @@ public class PersistentExecutionConfigUpdateDBStoreTest extends CommonUtils {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testCheckPersistedAvailable&taskId=" + originalTaskId + "&invokedBy=testAuthDataAuthAccess[2]");
         } finally {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -199,14 +211,18 @@ public class PersistentExecutionConfigUpdateDBStoreTest extends CommonUtils {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testCannotFindTask&jndiName=concurrent/myScheduler&taskId=" + taskId + "&invokedBy=testChangeAuthData[2]");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
 
         runInServlet("test=testFindTask&jndiName=concurrent/myScheduler&taskId=" + taskId + "&invokedBy=testChangeAuthData[3]");

@@ -129,7 +129,9 @@ public class SMTPTest {
         if (server.isStarted() != true) {
             server.startServer();
             // Pause for application to start properly and server to say it's listening on ports
-            server.waitForStringInLog("port " + server.getHttpDefaultPort());
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("port " + server.getHttpDefaultPort()));
         }
 
         // Set the e-mail subject string

@@ -141,7 +141,9 @@ public class LDAPRegistryDynamicUpdateTest {
 
         assertNull("Authentication should not succeed.", servlet.checkPassword(USERNAME, USER_PASSWORD));
         assertEquals("TwoLDAPRealm", servlet.getRealm());
-        server.waitForStringInLog("CWIML4538E"); // CWIML4538E: The user registry operation could not be completed. More than one record exists for the vmmtestuser principal name in the configured user registries. The principal name must be unique across all the user registries.
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E")); // CWIML4538E: The user registry operation could not be completed. More than one record exists for the vmmtestuser principal name in the configured user registries. The principal name must be unique across all the user registries.
 
         /*
          * Now change server configuration to to have only LDAP registry configured.
@@ -268,7 +270,9 @@ public class LDAPRegistryDynamicUpdateTest {
          * call checkPassword
          */
         assertNull("Authentication should not succeed.", servlet.checkPassword(USERNAME, USER_PASSWORD));
-        server.waitForStringInLog("CWIML4538E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E"));
 
         /*
          * call getUsers
@@ -360,7 +364,9 @@ public class LDAPRegistryDynamicUpdateTest {
          * And should fail with input as uid
          */
         assertNull("Authentication should not succeed.", servlet.checkPassword("vmmuser1", "vmmuser1"));
-        server.waitForStringInLog("CWIML4537E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4537E"));
 
         /*
          * Call getUserDisplayName to get principalName(mail) as output
@@ -401,7 +407,9 @@ public class LDAPRegistryDynamicUpdateTest {
          * And should fail with input as uid
          */
         assertNull("Authentication should not succeed with uid.", servlet.checkPassword("vmmuser1", "vmmuser1"));
-        server.waitForStringInLog("CWIML4537E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4537E"));
 
         /*
          * Call getUserDisplayName to get principalName(sn) as output as it is first login property

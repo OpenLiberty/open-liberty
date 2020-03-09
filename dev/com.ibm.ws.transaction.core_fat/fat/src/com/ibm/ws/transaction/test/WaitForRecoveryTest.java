@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -83,7 +85,9 @@ public class WaitForRecoveryTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "testRec001 returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("Dump State:"));
 
         // Now re-start cloud1
         ProgramOutput po = server1.startServerAndValidate(false, true, true);
@@ -97,7 +101,9 @@ public class WaitForRecoveryTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        server1.waitForStringInTrace("Performed recovery for server");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInTrace("Performed recovery for server"));
 
         // Lastly stop server1
         server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected

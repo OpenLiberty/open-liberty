@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,12 +26,16 @@ public class MultiModuleProjectTests20 extends AbstractSpringTests {
 
     @Test
     public void testBeanInRootInitialized() throws Exception {
-        server.findStringsInLogs("ROOT BEAN INVOKED");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogs("ROOT BEAN INVOKED").isEmpty());
     }
 
     @Test
     public void testBeanInModuleInitialized() throws Exception {
-        server.findStringsInLogs("MODULE BEAN INVOKED");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogs("MODULE BEAN INVOKED").isEmpty());
     }
 
     @Override

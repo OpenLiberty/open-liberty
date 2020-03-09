@@ -10,6 +10,7 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;

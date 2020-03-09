@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -78,7 +80,9 @@ public class WithAnnotationsTest extends LoggingTest {
 
         ShrinkHelper.exportDropinAppToServer(server, withAnnotationsApp);
         hasSetUp = true;
-        server.waitForStringInLogUsingMark("CWWKZ0001I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I"));
 
     }
 

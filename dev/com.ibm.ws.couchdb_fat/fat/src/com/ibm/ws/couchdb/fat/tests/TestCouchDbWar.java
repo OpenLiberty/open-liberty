@@ -110,14 +110,18 @@ public class TestCouchDbWar extends FATServletClient {
         logger.info("updating server configuraion");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
     }
 
     private void restoreServerConfiguration() throws Exception {
         logger.info("restoring server configuraion");
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
     }
 
     /**

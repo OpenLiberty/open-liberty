@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.fat;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -31,12 +34,18 @@ public class ActivationTypeTest {
     public void testActivationType() throws Exception {
 
         server.startServer();
-        server.waitForStringInLogUsingMark("test.activation.type.parallel.system: true");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("test.activation.type.parallel.system: true"));
 
         server.setMarkToEndOfLog();
         server.changeFeatures(Arrays.asList("test.activation.sequential.system-1.0"));
-        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
-        server.waitForStringInLogUsingMark("test.activation.type.sequential.system: false");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet()).isEmpty());
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForStringInLogUsingMark("test.activation.type.sequential.system: false").isEmpty());
 
         // Note that usr/product features are never parallel activated
         server.setMarkToEndOfLog();
@@ -44,13 +53,21 @@ public class ActivationTypeTest {
         // sure the config runtime will recognize the change.
         Thread.sleep(2000);
         server.changeFeatures(Arrays.asList("usr:test.activation.parallel.user-1.0"));
-        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
-        server.waitForStringInLogUsingMark("test.activation.type.parallel.user: false");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet()).isEmpty());
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForStringInLogUsingMark("test.activation.type.parallel.user: false").isEmpty());
 
         server.setMarkToEndOfLog();
         server.changeFeatures(Arrays.asList("usr:test.activation.sequential.user-1.0"));
-        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
-        server.waitForStringInLogUsingMark("test.activation.type.sequential.user: false");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet()).isEmpty());
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("test.activation.type.sequential.user: false"));
     }
 
     @BeforeClass

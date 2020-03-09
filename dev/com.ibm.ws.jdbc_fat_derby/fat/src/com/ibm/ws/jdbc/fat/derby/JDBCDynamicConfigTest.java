@@ -11,6 +11,7 @@
 package com.ibm.ws.jdbc.fat.derby;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Set;
@@ -73,7 +74,9 @@ public class JDBCDynamicConfigTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_SET);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_SET).isEmpty());
 
             //Ensure that updating the config results in servlet class being found, but a resource injection failure to occur.
             runTest(server, jdbcappfat, "testTNTransationEnlistmentModified");
@@ -86,7 +89,9 @@ public class JDBCDynamicConfigTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_SET);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_SET).isEmpty());
 
             //Ensure that we were able to switch back
             runTest(server, jdbcappfat, "testTNTransationEnlistment");
@@ -114,7 +119,9 @@ public class JDBCDynamicConfigTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_SET);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_SET).isEmpty());
 
             //Check update was successful and we are now using the updated transaction isolation level
             runTest(server, jdbcappfat, "testTNModifiedIsoLvl");
@@ -128,7 +135,9 @@ public class JDBCDynamicConfigTest extends FATServletClient {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_SET);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_SET).isEmpty());
 
             //Ensure that trying to get a connection fails since we cannot set isolation level to TRANSACTION_NONE
             runTest(server, jdbcappfat, "testTNRevertedIsoLvl");

@@ -174,7 +174,9 @@ public class HandlerTest {
             MsgServer.startServer();
         }
 
-        MsgServer.waitForStringInLog("CWWKF0011I", 30000);
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            MsgServer.waitForStringInLog("CWWKF0011I", 30000));
         url = new URL("http://" + MsgServer.getHostname() + ":" + MsgServer.getHttpSecondaryPort() + "/TestApp/");
 
         HttpURLConnection con = getHttpConnection(url);
@@ -404,8 +406,12 @@ public class HandlerTest {
         Log.info(c, testName, "Inside Test method : " + testName);
 
         // ***** Wait for Server to completely start
-        traceServer.waitForStringInLog("CWWKF0011I:"); // wait for TraceSourceHandlerServer to be ready
-        traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS);
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            traceServer.waitForStringInLog("CWWKF0011I:")); // wait for TraceSourceHandlerServer to be ready
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS));
 
 //            // ***** Check if the TraceSource has been activated
 //            lines = server.findStringsInFileInLibertyServerRoot("Activating com.ibm.ws.logging.source.TraceSource", TRACE_LOG);
@@ -448,8 +454,12 @@ public class HandlerTest {
         Log.info(c, testName, "Inside Test method : " + testName);
 
         // ***** Wait for Server to completely start
-        traceServer.waitForStringInLog("CWWKF0011I:"); // wait for TraceSourceHandlerServer to be ready
-        traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS);
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            traceServer.waitForStringInLog("CWWKF0011I:") ); // wait for TraceSourceHandlerServer to be ready
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS) );
 
 //        // ***** Check if the TraceSource has been activated
 //        lines = traceServer.findStringsInFileInLibertyServerRoot("Activating com.ibm.ws.logging.source.TraceSource", TRACE_LOG);
@@ -501,7 +511,9 @@ public class HandlerTest {
         String seqenceNum;
 
         lock.await(10, TimeUnit.SECONDS); // wait for sometime for server to start
-        server.waitForStringInLog("CWWKF0011I:"); // wait for SampleSourceHandlerServer to be ready
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I:")); // wait for SampleSourceHandlerServer to be ready
 
         lines = server.findStringsInFileInLibertyServerRoot("Activating com.ibm.ws.logging.ffdc.source.FFDCSource", TRACE_LOG);
         assertTrue("FFDCSource service NOT activated", !lines.isEmpty());
@@ -544,7 +556,9 @@ public class HandlerTest {
         Log.info(c, testName, "Inside Test method : " + testName);
 
         // ***** Wait for Server to completely start
-        traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS);
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS));
         assertTrue("TraceSourceHandlerServer NOT completely started",
                    traceServer.waitForStringInLog("CWWKF0011I:") != null); // wait for TraceSourceHandlerServer to be ready
 
@@ -569,7 +583,9 @@ public class HandlerTest {
         Log.info(c, testName, path + " - Response:" + response);
 
         // ***** Wait for few seconds, before reading logs files
-        traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS);
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS));
 
         // find log with messageKey in ACCESS_LOG_1, after event log from default logger.
         lines = traceServer.findStringsInFileInLibertyServerRoot(messageKey, ACCESS_LOG_1);

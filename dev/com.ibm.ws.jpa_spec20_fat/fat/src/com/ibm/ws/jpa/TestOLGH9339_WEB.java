@@ -11,6 +11,8 @@
 
 package com.ibm.ws.jpa;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -135,7 +137,9 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
 
         HashSet<String> appNamesSet = new HashSet<String>();
         appNamesSet.add(appName);
-        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNamesSet, "").isEmpty());
     }
 
     @AfterClass

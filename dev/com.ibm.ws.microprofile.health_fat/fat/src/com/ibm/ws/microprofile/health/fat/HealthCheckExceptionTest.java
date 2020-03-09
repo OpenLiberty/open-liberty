@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.health.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,7 +47,9 @@ public class HealthCheckExceptionTest {
         ShrinkHelper.exportToServer(server1, "dropins", hcexceptionApp);
 
         server1.startServer();
-        server1.waitForStringInLog("CWWKT0016I: Web application available.*health*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("CWWKT0016I: Web application available.*health*"));
 
     }
 

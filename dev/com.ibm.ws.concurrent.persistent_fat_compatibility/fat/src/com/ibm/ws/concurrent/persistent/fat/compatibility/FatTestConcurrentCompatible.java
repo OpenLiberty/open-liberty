@@ -11,6 +11,8 @@
 package com.ibm.ws.concurrent.persistent.fat.compatibility;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.util.TreeSet;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,7 +90,9 @@ public class FatTestConcurrentCompatible extends CommonUtils {
         } else {
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile("/config/disableTaskExecuteServer.xml");
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
 
         // set default props

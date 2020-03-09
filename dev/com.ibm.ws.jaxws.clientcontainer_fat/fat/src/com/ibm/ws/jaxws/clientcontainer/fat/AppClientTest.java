@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.clientcontainer.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +69,9 @@ public class AppClientTest {
         String thisMethod = "setUp";
         server.startServer("WebServiceRefTest.log");
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*helloServer");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*helloServer"));
         Log.info(c, thisMethod, "setup complete ...");
     }
 

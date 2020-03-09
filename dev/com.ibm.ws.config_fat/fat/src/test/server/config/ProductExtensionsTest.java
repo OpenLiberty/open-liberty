@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.server.config;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -177,7 +178,9 @@ public class ProductExtensionsTest {
         server.setServerConfigurationFile(PRODUCT_SERVER_XML_VALID);
         server.startServer();
         try {
-            server.waitForStringInLog("CWWKT0016I.*" + PROD_EXT_CONTEXT_ROOT);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKT0016I.*" + PROD_EXT_CONTEXT_ROOT) );
             HttpUtils.findStringInUrl(server, PROD_EXT_CONTEXT_ROOT + "/test", PASS_STRING);
         } finally {
             server.stopServer();
@@ -199,7 +202,9 @@ public class ProductExtensionsTest {
         server.setServerConfigurationFile(PRODUCT_SERVER_XML_INVALID);
         server.startServer();
         try {
-            server.waitForStringInLog("CWWKT0016I.*" + PROD_EXT_CONTEXT_ROOT);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKT0016I.*" + PROD_EXT_CONTEXT_ROOT));
             HttpUtils.findStringInUrl(server, PROD_EXT_CONTEXT_ROOT + "/test", "TEST_FAILED: getAttribute1 returned: null");
         } finally {
             server.stopServer();
@@ -222,7 +227,9 @@ public class ProductExtensionsTest {
         server.setServerConfigurationFile(USER_PRODUCT_SERVER_XML_VALID);
         server.startServer();
         try {
-            server.waitForStringInLog("CWWKT0016I.*" + USER_PROD_EXT_CONTEXT_ROOT);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKT0016I.*" + USER_PROD_EXT_CONTEXT_ROOT));
             HttpUtils.findStringInUrl(server, USER_PROD_EXT_CONTEXT_ROOT + "/test", PASS_STRING);
         } finally {
             server.stopServer();
@@ -244,7 +251,9 @@ public class ProductExtensionsTest {
         server.setServerConfigurationFile(USER_PRODUCT_SERVER_XML_INVALID);
         server.startServer();
         try {
-            server.waitForStringInLog("CWWKT0016I.*" + USER_PROD_EXT_CONTEXT_ROOT);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKT0016I.*" + USER_PROD_EXT_CONTEXT_ROOT));
             HttpUtils.findStringInUrl(server, USER_PROD_EXT_CONTEXT_ROOT + "/test", "TEST_FAILED: getAttribute1 returned: null");
         } finally {
             server.stopServer();
@@ -267,7 +276,9 @@ public class ProductExtensionsTest {
         server.setServerConfigurationFile(PRODUCT_SERVER_XML_USING_FACTORY_PID);
         server.startServer();
         try {
-            server.waitForStringInLog("CWWKT0016I.*" + PROD_EXT_CONTEXT_ROOT);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKT0016I.*" + PROD_EXT_CONTEXT_ROOT));
             HttpUtils.findStringInUrl(server, PROD_EXT_CONTEXT_ROOT + "/test", PASS_STRING);
         } finally {
             server.stopServer();
@@ -290,7 +301,9 @@ public class ProductExtensionsTest {
         server.setServerConfigurationFile(USER_PRODUCT_SERVER_XML_USING_FACTORY_PID);
         server.startServer();
         try {
-            server.waitForStringInLog("CWWKT0016I.*" + USER_PROD_EXT_CONTEXT_ROOT);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKT0016I.*" + USER_PROD_EXT_CONTEXT_ROOT));
             HttpUtils.findStringInUrl(server, USER_PROD_EXT_CONTEXT_ROOT + "/test", PASS_STRING);
         } finally {
             server.stopServer();

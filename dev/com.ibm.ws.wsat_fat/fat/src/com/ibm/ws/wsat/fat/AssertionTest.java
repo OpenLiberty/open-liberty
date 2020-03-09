@@ -154,7 +154,9 @@ public class AssertionTest extends WSATTest {
 			String result = br.readLine();
 			assertNotNull(result);
 			System.out.println("testAssertionIngorable Result : " + result);
-			server.waitForStringInLog("WS-AT does not accept Ignorable attribute is TRUE");
+			assertNotNull(
+			    "Message was not detected in the log",
+			    server.waitForStringInLog("WS-AT does not accept Ignorable attribute is TRUE"));
 			List<String> errors = new ArrayList<String>();
 			errors.add("SRVE0271E");
 			server.addIgnoredErrors(errors);

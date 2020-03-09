@@ -69,7 +69,9 @@ public class ProducesTest extends LoggingTest {
 
         ShrinkHelper.exportDropinAppToServer(server, war);
         hasSetUp = true;
-        server.waitForStringInLogUsingMark("CWWKZ0001I");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I"));
 
     }
 

@@ -70,7 +70,9 @@ public class JsonUserFeatureTest extends FATServletClient {
         ServerConfiguration config = server.getServerConfiguration();
         config.getFeatureManager().getFeatures().add("usr:testFeatureUsingJsonb-1.0");
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet());
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.emptySet()).isEmpty());
 
         // Scrape messages.log to verify that 'ServiceThatRequiresJsonb' has activated
         // using Johnzon for jsonp and Yasson for jsonb
@@ -89,6 +91,8 @@ public class JsonUserFeatureTest extends FATServletClient {
         // Clean up the test by removing the jsonb-1.0 feature
         config.getFeatureManager().getFeatures().remove("usr:testFeatureUsingJsonb-1.0");
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet());
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.emptySet()).isEmpty());
     }
 }

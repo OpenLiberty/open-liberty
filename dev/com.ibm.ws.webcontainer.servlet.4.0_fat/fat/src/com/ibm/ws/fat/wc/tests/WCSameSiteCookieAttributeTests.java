@@ -3761,7 +3761,9 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+        assertTrue(
+            "Message was not detected in the log",
+            !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3805,8 +3807,10 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration().toString());
+            assertTrue(
+                "Message was not detected in the log",
+                !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
         }
     }
 
@@ -3839,7 +3843,9 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+        assertTrue(
+            "Message was not detected in the log",
+            !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3884,8 +3890,10 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration().toString());
+            assertTrue(
+                "Message was not detected in the log",
+                !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
         }
     }
 
@@ -3917,7 +3925,9 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+        assertTrue(
+            "Message was not detected in the log",
+            !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -3963,8 +3973,10 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration().toString());
+            assertTrue(
+                "Message was not detected in the log",
+                !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
         }
     }
 
@@ -3994,7 +4006,9 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+        assertTrue(
+            "Message was not detected in the log",
+            !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -4039,8 +4053,10 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
+            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration().toString());
+            assertTrue(
+                "Message was not detected in the log",
+                !sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true).isEmpty());
         }
     }
 

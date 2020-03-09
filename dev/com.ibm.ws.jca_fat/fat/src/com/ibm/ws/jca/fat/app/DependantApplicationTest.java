@@ -11,6 +11,7 @@
 package com.ibm.ws.jca.fat.app;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -170,7 +171,9 @@ public class DependantApplicationTest {
     public void cleanUpPerTest() throws Exception {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(originalServerConfig);
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs).isEmpty());
         cleanUpExprs = EMPTY_EXPR_LIST;
         Log.info(getClass(), "cleanUpPerTest", "server configuration restored");
     }
@@ -207,7 +210,9 @@ public class DependantApplicationTest {
         properties_FAT1.setPassword("{xor}HhwLCW4PCBs=");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testActivationSpec", fvtweb);
 
@@ -219,7 +224,9 @@ public class DependantApplicationTest {
         properties_FAT1.setDestinationType(Topic.class.getName());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testActivationSpecsBothUsingTopic2", fvtweb);
 
@@ -233,7 +240,9 @@ public class DependantApplicationTest {
         properties_FAT1.setDestinationRef(null);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testActivationSpecBindings", fvtweb);
 
@@ -255,7 +264,9 @@ public class DependantApplicationTest {
         properties_FAT1.setClientID("updatedClientID");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testConnectionFactoryClientIDUpdated", fvtweb);
 
@@ -263,7 +274,9 @@ public class DependantApplicationTest {
         properties_FAT1.setClientID(defaultClientID);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testConnectionFactoryClientIDDefault", fvtweb);
 
@@ -273,7 +286,9 @@ public class DependantApplicationTest {
         cf1.setJndiName("jms/cf1_old");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         JMSConnectionFactory cfNew = new JMSConnectionFactory();
         cfNew.setJndiName(jms_cf1);
@@ -283,7 +298,9 @@ public class DependantApplicationTest {
         config.getJMSConnectionFactories().add(cfNew);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST).isEmpty());
 
         runInServlet("testConnectionFactoryClientIDUpdated", fvtweb);
 
@@ -303,7 +320,9 @@ public class DependantApplicationTest {
         cf1.setContainerAuthDataRef("activation1auth");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testConnectionFactoryUserUpdated1", fvtweb);
 
@@ -316,7 +335,9 @@ public class DependantApplicationTest {
         cf1.setContainerAuthDataRef("newAuth");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testConnectionFactoryUserUpdated2", fvtweb);
 
@@ -326,7 +347,9 @@ public class DependantApplicationTest {
         newAuth.setPassword(auth1.getPassword());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testConnectionFactoryUserUpdated1", fvtweb);
 
@@ -335,7 +358,9 @@ public class DependantApplicationTest {
         cf1.setContainerAuthDataRef(null);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testConnectionFactoryUserDefault", fvtweb);
 
@@ -364,7 +389,9 @@ public class DependantApplicationTest {
         conMgr.setConnectionTimeout("0");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testMaxPoolSize1", fvtweb);
 
@@ -372,7 +399,9 @@ public class DependantApplicationTest {
         cf1.getConnectionManager().remove(conMgr);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testMaxPoolSizeGreaterThan2", fvtweb);
 
@@ -385,7 +414,9 @@ public class DependantApplicationTest {
         cf1.setConnectionManagerRef(conMgr1.getId());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testMaxPoolSize1", fvtweb);
 
@@ -393,7 +424,9 @@ public class DependantApplicationTest {
         conMgr1.setMaxPoolSize("2");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testMaxPoolSize2", fvtweb);
 
@@ -406,7 +439,9 @@ public class DependantApplicationTest {
         cf1.getConnectionManager().add(conMgr);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testMaxPoolSize1", fvtweb);
 
@@ -427,7 +462,9 @@ public class DependantApplicationTest {
         properties_FAT1.setQueueName("updatedQueueName");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testQueueNameUpdated", fvtweb);
 
@@ -435,7 +472,9 @@ public class DependantApplicationTest {
         properties_FAT1.setQueueName("queue1");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testQueueNameDefault", fvtweb);
 
@@ -452,7 +491,9 @@ public class DependantApplicationTest {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testQueueNameUpdated", fvtweb);
 
@@ -476,7 +517,9 @@ public class DependantApplicationTest {
         resourceAdapter_FAT1.setContextServiceRef(compContextSvc.getId());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testActivationSpec", fvtweb);
 
@@ -488,7 +531,9 @@ public class DependantApplicationTest {
         resourceAdapter_FAT1.getContextServices().add(nestedContextSvc);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testActivationSpec", fvtweb);
 
@@ -496,7 +541,9 @@ public class DependantApplicationTest {
         resourceAdapter_FAT1.getContextServices().clear();
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST).isEmpty());
 
         runInServlet("testActivationSpec", fvtweb);
 

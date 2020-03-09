@@ -66,7 +66,9 @@ public class WebServiceInWebXMLTest_Lite {
         setWebXml("singleURLPattern/web.xml");
         server.startServer();
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/converter/converter?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_SingleURL",
                  "Calling converter Application with URL=" + url.toString());
@@ -92,7 +94,9 @@ public class WebServiceInWebXMLTest_Lite {
         setWebXml("multipleURLPattern/web.xml");
         server.startServer();
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/converter/converterAgain?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_MultipleURL",
                  "Calling converter Application with URL=" + url.toString());
@@ -118,7 +122,9 @@ public class WebServiceInWebXMLTest_Lite {
         setWebXml("noServletMapping/web.xml");
         server.startServer();
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/converter/ConverterSvcName?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_NoServletMapping",
                  "Calling converter Application with URL=" + url.toString());
@@ -145,7 +151,9 @@ public class WebServiceInWebXMLTest_Lite {
         setWebXml("singleURLPatternComplete/web.xml");
         server.startServer();
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/converter/converter?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_SingleURL_metadataComplete",
                  "Calling converter Application with URL=" + url.toString());
@@ -166,7 +174,9 @@ public class WebServiceInWebXMLTest_Lite {
         server.startServer(method + ".log");
 
         //Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*converter"));
 
         //Web service with default binding
         checkWSDLGenerated(method, "/ConverterSvcName-bindtype-default?wsdl");

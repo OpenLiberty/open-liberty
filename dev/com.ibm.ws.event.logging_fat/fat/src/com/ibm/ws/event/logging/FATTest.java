@@ -13,6 +13,7 @@ package com.ibm.ws.event.logging;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -70,7 +71,9 @@ public class FATTest {
     @Test
     public void testEventLogging() throws Exception {
         server.setServerConfigurationFile("server_eventLogging_original.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         server.setMarkToEndOfLog();
         Log.info(c, "testEventLogging", "------> Default log file path : " + server.getDefaultLogFile().getAbsolutePath());
@@ -82,7 +85,9 @@ public class FATTest {
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLogging", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
 
-        server.waitForStringInLogUsingMark("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("END", 30000));
         // Checking if the event logging messages are present or not
 
         List<String> lines = server.findStringsInLogsAndTraceUsingMark("END requestID=");
@@ -105,13 +110,17 @@ public class FATTest {
     @Test
     public void testEventLoggingWithNoPattern() throws Exception {
         server.setServerConfigurationFile("server_NoContextInfo.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingWithNoPattern", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingWithNoPattern", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service | duration=*",
                                                                          TRACE_LOG);
@@ -133,7 +142,9 @@ public class FATTest {
     @Test
     public void testEventLoggingMinDuration() throws Exception {
         server.setServerConfigurationFile("server_minDuration.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingMaxDuration", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
@@ -172,13 +183,17 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeExit() throws Exception {
         server.setServerConfigurationFile("server_logModeExit.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeExit", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeExit", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service", TRACE_LOG);
 
@@ -200,13 +215,17 @@ public class FATTest {
     public void testEventLoggingLogModeEntry() throws Exception {
 
         server.setServerConfigurationFile("server_logModeEntry.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeEntry", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeEntry", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("BEGIN", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("BEGIN", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot(" END ", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -226,13 +245,17 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeEntryExit() throws Exception {
         server.setServerConfigurationFile("server_logModeEntryExit.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeEntryExit", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeEntryExit", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service",
                                                                          TRACE_LOG);
@@ -259,13 +282,17 @@ public class FATTest {
     @Test
     public void testEventLoggingEventTypes() throws Exception {
         server.setServerConfigurationFile("server_eventTypes.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingEventTypes", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypes", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -292,13 +319,17 @@ public class FATTest {
     @Test
     public void testEventLoggingDynamicUpdate() throws Exception {
         server.setServerConfigurationFile("server_updateAll.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingDynamicUpdate", "Calling jdbcTestPrj_1 Application with URL = " + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingDynamicUpdate", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("BEGIN", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("BEGIN", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot(" END ", MESSAGES_LOG);
 
@@ -342,7 +373,9 @@ public class FATTest {
 
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("server_updateAllsample.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         for (int count = 0; count < 5; count++) {
             con = getHttpConnection(url);
@@ -363,13 +396,17 @@ public class FATTest {
     @Test
     public void testEventLoggingRemoveElement() throws Exception {
         server.setServerConfigurationFile("server_removeElement.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingRemoveElement", "Calling jdbcTestPrj_1 Application with URL = " + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingRemoveElement", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("BEGIN", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("BEGIN", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("BEGIN", MESSAGES_LOG);
 
@@ -387,12 +424,16 @@ public class FATTest {
         server.setServerConfigurationFile("server_eventLogging_original.xml");
         Log.info(c, "testEventLoggingRemoveElement", "--------> Removed EventLogging element");
 
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingRemoveElement", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("BEGIN", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("BEGIN", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("BEGIN", MESSAGES_LOG);
         begin = lines.size() - begin;
@@ -428,7 +469,9 @@ public class FATTest {
         Log.info(c, "testEventLoggingRemoveFeature", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
 
         // Waiting for server configuration to complete message
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         // Wait for the END Event to occur
         String endLine = server.waitForStringInLog("END", 90000);
@@ -441,7 +484,9 @@ public class FATTest {
             Log.info(c, "testEventLoggingRemoveFeature", " Output of br for jdbcTestPrj_1 servlet again : " + br.readLine());
 
             // Wait for the END Event to occur again
-            server.waitForStringInLog("END", 90000);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("END", 90000));
         }
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", MESSAGES_LOG);
@@ -453,7 +498,9 @@ public class FATTest {
         server.setServerConfigurationFile("server_NOeventLogging.xml");
         server.setMarkToEndOfLog();
 
-        server.waitForStringInLog("CWWKT0016I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKT0016I", 90000));
 
         Log.info(c, "testEventLoggingRemoveFeature", " *********** Removed eventLogging feature.. ***********");
         con = getHttpConnection(url);
@@ -487,13 +534,17 @@ public class FATTest {
 
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("server_eventLogging_original.xml");
-        server.waitForStringInLogUsingMark("CWWKF0012I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0012I", 90000));
 
         Log.info(c, "testEventLoggingAddFeature", "Added eventLogging feature..");
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingAddFeature", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLogUsingMark("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("END", 30000));
 
         lines = server.findStringsInLogsAndTraceUsingMark("END");
 
@@ -502,14 +553,18 @@ public class FATTest {
 
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("server_updateAll.xml");
-        server.waitForStringInLogUsingMark("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingAddFeature", "Added eventLogging element to update the default attribute values..");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingAddFeature", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLogUsingMark("BEGIN", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("BEGIN", 30000));
 
         lines = server.findStringsInLogsAndTraceUsingMark("BEGIN");
         assertTrue("BEGIN records not found for entry logMode", (lines.size() > 0));
@@ -529,7 +584,9 @@ public class FATTest {
     @Test
     public void testEventLoggingPatternUpdate() throws Exception {
         server.setServerConfigurationFile("server_NoContextInfo.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingPatternUpdate", "--------> Started server with patternRequired = false");
 
@@ -537,7 +594,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingPatternUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service | duration=*",
                                                                          MESSAGES_LOG);
@@ -551,14 +610,18 @@ public class FATTest {
         Log.info(c, "testEventLoggingPatternUpdate", " **** Pattern not found **** ");
 
         server.setServerConfigurationFile("server_TrueContextInfo.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingPatternUpdate", "--------> Updated server configuration :  patternRequired = true");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("END* | eventType=websphere.servlet.service | contextInfo=*",
                                                             MESSAGES_LOG);
@@ -583,7 +646,9 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeUpdate1() throws Exception {
         server.setServerConfigurationFile("server_logModeEntryExit.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeUpdate1", "--------> Started server with logMode = EntryExit");
 
@@ -591,7 +656,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate1", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -607,12 +674,16 @@ public class FATTest {
 
         Log.info(c, "testEventLoggingLogModeUpdate1", "******** logMode EntryExit has both Entry Exit records.. ********");
         server.setServerConfigurationFile("server_logModeEntry.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate1", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("BEGIN", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("BEGIN", 30000));
 
         Log.info(c, "testEventLoggingLogModeUpdate1", "--------> Updated server configuration :  logMode = Entry");
 
@@ -631,7 +702,9 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeUpdate3() throws Exception {
         server.setServerConfigurationFile("server_logModeEntryExit.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeUpdate3", "--------> Started server with logMode = EntryExit");
 
@@ -639,7 +712,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate3", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         int end = lines.size();
@@ -657,12 +732,16 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeUpdate3", "******** logMode EntryExit has both Entry Exit records.. ********");
 
         server.setServerConfigurationFile("server_logModeExit.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate3", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
         Log.info(c, "testEventLoggingLogModeUpdate3", "--------> Updated server configuration :  logMode = Exit");
 
         lines = server.findStringsInFileInLibertyServerRoot("BEGIN", TRACE_LOG);
@@ -686,7 +765,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate2", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         int end = lines.size();
@@ -703,19 +784,25 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeUpdate2", " ********* logMode Exit has Exit records ONLY.. *********");
 
         server.setServerConfigurationFile("server_logModeEntryExit.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
         Log.info(c, "testEventLoggingLogModeUpdate2", "--------> Updated server configuration :  logMode = EntryExit");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate2", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
 
-        server.waitForStringInLog("BEGIN", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("BEGIN", 30000));
         lines = server.findStringsInFileInLibertyServerRoot("BEGIN", TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeUpdate2", "--------> BEGIN 2 : " + (lines.size() - begin));
         assertTrue("BEGIN records NOT found for logMode EntryExit!", ((lines.size() - begin) > 0));
 
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
         lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeUpdate", "--------> END 2 : " + (lines.size() - end));
         assertTrue("END records NOT found for logMode EntryExit!", ((lines.size() - end) > 0));
@@ -727,7 +814,9 @@ public class FATTest {
     @Test
     public void testEventLoggingMinDurationUpdate() throws Exception {
         server.setServerConfigurationFile("server_minDuration.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingMinDurationUpdate", "--------> Started server with minDuration = 11500ms");
 
@@ -748,14 +837,18 @@ public class FATTest {
         }
 
         server.setServerConfigurationFile("server_minDuration2.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingMinDurationUpdate", "--------> Updated server configuration :  minDuration = 6000ms");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingMinDurationUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         Log.info(c, "testEventLoggingMinDurationUpdate", "------> size  : " + (lines.size() - end));
@@ -777,7 +870,9 @@ public class FATTest {
     @Test
     public void testEventLoggingEventTypesUpdate() throws Exception {
         server.setServerConfigurationFile("server_eventTypes2.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingEventTypesUpdate", "-----> Started server with eventType : service and execute");
 
@@ -785,7 +880,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypesUpdate", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -811,14 +908,18 @@ public class FATTest {
         assertTrue("Could not find the servlet or JDBC event type.", (countTypes == 2));
 
         server.setServerConfigurationFile("server_eventTypes.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingEventTypesUpdate", "--------> Updated server configuration :  eventType");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypesUpdate", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
 
@@ -851,18 +952,24 @@ public class FATTest {
     @Test
     public void testEventLoggingPatternRemove() throws Exception {
         server.setServerConfigurationFile("server_NoContextInfo.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingPatternRemove", "--------> Started server with patternRequired = false");
 
         Log.info(c, "testEventLoggingPatternRemove", "--------> Waiting for jdbcTestPrj_1 Application to become available");
-        server.waitForStringInLog("CWWKT0016I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKT0016I", 90000));
 
         Log.info(c, "testEventLoggingPatternRemove", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingPatternRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -875,14 +982,18 @@ public class FATTest {
         Log.info(c, "testEventLoggingPatternRemove", " **** Pattern NOT found **** ");
 
         server.setServerConfigurationFile("server_eventLogging_original.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingPatternUpdate", " $$$$$$ ---->  Removed eventLogging element... <---- $$$$$$ ");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeUpdate", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
 
@@ -902,7 +1013,9 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeRemove() throws Exception {
         server.setServerConfigurationFile("server_logModeEntry.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeRemove", "--------> Started server with logMode = Entry");
 
@@ -910,7 +1023,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -927,14 +1042,18 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeRemove", " ********* logMode Entry has BEGIN records ONLY.. *********");
 
         server.setServerConfigurationFile("server_eventLogging_original.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeRemove", " $$$$$$ ---->  Removed eventLogging element... <---- $$$$$$ ");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("BEGIN", TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeRemove", "--------> BEGIN 2 : " + (lines.size() - begin));
@@ -951,7 +1070,9 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeRemove2() throws Exception {
         server.setServerConfigurationFile("server_logModeEntryExit.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeRemove2", "--------> Started server with logMode = EntryExit");
 
@@ -959,7 +1080,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeRemove2", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -976,14 +1099,18 @@ public class FATTest {
         Log.info(c, "testEventLoggingLogModeRemove2", " ********* logMode EntryExit has both BEGIN and END records.. *********");
 
         server.setServerConfigurationFile("server_eventLogging_original.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingLogModeRemove2", " $$$$$$ ---->  Removed eventLogging element... <---- $$$$$$ ");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingLogModeRemove2", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("BEGIN", TRACE_LOG);
         Log.info(c, "testEventLoggingLogModeRemove2", "--------> BEGIN 2 : " + (lines.size() - begin));
@@ -1000,7 +1127,9 @@ public class FATTest {
     @Test
     public void testEventLoggingMinDurationRemove() throws Exception {
         server.setServerConfigurationFile("server_minDuration3.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingMinDurationRemove", "--------> Started server with minDuration = 25000ms");
 
@@ -1024,14 +1153,18 @@ public class FATTest {
         assertTrue("Record was not expected for 25000ms minDuration. : ", (end == 0));
 
         server.setServerConfigurationFile("server_eventLogging_original.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingMinDurationRemove", " $$$$$$ ---->  Removed eventLogging element... <---- $$$$$$ ");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingMinDurationRemove", " Output of br for jdbcTestPrj_1 servlet" + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         Log.info(c, "testEventLoggingMinDurationRemove", "------> END size  : " + lines.size());
@@ -1051,7 +1184,9 @@ public class FATTest {
     @Test
     public void testEventLoggingEventTypesRemove() throws Exception {
         server.setServerConfigurationFile("server_eventTypes.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingEventTypesRemove", "-----> Started server with eventType : servlet and JDBC");
 
@@ -1059,7 +1194,9 @@ public class FATTest {
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypesRemove", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
         server.setMarkToEndOfLog();
@@ -1086,14 +1223,18 @@ public class FATTest {
         assertTrue("Could not find the servlet or JDBC event type.", (countTypes == 3));
 
         server.setServerConfigurationFile("server_eventLogging_original.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingMinDurationRemove", " $$$$$$ ---->  Removed eventLogging element... <---- $$$$$$ ");
 
         con = getHttpConnection(url);
         br = getConnectionStream(con);
         Log.info(c, "testEventLoggingEventTypesRemove", " Output of br for jdbcTestPrj_1 servlet : " + br.readLine());
-        server.waitForStringInLog("END", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("END", 30000));
 
         lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
 
@@ -1118,7 +1259,9 @@ public class FATTest {
     @Test
     public void testEventLoggingSampleRate() throws Exception {
         server.setServerConfigurationFile("server_sampleRate.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingSampleRate", "--------> Started Server with Sample rate 2");
 
@@ -1165,7 +1308,9 @@ public class FATTest {
     @Test
     public void testEventLoggingSampleRateOdd() throws Exception {
         server.setServerConfigurationFile("server_sampleRate3.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingSampleRateOdd", "--------> Started Server with Sample rate 3");
 
@@ -1210,7 +1355,9 @@ public class FATTest {
     @Test
     public void testEventLoggingSampleRateZero() throws Exception {
         server.setServerConfigurationFile("server_sampleRate0.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingSampleRateUpdate", "--------> Started Server with Sample rate 0");
 
@@ -1237,7 +1384,9 @@ public class FATTest {
     @Test
     public void testEventLoggingSampleRateUpdate() throws Exception {
         server.setServerConfigurationFile("server_sampleRate.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingSampleRateUpdate", "--------> Started Server with Sample rate 2");
 
@@ -1294,7 +1443,9 @@ public class FATTest {
     @Test
     public void testEventLoggingSampleRateRemove() throws Exception {
         server.setServerConfigurationFile("server_sampleRate.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKG0017I", 90000));
 
         Log.info(c, "testEventLoggingSampleRateRemove", "--------> Started Server with Sample rate 2");
 

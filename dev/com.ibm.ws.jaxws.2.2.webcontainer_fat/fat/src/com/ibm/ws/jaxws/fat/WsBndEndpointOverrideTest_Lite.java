@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
@@ -87,7 +88,9 @@ public class WsBndEndpointOverrideTest_Lite {
 
         EJBinWarEndpointAddressOverrideServer.startServer();
         // Pause for application to start successfully
-        EJBinWarEndpointAddressOverrideServer.waitForStringInLog("CWWKZ0001I.*helloServer");
+        assertNotNull(
+            "Message was not detected in the log",
+            EJBinWarEndpointAddressOverrideServer.waitForStringInLog("CWWKZ0001I.*helloServer"));
 
         String result1 = getServletResponse(getBaseURL(EJBinWarEndpointAddressOverrideServer) + "/helloServer/hi");
         assertTrue("Can not access the target port, the return result is: " + result1, result1.contains("Hello! This is a CXF Web Service!"));

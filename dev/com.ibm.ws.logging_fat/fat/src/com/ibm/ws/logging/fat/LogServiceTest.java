@@ -84,7 +84,9 @@ public class LogServiceTest {
         server.installSystemFeature(LOGSERVICE_TEST_FEATURE);
         server.startServer();
         // Since a WAB is used we need to wait for WAB context root to be ready
-        server.waitForStringInLog("CWWKT0016I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKT0016I"));
         // force initialization of the LogTester servlet
         log("startTest", LEVEL_AUDIT, null, false);
     }
@@ -112,7 +114,9 @@ public class LogServiceTest {
         }
         sc.getLogging().setTraceSpecification(traceSpecification);
         server.updateServerConfiguration(sc);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            server.waitForConfigUpdateInLogUsingMark(null) != null);
     }
 
     private static void event(String type) throws IOException {

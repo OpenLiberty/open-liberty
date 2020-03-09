@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs20.fat.wadl;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -78,7 +79,9 @@ public class WADLTest {
     @Test
     public void testWADL2JAVATool() throws Exception {
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wadl");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*wadl"));
 
         String TEST_WADL_LOCATION = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/wadl/1/Order?_wadl").toString();
 

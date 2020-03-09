@@ -59,7 +59,9 @@ public class ClientSecurityTest {
         ShrinkHelper.exportAppToServer(server, ear);
 
         server.startServer("JaxwsTransSecTest.log");
-        server.waitForStringInLog("CWWKZ0001I.*TransportSecurityProvider");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*TransportSecurityProvider"));
 
     }
 

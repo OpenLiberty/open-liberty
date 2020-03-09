@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -100,7 +102,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("Dump State:"));
 
         // Now re-start cloud1
         ProgramOutput po = server1.startServerAndValidate(false, true, true);
@@ -114,7 +118,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        server1.waitForStringInTrace("Performed recovery for FScloud001");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInTrace("Performed recovery for FScloud001"));
 
         // Lastly stop server1
         server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
@@ -150,7 +156,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("Dump State:"));
 
         // Now start server2
         server2.setHttpDefaultPort(FScloud2ServerPort);
@@ -165,7 +173,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             throw ex;
         }
 
-        server2.waitForStringInTrace("Performed recovery for FScloud001");
+        assertNotNull(
+            "Message was not detected in the log",
+            server2.waitForStringInTrace("Performed recovery for FScloud001"));
         server2.stopServer();
 
         // Lastly, clean up XA resource files
@@ -205,7 +215,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
 
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
-        server1.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("Dump State:"));
         // Now is the time to take the filesys lock
         boolean lockSuccess = lockServerLease("FScloud001");
         if (!lockSuccess) {
@@ -247,7 +259,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-        server2.waitForStringInTrace("Performed recovery for FScloud001");
+        assertNotNull(
+            "Message was not detected in the log",
+            server2.waitForStringInTrace("Performed recovery for FScloud001"));
         server2.stopServer();
 
         // Lastly, clean up XA resource files

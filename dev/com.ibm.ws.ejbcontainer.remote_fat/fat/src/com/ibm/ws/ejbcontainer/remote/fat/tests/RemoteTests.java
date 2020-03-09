@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.remote.fat.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collections;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -246,13 +248,17 @@ public class RemoteTests extends AbstractTest {
     private void updateServerConfiguration(ServerConfiguration config) throws Exception {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote")).isEmpty());
     }
 
     private void restoreServerConfiguration() throws Exception {
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote")).isEmpty());
     }
 
     @Test

@@ -76,9 +76,13 @@ public class JSF22BeanValidationTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled"));
     }
 
     @Test

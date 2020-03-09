@@ -335,7 +335,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerQuery' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerQuery' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -435,7 +437,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -463,7 +467,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -492,7 +498,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         // Reload the application to re-init the identity store so hash parameters are re-read.
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -521,7 +529,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         // Reload the application to re-init the identity store so hash parameters are re-read.
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));;
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -550,7 +560,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         // Reload the application to re-init the identity store so hash parameters are re-read.
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -579,7 +591,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         // Reload the application to re-init the identity store so hash parameters are re-read.
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'hashAlgorithmParameters[0]' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'hashAlgorithmParameters[0]' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -639,7 +653,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
          */
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("IdentityStore from module BeanManager.*priority : 100");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInTrace("IdentityStore from module BeanManager.*priority : 100").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -671,7 +687,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
          */
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'priority/priorityExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'priority/priorityExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -721,7 +739,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -748,7 +768,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

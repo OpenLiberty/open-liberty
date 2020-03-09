@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -85,8 +86,13 @@ public class WsBndEndpointOverrideTest extends WsBndEndpointOverrideTest_Lite {
 
         EJBinWarOverrideServer.startServer();
         // Pause for application to start successfully
-        EJBinWarOverrideServer.waitForStringInLog("CWWKT0016I.*helloEJBServer");
-        EJBinWarOverrideServer.waitForStringInLog("CWWKZ0001I.*helloEJBApp");
+        
+        assertNotNull(
+            "Message was not detected in the log",
+            EJBinWarOverrideServer.waitForStringInLog("CWWKT0016I.*helloEJBServer"));
+        assertNotNull(
+            "Message was not detected in the log",
+            EJBinWarOverrideServer.waitForStringInLog("CWWKZ0001I.*helloEJBApp"));
 
         String result = getServletResponse(getBaseURL(EJBinWarOverrideServer) + "/hi/HelloService");
         assertTrue("Can not access the target port, the return result is: " + result, result.contains("Hello! This is a CXF Web Service!"));
@@ -109,8 +115,12 @@ public class WsBndEndpointOverrideTest extends WsBndEndpointOverrideTest_Lite {
 
         EJBinWarOverrideServer.startServer();
         // Pause for application to start successfully
-        EJBinWarOverrideServer.waitForStringInLog("CWWKT0016I.*helloEJBServer");
-        EJBinWarOverrideServer.waitForStringInLog("CWWKZ0001I.*helloEJBApp");
+        assertNotNull(
+            "Message was not detected in the log",
+            EJBinWarOverrideServer.waitForStringInLog("CWWKT0016I.*helloEJBServer"));
+        assertNotNull(
+            "Message was not detected in the log",
+            EJBinWarOverrideServer.waitForStringInLog("CWWKZ0001I.*helloEJBApp"));
 
         String result = getServletResponse(getBaseURL(EJBinWarOverrideServer) + "/helloEJBServer/hi");
         assertTrue("Can not access the target port, the return result is: " + result, result.contains("Hello! This is a CXF Web Service!"));
@@ -133,7 +143,9 @@ public class WsBndEndpointOverrideTest extends WsBndEndpointOverrideTest_Lite {
 
         WebEndpointAddressOverrideServer.startServer();
         // Pause for application to start successfully
-        WebEndpointAddressOverrideServer.waitForStringInLog("CWWKZ0001I.*helloServer");
+        assertNotNull(
+            "Message was not detected in the log",
+            WebEndpointAddressOverrideServer.waitForStringInLog("CWWKZ0001I.*helloServer"));
 
         String result = getServletResponse(getBaseURL(WebEndpointAddressOverrideServer) + "/helloServer/hi");
         assertTrue("Can not access the target port, the return result is: " + result, result.contains("Hello! This is a CXF Web Service!"));

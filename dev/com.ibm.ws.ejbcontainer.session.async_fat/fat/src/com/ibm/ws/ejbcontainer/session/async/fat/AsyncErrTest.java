@@ -111,6 +111,7 @@ public class AsyncErrTest extends FATServletClient {
     public void testMDB() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("AsyncErr2BeanApp_server.xml");
+        // TODO?
         server.waitForConfigUpdateInLogUsingMark(null, "");
 
         assertNotNull("Message was not logged: CNTR0185E", server.waitForStringInLogUsingMark("CNTR0185E"));
@@ -127,6 +128,7 @@ public class AsyncErrTest extends FATServletClient {
     public void testMDB_EE8() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("AsyncErr2BeanApp_server_EE8.xml");
+        // TODO
         server.waitForConfigUpdateInLogUsingMark(null, "");
 
         assertNotNull("Message was not logged: CNTR0185E", server.waitForStringInLogUsingMark("CNTR0185E"));

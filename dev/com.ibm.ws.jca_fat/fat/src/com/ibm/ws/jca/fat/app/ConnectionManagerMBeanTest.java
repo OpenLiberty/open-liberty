@@ -11,6 +11,7 @@
 package com.ibm.ws.jca.fat.app;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -158,7 +159,9 @@ public class ConnectionManagerMBeanTest {
     public void setUpPerTest() throws Exception {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(originalServerConfig);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         Log.info(getClass(), "setUpPerTest", "server configuration restored");
     }
 
@@ -259,8 +262,12 @@ public class ConnectionManagerMBeanTest {
             try {
                 server.setMarkToEndOfLog();
                 server.updateServerConfiguration(config);
-                server.waitForConfigUpdateInLogUsingMark(appNames);
-                server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
+                assertNotNull(
+                    "Message was not detected in the log",
+                    server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*"));
             } catch (Throwable x) {
                 System.out.println("Failure during " + method + " with the following config:");
                 System.out.println(config);
@@ -276,7 +283,9 @@ public class ConnectionManagerMBeanTest {
 
                 server.setMarkToEndOfLog();
                 server.updateServerConfiguration(config);
-                server.waitForConfigUpdateInLogUsingMark(appNames);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
                 //Make sure we're back.
                 runInServlet("testMBeanCreation", fvtweb);
             } catch (Throwable x) {
@@ -287,7 +296,9 @@ public class ConnectionManagerMBeanTest {
         } finally {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalServerConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
         System.out.println("<--- testConfigChangeDestroyMBean is successful");
     }
@@ -312,8 +323,12 @@ public class ConnectionManagerMBeanTest {
             // Update the config, to make sure the server registers it gone.
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
-            server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*"));
             runInServlet("testMBeanIsMissing", fvtweb);
             //Give new connectionFactory the same JNDI Name
             config = server.getServerConfiguration();
@@ -326,7 +341,9 @@ public class ConnectionManagerMBeanTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             //Get the showPoolContents again
             StringBuilder poolContentsAfterChange = runInServlet("testGetConnectionFactoryPoolContents", fvtweb);
@@ -350,7 +367,9 @@ public class ConnectionManagerMBeanTest {
         } finally {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalServerConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
 
     }
@@ -372,8 +391,12 @@ public class ConnectionManagerMBeanTest {
             conMgr.setMaxPoolSize("1");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
-            server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*"));
             //Get the showPoolContents again
             StringBuilder poolContentsAfterChange = runInServlet("testGetConnectionFactoryPoolContents", fvtweb);
             //Compare for changes: Different poolSize, same everything else
@@ -396,7 +419,9 @@ public class ConnectionManagerMBeanTest {
         } finally {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalServerConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -416,8 +441,12 @@ public class ConnectionManagerMBeanTest {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
-        server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*"));
         // Change the id of the factory so that it is slightly different than the
         // original xml.
         config = server.getServerConfiguration();
@@ -426,7 +455,9 @@ public class ConnectionManagerMBeanTest {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         runInServlet("testJNDILookupConnectionFactory", fvtweb);
     }

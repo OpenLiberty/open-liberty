@@ -277,12 +277,16 @@ public class FailoverTimersTest extends FATServletClient {
                         "testTimerFailover&timer=StatelessTxSuspendedTimer_1_2&server=" + SERVER_A_NAME + "&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[2]");
             } finally {
                 Set<String> remainingApps = APP_NAMES.stream().filter(s -> !s.equals(APP_NAME)).collect(Collectors.toSet());
-                serverB.waitForConfigUpdateInLogUsingMark(remainingApps);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !serverB.waitForConfigUpdateInLogUsingMark(remainingApps).isEmpty());
             }
         } finally {
             serverB.setMarkToEndOfLog();
             serverB.updateServerConfiguration(originalConfigB);
-            serverB.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !serverB.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.
@@ -326,12 +330,16 @@ public class FailoverTimersTest extends FATServletClient {
                         "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testSingletonTimerFailsOverWhenAppStops[2]");
             } finally {
                 Set<String> remainingApps = APP_NAMES.stream().filter(s -> !s.equals(APP_NAME)).collect(Collectors.toSet());
-                serverOnWhichToStopApp.waitForConfigUpdateInLogUsingMark(remainingApps);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !serverOnWhichToStopApp.waitForConfigUpdateInLogUsingMark(remainingApps).isEmpty());
             }
         } finally {
             serverOnWhichToStopApp.setMarkToEndOfLog();
             serverOnWhichToStopApp.updateServerConfiguration(originalConfig);
-            serverOnWhichToStopApp.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !serverOnWhichToStopApp.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.

@@ -11,6 +11,7 @@
 package com.ibm.ws.session.cache.config.fat.infinispan;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.ZonedDateTime;
@@ -60,7 +61,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     public void cleanUpPerTest() throws Exception {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList).isEmpty());
         cleanupList = EMPTY_RECYCLE_LIST;
 
         // In addition to starting the application, must also wait for asynchronous web module initialization to complete,
@@ -119,7 +122,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         run("testMXBeansEnabled", new ArrayList<>());
 
@@ -130,7 +135,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         run("testMXBeansNotEnabled", new ArrayList<>());
 
@@ -139,14 +146,18 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         run("testMXBeansEnabled", new ArrayList<>());
 
         // remove monitor-1.0 feature (and monitor config)
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         run("testMXBeansNotEnabled", new ArrayList<>());
     }
@@ -167,7 +178,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setMarkToEndOfLog(); // Only marks messages.log, does not mark the trace file
         server.setTraceMarkToEndOfDefaultTrace();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
         String messageToCheckFor = "doScheduledInvalidation scheduled hours are " + Integer.toString(hour1) + " and " + Integer.toString(hour2);
 
         // Monitor trace.log and wait for the message "doScheduledInvalidation scheduled hours are X and Y" before the test should continue
@@ -209,7 +222,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         httpSessionCache.setWriteContents("GET_AND_SET_ATTRIBUTES");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         run("testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
 
@@ -217,7 +232,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         httpSessionCache.setWriteContents("ALL_SESSION_ATTRIBUTES");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         run("testWriteContents_ALL_SESSION_ATTRIBUTES", new ArrayList<>());
     }
@@ -241,7 +258,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         httpSessionCache.setWriteFrequency("MANUAL_UPDATE");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
         session = new ArrayList<>();
@@ -270,7 +289,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         httpSessionCache.setWriteInterval("5s");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         // Set a new attribute value and verify that it does not get persisted upon the end of the servlet request.
         // This might require retries because periodic timed based write could happen right as the servlet request ends.

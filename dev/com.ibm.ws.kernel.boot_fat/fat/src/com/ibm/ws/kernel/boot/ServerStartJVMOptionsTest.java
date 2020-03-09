@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.boot;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -106,7 +107,9 @@ public class ServerStartJVMOptionsTest {
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
 
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
         server.resetStarted();
 
         assertTrue("the server should have been started", server.isStarted());
@@ -140,7 +143,9 @@ public class ServerStartJVMOptionsTest {
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
 
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
         server.resetStarted();
 
         server.serverDump();
@@ -217,7 +222,9 @@ public class ServerStartJVMOptionsTest {
         ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
         server.resetStarted();
 
         server.serverDump();
@@ -320,7 +327,9 @@ public class ServerStartJVMOptionsTest {
         ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
         server.resetStarted();
 
         server.serverDump();
@@ -435,7 +444,9 @@ public class ServerStartJVMOptionsTest {
         ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
         server.resetStarted();
 
         server.serverDump();
@@ -510,7 +521,9 @@ public class ServerStartJVMOptionsTest {
         ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
         server.resetStarted();
 
         server.serverDump();

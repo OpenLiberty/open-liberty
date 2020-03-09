@@ -82,7 +82,9 @@ public class JSONBContainerTest extends FATServletClient {
         ServerConfiguration config = server.getServerConfiguration();
         config.getFeatureManager().getFeatures().add("jsonb-1.0");
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JSONB_APP));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JSONB_APP)).isEmpty());
 
         // Run a test to verify that jsonb is still usable
         runTest(server, JSONB_APP + "/JSONBTestServlet", "testJsonbDeserializer&JsonbProvider=" + PROVIDER_JOHNZON);

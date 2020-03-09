@@ -11,6 +11,7 @@
 package com.ibm.ws.jdbc.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -190,7 +191,9 @@ public class ConfigTest extends FATServletClient {
     private static void updateServerConfig(ServerConfiguration config, String[] cleanup) throws Exception {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanup);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames, cleanup).isEmpty());
     }
 
     private void runTest(String app, String test) throws Throwable {
@@ -1308,7 +1311,9 @@ public class ConfigTest extends FATServletClient {
             privateLib.add("AutomaticDerbyLibrary");
 
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST).isEmpty());
             try {
                 server.stopServer(ALLOWED_MESSAGES);
 
@@ -1532,9 +1537,13 @@ public class ConfigTest extends FATServletClient {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             if (!platform.equalsIgnoreCase("Oracle"))
-                server.waitForConfigUpdateInLogUsingMark(appNames, JDBCAPP_RECYCLE_EXPR_LIST);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(appNames, JDBCAPP_RECYCLE_EXPR_LIST).isEmpty());
             else
-                server.waitForStringInLogUsingMark("TRAS0018I.*" + traceSpec);
+                assertNotNull(
+                    "Message was not detected in the log",
+                    server.waitForStringInLogUsingMark("TRAS0018I.*" + traceSpec));
             // trace should be enabled now
             runTest(basicfat, "testBasicQuery");
         } catch (Throwable t) {
