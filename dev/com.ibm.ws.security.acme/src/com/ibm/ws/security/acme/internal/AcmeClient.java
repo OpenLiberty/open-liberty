@@ -138,10 +138,10 @@ public class AcmeClient {
 			Collection<String> accountContacts) throws AcmeCaException {
 
 		if (directoryURI == null || directoryURI.trim().isEmpty()) {
-			throw new AcmeCaException("The ACME CA's directory URI must be a valid URI.");
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2008E", directoryURI));
 		}
-		validateKeyFilePath(accountKeyFilePath, "account");
-		validateKeyFilePath(domainKeyFilePath, "domain");
+		validateKeyFilePath(accountKeyFilePath, AcmeConstants.ACCOUNT_TYPE);
+		validateKeyFilePath(domainKeyFilePath, AcmeConstants.DOMAIN_TYPE);
 
 		this.directoryURI = directoryURI;
 		this.accountKeyFilePath = accountKeyFilePath;
@@ -187,7 +187,7 @@ public class AcmeClient {
 			try {
 				challenge.trigger();
 			} catch (AcmeException e) {
-				throw new AcmeCaException("Error triggering challenge to ACME server.", e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2009E", directoryURI, e.getMessage()), e);
 			}
 
 			/*
@@ -197,10 +197,10 @@ public class AcmeClient {
 			while (challenge.getStatus() != Status.VALID && attempts-- > 0) {
 				// Did the authorization fail?
 				if (challenge.getStatus() == Status.INVALID) {
-					String msg = "ACME CA responded that the challenge failed for domain '"
-							+ authorization.getIdentifier().getDomain() + "' with status " + Status.INVALID.toString()
-							+ ".";
-					Tr.error(tc, msg);
+					String msg = Tr.formatMessage(tc, "CWPKI2001E", directoryURI,
+							authorization.getIdentifier().getDomain(), challenge.getStatus().toString(),
+							challenge.getError().toString());
+					//Tr.error(tc, msg);
 					throw new AcmeCaException(msg);
 				}
 
@@ -219,7 +219,7 @@ public class AcmeClient {
 					// Instant.
 					// Instant when = e.getRetryAfter();
 				} catch (AcmeException e) {
-					throw new AcmeCaException("Error updating challenge status from ACME server.", e);
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2010E", directoryURI, e.getMessage()), e);
 				}
 			}
 
@@ -228,10 +228,9 @@ public class AcmeClient {
 			 * authorization?
 			 */
 			if (challenge.getStatus() != Status.VALID) {
-				String msg = "Timed out waiting for successful challenge for domain '"
-						+ authorization.getIdentifier().getDomain() + "'. Status is "
-						+ challenge.getStatus().toString();
-				Tr.error(tc, msg);
+				String msg = Tr.formatMessage(tc, "CWPKI2002E", directoryURI, authorization.getIdentifier().getDomain(),
+						challenge.getStatus().toString(), (challengeRetries * challengeRetryWaitMs) + "ms");
+				//Tr.error(tc, msg); TODO -- Do we want to log and throw?
 				throw new AcmeCaException(msg);
 			}
 
@@ -291,7 +290,7 @@ public class AcmeClient {
 		try {
 			order = orderBuilder.create();
 		} catch (AcmeException e) {
-			throw new AcmeCaException("Error creating order for ACME server.", e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2011E", directoryURI, e.getMessage()), e);
 		}
 
 		/*
@@ -333,7 +332,7 @@ public class AcmeClient {
 		try {
 			csrb.sign(domainKeyPair);
 		} catch (IOException e) {
-			throw new AcmeCaException("Error signing the certificate signing request.", e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2012E", directoryURI, e.getMessage()), e);
 		}
 		Tr.debug(tc, "Certificate Signing Request: " + csrb.toString());
 
@@ -343,9 +342,9 @@ public class AcmeClient {
 		try {
 			order.execute(csrb.getEncoded());
 		} catch (AcmeException e) {
-			throw new AcmeCaException("Error ordering the certificate.", e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2013E", directoryURI, e.getMessage()), e);
 		} catch (IOException e) {
-			throw new AcmeCaException("Error getting the encoded certificate signing request.", e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2014E", directoryURI, e.getMessage()), e);
 		}
 
 		/*
@@ -357,9 +356,8 @@ public class AcmeClient {
 			 * Did the order fail?
 			 */
 			if (order.getStatus() == Status.INVALID) {
-				String msg = "ACME CA responded that the challenge failed for domains " + csrOptions.getDomains()
-						+ " with status " + Status.INVALID.toString() + ".";
-				Tr.error(tc, msg);
+				String msg = Tr.formatMessage(tc, "CWPKI2001E", directoryURI,
+						csrOptions.getDomains(), order.getStatus().toString(), order.getError().toString());
 				throw new AcmeCaException(msg);
 			}
 
@@ -377,7 +375,7 @@ public class AcmeClient {
 				// TODO Wait until the moment defined in the returned Instant.
 				// Instant when = e.getRetryAfter();
 			} catch (AcmeException e) {
-				throw new AcmeCaException("Error updating the order status from the ACME server.", e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2015E", directoryURI, e.getMessage()), e);
 			}
 		}
 
@@ -385,9 +383,9 @@ public class AcmeClient {
 		 * All re-attempts are used up and there is still no valid order?
 		 */
 		if (order.getStatus() != Status.VALID) {
-			String msg = "Timed out waiting for successful order for domains " + csrOptions.getDomains()
-					+ ". Status is " + order.getStatus().toString();
-			Tr.error(tc, msg);
+			String msg = Tr.formatMessage(tc, "CWPKI2004E", directoryURI, csrOptions.getDomains(),
+					order.getStatus().toString(), (orderRetries * orderRetryWaitMs) + "ms");
+			//Tr.error(tc, msg); TODO -- Do we want to log and throw?
 			throw new AcmeCaException(msg);
 		}
 
@@ -417,7 +415,7 @@ public class AcmeClient {
 		} catch (AcmeServerException e) {
 			return null;
 		} catch (AcmeException e) {
-			throw new AcmeCaException("Error requesting an existing account from ACME server.", e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2016E", directoryURI, e.getMessage()), e);
 		}
 	}
 
@@ -451,17 +449,16 @@ public class AcmeClient {
 			try {
 				tosURI = session.getMetadata().getTermsOfService();
 			} catch (AcmeException e) {
-				throw new AcmeCaException("Error retrieving the terms of service from the ACME server.", e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2017E", directoryURI, e.getMessage()), e);
 			}
 
 			/*
-			 * Log that we are accepting the terms of the CA on behalf of
-			 * the account.
+			 * If the server provides terms of service, the account must accept them.
 			 */
-			if (tosURI != null) {
-				Tr.audit(tc,
-						"Accepted the ACME CA's terms of service on behalf of the account. See the terms of service here: "
-								+ tosURI);
+			if (tosURI == null) {
+				Tr.debug(tc, "No terms of service provided");
+			} else {
+				Tr.audit(tc, "CWPKI2006I", directoryURI, tosURI);
 			}
 
 			/*
@@ -484,11 +481,11 @@ public class AcmeClient {
 			try {
 				account = accountBuilder.create(session);
 			} catch (AcmeException e) {
-				throw new AcmeCaException("Error creating account on ACME server.", e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2018E", directoryURI, e.getMessage()), e);
 			}
 		}
 
-		Tr.audit(tc, "URL for ACME CA account: " + account.getLocation());
+		Tr.audit(tc, "CWPKI2019I", directoryURI, account.getLocation());
 		return account;
 	}
 
@@ -527,7 +524,7 @@ public class AcmeClient {
 			try (FileReader fr = new FileReader(accountKeyFile)) {
 				return KeyPairUtils.readKeyPair(fr);
 			} catch (IOException e) {
-				throw new AcmeCaException("Error reading domain key file.", e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", directoryURI, accountKeyFile, e.getMessage()), e);
 			}
 		}
 
@@ -556,7 +553,7 @@ public class AcmeClient {
 			try (FileReader fr = new FileReader(domainKeyFile)) {
 				return KeyPairUtils.readKeyPair(fr);
 			} catch (IOException e) {
-				throw new AcmeCaException("Error reading domain key pair file.", e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2020E", directoryURI, domainKeyFile, e.getMessage()), e);
 			}
 		}
 
@@ -608,7 +605,8 @@ public class AcmeClient {
 				try (FileWriter fw = new FileWriter(accountKeyFile)) {
 					KeyPairUtils.writeKeyPair(accountKeyPair, fw);
 				} catch (IOException e) {
-					throw new AcmeCaException("Error writing account key pair file.", e);
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E",
+							directoryURI, accountKeyFile, e.getMessage()), e);
 				}
 			}
 		}
@@ -661,7 +659,8 @@ public class AcmeClient {
 				try (FileWriter fw = new FileWriter(domainKeyFile)) {
 					KeyPairUtils.writeKeyPair(domainKeyPair, fw);
 				} catch (IOException e) {
-					throw new AcmeCaException("Error writing account key pair file.", e);
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2022E",
+							directoryURI, domainKeyFile, e.getMessage()), e);
 				}
 			}
 		}
@@ -692,9 +691,8 @@ public class AcmeClient {
 		 */
 		Http01Challenge challenge = auth.findChallenge(Http01Challenge.TYPE);
 		if (challenge == null) {
-			String msg = "Didn't find a " + Http01Challenge.TYPE + " challenge type.";
-			Tr.error(tc, msg);
-			throw new AcmeCaException(msg);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2005E",
+					directoryURI, Http01Challenge.TYPE));
 		}
 
 		/*
@@ -724,8 +722,7 @@ public class AcmeClient {
 		 */
 		KeyPair accountKeyPair = loadAccountKeyPair();
 		if (accountKeyPair == null) {
-			throw new AcmeCaException(
-					"Could not load account KeyPair. Revoking a certificate requires a valid account key pair.");
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", directoryURI));
 		}
 
 		/*
@@ -746,11 +743,10 @@ public class AcmeClient {
 			try {
 				Certificate.revoke(login, certificate, RevocationReason.UNSPECIFIED);
 			} catch (AcmeException e) {
-				throw new AcmeCaException("Error revoking certificate.", e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", directoryURI, e.getMessage()), e);
 			}
 		} else {
-			throw new AcmeCaException(
-					"Unable to find account to revoke certificate.  Revoking a certificate requires a valid account.");
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", directoryURI));
 		}
 	}
 
@@ -836,15 +832,23 @@ public class AcmeClient {
 	 */
 	private static void validateKeyFilePath(String path, String type) throws AcmeCaException {
 		if (path == null || path.trim().isEmpty()) {
-			throw new AcmeCaException("The " + type + " key file path must be valid.");
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2027E", type, path));
 		}
 
 		File file = new File(path);
 		if (file.exists() && !file.canRead()) {
-			throw new AcmeCaException("Cannot read existing " + type + " key file.");
+			if (type.equals(AcmeConstants.DOMAIN_TYPE)) {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2020E", type, path));
+			} else {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", type, path));
+			}
 		}
 		if (file.exists() && !file.canWrite()) {
-			throw new AcmeCaException("Cannot write to specified " + type + " key file location.");
+			if (type.equals(AcmeConstants.DOMAIN_TYPE)) {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2022E", type, path));
+			} else {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E", type, path));
+			}
 		}
 	}
 

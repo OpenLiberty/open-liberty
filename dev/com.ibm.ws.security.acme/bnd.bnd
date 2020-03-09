@@ -29,6 +29,8 @@ Web-ContextPath: /.well-known/acme-challenge
 
 IBM-Web-Extension-Processing-Disabled: false
 
+Import-Package: !*.internal.*, *
+
 Export-Package: \
     com.ibm.ws.security.acme;version="1.0.0"
  
