@@ -172,52 +172,34 @@ public class CollectorJsonUtils_JSON {
                                       String serverName, String hostName, Object event, String[] tags) {
 
         FFDCData ffdcData = (FFDCData) event;
-        Boolean isFirstField = true;
-        StringBuilder sb = CollectorJsonHelpers.startFFDCJsonFields(hostName, wlpUserDir, serverName);
-
-        if (sb.length() > 1)
-            isFirstField = false;
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(hostName, wlpUserDir, serverName);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getDatetimeKeyJSON(), datetime, false, true, false, isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getMessageKeyJSON(), ffdcData.getMessage(), false, true, false, isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getClassNameKeyJSON(), ffdcData.getClassName(), false, true, false, isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getExceptionNameKeyJSON(), ffdcData.getExceptionName(), false, true, false, isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getProbeIdKeyJSON(), ffdcData.getProbeId(), false, true, false, isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getThreadIdKeyJSON(), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false,
-                                                        true, false, isFirstField, false);
-
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getStacktraceKeyJSON(), formattedValue, false, true, false, isFirstField, false);
 
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getObjectDetailsKeyJSON(), ffdcData.getObjectDetails(), false, true,
-                                                        isFirstField, false,
-                                                        false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, FFDCData.getSequenceKeyJSON(), ffdcData.getSequence(), false, true, false, isFirstField,
-                                                        false);
+        //@formatter:off
+        jsonBuilder.addField(FFDCData.getDatetimeKeyJSON(), datetime, false, true)
+        .addField(FFDCData.getMessageKeyJSON(), ffdcData.getMessage(), false, true)
+        .addField(FFDCData.getClassNameKeyJSON(), ffdcData.getClassName(), false, true)
+        .addField(FFDCData.getExceptionNameKeyJSON(), ffdcData.getExceptionName(), false, true)
+        .addField(FFDCData.getProbeIdKeyJSON(), ffdcData.getProbeId(), false, true)
+        .addField(FFDCData.getThreadIdKeyJSON(), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
+        .addField(FFDCData.getStacktraceKeyJSON(), formattedValue, false, true)
+        .addField(FFDCData.getObjectDetailsKeyJSON(), ffdcData.getObjectDetails(), false, true)
+        .addField(FFDCData.getSequenceKeyJSON(), ffdcData.getSequence(), false, true);
+        //@formatter:on
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addField("\"ibm_tags\":", CollectorJsonHelpers.jsonifyTags(tags), false, false);
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     public static String jsonifyAccess(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
 
         AccessLogData accessLogData = (AccessLogData) event;
-        Boolean isFirstField = true;
-        StringBuilder sb = CollectorJsonHelpers.startAccessLogJsonFields(hostName, wlpUserDir, serverName);
-
-        if (sb.length() > 1)
-            isFirstField = false;
-
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getUriPathKeyJSON(), accessLogData.getUriPath(), false, true, false,
-                                                        isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getRequestMethodKeyJSON(), accessLogData.getRequestMethod(), false, true,
-                                                        false, isFirstField, false);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(hostName, wlpUserDir, serverName);
 
         String jsonQueryString = accessLogData.getQueryString();
         if (jsonQueryString != null) {
@@ -227,47 +209,34 @@ public class CollectorJsonUtils_JSON {
                 // ignore, use the original value;
             }
         }
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getQueryStringKeyJSON(), jsonQueryString, false, true, false,
-                                                        isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getRequestHostKeyJSON(), accessLogData.getRequestHost(), false, true, false,
-                                                        isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getRequestPortKeyJSON(), accessLogData.getRequestPort(), false, true, false,
-                                                        isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getRemoteHostKeyJSON(), accessLogData.getRemoteHost(), false, true, false,
-                                                        isFirstField, false);
 
         String userAgent = accessLogData.getUserAgent();
-
-        if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
+        if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH)
             userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
-        }
-
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getUserAgentKeyJSON(), userAgent, false, false, false, isFirstField,
-                                                        false);
-
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getRequestProtocolKeyJSON(), accessLogData.getRequestProtocol(), false,
-                                                        true, false, isFirstField, false);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getBytesReceivedKeyJSON(), Long.toString(accessLogData.getBytesReceived()),
-                                                        false, true, false, isFirstField, true);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getResponseCodeKeyJSON(), Integer.toString(accessLogData.getResponseCode()),
-                                                        false, true, false, isFirstField, true);
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getElapsedTimeKeyJSON(), Long.toString(accessLogData.getElapsedTime()), false,
-                                                        true, false, isFirstField, true);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(accessLogData.getDatetime());
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getDatetimeKeyJSON(), datetime, false, true, false, isFirstField, false);
 
-        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AccessLogData.getSequenceKeyJSON(), accessLogData.getSequence(), false, true, false,
-                                                        isFirstField,
-                                                        false);
+        //@formatter:off
+        jsonBuilder.addField(AccessLogData.getUriPathKeyJSON(), accessLogData.getUriPath(), false, true)
+        .addField(AccessLogData.getRequestMethodKeyJSON(), accessLogData.getRequestMethod(), false, true)
+        .addField(AccessLogData.getQueryStringKeyJSON(), jsonQueryString, false, true)
+        .addField(AccessLogData.getRequestHostKeyJSON(), accessLogData.getRequestHost(), false, true)
+        .addField(AccessLogData.getRequestPortKeyJSON(), accessLogData.getRequestPort(), false, true)
+        .addField(AccessLogData.getRemoteHostKeyJSON(), accessLogData.getRemoteHost(), false, true)
+        .addField(AccessLogData.getUserAgentKeyJSON(), userAgent, false, false)
+        .addField(AccessLogData.getRequestProtocolKeyJSON(), accessLogData.getRequestProtocol(), false, true)
+        .addField(AccessLogData.getBytesReceivedKeyJSON(), Long.toString(accessLogData.getBytesReceived()), false, true)
+        .addField(AccessLogData.getResponseCodeKeyJSON(), Integer.toString(accessLogData.getResponseCode()), false, true)
+        .addField(AccessLogData.getElapsedTimeKeyJSON(), Long.toString(accessLogData.getElapsedTime()), false, true)
+        .addField(AccessLogData.getDatetimeKeyJSON(), datetime, false, true)
+        .addField(AccessLogData.getSequenceKeyJSON(), accessLogData.getSequence(), false, true);
+        //@formatter:on
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addField("\"ibm_tags\":", CollectorJsonHelpers.jsonifyTags(tags), false, false);
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
@@ -348,11 +317,7 @@ public class CollectorJsonUtils_JSON {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        Boolean isFirstField = true;
-        StringBuilder sb = CollectorJsonHelpers.startAuditJsonFields(hostName, wlpUserDir, serverName);
-
-        if (sb.length() > 1)
-            isFirstField = false;
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(hostName, wlpUserDir, serverName);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -376,27 +341,22 @@ public class CollectorJsonUtils_JSON {
                      */
                     if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime") || AuditData.getDatetimeKeyJSON().equals(key)) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AuditData.getDatetimeKeyJSON(), datetime, false, true, false, isFirstField,
-                                                                        false);
+                        jsonBuilder.addField(AuditData.getDatetimeKeyJSON(), datetime, false, true);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber") || AuditData.getSequenceKeyJSON().equals(key)) {
-                        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AuditData.getSequenceKeyJSON(), kvp.getStringValue(), false, false,
-                                                                        isFirstField, false,
-                                                                        !kvp.isString());
+                        jsonBuilder.addField(AuditData.getSequenceKeyJSON(), kvp.getStringValue(), false, false);
                     } else if (key.equals(LogFieldConstants.IBM_THREADID) || AuditData.getThreadIDKeyJSON().equals(key)) {
-                        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, AuditData.getThreadIDKeyJSON(), DataFormatHelper.padHexString(kvp.getIntValue(), 8),
-                                                                        false, true, false,
-                                                                        isFirstField, false);
+                        jsonBuilder.addField(AuditData.getThreadIDKeyJSON(), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
                     } else {
                         //check this before leaving
-                        isFirstField &= !CollectorJsonHelpers.addToJSON(sb, "ibm_audit_" + key, kvp.getStringValue(), false, false, false, isFirstField, !kvp.isString());
+                        jsonBuilder.addField("ibm_audit_" + key, kvp.getStringValue(), false, false);
                     }
 
                 } //There shouldn't be any list items from Audit's Generic Data object
             }
 
         }
-        sb.append("}");
-        return sb.toString();
+
+        return jsonBuilder.build().toString();
     }
 
     private static StringBuilder addTagNameForVersion(StringBuilder sb) {
