@@ -13,6 +13,7 @@ package com.ibm.ws.http.channel.h2internal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -2080,9 +2081,10 @@ public class H2StreamProcessor implements Http2Stream {
             try {
                 headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, pseudoHeaders.get(header), LiteralIndexType.NOINDEXING));
             } catch (CompressionException | IOException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                e.printStackTrace();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writeHeaders: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
+                }
+                cancel(e, 0x3);
             }
         }
 
@@ -2090,9 +2092,10 @@ public class H2StreamProcessor implements Http2Stream {
             try {
                 headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, headers.get(header), LiteralIndexType.NOINDEXING));
             } catch (CompressionException | IOException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                e.printStackTrace();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writeHeaders: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
+                }
+                cancel(e, 0x3);
             }
         }
         try {
@@ -2100,9 +2103,10 @@ public class H2StreamProcessor implements Http2Stream {
             FrameHeaders headersFrame = new FrameHeaders(getId(), headerStream.toByteArray(), false, true);
             processNextFrame(headersFrame, Constants.Direction.WRITING_OUT);
         } catch (ProtocolException | StreamClosedException | FlowControlException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "writeHeaders: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
+            }
+            cancel(e, 0x3);
         }
     }
 
@@ -2118,7 +2122,10 @@ public class H2StreamProcessor implements Http2Stream {
             FrameHeaders headersFrame = new FrameHeaders(this.getId(), headerStream.toByteArray(), true, true);
             processNextFrame(headersFrame, Constants.Direction.WRITING_OUT);
         } catch (ProtocolException | StreamClosedException | FlowControlException | IOException | CompressionException e) {
-            cancel(e, 1);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "writeTrailers: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
+            }
+            cancel(e, 0x3);
         }
     }
 
@@ -2128,19 +2135,33 @@ public class H2StreamProcessor implements Http2Stream {
         try {
             processNextFrame(reset, Constants.Direction.WRITING_OUT);
         } catch (ProtocolException | StreamClosedException | FlowControlException e) {
-            // TODO nuke the connection
-            e.printStackTrace();
+            muxLink.closeConnectionLink(e, true);
         }
     }
 
     @Override
     public void writeData(byte[] buffer, boolean endOfStream) {
-        FrameData dataFrame = new FrameData(getId(), buffer, 0, endOfStream, false, false);
-        try {
-            processNextFrame(dataFrame, Constants.Direction.WRITING_OUT);
-        } catch (ProtocolException | StreamClosedException | FlowControlException e) {
-            System.out.println("writeData: failed to write data on stream; " + e.getErrorString());
-            cancel(e, e.getErrorCode());
+        int maxFrameSize = this.muxLink.getRemoteConnectionSettings().maxFrameSize;
+        int written = 0;
+        int remaining = 0;
+        int currentBufferSize = 0;
+        boolean localEndOfStream = false;
+        while (written < buffer.length) {
+            remaining = buffer.length - written;
+            currentBufferSize = maxFrameSize >= remaining ? remaining : maxFrameSize;
+            byte[] localWriteBuffer = Arrays.copyOfRange(buffer, written, written + currentBufferSize);
+            written += currentBufferSize;
+            localEndOfStream = (written == buffer.length) && endOfStream;
+            FrameData localDataFrame = new FrameData(getId(), localWriteBuffer, 0, localEndOfStream, false, false);
+            try {
+                processNextFrame(localDataFrame, Constants.Direction.WRITING_OUT);
+
+            } catch (ProtocolException | StreamClosedException | FlowControlException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writeData: failed to write data on stream " + streamId() + " with error " + e.getErrorString());
+                }
+                cancel(e, e.getErrorCode());
+            }
         }
     }
 }
