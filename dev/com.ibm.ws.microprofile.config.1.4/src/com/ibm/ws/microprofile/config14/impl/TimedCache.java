@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config14.impl;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,6 +50,7 @@ public class TimedCache<K, V> {
     private static final Object NULL_VALUE = new CachedNullValue();
 
     private final ScheduledExecutorService executor;
+    private final boolean localExecutor;
     private final long delay;
     private final TimeUnit unit;
 
@@ -63,7 +65,14 @@ public class TimedCache<K, V> {
      * @param unit
      */
     public TimedCache(ScheduledExecutorService executor, long delay, TimeUnit unit) {
-        this.executor = executor;
+        if (executor == null) {
+            // For unit testing only
+            this.executor = Executors.newSingleThreadScheduledExecutor();
+            this.localExecutor = true;
+        } else {
+            this.executor = executor;
+            this.localExecutor = false;
+        }
         this.delay = delay;
         this.unit = unit;
     }
@@ -163,6 +172,9 @@ public class TimedCache<K, V> {
         closed.set(true);
         if (invalidationFuture != null) {
             invalidationFuture.cancel(false);
+        }
+        if (localExecutor) {
+            executor.shutdown();
         }
     }
 
