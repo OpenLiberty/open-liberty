@@ -1437,9 +1437,7 @@ public class Director extends AbstractDirector {
 
 
         Set<String> resolveAsSetFeatures = InstallUtils.getResolveAsSetFeatures();
-        System.out.println("resolve as set features: " + resolveAsSetFeatures);
         Pattern pattern = Pattern.compile(".*\\d+\\.\\d+-.*\\d+\\.\\d+");
-        Set<String> resolveFeatures = InstallUtils.getResolveFeatures();
 
 
         int progress = 10;
@@ -1461,8 +1459,6 @@ public class Director extends AbstractDirector {
                         ESAAsset esaAsset;
                         String target = targetList.getKey();
                         boolean useThisFeature = false;
-
-                        System.out.println("processing " + installResource.getName());
                         try {
                             if (d != null) {
                                 esaAsset = new ESAAsset(esa.getName(), esa.getProvideFeature(), InstallUtils.toExtension(target, toExtension), d, false);
@@ -1480,7 +1476,6 @@ public class Director extends AbstractDirector {
                             } else {
                                 esaAsset = new ESAAsset(esa.getName(), esa.getProvideFeature(), InstallUtils.toExtension(target, toExtension), esa);
                             }
-
                             if (resolveAsSetFeatures == null || ((resolveAsSetFeatures.contains(esa.getProvideFeature())))) {
                                 useThisFeature = true;
                             } else {
@@ -1537,9 +1532,7 @@ public class Director extends AbstractDirector {
      * @throws InstallException
      */
     public void checkResources() throws InstallException {
-        System.out.println("install assets begin: " + installAssets);
         getResolveDirector().checkResources();
-        System.out.println("install assets now: " + installAssets);
         if (installAssets != null) {
             for (List<InstallAsset> iaList : installAssets) {
                 for (InstallAsset ia : iaList) {
@@ -1555,8 +1548,6 @@ public class Director extends AbstractDirector {
         long free = wlpDir.getFreeSpace();
         String wlpDirSpace = castToPrintableMessage(wlpDir.getFreeSpace());
         logger.log(Level.FINEST, "Total available space is " + wlpDirSpace + ".");
-
-        System.out.println("install assets now: " + installAssets);
 
         if (free < required) {
             try {
