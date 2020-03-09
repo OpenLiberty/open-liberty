@@ -1435,11 +1435,6 @@ public class Director extends AbstractDirector {
             this.installAssets = new ArrayList<List<InstallAsset>>(installResources.size());
         }
 
-
-        Set<String> resolveAsSetFeatures = InstallUtils.getResolveAsSetFeatures();
-        Pattern pattern = Pattern.compile(".*\\d+\\.\\d+-.*\\d+\\.\\d+");
-
-
         int progress = 10;
         int interval1 = installResources.size() == 0 ? 40 : 40 / installResources.size();
         for (Entry<String, List<List<RepositoryResource>>> targetList : installResources.entrySet()) {
@@ -1458,7 +1453,6 @@ public class Director extends AbstractDirector {
                         EsaResource esa = (EsaResource) installResource;
                         ESAAsset esaAsset;
                         String target = targetList.getKey();
-                        boolean useThisFeature = false;
                         try {
                             if (d != null) {
                                 esaAsset = new ESAAsset(esa.getName(), esa.getProvideFeature(), InstallUtils.toExtension(target, toExtension), d, false);
@@ -1476,19 +1470,7 @@ public class Director extends AbstractDirector {
                             } else {
                                 esaAsset = new ESAAsset(esa.getName(), esa.getProvideFeature(), InstallUtils.toExtension(target, toExtension), esa);
                             }
-                            if (resolveAsSetFeatures == null || ((resolveAsSetFeatures.contains(esa.getProvideFeature())))) {
-                                useThisFeature = true;
-                            } else {
-                                // determine if autofeature, NOTE that esa.isAutoFeature() doesnt work all the time!!
-
-                                Matcher matcher = pattern.matcher(esa.getProvideFeature());
-                                if(matcher.find()){
-                                    useThisFeature = true; // it is an auto feature
-                                }
-                            }
-                            if(useThisFeature) {
-                                iaList.add(esaAsset);
-                            }
+                            iaList.add(esaAsset);
                         } catch (Exception e) {
                             throw ExceptionUtils.createByKey(e, "ERROR_INVALID_ESA", esa.getName());
                         }

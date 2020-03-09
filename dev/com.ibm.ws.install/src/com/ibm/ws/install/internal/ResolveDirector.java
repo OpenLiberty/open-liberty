@@ -43,6 +43,7 @@ import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.adaptor.FixAdaptor;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.InstallAsset;
+import com.ibm.ws.install.repository.Repository;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
 import com.ibm.ws.install.repository.internal.RepositoryUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -641,24 +642,44 @@ class ResolveDirector extends AbstractDirector {
                 Set<String> allServerFeatures = new HashSet<>(InstallUtils.getAllServerFeatures());
                 allServerFeatures.addAll(assetsToInstall);
 
-                // FIRST CALL to resolveAsSet --> this throws an error for singleton features
+                // call resolveAsSet --> detects singleton exceptions and tolerated features
                 log(Level.FINE, "Calling resolveAsSet api");
                 installResources = resolver.resolveAsSet(allServerFeatures); // use new api
 
-
-                Set<String> returnedFeatureList = new HashSet<>();
-                for(List<RepositoryResource>  resList  : installResources){
-                    for(RepositoryResource res : resList) {
-                        if (res.getType().equals(ResourceType.FEATURE)) {
-                            EsaResource esa = (EsaResource) res;
-                            returnedFeatureList.add(esa.getProvideFeature());
+                if(!installResources.isEmpty()) {
+                    Set<String> resolveAsSetFeatures = new HashSet<>();
+                    for (List<RepositoryResource> resList : installResources) {
+                        for (RepositoryResource res : resList) {
+                            if (res.getType().equals(ResourceType.FEATURE)) {
+                                EsaResource esa = (EsaResource) res;
+                                resolveAsSetFeatures.add(esa.getProvideFeature());
+                            }
                         }
                     }
-                }
-                InstallUtils.setResolveAsSetFeatures(returnedFeatureList);
 
-                resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
-                installResources = resolver.resolve(returnedFeatureList);
+                    // call old resolve api
+                    resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
+                    installResources = resolver.resolve(resolveAsSetFeatures);
+
+                    // filter install resources to include resolveAsSet feature + missing auto features from old resolve api
+                    List<List<RepositoryResource>> resources = new ArrayList<>();
+                    for (List<RepositoryResource> resList : installResources) {
+                        List<RepositoryResource> curr = new ArrayList<>();
+                        for (RepositoryResource res : resList) {
+                            boolean useThis = true;
+                            if (res.getType().equals(ResourceType.FEATURE)) {
+                                EsaResource esa = (EsaResource) res;
+                                useThis = esa.getInstallPolicy().toString().equals("WHEN_SATISFIED") || resolveAsSetFeatures.contains(esa.getProvideFeature());
+                            }
+                            if (useThis) {
+                                curr.add(res);
+                            }
+                        }
+                        resources.add(curr);
+                    }
+                    // update install resources with the filtered ones
+                    installResources = resources;
+                }
             } else {
                 log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetsToInstall);
