@@ -26,6 +26,8 @@ import static java.util.logging.Level.WARNING;
 
 import com.google.common.io.BaseEncoding;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.grpc.Attributes;
 import io.grpc.InternalLogId;
 import io.grpc.Metadata;
@@ -52,6 +54,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
+@Trivial
 final class ServletServerStream extends AbstractServerStream {
 
   private static final Logger logger = Logger.getLogger(ServletServerStream.class.getName());

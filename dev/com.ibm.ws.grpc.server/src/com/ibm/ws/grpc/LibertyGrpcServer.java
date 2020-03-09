@@ -24,15 +24,15 @@ import java.net.SocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-final class LibertyServer implements InternalServer {
+final class LibertyGrpcServer implements InternalServer {
 
-	private static final String CLASS_NAME = LibertyServer.class.getName();
-	private static final Logger logger = Logger.getLogger(LibertyServer.class.getName());
+	private static final String CLASS_NAME = LibertyGrpcServer.class.getName();
+	private static final Logger logger = Logger.getLogger(LibertyGrpcServer.class.getName());
 	
 	private GrpcConnectionHandler handler;
 	private LibertyServerTransport transport;
 		
-	public LibertyServer() {
+	public LibertyGrpcServer() {
 	}
 
 	@Override

@@ -17,6 +17,8 @@
 package io.grpc.servlet;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.grpc.BindableService;
 import io.grpc.ExperimentalApi;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * are welcome to provide feedback by commenting on
  * <a href=https://github.com/grpc/grpc-java/issues/5066>the tracking issue</a>.
  */
+@Trivial
 @ExperimentalApi("https://github.com/grpc/grpc-java/issues/5066")
 public class GrpcServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;

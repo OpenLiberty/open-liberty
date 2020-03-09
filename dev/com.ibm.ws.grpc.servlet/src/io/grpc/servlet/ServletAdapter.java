@@ -23,6 +23,8 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 
 import com.google.common.io.BaseEncoding;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.grpc.Attributes;
 import io.grpc.ExperimentalApi;
 import io.grpc.Grpc;
@@ -68,6 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * are welcome to provide feedback by commenting on
  * <a href=https://github.com/grpc/grpc-java/issues/5066>the tracking issue</a>.
  */
+@Trivial
 @ExperimentalApi("https://github.com/grpc/grpc-java/issues/5066")
 public final class ServletAdapter {
 

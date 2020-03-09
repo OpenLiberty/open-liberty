@@ -29,8 +29,6 @@ Export-Package: io.grpc.servlet,\
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-instrument.disabled: true
-
 javac.source: 1.8
 javac.target: 1.8
 

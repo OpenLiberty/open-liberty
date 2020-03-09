@@ -49,7 +49,7 @@ public class GrpcServerTest {
     
     @Test
     public void testActiveGrpcServers() {
-    	LibertyServerBuilder serverBuilder = new LibertyServerBuilder();
+    	LibertyGrpcServerBuilder serverBuilder = new LibertyGrpcServerBuilder();
     	Server server1 = serverBuilder.build();
     	Server server2 = serverBuilder.build();
     	Assert.assertEquals(0, ActiveGrpcServers.getServerList().size());
@@ -94,9 +94,9 @@ public class GrpcServerTest {
     
     @Test
     public void testMultipleServerStart() throws IOException {
-    	LibertyServer server1 = new LibertyServer();
-    	LibertyServer server2 = new LibertyServer();
-    	LibertyServer server3 = new LibertyServer();
+    	LibertyGrpcServer server1 = new LibertyGrpcServer();
+    	LibertyGrpcServer server2 = new LibertyGrpcServer();
+    	LibertyGrpcServer server3 = new LibertyGrpcServer();
     	TestServerListener listener = new TestServerListener();
     	server1.start(listener);
     	server2.start(listener);

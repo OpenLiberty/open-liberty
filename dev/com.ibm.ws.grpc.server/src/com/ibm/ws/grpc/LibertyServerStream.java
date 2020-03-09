@@ -168,7 +168,6 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 		@Override
 		public void writeFrame(WritableBuffer frame, boolean flush, final int numMessages) {
 			Preconditions.checkArgument(numMessages >= 0);
-			// TODO: queue messages
 			if (frame == null) {
 				return;
 			}
@@ -228,7 +227,6 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 
 		@Override
 		public void deframeFailed(Throwable cause) {
-			// TODO: warning and/or FFDC
 			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "TransportState.deframeFailed", cause.getMessage());
 			int errorCode = Status.fromThrowable(cause).getCode().value();
 			http2Stream.cancel(new Exception(cause), 0x2);
