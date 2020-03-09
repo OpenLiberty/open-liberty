@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.NameAliases.ExtensionAliases;
 import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
@@ -531,23 +532,13 @@ public class LogTraceData extends GenericData {
     }
 
     public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
-        ArrayList<String> tempExt = null;
-        ArrayList<String> aliasesExt = null;
+        ExtensionAliases tempExt = null;
         if (isMessageEvent) {
-            tempExt = jsonLoggingNameAliasesMessages.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesMessages.aliasesExtensions;
-
+            tempExt = jsonLoggingNameAliasesMessages.extensionAliases;
         } else {
-            tempExt = jsonLoggingNameAliasesTrace.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesTrace.aliasesExtensions;
-
+            tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
         }
-        for (int i = 0; i < tempExt.size(); i++) {
-            if (tempExt.get(i).equals(extKey)) {
-                return aliasesExt.get(i);
-            }
-        }
-        return extKey;
+        return tempExt.getAlias(extKey);
 
     }
 
