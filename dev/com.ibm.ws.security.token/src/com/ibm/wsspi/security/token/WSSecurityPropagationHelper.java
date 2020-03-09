@@ -22,9 +22,8 @@ import com.ibm.websphere.security.WebSphereRuntimePermission;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.websphere.security.auth.ValidationFailedException;
-import com.ibm.ws.security.token.internal.ValidationResultImpl;
-import com.ibm.ws.security.jaas.common.callback.AuthenticationHelper;
 import com.ibm.ws.security.token.TokenManager;
+import com.ibm.ws.security.token.internal.ValidationResultImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.ltpa.Token;
 
@@ -102,11 +101,36 @@ public class WSSecurityPropagationHelper {
         Token token = null;
         TokenManager tokenManager = tokenManagerRef.getService();
         if (tokenManager != null) {
-            byte[] credToken = AuthenticationHelper.copyCredToken(ssoToken);
+//            byte[] credToken = AuthenticationHelper.copyCredToken(ssoToken);
+            byte[] credToken = copyCredToken(ssoToken);
             token = tokenManager.recreateTokenFromBytes(credToken);
 
         }
         return token;
+    }
+
+    /**
+     * This code is from AuthenticationHelper
+     * Create a copy of the specified byte array.
+     *
+     * @param credToken
+     * @return A copy of the specified byte array, or null if the input was null.
+     */
+    private static byte[] copyCredToken(byte[] credToken) {
+
+        if (credToken == null) {
+            return null;
+        }
+
+        final int LEN = credToken.length;
+        if (LEN == 0) {
+            return new byte[LEN];
+        }
+
+        byte[] newCredToken = new byte[LEN];
+        System.arraycopy(credToken, 0, newCredToken, 0, LEN);
+
+        return newCredToken;
     }
 
     protected void setTokenManager(ServiceReference<TokenManager> ref) {
