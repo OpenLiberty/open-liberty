@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.acme.docker.PebbleContainer;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.Server;
@@ -57,7 +58,7 @@ public class AcmeSimpleTest {
 		 * Configure mock DNS server.
 		 */
 		AcmeFatUtils.configureDnsForDomains(DOMAINS_ALL);
-		AcmeFatUtils.checkPortOpen(5002, 60000);
+		AcmeFatUtils.checkPortOpen(PebbleContainer.HTTP_PORT, 60000);
 	}
 
 	@AfterClass
@@ -108,7 +109,7 @@ public class AcmeSimpleTest {
 			 * Start the server and wait for the certificate to be installed.
 			 */
 			server.startServer();
-			AcmeFatUtils.waitForLibertyToCreateCertificate(server);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -223,7 +224,7 @@ public class AcmeSimpleTest {
 			 * Start the server and wait for the certificate to be installed.
 			 */
 			server.startServer();
-			AcmeFatUtils.waitForLibertyToCreateCertificate(server);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -292,7 +293,7 @@ public class AcmeSimpleTest {
 
 			serial1 = ((X509Certificate) certificates3[0]).getSerialNumber();
 			serial2 = ((X509Certificate) certificates4[0]).getSerialNumber();
-			assertFalse("Expected new certificate after removing subject CN domain.", serial1.equals(serial2));
+			assertFalse("Expected new certificate after adding new domain.", serial1.equals(serial2));
 			Log.info(this.getClass(), methodName, "TEST 3: FINISH");
 
 		} finally {
@@ -325,7 +326,7 @@ public class AcmeSimpleTest {
 			 * installed.
 			 */
 			server.startServer();
-			AcmeFatUtils.waitForLibertyToCreateCertificate(server);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*

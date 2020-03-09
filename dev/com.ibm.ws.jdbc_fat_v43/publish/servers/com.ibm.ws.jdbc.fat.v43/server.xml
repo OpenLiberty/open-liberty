@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018 IBM Corporation and others.
+    Copyright (c) 2018,2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@
     <properties databaseName="memory:testdb;create=true"/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
+  <dataSource id="poolOf1" jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
               enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
     <connectionManager maxPoolSize="1"/>
     <jdbcDriver libraryRef="D43Lib"/>
