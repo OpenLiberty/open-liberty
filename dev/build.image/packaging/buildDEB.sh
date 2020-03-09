@@ -19,15 +19,15 @@ if  [ -e ${PASSPHRASE_FILE} ] && [ KEY_FOUND=="true" ] ;
 then
 	echo "Passphrase file exists.  Building signed .deb"
 	cd debuild/openliberty
-	debuild -d -b -p"gpg --passphrase-file $PASSPHRASE_FILE --batch"  -e"$EMAIL"
+	timeout --preserve-status 5m debuild -d -b -p"gpg --passphrase-file $PASSPHRASE_FILE --batch"  -e"$EMAIL"
 	RC=$?
 	echo "Built signed .deb RC:$RC"
-	BUILD_UNSIGNED=$RC
+	BUILD_SIGNED=$RC
 	cd $WD1
 fi
 
 #Build .deb without passphrase (building with passphrase failed, or GPG key or passphrase were not found)
-if [ "$BUILD_UNSIGNED" -ne "0" ]
+if [ "$BUILD_SIGNED" -ne "0" ]
 then
 	echo "Building unsigned .deb"
 	cd debuild/openliberty
