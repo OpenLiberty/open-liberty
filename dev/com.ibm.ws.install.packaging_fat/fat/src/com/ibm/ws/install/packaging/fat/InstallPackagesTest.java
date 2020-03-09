@@ -41,6 +41,7 @@ public class InstallPackagesTest extends InstallUtilityToolTest {
      */
     @Test
     public void testUpdatePackage() throws Exception {
+        Assume.assumeTrue(packagesBuilt);
 
         String METHOD_NAME = "testUpdatePackage";
         entering(c, METHOD_NAME);
@@ -75,6 +76,7 @@ public class InstallPackagesTest extends InstallUtilityToolTest {
      */
     @Test
     public void testFileUserGroupOwnership() throws Exception {
+        Assume.assumeTrue(packagesBuilt);
 
         String METHOD_NAME = "testFileUserGroupOwnership";
         entering(c, METHOD_NAME);

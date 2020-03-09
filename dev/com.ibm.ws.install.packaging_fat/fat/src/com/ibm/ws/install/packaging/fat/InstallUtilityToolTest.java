@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +45,7 @@ public abstract class InstallUtilityToolTest {
     public static String currentDEBName = publishPath + "/packages.current/" + "openliberty_1" + "*" + "-1ubuntu1_all.deb";
 
     public static String packageExt = ".none";
+    public static Boolean packagesBuilt = false;
 
     protected static Boolean isSupportedOS() throws Exception {
         final String METHOD_NAME = "isSupportedOS";
@@ -78,6 +80,15 @@ public abstract class InstallUtilityToolTest {
         return isSupportedOS;
     }
 
+    public static File[] findFilesForId(File dir, final String id) {
+        return dir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().equals("a_id_" + id + ".zip");
+            }
+        });
+    }
+
     /**
      * Setup the environment.
      *
@@ -86,7 +97,6 @@ public abstract class InstallUtilityToolTest {
     protected static void setupEnv() throws Exception {
         final String METHOD_NAME = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.packaging_fat");
-
         installRoot = server.getInstallRoot();
 
         Log.info(c, METHOD_NAME, "installRoot: " + installRoot);
@@ -105,18 +115,33 @@ public abstract class InstallUtilityToolTest {
         currentRPMName = publishPath + "/packages.current/" + "openliberty" + "*" + ".rpm";
         currentDEBName = publishPath + "/packages.current/" + "openliberty" + "*" + ".deb";
         Log.info(c, METHOD_NAME, "testRPMName: " + testRPMName);
+        String packageDirName = publishPath + "/packages.current";
 
         if (isLinuxUbuntu()) {
             packageExt = ".deb";
+
         } else if (isLinuxRHEL()) {
             packageExt = ".rpm";
         }
         Log.info(c, METHOD_NAME, "packageExt set to: " + packageExt);
 
-        // Try to uninstall package, in case it was not cleanly uninstalled before.
-        Log.info(c, METHOD_NAME, "try to Uninstall package before running tests.");
-        ProgramOutput po4 = uninstallPackage(METHOD_NAME, packageExt);
+        String[] listPackageParam = { packageDirName + "/*" + packageExt };
 
+        ProgramOutput po1 = null;
+
+        po1 = runCommand(METHOD_NAME, "ls", listPackageParam);
+        if ((po1.getReturnCode() == 0)) {
+            Log.info(c, METHOD_NAME, "package found");
+            packagesBuilt = true;
+
+            // Try to uninstall package, in case it was not cleanly uninstalled before.
+            Log.info(c, METHOD_NAME, "try to Uninstall package before running tests.");
+            ProgramOutput po4 = uninstallPackage(METHOD_NAME, packageExt);
+
+        } else {
+            Log.info(c, METHOD_NAME, "package not found");
+            packagesBuilt = false;
+        }
     }
 
     protected static void entering(Class<?> c, String METHOD_NAME) {
