@@ -485,8 +485,6 @@ public class BaseTraceService implements TrService {
             return;
         }
 
-        CollectorJsonHelpers.updateFieldMappings();
-
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         boolean valueFound = false;
         boolean isInvalidEventType = false;
@@ -594,6 +592,8 @@ public class BaseTraceService implements TrService {
         LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
         LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
         AuditData.newJsonLoggingNameAliases(auditMap);
+
+        CollectorJsonHelpers.updateFieldMappings();
     }
 
     /**
