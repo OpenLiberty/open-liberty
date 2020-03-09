@@ -70,8 +70,6 @@ public class CollectorJsonHelpers {
     public final static String LONG_SUFFIX = "_long";
     public static final String LINE_SEPARATOR;
     public static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
-    private static volatile int fieldMappingVersion_Message = 0;
-    private static volatile int fieldMappingVersion_Trace = 0;
 
     static {
         LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -204,6 +202,11 @@ public class CollectorJsonHelpers {
                     sb.append(c);
             }
         }
+    }
+
+    public static void updateFieldMappings() {
+        startMessageJsonFields = null;
+        startTraceJsonFields = null;
     }
 
     private static void addUnchangingFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
@@ -511,12 +514,10 @@ public class CollectorJsonHelpers {
 
     protected static JSONObjectBuilder startMessageJsonFields(String hostName, String wlpUserDir, String serverName) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
+        String tempStartFields = startMessageJsonFields;
 
-        if (fieldMappingVersion_Message < BaseTraceService.getFieldMappingVersion())
-            startMessageJsonFields = null;
-
-        if (startMessageJsonFields != null)
-            jsonBuilder.addFields(startMessageJsonFields);
+        if (tempStartFields != null)
+            jsonBuilder.addFields(tempStartFields);
         else {
             //@formatter:off
             jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), CollectorConstants.MESSAGES_LOG_EVENT_TYPE, false, false)
@@ -525,19 +526,16 @@ public class CollectorJsonHelpers {
             .addField(LogTraceData.getServerNameKeyJSON(true), serverName, false, false);
             //@formatter:on
             startMessageJsonFields = jsonBuilder.toString();
-            fieldMappingVersion_Message = BaseTraceService.getFieldMappingVersion();
         }
         return jsonBuilder;
     }
 
     protected static JSONObjectBuilder startTraceJsonFields(String hostName, String wlpUserDir, String serverName) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
+        String tempStartFields = startTraceJsonFields;
 
-        if (fieldMappingVersion_Trace < BaseTraceService.getFieldMappingVersion())
-            startMessageJsonFields = null;
-
-        if (startTraceJsonFields != null)
-            jsonBuilder.addFields(startTraceJsonFields);
+        if (tempStartFields != null)
+            jsonBuilder.addFields(tempStartFields);
         else {
             //@formatter:off
             jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), CollectorConstants.TRACE_LOG_EVENT_TYPE, false, false)
@@ -546,7 +544,6 @@ public class CollectorJsonHelpers {
             .addField(LogTraceData.getServerNameKeyJSON(false), serverName, false, false);
             //@formatter:on
             startTraceJsonFields = jsonBuilder.toString();
-            fieldMappingVersion_Trace = BaseTraceService.getFieldMappingVersion();
         }
         return jsonBuilder;
     }

@@ -48,6 +48,7 @@ import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
@@ -219,10 +220,8 @@ public class BaseTraceService implements TrService {
 
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
-    private static volatile int fieldMappingVersion = 0;
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
     private static boolean isServerConfigUpdate = false;
-    private static boolean isServerConfigSetup = true;
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -473,17 +472,7 @@ public class BaseTraceService implements TrService {
         return isServerConfigUpdate;
     }
 
-    public static int getFieldMappingVersion() {
-        return fieldMappingVersion;
-    }
-
     public static void applyJsonFields(String value, Boolean omitJsonFields) {
-
-        if (!isServerConfigSetup)
-            fieldMappingVersion++;
-        //isServerConfigUpdate = true;
-        else
-            isServerConfigSetup = false;
 
         if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
             AccessLogData.resetJsonLoggingNameAliases();
@@ -495,6 +484,8 @@ public class BaseTraceService implements TrService {
             //if no property is set, return
             return;
         }
+
+        CollectorJsonHelpers.updateFieldMappings();
 
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         boolean valueFound = false;
