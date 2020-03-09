@@ -70,8 +70,8 @@ public class CollectorJsonHelpers {
     public final static String LONG_SUFFIX = "_long";
     public static final String LINE_SEPARATOR;
     public static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
-    private static int fieldMappingVersion_Message = 0;
-    private static int fieldMappingVersion_Trace = 0;
+    private static volatile int fieldMappingVersion_Message = 0;
+    private static volatile int fieldMappingVersion_Trace = 0;
 
     static {
         LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -525,7 +525,7 @@ public class CollectorJsonHelpers {
             .addField(LogTraceData.getServerNameKeyJSON(true), serverName, false, false);
             //@formatter:on
             startMessageJsonFields = jsonBuilder.toString();
-            fieldMappingVersion_Message++;
+            fieldMappingVersion_Message = BaseTraceService.getFieldMappingVersion();
         }
         return jsonBuilder;
     }
@@ -533,11 +533,11 @@ public class CollectorJsonHelpers {
     protected static JSONObjectBuilder startTraceJsonFields(String hostName, String wlpUserDir, String serverName) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
 
-        if (fieldMappingVersion_Message < BaseTraceService.getFieldMappingVersion())
+        if (fieldMappingVersion_Trace < BaseTraceService.getFieldMappingVersion())
             startMessageJsonFields = null;
 
-        if (startMessageJsonFields != null)
-            jsonBuilder.addFields(startMessageJsonFields);
+        if (startTraceJsonFields != null)
+            jsonBuilder.addFields(startTraceJsonFields);
         else {
             //@formatter:off
             jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), CollectorConstants.TRACE_LOG_EVENT_TYPE, false, false)
@@ -546,7 +546,7 @@ public class CollectorJsonHelpers {
             .addField(LogTraceData.getServerNameKeyJSON(false), serverName, false, false);
             //@formatter:on
             startTraceJsonFields = jsonBuilder.toString();
-            fieldMappingVersion_Trace++;
+            fieldMappingVersion_Trace = BaseTraceService.getFieldMappingVersion();
         }
         return jsonBuilder;
     }
