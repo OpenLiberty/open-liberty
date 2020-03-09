@@ -456,6 +456,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             Tr.debug(tc, "userApiConfigs = " + (userApiConfigs == null ? "null" : userApiConfigs.length));
             Tr.debug(tc, KEY_realmName + " = " + realmName);
             Tr.debug(tc, KEY_realmNameAttribute + " = " + realmNameAttribute);
+            Tr.debug(tc, KEY_accessTokenHeaderName + " = " + accessTokenHeaderName);
             Tr.debug(tc, KEY_groupNameAttribute + " = " + groupNameAttribute);
             Tr.debug(tc, KEY_userUniqueIdAttribute + " = " + userUniqueIdAttribute);
             Tr.debug(tc, KEY_mapToUserRegistry + " = " + mapToUserRegistry);
