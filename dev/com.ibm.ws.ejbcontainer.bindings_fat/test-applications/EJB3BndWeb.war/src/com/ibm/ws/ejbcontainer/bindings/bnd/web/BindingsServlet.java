@@ -136,7 +136,7 @@ public class BindingsServlet extends FATServlet {
     /*
      * testTargetOneLBIBND() Test Local Business Interface binding
      */
-    //@Test
+    @Test
     public void testTargetOneLBIBND() throws Exception {
         LocalTargetOneBiz lto1 = null;
 
@@ -275,7 +275,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 1 for TargetBeanThree
      */
-    //@Test
+    @Test
     public void testTargetThreeLBIBND1() throws Exception {
         LocalTargetThreeBiz1 lt3b1 = null;
 
@@ -294,7 +294,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 2 for TargetBeanThree
      */
-    //@Test
+    @Test
     public void testTargetThreeLBIBND2() throws Exception {
         LocalTargetThreeBiz2 lt3b2 = null;
 
@@ -313,7 +313,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 3 for TargetBeanThree
      */
-    //@Test
+    @Test
     public void testTargetThreeLBIBND3() throws Exception {
         LocalTargetThreeBiz3 lt3b3 = null;
 
@@ -370,7 +370,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 1 for TargetBeanThree
      */
-    //@Test
+    @Test
     public void testTargetFourLBIBND1() throws Exception {
         LocalTargetFourBiz1 lt4b1 = null;
 
@@ -389,7 +389,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Local Business Interface binding 2 for TargetBeanFour
      */
-    //@Test
+    @Test
     public void testTargetFourLBIBND2() throws Exception {
         LocalTargetFourBiz2 lt3b2 = null;
 
