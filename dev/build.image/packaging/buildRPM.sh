@@ -9,6 +9,6 @@ echo "rpmbuild RC:$RC"
 cd $WD1
 #sign rpm
 
-timeout --preserve-status 5m cat $HOME/.gnupg/pp.txt | setsid rpmsign --addsign --addsign $RPMFILE -D "%_gpg_name admin@openliberty.io"
+timeout --preserve-status 3m cat $HOME/.gnupg/pp.txt | setsid rpmsign --addsign $RPMFILE -D "%_gpg_name admin@openliberty.io"
 echo "rpmsign RC:$?"
 
