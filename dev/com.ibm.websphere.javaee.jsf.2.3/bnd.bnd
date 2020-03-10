@@ -14,9 +14,6 @@ Bundle-Name: WS_J2EE_jsf
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsf.2.3; singleton:=true
 Bundle-Description: WS_J2EE_jsf, version 2.3
 
-javac.source: 1.8
-javac.target: 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: javax.faces.*; version=2.3.6
 

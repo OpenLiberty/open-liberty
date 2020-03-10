@@ -31,8 +31,7 @@ Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclip
 -provider-policy :    ${range;[==,=+)}
 -consumer-policy :    ${range;[==,+)}
 
-# Require a 1.6 JDK (at least): see section 3.4.1 of OSGi 4.3 core spec
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 #tell bnd to use our Externals plugin
 -plugin.build.bnd.plugins: ${def;${if;${driver;gradle};build.bnd.plugins;EMPTY}}

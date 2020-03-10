@@ -16,12 +16,9 @@ Bundle-SymbolicName: com.ibm.ws.security.jwtsso
 Bundle-Description: WebSphere Security JWT SSO Authentication, version=${bVersion}
 
 #Web-ContextPath: /jwtsso
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 WS-TraceGroup: \
   JWTSSO
 
-javac.source: 1.8
-javac.target: 1.8
 
 # For each exported package, create (in that package) a package-info.java...
 # file, and place an @version javadoc tag in package-level javadoc. 

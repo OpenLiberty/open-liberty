@@ -16,10 +16,7 @@ Bundle-Name: JAX-WS 2.3 Web
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.web
 Bundle-Description: IBM JAX-WS 2.3 Web support; version=${bVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations: com.ibm.ws.jaxws.web.WebXMLEndpointInfoConfigurator
 

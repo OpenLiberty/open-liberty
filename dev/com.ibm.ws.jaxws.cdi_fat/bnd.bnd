@@ -17,8 +17,6 @@ src: \
 
 fat.project: true
 
-javac.source: 1.7
-javac.target: 1.7
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

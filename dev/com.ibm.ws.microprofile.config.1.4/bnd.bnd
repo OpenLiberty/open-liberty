@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.config.1.4
 Bundle-SymbolicName: com.ibm.ws.microprofile.config.1.4
@@ -37,7 +35,6 @@ Import-Package: \
 
 WS-TraceGroup: APPCONFIG
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
 	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest, \

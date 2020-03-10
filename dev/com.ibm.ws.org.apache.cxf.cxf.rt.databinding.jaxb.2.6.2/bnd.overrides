@@ -5,7 +5,6 @@ Bundle-Name: Apache CXF Runtime Data Binding JAX-B
 Bundle-Description: Apache CXF Runtime Data Binding JAX-B, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
  
 Export-Package: \
   org.apache.cxf.endpoint.dynamic;version="2.6.2", \

@@ -15,10 +15,7 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.security
 Bundle-Name: JAX-WS Security
 Bundle-Description: JAX-WS Transport Level and Endpoints Security 
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"   
 
 Import-Package: \
    com.ibm.ws.jaxws23.webcontainer, \

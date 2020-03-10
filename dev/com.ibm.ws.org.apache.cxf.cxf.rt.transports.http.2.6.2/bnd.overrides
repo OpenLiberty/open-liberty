@@ -16,7 +16,6 @@ Bundle-Description: Apache CXF Runtime HTTP Transport, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2
 Bundle-Activator: org.apache.cxf.transport.http.osgi.HTTPTransportActivator
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 DynamicImport-Package: \
   com.ctc.wstx.*

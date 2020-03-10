@@ -1,8 +1,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.health.1.0; singleton:=true
 
@@ -13,7 +11,6 @@ Export-Package: org.eclipse.microprofile.health;version=1.0, \
 
 publish.wlp.jar.suffix: dev/api/stable
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"
 
 WS-TraceGroup: HEALTH
 
