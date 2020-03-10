@@ -221,7 +221,6 @@ public class BaseTraceService implements TrService {
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
-    private static boolean isServerConfigUpdate = false;
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -466,10 +465,6 @@ public class BaseTraceService implements TrService {
         }
 
         applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
-    }
-
-    public static boolean getIsServerConfigUpdate() {
-        return isServerConfigUpdate;
     }
 
     public static void applyJsonFields(String value, Boolean omitJsonFields) {

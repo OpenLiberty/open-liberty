@@ -443,7 +443,7 @@ public class CollectorJsonHelpers {
             jsonBuilder.addField(AuditData.getTypeKeyJSON(), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
             .addField(AuditData.getHostKeyJSON(), hostName, false, false)
             .addField(AuditData.getUserDirKeyJSON(), wlpUserDir, false, true)
-            .addField( AuditData.getServerNameKeyJSON(), serverName, false, false);
+            .addField(AuditData.getServerNameKeyJSON(), serverName, false, false);
             //@formatter:on
             startAuditJsonFields = jsonBuilder.toString();
         }
