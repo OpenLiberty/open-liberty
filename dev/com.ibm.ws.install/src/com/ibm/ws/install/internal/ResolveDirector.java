@@ -43,7 +43,6 @@ import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.adaptor.FixAdaptor;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.InstallAsset;
-import com.ibm.ws.install.repository.Repository;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
 import com.ibm.ws.install.repository.internal.RepositoryUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -648,37 +647,42 @@ class ResolveDirector extends AbstractDirector {
 
                 if(!installResources.isEmpty()) {
                     Set<String> resolveAsSetFeatures = new HashSet<>();
+                    boolean foundAFeature = false;
+
                     for (List<RepositoryResource> resList : installResources) {
                         for (RepositoryResource res : resList) {
                             if (res.getType().equals(ResourceType.FEATURE)) {
-                                EsaResource esa = (EsaResource) res;
-                                resolveAsSetFeatures.add(esa.getProvideFeature());
+                                foundAFeature = true;
                             }
+                            EsaResource esa = (EsaResource) res;
+                            resolveAsSetFeatures.add(esa.getProvideFeature());
                         }
                     }
 
-                    // call old resolve api
-                    resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
-                    installResources = resolver.resolve(resolveAsSetFeatures);
+                    if(foundAFeature) {
+                        // call old resolve api
+                        resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
+                        installResources = resolver.resolve(resolveAsSetFeatures);
 
-                    // filter install resources to include resolveAsSet feature + missing auto features from old resolve api
-                    List<List<RepositoryResource>> resources = new ArrayList<>();
-                    for (List<RepositoryResource> resList : installResources) {
-                        List<RepositoryResource> curr = new ArrayList<>();
-                        for (RepositoryResource res : resList) {
-                            boolean useThis = true;
-                            if (res.getType().equals(ResourceType.FEATURE)) {
-                                EsaResource esa = (EsaResource) res;
-                                useThis = esa.getInstallPolicy().toString().equals("WHEN_SATISFIED") || resolveAsSetFeatures.contains(esa.getProvideFeature());
+                        // filter install resources to include resolveAsSet feature + missing auto features from old resolve api
+                        List<List<RepositoryResource>> resources = new ArrayList<>();
+                        for (List<RepositoryResource> resList : installResources) {
+                            List<RepositoryResource> curr = new ArrayList<>();
+                            for (RepositoryResource res : resList) {
+                                boolean useThis = true;
+                                if (res.getType().equals(ResourceType.FEATURE)) {
+                                    EsaResource esa = (EsaResource) res;
+                                    useThis = esa.getInstallPolicy().toString().equals("WHEN_SATISFIED") || resolveAsSetFeatures.contains(esa.getProvideFeature());
+                                }
+                                if (useThis) {
+                                    curr.add(res);
+                                }
                             }
-                            if (useThis) {
-                                curr.add(res);
-                            }
+                            resources.add(curr);
                         }
-                        resources.add(curr);
+                        // update install resources with the filtered ones
+                        installResources = resources;
                     }
-                    // update install resources with the filtered ones
-                    installResources = resources;
                 }
             } else {
                 log(Level.FINE, "Using old resolve API");

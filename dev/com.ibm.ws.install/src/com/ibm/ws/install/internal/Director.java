@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipException;
 
 import com.ibm.ws.install.CancelException;
@@ -1434,7 +1432,6 @@ public class Director extends AbstractDirector {
         } else {
             this.installAssets = new ArrayList<List<InstallAsset>>(installResources.size());
         }
-
         int progress = 10;
         int interval1 = installResources.size() == 0 ? 40 : 40 / installResources.size();
         for (Entry<String, List<List<RepositoryResource>>> targetList : installResources.entrySet()) {
@@ -1448,7 +1445,6 @@ public class Director extends AbstractDirector {
                         fireDownloadProgressEvent(progress, installResource);
                     progress += interval3;
                     File d = InstallUtils.getFileDirectoryBasedRepository(installResource);
-
                     if (installResource.getType().equals(ResourceType.FEATURE)) {
                         EsaResource esa = (EsaResource) installResource;
                         ESAAsset esaAsset;
@@ -1456,7 +1452,6 @@ public class Director extends AbstractDirector {
                         try {
                             if (d != null) {
                                 esaAsset = new ESAAsset(esa.getName(), esa.getProvideFeature(), InstallUtils.toExtension(target, toExtension), d, false);
-
                                 if (esaAsset.getSubsystemEntry() == null) {
                                     throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.content.no.subsystem.manifest"),
                                                                 InstallException.BAD_FEATURE_DEFINITION);
@@ -1530,7 +1525,6 @@ public class Director extends AbstractDirector {
         long free = wlpDir.getFreeSpace();
         String wlpDirSpace = castToPrintableMessage(wlpDir.getFreeSpace());
         logger.log(Level.FINEST, "Total available space is " + wlpDirSpace + ".");
-
         if (free < required) {
             try {
                 throw ExceptionUtils.createByKey("ERROR_WLP_DIR_NO_SPACE", wlpDir.getCanonicalPath(), wlpDirSpace, requiredSpace);
@@ -1538,7 +1532,6 @@ public class Director extends AbstractDirector {
                 throw ExceptionUtils.create(e);
             }
         }
-
     }
 
     /**
