@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -60,8 +61,8 @@ public class RequestProbeJDBCTest {
 
     @Test
     public void testReqProbeJDBCTDTypes() throws Exception {
-        server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("server_RT.xml");
+        String configUpdate = setConfig("server_RT.xml");
+        Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", configUpdate);
         CommonTasks.writeLogMsg(Level.INFO, "Started server with Request Timing feature");
         createRequests(11000);
         server.waitForStringInLogUsingMark("TRAS0112W", 5000);
@@ -121,8 +122,8 @@ public class RequestProbeJDBCTest {
 
     @Test
     public void testAllJdbcTDsRegistered() throws Exception {
-        server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("server_original.xml");
+        String configUpdate = setConfig("server_original.xml");
+        Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", configUpdate);
         CommonTasks.writeLogMsg(Level.INFO, "Started server with Request Timing feature");
         createRequests(10);
 
@@ -233,4 +234,9 @@ public class RequestProbeJDBCTest {
         }
     }
 
+    private String setConfig(String fileName) throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile(fileName);
+        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+    }
 }
