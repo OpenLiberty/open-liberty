@@ -477,6 +477,8 @@ org.jboss.resteasy:resteasy-core-spi:4.5.2.Final
 org.jboss.resteasy:resteasy-jaxb-provider:4.5.2.Final
 org.jboss.resteasy:resteasy-servlet-initializer:4.5.2.Final
 org.jboss.resteasy:resteasy-tracing-api:1.0.0.Final
+org.jboss.narayana.rts:lra-client:5.10.1.Final
+org.jboss.narayana.rts:narayana-lra:5.10.1.Final
 org.jboss.shrinkwrap:shrinkwrap-api:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
