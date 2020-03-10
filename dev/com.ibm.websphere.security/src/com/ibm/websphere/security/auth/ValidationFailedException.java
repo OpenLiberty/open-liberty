@@ -17,19 +17,50 @@ public class ValidationFailedException extends InvalidTokenException {
 
     private static final long serialVersionUID = -5920252763989441670L;
 
+    /**
+     * <p>
+     * A default constructor.
+     * </p>
+     */
     public ValidationFailedException() {
         super();
     }
 
-    public ValidationFailedException(String debug_message) {
-        super(debug_message);
+    /**
+     * <p>
+     * A constructor that accepts an error message. The error message can be retrieved
+     * using the getMessage() API.
+     * </p>
+     *
+     * @param str An error message.
+     */
+    public ValidationFailedException(String str) {
+        super(str);
     }
 
+    /**
+     * <p>
+     * A constructor that accepts a Throwable. The Throwable can be retrieved
+     * using the getExceptions() or getCause() API.
+     * </p>
+     *
+     * @param t Any exception type that extends Throwable.
+     */
     public ValidationFailedException(Throwable t) {
         super(t);
     }
 
-    public ValidationFailedException(String debug_message, Throwable t) {
-        super(debug_message, t);
+    /**
+     * <p>
+     * A constructor accepts an error message and original exception. The exception
+     * will be added to an ArrayList and other exceptions may be added along the way.
+     * The error message can be retrieved using the getMessage() API.
+     * </p>
+     *
+     * @param str An error message.
+     * @param t Any exception type that extends Throwable.
+     */
+    public ValidationFailedException(String str, Throwable t) {
+        super(str, t);
     }
 }
