@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -62,6 +61,7 @@ public class RequestProbeJDBCTest {
     @Test
     public void testReqProbeJDBCTDTypes() throws Exception {
         server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("server_RT.xml");
         CommonTasks.writeLogMsg(Level.INFO, "Started server with Request Timing feature");
         createRequests(11000);
         server.waitForStringInLogUsingMark("TRAS0112W", 5000);
