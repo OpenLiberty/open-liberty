@@ -7,6 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
@@ -18,6 +19,7 @@ public class ServicesTest extends InstallUtilityToolTest {
     public static void beforeClassSetup() throws Exception {
         Assume.assumeTrue(isSupportedOS());
         setupEnv();
+        Assume.assumeTrue(isjavaHomeExecutable);
     }
 
     @AfterClass
@@ -42,20 +44,14 @@ public class ServicesTest extends InstallUtilityToolTest {
      * 5. stop service
      * 6. Uninstall TestRPM
      */
-// test currently disabled.
-//    @Test
+//  currently disabled.
+    @Test
     public void testService() throws Exception {
 
         String METHOD_NAME = "testService";
         entering(c, METHOD_NAME);
 
         Boolean testsPassed = false;
-
-        // Should not be necessary to chmod a+X java.  Test machines should be setup so that java can be executed by openliberty user.
-//        // ensure java_home and parent dirs have +x attribute
-//        String[] param1a = { "chmod", "-R", "a+X", "/home" };
-//        ProgramOutput po1a = runCommand(METHOD_NAME, "sudo ", param1a);
-//        Log.info(c, METHOD_NAME, "add permissions RC:" + po1a.getReturnCode());
 
         //Install package
         ProgramOutput po1 = installCurrentPackage(METHOD_NAME, packageExt);
