@@ -121,6 +121,8 @@ public class RequestProbeJDBCTest {
 
     @Test
     public void testAllJdbcTDsRegistered() throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("server_original.xml");
         CommonTasks.writeLogMsg(Level.INFO, "Started server with Request Timing feature");
         createRequests(10);
 
@@ -227,7 +229,6 @@ public class RequestProbeJDBCTest {
     @Before
     public void setupTestStart() throws Exception {
         if (server != null && !server.isStarted()) {
-            server.setServerConfigurationFile("server_original.xml");
             server.startServer();
         }
     }
