@@ -19,7 +19,7 @@ if  [ -e ${PASSPHRASE_FILE} ] && [ KEY_FOUND=="true" ] ;
 then
 	echo "Passphrase file exists.  Building signed .deb"
 	cd debuild/openliberty
-	timeout --preserve-status 5m debuild -d -b -p"gpg --passphrase-file $PASSPHRASE_FILE --batch"  -e"$EMAIL"
+	debuild -d -b -p"gpg --passphrase-file $PASSPHRASE_FILE --batch"  -e"$EMAIL"
 	RC=$?
 	echo "Built signed .deb RC:$RC"
 	BUILD_SIGNED=$RC
