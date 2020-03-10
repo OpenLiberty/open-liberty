@@ -645,10 +645,9 @@ class ResolveDirector extends AbstractDirector {
                 log(Level.FINE, "Calling resolveAsSet api");
                 installResources = resolver.resolveAsSet(allServerFeatures); // use new api
 
-                if(!installResources.isEmpty()) {
+                if (!installResources.isEmpty()) {
                     Set<String> resolveAsSetFeatures = new HashSet<>();
                     boolean foundAFeature = false;
-
                     for (List<RepositoryResource> resList : installResources) {
                         for (RepositoryResource res : resList) {
                             if (res.getType().equals(ResourceType.FEATURE)) {
@@ -658,30 +657,24 @@ class ResolveDirector extends AbstractDirector {
                             resolveAsSetFeatures.add(esa.getProvideFeature());
                         }
                     }
-
-                    if(foundAFeature) {
+                    if (foundAFeature) {
                         // call old resolve api
                         resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
-                        installResources = resolver.resolve(resolveAsSetFeatures);
-
+                        Collection<List<RepositoryResource>> resolvedResources = resolver.resolve(resolveAsSetFeatures);
                         // filter install resources to include resolveAsSet feature + missing auto features from old resolve api
-                        List<List<RepositoryResource>> resources = new ArrayList<>();
-                        for (List<RepositoryResource> resList : installResources) {
-                            List<RepositoryResource> curr = new ArrayList<>();
+                        for (List<RepositoryResource> resList : resolvedResources) {
+                            List<RepositoryResource> autoFeatures = new ArrayList<>();
                             for (RepositoryResource res : resList) {
-                                boolean useThis = true;
                                 if (res.getType().equals(ResourceType.FEATURE)) {
                                     EsaResource esa = (EsaResource) res;
-                                    useThis = esa.getInstallPolicy().toString().equals("WHEN_SATISFIED") || resolveAsSetFeatures.contains(esa.getProvideFeature());
-                                }
-                                if (useThis) {
-                                    curr.add(res);
+                                    if (esa.getInstallPolicy().toString().equalsIgnoreCase("WHEN_SATISFIED")) {
+                                        autoFeatures.add(res);
+                                    }
                                 }
                             }
-                            resources.add(curr);
+                        if (!autoFeatures.isEmpty())
+                            installResources.add(autoFeatures);
                         }
-                        // update install resources with the filtered ones
-                        installResources = resources;
                     }
                 }
             } else {
