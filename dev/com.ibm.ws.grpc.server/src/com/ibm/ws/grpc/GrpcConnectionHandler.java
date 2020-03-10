@@ -14,6 +14,7 @@ package com.ibm.ws.grpc;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.wsspi.genericbnf.HeaderField;
@@ -48,7 +49,7 @@ public class GrpcConnectionHandler implements Http2ConnectionHandler {
 	public Http2StreamHandler onStreamCreated(HttpRequestMessage request, Http2Stream stream,
 			Http2Connection connection) {
 
-		Utils.traceEntryMessage(logger, CLASS_NAME, "onStreamCreated",
+		Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStreamCreated",
 				"request: " + request.getRequestURI() + " connection " + connection + " stream ID: " + stream.getId());
 
 		ServerStream grpcH2Stream = new LibertyServerStream(stream, connection);
