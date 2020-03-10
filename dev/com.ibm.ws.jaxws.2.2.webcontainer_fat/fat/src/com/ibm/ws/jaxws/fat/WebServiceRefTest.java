@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
@@ -64,10 +65,18 @@ public class WebServiceRefTest {
         }
 
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*helloServer");
-        server.waitForStringInLog("CWWKZ0001I.*helloClient");
-        server.waitForStringInLog("CWWKZ0001I.*helloClientDDMerge");
-        server.waitForStringInLog("CWWKZ0001I.*helloClientServiceResource");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*helloServer"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*helloClient"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*helloClientDDMerge"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*helloClientServiceResource"));
 
         BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
     }

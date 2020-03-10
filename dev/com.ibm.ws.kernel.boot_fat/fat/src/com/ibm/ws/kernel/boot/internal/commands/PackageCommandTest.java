@@ -636,6 +636,9 @@ public class PackageCommandTest {
 
             server.startServer(true); // --clean
             String installedFeaturesBefore = server.findStringsInLogs("CWWKF0012I:.*").get(0);
+            assertNotNull(
+                "Message was not detected in the log",
+                installedFeaturesBefore);
             System.out.println("installedFeaturesBefore: " + installedFeaturesBefore);
             server.stopServer();
 
@@ -645,6 +648,9 @@ public class PackageCommandTest {
 
             server.startServer(); // Not --clean
             String installedFeaturesAfter = server.findStringsInLogs("CWWKF0012I:.*").get(0);
+            assertNotNull(
+                "Message was not detected in the log",
+                installedFeaturesAfter);
             System.out.println("installedFeaturesAfter: " + installedFeaturesAfter);
 
             int i = installedFeaturesBefore.indexOf("CWWKF0012I:"); // Ignore the timestamp

@@ -69,7 +69,9 @@ public class HibernateSearchTest extends LoggingTest {
         server = LibertyServerFactory.getLibertyServer("cdi20HibernateSearchServer");
         ShrinkHelper.exportAppToServer(server, hibernateSearchTest);
         server.startServer();
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application hibernateSearchTest.war started");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I.*Application hibernateSearchTest.war started"));
     }
 
     @Test

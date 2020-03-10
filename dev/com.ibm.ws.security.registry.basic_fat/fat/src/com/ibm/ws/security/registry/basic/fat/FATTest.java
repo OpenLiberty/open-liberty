@@ -212,7 +212,9 @@ public class FATTest {
             Log.info(c, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKG0017I"));
             serverConfigurationFile = serverXML;
         }
     }

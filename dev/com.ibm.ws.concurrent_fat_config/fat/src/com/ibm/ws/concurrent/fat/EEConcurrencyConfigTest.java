@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
@@ -134,7 +135,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         // save
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testNoJEEMetadataContext", "concurrent/execSvc1");
@@ -148,7 +151,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         contextSvc1.getClassloaderContexts().add(new ClassloaderContext());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testClassloaderContext", "concurrent/execSvc1");
 
@@ -156,7 +161,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         contextSvc1.getJEEMetadataContexts().add(new JEEMetadataContext());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContextFromEJB", null);
@@ -169,7 +176,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         execSvc1.setContextServiceRef(contextSvc2.getId());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
@@ -183,7 +192,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedScheduledExecutorServices().add(scheduledExecSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
@@ -202,7 +213,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedScheduledExecutorServices().add(scheduledExecSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testNoJEEMetadataContext", "concurrent/execSvc1");
@@ -216,7 +229,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         nestedContextSvc.getClassloaderContexts().add(new ClassloaderContext());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testClassloaderContext", "concurrent/execSvc1");
 
@@ -224,7 +239,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         nestedContextSvc.getJEEMetadataContexts().add(new JEEMetadataContext());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContextFromEJB", null);
@@ -238,7 +255,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         scheduledExecSvc1.setContextServiceRef(contextSvc2.getId());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
@@ -252,7 +271,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedExecutorServices().add(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
@@ -269,7 +290,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedThreadFactories().add(threadFactory1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testThreadIsNotDaemon", "concurrent/threadFactory1");
         runTest("testThreadPriority5", "concurrent/threadFactory1");
@@ -279,7 +302,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         threadFactory1.setDefaultPriority("8");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testThreadIsDaemon", "concurrent/threadFactory1");
         runTest("testThreadPriority8", "concurrent/threadFactory1");
@@ -290,7 +315,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         threadFactory1.setMaxPriority("4");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testThreadIsNotDaemon", "concurrent/threadFactory1");
         runTest("testThreadPriority3", "concurrent/threadFactory1");
@@ -302,7 +329,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         threadFactory1.setMaxPriority("6");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testThreadIsNotDaemon", "concurrent/threadFactory1");
         runTest("testThreadPriority5", "concurrent/threadFactory1");
@@ -313,7 +342,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         threadFactory1.setMaxPriority("3");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testThreadPriority3", "concurrent/threadFactory1");
     }
@@ -331,7 +362,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedExecutorServices().add(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testClassloaderContext", "concurrent/execSvc1");
         runTest("testNoJEEMetadataContext", "concurrent/execSvc1");
@@ -341,7 +374,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         contextSvc.getJEEMetadataContexts().add(new JEEMetadataContext());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContextFromEJB", null);
@@ -355,7 +390,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         execSvc1.setContextServiceRef(contextSvc1.getId());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
@@ -385,7 +422,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedExecutorServices().add(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This leaves 1 future running and another stuck in the queue
         runTest("testTask1BlockedByTask2LongRunning", "concurrent/execSvc1");
@@ -397,7 +436,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testLongRunningTaskSuccessful", "concurrent/execSvc1");
 
@@ -405,7 +446,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         longRunningPolicy.setMax("2");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This verifies that the previously blocked tasks complete successfully
         runTest("testTask1BlockedByTask2LongRunningCompleted", "concurrent/execSvc1");
@@ -433,7 +476,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedExecutorServices().add(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This leaves 1 future running and another stuck in the queue
         runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
@@ -442,7 +487,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         policy.setMax("2");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This verifies that the previously blocked tasks complete successfully
         runTest("testTask1BlockedByTask2Completed", "concurrent/execSvc1");
@@ -471,7 +518,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedScheduledExecutorServices().add(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This leaves 1 future running and another stuck in the queue
         runTest("testTask1BlockedByTask2LongRunning", "concurrent/execSvc1");
@@ -483,7 +532,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         policy.setMax("2");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This verifies that the previously blocked tasks complete successfully
         runTest("testTask1BlockedByTask2LongRunningCompleted", "concurrent/execSvc1");
@@ -518,7 +569,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedExecutorServices().add(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This leaves 1 future running and another stuck in the queue
         runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
@@ -529,7 +582,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         runTest("testTaskSuccessful", "concurrent/execSvc1");
 
@@ -537,7 +592,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         normalPolicy.setMax("2");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This verifies that the previously blocked tasks complete successfully
         runTest("testTask1BlockedByTask2Completed", "concurrent/execSvc1");
@@ -575,7 +632,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedScheduledExecutorServices().add(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // This leaves 1 future running and another stuck in the queue for normal tasks
         runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
@@ -587,7 +646,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         config.getManagedScheduledExecutorServices().remove(execSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME)).isEmpty());
 
         // Tasks should be canceled
         runTest("testTask1BlockedByTask2Canceled", "concurrent/execSvc1");

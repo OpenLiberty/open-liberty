@@ -69,7 +69,9 @@ public class WsBndServiceRefOverrideTest {
         ShrinkHelper.exportDropinAppToServer(server, war);
 
         server.startServer("WebServiceRefTest.log");
-        server.waitForStringInLog("CWWKZ0001I.*helloServer");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*helloServer"));
 
     }
 

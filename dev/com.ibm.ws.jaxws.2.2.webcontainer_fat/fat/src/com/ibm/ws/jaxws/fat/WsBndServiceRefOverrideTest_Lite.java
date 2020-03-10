@@ -12,6 +12,7 @@ package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
@@ -72,7 +73,9 @@ public class WsBndServiceRefOverrideTest_Lite {
     @Test
     public void testFaultEndpointUri() throws Exception {
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        assertNotNull(
+          "Message was not detected in the log",
+          server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride"));
         String result = getServletResponse(getServletAddr());
 
         assertFalse("The service should not be accessed.", "Hello".equals(result));
@@ -86,7 +89,9 @@ public class WsBndServiceRefOverrideTest_Lite {
         TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#ENDPOINT_ADDRESS#", getDefaultEndpointAddr());
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        assertNotNull(
+          "Message was not detected in the log",
+          server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride"));
         String result = getServletResponse(getServletAddr());
         assertTrue("The returned result is not expected: " + getDefaultEndpointAddr() + "," + result, "Hello".equals(result));
     }
@@ -104,7 +109,9 @@ public class WsBndServiceRefOverrideTest_Lite {
         TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#ENDPOINT_ADDRESS#", getDefaultEndpointAddr());
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        assertNotNull(
+          "Message was not detected in the log",
+          server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride"));
         String result = getServletResponse(getServletAddr());
         assertFalse("The returned result is not expected: " + getDefaultEndpointAddr() + "," + result, "Hello".equals(result));
     }
@@ -122,7 +129,9 @@ public class WsBndServiceRefOverrideTest_Lite {
         TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#ENDPOINT_ADDRESS#", getDefaultEndpointAddr());
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        assertNotNull(
+          "Message was not detected in the log",
+          server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride"));
         String result = getServletResponse(getServletAddr());
         assertTrue("The returned result is not expected: " + getDefaultEndpointAddr() + "," + result, "Hello".equals(result));
     }
@@ -140,7 +149,9 @@ public class WsBndServiceRefOverrideTest_Lite {
         TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#ENDPOINT_ADDRESS#", getDefaultEndpointAddr());
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        assertNotNull(
+          "Message was not detected in the log",
+          server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride"));
         String result = getServletResponse(getServletAddr());
         assertFalse("The returned result is not expected: " + getDefaultEndpointAddr() + "," + result, "Hello".equals(result));
     }
@@ -159,7 +170,9 @@ public class WsBndServiceRefOverrideTest_Lite {
         TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#WSDL_LOCATION#", wsdlAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        assertNotNull(
+          "Message was not detected in the log",
+          server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride"));
         String result = getServletResponse(getServletAddr());
         assertTrue("WSDL Location Override is not working, and the result is not expected: " + result, "Hello".equals(result));
     }
@@ -177,7 +190,9 @@ public class WsBndServiceRefOverrideTest_Lite {
         String wsdlAddr = getDefaultEndpointAddr() + "?wsdl";
         TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#WSDL_LOCATION#", wsdlAddr);
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        assertNotNull(
+          "Message was not detected in the log",
+          server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride"));
         getServletResponse(getServletAddr());
         List<String> dumpInMessages = server.findStringsInLogs("Inbound Message");
         List<String> dumpOutMessages = server.findStringsInLogs("Outbound Message");

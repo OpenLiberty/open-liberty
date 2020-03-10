@@ -11,6 +11,7 @@
 package com.ibm.ws.ejbcontainer.remote.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
@@ -193,7 +194,9 @@ public class BadApplicationTests extends AbstractTest {
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
-        server.waitForConfigUpdateInLogUsingMark(installedApps);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(installedApps).isEmpty());
     }
 
     /**

@@ -60,7 +60,9 @@ public class WebServiceInWebXMLTest extends WebServiceInWebXMLTest_Lite {
         setWebXml("multipleURLPatternComplete/web.xml");
         server.startServer();
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/converter/converterAgain?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_MultipleURL_metadataComplete",
                  "Calling converter Application with URL=" + url.toString());
@@ -88,7 +90,9 @@ public class WebServiceInWebXMLTest extends WebServiceInWebXMLTest_Lite {
         setWebXml("noServletMappingComplete/web.xml");
         server.startServer();
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/converter/ConverterSvcName?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_NoServletMapping_metadataComplete",
                  "Calling converter Application with URL=" + url.toString());
@@ -117,7 +121,9 @@ public class WebServiceInWebXMLTest extends WebServiceInWebXMLTest_Lite {
         setWebXml(serverWithSharedLib, "sharedLib/web.xml");
         serverWithSharedLib.startServer();
         // Pause for application to start successfully
-        serverWithSharedLib.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            serverWithSharedLib.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + serverWithSharedLib.getHttpDefaultPort() + "/converter/calculator?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_SharedLib",
                  "Calling converter Application with URL=" + url.toString());
@@ -147,7 +153,9 @@ public class WebServiceInWebXMLTest extends WebServiceInWebXMLTest_Lite {
         setWebXml(serverWithSharedLib, "sharedLibComplete/web.xml");
         serverWithSharedLib.startServer();
         // Pause for application to start successfully
-        serverWithSharedLib.waitForStringInLog("CWWKZ0001I.*converter");
+        assertNotNull(
+            "Message was not detected in the log",
+            serverWithSharedLib.waitForStringInLog("CWWKZ0001I.*converter"));
         URL url = new URL("http://" + server.getHostname() + ":" + serverWithSharedLib.getHttpDefaultPort() + "/converter/calculatorAgain?wsdl");
         Log.info(c, "testConfigWebServiceInWebXml_SharedLibComplet",
                  "Calling converter Application with URL=" + url.toString());

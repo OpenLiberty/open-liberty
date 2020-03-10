@@ -88,8 +88,12 @@ public class TestUtils {
 
         // wait for configuration and feature update to complete
         // these two messages can happen in any order!
-        server.waitForStringInLogUsingMark("CWWKG0017I");
-        server.waitForStringInLogUsingMark("CWWKF0008I");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKG0017I"));
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0008I"));
     }
 
 }

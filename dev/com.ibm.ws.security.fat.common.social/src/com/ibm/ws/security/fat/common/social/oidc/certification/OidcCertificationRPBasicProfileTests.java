@@ -11,6 +11,7 @@
 package com.ibm.ws.security.fat.common.social.oidc.certification;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -705,7 +706,9 @@ public abstract class OidcCertificationRPBasicProfileTests extends CommonSecurit
         }
 
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation()).isEmpty());
     }
 
     protected void addOrUpdateConfigVariable(ConfigElementList<Variable> vars, String name, String value) {

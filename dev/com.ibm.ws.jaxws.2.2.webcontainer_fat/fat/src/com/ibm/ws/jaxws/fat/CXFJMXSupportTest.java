@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -114,16 +115,22 @@ public class CXFJMXSupportTest {
 
         server.startServer("CXFJMXSupportTest.log");
         //Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*testCXFJMXSupport");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testCXFJMXSupport"));
         //access the service's WSDL first, then MBean for the endpoint of the service will be loaded
         //NOTE: in fact, any service request triggers its MBean's activation
         accessServiceWSDL("WSTestEndpointService");
         //access a client servlet, then client bus will be triggered to load.
         accessURL("JMXClientServlet");
         //Check to make sure jks has been created for restConnector
-        server.waitForStringInLog("CWPKI0803A.*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWPKI0803A.*"));
         //Check to see if Rest service is up
-        server.waitForStringInLog("CWWKX0103I.*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKX0103I.*"));
 
         Log.info(thisClass, thisMethod, "@TJJ before constructing Client");
 

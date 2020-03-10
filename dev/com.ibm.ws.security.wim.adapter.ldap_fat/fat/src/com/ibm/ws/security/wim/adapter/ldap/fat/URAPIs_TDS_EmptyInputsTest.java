@@ -118,7 +118,9 @@ public class URAPIs_TDS_EmptyInputsTest {
         Log.info(c, "checkPasswordWithEmptyPrincipalName", "Checking with empty password");
         assertNull("Authentication should not succeed with empty password.",
                    servlet.checkPassword(user, password));
-        server.waitForStringInLog("CWIML4541E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4541E:"));
     }
 
     /**
@@ -156,7 +158,9 @@ public class URAPIs_TDS_EmptyInputsTest {
 
         Log.info(c, "getUserDisplayName", "Checking with a empty input");
         assertNull("Empty input fot getUserDisplayName should cause invalid identifier exception", servlet.getUserDisplayName(user));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
     /**
@@ -167,7 +171,9 @@ public class URAPIs_TDS_EmptyInputsTest {
         String user = "";
         Log.info(c, "getUniqueUserId", "Checking with a empty input");
         assertNull("Empty input fot getUniqueUserId should cause invalid identifier exception", servlet.getUniqueUserId(user));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
     /**
@@ -179,7 +185,9 @@ public class URAPIs_TDS_EmptyInputsTest {
 
         Log.info(c, "getUserSecurityName", "Checking with a empty input.");
         assertNull("Empty input fot getUserSecurityName should cause invalid identifier exception", servlet.getUniqueUserId(user));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
     /**
@@ -216,7 +224,9 @@ public class URAPIs_TDS_EmptyInputsTest {
         String group = "";
         Log.info(c, "getGroupDisplayName", "Checking with a empty input.");
         assertNull("Empty input fot getGroupDisplayName should cause invalid identifier exception", servlet.getGroupDisplayName(group));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
     /**
@@ -228,7 +238,9 @@ public class URAPIs_TDS_EmptyInputsTest {
         String group = "";
         Log.info(c, "getUniqueGroupId", "Checking with a empty input.");
         assertNull("Empty input fot getUniqueGroupId should cause invalid identifier exception", servlet.getUniqueGroupId(group));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
     /**
@@ -240,7 +252,9 @@ public class URAPIs_TDS_EmptyInputsTest {
         String uniqueGroupId = "";
         Log.info(c, "getGroupSecurityName", "Checking with a empty input.");
         assertNull("Empty input fot getGroupSecurityName should cause invalid identifier exception", servlet.getGroupSecurityName(uniqueGroupId));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
     /**
@@ -252,7 +266,9 @@ public class URAPIs_TDS_EmptyInputsTest {
         String user = "";
         Log.info(c, "getGroupsForUser", "Checking with a empty input.");
         assertNull("Empty input fot getGroupsForUser should cause invalid identifier exception", servlet.getGroupsForUser(user));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
     /**
@@ -264,7 +280,9 @@ public class URAPIs_TDS_EmptyInputsTest {
         String user = "";
         Log.info(c, "getUniqueGroupIds", "Checking with a empty input.");
         assertNull("Empty input fot getUniqueGroupIds should cause invalid identifier exception", servlet.getUniqueGroupIdsForUser(user));
-        server.waitForStringInLog("CWIML1010E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML1010E:"));
     }
 
 }

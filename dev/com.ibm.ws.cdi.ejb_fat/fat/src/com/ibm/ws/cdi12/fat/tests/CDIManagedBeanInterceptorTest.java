@@ -74,7 +74,9 @@ public class CDIManagedBeanInterceptorTest extends LoggingTest {
 
             server = LibertyServerFactory.getStartedLibertyServer("cdi12ManagedBeanTestServer");
             ShrinkHelper.exportDropinAppToServer(server, managedBeanApp);
-            server.waitForStringInLogUsingMark("CWWKZ0001I.*Application managedBeanApp started");
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark("CWWKZ0001I.*Application managedBeanApp started"));
 
 
         } else {

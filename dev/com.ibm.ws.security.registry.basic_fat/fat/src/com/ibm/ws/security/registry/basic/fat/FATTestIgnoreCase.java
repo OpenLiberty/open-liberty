@@ -13,6 +13,7 @@ package com.ibm.ws.security.registry.basic.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -116,7 +117,9 @@ public class FATTestIgnoreCase {
             Log.info(c, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile(serverXML);
-            server.waitForMultipleStringsInLog(updateCount++, "CWWKG0017I");
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForMultipleStringsInLog(updateCount++, "CWWKG0017I"));
             serverConfigurationFile = serverXML;
         }
     }

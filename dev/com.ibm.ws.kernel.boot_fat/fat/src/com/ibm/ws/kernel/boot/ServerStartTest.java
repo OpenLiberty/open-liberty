@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.boot;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
@@ -83,7 +84,9 @@ public class ServerStartTest {
         Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
         Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
 
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
 
         // because we didn't start the server using the LibertyServer APIs, we need to have it detect
         // its started state so it will stop and save logs properly

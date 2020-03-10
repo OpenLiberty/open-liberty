@@ -69,9 +69,13 @@ public class JSF22StatelessViewTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces CDI support enabled");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("MyFaces CDI support enabled"));
     }
 
     @Test

@@ -127,7 +127,9 @@ public class DefaultWIMRealmTest {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             e.printStackTrace();
         }
-        server.waitForStringInLog("CWIML4537E");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4537E"));
         assertTrue("An invalid user should cause RegistryException with No principal is found message", true);
     }
 

@@ -11,6 +11,7 @@
 package com.ibm.ws.jsf.container.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 
@@ -105,7 +106,9 @@ public class JSF22CDIGeneralTests extends FATServletClient {
 
     public void testViewHandler(String contextRoot) throws Exception {
         // Wait for the application to be started.
-        server.waitForStringInLog("CWWKZ0001I: Application " + contextRoot + " started");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I: Application " + contextRoot + " started") );
 
         // Construct the URL for the test
         URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");

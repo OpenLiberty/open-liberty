@@ -11,6 +11,7 @@
 package com.ibm.ws.ejbcontainer.async.fat.tests;
 
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.logging.Logger;
@@ -170,6 +171,8 @@ public class AsyncConfigTests extends AbstractTest {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("AsyncConfigTestApp"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("AsyncConfigTestApp")).isEmpty());
     }
 }

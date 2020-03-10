@@ -11,6 +11,7 @@
 package com.ibm.ws.request.probe.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -72,9 +73,15 @@ public class RequestProbeTest {
         CommonTasks.writeLogMsg(Level.INFO, "-----> Updating server configuration to REMOVE Request Timing feature..");
         server.setServerConfigurationFile("server_NoRT.xml");
 
-        server.waitForStringInLogUsingMark("CWWKF0013I", 30000);
-        server.waitForStringInLogUsingMark("CWWKG0017I", 10000);
-        server.waitForStringInLogUsingMark("CWWKT0016I", 10000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0013I", 30000));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKG0017I", 10000));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
 
         Thread.sleep(60000); // Sleep for one minute
         createRequest(2100);

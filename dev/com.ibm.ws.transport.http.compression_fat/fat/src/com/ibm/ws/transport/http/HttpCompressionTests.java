@@ -1017,7 +1017,9 @@ public class HttpCompressionTests {
     private void startServer(String variation, String testName) throws Exception {
         server.setServerConfigurationFile(CONFIGURATION_FILES_DIR + variation + XML_EXTENSION);
         server.startServer(testName + LOG_EXTENSION);
-        server.waitForStringInLogUsingMark(APP_STARTED_MESSAGE);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark(APP_STARTED_MESSAGE));
     }
 
     /**

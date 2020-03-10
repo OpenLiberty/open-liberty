@@ -12,6 +12,7 @@ package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -110,12 +111,18 @@ public class WebServiceMonitorTest {
     public void startServer() throws Exception {
 
         server.startServer("WebServiceMonitorTest.log");
-        server.waitForStringInLog("CWWKZ0001I.*testWebServiceMonitor");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testWebServiceMonitor"));
 
         //Check to make sure jks has been created for restConnector
-        server.waitForStringInLog("CWPKI0803A.*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWPKI0803A.*"));
         //Check to see if Rest service is up
-        server.waitForStringInLog("CWWKX0103I.*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKX0103I.*"));
 
         ClientConnector cc = new ClientConnector(server.getServerRoot(), server.getHostname(), server.getHttpDefaultSecurePort());
         mbsc = cc.getMBeanServer();
@@ -160,9 +167,15 @@ public class WebServiceMonitorTest {
 
         // Disable monitor feature dynamiclly.
         server.updateServerConfiguration(new File(server.pathToAutoFVTTestFiles + "WebServiceMonitorTest/clearCache/server.xml"));
-        server.waitForStringInLog("CWWKZ0009I.*testWebServiceMonitor");
-        server.waitForStringInLog("CWWKZ0003I.*testWebServiceMonitor");
-        server.waitForStringInLog("CWWKF0008I.*Feature update completed");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0009I.*testWebServiceMonitor"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0003I.*testWebServiceMonitor"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0008I.*Feature update completed"));
 
         respStr = postSOAPMessage(urlAddress, REQUEST_STR);
         assertTrue("Web service response is not correct.", respStr.contains("<return>162.32</return>"));

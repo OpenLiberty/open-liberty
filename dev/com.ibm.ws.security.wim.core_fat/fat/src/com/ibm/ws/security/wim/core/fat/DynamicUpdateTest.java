@@ -122,7 +122,9 @@ public class DynamicUpdateTest {
             // Wait for CWWKG0017I and CWWKF0008I to appear in logs after we started the config update
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            server.waitForStringInLogUsingMark("CWWKG0017I"); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark("CWWKG0017I")); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
 
             serverConfigurationFile = serverXML;
         }
@@ -230,7 +232,9 @@ public class DynamicUpdateTest {
 
         SearchResult result = servlet.getUsers(USERNAME, 4);
         assertEquals("There should only be 2 entries", 2, result.getList().size());
-        server.waitForStringInLog("CWIML4538E"); //DuplicateLogonIdException
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4538E")); //DuplicateLogonIdException
     }
 
     /*

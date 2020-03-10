@@ -83,7 +83,9 @@ public class TestConfiguration {
      */
     private void assertOtherFeaturesStarted(String[] featuresRegExps) throws Exception {
         for (String featureRegularExpression : featuresRegExps) {
-            server.waitForStringInLogUsingMark(featureRegularExpression, WAIT_TIME);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark(featureRegularExpression, WAIT_TIME));
         }
     }
 
@@ -308,7 +310,9 @@ public class TestConfiguration {
      * Waits for the web security configuration properties to be modified.
      */
     public void waitForPropertiesUpdate() {
-        server.waitForStringInLogUsingMark("CWWKS9112A");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKS9112A"));
     }
 
     /**

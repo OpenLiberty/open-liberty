@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.delayexec;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -194,7 +195,9 @@ public class DelayExecutionFATTest {
             config.getFeatureManager().getFeatures().add("testFeature-1.0");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
             Log.info(getClass(), "testRescheduleUnderConfigUpdateRemove", "added testFeature-1.0 to feature list");
 
             // Wait for evidence that the TestService has activated
@@ -292,7 +295,9 @@ public class DelayExecutionFATTest {
             config.getFeatureManager().getFeatures().add("testFeature-1.0");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
             Log.info(getClass(), "testRescheduleUnderConfigUpdateRun", "added testFeature-1.0 to feature list");
 
             // Wait for evidence that the TestService has activated

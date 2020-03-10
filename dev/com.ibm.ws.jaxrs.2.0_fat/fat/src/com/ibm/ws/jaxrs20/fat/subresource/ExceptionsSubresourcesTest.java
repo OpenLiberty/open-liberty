@@ -14,6 +14,7 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.asString;
 import static com.ibm.ws.jaxrs20.fat.TestUtils.getBaseTestUri;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import javax.xml.bind.JAXBContext;
@@ -151,7 +152,9 @@ public class ExceptionsSubresourcesTest {
         try {
             resp = client.execute(optionsMethod);
             assertEquals(200, resp.getStatusLine().getStatusCode());
-            server.waitForStringInLog("Invoked CommentData.checkOptions");
+            assertNotNull(
+              "Message was not detected in the log",
+              server.waitForStringInLog("Invoked CommentData.checkOptions"));
         } finally {
             // Do this so that connection for GET below doesn't fail
             client.getConnectionManager().shutdown();

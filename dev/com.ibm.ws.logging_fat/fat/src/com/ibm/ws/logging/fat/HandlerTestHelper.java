@@ -11,6 +11,7 @@
 package com.ibm.ws.logging.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -63,7 +64,9 @@ public class HandlerTestHelper {
         LibertyLogsFound logsFound = new LibertyLogsFound();
 
         Log.info(c, "findAllLogsFromRESTHandlerTraceLogger", "------> start waiting");
-        server.waitForStringInLog("[10]Received", 5000, new RemoteFile(Machine.getLocalMachine(), server.getLogsRoot() + "tracehandlerimpl.log"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("[10]Received", 5000, new RemoteFile(Machine.getLocalMachine(), server.getLogsRoot() + "tracehandlerimpl.log")));
         Log.info(c, "findAllLogsFromRESTHandlerTraceLogger", "------> wait completed");
 
         List<String> lines = null;
@@ -124,7 +127,9 @@ public class HandlerTestHelper {
         LibertyLogsFound logsFound = new LibertyLogsFound();
 
         Log.info(c, "findAllLogsFromRESTHandlerTraceLogger", "------> start waiting");
-        server.waitForStringInLog("[10]Received", 5000, new RemoteFile(Machine.getLocalMachine(), server.getLogsRoot() + "tracehandlerimpl.log"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("[10]Received", 5000, new RemoteFile(Machine.getLocalMachine(), server.getLogsRoot() + "tracehandlerimpl.log")));
         Log.info(c, "findAllLogsFromRESTHandlerTraceLogger", "------> wait completed");
 
         List<String> lines = null;
@@ -306,7 +311,9 @@ public class HandlerTestHelper {
         JULLogsFound logsFound = new JULLogsFound();
 
         Log.info(c, "findAllLogsForTestAppJUL_jsp", "------> start waiting");
-        server.waitForStringInLog("[11]Received", 5000, new RemoteFile(Machine.getLocalMachine(), server.getLogsRoot() + "tracehandlerimpl.log"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("[11]Received", 5000, new RemoteFile(Machine.getLocalMachine(), server.getLogsRoot() + "tracehandlerimpl.log")));
         Log.info(c, "findAllLogsForTestAppJUL_jsp", "------> wait completed");
 
         List<String> lines = null;

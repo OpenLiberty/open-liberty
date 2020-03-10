@@ -76,7 +76,9 @@ public class MongoConfigUpdateTest extends FATServletClient {
     private void updateConfig(ServerConfiguration config) throws Exception {
         server.updateServerConfiguration(config);
         if (server.isStarted()) {
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(FATSuite.APP_NAME));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(FATSuite.APP_NAME)).isEmpty());
             server.setMarkToEndOfLog();
         } else {
             server.startServer();

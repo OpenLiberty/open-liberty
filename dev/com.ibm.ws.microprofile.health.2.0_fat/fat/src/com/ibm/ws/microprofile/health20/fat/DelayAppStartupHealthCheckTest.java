@@ -71,7 +71,9 @@ public class DelayAppStartupHealthCheckTest {
         if (!server1.isStarted())
             server1.startServer();
 
-        server1.waitForStringInLog("CWWKT0016I: Web application available.*DelayedHealthCheckApp*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("CWWKT0016I: Web application available.*DelayedHealthCheckApp*"));
     }
 
     @After

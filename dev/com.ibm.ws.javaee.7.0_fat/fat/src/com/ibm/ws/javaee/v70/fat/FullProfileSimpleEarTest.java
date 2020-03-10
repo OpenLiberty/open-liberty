@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.v70.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import javax.servlet.http.HttpServlet;
 
 import org.junit.AfterClass;
@@ -58,7 +60,9 @@ public class FullProfileSimpleEarTest extends FATServletClient implements FATApp
 
         server.startServer();
 
-        server.waitForStringInLog("CWWKZ0001I.* " + SIMPLE_WAR_NAME, 10000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.* " + SIMPLE_WAR_NAME, 10000));
     }
 
     @AfterClass

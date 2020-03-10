@@ -225,7 +225,9 @@ public class JSF23FaceletVDLTests {
         jsf23Server.restoreServerConfiguration();
 
         // Ensure that the server configuration has completed before uninstalling the application
-        jsf23Server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            jsf23Server.waitForConfigUpdateInLogUsingMark(null) != null);
 
         jsf23Server.removeInstalledAppForValidation(contextRoot);
     }

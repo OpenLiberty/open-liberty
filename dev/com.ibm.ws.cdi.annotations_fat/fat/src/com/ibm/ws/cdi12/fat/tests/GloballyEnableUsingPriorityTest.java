@@ -16,6 +16,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -118,7 +120,9 @@ public class GloballyEnableUsingPriorityTest extends LoggingTest {
 
         ShrinkHelper.exportDropinAppToServer(server, globalPriorityApp);
         hasSetUp = true;
-        server.waitForStringInLogUsingMark("CWWKZ0001I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I"));
 
     }
 

@@ -48,7 +48,9 @@ public class WebServiceRefFeaturesTest {
                                       "com.ibm.ws.test.wsfeatures.service");
 
         server.startServer("WebServiceRefFeaturesTest.log");
-        server.waitForStringInLog("webServiceRefFeatures");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("webServiceRefFeatures"));
     }
 
     @AfterClass

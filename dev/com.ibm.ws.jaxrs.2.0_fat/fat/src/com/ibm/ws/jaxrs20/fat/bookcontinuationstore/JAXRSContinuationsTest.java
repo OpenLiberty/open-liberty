@@ -198,7 +198,9 @@ public class JAXRSContinuationsTest {
     @Test
     public void testAsyncMethodWithNonVoidReturnType() throws Exception {
         checkBook(TestUtils.getBaseTestUri(CONTEXT_ROOT, "bookstore/books/nonvoidreturn/3"), "3", "CXF in Action3");
-        server.findStringsInLogs(NON_VOID_RETURN_WARNING);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.findStringsInLogs(NON_VOID_RETURN_WARNING));
     }
 
     private void checkBook(String address, String id, String expected) throws Exception {

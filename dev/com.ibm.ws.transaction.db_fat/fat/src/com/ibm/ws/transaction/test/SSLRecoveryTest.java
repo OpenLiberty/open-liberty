@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -125,14 +127,18 @@ public class SSLRecoveryTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        serverLibertySSL.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            serverLibertySSL.waitForStringInLog("Dump State:"));
         serverLibertySSL.stopServer();
 
         setUp();
         serverLibertySSL.startServer();
 
         // Server appears to have started ok
-        serverLibertySSL.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+        assertNotNull(
+            "Message was not detected in the log",
+            serverLibertySSL.waitForStringInTrace("Setting state from RECOVERING to ACTIVE"));
         Log.info(this.getClass(), method, "calling checkRec" + id);
         try {
             sb = runTestWithResponse(serverLibertySSL, APP_NAME + "/SSLRecoveryServlet", "checkRec" + id);

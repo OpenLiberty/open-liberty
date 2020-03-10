@@ -11,6 +11,7 @@
 package com.ibm.ws.request.probe.jdbc.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -64,7 +65,9 @@ public class RequestProbeJDBCTest {
         server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "Started server with Request Timing feature");
         createRequests(11000);
-        server.waitForStringInLogUsingMark("TRAS0112W", 5000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("TRAS0112W", 5000));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0112W", MESSAGE_LOG);
         // retry
@@ -72,7 +75,9 @@ public class RequestProbeJDBCTest {
             CommonTasks.writeLogMsg(Level.INFO, "---->Retry because no slow request warning found!");
             Thread.sleep(60000); // Sleep for 60sec
             createRequests(11000);
-            server.waitForStringInLogUsingMark("TRAS0112W", 5000);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark("TRAS0112W", 5000));
             lines = server.findStringsInFileInLibertyServerRoot("TRAS0112W", MESSAGE_LOG);
         }
         assertTrue("No slow request warning found!", (lines.size() > 0));

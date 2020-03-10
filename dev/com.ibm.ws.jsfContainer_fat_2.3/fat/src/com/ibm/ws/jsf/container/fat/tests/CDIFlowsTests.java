@@ -11,6 +11,7 @@
 package com.ibm.ws.jsf.container.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -86,9 +87,13 @@ public class CDIFlowsTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces CDI support enabled");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("MyFaces CDI support enabled"));
     }
 
     /**

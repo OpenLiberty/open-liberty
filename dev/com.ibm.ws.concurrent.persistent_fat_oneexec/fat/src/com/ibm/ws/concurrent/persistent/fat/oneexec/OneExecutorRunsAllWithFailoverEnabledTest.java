@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.oneexec;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -204,7 +205,9 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
             PersistentExecutor executorC = config.getPersistentExecutors().removeById("executorC");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Schedule a task to executor (B) that can't run tasks, and with no other executors that can run tasks
             output = runInServlet(
@@ -222,7 +225,9 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/executorB&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-5");
 
@@ -236,7 +241,9 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
             executorB.setEnableTaskExecution("false");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Verify that all tasks are running
             runInServlet("test=testTasksAreRunning&jndiName=concurrent/executorD&taskId="
@@ -246,7 +253,9 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(failoverConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
 
         runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdA1 + "&invokedBy=testRunTasksOnDifferentExecutor-7");

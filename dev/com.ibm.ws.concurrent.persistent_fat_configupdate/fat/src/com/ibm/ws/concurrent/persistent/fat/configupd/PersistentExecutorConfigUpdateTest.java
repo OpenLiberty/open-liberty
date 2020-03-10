@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.configupd;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -140,13 +141,17 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setEnableTaskExecution("false");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // change enableTaskExecution=true
             myExecutor.setEnableTaskExecution("true");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testDisableAndEnableTaskExecution");
 
@@ -155,7 +160,9 @@ public class PersistentExecutorConfigUpdateTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -172,7 +179,9 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setRetryLimit("-1"); // unlimited retries
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Schedule a task that will fail when it runs
             StringBuilder output = runInServlet(
@@ -186,14 +195,18 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setRetryLimit("0");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskFailsWithLookupError&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testDisableRetries");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -211,7 +224,9 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setEnableTaskExecution("false");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Schedule a task
             StringBuilder output = runInServlet(
@@ -235,14 +250,18 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setPollInterval("-1");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Reduce the initial poll delay to immediate, set the poll size to 1, and verify the first task runs
             myExecutor.setInitialPollDelay("0");
             myExecutor.setPollSize("1");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskIdA + "&invokedBy=EnablePolling");
             runInServlet("test=testTaskDidNotRun&jndiName=concurrent/MyExecutor&taskId=" + taskIdB + "&invokedBy=EnablePolling");
@@ -251,7 +270,9 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setPollSize("20");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskIdB + "&invokedBy=EnablePolling");
 
@@ -261,7 +282,9 @@ public class PersistentExecutorConfigUpdateTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -320,7 +343,9 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setEnableTaskExecution("false");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Schedule a task
             StringBuilder output = runInServlet(
@@ -336,13 +361,17 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setPollInterval("3d");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Reduce the initial poll delay to 100ms and verify the task runs
             myExecutor.setInitialPollDelay("100ms");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testReduceTheInitialPollDelay");
 
@@ -351,7 +380,9 @@ public class PersistentExecutorConfigUpdateTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -370,7 +401,9 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setRetryInterval("2s");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Schedule a task that will fail when it runs
             StringBuilder output = runInServlet(
@@ -384,14 +417,18 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setRetryInterval("10ms");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskFailsWithLookupError&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&expectedNumAttempts=11&invokedBy=testReduceTheRetryInterval");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -419,7 +456,9 @@ public class PersistentExecutorConfigUpdateTest {
             myExecutor.setRetryLimit("0");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Verify the original task still runs
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testReplaceTheContextService");
@@ -441,7 +480,9 @@ public class PersistentExecutorConfigUpdateTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 }

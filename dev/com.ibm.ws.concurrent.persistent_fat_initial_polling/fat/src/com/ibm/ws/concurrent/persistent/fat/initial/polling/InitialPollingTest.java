@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.initial.polling;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -143,7 +144,9 @@ public class InitialPollingTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Schedule tasks
             StringBuilder output = runInServlet(
@@ -195,7 +198,9 @@ public class InitialPollingTest {
                 server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
             if (server.isStarted())
-                server.waitForConfigUpdateInLogUsingMark(appNames);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -268,7 +273,9 @@ public class InitialPollingTest {
 
                 server.setMarkToEndOfLog();
                 server.updateServerConfiguration(config);
-                server.waitForConfigUpdateInLogUsingMark(appNames);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
                 Thread.sleep(500);
             }
@@ -286,7 +293,9 @@ public class InitialPollingTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -305,8 +314,10 @@ public class InitialPollingTest {
         PersistentExecutor executor1 = config.getPersistentExecutors().getBy("id", "executor1");
         executor1.setEnableTaskExecution("false");
         server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        server.updateServerConfiguration(config);   
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         try {
             // schedule a one-shot task, which won't be able to run yet because execution is disabled
             StringBuilder output = runInServlet(
@@ -321,7 +332,9 @@ public class InitialPollingTest {
             executor1.setInitialPollDelay("-1");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // verify the task did not run yet
             runInServlet("test=testTaskCompletesAfterPollingStarted&jndiName=concurrent/executor1&taskId=" + taskId + "&invokedBy=testStartPolling");
@@ -329,7 +342,9 @@ public class InitialPollingTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 }

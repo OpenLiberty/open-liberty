@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -69,7 +71,9 @@ public class SimpleJSFWithSharedLibTest extends LoggingTest {
         ShrinkHelper.exportToServer(server, "/InjectionSharedLibrary", sharedLibrary);
         ShrinkHelper.exportToServer(server, "/apps", simpleJSFWithSharedLib);
         server.startServer();
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application simpleJSFWithSharedLib started");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I.*Application simpleJSFWithSharedLib started"));
     }
 
     @Test

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -53,7 +55,9 @@ public class CDIRetryTest extends FATServletClient {
         // This should cause executors to get cleaned up
         runTest(server, "CDIFaultTolerance/retry", "testRetryAbortOn");
 
-        server.waitForStringInLog("Cleaning up executors", traceLog);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("Cleaning up executors", traceLog));
     }
 
     @BeforeClass

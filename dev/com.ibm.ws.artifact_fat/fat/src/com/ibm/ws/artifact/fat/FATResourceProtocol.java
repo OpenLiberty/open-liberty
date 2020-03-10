@@ -359,7 +359,7 @@ public class FATResourceProtocol {
         server.updateServerConfiguration(serverConfig);
 
         Assert.assertNotNull(
-            "Detection of completion mark",
+            "Message was not detected in the log",
             server.waitForStringInLogUsingMark("CWWKG0017I"));
     }
 

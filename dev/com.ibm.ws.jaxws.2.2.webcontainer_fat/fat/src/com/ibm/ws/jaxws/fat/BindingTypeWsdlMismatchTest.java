@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -46,7 +47,9 @@ public class BindingTypeWsdlMismatchTest extends BindingTypeWsdlMismatchTest_Lit
                                       "dropins/testBindingTypeWsdlWeb.war/WEB-INF/wsdl", "HelloService.wsdl");
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testBindingTypeWsdlWeb"); // start successfully
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testBindingTypeWsdlWeb")); // start successfully
 
         String result = TestUtils.getServletResponse(getBaseUrl() + "/testBindingTypeWsdlWeb/HelloService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + result, result.contains("<?xml"));

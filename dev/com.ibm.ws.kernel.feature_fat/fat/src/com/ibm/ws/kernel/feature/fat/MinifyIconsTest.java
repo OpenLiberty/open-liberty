@@ -100,7 +100,9 @@ public class MinifyIconsTest {
         server.startServer();
         // Check all the apps installed ok and work
         for (IconFeature feature : iconFeaturesInstalled.values()) {
-            server.waitForStringInLog("CWWKT0016I.*" + feature.getShortName());
+            Assert.assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKT0016I.*" + feature.getShortName()));
             URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + feature.getURL());
             HttpURLConnection con = getHttpConnection(url);
             BufferedReader br = getConnectionStream(con);
@@ -136,7 +138,9 @@ public class MinifyIconsTest {
             // We should start the server again and make sure all our features are available
             minifiedServer.startServer();
             for (IconFeature feature : iconFeaturesInstalled.values()) {
-                minifiedServer.waitForStringInLog("CWWKT0016I.*" + feature.getShortName());
+                Assert.assertNotNull(
+                    "Message was not detected in the log",
+                    minifiedServer.waitForStringInLog("CWWKT0016I.*" + feature.getShortName()));
                 URL url = new URL("http://" + minifiedServer.getHostname() + ":" + minifiedServer.getHttpDefaultPort() + feature.getURL());
                 HttpURLConnection con = getHttpConnection(url);
                 BufferedReader br = getConnectionStream(con);

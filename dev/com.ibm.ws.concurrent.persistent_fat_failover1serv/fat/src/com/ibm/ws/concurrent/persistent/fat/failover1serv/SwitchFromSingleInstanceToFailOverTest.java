@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.failover1serv;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Set;
@@ -124,7 +125,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             // Enable fail over
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
             // Verify that tasks still run
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
@@ -448,7 +451,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             config.getPersistentExecutors().add(persistentExec);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
             // Verify that tasks still run
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
@@ -469,7 +474,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             config.getPersistentExecutors().removeById("persistentExec2");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
             // Verify that tasks still run
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
@@ -566,7 +573,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             persistentExecRFR.setMissedTaskThreshold(null);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
             // Schedule another task and verify that it runs
             result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
@@ -776,7 +785,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             config.getPersistentExecutors().add(persistentExec);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
             // Verify that tasks still run
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",

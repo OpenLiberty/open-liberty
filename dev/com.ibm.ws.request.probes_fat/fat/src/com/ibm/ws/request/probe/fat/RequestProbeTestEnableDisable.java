@@ -11,6 +11,7 @@
 package com.ibm.ws.request.probe.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -112,7 +113,9 @@ public class RequestProbeTestEnableDisable {
     }
 
     private boolean isRequestTimingEnabled() throws Exception {
-        server.waitForStringInLogUsingMark("CWWKF0012I", 60000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0012I", 60000));
         List<String> lines = server.findStringsInFileInLibertyServerRoot("CWWKF0012I", MESSAGE_LOG);
         if (lines.get(lines.size() - 1).contains("requestTiming-1.0")) {
             return true;
@@ -131,16 +134,26 @@ public class RequestProbeTestEnableDisable {
 
     private void enableRequestTiming() throws Exception {
         server.setServerConfigurationFile("server_RT2.xml");
-        server.waitForStringInLogUsingMark("CWWKF0012I", 30000);
-        server.waitForStringInLogUsingMark("CWWKG0017I", 10000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0012I", 30000));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKG0017I", 10000));
     }
 
     private void disableRequestTiming() throws Exception {
         server.setServerConfigurationFile("server_NoRT.xml");
 
-        server.waitForStringInLogUsingMark("CWWKF0013I", 30000);
-        server.waitForStringInLogUsingMark("CWWKG0017I", 10000);
-        server.waitForStringInLogUsingMark("CWWKT0016I", 10000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0013I", 30000));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKG0017I", 10000));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
         Thread.sleep(60000);
     }
 

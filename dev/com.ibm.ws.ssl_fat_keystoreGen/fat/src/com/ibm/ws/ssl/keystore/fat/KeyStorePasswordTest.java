@@ -11,6 +11,7 @@
 package com.ibm.ws.ssl.keystore.fat;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,14 +53,18 @@ public class KeyStorePasswordTest extends FATServletClient {
     @Test
     public void noPass() throws Exception {
         startServer();
-        server.waitForStringInLog(KEYSTORE_NOT_GENERATED);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog(KEYSTORE_NOT_GENERATED));
         server.stopServer();
     }
 
     @Test
     public void configuredPass() throws Exception {
         startServer();
-        server.waitForStringInLog(KEYSTORE_GENERATED);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog(KEYSTORE_GENERATED));
         server.stopServer();
         validateGeneratedKeyStore(server, "liberty");
     }
@@ -67,14 +72,18 @@ public class KeyStorePasswordTest extends FATServletClient {
     @Test
     public void configuredInvalidPass() throws Exception {
         startServer();
-        server.waitForStringInLog(PASSWORD_TOO_SHORT);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog(PASSWORD_TOO_SHORT));
         server.stopServer(PASSWORD_TOO_SHORT);
     }
 
     @Test
     public void envPass() throws Exception {
         startServer();
-        server.waitForStringInLog(KEYSTORE_GENERATED);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog(KEYSTORE_GENERATED));
         server.stopServer();
         validateGeneratedKeyStore(server, server.getServerEnv().getProperty("keystore_password"));
     }
@@ -82,14 +91,18 @@ public class KeyStorePasswordTest extends FATServletClient {
     @Test
     public void envInvalidPass() throws Exception {
         startServer();
-        server.waitForStringInLog(PASSWORD_TOO_SHORT);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog(PASSWORD_TOO_SHORT));
         server.stopServer(PASSWORD_TOO_SHORT);
     }
 
     @Test
     public void envAndConfiguredPass() throws Exception {
         startServer();
-        server.waitForStringInLog(KEYSTORE_GENERATED);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog(KEYSTORE_GENERATED));
         server.stopServer();
         validateGeneratedKeyStore(server, "liberty");
     }

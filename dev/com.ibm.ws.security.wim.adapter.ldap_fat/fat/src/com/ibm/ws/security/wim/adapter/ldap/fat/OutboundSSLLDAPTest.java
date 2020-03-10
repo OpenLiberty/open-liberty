@@ -104,8 +104,12 @@ public class OutboundSSLLDAPTest {
             myServer.setServerConfigurationFile("/" + serverXML);
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            myServer.waitForStringInLogUsingMark("CWWKG0017I");
-            myServer.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl");
+            assertNotNull(
+                "Message was not detected in the log",
+                myServer.waitForStringInLogUsingMark("CWWKG0017I"));
+            assertNotNull(
+                "Message was not detected in the log",
+                myServer.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl"));
 
             serverConfigurationFile = serverXML;
         }

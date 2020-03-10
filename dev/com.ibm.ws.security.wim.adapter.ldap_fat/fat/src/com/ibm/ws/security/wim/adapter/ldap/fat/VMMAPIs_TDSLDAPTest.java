@@ -116,7 +116,9 @@ public class VMMAPIs_TDSLDAPTest {
         } catch (WIMException e) {
             e.printStackTrace();
         }
-        server.waitForStringInLog("CWIML4527E", 500);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWIML4527E", 500));
         assertTrue("An invalid user should cause EntityNotFoundException ", true);
     }
 

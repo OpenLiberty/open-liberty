@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -66,7 +68,9 @@ public class SimpleJSFTest extends LoggingTest {
         server = LibertyServerFactory.getLibertyServer("cdi12JSFServer");
         ShrinkHelper.exportDropinAppToServer(server, simpleJSFApp);
         server.startServer();
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application simpleJSFApp started");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I.*Application simpleJSFApp started"));
     }
 
     @Test

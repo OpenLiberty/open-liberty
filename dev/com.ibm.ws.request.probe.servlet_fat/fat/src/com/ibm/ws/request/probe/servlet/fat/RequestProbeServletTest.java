@@ -11,6 +11,7 @@
 package com.ibm.ws.request.probe.servlet.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -66,7 +67,9 @@ public class RequestProbeServletTest {
 
         CommonTasks.writeLogMsg(Level.INFO, "$$$ Removing EventLogging Feature");
         server.setServerConfigurationFile("server_noEL.xml");
-        server.waitForStringInLog("CWWKF0013I", 30000);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0013I", 30000));
 
         fetchUnregisteredTDsFromTraceLog();
 

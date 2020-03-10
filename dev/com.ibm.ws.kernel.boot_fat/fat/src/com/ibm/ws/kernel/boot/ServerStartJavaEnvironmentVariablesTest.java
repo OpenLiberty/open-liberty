@@ -189,7 +189,9 @@ public class ServerStartJavaEnvironmentVariablesTest {
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
 
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
         server.resetStarted();
 
         server.serverDump();

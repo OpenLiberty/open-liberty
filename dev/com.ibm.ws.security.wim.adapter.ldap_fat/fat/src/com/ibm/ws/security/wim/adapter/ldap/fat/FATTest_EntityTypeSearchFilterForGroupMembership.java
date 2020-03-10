@@ -162,7 +162,9 @@ public class FATTest_EntityTypeSearchFilterForGroupMembership {
             // Wait for CWWKG0017I and CWWKF0008I to appear in logs after we started the config update
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            server.waitForStringInLogUsingMark("CWWKG0017I"); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLogUsingMark("CWWKG0017I")); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
             //server.waitForStringInLogUsingLastOffset("CWWKG0017I");
             //server.waitForStringInLogUsingMark("CWWKF0008I"); //CWWKF0008I: Feature update completed in 3.461 seconds.
 

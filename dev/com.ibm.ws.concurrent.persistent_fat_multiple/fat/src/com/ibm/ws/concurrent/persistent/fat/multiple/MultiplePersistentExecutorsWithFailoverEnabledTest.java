@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.multiple;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collections;
 import java.util.Set;
 
@@ -116,7 +118,9 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
             PersistentExecutor executor1 = config.getPersistentExecutors().removeById("executor1");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("testTaskIsRunning&jndiName=concurrent/executor2&taskId=" + taskId + "&invokedBy=testFailoverBetweenTwoInstancesFE-2");
 
@@ -125,7 +129,9 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("testTaskIsRunning&jndiName=concurrent/executor1&taskId=" + taskId + "&invokedBy=testFailoverBetweenTwoInstancesFE-3");
 
@@ -134,7 +140,9 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("testTaskIsRunning&jndiName=concurrent/executor1&taskId=" + taskId + "&invokedBy=testFailoverBetweenTwoInstancesFE-4");
 
@@ -143,7 +151,9 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(failoverEnabledConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -201,7 +211,9 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
             config.getPersistentExecutors().add(executor4);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("testTasksAreRunning&jndiName=concurrent/executor3&taskId="
                          + taskIdA + "&taskId=" + taskIdB + "&taskId=" + taskIdC + "&taskId=" + taskIdD + "&taskId=" + taskIdE +
@@ -212,7 +224,9 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(failoverEnabledConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 

@@ -113,7 +113,9 @@ public class CertificateLoginOddOIDTest {
             myServer.setServerConfigurationFile("/" + serverXML);
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            myServer.waitForStringInLogUsingMark("CWWKG0017I");
+            assertNotNull(
+                "Message was not detected in the log",
+                myServer.waitForStringInLogUsingMark("CWWKG0017I"));
             serverConfigurationFile = serverXML;
         }
     }

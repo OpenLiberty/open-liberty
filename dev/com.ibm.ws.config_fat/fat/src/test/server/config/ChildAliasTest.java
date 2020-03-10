@@ -98,7 +98,9 @@ public class ChildAliasTest {
         // precondition: regular server.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/server.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         test(testServer);
     }
@@ -108,7 +110,9 @@ public class ChildAliasTest {
         // precondition: regular server.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/server.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -117,7 +121,9 @@ public class ChildAliasTest {
         // precondition: regular server.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/server.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -126,7 +132,9 @@ public class ChildAliasTest {
         // precondition: regular server.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/server.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -141,7 +149,9 @@ public class ChildAliasTest {
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverB.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
 
     }
@@ -157,7 +167,9 @@ public class ChildAliasTest {
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -172,7 +184,9 @@ public class ChildAliasTest {
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -181,11 +195,15 @@ public class ChildAliasTest {
         // precondition: serverC.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC2.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -194,11 +212,15 @@ public class ChildAliasTest {
         // precondition: serverC2.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC2.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC3.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty() );
         test(testServer);
     }
 
@@ -207,11 +229,15 @@ public class ChildAliasTest {
         // precondition: serverC3
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC3.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC4.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -220,11 +246,15 @@ public class ChildAliasTest {
         // precondition: serverC4.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC4.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC5.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -233,11 +263,15 @@ public class ChildAliasTest {
         // precondition: serverC5.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC5.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC6.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 
@@ -246,11 +280,15 @@ public class ChildAliasTest {
         // precondition: serverC6.xml
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC6.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC7.xml");
-        testServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            !testServer.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         test(testServer);
     }
 

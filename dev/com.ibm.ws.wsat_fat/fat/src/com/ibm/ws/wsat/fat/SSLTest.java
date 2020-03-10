@@ -11,6 +11,7 @@
 package com.ibm.ws.wsat.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -89,14 +90,22 @@ public class SSLTest extends DBTestBase {
 		client.restoreServerConfiguration();
 		server1.restoreServerConfiguration();
 		server2.restoreServerConfiguration();
-		client.waitForStringInLog("CWWKG001[78]I");
-		server1.waitForStringInLog("CWWKG001[78]I");
-		server2.waitForStringInLog("CWWKG001[78]I");
+		assertNotNull(
+			"Message was not detected in the log",
+			client.waitForStringInLog("CWWKG001[78]I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server1.waitForStringInLog("CWWKG001[78]I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server2.waitForStringInLog("CWWKG001[78]I"));
 	}
 
 	@Test
 	public void testSSL_AllCommitByProxy() {
-		client.waitForStringInLog("CWLIB0206I");
+		assertNotNull(
+			"Message was not detected in the log",
+			client.waitForStringInLog("CWLIB0206I"));
 		final String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name
 				+ "p=" + commit + ":" + basicURL + ":"
@@ -110,7 +119,9 @@ public class SSLTest extends DBTestBase {
 
 	@Test
 	public void testSSL_ClientRollbackByProxy() {
-		server1.waitForStringInLog("CWLIB0206I");
+		assertNotNull(
+			"Message was not detected in the log",
+			server1.waitForStringInLog("CWLIB0206I"));
 		final String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name
 				+ "p=" + commit + ":" + basicURL + ":"
@@ -123,7 +134,9 @@ public class SSLTest extends DBTestBase {
 	
 	@Test
 	public void testSSL_Server2RollbackByProxy() {
-		server2.waitForStringInLog("CWLIB0206I");
+		assertNotNull(
+			"Message was not detected in the log",
+			server2.waitForStringInLog("CWLIB0206I"));
 		final String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name
 				+ "p=" + commit + ":" + basicURL + ":"
@@ -135,16 +148,24 @@ public class SSLTest extends DBTestBase {
 
 	@Test
 	public void testSSL_AllCommitByProx_WithClientAuth() throws Exception {
-		client.waitForStringInLog("CWLIB0206I");
+		assertNotNull(
+			"Message was not detected in the log",
+			client.waitForStringInLog("CWLIB0206I"));
 		client.setMarkToEndOfLog();
 		client.setServerConfigurationFile("ssl/server_client.xml");
 		server1.setMarkToEndOfLog();
 		server1.setServerConfigurationFile("ssl/server_server1.xml");
 		server2.setMarkToEndOfLog();
 		server2.setServerConfigurationFile("ssl/server_server2.xml");
-		client.waitForStringInLogUsingMark("CWWKG0017I");
-		server1.waitForStringInLogUsingMark("CWWKG0017I");
-		server2.waitForStringInLogUsingMark("CWWKG0017I");
+		assertNotNull(
+			"Message was not detected in the log",
+			client.waitForStringInLogUsingMark("CWWKG0017I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server1.waitForStringInLogUsingMark("CWWKG0017I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server2.waitForStringInLogUsingMark("CWWKG0017I"));
 		final String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name
 				+ "p=" + commit + ":" + basicURL + ":"
@@ -156,16 +177,24 @@ public class SSLTest extends DBTestBase {
 
 	@Test
 	public void testSSL_ClientRollbackByProxy_WithClientAuth() throws Exception {
-		server1.waitForStringInLog("CWLIB0206I");
+		assertNotNull(
+			"Message was not detected in the log",
+			server1.waitForStringInLog("CWLIB0206I"));
 		client.setMarkToEndOfLog();
 		client.setServerConfigurationFile("ssl/server_client.xml");
 		server1.setMarkToEndOfLog();
 		server1.setServerConfigurationFile("ssl/server_server1.xml");
 		server2.setMarkToEndOfLog();
 		server2.setServerConfigurationFile("ssl/server_server2.xml");
-		client.waitForStringInLogUsingMark("CWWKG0017I");
-		server1.waitForStringInLogUsingMark("CWWKG0017I");
-		server2.waitForStringInLogUsingMark("CWWKG0017I");
+		assertNotNull(
+			"Message was not detected in the log",
+			client.waitForStringInLogUsingMark("CWWKG0017I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server1.waitForStringInLogUsingMark("CWWKG0017I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server2.waitForStringInLogUsingMark("CWWKG0017I"));
 		final String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name
 				+ "p=" + commit + ":" + basicURL + ":"
@@ -178,16 +207,24 @@ public class SSLTest extends DBTestBase {
 	
 	@Test
 	public void testSSL_Server2RollbackByProxy_WithClientAuth() throws Exception {
-		server2.waitForStringInLog("CWLIB0206I");
+		assertNotNull(
+			"Message was not detected in the log",
+			server2.waitForStringInLog("CWLIB0206I"));
 		client.setMarkToEndOfLog();
 		client.setServerConfigurationFile("ssl/server_client.xml");
 		server1.setMarkToEndOfLog();
 		server1.setServerConfigurationFile("ssl/server_server1.xml");
 		server2.setMarkToEndOfLog();
 		server2.setServerConfigurationFile("ssl/server_server2.xml");
-		client.waitForStringInLogUsingMark("CWWKG0017I");
-		server1.waitForStringInLogUsingMark("CWWKG0017I");
-		server2.waitForStringInLogUsingMark("CWWKG0017I");
+		assertNotNull(
+			"Message was not detected in the log",
+			client.waitForStringInLogUsingMark("CWWKG0017I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server1.waitForStringInLogUsingMark("CWWKG0017I"));
+		assertNotNull(
+			"Message was not detected in the log",
+			server2.waitForStringInLogUsingMark("CWWKG0017I"));
 		final String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name
 				+ "p=" + commit + ":" + basicURL + ":"

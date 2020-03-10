@@ -453,7 +453,9 @@ public class JSF23CDIGeneralTests {
         jsf23CDIServer.restoreServerConfiguration();
 
         // Ensure that the server configuration has completed before uninstalling the application
-        jsf23CDIServer.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            jsf23CDIServer.waitForConfigUpdateInLogUsingMark(null) != null);
 
         // Now uninstall the application and archive the logs.
         jsf23CDIServer.removeInstalledAppForValidation(appName.substring(0, appName.length() - 4));

@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.configupd.db;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -154,7 +155,9 @@ public class ExecEnabledDBStoreConfigUpdateTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testScheduleTaskWithMissingTables&jndiName=concurrent/executor2&invokedBy=testCreateMissingTables[1]");
 
@@ -163,14 +166,18 @@ public class ExecEnabledDBStoreConfigUpdateTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testScheduleAndRunTask&jndiName=concurrent/executor2&invokedBy=testCreateMissingTables[2]");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
     }
 
@@ -209,7 +216,9 @@ public class ExecEnabledDBStoreConfigUpdateTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Tasks from the original database store should not be visible.
             runInServlet("test=testCannotFindTask&jndiName=concurrent/myScheduler&taskId=" + taskIdA1 + "&invokedBy=testSwapDatabaseStores[3]");
@@ -221,7 +230,9 @@ public class ExecEnabledDBStoreConfigUpdateTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
 
         // Tasks from the original database store should be visible again
@@ -264,7 +275,9 @@ public class ExecEnabledDBStoreConfigUpdateTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Task from the original database should not be visible.
             runInServlet("test=testCannotFindTask&jndiName=concurrent/myScheduler&taskId=" + taskId + "&invokedBy=testSwapDataSources[2]");
@@ -275,7 +288,9 @@ public class ExecEnabledDBStoreConfigUpdateTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
 
         // Repeating task from the original database store should be running

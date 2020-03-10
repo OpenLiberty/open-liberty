@@ -290,7 +290,9 @@ public class SingleRecoveryTest {
 				+ result);
 
 		System.out.println(logKeyword + "waitForStringInLog Dump State start");
-		server.waitForStringInLog("Dump State:");
+		assertNotNull(
+			"Message was not detected in the log",
+			server.waitForStringInLog("Dump State:"));
 		System.out.println(logKeyword + "waitForStringInLog Dump State end");
 
 		ProgramOutput po;
@@ -304,14 +306,18 @@ public class SingleRecoveryTest {
 			}
 
 			// make sure it's dead
-			server.waitForStringInLog("Dump State:");
+			assertNotNull(
+				"Message was not detected in the log",
+				server.waitForStringInLog("Dump State:"));
 		}
 
 		po = server.startServerAndValidate(false, true, true);
 		System.out.println("Start server return code: " + po.getReturnCode());
 
 		// Server appears to have started ok
-		server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+		assertNotNull(
+			"Message was not detected in the log",
+			server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE"));
 
 		if (id.equals("37") || id.equals("38") || id.equals("39")
 				|| id.equals("40") || id.equals("45")) {

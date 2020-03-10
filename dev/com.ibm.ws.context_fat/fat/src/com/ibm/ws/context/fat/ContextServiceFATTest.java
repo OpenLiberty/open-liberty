@@ -11,6 +11,7 @@
 package com.ibm.ws.context.fat;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -194,7 +195,9 @@ public class ContextServiceFATTest {
         config.getContextServices().add(contextSvc1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         runInServlet("context", "testNoClassloaderContext", contextSvc1.getJndiName());
         runInServlet("context", "testNoJEEMetadataContext", contextSvc1.getJndiName());
@@ -207,7 +210,9 @@ public class ContextServiceFATTest {
         contextSvc1.getJEEMetadataContexts().add(new JEEMetadataContext());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         runInServlet("context", "testJEEMetadataContext", contextSvc1.getJndiName());
         runInServlet("context", "testDefaultContextForAllContextTypes", contextSvc1.getJndiName());
@@ -216,7 +221,9 @@ public class ContextServiceFATTest {
         contextSvc1.getClassloaderContexts().add(new ClassloaderContext());
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         runInServlet("context", "testClassloaderContext", contextSvc1.getJndiName());
 
@@ -228,7 +235,9 @@ public class ContextServiceFATTest {
         config.getContextServices().add(contextSvc2);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         runInServlet("context", "testClassloaderContext", contextSvc2.getJndiName());
         runInServlet("context", "testJEEMetadataContext", contextSvc2.getJndiName());
@@ -237,7 +246,9 @@ public class ContextServiceFATTest {
         contextSvc1.getClassloaderContexts().retainAll(Collections.EMPTY_SET);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         //runInServlet("context", "testNoClassloaderContext", contextSvc2.getJndiName()); // TODO: re-enable when bug with unset never being invoked is fixed
         //runInServlet("context", "testNoClassloaderContext", contextSvc1.getJndiName()); // TODO: re-enable when bug with unset never being invoked is fixed
@@ -246,7 +257,9 @@ public class ContextServiceFATTest {
         contextSvc2.setBaseContextRef("DefaultContextService");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         runInServlet("context", "testClassloaderContext", contextSvc2.getJndiName());
         runInServlet("context", "testJEEMetadataContext", contextSvc2.getJndiName());
@@ -255,7 +268,9 @@ public class ContextServiceFATTest {
         contextSvc2.setBaseContextRef(null);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
         runInServlet("context", "testNoClassloaderContext", contextSvc2.getJndiName());
         runInServlet("context", "testNoJEEMetadataContext", contextSvc2.getJndiName());

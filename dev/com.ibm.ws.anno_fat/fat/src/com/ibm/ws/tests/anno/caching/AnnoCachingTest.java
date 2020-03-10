@@ -12,6 +12,7 @@ package com.ibm.ws.tests.anno.caching;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -273,7 +274,9 @@ public abstract class AnnoCachingTest extends LoggingTest {
         RemoteFile consoleLog = libertyServer.getConsoleLogFile();
 
         long lStartTime = System.nanoTime();
-        libertyServer.waitForStringInLog("CWWKZ0003I:", consoleLog);
+        assertNotNull(
+            "Message was not detected in the log",
+            libertyServer.waitForStringInLog("CWWKZ0003I:", consoleLog));
         long lEndTime = System.nanoTime();
         long elapsed = lEndTime - lStartTime;
         LOG.info("waitForAppUpdate: Elapsed (ms): " + elapsed / 1000000);
@@ -291,7 +294,9 @@ public abstract class AnnoCachingTest extends LoggingTest {
         RemoteFile consoleLog = libertyServer.getConsoleLogFile();
 
         long lStartTime = System.nanoTime();
-        libertyServer.waitForStringInLog(message, consoleLog);
+        assertNotNull(
+            "Message was not detected in the log",
+            libertyServer.waitForStringInLog(message, consoleLog));
         long lEndTime = System.nanoTime();
         long elapsed = lEndTime - lStartTime;
         LOG.info("waitForConsole: Elapsed (ms): " + elapsed / 1000000);

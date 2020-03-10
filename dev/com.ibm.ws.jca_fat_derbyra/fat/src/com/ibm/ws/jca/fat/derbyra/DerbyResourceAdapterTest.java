@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.derbyra;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -104,7 +106,9 @@ public class DerbyResourceAdapterTest extends FATServletClient {
         server.setMarkToEndOfLog();
         runTest(DerbyRAAnnoServlet);
         // Wait for FFDC messages which can be reported asynchronously to the servlet thread
-        server.waitForStringInLogUsingMark("FFDC1015I.*EJBException");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("FFDC1015I.*EJBException"));
     }
 
     @Test

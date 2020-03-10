@@ -120,7 +120,9 @@ public class CertificateLoginTest {
             myServer.setServerConfigurationFile("/" + serverXML);
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            myServer.waitForStringInLogUsingMark("CWWKG0017I");
+            assertNotNull(
+                "Message was not detected in the log",
+                myServer.waitForStringInLogUsingMark("CWWKG0017I"));
             serverConfigurationFile = serverXML;
         }
     }
@@ -311,7 +313,9 @@ public class CertificateLoginTest {
 
         client = setupClient(user1InvalidCertFile, true);
         client.access("/SimpleServlet", 403);
-        myServer.waitForStringInLog("CWIML4537E:", 2000);
+        assertNotNull(
+            "Message was not detected in the log",
+            myServer.waitForStringInLog("CWIML4537E:", 2000));
         Log.info(c, methodName, "Exiting test " + methodName);
     }
 
@@ -338,7 +342,9 @@ public class CertificateLoginTest {
 
         client = setupClient(user1CertFile, true);
         client.access("/SimpleServlet", 403);
-        myServer.waitForStringInLog("CWIML4538E:"); // com.ibm.websphere.wim.exception.DuplicateLogonIdException: CWIML4538E: The user registry operation could not be completed. More than one record exists for the null principal name in the configured user registries. The principal name must be unique across all the user registries.
+        assertNotNull(
+            "Message was not detected in the log",
+            myServer.waitForStringInLog("CWIML4538E:")); // com.ibm.websphere.wim.exception.DuplicateLogonIdException: CWIML4538E: The user registry operation could not be completed. More than one record exists for the null principal name in the configured user registries. The principal name must be unique across all the user registries.
 
         Log.info(c, methodName, "Exiting test " + methodName);
     }

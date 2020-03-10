@@ -12,6 +12,7 @@ package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -112,7 +113,9 @@ public class HttpConduitPropertiesTest {
                                           defaultSimpleEchoServiceEndpointAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
         String clientConnectionTimeOut = propertyMap.get("client.ConnectionTimeout");
@@ -144,7 +147,9 @@ public class HttpConduitPropertiesTest {
                                           defaultSimpleEchoServiceEndpointAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
         String clientConnectionTimeOut = propertyMap.get("client.ConnectionTimeout");
@@ -176,7 +181,9 @@ public class HttpConduitPropertiesTest {
                                           defaultSimpleEchoServiceEndpointAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
         String clientConnectionTimeOut = propertyMap.get("client.ConnectionTimeout");
@@ -208,7 +215,9 @@ public class HttpConduitPropertiesTest {
                                           defaultSimpleEchoServiceEndpointAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
         String clientConnectionTimeOut = propertyMap.get("client.ConnectionTimeout");
@@ -240,7 +249,9 @@ public class HttpConduitPropertiesTest {
                                           defaultSimpleEchoServiceEndpointAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
         String clientConnectionTimeOut = propertyMap.get("client.ConnectionTimeout");
@@ -278,8 +289,12 @@ public class HttpConduitPropertiesTest {
                                           defaultSimpleEchoServiceEndpointAddr2);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties2");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties2"));
 
         Map<String, String> propertyMap1 = getServletResponse(testServletURL);
 
@@ -345,7 +360,9 @@ public class HttpConduitPropertiesTest {
                                           defaultHelloServiceEndpointAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
         Map<String, String> echoServiceProperties = getServletResponse(testServletURL);
         Map<String, String> helloServiceProperties = getServletResponse(testServletURLForHelloService);
 
@@ -384,7 +401,9 @@ public class HttpConduitPropertiesTest {
         TestUtils.replaceServerFileString(server, "dropins/httpConduitProperties.war/WEB-INF/ibm-ws-bnd.xml", "#HELLO_ENDPOINT_ADDRESS#", defaultHelloServiceEndpointAddr);
 
         server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties"));
         String msg = getServletResponseMessage(receiveTimeoutTestServletURL);
         assertTrue("The Read time out exception should be thrown, but the actual is '" + msg + "'",
                    msg.contains("SocketTimeoutException"));

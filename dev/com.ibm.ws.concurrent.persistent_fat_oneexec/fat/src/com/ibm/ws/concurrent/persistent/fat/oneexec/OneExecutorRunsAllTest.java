@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.oneexec;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -191,7 +192,9 @@ public class OneExecutorRunsAllTest {
             PersistentExecutor executorC = config.getPersistentExecutors().removeById("executorC");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Schedule a task to executor (B) that can't run tasks, and with no other executors that can run tasks
             output = runInServlet(
@@ -208,7 +211,9 @@ public class OneExecutorRunsAllTest {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/executorB&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-7");
 
@@ -219,7 +224,9 @@ public class OneExecutorRunsAllTest {
             executorB.setEnableTaskExecution("false");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
 
             // Liberty doesn't have high availability support yet, so we need to manually trigger the failover from executorB
             runInServlet("test=testTransfer&jndiName=concurrent/executorC&oldExecutorId=executorB&maxTaskId=" + Long.MAX_VALUE + "&invokedBy=testRunTasksOnDifferentExecutor-8");
@@ -232,7 +239,9 @@ public class OneExecutorRunsAllTest {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(appNames).isEmpty());
         }
 
         runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdA1 + "&invokedBy=testRunTasksOnDifferentExecutor-10");

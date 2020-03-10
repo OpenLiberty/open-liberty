@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.boot;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,7 +69,9 @@ public class ServerStartAsServiceTest {
         server.startServer();
 
         Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
 
         assertTrue("the server should have been started", server.isStarted());
 
@@ -96,7 +99,9 @@ public class ServerStartAsServiceTest {
         server.startServer();
 
         Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
-        server.waitForStringInLog("CWWKF0011I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKF0011I"));
 
         assertTrue("the server should have been started", server.isStarted());
 

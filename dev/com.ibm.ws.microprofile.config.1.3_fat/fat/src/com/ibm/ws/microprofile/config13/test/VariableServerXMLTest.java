@@ -91,7 +91,9 @@ public class VariableServerXMLTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.copyFileToLibertyServerRoot(filename);
 
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
+        assertTrue(
+            "Message was not detected in the log",
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false) != null);
 
         Thread.sleep(ConfigConstants.DEFAULT_DYNAMIC_REFRESH_INTERVAL * 2); // We need this pause so that the MP config change is picked up through the polling mechanism
     }

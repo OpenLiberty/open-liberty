@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.fat.failover1serv;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -188,7 +189,9 @@ public class Failover1ServerTest extends FATServletClient {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
             try {
                 runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                         "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&taskId=" + taskIdC +
@@ -198,7 +201,9 @@ public class Failover1ServerTest extends FATServletClient {
                 // restore original configuration
                 server.setMarkToEndOfLog();
                 server.updateServerConfiguration(originalConfig);
-                server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
             }
 
             // Verify one more failover,
@@ -286,7 +291,9 @@ public class Failover1ServerTest extends FATServletClient {
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
             try {
                 runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                         "testTaskIsRunning&taskId=" + taskId + "&jndiName=persistent/exec1&test=testMultipleInstancesCompeteToRunOneLateTask[3]");
@@ -294,7 +301,9 @@ public class Failover1ServerTest extends FATServletClient {
                 // restore original configuration
                 server.setMarkToEndOfLog();
                 server.updateServerConfiguration(originalConfig);
-                server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
             }
 
             // Verify one more failover,
@@ -364,7 +373,9 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec1.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
             try {
                 runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                         "testTaskIsRunning&taskId=" + taskId + "&jndiName=persistent/exec1&test=testScheduleOnOneServerRunOnAnotherThenBackToOriginal[3]");
@@ -372,7 +383,9 @@ public class Failover1ServerTest extends FATServletClient {
                 // restore original configuration
                 server.setMarkToEndOfLog();
                 server.updateServerConfiguration(originalConfig);
-                server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+                assertTrue(
+                    "Message was not detected in the log",
+                    !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
             }
 
             // Verify one more failover,
@@ -400,7 +413,9 @@ public class Failover1ServerTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
         try {
             // Schedule on the instance that cannot run tasks
             StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
@@ -427,7 +442,9 @@ public class Failover1ServerTest extends FATServletClient {
             // restore original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
         }
     }
 }

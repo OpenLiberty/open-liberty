@@ -115,7 +115,9 @@ public class CertificateLoginTestWithSquareBraceInCertificateFilter {
             myServer.setServerConfigurationFile("/" + serverXML);
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            myServer.waitForStringInLogUsingMark("CWWKG0017I");
+            assertNotNull(
+                "Message was not detected in the log",
+                myServer.waitForStringInLogUsingMark("CWWKG0017I"));
             serverConfigurationFile = serverXML;
         }
     }
@@ -175,7 +177,9 @@ public class CertificateLoginTestWithSquareBraceInCertificateFilter {
 
         client = setupClient(user1CertFile, true);
         client.access("/SimpleServlet", 403);
-        myServer.waitForStringInLog("CWIML0002E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            myServer.waitForStringInLog("CWIML0002E:"));
         Log.info(c, methodName, "Exiting test " + methodName);
     }
 
@@ -204,7 +208,9 @@ public class CertificateLoginTestWithSquareBraceInCertificateFilter {
 
         client = setupClient(user1CertFile, true);
         client.access("/SimpleServlet", 403);
-        myServer.waitForStringInLog("CWIML0002E:");
+        assertNotNull(
+            "Message was not detected in the log",
+            myServer.waitForStringInLog("CWIML0002E:"));
         Log.info(c, methodName, "Exiting test " + methodName);
     }
 

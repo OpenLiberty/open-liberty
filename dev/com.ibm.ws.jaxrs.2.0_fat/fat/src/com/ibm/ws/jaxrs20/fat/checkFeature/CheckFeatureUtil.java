@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat.checkFeature;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -18,7 +21,9 @@ public final class CheckFeatureUtil {
     public static void checkFeature(final LibertyServer server, final String configFile) throws Exception {
         server.setServerConfigurationFile("server.without.cdi.xml");
         server.startServer();
-        server.waitForStringInLog("CWWKT0016I: Web application available");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKT0016I: Web application available"));
 
         HttpUtils.findStringInUrl(server, "/checkFeature/rest/front", "EJB not initialised");
 
@@ -27,8 +32,12 @@ public final class CheckFeatureUtil {
 
         Thread.sleep(3000);
 
-        server.waitForConfigUpdateInLogUsingMark(null, true, new String[0]);
-        server.waitForStringInLogUsingMark("CWWKT0016I: Web application available");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(null, true, new String[0]).isEmpty());
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKT0016I: Web application available"));
 
         HttpUtils.findStringInUrl(server, "/checkFeature/rest/front", "message from EJB");
 

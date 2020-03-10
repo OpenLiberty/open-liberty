@@ -138,7 +138,9 @@ public class OpenAPITestUtil {
             ServerConfiguration config = server.getServerConfiguration();
             webApp = config.getApplications().removeById(appName);
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             waitForApplicationProcessorRemovedEvent(server, appName);
             assertNotNull("FAIL: App didn't report is has been stopped.",
                           server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
@@ -266,7 +268,9 @@ public class OpenAPITestUtil {
             assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
             String regex = "Updated server information.*"
                            + "httpPort=" + (httpPort == -1 ? 0 : httpPort) + ", httpsPort=" + (httpsPort == -1 ? 0 : httpsPort);
-            server.waitForStringInTrace(regex, TIMEOUT);
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInTrace(regex, TIMEOUT));
         } else {
             server.updateServerConfiguration(config);
         }

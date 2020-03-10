@@ -11,6 +11,8 @@
 package com.ibm.ws.cloudant.fat;
 
 import static com.ibm.ws.cloudant.fat.FATSuite.cloudant;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Set;
@@ -94,7 +96,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
     public void cleanUpPerTest() throws Exception {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(originalConfig);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList).isEmpty());
         cleanupList = EMPTY_RECYCLE_LIST;
         Log.info(getClass(), "cleanUpPerTest", "server configuration restored");
     }
@@ -155,7 +159,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantlookupapp"), "CWWKZ000[13]I.*cloudantlookupapp");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantlookupapp"), "CWWKZ000[13]I.*cloudantlookupapp").isEmpty());
 
         // use for first time
         runTest(server, "cloudantlookupapp/CloudantLookupTestServlet",
@@ -174,7 +180,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantlookupapp"), "CWWKZ0009I.*cloudantlookupapp", "CWWKZ000[13]I.*cloudantlookupapp");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantlookupapp"), "CWWKZ0009I.*cloudantlookupapp", "CWWKZ000[13]I.*cloudantlookupapp").isEmpty());
 
         runTest(server, "cloudantlookupapp/CloudantLookupTestServlet",
                 "testLookupFailsClassNotFoundException&test=testAddAndRemoveApplicationLibrary3&jndiName=java:app/env/cloudant/dbLoadFromApp");
@@ -184,7 +192,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantlookupapp"), "CWWKZ0009I.*cloudantlookupapp", "CWWKZ000[13]I.*cloudantlookupapp");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantlookupapp"), "CWWKZ0009I.*cloudantlookupapp", "CWWKZ000[13]I.*cloudantlookupapp").isEmpty());
 
         runTest(server, "cloudantlookupapp/CloudantLookupTestServlet",
                 "testDatabaseInsert&kingdom=Animalia&phylum=Chordata&class=Mammalia&order=Cetartiodactyla&family=Cervidae&genus=Cervus&species=canadensis" +
@@ -217,7 +227,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         cloudantAuth.setPassword("not-a-valid-password");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(2, "testIncorrectPassword", CLOUDANT_JNDI);
 
@@ -225,7 +237,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         cloudantAuth.setPassword(password);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(3, "testContainsId", CLOUDANT_JNDI, "id=Gavia+immer");
 
@@ -249,7 +263,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         myCloudantDB.setCreate("false");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(2, "testDatabaseNotFound", DATABASE_JNDI);
 
@@ -257,7 +273,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         myCloudantDB.setDatabaseName(dbName);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(3, "testContainsId", DATABASE_JNDI, "id=Ankylosaurus+magniventris");
 
@@ -281,7 +299,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         myCloudantDB.setJndiName("cloudant/dbmodified");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(2, "testContainsId", DATABASE_JNDI_MOD, "id=Triceratops+horridus");
         runTest(3, "testNameNotFound", DATABASE_JNDI);
@@ -293,7 +313,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         config.getCloudantDatabases().add(newCloudantDB);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         runTest(4, "testInsert", DATABASE_JNDI, "kingdom=Animalia", "phylum=Chordata", "class=Archosauria", "order=Saurischia", "family=Diplodocidae", "genus=Apatosaurus",
                 "species=ajax");
@@ -303,7 +325,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         config.getCloudantDatabases().removeById("myCloudantDB");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(6, "testNameNotFound", DATABASE_JNDI_MOD);
         runTest(7, "testContainsId", DATABASE_JNDI, "id=Apatosaurus+ajax");
@@ -327,7 +351,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         builder.setJndiName("cloudant/modified");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(2, "testContainsId", CLOUDANT_JNDI_MOD, "id=Gorilla+beringei");
         runTest(3, "testNameNotFound", CLOUDANT_JNDI);
@@ -339,7 +365,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         config.getCloudants().add(newBuilder);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         runTest(4, "testInsert", CLOUDANT_JNDI, "kingdom=Animalia", "phylum=Chordata", "class=Mammalia", "order=Rodentia", "family=Erethizontidae", "genus=Erethizon",
                 "species=dorsatum");
@@ -349,7 +377,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         config.getCloudants().removeById("builder");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(6, "testNameNotFound", CLOUDANT_JNDI_MOD);
         runTest(7, "testInsert", CLOUDANT_JNDI, "kingdom=Animalia", "phylum=Chordata", "class=Mammalia", "order=Artiodactyla", "family=Bovidae",
@@ -400,7 +430,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         // Save and verify the application gets an error when looking up the ClientBuilder instance
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(2, "testMissingLibraryJAR", CLOUDANT_JNDI);
 
@@ -409,7 +441,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         server.setMarkToEndOfLog();
         boolean copied = gsonSource.copyToDest(gsonDestination);
         System.out.println("Copied cloudant gson jar to: " + gsonDestination.toString() + "? " + copied);
-        server.waitForStringInLogUsingMark("CWWKZ000[13]I.*" + APP);
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ000[13]I.*" + APP));
 
         runTest(3, "testReflectiveContainsId", DATABASE_JNDI, "id=Rangifer+tarandus");
 
@@ -432,7 +466,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         builder.setContainerAuthDataRef(null);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(2, "testNoAuthentication", CLOUDANT_JNDI);
 
@@ -444,7 +480,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         builder.setPassword(password);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(3, "testContainsId", CLOUDANT_JNDI, "id=Mammuthus+primigenius");
 
@@ -455,7 +493,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         builder.getContainerAuthDatas().add(builder_containerAuthData);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(4, "testInvalidUser", CLOUDANT_JNDI);
 
@@ -464,7 +504,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         builder_containerAuthData.setPassword(password);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(5, "testInsert", CLOUDANT_JNDI, "kingdom=Animalia", "phylum=Chordata", "class=Mammalia", "order=Carnivora", "family=Ursidae", "genus=Ursus", "species=arctos");
 
@@ -473,7 +515,9 @@ public class CloudantModifyConfigTest extends FATServletClient {
         builder.setPassword(null);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, APP_RECYCLE_LIST).isEmpty());
 
         runTest(6, "testFindById", CLOUDANT_JNDI, "id=Ursus+arctos", "kingdom=Animalia", "phylum=Chordata", "class=Mammalia", "order=Carnivora", "family=Ursidae", "genus=Ursus",
                 "species=arctos");

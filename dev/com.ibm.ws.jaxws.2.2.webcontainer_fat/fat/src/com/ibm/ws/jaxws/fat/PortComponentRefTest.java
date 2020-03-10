@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -62,9 +63,15 @@ public class PortComponentRefTest {
         TestUtils.replaceServerFileString(server, "resources/testPortComponentRefApplicationEJB.jar/META-INF/wsdl/HelloService.wsdl", "#BASE_URL#", getBaseURL());
 
         // Pause for application to start successfully
-        server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefWeb");
-        server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefEJBinWeb");
-        server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefApplication");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefWeb"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefEJBinWeb"));
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefApplication"));
     }
 
     @AfterClass

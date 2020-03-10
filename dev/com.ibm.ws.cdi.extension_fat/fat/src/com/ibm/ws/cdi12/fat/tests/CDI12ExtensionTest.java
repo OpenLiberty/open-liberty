@@ -104,7 +104,9 @@ public class CDI12ExtensionTest extends LoggingTest {
         server.installUserFeature(INSTALL_USERFEATURE);
         server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE);
         server.startServer(true);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started"));
     }
 
     @Test

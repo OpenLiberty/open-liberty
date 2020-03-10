@@ -11,6 +11,7 @@
 package com.ibm.ws.cloudant.fat;
 
 import static com.ibm.ws.cloudant.fat.FATSuite.cloudant;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
@@ -110,7 +111,9 @@ public class CloudantTestOutboundSSL extends FATServletClient {
         server.updateServerConfiguration(config);
 
         //Make sure the configuration has been updated and the application restarted
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat")).isEmpty());
 
         //running with no sslRef with this configuration will pick up the outbound SSL filter
         runTest();
@@ -118,7 +121,9 @@ public class CloudantTestOutboundSSL extends FATServletClient {
         //test has run lets restore the config to the original
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat")).isEmpty());
     }
 
     /*
@@ -150,7 +155,9 @@ public class CloudantTestOutboundSSL extends FATServletClient {
         server.updateServerConfiguration(config);
 
         //Make sure the configuration has been updated and the application restarted
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat")).isEmpty());
 
         //running to the cloudant configuration with sslRef set to cloudantSSLConfig
         runTest();
@@ -158,7 +165,9 @@ public class CloudantTestOutboundSSL extends FATServletClient {
         //test has run lets restore the config
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat"));
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.singleton("cloudantfat")).isEmpty());
     }
 
 }

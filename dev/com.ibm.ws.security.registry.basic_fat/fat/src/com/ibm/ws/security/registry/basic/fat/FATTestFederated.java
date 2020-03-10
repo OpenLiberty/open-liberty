@@ -226,8 +226,12 @@ public class FATTestFederated {
             Log.info(c, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG001[7-8]I");
-            server.waitForStringInLog("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKG001[7-8]I"));
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKZ0003I")); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
             serverConfigurationFile = serverXML;
         }
     }

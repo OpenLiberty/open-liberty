@@ -100,7 +100,8 @@ public class PersistRATest {
     	server.startServer();
     			
     	//Check everything went okay
-        server.waitForStringInLog("CWWKE0002I");
+        assertNotNull("Message was not detected in the log",
+                     server.waitForStringInLog("CWWKE0002I"));
         assertNotNull("FeatureManager should report update is complete",
                       server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("Server should report it has started",

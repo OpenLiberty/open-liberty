@@ -13,6 +13,7 @@ package com.ibm.ws.session.cache.config.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
@@ -164,7 +165,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         Library hazelcastLib = config.getLibraries().remove(0);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         // Session manager should warn user that sessions will be stored in memory
         assertEquals(1, server.findStringsInLogs("SESN8501I").size());
@@ -176,7 +179,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         config.getLibraries().add(hazelcastLib);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
         run("testSetAttribute&attribute=testAddFeature2&value=AF2", session);
 
@@ -212,7 +217,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             config.getHttpSessionCaches().get(0).setUri(validHazelcastURI);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
             session = new ArrayList<>();
             run("testSetAttribute&attribute=testInvalidURI2&value=IU2", session);
@@ -223,7 +230,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             // Remove the URI and let it default to the system property
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
             run("testSetAttribute&attribute=testInvalidURI3&value=IU3", session);
 
@@ -267,7 +276,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             // Correct the libraryRef to point at Hazelcast JCache provider
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
             session = new ArrayList<>();
             run("testSetAttribute&attribute=testLibraryWithoutJCacheProvider2&value=LWJCP2", session);
@@ -306,7 +317,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             // Add the libraryRef
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).isEmpty());
 
             run("testSetAttribute&attribute=testMissingLibraryRef2&value=MLF2", session);
 
@@ -338,7 +351,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         hazelcastFile.setName("${shared.resource.dir}/hazelcast/bogus.jar");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
 
         run("testSessionCacheNotAvailable", session);
 
@@ -346,7 +361,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         hazelcastFile.setName(originalName);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(APP_NAMES).isEmpty());
         run("testSetAttribute&attribute=testModifyFileset&value=1", session);
         run("testCacheContains&attribute=testModifyFileset&value=1", session);
 

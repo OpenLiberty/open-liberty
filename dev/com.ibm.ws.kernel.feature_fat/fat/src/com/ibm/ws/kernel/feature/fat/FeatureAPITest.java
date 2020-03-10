@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.feature.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -63,7 +64,9 @@ public class FeatureAPITest {
 
         server.setMarkToEndOfLog();
         server.changeFeatures(Arrays.asList("servlet-3.1", "test.feature.api-1.0"));
-        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+        assertTrue(
+            "Message was not detected in the log",
+            !server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet()).isEmpty());
 
         Log.info(c, method, "Calling Application with URL=" + url.toString());
         con = getHttpConnection(url);

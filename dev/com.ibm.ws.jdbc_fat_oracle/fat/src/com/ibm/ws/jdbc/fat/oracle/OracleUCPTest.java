@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -138,7 +140,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
 
             //Ensure we are now using UCP
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testUsingUCP");
@@ -147,7 +151,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config back to a non UCP
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(initialConfig);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
 
             //Ensure we have switched back
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testUsingLibertyConnPool");
@@ -176,7 +182,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
 
             //Ensure we are still using UCP
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testOracleUCPMaxConnections");
@@ -185,7 +193,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config back
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(initialConfig);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
         }
     }
 
@@ -212,7 +222,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
 
             //Ensure we are still using UCP
 
@@ -222,7 +234,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config back
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(initialConfig);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
         }
     }
 
@@ -250,7 +264,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
 
             //Ensure we are still using UCP
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testOracleUCPMaxConnectionsEmbedded");
@@ -259,7 +275,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config back
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(initialConfig);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
         }
     }
 
@@ -287,7 +305,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
 
             //Ensure we are still using UCP
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testOracleUCPMaxConnectionsEmbedded");
@@ -296,7 +316,9 @@ public class OracleUCPTest extends FATServletClient {
             //Update config back
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(initialConfig);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
 
             //Ensure we are still using UCP
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testOracleUCPMaxConnectionsEmbedded");
@@ -322,14 +344,18 @@ public class OracleUCPTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
             //Ensure we are now using UCP
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testOracleUCPMaxConnections");
         } finally {
             //Update config back
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(initialConfig);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
         }
     }
 
@@ -351,13 +377,17 @@ public class OracleUCPTest extends FATServletClient {
             //Update config
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testUsingPoolDataSource");
         } finally {
             //Update config back
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(initialConfig);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP));
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JEE_APP)).isEmpty());
             //Test we are again using XA
             runTest(server, JEE_APP + '/' + SERVLET_NAME, "testOracleUCPXADS");
         }

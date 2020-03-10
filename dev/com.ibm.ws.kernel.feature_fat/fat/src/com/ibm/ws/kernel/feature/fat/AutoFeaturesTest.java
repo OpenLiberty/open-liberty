@@ -1832,6 +1832,9 @@ public class AutoFeaturesTest {
 
         // Wait for the Feature Refresh servlet to start.
         String message = server.waitForStringInLog("CWWKT0016I.*http://.*/feature");
+        assertNotNull(
+            "Message was not detected in the log",
+            message);
 
         String installedFeatures = TestUtils.getInstalledFeatures(server);
 
@@ -1859,7 +1862,9 @@ public class AutoFeaturesTest {
 
         // Because the refreshFeatures method is asynchronous, we need to wait for the completion message in the console logs.
         server.setMarkToEndOfLog();
-        server.waitForStringInLogUsingMark("CWWKF0008I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0008I"));
 
         installedFeatures = TestUtils.getInstalledFeatures(server);
 
@@ -1879,7 +1884,9 @@ public class AutoFeaturesTest {
         HttpUtils.findStringInUrl(server, FEATURE_PROVISIONER_CONTEXT_ROOT, "FeatureProvisioner: features refreshed.");
         // Because the refreshFeatures method is asynchronous, we need to wait for the completion message in the console logs.
         server.setMarkToEndOfLog();
-        server.waitForStringInLogUsingMark("CWWKF0008I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0008I"));
 
         installedFeatures = TestUtils.getInstalledFeatures(server);
 
@@ -1899,7 +1906,9 @@ public class AutoFeaturesTest {
         HttpUtils.findStringInUrl(server, FEATURE_PROVISIONER_CONTEXT_ROOT, "FeatureProvisioner: features refreshed.");
         // Because the refreshFeatures method is asynchronous, we need to wait for the completion message in the console logs.
         server.setMarkToEndOfLog();
-        server.waitForStringInLogUsingMark("CWWKF0008I");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKF0008I"));
 
         installedFeatures = TestUtils.getInstalledFeatures(server);
         assertNotNull("There are no installed features found in trace.log file",

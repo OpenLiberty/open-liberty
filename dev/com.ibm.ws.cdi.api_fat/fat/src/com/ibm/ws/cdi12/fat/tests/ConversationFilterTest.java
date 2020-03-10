@@ -58,7 +58,9 @@ public class ConversationFilterTest extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/appConversationFilter.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
         ShrinkHelper.exportDropinAppToServer(server, appConversationFilter);
         server.startServer();
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application appConversationFilter started");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I.*Application appConversationFilter started"));
     }
 
     @Test

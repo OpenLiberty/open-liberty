@@ -16,6 +16,8 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipa
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -356,7 +358,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDn' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDn' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -411,7 +415,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(myServer);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDnPassword' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDnPassword' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -468,7 +474,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerBaseDn' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerBaseDn' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -521,7 +529,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerNameAttribute' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerNameAttribute' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -576,7 +586,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchBase' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchBase' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -683,7 +695,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchScope/callerSearchScopeExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchScope/callerSearchScopeExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -736,7 +750,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupMemberAttribute' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupMemberAttribute' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -820,7 +836,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupMemberOfAttribute' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupMemberOfAttribute' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -873,7 +891,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupNameAttribute' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupNameAttribute' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -927,7 +947,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchBase' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchBase' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -980,7 +1002,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchFilter' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchFilter' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1033,7 +1057,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchScope/groupSearchScopeExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchScope/groupSearchScopeExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1064,7 +1090,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
          */
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));;
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInTrace("IdentityStore from module BeanManager.*priority : 100");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInTrace("IdentityStore from module BeanManager.*priority : 100").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1097,7 +1125,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
          */
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));;
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'priority/priorityExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'priority/priorityExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1124,7 +1154,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInTrace("searchScope: 2, timeLimit: 100");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInTrace("searchScope: 2, timeLimit: 100").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1152,7 +1184,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'readTimeout/readTimeoutExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'readTimeout/readTimeoutExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1207,7 +1241,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'url' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'url' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1259,7 +1295,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1287,7 +1325,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
+        assertTrue(
+            "Message was not detected in the log",
+            !server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.").isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

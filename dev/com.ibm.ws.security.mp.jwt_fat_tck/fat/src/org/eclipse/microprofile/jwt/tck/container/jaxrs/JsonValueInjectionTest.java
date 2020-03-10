@@ -110,7 +110,9 @@ public class JsonValueInjectionTest extends FATServletClient {
 
         baseURL = "http://localhost:" + server1.getHttpDefaultPort() + "/JsonValueInjectionTest";
         server1.startServer();
-        server1.waitForStringInLog("CWWKS4105I", 30000); // wait for ltpa keys to be created and service ready, which can happen after startup.
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("CWWKS4105I", 30000)); // wait for ltpa keys to be created and service ready, which can happen after startup.
     }
 
     @BeforeClass

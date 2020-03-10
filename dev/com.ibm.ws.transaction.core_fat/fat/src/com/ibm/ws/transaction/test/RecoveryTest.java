@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
@@ -225,7 +227,9 @@ public class RecoveryTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server.waitForStringInLog("Dump State:");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("Dump State:"));
 
         ProgramOutput po = server.startServerAndValidate(false, true, true);
 
@@ -251,7 +255,9 @@ public class RecoveryTest extends FATServletClient {
         }
 
         // Server appears to have started ok
-        server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE"));
         Log.info(this.getClass(), method, "calling checkRec" + id);
         try {
             sb = runTestWithResponse(server, SERVLET_NAME, "checkRec" + id);

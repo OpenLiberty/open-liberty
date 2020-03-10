@@ -12,6 +12,7 @@ package test.server.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -48,19 +49,27 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinDefaultConfiguration("dropins/simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple.notxml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.notxml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -70,24 +79,36 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.addDropinDefaultConfiguration("dropins/aBrokenFile.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.addDropinOverrideConfiguration("dropins/aBrokenFile.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             assertEquals("There should be two CWWKG0014E errors", 2, server.waitForMultipleStringsInLog(2, "CWWKG0014E"));
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("aBrokenFile.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("aBrokenFile.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
         }
     }
@@ -97,13 +118,17 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinDefaultConfiguration("dropins/simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -112,13 +137,17 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -127,19 +156,27 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple2.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple2.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -148,19 +185,27 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinDefaultConfiguration("dropins/simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.addDropinDefaultConfiguration("dropins/simple2.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("simple2.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -169,19 +214,27 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple2.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple2.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -190,13 +243,17 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinDefaultConfiguration("dropins/alibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("alibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -205,13 +262,17 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/alibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("alibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 
@@ -220,19 +281,27 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinDefaultConfiguration("dropins/alibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/blibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
 
             test(server);
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("alibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("blibrary.xml");
-            server.waitForConfigUpdateInLogUsingMark(null);
+            assertTrue(
+                "Message was not detected in the log",
+                !server.waitForConfigUpdateInLogUsingMark(null).isEmpty());
         }
     }
 

@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.boot.commandport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -71,7 +72,9 @@ public class ServerCommandPortTest {
             // there are two messages for starting a server, one that contains a process ID and one that does not;
             // either message indicates success of the start command for this purpose
             assertTrue(output.contains("CWWKE0088W") || output.contains("CWWKE0087W"));
-            server.waitForStringInLog("CWWKF0011I");
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKF0011I"));
 
             // save the PID to validate the server status command - note that on Windows, the PID is not returned
             // as part of the start message, so we can't always perform this verification
@@ -119,7 +122,9 @@ public class ServerCommandPortTest {
             } catch (Throwable t) {
                 Log.error(ServerCommandPortTest.class, "testServerCommandPortDisabled", t);
             }
-            server.waitForStringInLog("CWWKE0036I");
+            assertNotNull(
+                "Message was not detected in the log",
+                server.waitForStringInLog("CWWKE0036I"));
 
             // make sure logs are collected (not stopping the normal way...no command port)
             server.postStopServerArchive();

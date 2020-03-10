@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.examplera.anno;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
@@ -104,6 +106,8 @@ public class ResourceAdapterExampleTest extends FATServletClient {
                 "Successfully performed ADD with output: {area=654.5, county=Olmsted, population=147066, state=Minnesota}");
 
         // search messages log for MDB output
-        server.waitForStringInLog("ExampleMessageDrivenBean.onMessage record = {area=654.5, county=Olmsted, population=147066, state=Minnesota}");
+        assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLog("ExampleMessageDrivenBean.onMessage record = {area=654.5, county=Olmsted, population=147066, state=Minnesota}"));
     }
 }

@@ -146,7 +146,9 @@ public class IsoDateFormatTest {
     public void testInvalidIsoDateFormatAttributeValue() throws Exception {
         // Set the invalid true value for attribute. e.g. "isoDateFormat=ture"
         server.setServerConfigurationFile(INVALID_ISO_DATE_FORMAT_SERVER);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            server.waitForConfigUpdateInLogUsingMark(null) != null);
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("CWWKG0081E", MESSAGE_LOG);
         assertEquals("Error CWWKG0081E did not appear in messages.log", 1, lines.size());
@@ -292,7 +294,9 @@ public class IsoDateFormatTest {
         loggingObj.setIsoDateFormat(useIsoDateFormat);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        assertTrue(
+            "Message was not detected in the log",
+            server.waitForConfigUpdateInLogUsingMark(null) != null);
     }
 
     private static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed, String params) throws MalformedURLException, IOException, ProtocolException {

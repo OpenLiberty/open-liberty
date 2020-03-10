@@ -53,7 +53,9 @@ public class CDIHealthCheckTest {
         if (!server1.isStarted()) {
             server1.startServer();
         }
-        server1.waitForStringInLog("CWWKT0016I: Web application available.*health*");
+        assertNotNull(
+            "Message was not detected in the log",
+            server1.waitForStringInLog("CWWKT0016I: Web application available.*health*"));
     }
 
     @AfterClass

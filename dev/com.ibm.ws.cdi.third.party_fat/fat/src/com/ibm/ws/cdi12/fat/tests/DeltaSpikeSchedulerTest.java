@@ -70,7 +70,9 @@ public class DeltaSpikeSchedulerTest extends LoggingTest {
         server = LibertyServerFactory.getLibertyServer("cdi12DeltaSpikeServer");
         ShrinkHelper.exportAppToServer(server, deltaspikeTest);
         server.startServer();
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application deltaspikeTest started");
+        Assert.assertNotNull(
+            "Message was not detected in the log",
+            server.waitForStringInLogUsingMark("CWWKZ0001I.*Application deltaspikeTest started"));
     }
 
     @Test

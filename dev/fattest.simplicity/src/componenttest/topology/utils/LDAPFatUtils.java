@@ -253,9 +253,11 @@ public class LDAPFatUtils {
     public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
         resetMarksInLogs(server);
         server.updateServerConfiguration(config);
-        server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
+        if(server.waitForStringInLogUsingMark("CWWKG001[7-8]I") == null)
+            throw new Exception("Required string did not appear in the log within the allotted time");
         if (waitForAppToStart) {
-            server.waitForStringInLogUsingMark("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
+            if(server.waitForStringInLogUsingMark("CWWKZ0003I") == null) //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
+                throw new Exception("Required string did not appear in the log within the allotted time");
         }
     }
 
