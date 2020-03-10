@@ -53,16 +53,5 @@ public class Utils {
 				logger.logp(level, className, method, message);
 			}
 		}
-	}
-	
-	public static void traceEntryMessage(Logger logger, String className, String method, String message) {
-		if (TraceComponent.isAnyTracingEnabled()) {
-				logger.entering(className, method);
-		}
-	}
-	
-	public static void createFFDC(Throwable t, String className, String methodName) {
-		FFDCFilter.processException(t, className, className + "." + methodName);
-	}
-
+	}	
 }

@@ -107,7 +107,7 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 		try {
 			transportState.inboundDataReceived(data, endOfStream);
 		} catch (Throwable e) {
-			Utils.createFFDC(e, CLASS_NAME, "onDataRead");
+			// FFDC
 		}
 	}
 
@@ -133,7 +133,7 @@ class LibertyServerStream extends AbstractServerStream implements Http2StreamHan
 				WriteWaitLatch.await();
 				transportState.requestMessagesFromDeframer(numMessages);
 			} catch (InterruptedException e) {
-				Utils.createFFDC(e, CLASS_NAME, "Sink.request");
+				// FFDC
 			}
 		}
 

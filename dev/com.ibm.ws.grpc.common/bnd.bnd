@@ -36,6 +36,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 Include-Resource: \
   @${repo;io.grpc:grpc-core;1.27.0;EXACT}!/META-INF/**, \
 
+instrument.disabled: true
+
 -buildpath: \
   com.ibm.ws.logging.core,\
   com.google.api.grpc:proto-google-common-protos;version=1.17.0, \

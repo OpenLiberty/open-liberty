@@ -82,7 +82,7 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 				server.start();
 				ActiveGrpcServers.addServer(appInfo.getName(), server);
 			} catch (IOException e) {
-				Utils.createFFDC(e, CLASS_NAME, "applicationStarting");
+				// FFDC
 				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStarting",
 						"gRPC Server " + server + " could not be started ", e);
 			}
@@ -127,7 +127,7 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 			serviceClassNames.removeIf((String s) -> s.contains("$"));
 			return serviceClassNames;
 		} catch (UnableToAdaptException e) {
-			Utils.createFFDC(e, CLASS_NAME, "findGrpcServiceImplementors");
+			// FFDC
 		}
 		return null;
 	}
@@ -175,7 +175,7 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 				}
 				return services;
 			} catch (UnableToAdaptException e) {
-				Utils.createFFDC(e, CLASS_NAME, "initGrpcServices");
+				// FFDC
 				return null;
 			}
 		}

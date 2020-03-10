@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,13 +18,13 @@ import javax.servlet.ServletRegistration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.grpc.Utils;
+import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
@@ -37,7 +38,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	private static final String CLASS_NAME = GrpcServletContainerInitializer.class.getName();
 	private static final Logger logger = Logger.getLogger(GrpcServletContainerInitializer.class.getName());
 
-	private Set<String> grpcServiceClassNames;
+	private static ConcurrentHashMap<String, Set<String>> grpcServiceClassNames;
 
 	/**
 	 * Search for all implementors of io.grpc.BindableService and register them with
@@ -48,47 +49,47 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	public void onStartup(Set<Class<?>> ctx, ServletContext sc) throws ServletException {
 
 		if (grpcServiceClassNames != null) {
-			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup", "Attempting to load gRPC services on " + sc.getServletContextName());
+			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup", "Attempting to load gRPC services for app " + sc.getServletContextName());
 
 			Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
 
 			// TODO: optionally load classes with CDI to allow injection in service classes
 			// init all other BindableService classes via reflection
-			for (String serviceClassName : grpcServiceClassNames) {
-				if (grpcServiceClasses.containsKey(serviceClassName)) {
-					continue;
+			Set<String> services = grpcServiceClassNames.get(((WebApp)sc).getApplicationName());
+			if (services != null) {
+				for (String serviceClassName : services) {
+					try {
+						// use the TCCL to load app classes
+						ClassLoader cl = Thread.currentThread().getContextClassLoader();
+						Class serviceClass = Class.forName(serviceClassName, true, cl);
+						// get the no-arg constructor and ensure it's accessible
+						Constructor ctor = serviceClass.getDeclaredConstructor();
+						ctor.setAccessible(true);
+						BindableService service = (BindableService) ctor.newInstance();
+						grpcServiceClasses.put(serviceClassName, service);
+					} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+							| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						// FFDC
+					}
 				}
-				try {
-					// use the TCCL to load app classes
-					ClassLoader cl = Thread.currentThread().getContextClassLoader();
-					Class serviceClass = Class.forName(serviceClassName, true, cl);
-					// get the no-arg constructor and ensure it's accessible
-					Constructor ctor = serviceClass.getDeclaredConstructor();
-					ctor.setAccessible(true);
-					BindableService service = (BindableService) ctor.newInstance();
-					grpcServiceClasses.put(serviceClassName, service);
-				} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-						| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					Utils.createFFDC(e, CLASS_NAME, "onStartup");
-				}
-			}
-			if (!grpcServiceClasses.isEmpty()) {
-				// pass all of our grpc service implementors into a new GrpcServlet
-				// and register that new Servlet on this context
-				ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet",
-						new GrpcServlet(new ArrayList(grpcServiceClasses.values())));
-				servletRegistration.setAsyncSupported(true);
+				if (!grpcServiceClasses.isEmpty()) {
+					// pass all of our grpc service implementors into a new GrpcServlet
+					// and register that new Servlet on this context
+					ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet",
+							new GrpcServlet(new ArrayList(grpcServiceClasses.values())));
+					servletRegistration.setAsyncSupported(true);
 
-				// register URL mappings for each gRPC service we've registered
-				for (BindableService service : grpcServiceClasses.values()) {
-					String serviceName = service.bindService().getServiceDescriptor().getName();
-					String urlPattern = "/" + serviceName + "/*";
-					servletRegistration.addMapping(urlPattern);
-					Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup", "Registered gRPC service at URL: " + urlPattern);
+					// register URL mappings for each gRPC service we've registered
+					for (BindableService service : grpcServiceClasses.values()) {
+						String serviceName = service.bindService().getServiceDescriptor().getName();
+						String urlPattern = "/" + serviceName + "/*";
+						servletRegistration.addMapping(urlPattern);
+						Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup", "Registered gRPC service at URL: " + urlPattern);
+					}
 				}
 			} else {
 				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
-						"No gRPC services have been registered for " + sc.getServletContextName());
+						"No gRPC services have been registered for app " + sc.getServletContextName());
 			}
 		}
 	}
@@ -103,24 +104,26 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 		try {
 			WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(appInfo.getContainer());
 			AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
-			grpcServiceClassNames = annoTargets.getAllImplementorsOf("io.grpc.BindableService");
+			Set<String> services = annoTargets.getAllImplementorsOf("io.grpc.BindableService");
 			
-			// TODO: we'll ignore inner classes for now, but this should be revisited
-			grpcServiceClassNames.removeIf((String s) -> s.contains("$"));
+			if (services != null && !services.isEmpty()) {
+				// TODO: we'll ignore inner classes for now, but this should be revisited
+				services.removeIf((String s) -> s.contains("$"));
+				if (!services.isEmpty()) {
+					if (grpcServiceClassNames == null) {
+						grpcServiceClassNames = new ConcurrentHashMap<String, Set<String>>();
+					}
+					grpcServiceClassNames.put(appInfo.getName(), services);
+				}
+			}
 		} catch (UnableToAdaptException e) {
-			Utils.createFFDC(e, CLASS_NAME, "initGrpcServices");
+			// FFDC
 		}
 	}
 
 	@Override
 	public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
 		initGrpcServices(appInfo);
-
-		Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStarting",
-				"gRPC BindableService implementations discovered during applicationStarting: ");
-		for (String service : grpcServiceClassNames) {
-			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "applicationStarting", service);
-		}
 	}
 
 	@Override
@@ -129,9 +132,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 	@Override
 	public void applicationStopping(ApplicationInfo appInfo) {
-		if (grpcServiceClassNames != null) {
-			grpcServiceClassNames = null;
-		}
+		grpcServiceClassNames = null;
 	}
 
 	@Override
