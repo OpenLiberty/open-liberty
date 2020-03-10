@@ -2,7 +2,7 @@
 WD1=$(pwd)
 PASSPHRASE_FILE=$HOME/.gnupg/pp.txt
 EMAIL=admin@openliberty.io
-BUILD_UNSIGNED=1
+BUILD_SIGNED=1
 KEY_FOUND=false
 
 #Verify gpg key was installed correctly
