@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2019 IBM Corporation and others.
+* Copyright (c) 2019, 2020 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -269,6 +269,18 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     protected void addNameToApplicationMap(MetricID metricID) {
         String appName = getApplicationName();
+        addNameToApplicationMap(metricID, appName);
+    }
+
+    /**
+     * Adds the MetricID to an application map given the application name.
+     * This map is not a complete list of metrics owned by an application,
+     * produced metrics are managed in the MetricsExtension
+     *
+     * @param metricID metric ID of metric that was added
+     * @param appName  applicationName
+     */
+    public void addNameToApplicationMap(MetricID metricID, String appName) {
         // If it is a base metric, the name will be null
         if (appName == null)
             return;
@@ -280,7 +292,6 @@ public class MetricRegistryImpl extends MetricRegistry {
                 list = newList;
         }
         list.add(metricID);
-
     }
 
     public void unRegisterApplicationMetrics() {

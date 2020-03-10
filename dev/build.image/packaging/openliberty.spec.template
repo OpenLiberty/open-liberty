@@ -19,8 +19,7 @@ AutoReqProv:    no
 #Suggests:       java >= 1:1.8.0
 
 %description
-Open Liberty provides developers with Java EE 8 technology 
-and Eclipse MicroProfile capabilities for building micro-services
+A lightweight open framework for building fast and efficient cloud-native Java microservices.
  
 %install
 

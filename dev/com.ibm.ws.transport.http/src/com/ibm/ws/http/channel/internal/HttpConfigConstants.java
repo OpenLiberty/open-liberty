@@ -431,4 +431,28 @@ public class HttpConfigConstants {
     /** Specifies the maximum number of times the HTTP channel can hit the decompressionRatioLimit as the request body is decompressed before the request is ended. */
     public static final String PROPNAME_DECOMPRESSION_TOLERANCE = "decompressionTolerance";
 
+    public static final String PROPNAME_SAMESITE = "sameSiteInternal";
+
+    public static final String PROPNAME_SAMESITE_LAX = "sameSiteLaxInternal";
+
+    public static final String PROPNAME_SAMESITE_NONE = "sameSiteNoneInternal";
+
+    public static final String PROPNAME_SAMESITE_STRICT = "sameSiteStrictInternal";
+
+    public static final String WILDCARD_CHAR = "*";
+
+    public static enum SameSite {
+        LAX("Lax"),
+        NONE("None"),
+        STRICT("Strict");
+        SameSite(String name) {
+            this.name = name;
+        }
+
+        private String name;
+
+        public String getName() {
+            return this.name;
+        }
+    }
 }

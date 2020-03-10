@@ -1388,7 +1388,7 @@ public final class InjectionUtils {
                 Object oldProvider = pi.getOldProvider();
                 clz = oldProvider.getClass();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "injectContexts pre: oldProvider=" + oldProvider + " clz=" + clz + " loader="+getClassLoader(clz));
+                    Tr.debug(tc, "injectContexts pre: oldProvider=" + oldProvider.getClass().getSimpleName() + " clz=" + clz + " loader="+getClassLoader(clz));
                 }
             } else {
                 clz = requestObject.getClass();
@@ -2096,19 +2096,21 @@ public final class InjectionUtils {
     }
 
     private static class InjectionTargets {
+
+        private static final String INJECT_ANNOTATION_CLASS_NAME = "javax.inject.Inject";
+        private static final String RESOURCE_ANNOTATION_CLASS_NAME = "javax.annotation.Resource";
+
         private final com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets targets;
-
-        public String getSuperclassName(String className) {
-            return targets.getSuperclassName(className);
-        }
-
-        //
 
         private Set<String> injectClassTargets;
         private Set<String> injectMethodTargets;
         private Set<String> injectFieldTargets;
 
         private final Map<String, Set<String>> lifecycleTargets;
+
+        public String getSuperclassName(String className) {
+            return targets.getSuperclassName(className);
+        }
 
         public InjectionTargets(com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets targets) {
             this.targets = targets;
@@ -2120,21 +2122,27 @@ public final class InjectionUtils {
 
         public boolean isInjectClassTarget(String className) {
             if ( injectClassTargets == null ) {
-                injectClassTargets = targets.getAnnotatedClasses("javax.inject.Inject");
+                injectClassTargets = new HashSet<String>();
+                injectClassTargets.addAll(targets.getAnnotatedClasses(INJECT_ANNOTATION_CLASS_NAME));
+                injectClassTargets.addAll(targets.getAnnotatedClasses(RESOURCE_ANNOTATION_CLASS_NAME));
             }
             return injectClassTargets.contains(className);
         }
 
         public boolean isInjectFieldTarget(String className) {
             if ( injectFieldTargets == null ) {
-                injectFieldTargets = targets.getClassesWithFieldAnnotation("javax.inject.Inject");
+                injectFieldTargets = new HashSet<String>();
+                injectFieldTargets.addAll(targets.getClassesWithFieldAnnotation(INJECT_ANNOTATION_CLASS_NAME));
+                injectFieldTargets.addAll(targets.getClassesWithFieldAnnotation(RESOURCE_ANNOTATION_CLASS_NAME));
             }
             return injectFieldTargets.contains(className);
         }
 
         public boolean isInjectMethodTarget(String className) {
             if ( injectMethodTargets == null ) {
-                injectMethodTargets = targets.getClassesWithMethodAnnotation("javax.inject.Inject");
+                injectMethodTargets = new HashSet<String>();
+                injectMethodTargets.addAll(targets.getClassesWithMethodAnnotation(INJECT_ANNOTATION_CLASS_NAME));
+                injectMethodTargets.addAll(targets.getClassesWithMethodAnnotation(RESOURCE_ANNOTATION_CLASS_NAME));
             }
             return injectMethodTargets.contains(className);
         }

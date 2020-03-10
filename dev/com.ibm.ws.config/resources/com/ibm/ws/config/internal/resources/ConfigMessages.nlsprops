@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -469,8 +469,12 @@ warning.supplied.config.not.valid.explanation= A configuration attribute marked 
 warning.supplied.config.not.valid.useraction=Update the server configuration to remove the incorrect attribute value.
 
 variables.in.id.not.supported=CWWKG0104W: The ID attribute with value {1} for the configuration element {0} must have a fixed value. Variables in the ID attribute will not be replaced.
-variables.in.id.not.supported.explanation: Variable values are not allowed in ID attributes. All variables in ID attributes will be treated as literal strings.  
-variables.in.id.not.supported.useraction: Remove the variable from the value of the ID attribute.
+variables.in.id.not.supported.explanation=Variable values are not allowed in ID attributes. All variables in ID attributes will be treated as literal strings.  
+variables.in.id.not.supported.useraction=Remove the variable from the value of the ID attribute.
+
+error.root.must.be.server=CWWKG0105E: The {0} configuration document must begin with the [{1}] element.
+error.root.must.be.server.explanation=The configuration must be contained in either a server element or a client element. 
+error.root.must.be.server.useraction=Add a server or client element as the root of the configuration file. 
 
 # Non-TR message
 error.invalidOCDRef=ERROR: Metatype PID [{0}] specifies non-existent object class definition ID [{1}]

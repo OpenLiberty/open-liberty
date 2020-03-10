@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,14 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
+import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
@@ -333,4 +336,30 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             Tr.exit(tc, "createKeyringMonitor");
     }
 
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    public void setCertificateCreator(DefaultSSLCertificateCreator creator) {
+        final String methodName = "setCertificateCreator(DefaultSSLCertificateCreator)";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, creator);
+        }
+
+        DefaultSSLCertificateFactory.setDefaultSSLCertificateCreator(creator);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName);
+        }
+    }
+
+    public void unsetCertificateCreator(DefaultSSLCertificateCreator creator) {
+        final String methodName = "unsetCertificateCreator(DefaultSSLCertificateCreator)";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, creator);
+        }
+
+        DefaultSSLCertificateFactory.setDefaultSSLCertificateCreator(null);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName);
+        }
+    }
 }

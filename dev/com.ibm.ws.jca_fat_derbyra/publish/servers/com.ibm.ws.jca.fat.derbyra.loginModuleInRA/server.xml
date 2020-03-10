@@ -15,7 +15,7 @@
       <feature>concurrent-1.0</feature>
       <feature>jca-1.7</feature>
       <feature>jndi-1.0</feature>
-      <feature>servlet-4.0</feature>
+      <feature>servlet-3.1</feature>
     </featureManager>
 
     <include optional="true" location="../fatTestPorts.xml"/>
@@ -42,14 +42,8 @@
     </connectionFactory>    
 
     <jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntryName">
-      <!-- TODO replace with classProviderRef="DerbyLMRA" once implemented -->
-      <loginModule className="com.ibm.ws.jca.fat.security.login.TestLoginModule" libraryRef="temp"/>
+      <loginModule className="com.ibm.ws.jca.fat.security.login.TestLoginModule" classProviderRef="DerbyLMRA"/>
     </jaasLoginContextEntry>
-
-    <!-- TODO remove this -->
-    <library id="temp">
-      <file name="${server.config.dir}/connectors/DerbyLMRA.rar"/>
-    </library>
 
     <!-- "APP" is the default schema for Derby -->
     <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>

@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -55,6 +56,7 @@ public class DataSourceTest extends FATServletClient {
     private static final String dsdfat = "dsdfat";
     private static final String dsdfat_global_lib = "dsdfat_global_lib";
 
+    @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     //Server used for ConfigTest.java and DataSourceTest.java
@@ -63,12 +65,6 @@ public class DataSourceTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Need to set the default number of prepared transactions if working with Postgres
-        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Postgres) {
-            testContainer.withCommand("postgres -c max_prepared_transactions=5");
-        }
-
-        testContainer.start(); // Start the test container
 
         // Delete the Derby database that might be left over from last run
         Machine machine = server.getMachine();
@@ -77,8 +73,9 @@ public class DataSourceTest extends FATServletClient {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/derbyfat");
 
         //Get driver type
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-        server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("ANON_DRIVER", type.getAnonymousDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
@@ -114,25 +111,24 @@ public class DataSourceTest extends FATServletClient {
                           "WTRN0062E", //expected by testEnableSharingForDirectLookupsFalse
                           "J2CA0030E", //expected by testEnableSharingForDirectLookupsFalse
                           "CWWKE0701E"); //expected by testReapTimeUnsupportedValue
-        testContainer.stop(); // Stop the test container
     }
 
     /**
      * Runs the test in the "basicfat" app
      */
     private void runTest() throws Exception {
-        runTest(server, basicfat + '/', testName);
+        runTest(server, basicfat, testName);
     }
 
     @Test
     public void testServletWorking() throws Exception {
-        runTest(server, setupfat + '/', testName);
+        runTest(server, setupfat, testName);
     }
 
     @Test
     @SkipIfDataSourceProperties(DERBY_EMBEDDED)
     public void testBootstrapDatabaseConnection() throws Throwable {
-        runTest(server, setupfat + '/', testName);
+        runTest(server, setupfat, testName);
     }
 
     @Test
@@ -165,7 +161,7 @@ public class DataSourceTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException" })
     public void testDuplicateJNDINames() throws Exception {
-        runTest(server, dsdfat + '/', testName);
+        runTest(server, dsdfat, testName);
     }
 
     @Test

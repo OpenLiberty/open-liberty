@@ -18,12 +18,10 @@ src: \
 
 -sub: *.bnd
 
-javac.source: 1.8
-javac.target: 1.8
 
 fat.project: true
 
-# Define additional tested features that are NOT present any any XML files in this bucket.
+# Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-4.0 is added programatically at runtime by the RepeatTests rule.
 tested.features:\
 	servlet-4.0,\

@@ -1577,12 +1577,21 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mo
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: A(z) {1} komponens {0} fel\u00fclete a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem k\u00f6thet\u0151 a(z) {4} n\u00e9vhelyhez. A(z) {6} komponens {5} fel\u00fclete a(z) {8} alkalmaz\u00e1s {7} modulj\u00e1ban m\u00e1r k\u00f6tve van a(z) {4} n\u00e9vhelyhez. \
-A(z) {4} n\u00e9vhely nem el\u00e9rhet\u0151.
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: A(z) {1} komponens {0} fel\u00fclete a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem k\u00f6thet\u0151 a(z) {4} n\u00e9vhelyhez. A(z) {6} komponens {5} fel\u00fclete a(z) {8} alkalmaz\u00e1s {7} modulj\u00e1ban m\u00e1r k\u00f6tve van a(z) {4} n\u00e9vhelyhez. A(z) {4} n\u00e9vhely nem el\u00e9rhet\u0151.
 NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Minden egyes EJB-komponens fel\u00fcletnek egyedi k\u00f6t\u00e9shelyet kell megadnia.
 NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Jav\u00edtsa ki a k\u00e9t komponens fel\u00fclet valamelyik\u00e9nek k\u00f6t\u00e9sf\u00e1jlj\u00e1t, hogy minden egyes komponens egyedi k\u00f6t\u00e9shellyel rendelkezzen.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: A(z) {0} komponens vagy saj\u00e1t fel\u00fclethez tartoz\u00f3 {2} Java n\u00e9vad\u00e1si \u00e9s c\u00edmjegyz\u00e9k fel\u00fclet (JNDI) k\u00f6t\u00e9si neve a(z) {1} modulban n\u00e9vteret tartalmaz.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=A JNDI k\u00f6t\u00e9si nevek nem tartalmazhatnak n\u00e9vteret jel\u00f6l\u0151 kett\u0151spont (:) karaktert. A teljes karaktersorozat a kett\u0151spont (:) karakter el\u0151tt \u00e9s azzal bez\u00e1r\u00f3lag n\u00e9vt\u00e9rnek min\u0151s\u00fcl.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=A n\u00e9vt\u00e9r elt\u00e1vol\u00edt\u00e1s\u00e1val jav\u00edtsa ki az ibm-ejb-jar-bnd.xml k\u00f6t\u00e9si f\u00e1jlt, hogy az adott komponensnek \u00e9rv\u00e9nyes JNDI k\u00f6t\u00e9si neve legyen.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: A(z) {0} komponens vagy helyi saj\u00e1t fel\u00fclethez tartoz\u00f3 {2} Java n\u00e9vad\u00e1si \u00e9s c\u00edmjegyz\u00e9k fel\u00fclet (JNDI) k\u00f6t\u00e9si neve a(z) {1} modulban n\u00e9vteret tartalmaz, ami \u00e9rv\u00e9nytelen.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=A helyi k\u00f6t\u00e9si n\u00e9v csak egy n\u00e9vteret tartalmazhat, amely az ejblocal: karakterekkel kezd\u0151dik. A n\u00e9vtereket a kett\u0151spont (:) karakter jel\u00f6li. A teljes karaktersorozat a kett\u0151spont (:) karakter el\u0151tt \u00e9s azzal bez\u00e1r\u00f3lag n\u00e9vt\u00e9rnek min\u0151s\u00fcl.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Az \u00e9rv\u00e9nytelen n\u00e9vt\u00e9r elt\u00e1vol\u00edt\u00e1s\u00e1val jav\u00edtsa ki az ibm-ejb-jar-bnd.xml k\u00f6t\u00e9si f\u00e1jlt, hogy az adott komponensnek \u00e9rv\u00e9nyes JNDI k\u00f6t\u00e9si neve legyen.
 
 #-------------------------------------------------------------------------------
 #

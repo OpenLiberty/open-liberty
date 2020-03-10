@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=Zvy\u0161te dostupnost v p\u0159ep\u00
 application.shutdown.CWMFT0002W=CWMFT0002W: Asynchronn\u00ed metodu {0} nelze dokon\u010dit, proto\u017ee aplikace nebo komponenta, kter\u00e1 volala, byla zastavena.
 application.shutdown.CWMFT0002W.explanation=Asynchronn\u00ed metody jsou spou\u0161t\u011bny v kontextu komponenty, kter\u00e1 je spustila. Aplikace nebo komponenta, kter\u00e1 volala asynchronn\u00ed metodu, se zastavila, co\u017e zabr\u00e1nilo v dokon\u010den\u00ed asynchronn\u00ed metody.
 application.shutdown.CWMFT0002W.useraction= Toto varov\u00e1n\u00ed se obvykle vyskytne, kdy\u017e se aplikace, komponenta nebo server vyp\u00edn\u00e1. Pokud mus\u00ed b\u00fdt v\u0161echny spu\u0161t\u011bn\u00e9 asynchronn\u00ed metody dokon\u010deny, mus\u00ed aplikace nebo komponenta \u010dekat na v\u00fdsledky p\u0159ed zastaven\u00edm.
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: Asynchronn\u00ed metoda {0} vr\u00e1tila hodnotu Null. 
+asynchronous.returned.null.CWMFT0003W.explanation=Metody anotovan\u00e9 s @Asynchronous nesm\u00ed vracet hodnotu null.
+asynchronous.returned.null.CWMFT0003W.useraction=Zamezte tomu, aby metoda byla vr\u00e1cena hodnotou Null.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}.

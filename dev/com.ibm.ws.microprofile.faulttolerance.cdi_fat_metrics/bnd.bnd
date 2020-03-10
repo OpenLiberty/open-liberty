@@ -16,8 +16,6 @@ src: \
 	test-applications/CDIFaultToleranceMetrics.war/src,\
 	test-applications/faulttolerancemetrics.jar/src
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 
@@ -30,7 +28,8 @@ tested.features: mpfaulttolerance-1.0,\
                  el-3.0,\
                  mpmetrics-1.0,\
                  mpMetrics-1.1,\
-                 mpMetrics-2.0
+                 mpMetrics-2.0,\
+                 mpMetrics-2.3
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

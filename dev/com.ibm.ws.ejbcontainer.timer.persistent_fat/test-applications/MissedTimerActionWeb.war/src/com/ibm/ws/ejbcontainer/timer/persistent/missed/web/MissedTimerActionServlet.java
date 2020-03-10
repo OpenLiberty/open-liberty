@@ -113,34 +113,8 @@ public class MissedTimerActionServlet extends FATServlet {
     }
 
     /**
-     * Test Persistent Timer missed action "ONCE" behavior when failover has not been enabled. <p>
-     *
-     * This test will confirm the following :
-     * <ol>
-     * <li> Interval timer will skip expirations missed because of a delay.
-     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
-     * </ol>
-     */
-    public void testMissedTimerActionNoneNoFailover() throws Exception {
-        testMissedTimerAction("testMissedTimerActionNoneNoFailover", "NONE");
-    }
-
-    /**
-     * Test Persistent Timer missed action "NONE" behavior when failover has been enabled. <p>
-     *
-     * This test will confirm the following :
-     * <ol>
-     * <li> Interval timer will skip expirations missed because of a delay.
-     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
-     * </ol>
-     */
-    public void testMissedTimerActionNoneWithFailover() throws Exception {
-        testMissedTimerAction("testMissedTimerActionNoneWithFailover", "NONE");
-    }
-
-    /**
-     * Test Persistent Timer missed action "None" (mixed case) behavior when failover has not been enabled.
-     * The value is case insensitive and will be treated as "NONE". <p>
+     * Test Persistent Timer missed action "Once" (mixed case) behavior when failover has not been enabled.
+     * The value is case insensitive and will be treated as "ONCE". <p>
      *
      * This test will confirm the following :
      * <ol>
@@ -149,7 +123,7 @@ public class MissedTimerActionServlet extends FATServlet {
      * </ol>
      */
     public void testMissedTimerActionMixedCaseNoFailover() throws Exception {
-        testMissedTimerAction("testMissedTimerActionMixedCaseNoFailover", "NONE");
+        testMissedTimerAction("testMissedTimerActionMixedCaseNoFailover", "ONCE");
     }
 
     /**
@@ -176,6 +150,9 @@ public class MissedTimerActionServlet extends FATServlet {
         } catch (EJBException ejbex) {
             // Unwrap any junit assertion errors to make it clearer what failed.
             Throwable rootex = ejbex.getCause();
+            if (rootex instanceof Exception && rootex.getCause() != null) {
+                rootex = rootex.getCause();
+            }
             if (rootex instanceof AssertionError) {
                 throw (AssertionError) rootex;
             }

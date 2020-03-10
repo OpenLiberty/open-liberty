@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.AppDefinedResource;
+import com.ibm.ws.jca.cm.handle.HandleList;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -152,7 +153,6 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "<init>");
         }
-
         this.connectionFactorySvc = cfSvc;
         this._pm = pm;
         this.gConfigProps = gconfigProps;

@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
@@ -85,24 +86,33 @@ public class MultiThreadedTest extends WSATTest {
 	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "com.ibm.ws.wsat.service.WSATException", "java.lang.IllegalStateException", "com.ibm.ws.wsat.service.WSATFaultException"})
 	public void testWSATMT001FVT() {
-		final int count = 100;
+		int count = 100;
+		String result;
+		String urlStr;
+		HttpURLConnection con;
+		BufferedReader br;
 		try {
-			String urlStr = BASE_URL + "/threadedClient/ThreadedClientServlet"
-					+ "?baseurl=" + BASE_URL2 + "&count=" + count;
-			System.out.println("URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT + count); // Use a bigger timeout here
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("Result : " + result);
-			
-			assertTrue("Cannot get expected reply from server",
-					result.contains("completedCount = "+count));
-			assertTrue("Transactions are still running",
-					result.contains("transactionCount = 0"));
-			
-			Thread.sleep(count * 1000);
+			final int originalCount = count;
+			do {
+				if (count != originalCount) {
+					// This is a retry. Wait a minute
+					Thread.sleep(60000);
+				}
+				urlStr = BASE_URL + "/threadedClient/ThreadedClientServlet"
+						+ "?baseurl=" + BASE_URL2 + "&count=" + count;
+				Log.info(this.getClass(), "testWSATMT001FVT", "URL: " + urlStr);
+				con = getHttpConnection(new URL(urlStr), 
+						HttpURLConnection.HTTP_OK, 1200); // 20 minutes
+				br = HttpUtils.getConnectionStream(con);
+				result = br.readLine();
+				assertNotNull(result);
+
+				Log.info(this.getClass(), "testWSATMT001FVT", "Result : " + result);
+
+				assertTrue("Cannot get expected reply from server",
+						result.contains("completedCount = "+originalCount));
+				count = 0;
+			} while (!result.contains("transactionCount = 0"));
 
 			// get number of resources committed in client
 			urlStr = BASE_URL + "/threadedClient/CoordinatorCheckServlet";
@@ -111,7 +121,6 @@ public class MultiThreadedTest extends WSATTest {
             br = HttpUtils.getConnectionStream(con);
             String clientCommits = br.readLine();
 		
-
 			// get number of resources committed in server
 			urlStr = BASE_URL2 + "/threadedServer/ParticipantCheckServlet";
             con = getHttpConnection(new URL(urlStr), 
@@ -119,7 +128,7 @@ public class MultiThreadedTest extends WSATTest {
             br = HttpUtils.getConnectionStream(con);
             String participantCommits = br.readLine();
 			
-            System.out.println("Client commits: " + clientCommits + ", Participant commits: " + participantCommits);
+            Log.info(this.getClass(), "testWSATMT001FVT", "Client commits: " + clientCommits + ", Participant commits: " + participantCommits);
             assertTrue("Coordinator commit count differs from participant", Integer.parseInt(clientCommits) == Integer.parseInt(participantCommits));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());

@@ -1,8 +1,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: WAS WebContainer
 Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.4.0.factories
@@ -58,7 +56,6 @@ Import-Package: \
     com.ibm.wsspi.injectionengine, \
     *
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
     com.ibm.ws.webcontainer.servlet.3.1;version=latest,\

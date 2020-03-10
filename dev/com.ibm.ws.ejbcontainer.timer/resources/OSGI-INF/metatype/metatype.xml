@@ -46,7 +46,6 @@
             name="%missedPersistentTimerAction" description="%missedPersistentTimerAction.desc">
             <Option value="ALL"  label="%missedPersistentTimerAction.ALL"/>
             <Option value="ONCE" label="%missedPersistentTimerAction.ONCE"/>
-            <Option value="NONE" label="%missedPersistentTimerAction.NONE"/>
         </AD>
     </OCD>
 

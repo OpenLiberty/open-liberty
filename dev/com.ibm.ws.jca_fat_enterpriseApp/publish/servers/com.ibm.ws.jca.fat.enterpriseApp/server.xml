@@ -11,9 +11,9 @@
 <server>
     <featureManager>
       <feature>appSecurity-2.0</feature>
-      <feature>servlet-4.0</feature>
+      <feature>servlet-3.1</feature>
       <feature>localConnector-1.0</feature>
-      <feature>jdbc-4.2</feature>
+      <feature>jdbc-4.1</feature>
       <feature>jca-1.7</feature>
       <feature>jms-2.0</feature>
       <feature>mdb-3.2</feature>
@@ -32,14 +32,9 @@
     <connectionFactory jndiName="eis/cf1">
       <properties.enterpriseApp.loginModRA />
       <jaasLoginContextEntry name="cf1login">
-        <loginModule className="com.ibm.test.jca.loginmodra.LMLoginModule" libraryRef="temp"/> <!-- TODO replace with classProviderRef once implemented -->
+        <loginModule className="com.ibm.test.jca.loginmodra.LMLoginModule" classProviderRef="enterpriseApp"/>
       </jaasLoginContextEntry>
     </connectionFactory>
-
-    <library id="temp">
-      <file name="${server.config.dir}/tempLoginModule.jar"/>
-    </library>
-    <javaPermission codebase="${server.config.dir}/tempLoginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
 
     <connectionFactory jndiName="eis/ds1">
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
@@ -47,7 +42,7 @@
     </connectionFactory>
 
     <jaasLoginContextEntry id="ds1LoginContextEntry" name="ds1login">
-      <loginModule className="com.ibm.test.jca.enterprisera.EALoginModule" libraryRef="temp"/> <!-- TODO replace with classProviderRef once implemented -->
+      <loginModule className="com.ibm.test.jca.enterprisera.EALoginModule" classProviderRef="enterpriseApp"/>
     </jaasLoginContextEntry>
 
     <activationSpec id="enterpriseApp/fvtweb/JCAEnterpriseAppMDB">
@@ -77,6 +72,9 @@
     <javaPermission className="javax.management.MBeanPermission" name="*" actions="registerMBean"/>
     <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission className="javax.management.MBeanTrustPermission" name="register"/>
-    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+
+    <!-- required by login modules within resource adapters that are embedded within the enterprise application -->
+    <javaPermission codebase="${server.config.dir}/apps/enterpriseApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/enterpriseApp.ear" className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
 
 </server>

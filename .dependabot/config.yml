@@ -5,6 +5,9 @@ update_configs:
   - package_manager: "java:maven"
     directory: "/dev/cnf/dependabot/check_this_in_if_it_changes/"
     update_schedule: "daily"
+    default_assignees:
+      - "tevans78"
+      - "aguibert"
     target_branch: "integration"
     allowed_updates:
       - match:

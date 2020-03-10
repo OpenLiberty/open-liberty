@@ -116,9 +116,6 @@ threadpool.size.description=Tama\u00f1o de la agrupaci\u00f3n de hebras.
 servlet.request.total.description=N\u00famero de visitas a este servlet desde el inicio del servidor.
 servlet.responseTime.total.description=Tiempo total de respuesta de este servlet desde el inicio del servidor.
 
-RESTful.request.total.description=N\u00famero de invocaciones de este m\u00e9todo de recurso RESTful desde el inicio del servidor.
-RESTful.responseTime.total.description=Tiempo de respuesta total para este m\u00e9todo de recurso RESTful desde el inicio del servidor.
-
 connectionpool.create.total.description=N\u00famero total de conexiones gestionadas que se han creado desde la creaci\u00f3n de la agrupaci\u00f3n.
 connectionpool.destroy.total.description=N\u00famero total de conexiones gestionadas que se han destruido desde la creaci\u00f3n de la agrupaci\u00f3n.
 connectionpool.managedConnections.description=N\u00famero de conexiones gestionadas en las agrupaciones libres, compartidas y no compartidas.

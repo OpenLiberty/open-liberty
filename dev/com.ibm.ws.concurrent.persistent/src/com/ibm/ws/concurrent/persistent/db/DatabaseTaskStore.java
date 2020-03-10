@@ -593,7 +593,7 @@ public class DatabaseTaskStore implements TaskStore {
                 // Initialize to already-expired and eligible for any server to claim.
                 // Use a fractional second to help avoid accessing the database around the same time as scheduled tasks
                 // which might be scheduled to run on the hour or minute.
-                partition.EXPIRY = (System.currentTimeMillis() / 1000 - 1) * 1000 + 600;
+                partition.EXPIRY = System.currentTimeMillis() / 1000 * 1000 + 600;
                 partition.STATES = partition.EXPIRY; // used as a last-updated timestamp
                 partition.LSERVER = ".pollinfo";
                 partition.EXECUTOR = ""; // unused, cannot be null

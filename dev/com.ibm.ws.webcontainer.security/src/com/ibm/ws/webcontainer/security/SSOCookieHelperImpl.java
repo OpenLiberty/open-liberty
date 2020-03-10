@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,9 @@ import com.ibm.ws.webcontainer.security.internal.LoggedOutJwtSsoCookieCache;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
-//import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 
 /**
  * Single sign-on cookie helper class.
@@ -151,6 +151,16 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         String domainName = getSSODomainName(req, config.getSSODomainList(), config.getSSOUseDomainFromURL());
         if (domainName != null) {
             ssoCookie.setDomain(domainName);
+        }
+
+        String sameSite = config.getSameSiteCookie();
+        if (sameSite != null && !sameSite.equals("Disabled")) {
+            WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+            requestState.setCookieAttributes(cookieName, "SameSite=" + sameSite);
+            
+            if (sameSite.equals("None")) {
+                ssoCookie.setSecure(true);
+            } 
         }
 
         return ssoCookie;

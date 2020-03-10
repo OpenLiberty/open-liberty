@@ -90,7 +90,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: Die Social 
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=Die Benutzer-API-Antwort enth\u00e4lt keinen Schl\u00fcssel, der dem Wert des Konfigurationsattributs entspricht, das in der Nachricht angegeben ist. Das Social Login-Feature versucht stattdessen, einen anderen Schl\u00fcssel zu verwenden.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Vergewissern Sie sich, dass das in der Nachricht angegebene Konfigurationsattribut ordnungsgem\u00e4\u00df konfiguriert wurde. Stellen Sie sicher, dass der Wert des Konfigurationsattributs dem Eintrag in der BenutzerAPI-Antwort entspricht, der als Benutzername verwendet werden soll.
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: Die Antwort von der Servicekonto-Benutzer-API kann nicht verarbeitet werden: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: Die folgende Antwort von der Benutzer-API kann nicht verarbeitet werden: {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Informationen zum Service-Account k\u00f6nnen nicht abgerufen werden, weil ein weiterer Fehler aufgetreten ist.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Wenn die Nachricht eine weitere Fehlernachricht enth\u00e4lt, sehen Sie sich die Benutzeraktion f\u00fcr diese Nachricht an. Suchen Sie andernfalls in den Serverprotokollen nach weiteren Fehlernachrichten, die anzeigen, wo ein weiterer Fehler aufgetreten ist.
 
@@ -110,6 +110,16 @@ JSON_MISSING_KEY.useraction=\u00dcberpr\u00fcfen Sie die JSON-Daten, um zu ermit
 JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Der Wert f\u00fcr den Schl\u00fcssel [{0}] in den JSON-Daten muss den Typ {1} haben, aber der Wert hat den Typ {2}. JSON-Daten sind [{3}].
 JSON_ENTRY_WRONG_JSON_TYPE.explanation=Der Wert f\u00fcr den angegebenen Schl\u00fcssel hat nicht den richtigen Typ. Die JSON-Daten sind m\u00f6glicherweise fehlerhaft oder haben eine nicht erwartete Struktur.
 JSON_ENTRY_WRONG_JSON_TYPE.useraction=\u00dcberpr\u00fcfen Sie die Struktur der JSON-Daten. \u00dcberpr\u00fcfen Sie die JSON-Daten, um festzustellen, ob ein Fehler aufgetreten ist. 
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: Die Antwort von der Tokenintrospektions-API kann nicht verarbeitet werden: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Informationen zum authentifizierten Benutzer k\u00f6nnen nicht abgerufen werden, weil ein weiterer Fehler aufgetreten ist.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Wenn die Nachricht eine weitere Fehlernachricht enth\u00e4lt, sehen Sie sich die Benutzeraktion f\u00fcr diese Nachricht an. Suchen Sie andernfalls in den Serverprotokollen nach weiteren Fehlernachrichten, die anzeigen, wo ein weiterer Fehler aufgetreten ist.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: Die Tokenintrospektionsanforderung ist fehlgeschlagen, weil das in der Anforderung enthaltene Token ung\u00fcltig ist. Die vollst\u00e4ndige Antwort ist {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Der Berechtigungsserver hat das Token nicht ausgegeben, der Ressourceneigner hat das Token widerrufen, das Token ist abgelaufen oder es ist ein anderer Fehler aufgetreten.
+INTROSPECT_USER_API_INACTIVE.useraction=\u00dcberpr\u00fcfen Sie die in der Nachricht enthaltene Antwort. Vergewissern Sie sich, dass der richtigen Tokenintrospektionsendpunkt verwendet wird. Vergewissern Sie sich, dass das Token g\u00fcltig ist und das eine Selbst\u00fcberwachung f\u00fcr das Token ausgef\u00fchrt werden kann.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Die Social Login-Konfiguration [{0}] wurde erfolgreich verarbeitet.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Die angegebene Social Login-Konfiguration wurde erfolgreich verarbeitet.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Es ist keine Aktion erforderlich.

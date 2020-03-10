@@ -1307,7 +1307,7 @@ public final class InjectionUtils {
                 Object oldProvider = pi.getOldProvider();
                 clz = oldProvider.getClass();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "injectContexts pre: oldProvider=" + oldProvider + " clz=" + clz + " loader="+clz.getClassLoader());
+                    Tr.debug(tc, "injectContexts pre: oldProvider=" +  oldProvider.getClass().getSimpleName() + " clz=" + clz + " loader="+clz.getClassLoader());
                 }
             } else {
                 clz = requestObject.getClass();
@@ -1923,6 +1923,7 @@ public final class InjectionUtils {
     }
 
     private static final String INJECT_CLASS_NAME = "javax.inject.Inject";
+    private static final String RESOURCE_CLASS_NAME = "javax.annotation.Resource";
 
     private static List<String> EXPLICIT_LIFECYCLE_CLASS_NAMES = new ArrayList<String>();
     static {
@@ -1956,7 +1957,7 @@ public final class InjectionUtils {
      *     injection.
      */
     private static boolean selectForInjection(ClassInfo classInfo) {
-        if ( classInfo.isAnnotationPresent(INJECT_CLASS_NAME) &&
+        if ( (classInfo.isAnnotationPresent(INJECT_CLASS_NAME) || classInfo.isAnnotationPresent(RESOURCE_CLASS_NAME)) &&
              !classInfo.isAnnotationWithin(EXPLICIT_LIFECYCLE_CLASS_NAMES) ) {
             return true;
 
@@ -1971,17 +1972,17 @@ public final class InjectionUtils {
             // because the method is overridden.
 
             for ( com.ibm.wsspi.anno.info.FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
-                if ( fieldInfo.isAnnotationPresent(INJECT_CLASS_NAME) ) {
+                if ( fieldInfo.isAnnotationPresent(INJECT_CLASS_NAME) || fieldInfo.isAnnotationPresent(RESOURCE_CLASS_NAME) ) {
                     return true;
                 }
             }
             for ( MethodInfo methodInfo : classInfo.getDeclaredMethods() ) {
-                if ( methodInfo.isAnnotationPresent(INJECT_CLASS_NAME) ) {
+                if ( methodInfo.isAnnotationPresent(INJECT_CLASS_NAME) || methodInfo.isAnnotationPresent(RESOURCE_CLASS_NAME) ) {
                     return true;
                 }
             }
             for ( MethodInfo constructorInfo : classInfo.getDeclaredConstructors() ) {
-                if ( constructorInfo.isAnnotationPresent(INJECT_CLASS_NAME) ) {
+                if ( constructorInfo.isAnnotationPresent(INJECT_CLASS_NAME) || constructorInfo.isAnnotationPresent(RESOURCE_CLASS_NAME) ) {
                     return true;
                 }
             }

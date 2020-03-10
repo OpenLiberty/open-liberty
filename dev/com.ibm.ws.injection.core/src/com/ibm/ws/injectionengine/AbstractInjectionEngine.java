@@ -389,7 +389,7 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
                                          ComponentNameSpaceConfiguration compNSConfig) throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "processInjectionMetaData (targets)");
+            Tr.entry(tc, "processInjectionMetaData", "(targets)");
 
         InjectionProcessorContextImpl context = createInjectionProcessorContext();
         // F743-31682 - Always bind in the client container code flow.
@@ -413,7 +413,7 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
         notifyInjectionMetaDataListeners(null, compNSConfig);
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "processInjectionMetaData: " + injectionTargetMap);
+            Tr.exit(tc, "processInjectionMetaData", injectionTargetMap);
     }
 
     /**

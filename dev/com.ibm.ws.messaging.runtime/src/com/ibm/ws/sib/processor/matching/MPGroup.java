@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,7 @@
 package com.ibm.ws.sib.processor.matching;
 
 import java.security.Principal;
-import java.security.acl.Group;
 import java.util.List;
-import java.util.Enumeration;
 
 import com.ibm.ws.sib.processor.SIMPConstants;
 import com.ibm.websphere.ras.TraceComponent;
@@ -25,7 +23,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class MPGroup extends MPPrincipal implements Group
+public class MPGroup extends MPPrincipal
 {
   private static final TraceComponent tc =
     SibTr.register(MPGroup.class, SIMPConstants.MP_TRACE_GROUP, SIMPConstants.RESOURCE_BUNDLE);
@@ -44,32 +42,6 @@ public class MPGroup extends MPPrincipal implements Group
         SibTr.entry(tc, "MPGroup", nm);
         SibTr.exit(tc, "MPGroup", this);
       }
-    }
-
-    /**
-     * Adds the specified member to the group.
-     *
-     * @param user the principal to add to this group.
-     *
-     * @return true if the member was successfully added,
-     * false if the principal was already a member.
-     */
-    public boolean addMember(Principal user)
-    {
-      return true;
-    }
-
-    /**
-     * Removes the specified member from the group.
-     *
-     * @param user the principal to remove from this group.
-     *
-     * @return true if the principal was removed, or
-     * false if the principal was not a member.
-     */
-    public boolean removeMember(Principal user)
-    {
-       return true;
     }
 
     /**
@@ -102,16 +74,4 @@ public class MPGroup extends MPPrincipal implements Group
       return result;
     }
 
-
-    /**
-     * Returns an enumeration of the members in the group.
-     * The returned objects can be instances of either Principal
-     * or Group (which is a subclass of Principal).
-     *
-     * @return an enumeration of the group members.
-     */
-    public Enumeration members()
-    {
-        return null;
-    }
 }

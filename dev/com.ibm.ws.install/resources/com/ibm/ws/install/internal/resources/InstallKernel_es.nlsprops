@@ -831,13 +831,21 @@ ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de
 
 ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: El formato de la variable de entorno https_proxy {0} no es v\u00e1lido. Aseg\u00farese de que la variable https_proxy tenga el formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
 ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=El formato de variable de entorno de proxy no es v\u00e1lido.
-ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de entorno https_proxy para que se ajuste al formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port> format.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de entorno https_proxy para que se ajuste al formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
 
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Las caracter\u00edsticas siguientes no se han obtenido: {0}. Aseg\u00farese de que las caracter\u00edsticas son v\u00e1lidas.
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=La caracter\u00edstica no est\u00e1 soportada por Open Liberty.
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Ejecute featureUtility con una caracter\u00edstica compatible.
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Las caracter\u00edsticas de usuario siguientes se han especificado en server.xml y no se instalar\u00e1n: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Las caracter\u00edsticas {0} y {1} son incompatibles entre s\u00ed y no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Las caracter\u00edsticas no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Elimine una de las caracter\u00edsticas e int\u00e9ntelo de nuevo.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Las caracter\u00edsticas singleton {0} y {1} son incompatibles entre s\u00ed y no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Las caracter\u00edsticas no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Elimine una de las caracter\u00edsticas e int\u00e9ntelo de nuevo.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La caracter\u00edstica se ha descargado satisfactoriamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La caracter\u00edstica se ha descargado.

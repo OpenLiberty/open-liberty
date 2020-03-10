@@ -1,8 +1,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.security.mp.jwt.cdi
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.cdi
@@ -28,7 +26,6 @@ WS-TraceGroup: MPJWT
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.security.mp.jwt.cdi.JwtCDIExtension
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
     com.ibm.ws.logging;version=latest,\

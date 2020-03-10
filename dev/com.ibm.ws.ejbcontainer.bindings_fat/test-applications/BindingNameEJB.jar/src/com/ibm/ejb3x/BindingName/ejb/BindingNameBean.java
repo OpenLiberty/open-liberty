@@ -14,7 +14,7 @@ package com.ibm.ejb3x.BindingName.ejb;
 import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
-public class BindingNameBean implements javax.ejb.SessionBean, BindingNameIntf {
+public class BindingNameBean implements javax.ejb.SessionBean, BindingNameIntf, RemoteBindingNameIntf {
     private final static String CLASS_NAME = BindingNameBean.class.getName();
     private final static Logger svLogger = Logger.getLogger(CLASS_NAME);
     private static final String BeanName = "BindingName";

@@ -46,7 +46,7 @@ public class RepeatFaultTolerance {
     static final Set<String> MP32_FEATURE_SET = new HashSet<>(Arrays.asList(MP32_FEATURES_ARRAY));
     public static final String MP32_FEATURES_ID = "MICROPROFILE32";
 
-    static final String[] MP33_FEATURES_ARRAY = { "mpConfig-1.3", "mpFaultTolerance-2.1", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.2" };
+    static final String[] MP33_FEATURES_ARRAY = { "mpConfig-1.4", "mpFaultTolerance-2.1", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-2.3" };
     static final Set<String> MP33_FEATURE_SET = new HashSet<>(Arrays.asList(MP33_FEATURES_ARRAY));
     public static final String MP33_FEATURES_ID = "MICROPROFILE33";
 

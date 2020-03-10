@@ -62,6 +62,9 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
     // Access to the persistent timer runtime; set when the component activates
     static volatile EJBPersistentTimerRuntimeImpl persistentTimerRuntime;
 
+    // Current timer start time for calculating missed action behavior
+    private transient Long missedActionStartTime;
+
     /**
      * Constructor for expiration based persistent timers. Expiration based timers are
      * either "single-action" timers that run just once at a specific time (expiration),
@@ -133,6 +136,38 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
 
     @Override
     public Date getNextTimeout(Date lastExecution, Date timerCreationTime) {
+        Date nextRunTime = calculateNextTimeout(lastExecution, timerCreationTime);
+
+        // When configured to catch up then skip missed expirations, advance the next timeout
+        // to the next expiration after the current run time, skipping over all missed expirations.
+        // The timer will have just run one time to perform the catch up.
+        //
+        // Note: only those expirations that occurred prior to the start of the current
+        // run time are skipped. This allows getNextTimeout to consistently return the
+        // same response, regardless how long the timer takes to run. If the timer takes
+        // so long to run that additional expirations are missed, then another catch up
+        // and skip will occur on the next run of the timer.
+        if (missedActionStartTime != null) {
+            int skippedExpirations = 0;
+            while (nextRunTime != null && nextRunTime.getTime() < missedActionStartTime) {
+                nextRunTime = calculateNextTimeout(nextRunTime, timerCreationTime);
+                skippedExpirations++;
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && skippedExpirations > 0)
+                Tr.debug(tc, "Skipped Expirations = " + skippedExpirations);
+        }
+        return nextRunTime;
+    }
+
+    /**
+     * Get the point in time at which the next timer expiration would be scheduled
+     * to occur after the specified last execution time, without consideration for
+     * missed timer action configuration. <p>
+     *
+     * @param lastExecution last time the timeout callback was scheduled to expire
+     * @param the           date/time in which the timer task was created.
+     */
+    private Date calculateNextTimeout(Date lastExecution, Date timerCreationTime) {
 
         // For 'expiration' based timers, return one of the following:
         // 1 - first expiration if timer has never run
@@ -220,21 +255,7 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
     public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
         Date lastExecution = lastExecutionInfo == null ? null : lastExecutionInfo.getScheduledStart();
         Date nextRunTime = getNextTimeout(lastExecution, taskScheduledTime);
-
-        // When not configured to run all missed expirations, advance the next run time
-        // to the next expiration after the current system time, skipping over all missed
-        // expirations. The timer will have just run one time to catch up, unless it
-        // was intentionally skipped by skipRun() for the NONE missed timer action.
-        EJBPersistentTimerRuntimeImpl timerRuntime = persistentTimerRuntime;
-        if (timerRuntime != null && timerRuntime.getMissedTimerAction() != MissedTimerAction.ALL) {
-            int skippedExpirations = 0;
-            while (nextRunTime != null && nextRunTime.getTime() < System.currentTimeMillis()) {
-                nextRunTime = getNextTimeout(nextRunTime, taskScheduledTime);
-                skippedExpirations++;
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Skipped Expirations = " + skippedExpirations);
-        }
+        missedActionStartTime = null; // current expiration is complete
 
         return nextRunTime;
     }
@@ -245,22 +266,14 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
         EJBPersistentTimerRuntimeImpl timerRuntime = persistentTimerRuntime;
         MissedTimerAction missedTimerAction = (timerRuntime != null) ? timerRuntime.getMissedTimerAction() : MissedTimerAction.ALL;
 
-        // When configured to perform no action for missed timers and the timer expired
-        // prior to the timer feature starting (usually when the server was down), skip
-        // running the timer. The timer will be rescheduled via getNextRunTime() to a
-        // future time without running immediately on timer service start.
-        if (missedTimerAction == MissedTimerAction.NONE) {
-            if (scheduledRunTime.getTime() < TIMER_SERVICE_START) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Run time = " + scheduledRunTime.getTime() + " < service start = " + TIMER_SERVICE_START);
-                return true;
-            }
-        }
+        // If missed action supports skipping missed expirations, then capture the
+        // current expiration start time for calculating the next expiration.
+        missedActionStartTime = (missedTimerAction == MissedTimerAction.ALL) ? null : System.currentTimeMillis();
 
-        // Except for the NONE action, EJB Timers never skip, however this is where a warning may be logged
-        // if a timer is running noticeably later than scheduled, like ASYN0091_LATE_ALARM on traditional WAS
-        // For ONCE and NONE actions, only log the warning if the timer is scheduled to run after timer service
-        // start (i.e. ONCE and NONE configurations accept it is normal for late timers to run on start)
+        // EJB Timers never skip, however this is where a warning may be logged if a timer
+        // is running noticeably later than scheduled, like ASYN0091_LATE_ALARM on traditional WAS
+        // For the ONCE action, only log the warning if the timer is scheduled to run after timer
+        // service start (i.e. ONCE accepts it is normal for late timers to run on start)
         if (missedTimerAction == MissedTimerAction.ALL || scheduledRunTime.getTime() > TIMER_SERVICE_START) {
             EJBRuntime ejbRuntime = EJSContainer.getDefaultContainer().getEJBRuntime();
             ejbRuntime.checkLateTimerThreshold(scheduledRunTime, TaskIdAccessor.get().toString(), j2eeName);

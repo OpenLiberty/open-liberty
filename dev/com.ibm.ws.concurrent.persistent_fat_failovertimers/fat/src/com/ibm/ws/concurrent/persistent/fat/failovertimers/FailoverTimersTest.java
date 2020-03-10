@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.failovertimers;
 
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -41,29 +42,30 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.database.container.DatabaseContainerUtil;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
-import failovertimers.web.FailoverTimersTestServlet;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+import failovertimers.web.FailoverTimersTestServlet;
 
 /**
  * This test bucket will cover scenarios where EJB persistent timers are shared across multiple servers,
- * by pointing at the same database.  When the instance that has been running the timer goes down, it should
+ * by pointing at the same database. When the instance that has been running the timer goes down, it should
  * fail over to another server and continue running there.
  */
 @RunWith(FATRunner.class)
 @SkipIfSysProp(DB_Oracle) //TODO investigate running these tests causes an FFDC java.lang.IllegalStateException: Attempting to execute an operation on a closed EntityManagerFactory.
 public class FailoverTimersTest extends FATServletClient {
-	private static final Class<FailoverTimersTest> c = FailoverTimersTest.class;
-	private static final String APP_NAME = "failoverTimersApp";
-	private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
+    private static final Class<FailoverTimersTest> c = FailoverTimersTest.class;
+    private static final String APP_NAME = "failoverTimersApp";
+    private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
 
     private static ServerConfiguration originalConfigA;
     private static ServerConfiguration originalConfigB;
@@ -78,13 +80,11 @@ public class FailoverTimersTest extends FATServletClient {
     @Server(SERVER_B_NAME)
     @TestServlet(servlet = FailoverTimersTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverB;
-    
+
     @Rule
     public TestName testName = new TestName();
-    
-    // Not a ClassRule as Postgres needs to start with a specific command
-    // By default run on DerbyClient and not DerbyEmbedded
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DatabaseContainerType.DerbyClient);
+
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     private static final ExecutorService testThreads = Executors.newFixedThreadPool(3);
 
@@ -92,36 +92,27 @@ public class FailoverTimersTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // In order to use two phase commit Postgres needs explicit permission to prepare transactions
-        // See documentation here: https://www.postgresql.org/docs/current/sql-prepare-transaction.html
-        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Postgres) {
-            testContainer.withCommand("postgres -c max_prepared_transactions=2");
-        }
-        
-        testContainer.start();
-    	
         //Setup datasource properties
         DatabaseContainerUtil.setupDataSourceProperties(serverA, testContainer);
         DatabaseContainerUtil.setupDataSourceProperties(serverB, testContainer);
-        
+
         //Application uses an XA datasource to perform database access.
         //Oracle restrictions creation/dropping of database tables using transactions with error:
         //  ORA-02089: COMMIT is not allowed in a subordinate session
         //Therefore, we will create the table prior to running tests when running against oracle.
-        if(DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Oracle) {
-                final String createTable = "CREATE TABLE TIMERLOG (TIMERNAME VARCHAR(254) NOT NULL PRIMARY KEY, COUNT INT NOT NULL, SERVERNAME VARCHAR(254) NOT NULL)";
+        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Oracle) {
+            final String createTable = "CREATE TABLE TIMERLOG (TIMERNAME VARCHAR(254) NOT NULL PRIMARY KEY, COUNT INT NOT NULL, SERVERNAME VARCHAR(254) NOT NULL)";
 
-                try (Connection conn = testContainer.createConnection("")) {
-                    try (PreparedStatement pstmt = conn.prepareStatement(createTable)) {
-                        pstmt.executeUpdate();
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+            try (Connection conn = testContainer.createConnection("")) {
+                try (PreparedStatement pstmt = conn.prepareStatement(createTable)) {
+                    pstmt.executeUpdate();
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+            }
         }
-    	
-    	
+
         originalConfigA = serverA.getServerConfiguration();
         ShrinkHelper.defaultApp(serverA, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
 
@@ -141,11 +132,11 @@ public class FailoverTimersTest extends FATServletClient {
         if (startInParallel) {
             ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
             if (!serverA.isStarted()) {
-            	serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+                serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
                 startActions.add(() -> serverA.startServer(testName.getMethodName()));
             }
             if (!serverB.isStarted()) {
-            	serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+                serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
                 startActions.add(() -> serverB.startServer(testName.getMethodName()));
             }
 
@@ -162,8 +153,8 @@ public class FailoverTimersTest extends FATServletClient {
                 serverA.startServer(testName.getMethodName());
             }
             if (!serverB.isStarted()) {
-            	serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-            	serverB.startServer(testName.getMethodName());
+                serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+                serverB.startServer(testName.getMethodName());
             }
         }
     }
@@ -177,8 +168,6 @@ public class FailoverTimersTest extends FATServletClient {
             if (serverB.isStarted())
                 serverB.stopServer();
         }
-        
-        testContainer.stop();
     }
 
     /**
@@ -189,10 +178,10 @@ public class FailoverTimersTest extends FATServletClient {
      * This should occur even if a retryInterval is configured on the server where the failure occurs.
      */
     @AllowedFFDC({
-        "java.util.concurrent.CompletionException", // intentionally raised by timer to force a rollback
-        "com.ibm.websphere.csi.CSITransactionRolledbackException", // internally raised exception for rollback path
-        "javax.ejb.TransactionRolledbackLocalException" // EJB spec exception for rollback
-        })
+                   "java.util.concurrent.CompletionException", // intentionally raised by timer to force a rollback
+                   "com.ibm.websphere.csi.CSITransactionRolledbackException", // internally raised exception for rollback path
+                   "javax.ejb.TransactionRolledbackLocalException" // EJB spec exception for rollback
+    })
     @Test
     public void testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer() throws Exception {
         runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -222,10 +211,10 @@ public class FailoverTimersTest extends FATServletClient {
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
         // to the intentionally failed task.
         serverA.stopServer(
-                "CNTR0020E.*Timer_400_1700", // EJB threw an unexpected (non-declared) exception during invocation of ...
-                "CWWKC1501W.*Timer_400_1700", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
-                "CWWKC1503W.*Timer_400_1700" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... due to failure ...
-                );
+                           "CNTR0020E.*Timer_400_1700", // EJB threw an unexpected (non-declared) exception during invocation of ...
+                           "CWWKC1501W.*Timer_400_1700", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                           "CWWKC1503W.*Timer_400_1700" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... due to failure ...
+        );
     }
 
     /**
@@ -264,9 +253,9 @@ public class FailoverTimersTest extends FATServletClient {
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
         // to the intentionally failed task.
         serverA.stopServer(
-                "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
-                "CWWKC1503W.*StatelessProgrammaticTimersBean"  // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
-                );
+                           "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
+                           "CWWKC1503W.*StatelessProgrammaticTimersBean" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
+        );
     }
 
     /**
@@ -317,7 +306,7 @@ public class FailoverTimersTest extends FATServletClient {
     @Test
     public void testSingletonTimerFailsOverWhenAppStops() throws Exception {
         StringBuilder sb = runTestWithResponse(serverA, APP_NAME + "/FailoverTimersTestServlet",
-                "findServerWhereTimerRuns&timer=AutomaticCountingSingletonTimer&test=testSingletonTimerFailsOverWhenAppStops[1]");
+                                               "findServerWhereTimerRuns&timer=AutomaticCountingSingletonTimer&test=testSingletonTimerFailsOverWhenAppStops[1]");
         assertEquals(sb.toString(), 0, sb.indexOf(TIMER_LAST_RAN_ON));
         String serverName = sb.substring(TIMER_LAST_RAN_ON.length(), sb.lastIndexOf("."));
         assertTrue(serverName, SERVER_A_NAME.equals(serverName) || SERVER_B_NAME.equals(serverName));
@@ -353,12 +342,12 @@ public class FailoverTimersTest extends FATServletClient {
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
             serverOnWhichToStopApp.stopServer(
-                    "CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
-                    "DSRA0230E", // transaction in progress across server stop
-                    "DSRA0302E", // transaction in progress across server stop
-                    "DSRA0304E", // transaction in progress across server stop
-                    "J2CA0027E" // transaction in progress across server stop
-                    );
+                                              "CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+                                              "DSRA0230E", // transaction in progress across server stop
+                                              "DSRA0302E", // transaction in progress across server stop
+                                              "DSRA0304E", // transaction in progress across server stop
+                                              "J2CA0027E" // transaction in progress across server stop
+            );
         }
     }
 
@@ -391,7 +380,7 @@ public class FailoverTimersTest extends FATServletClient {
     @Test
     public void testTimerFailsOverWhenServerStops() throws Exception {
         StringBuilder sb = runTestWithResponse(serverA, APP_NAME + "/FailoverTimersTestServlet",
-                "findServerWhereTimerRuns&timer=AutomaticCountingSingletonTimer&test=testTimerFailsOverWhenServerStops[1]");
+                                               "findServerWhereTimerRuns&timer=AutomaticCountingSingletonTimer&test=testTimerFailsOverWhenServerStops[1]");
         assertEquals(sb.toString(), 0, sb.indexOf(TIMER_LAST_RAN_ON));
         String serverName = sb.substring(TIMER_LAST_RAN_ON.length(), sb.lastIndexOf("."));
         assertTrue(serverName, SERVER_A_NAME.equals(serverName) || SERVER_B_NAME.equals(serverName));

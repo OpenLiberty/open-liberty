@@ -13,8 +13,6 @@ package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.BetaUtils;
-
 public class ProducerRecordFactory {
 
     private static final String CLAZZ = ProducerRecordFactory.class.getName();
@@ -37,8 +35,7 @@ public class ProducerRecordFactory {
 
         org.apache.kafka.clients.producer.ProducerRecord<?, ?> delegateRecord;
 
-        //TODO remove beta guard before GA
-        if (BetaUtils.USE_KAFKA_PRODUCER_RECORD && (value instanceof org.apache.kafka.clients.producer.ProducerRecord)) {
+        if (value instanceof org.apache.kafka.clients.producer.ProducerRecord) {
             org.apache.kafka.clients.producer.ProducerRecord<?, ?> userProducerRecord = (org.apache.kafka.clients.producer.ProducerRecord<?, ?>) value;
 
             delegateRecord = extractUserProducerRecord(configuredTopic, userProducerRecord);

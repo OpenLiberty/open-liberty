@@ -156,12 +156,6 @@ public class DependantApplicationTest {
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
 
-        // TODO remove this temporary jar when login modules can be accessed from the resource adapter
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "tempLoginModule.jar");
-        jar.addPackage("fat.jca.resourceadapter.jar1");
-        jar.addPackage("fat.jca.resourceadapter.jar2");
-        ShrinkHelper.exportToServer(server, "/", jar);
-
         originalServerConfig = server.getServerConfiguration().clone();
         server.addInstalledAppForValidation(fvtapp);
         server.startServer();

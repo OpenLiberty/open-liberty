@@ -49,7 +49,6 @@ public class ConsumerRecordServlet extends AbstractKafkaTestServlet {
 
         ByteBuffer timestampBuffer = ByteBuffer.allocate(Long.BYTES).putLong(timestamp);
         record.headers().add(ConsumerRecordBean.EXPECTED_TIMESTAMP_HEADER_KEY, timestampBuffer.array());
-
         writer.sendMessage(record, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         KafkaReader<String, String> reader = kafkaTestClient.readerFor(ConsumerRecordBean.CHANNEL_OUT);

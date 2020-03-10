@@ -7,7 +7,11 @@
         <feature>jndi-1.0</feature>
         <feature>jsp-2.3</feature>
         <feature>componentTest-1.0</feature>
-		<feature>localConnector-1.0</feature>
+	<feature>localConnector-1.0</feature>
 	</featureManager>
+
+    <logging
+        traceSpecification="*=info:com.ibm.ws.app.manager.*=all"
+        maxFileSize="100" maxFiles="1" />
 
 </server>

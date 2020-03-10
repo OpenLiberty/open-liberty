@@ -10,7 +10,7 @@
  -->
 <server>
     <featureManager>
-      <feature>appSecurity-2.0</feature>
+      <feature>appSecurity-3.0</feature>
       <feature>componenttest-1.0</feature>
       <feature>ejbLite-3.2</feature>
       <feature>jca-1.7</feature>
@@ -22,9 +22,9 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <application location="derbyApp.war"/>
+    <application id="derbyApp" location="derbyApp.war"/>
 
-    <application location="otherApp.ear"/>
+    <application id="otherApp" location="otherApp.ear"/>
 
     <dataSource id="DefaultDataSource" ibm.internal.nonship.function="true">
       <jdbcDriver javax.sql.DataSource="jdbc.driver.proxy.ProxyDataSource" libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
@@ -58,23 +58,40 @@
 
     <library id="ibm.internal.simulate.no.library.do.not.ship"/>
 
-    <!-- TODO replace with classProviderRef once implemented -->
-    <library id="temp">
-      <file name="${server.config.dir}/tempLoginModule.jar"/>
-    </library>
-    <javaPermission codebase="${server.config.dir}/tempLoginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
-
     <jaasLoginContextEntry id="app1loginEntry" name="app1login">
-      <loginModule className="loginmod.LoadFromAppLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+      <loginModule className="loginmod.LoadFromAppLoginModule" classProviderRef="otherApp"/>
     </jaasLoginContextEntry>
 
     <jaasLoginContextEntry id="webapploginEntry" name="webapplogin">
-      <loginModule className="web.derby.LoadFromWebAppLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+      <loginModule className="web.derby.LoadFromWebAppLoginModule" classProviderRef="derbyApp"/>
     </jaasLoginContextEntry>
 
     <jaasLoginContextEntry id="web1loginEntry" name="web1login">
-      <loginModule className="web.other.LoadFromWebModLoginModule" libraryRef="temp"/> <!-- TODO use classProviderRef once implemented -->
+      <loginModule className="web.other.LoadFromWebModLoginModule" classProviderRef="otherApp"/>
     </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="notFoundInEarLoginEntry" name="notFoundInEarLogin">
+      <!-- otherApp does not contain this class; it is in the derbyApp and should not be found -->
+      <loginModule className="web.derby.LoadFromWebAppLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="notFoundInWebAppLoginEntry" name="notFoundInWebAppLogin">
+      <!-- derbyApp does not contain this class; it is in the otherApp and should not be found -->
+      <loginModule className="loginmod.LoadFromAppLoginModule" classProviderRef="derbyApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="ejb1loginEntry" name="ejb1login">
+      <loginModule className="ejb.first.FirstEJBModLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="ejb2loginEntry" name="ejb2login">
+      <loginModule className="ejb.second.SecondEJBModLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="system.WEB_INBOUND" name="system.WEB_INBOUND" loginModuleRef="webInboundLoginModule, hashtable"/>
+    <jaasLoginModule id="webInboundLoginModule" controlFlag="REQUIRED" className="loginmod.WebInboundLoginModule" classProviderRef="otherApp">
+      <options city="Rochester" state="MN" zip="55901"/>
+    </jaasLoginModule>
 
     <!-- permissions for Derby in the app -->
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
@@ -101,6 +118,10 @@
 
     <!-- permissions for Mini driver to utilize dynamic proxy -->
     <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <!-- permissions for login modules -->
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
 
     <variable name="onError" value="FAIL"/>
 </server>

@@ -377,7 +377,7 @@ public final class ThreadPoolController {
         interval = (tpcInterval == null) ? 1500 : Integer.parseInt(tpcInterval);
 
         String tpcHangInterval = getSystemProperty("tpcHangInterval");
-        hangInterval = (tpcHangInterval == null) ? 250 : Integer.parseInt(tpcHangInterval);
+        hangInterval = (tpcHangInterval == null) ? 750 : Integer.parseInt(tpcHangInterval);
 
         String tpcCompareRange = getSystemProperty("tpcCompareRange");
         compareRange = (tpcCompareRange == null) ? 4 : Integer.parseInt(tpcCompareRange);
@@ -600,7 +600,7 @@ public final class ThreadPoolController {
      * Constructor
      *
      * @param executorServce the configured OSGi component that's associated with
-     *            the managed thread pool.
+     *                           the managed thread pool.
      */
     ThreadPoolController(ExecutorServiceImpl executorService, ThreadPoolExecutor pool) {
         this.executorService = executorService;
@@ -741,10 +741,10 @@ public final class ThreadPoolController {
      * number of active threads.
      *
      * @param activeThreads the number of active threads when the data was
-     *            collected
+     *                          collected
      *
-     * @param create whether to create and return a new throughput distribution
-     *            if none currently exists
+     * @param create        whether to create and return a new throughput distribution
+     *                          if none currently exists
      *
      * @return the data representing the throughput distribution for the
      *         specified number of active threads
@@ -766,7 +766,7 @@ public final class ThreadPoolController {
      * Determine whether or not the thread pool has been idle long enough to
      * pause the monitoring task.
      *
-     * @param threadPool a reference to the thread pool
+     * @param threadPool        a reference to the thread pool
      * @param intervalCompleted the tasks completed this interval
      *
      * @return true if the controller has been paused
@@ -794,7 +794,7 @@ public final class ThreadPoolController {
      * in the throughput distribution.
      *
      * @param distribution the throughput distribution associated with throughput
-     * @param throughput the observed throughput
+     * @param throughput   the observed throughput
      *
      * @return true if the thread pool has been reset due to an aberrant
      *         workload
@@ -878,15 +878,16 @@ public final class ThreadPoolController {
      * the current size of the pool and the number of consecutive times we've
      * observed an empty thread pool queue will cause the score to change.
      *
-     * @param poolSize the current thread pool size
-     * @param forecast the throughput forecast at the current thread pool size
-     * @param throughput the throughput of the current interval
-     * @param cpuHigh - whether current cpu usage exceeds the 'high' threshold
-     * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
+     * @param poolSize    the current thread pool size
+     * @param forecast    the throughput forecast at the current thread pool size
+     * @param throughput  the throughput of the current interval
+     * @param cpuHigh     true if current cpu usage exceeds the 'high' threshold
+     * @param lowTput     true if tput is low relative to poolsize, and queue is empty
+     * @param systemCpuNA true if systemCpu is not available/valid
      *
      * @return the shrink score
      */
-    double getShrinkScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput) {
+    double getShrinkScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput, boolean systemCpuNA) {
         double shrinkScore = 0.0;
         double shrinkMagic = 0.0;
         boolean flippedCoin = false;
@@ -968,7 +969,7 @@ public final class ThreadPoolController {
 
             // lean toward shrinking if cpuUtil is high
             if ((shrinkScore < 0.5) && (poolSize > hangBufferPoolSize) && (!smallPool)) {
-                if (cpuHigh) {
+                if (cpuHigh || (flippedCoin && systemCpuNA)) {
                     shrinkScore = (flipCoin()) ? 0.7 : shrinkScore;
                 } else {
                     if (flippedCoin) {
@@ -1026,15 +1027,16 @@ public final class ThreadPoolController {
      * pool with up to compareRange more threads will have higher throughput than
      * the forecast.
      *
-     * @param poolSize the current thread pool size
-     * @param forecast the throughput forecast at the current thread pool size
-     * @param throughput the throughput of the current interval
-     * @param cpuHigh - whether current cpu usage exceeds the 'high' threshold
-     * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
+     * @param poolSize    the current thread pool size
+     * @param forecast    the throughput forecast at the current thread pool size
+     * @param throughput  the throughput of the current interval
+     * @param cpuHigh     true if current cpu usage exceeds the 'high' threshold
+     * @param lowTput     true if tput is low relative to poolsize, and queue is empty
+     * @param systemCpuNA true if systemCpu is not available/valid
      *
      * @return the grow score
      */
-    double getGrowScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput) {
+    double getGrowScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowTput, boolean systemCpuNA) {
         double growScore = 0.0;
         boolean flippedCoin = false;
         int upwardCompareSpan = 0;
@@ -1087,8 +1089,8 @@ public final class ThreadPoolController {
                 }
             }
 
-            // grow less eagerly based on no data when cpuUtil is high
-            if (cpuHigh && growScore > 0.0 && flippedCoin) {
+            // grow less eagerly based on no data when cpuUtil is high or systemCpu is not available/valid
+            if ((cpuHigh || systemCpuNA) && growScore > 0.0 && flippedCoin) {
                 if (poolSize > hangBufferPoolSize) {
                     growScore = (flipCoin()) ? growScore : 0.0;
                 }
@@ -1151,10 +1153,10 @@ public final class ThreadPoolController {
      * Force an adjustment to the thread pool size if the change wouldn't shrink the
      * pool to zero or grow it beyond {@link maxThreads}.
      *
-     * @param poolSize the current pool size
+     * @param poolSize             the current pool size
      * @param calculatedAdjustment the adjustment calculated by grow and shrink scores
-     * @param intervalCompleted the number of tasks completed in the current interval
-     * @param lowTput an indicator that tput is low relative to poolsize, and queue is empty
+     * @param intervalCompleted    the number of tasks completed in the current interval
+     * @param lowTput              an indicator that tput is low relative to poolsize, and queue is empty
      *
      * @return the pool adjustment size to use
      */
@@ -1201,7 +1203,7 @@ public final class ThreadPoolController {
     /**
      * Adjust the size of the thread pool.
      *
-     * @param poolSize the current pool size
+     * @param poolSize       the current pool size
      * @param poolAdjustment the change to make to the pool
      *
      * @return the new pool size
@@ -1271,15 +1273,12 @@ public final class ThreadPoolController {
             }
 
             // update cpu utilization info
-            boolean cpuHigh = false;
-
             processCpuUtil = CpuInfo.getJavaCpuUsage();
             systemCpuUtil = CpuInfo.getSystemCpuUsage();
             cpuUtil = Math.max(systemCpuUtil, processCpuUtil);
 
-            if (cpuUtil > highCpu) {
-                cpuHigh = true;
-            }
+            boolean cpuHigh = (cpuUtil > highCpu);
+            boolean systemCpuNA = (systemCpuUtil < 0);
 
             // Handle pausing the task if the pool has been idle
             if (manageIdlePool(threadPool, deltaCompleted)) {
@@ -1337,8 +1336,8 @@ public final class ThreadPoolController {
             setPoolIncrementDecrement(poolSize);
 
             double forecast = currentStats.getMovingAverage();
-            double shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowTput);
-            double growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowTput);
+            double shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowTput, systemCpuNA);
+            double growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowTput, systemCpuNA);
 
             // Adjust the poolsize only if one of the scores is both larger than the scoreFilterLevel
             // and sufficiently larger than the other score. These conditions reduce poolsize fluctuation
@@ -1577,7 +1576,7 @@ public final class ThreadPoolController {
      * Evaluates a ThroughputDistribution for possible removal from the historical dataset.
      *
      * @param priorStats - ThroughputDistribution under evaluation
-     * @param forecast - expected throughput at the current poolSize
+     * @param forecast   - expected throughput at the current poolSize
      * @return - true if priorStats should be removed
      */
     private boolean pruneData(ThroughputDistribution priorStats, double forecast) {
@@ -1657,9 +1656,9 @@ public final class ThreadPoolController {
      * to shrink. The final outcome is probabilistic, not deterministic.
      *
      * @param smallerPoolSize - smaller poolSize for comparison
-     * @param largerPoolSize - larger poolSize for comparison
+     * @param largerPoolSize  - larger poolSize for comparison
      * @param smallerPoolTput - tput (historical or expected) of smaller poolSize
-     * @param largerPoolTput - tput (historical or expected) of larger poolSize
+     * @param largerPoolTput  - tput (historical or expected) of larger poolSize
      * @return - true if the ratios and coinFlips favor shrinking
      */
     private boolean leanTowardShrinking(Integer smallerPoolSize, int largerPoolSize,

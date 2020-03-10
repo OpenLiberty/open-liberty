@@ -139,6 +139,7 @@ public class ReferrerURLCookieHandlerTest {
         });
         assertEquals(slashPath, handler.getPathName(req));
     }
+
     /**
      * getReferrerURLFromCookies shall return null if there is no
      * REFERRER_URL cookie.
@@ -165,7 +166,7 @@ public class ReferrerURLCookieHandlerTest {
         final String encoded = "http://:80/page%3B/subpage%2C/more%25.html";
         final StringBuffer currentURL = new StringBuffer("http://site.com/page");
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, encoded)
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, encoded)
         };
         context.checking(new Expectations() {
             {
@@ -182,7 +183,7 @@ public class ReferrerURLCookieHandlerTest {
     /**
      * Get the first (and only) Cookie out of the AuthenticationResult
      * and ensure it has the correct properties and URL String.
-     * 
+     *
      * @param authResult
      * @param url
      */
@@ -211,6 +212,8 @@ public class ReferrerURLCookieHandlerTest {
                 will(returnValue(true));
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null);
@@ -237,6 +240,8 @@ public class ReferrerURLCookieHandlerTest {
                 will(returnValue(true));
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null);
@@ -364,7 +369,7 @@ public class ReferrerURLCookieHandlerTest {
     @Test
     public void clearReferrerURLCookie_setEmpty() {
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, "")
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, "")
         };
         context.checking(new Expectations() {
             {
@@ -379,7 +384,7 @@ public class ReferrerURLCookieHandlerTest {
     /**
      * cokieMatches is used in clearReferrerURLCookie_set to verify
      * the cookie passed to the HttpServletResponse has the right properties.
-     * 
+     *
      * @param cookie
      * @return boolean if the cookie's properties match
      */
@@ -396,7 +401,7 @@ public class ReferrerURLCookieHandlerTest {
     @Test
     public void clearReferrerURLCookie_set() {
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, "http://site.com/page")
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, "http://site.com/page")
         };
         context.checking(new Expectations() {
             {
@@ -455,7 +460,7 @@ public class ReferrerURLCookieHandlerTest {
         String referrerURL = "";
         final StringBuffer currentURL = new StringBuffer("http://site.com/page");
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
         };
         context.checking(new Expectations() {
             {
@@ -489,7 +494,7 @@ public class ReferrerURLCookieHandlerTest {
         String referrerURL = "/otherpage";
         final StringBuffer currentURL = new StringBuffer("http://site.com/page");
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
         };
         context.checking(new Expectations() {
             {
@@ -524,7 +529,7 @@ public class ReferrerURLCookieHandlerTest {
         final String referrerURL = "http://:80/page%3B/subpage%2C/more%25.html";
         final StringBuffer currentURL = new StringBuffer("http://site.com/page");
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
         };
         context.checking(new Expectations() {
             {
@@ -558,7 +563,7 @@ public class ReferrerURLCookieHandlerTest {
         final String referrerURL = "http://site.com/page";
         final StringBuffer currentURL = new StringBuffer("http://site.com/page");
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
         };
         context.checking(new Expectations() {
             {
@@ -590,7 +595,7 @@ public class ReferrerURLCookieHandlerTest {
         final String referrerURL = "http:///page";
         final StringBuffer currentURL = new StringBuffer("http://site.com/page");
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
         };
         context.checking(new Expectations() {
             {
@@ -623,7 +628,7 @@ public class ReferrerURLCookieHandlerTest {
         final String referrerURL = "http:///page";
         final StringBuffer currentURL = new StringBuffer("http://site.com/page");
         final Cookie[] cookies = new Cookie[] {
-                                               new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
+                                                new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, referrerURL)
         };
         context.checking(new Expectations() {
             {
@@ -659,6 +664,8 @@ public class ReferrerURLCookieHandlerTest {
                 will(returnValue(true));
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         String url = "http://site.com:80/page";
@@ -680,6 +687,8 @@ public class ReferrerURLCookieHandlerTest {
                 will(returnValue(true));
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         String url = "http://site.com:80/page";
@@ -704,6 +713,8 @@ public class ReferrerURLCookieHandlerTest {
                 will(returnValue(false));
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(false));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         String url = "http://site.com:80/page";
@@ -727,6 +738,8 @@ public class ReferrerURLCookieHandlerTest {
                 will(returnValue(true));
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         String url = "http://site.com:80/page";

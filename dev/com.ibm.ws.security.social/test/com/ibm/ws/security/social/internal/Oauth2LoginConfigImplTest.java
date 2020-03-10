@@ -1208,7 +1208,7 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
     protected Map<String, Object> getRequiredConfigProps() {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(Oauth2LoginConfigImpl.KEY_authorizationEndpoint, authzEndpoint);
-        props.put(Oauth2LoginConfigImpl.KEY_scope, scope);
+        //props.put(Oauth2LoginConfigImpl.KEY_scope, scope);
         props.put(Oauth2LoginConfigImpl.KEY_clientId, clientId);
         props.put(Oauth2LoginConfigImpl.KEY_clientSecret, clientSecretPS);
         return props;
