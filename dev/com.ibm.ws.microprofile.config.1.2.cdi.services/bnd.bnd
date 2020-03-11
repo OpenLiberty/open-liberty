@@ -31,6 +31,8 @@ WS-TraceGroup: APPCONFIG
 Include-Resource: \
     META-INF=resources/META-INF
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.config12.cdi.services.Config12CDIExtensionComponent
 

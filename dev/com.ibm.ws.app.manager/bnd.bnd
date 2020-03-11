@@ -16,19 +16,24 @@ Bundle-Name: WebSphere Application Manager
 Bundle-SymbolicName: com.ibm.ws.app.manager
 Bundle-Description: WebSphere Application Manager, version ${bVersion}
 
+Include-Resource: \
+  OSGI-INF/metatype=resources/OSGI-INF/metatype, \
+  OSGI-INF=resources/OSGI-INF
+
+Export-Package: \
+  com.ibm.websphere.application, \
+  com.ibm.wsspi.application, \
+  com.ibm.wsspi.application.handler, \
+  com.ibm.ws.app.manager
+
 Private-Package: com.ibm.ws.app.manager.internal*
 
--dsannotations: com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor,\
- com.ibm.ws.app.manager.internal.monitor.DropinMonitor,\
- com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator,\
- com.ibm.ws.app.manager.internal.ApplicationConfigurator,\
- com.ibm.ws.app.manager.ApplicationManager
-
-Include-Resource: OSGI-INF/metatype=resources/OSGI-INF/metatype,OSGI-INF=resources/OSGI-INF
-Export-Package: com.ibm.websphere.application,\
- com.ibm.wsspi.application,\
- com.ibm.wsspi.application.handler,\
- com.ibm.ws.app.manager
+-dsannotations: \
+  com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor, \
+  com.ibm.ws.app.manager.internal.monitor.DropinMonitor, \
+  com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator, \
+  com.ibm.ws.app.manager.internal.ApplicationConfigurator, \
+  com.ibm.ws.app.manager.ApplicationManager
 
 instrument.classesExcludes: com/ibm/ws/app/manager/internal/resources/*.class
 

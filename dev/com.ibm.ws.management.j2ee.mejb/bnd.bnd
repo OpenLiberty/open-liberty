@@ -26,6 +26,7 @@ Private-Package: \
   com.ibm.ws.management.j2ee.mejb.resources
   
 Import-Package: \
+  !com.ibm.ws.management.j2ee.mejb.service, \
   com.ibm.ws.app.manager.module.internal, \
   com.ibm.ejs.container, \
   * 

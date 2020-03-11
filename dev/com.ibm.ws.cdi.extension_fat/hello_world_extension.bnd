@@ -24,6 +24,8 @@ Import-Package: \
 Export-Package: \
   com.ibm.ws.cdi.extension.impl;version=1.0.0
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.cdi.extension.impl.HelloWorldExtension

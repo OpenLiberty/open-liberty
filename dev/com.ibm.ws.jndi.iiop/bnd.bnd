@@ -26,6 +26,7 @@ WS-TraceGroup: Naming
 Export-Package: com.ibm.ws.jndi.iiop;thread-context=true;mandatory:=thread-context
 
 Import-Package: \
+ !com.ibm.ws.jndi.iiop, \
  org.omg.*;version="[2.4,3.0)", \
  javax.rmi.*;version="[2.4,3.0)", \
  *

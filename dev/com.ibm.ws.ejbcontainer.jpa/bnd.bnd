@@ -16,14 +16,18 @@ Bundle-SymbolicName: com.ibm.ws.ejbcontainer.jpa
 Bundle-Description: EJB EPC enablement feature for JPA; version=${bVersion}
 
 WS-TraceGroup: EJBContainer
+  
+Export-Package: \
+  com.ibm.ws.ejbcontainer.jpa.injection.factory
+
+Import-Package: \
+  !com.ibm.ws.ejbcontainer.jpa.injection.factory, \
+  ${defaultPackageImport}
 
 Private-Package: \
   com.ibm.ws.ejbcontainer.jpa.internal.*,\
   com.ibm.ws.ejbcontainer.jpa.resources
-  
-Export-Package: \
-  com.ibm.ws.ejbcontainer.jpa.injection.factory
-  
+
 Service-Component:\
   com.ibm.ws.ejbcontainer.jpa.runtime;\
     implementation:=com.ibm.ws.ejbcontainer.jpa.internal.EJBJPAContainerImpl;\

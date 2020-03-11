@@ -140,6 +140,7 @@ Export-Package: \
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: \
+  !com.ibm.ws.jsf.ee, \
   !com.google.inject, \
   !javax.ejb, \
   !javax.persistence, \

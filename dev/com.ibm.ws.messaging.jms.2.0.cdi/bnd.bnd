@@ -27,7 +27,9 @@ Private-Package: \
 
 Include-Resource: \
     META-INF=resources/META-INF
-    
+
+-cdiannotations:
+
 -dsannotations: com.ibm.ws.cdi.jms.JMSContextInjectionExtension
 
 instrument.classesExcludes: com/ibm/ws/cdi/jms/resources/*.class

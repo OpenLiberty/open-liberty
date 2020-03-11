@@ -46,6 +46,7 @@ Export-Package: \
     com.ibm.ws.jaxws23.web
 
 Import-Package: \
+   !com.ibm.ws.jaxws23.web, \
    com.ibm.wsspi.adaptable.module.adapters, \
    com.ibm.wsspi.webcontainer.collaborator, \
    com.ibm.ws.container.service.metadata, \

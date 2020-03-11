@@ -54,6 +54,7 @@ Export-Package: \
    com.ibm.ws.URL
 
 Import-Package: \
+    !com.ibm.ws.container.service.naming, \
     !*.internal.*, *
 
 Private-Package: \

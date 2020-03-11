@@ -20,6 +20,7 @@ Export-Package: \
   com.ibm.ws.microprofile.rest.client.cdi
 
 Import-Package: \
+  !com.ibm.ws.microprofile.rest.client.cdi, \
   org.apache.cxf.common.classloader;version="[3.1,4)",\
   org.apache.cxf.microprofile.client;version="[3.1,4)",\
   org.apache.cxf.microprofile.client.cdi;version="[3.1,4)",\
