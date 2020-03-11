@@ -18,7 +18,6 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
-import com.ibm.ws.logging.data.GCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.JSONObject.JSONObjectBuilder;
 import com.ibm.ws.logging.data.KeyValuePair;
@@ -51,19 +50,7 @@ public class CollectorJsonUtils_JSON {
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String[] tags,
                                       int maxFieldLength) {
 
-        if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
-
-            if (event instanceof GCData) {
-
-                return jsonifyGCEvent(wlpUserDir, serverName, serverHostName, event, tags);
-
-            } else {
-
-                return jsonifyGCEvent(-1, wlpUserDir, serverName, serverHostName, CollectorConstants.GC_EVENT_TYPE, event, tags);
-
-            }
-
-        } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
+        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
 
             return jsonifyTraceAndMessage(maxFieldLength, wlpUserDir, serverName, serverHostName, CollectorConstants.MESSAGES_LOG_EVENT_TYPE, event, tags);
 
@@ -86,86 +73,6 @@ public class CollectorJsonUtils_JSON {
         }
         return "";
 
-    }
-
-    private static String jsonifyGCEvent(int maxFieldLength, String wlpUserDir,
-                                         String serverName, String hostName, String eventType, Object event, String[] tags) {
-        GenericData genData = (GenericData) event;
-        KeyValuePair[] pairs = genData.getPairs();
-        KeyValuePair kvp = null;
-        String key = null;
-
-        StringBuilder sb = CollectorJsonHelpers.startGCJson1_1(hostName, wlpUserDir, serverName);
-
-        for (KeyValuePair p : pairs) {
-
-            if (p != null && !p.isList()) {
-
-                kvp = p;
-                key = kvp.getKey();
-
-                if (key.equals(LogFieldConstants.IBM_DURATION)) {
-
-                    long duration = kvp.getLongValue() * 1000;
-                    CollectorJsonHelpers.addToJSON(sb, key, Long.toString(duration), false, true, false, false, true);
-
-                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-
-                    String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                    CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, false, false);
-
-                } else {
-
-                    String value = null;
-                    if (kvp.isInteger()) {
-                        value = Integer.toString(kvp.getIntValue());
-                    } else if (kvp.isLong()) {
-                        value = Long.toString(kvp.getLongValue());
-                    } else {
-                        value = kvp.getStringValue();
-                    }
-                    CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
-
-                }
-            }
-        }
-
-        if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
-        }
-
-        sb.append("}");
-
-        return sb.toString();
-    }
-
-    private static String jsonifyGCEvent(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
-
-        GCData gcData = (GCData) event;
-        StringBuilder sb = CollectorJsonHelpers.startGCJson1_1(hostName, wlpUserDir, serverName);
-
-        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey1_1(), Long.toString(gcData.getHeap()), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey1_1(), Long.toString(gcData.getUsedHeap()), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey1_1(), Long.toString(gcData.getMaxHeap()), false, false, false, false, true);
-
-        long duration = gcData.getDuration() * 1000;
-        CollectorJsonHelpers.addToJSON(sb, gcData.getDurationKey1_1(), Long.toString(duration), false, false, false, false, true);
-
-        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey1_1(), gcData.getGcType(), false, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey1_1(), gcData.getReason(), false, false, false, false, false);
-
-        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(gcData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, gcData.getDatetimeKey1_1(), datetime, false, false, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey1_1(), gcData.getSequence(), false, false, false, false, false);
-
-        if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
-        }
-
-        sb.append("}");
-
-        return sb.toString();
     }
 
     private static String jsonifyFFDC(int maxFieldLength, String wlpUserDir,
