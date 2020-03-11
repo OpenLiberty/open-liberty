@@ -74,6 +74,8 @@ import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.SampleResource;
 
+import com.ibm.ws.repository.resources.internal.EsaResourceImpl;
+import com.ibm.ws.repository.resources.internal.SampleResourceImpl;
 import wlp.lib.extract.SelfExtractor;
 
 class ResolveDirector extends AbstractDirector {
@@ -647,17 +649,14 @@ class ResolveDirector extends AbstractDirector {
 
                 if (!installResources.isEmpty()) {
                     Set<String> resolveAsSetFeatures = new HashSet<>();
-                    boolean foundAFeature = false;
                     for (List<RepositoryResource> resList : installResources) {
                         for (RepositoryResource res : resList) {
                             if (res.getType().equals(ResourceType.FEATURE)) {
-                                foundAFeature = true;
+                                resolveAsSetFeatures.add(((EsaResource) res).getProvideFeature());
                             }
-                            EsaResource esa = (EsaResource) res;
-                            resolveAsSetFeatures.add(esa.getProvideFeature());
                         }
                     }
-                    if (foundAFeature) {
+                    if (!resolveAsSetFeatures.isEmpty()) {
                         // call old resolve api
                         resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
                         Collection<List<RepositoryResource>> resolvedResources = resolver.resolve(resolveAsSetFeatures);
