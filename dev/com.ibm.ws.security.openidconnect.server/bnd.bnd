@@ -114,7 +114,7 @@ Service-Component: \
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
     OSGI-INF=resources/OSGI-INF, \
-    scripts=resources/scripts, \    
+    scripts=resources/scripts, \
     resources/clienttable.jsp, \
     resources/login.jsp, \
     resources/sessionMgmt.jsp, \
