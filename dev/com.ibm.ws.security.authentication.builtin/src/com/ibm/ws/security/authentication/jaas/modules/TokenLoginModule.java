@@ -181,6 +181,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(jwtPartialSubject, hashtableLoginProperties);
         customPropertiesFromSubject = true;
+        temporarySubject.getPrivateCredentials().add(customProperties);
         String userId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_USERID);
         if (userId != null && allowLoginWithIdOnly(customProperties)) {
             securityName = userId;
