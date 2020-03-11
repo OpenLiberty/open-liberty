@@ -775,12 +775,11 @@ public class InstallKernelMap implements Map {
                             featuresResolved.add(repoResrc.getMavenCoordinates());
                         }
                         if (repoResrc.getType().equals(ResourceType.FEATURE)) {
-                            foundAFeature=true;
+                            resolveAsSetFeatures.add(((EsaResource) repoResrc).getProvideFeature());
                         }
-                        resolveAsSetFeatures.add((EsaResource) res).getProvideFeature();
                     }
                 }
-                if (foundAFeature) {
+                if (!resolveAsSetFeatures.isEmpty()) {
                     // call old resolve api
                     resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
                     Collection<List<RepositoryResource>> resolvedResources = resolver.resolve(resolveAsSetFeatures);
