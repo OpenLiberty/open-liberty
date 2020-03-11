@@ -11,9 +11,9 @@
             </arguments>
         </buildCommand>
         <buildCommand>
-                <name>bndtools.core.bndbuilder</name>
-                <arguments>
-                </arguments>
+            <name>bndtools.core.bndbuilder</name>
+            <arguments>
+            </arguments>
         </buildCommand>
     </buildSpec>
     <natures>

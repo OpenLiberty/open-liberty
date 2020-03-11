@@ -1,74 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.4.0"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.grpc.common"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.websphere.javaee.cdi.1.2"/>
-	<classpathentry kind="lib" path="/com.ibm.websphere.javaee.servlet.3.0/generated/com.ibm.websphere.javaee.servlet.3.0.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.javaee.servlet.3.0.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.javaee.servlet.3.0"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/com.ibm.ws.grpc.common/build/libs/com.ibm.ws.grpc.common.1.0.jar" sourcepath="/Users/wtlucy/Downloads/grpc-java-1.27.0.zip"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.channelfw"/>
-	<classpathentry kind="src" path="/com.ibm.ws.transport.http"/>
-	<classpathentry kind="lib" path="/com.ibm.websphere.javaee.cdi.1.2/generated/com.ibm.websphere.javaee.cdi.1.2.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.javaee.cdi.1.2.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.javaee.cdi.1.2"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.core/generated/com.ibm.websphere.org.osgi.core.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.org.osgi.core.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.org.osgi.core"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.service.component/generated/com.ibm.websphere.org.osgi.service.component.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.org.osgi.service.component.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.org.osgi.service.component"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/com.ibm.wsspi.org.osgi.service.component.annotations/generated/com.ibm.wsspi.org.osgi.service.component.annotations.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.wsspi.org.osgi.service.component.annotations.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.wsspi.org.osgi.service.component.annotations"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/com.ibm.ws.container.service"/>
-	<classpathentry kind="src" path="/com.ibm.ws.adaptable.module"/>
-	<classpathentry kind="src" path="/com.ibm.ws.kernel.service"/>
-	<classpathentry kind="src" path="/com.ibm.ws.anno"/>
-	<classpathentry kind="src" path="/com.ibm.ws.app.manager"/>
-	<classpathentry kind="src" path="/com.ibm.ws.javaee.dd"/>
-	<classpathentry kind="lib" path="/com.ibm.websphere.javaee.servlet.4.0/generated/com.ibm.websphere.javaee.servlet.4.0.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.javaee.servlet.4.0.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.javaee.servlet.4.0"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/com.ibm.ws.logging.core"/>
-	<classpathentry kind="src" path="/com.ibm.ws.webcontainer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

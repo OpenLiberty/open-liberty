@@ -31,8 +31,6 @@ Export-Package: com.ibm.ws.grpc
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
--fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
-
 -buildpath: \
   com.ibm.ws.container.service;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\

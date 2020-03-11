@@ -2,55 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.grpc.common"/>
-	<classpathentry kind="lib" path="/com.ibm.ws.grpc.common/build/libs/com.ibm.ws.grpc.common.1.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.channelfw"/>
-	<classpathentry kind="src" path="/com.ibm.ws.transport.http"/>
-	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.core/generated/com.ibm.websphere.org.osgi.core.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.org.osgi.core.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.org.osgi.core"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.service.component/generated/com.ibm.websphere.org.osgi.service.component.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.org.osgi.service.component.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.org.osgi.service.component"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/com.ibm.wsspi.org.osgi.service.component.annotations/generated/com.ibm.wsspi.org.osgi.service.component.annotations.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.wsspi.org.osgi.service.component.annotations.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.wsspi.org.osgi.service.component.annotations"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/com.ibm.ws.container.service"/>
-	<classpathentry kind="src" path="/com.ibm.ws.adaptable.module"/>
-	<classpathentry kind="src" path="/com.ibm.ws.kernel.service"/>
-	<classpathentry kind="src" path="/com.ibm.ws.anno"/>
-	<classpathentry kind="src" path="/com.ibm.ws.app.manager"/>
-	<classpathentry kind="src" path="/com.ibm.ws.javaee.dd"/>
-	<classpathentry kind="src" path="/com.ibm.ws.logging.core"/>
-	<classpathentry kind="lib" path="/com.ibm.ws.org.osgi.annotation.versioning/generated/com.ibm.ws.org.osgi.annotation.versioning.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.ws.org.osgi.annotation.versioning.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.ws.org.osgi.annotation.versioning"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="src" path="/com.ibm.ws.junit.extensions"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
