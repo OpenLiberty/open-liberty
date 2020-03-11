@@ -738,7 +738,6 @@ public class InstallKernelMap implements Map {
 
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
-
             if(!resolveResult.isEmpty()){
                 Set<String> resolveAsSetFeatures = new HashSet<>();
                 boolean foundAFeature = false;
@@ -774,33 +773,11 @@ public class InstallKernelMap implements Map {
                         } else {
                             featuresResolved.add(repoResrc.getMavenCoordinates());
                         }
-                        if (repoResrc.getType().equals(ResourceType.FEATURE)) {
-                            resolveAsSetFeatures.add(((EsaResource) repoResrc).getProvideFeature());
-                        }
                     }
                 }
-                if (!resolveAsSetFeatures.isEmpty()) {
-                    // call old resolve api
-                    resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
-                    Collection<List<RepositoryResource>> resolvedResources = resolver.resolve(resolveAsSetFeatures);
-
-                    // filter install resources to include resolveAsSet feature + missing auto features from old resolve api
-                    for (List<RepositoryResource> resList : resolvedResources) {
-                        List<RepositoryResource> autoFeatures = new ArrayList<>();
-                        for (RepositoryResource res : resList) {
-                            if (res.getType().equals(ResourceType.FEATURE)) {
-                                EsaResource esa = (EsaResource) res;
-                                if (esa.getInstallPolicy().toString().equalsIgnoreCase("WHEN_SATISFIED")) {
-                                    autoFeatures.add(res);
-                                }
-                            }
-                        }
-                        if (!autoFeatures.isEmpty())
-                            resolveResult.add(autoFeatures);
-                    }
-                }
-
             }
+            ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
+
             actionType = ActionType.install;
             featuresResolved = keepFirstInstance(featuresResolved);
             return featuresResolved;
