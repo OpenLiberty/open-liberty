@@ -738,9 +738,9 @@ public class InstallKernelMap implements Map {
 
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+            ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
+
             if(!resolveResult.isEmpty()){
-                Set<String> resolveAsSetFeatures = new HashSet<>();
-                boolean foundAFeature = false;
                 for (List<RepositoryResource> item : resolveResult) {
                     for (RepositoryResource repoResrc : item) {
                         String license = repoResrc.getLicenseId();
@@ -776,7 +776,6 @@ public class InstallKernelMap implements Map {
                     }
                 }
             }
-            ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
 
             actionType = ActionType.install;
             featuresResolved = keepFirstInstance(featuresResolved);
