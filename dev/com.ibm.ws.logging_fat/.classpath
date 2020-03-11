@@ -15,7 +15,8 @@
 	<classpathentry kind="src" path="test-bundles/test.configuration.fallalloverthefloor.userfeature/src"/>
 	<classpathentry kind="src" path="test-bundles/logservice.tester/src"/>
 	<classpathentry kind="src" path="test-applications/RealFlushTestApp/src"/>
+	<classpathentry kind="src" path="test-applications/add-extension-fields/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

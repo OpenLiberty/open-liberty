@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,25 +17,21 @@ public class NameAliases {
 
     private final String[] originalNames;
     public volatile String[] aliases;
-    public volatile ArrayList<String> originalExtensions;
-    public volatile ArrayList<String> aliasesExtensions;
+    public ExtensionAliases extensionAliases;
 
     public NameAliases(String[] originalNames) {
         this.originalNames = originalNames;
         this.aliases = originalNames.clone();
-        this.originalExtensions = new ArrayList<>();
-        this.aliasesExtensions = new ArrayList<>();
+        this.extensionAliases = new ExtensionAliases();
     }
 
     public void newAliases(Map<String, String> newAliases) {
         String[] tempAliases = originalNames.clone();
-        this.originalExtensions = new ArrayList<>();
-        this.aliasesExtensions = new ArrayList<>();
+        ExtensionAliases tempExtensionAliases = new ExtensionAliases();
         for (Map.Entry<String, String> entry : newAliases.entrySet()) {
             //check if entry key is an extension or original name
-            if (entry.getKey().startsWith("ext_")) {
-                this.originalExtensions.add(entry.getKey().trim());
-                this.aliasesExtensions.add(entry.getValue().trim());
+            if (entry.getKey().trim().startsWith("ext_")) {
+                tempExtensionAliases.addExtensionAlias(entry.getKey().trim(), entry.getValue().trim());
                 continue;
             }
             for (int i = 0; i < originalNames.length; i++) {
@@ -45,10 +41,36 @@ public class NameAliases {
             }
         }
         aliases = tempAliases;
+        extensionAliases = tempExtensionAliases;
     }
 
     public void resetAliases() {
         aliases = originalNames.clone();
+        extensionAliases = new ExtensionAliases();
+    }
+
+    static class ExtensionAliases {
+        public ArrayList<String> originalExtensions;
+        public ArrayList<String> aliasesExtensions;
+
+        public ExtensionAliases() {
+            this.originalExtensions = new ArrayList<String>();
+            this.aliasesExtensions = new ArrayList<String>();
+        }
+
+        public void addExtensionAlias(String originalName, String alias) {
+            originalExtensions.add(originalName);
+            aliasesExtensions.add(alias);
+        }
+
+        public String getAlias(String original) {
+            for (int i = 0; i < originalExtensions.size(); i++) {
+                if (originalExtensions.get(i).equals(original)) {
+                    return aliasesExtensions.get(i);
+                }
+            }
+            return original;
+        }
     }
 
 }

@@ -19,7 +19,7 @@
 <body>
 	<%
 	
-		out.println("SameSite Set-Cookie Test");
+		out.println("SameSite Set-Cookie JSP Test!");
 	
 		if(response.containsHeader("Set-Cookie")) {
 			out.println("Response contained a Set-Cookie header and we are replacing them: ");

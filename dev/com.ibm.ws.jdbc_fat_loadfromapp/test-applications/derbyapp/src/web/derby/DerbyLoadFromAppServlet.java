@@ -12,18 +12,28 @@ package web.derby;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
+import javax.resource.spi.security.PasswordCredential;
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
@@ -37,6 +47,9 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
 
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromOtherApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromOtherApp;
+
+    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromEnterpriseAppNotFoundInWebApp", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromOtherAppNotFound;
 
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromWebApp;
@@ -76,6 +89,29 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     }
 
     /**
+     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application can be used
+     * by an EJB within the web application to authenticate to a data source when its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromEJBInWebApp() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/derbyApp/BeanInWebApp!java.util.concurrent.Executor");
+        bean.execute(() -> {
+            try {
+                DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
+                try (Connection con = ds.getConnection()) {
+                    DatabaseMetaData mdata = con.getMetaData();
+                    String userName = mdata.getUserName();
+                    assertEquals("webappuser", userName);
+                }
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new RuntimeException(x);
+            }
+        });
+    }
+
+    /**
      * testLoginModuleFromOtherApp - verify that a login module that is packaged within another application can be used to authenticate
      * a data source that is defined in the current web application, where its resource reference specifies to use that login module.
      */
@@ -88,23 +124,37 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     }
 
     /**
-     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application CANNOT be used to authenticate
-     * to a data source when its resource reference specifies to use that login module.
+     * testLoginModuleFromOtherAppNotFoundInWebApp - verify that a login module that is packaged within a separate enterprise application
+     * that does not match the classProviderRef CANNOT be used to authenticate to a data source when its resource reference
+     * specifies to use that login module.
      */
-    @AllowedFFDC({ "javax.security.auth.login.LoginException", "javax.resource.ResourceException" }) // TODO remove if we decide to enable this scenario
+    @AllowedFFDC({
+                   "javax.security.auth.login.LoginException", // no login modules for notFoundInWebAppLogin
+                   "javax.resource.ResourceException" // chains the LoginException
+    })
     @Test
-    public void testLoginModuleFromWebApp() throws Exception {
-        try (Connection con = sldsLoginModuleFromWebApp.getConnection()) {
+    public void testLoginModuleFromOtherAppNotFoundInWebApp() throws Exception {
+        try (Connection con = sldsLoginModuleFromOtherAppNotFound.getConnection()) {
             DatabaseMetaData metadata = con.getMetaData();
             fail("authenticated as user " + metadata.getUserName());
-            // TODO if we decide to enable this path, then switch to the following assert and remove the catch block
-            // assertEquals("webappuser", metadata.getUserName());
         } catch (SQLException x) {
             Throwable cause = x;
             while (cause != null && !(cause instanceof LoginException))
                 cause = cause.getCause();
             if (!(cause instanceof LoginException))
                 throw x;
+        }
+    }
+
+    /**
+     * testLoginModuleFromWebApp - verify that a login module that is packaged within the web application can be used to authenticate
+     * to a data source when its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromWebApp() throws Exception {
+        try (Connection con = sldsLoginModuleFromWebApp.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            assertEquals("webappuser", metadata.getUserName());
         }
     }
 
@@ -124,5 +174,36 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
         } finally {
             con.close();
         }
+    }
+
+    /**
+     * testWebInboundLoginModuleFromWebApp - log in with the default login module for web inbound traffic,
+     * for which the location of the login module class is configured via classProviderRef.
+     */
+    @Test
+    public void testWebInboundLoginModuleFromWebApp() throws Exception {
+        final List<String> users = new ArrayList<String>();
+        final LoginContext loginContext = new LoginContext("system.WEB_INBOUND");
+
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+            @Override
+            public Void run() throws Exception {
+                loginContext.login();
+                try {
+                    Subject subject = loginContext.getSubject();
+                    for (PasswordCredential cred : subject.getPrivateCredentials(PasswordCredential.class)) {
+                        String user = cred.getUserName();
+                        users.add(user);
+                        if ("webInboundUser".equals(user))
+                            Assert.assertArrayEquals("webInboundPwd".toCharArray(), cred.getPassword());
+                    }
+                } finally {
+                    loginContext.logout();
+                }
+                return null;
+            }
+        });
+
+        assertTrue("Found in private credentials: " + users.toString(), users.contains("webInboundUser"));
     }
 }

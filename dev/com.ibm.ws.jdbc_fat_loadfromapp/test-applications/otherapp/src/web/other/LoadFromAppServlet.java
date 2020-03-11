@@ -14,19 +14,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
+import javax.resource.spi.security.PasswordCredential;
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
@@ -41,6 +49,9 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
 
     @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromTopLevelJarInApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromTopLevelJarInApp;
+
+    @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromWebAppNotFoundInEAR", lookup = "jdbc/sharedLibDataSource")
+    private DataSource sldsLoginModuleFromWebAppNotFound;
 
     @Resource(name = "java:app/env/jdbc/sldsLoginModuleFromWebModuleInApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromWebModuleInApp;
@@ -119,21 +130,20 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
         }
     }
 
-    // TODO determine expectations around loading login modules from EJBs.
-    // Currently not expecting to load login modules from EJB modules, but what about being able to load login modules
-    // that are packaged elsewhere within the application when on an EJB code path?
-
+    /**
+     * testLoginModuleFromEJBModule1 - verify that a login module that is packaged within an EJB module
+     * is used to authenticate to a data source when its resource reference specifies to use that login module.
+     */
     @Test
     public void testLoginModuleFromEJBModule1() throws Exception {
         Executor bean = InitialContext.doLookup("java:global/otherApp/ejb1/FirstBean!java.util.concurrent.Executor");
         bean.execute(() -> {
             try {
-                System.out.println("EJB1 loads: " + Class.forName("loginmod.LoadFromAppLoginModule"));
                 DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
                 try (Connection con = ds.getConnection()) {
                     DatabaseMetaData mdata = con.getMetaData();
                     String userName = mdata.getUserName();
-                    assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+                    assertEquals("ejb1user", userName);
                 }
             } catch (RuntimeException x) {
                 throw x;
@@ -143,17 +153,20 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
         });
     }
 
+    /**
+     * testLoginModuleFromEJBModule2 - verify that a login module that is packaged within an EJB module
+     * is used to authenticate to a data source when its resource reference specifies to use that login module.
+     */
     @Test
     public void testLoginModuleFromEJBModule2() throws Exception {
         Executor bean = InitialContext.doLookup("java:global/otherApp/ejb2/SecondBean!java.util.concurrent.Executor");
         bean.execute(() -> {
             try {
-                System.out.println("EJB2 loads: " + Class.forName("loginmod.LoadFromAppLoginModule"));
                 DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");
                 try (Connection con = ds.getConnection()) {
                     DatabaseMetaData mdata = con.getMetaData();
                     String userName = mdata.getUserName();
-                    assertEquals("APP", userName); // this will start failing if login module gets used. "APP" is the default Derby user, not a user from a login module
+                    assertEquals("ejb2user", userName);
                 }
             } catch (RuntimeException x) {
                 throw x;
@@ -214,16 +227,17 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
     }
 
     /**
-     * testLoginModuleFromWebModuleInEAR - verify that a login module that is packaged within the web module CANNOT be used to authenticate
-     * to a data source when its resource reference specifies to use that login module.
+     * testLoginModuleFromWebAppNotFoundInOtherApp - verify that a login module that is packaged within a separate web application
+     * that does not match the classProviderRef CANNOT be used to authenticate to a data source when its resource reference
+     * specifies to use that login module.
      */
     @AllowedFFDC({
-                   "javax.security.auth.login.LoginException", // no login modules for webapplogin
+                   "javax.security.auth.login.LoginException", // no login modules for notFoundInEarLogin
                    "javax.resource.ResourceException" // chains the LoginException
     })
     @Test
-    public void testLoginModuleFromWebModuleInEAR() throws Exception {
-        try (Connection con = sldsLoginModuleFromWebModuleInApp.getConnection()) {
+    public void testLoginModuleFromWebAppNotFoundInOtherApp() throws Exception {
+        try (Connection con = sldsLoginModuleFromWebAppNotFound.getConnection()) {
             DatabaseMetaData metadata = con.getMetaData();
             fail("authenticated as user " + metadata.getUserName());
         } catch (SQLException x) {
@@ -232,6 +246,19 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
                 cause = cause.getCause();
             if (!(cause instanceof LoginException))
                 throw x;
+        }
+    }
+
+    /**
+     * testLoginModuleFromWebModuleInEAR - verify that a login module that is packaged within a web module within an enterprise application
+     * can be used to authenticate to a data source when its resource reference specifies to use that login module.
+     */
+    @Test
+    public void testLoginModuleFromWebModuleInEAR() throws Exception {
+        try (Connection con = sldsLoginModuleFromWebModuleInApp.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            String userName = metadata.getUserName();
+            assertEquals("webuser", userName);
         }
     }
 
@@ -252,5 +279,36 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
         } finally {
             con.close();
         }
+    }
+
+    /**
+     * testWebInboundLoginModule - log in with the default login module for web inbound traffic,
+     * for which the location of the login module class is configured via classProviderRef.
+     */
+    @Test
+    public void testWebInboundLoginModule() throws Exception {
+        final List<String> users = new ArrayList<String>();
+        final LoginContext loginContext = new LoginContext("system.WEB_INBOUND");
+
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+            @Override
+            public Void run() throws Exception {
+                loginContext.login();
+                try {
+                    Subject subject = loginContext.getSubject();
+                    for (PasswordCredential cred : subject.getPrivateCredentials(PasswordCredential.class)) {
+                        String user = cred.getUserName();
+                        users.add(user);
+                        if ("webInboundUser".equals(user))
+                            Assert.assertArrayEquals("webInboundPwd".toCharArray(), cred.getPassword());
+                    }
+                } finally {
+                    loginContext.logout();
+                }
+                return null;
+            }
+        });
+
+        assertTrue("Found in private credentials: " + users.toString(), users.contains("webInboundUser"));
     }
 }

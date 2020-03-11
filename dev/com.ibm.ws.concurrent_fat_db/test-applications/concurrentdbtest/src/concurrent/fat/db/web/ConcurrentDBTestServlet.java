@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,12 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
 
     @Resource
     private DataSource dataSource;
+
+    @Resource(shareable = false, lookup = "jdbc/CPDataSource")
+    private DataSource unshared1PCDataSource;
+
+    @Resource(shareable = false)
+    private DataSource unsharedXADataSource;
 
     @Resource
     private ManagedScheduledExecutorService scheduledExecutor;
@@ -362,17 +368,21 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
         // create a database entry upon taskSubmitted
         Runnable task = new Runnable() {
             @Override
-            public void run() {}
+            public void run() {
+            }
         };
         ManagedTaskListener listener = new ManagedTaskListener() {
             @Override
-            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {}
+            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
 
             @Override
-            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {}
+            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
 
             @Override
-            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {}
+            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
 
             @Override
             public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
@@ -565,5 +575,244 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
 
         if (updateCount != 1)
             throw new Exception("Unexpected update count " + updateCount);
+    }
+
+    /**
+     * Use an unshared, one-phase commit connection to do work in a database local transaction.
+     * Without resolving the transaction, apply a new transaction context,
+     * in which a new database local transaction is started and more work is
+     * attempted using the same unshared connection. Because database local transactions
+     * don't have any way of honoring suspend/resume, we should ideally see this attempt fail.
+     */
+    // @Test TODO fails with: "Unexpectedly rolled back work that was done under original transaction, probably due to connection erroneously being allowed to do work while a different transaction is active on the thread"
+    public void testUnsharedOnePhaseConnectionSuspendAndResumeDBLocalTransaction() throws Exception {
+        final Connection con = unshared1PCDataSource.getConnection();
+        try {
+            con.setAutoCommit(false);
+            try {
+                Statement s1 = con.createStatement();
+                s1.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedOnePhaseConnectionSuspendAndResumeDBLocalTransaction-1', 23)");
+                s1.close();
+
+                // transaction should suspend for this
+                contextService.createContextualProxy(new Callable<Integer>() {
+                    @Override
+                    public Integer call() throws Exception {
+                        con.setAutoCommit(false);
+                        try {
+                            // TODO It would be nice if the attempt to use a connection with a database local transaction in-progress
+                            // on a different thread could raise an error. There is no way of doing a suspend/resume on a
+                            // database local transaction.
+                            Statement s2 = con.createStatement();
+                            int count = s2.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedOnePhaseConnectionSuspendAndResumeDBLocalTransaction-2', 24)");
+                            s2.close();
+                            return count;
+                        } finally {
+                            con.rollback();
+                        }
+                    }
+                }, Callable.class).call();
+
+                // original transaction should be resumed
+                con.commit();
+            } finally {
+                con.setAutoCommit(true);
+            }
+
+            Statement s3 = con.createStatement();
+            ResultSet result = s3.executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY LIKE 'testUnsharedOnePhaseConnectionSuspendAndResumeDBLocalTransaction-%'");
+            if (!result.next())
+                throw new Exception("Unexpectedly rolled back work that was done under original transaction, " +
+                                    " probably due to connection erroneously being allowed to do work while a different transaction is active on the thread.");
+
+            int value = result.getInt(1);
+
+            if (result.next())
+                throw new Exception("Should only find entry with 23. If 24 is found, then the second transaction was allowed to run but didn't honor its rollback." +
+                                    " Found: " + value + " and " + result.getInt(1));
+
+            if (value != 23)
+                throw new Exception("Committed the wrong update.");
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Use an unshared, one-phase commit connection to do work in a global transaction.
+     * Without resolving the global transaction, apply a new transaction context,
+     * in which a new global transaction is started and more work is attempted using
+     * the same unshared connection. Because one-phase connections don't have any way
+     * of honoring a suspend/resume, we should ideally see this attempt fail.
+     */
+    // @Test TODO fails with: "Should only find entry with 19. If 20 is found, then the second transaction was allowed to run but didn't honor its rollback. Found: 19 and 20"
+    public void testUnsharedOnePhaseConnectionSuspendAndResumeGlobalTransaction() throws Exception {
+        final Connection con = unshared1PCDataSource.getConnection();
+        try {
+            tran.begin();
+            try {
+                Statement s1 = con.createStatement();
+                s1.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedOnePhaseConnectionSuspendAndResumeGlobalTransaction-1', 19)");
+                s1.close();
+
+                // global transaction should suspend for this
+                contextService.createContextualProxy(new Callable<Integer>() {
+                    @Override
+                    public Integer call() throws Exception {
+                        tran.begin();
+                        try {
+                            // TODO It would be nice if the attempt to use an in-progress one-phase-only resource within
+                            // a different transaction could raise an error. There is no way of doing a suspend/resume on a
+                            // one-phase-only connection.
+                            Statement s2 = con.createStatement();
+                            int count = s2.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedOnePhaseConnectionSuspendAndResumeGlobalTransaction-2', 20)");
+                            s2.close();
+                            return count;
+                        } finally {
+                            tran.rollback();
+                        }
+                    }
+                }, Callable.class).call();
+
+                // original global transaction should be resumed
+            } finally {
+                tran.commit();
+            }
+
+            Statement s3 = con.createStatement();
+            ResultSet result = s3.executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY LIKE 'testUnsharedOnePhaseConnectionSuspendAndResumeGlobalTransaction-%'");
+            if (!result.next())
+                throw new Exception("Unexpectedly rolled back work that was done under original transaction.");
+
+            int value = result.getInt(1);
+
+            if (result.next())
+                throw new Exception("Should only find entry with 19. If 20 is found, then the second transaction was allowed to run but didn't honor its rollback." +
+                                    " Found: " + value + " and " + result.getInt(1));
+
+            if (value != 19)
+                throw new Exception("Committed the wrong update.");
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Use an unshared, xa-capable connection to do work in a database local transaction.
+     * Without resolving the transaction, apply a new transaction context,
+     * in which a new global transaction is started and more work is
+     * attempted using the same unshared connection. Because database local transactions
+     * don't have any way of honoring suspend/resume, we should ideally see this attempt fail.
+     */
+    // @Test TODO fails with: "Should only find entry with 25. If 26 is found, then the connection was allowed to run with the second transaction active but didn't honor its rollback. Found: 25 and 26"
+    public void testUnsharedXAConnectionSuspendAndResumeDBLocalTransaction() throws Exception {
+        final Connection con = unsharedXADataSource.getConnection();
+        try {
+            con.setAutoCommit(false);
+            try {
+                Statement s1 = con.createStatement();
+                s1.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedXAConnectionSuspendAndResumeDBLocalTransaction-1', 25)");
+                s1.close();
+
+                // transaction should suspend for this
+                contextService.createContextualProxy(new Callable<Integer>() {
+                    @Override
+                    public Integer call() throws Exception {
+                        tran.begin();
+                        try {
+                            // TODO It would be nice if the attempt to use a connection with a database local transaction in-progress
+                            // on a different thread could raise an error. There is no way of doing a suspend/resume on a
+                            // database local transaction.
+                            Statement s2 = con.createStatement();
+                            int count = s2.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedXAConnectionSuspendAndResumeDBLocalTransaction-2', 26)");
+                            s2.close();
+                            return count;
+                        } finally {
+                            tran.rollback();
+                        }
+                    }
+                }, Callable.class).call();
+
+                // original transaction should be resumed
+                con.commit();
+            } finally {
+                con.setAutoCommit(true);
+            }
+
+            Statement s3 = con.createStatement();
+            ResultSet result = s3.executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY LIKE 'testUnsharedXAConnectionSuspendAndResumeDBLocalTransaction-%'");
+            if (!result.next())
+                throw new Exception("Unexpectedly rolled back work that was done under original transaction, " +
+                                    " probably due to connection erroneously being allowed to do work while a different transaction is active on the thread.");
+
+            int value = result.getInt(1);
+
+            if (result.next())
+                throw new Exception("Should only find entry with 25. If 26 is found, then the connection was allowed to run with the second transaction active " +
+                                    " but didn't honor its rollback. Found: " + value + " and " + result.getInt(1));
+
+            if (value != 25)
+                throw new Exception("Committed the wrong update.");
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Use an unshared, XA capable connection to do work in a global transaction.
+     * Without resolving the global transaction, apply a new transaction context,
+     * in which a new global transaction is started and more work is done using
+     * the same unshared connection. Commit this second global transaction.
+     * After the original transaction context is restored, roll back the first
+     * global transaction. Expect that the work done on the connection within
+     * the first transaction gets rolled back and the work done on the connection
+     * with the second transaction gets committed.
+     */
+    //@Test TODO fails with: "Unshared connection did not participate in new transaction that was started by the contextual proxy action"
+    public void testUnsharedXAConnectionSuspendAndResumeGlobalTransaction() throws Exception {
+        final Connection con = unsharedXADataSource.getConnection();
+        try {
+            tran.begin();
+            try {
+                Statement s1 = con.createStatement();
+                s1.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedXAConnectionSuspendAndResumeGlobalTransaction-1', 21)");
+                s1.close();
+
+                // global transaction should suspend for this
+                contextService.createContextualProxy(new Callable<Integer>() {
+                    @Override
+                    public Integer call() throws Exception {
+                        tran.begin();
+                        try {
+                            Statement s2 = con.createStatement();
+                            int count = s2.executeUpdate("INSERT INTO MYTABLE VALUES ('testUnsharedXAConnectionSuspendAndResumeGlobalTransaction-2', 22)");
+                            s2.close();
+                            return count;
+                        } finally {
+                            tran.commit();
+                        }
+                    }
+                }, Callable.class).call();
+
+                // original global transaction should be resumed
+            } finally {
+                tran.rollback();
+            }
+
+            Statement s3 = con.createStatement();
+            ResultSet result = s3.executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY LIKE 'testUnsharedXAConnectionSuspendAndResumeGlobalTransaction-%'");
+            if (!result.next())
+                throw new Exception("Unshared connection did not participate in new transaction that was started by the contextual proxy action.");
+
+            int value = result.getInt(1);
+
+            if (result.next())
+                throw new Exception("One of the entries (21) should have rolled back. Found: " + value + " and " + result.getInt(1));
+
+            if (value != 22)
+                throw new Exception("Committed the wrong update.");
+        } finally {
+            con.close();
+        }
     }
 }

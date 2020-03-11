@@ -1552,15 +1552,15 @@ NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Correct the binding file for one of
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: The {2} Java Naming and Directory Interface (JNDI) binding name for the {0} bean or home interface in the {1} module contains a namespace.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=JNDI binding names must not contain the colon (:) character, which denotes a namespace. The entire string before and including the colon (:) character is considered a namespace.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: The {2} Java Naming and Directory Interface (JNDI) binding name for the {0} bean or home interface in the {1} module contains a namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=JNDI binding names must not contain the colon (:) character, which denotes a namespace. The entire string before and including the colon (:) character is considered a namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: The {2} Java Naming and Directory Interface (JNDI) binding name for the {0} bean or local home interface in the {1} module contains a namespace that is not valid.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=The local binding name can only contain one namespace and it must start with ejblocal:. Namespaces are denoted by the colon (:) character. The entire string before and including the colon (:) character is considered a namespace.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace that is not valid.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: The {2} Java Naming and Directory Interface (JNDI) binding name for the {0} bean or local home interface in the {1} module contains a namespace that is not valid.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=The local binding name can only contain one namespace and it must start with ejblocal:. Namespaces are denoted by the colon (:) character. The entire string before and including the colon (:) character is considered a namespace.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace that is not valid.
 
 #-------------------------------------------------------------------------------
 #

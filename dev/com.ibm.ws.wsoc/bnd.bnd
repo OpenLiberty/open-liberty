@@ -90,7 +90,6 @@ Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
   META-INF=resources/META-INF
   
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 instrument.classesExcludes: \
   com.ibm.ws.wsoc.Utils.class, \

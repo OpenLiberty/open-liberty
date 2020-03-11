@@ -21,6 +21,7 @@ src: \
 	test-applications/logger-servlet/src, \
 	test-applications/missing-feature-servlet/src, \
 	test-applications/RealFlushTestApp/src, \
+	test-applications/add-extension-fields/src, \
 	test-bundles/sample.source.handler/src, \
 	test-bundles/message.source.handler/src, \
 	test-bundles/ffdc.source.handler/src, \

@@ -11,11 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: Require Java 8
 Bundle-SymbolicName: com.ibm.ws.require.java8
 Bundle-Description: Bundle to force a Java 8 dependency; version=${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,10 @@
 package com.ibm.ejs.j2c;
 
 /**
- * Stub - Liberty does not support DissociatableManagedConnection
+ * Copied to the com.ibm.ws.jca.cm.handle package in order to avoid causing split packages
+ * on com.ibm.ej2.j2c with the com.ibm.ws.jca.cm bundle.
+ * TODO see if we can switch over usage throughout all other bundles and
+ * completely remove com.ibm.ej2.j2c from com.ibm.ejs.j2c from container.service.compat
  */
-public class HandleList implements HandleListInterface {
-    @Override
-    public void parkHandle() {}
-
-    @Override
-    public void reAssociate() {}
-
-    public void close() {}
-
-    public void componentDestroyed() {}
+public class HandleList extends com.ibm.ws.jca.cm.handle.HandleList implements HandleListInterface {
 }

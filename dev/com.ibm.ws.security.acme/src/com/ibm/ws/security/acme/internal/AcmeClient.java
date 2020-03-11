@@ -16,7 +16,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.security.AccessController;
 import java.security.KeyPair;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Collection;
@@ -43,7 +46,9 @@ import org.shredzone.acme4j.util.KeyPairUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
+import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 
 /**
@@ -158,6 +163,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue authorizing the domain.
 	 */
+	@FFDCIgnore({ AcmeException.class, AcmeRetryAfterException.class })
 	private void authorize(Authorization authorization) throws AcmeCaException {
 		/*
 		 * The authorization is already valid. No need to process a challenge.
@@ -255,6 +261,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue fetching the certificate.
 	 */
+	@FFDCIgnore({ IOException.class, AcmeException.class, AcmeRetryAfterException.class })
 	public AcmeCertificate fetchCertificate(CSROptions csrOptions) throws AcmeCaException {
 
 		/*
@@ -265,7 +272,7 @@ public class AcmeClient {
 		/*
 		 * Create a session to the ACME CA directory service.
 		 */
-		Session session = new Session(this.directoryURI);
+		Session session = getNewSession();
 
 		/*
 		 * Get the Account. If there is no account yet, create a new one.
@@ -408,6 +415,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue requesting an existing account.
 	 */
+	@FFDCIgnore({ AcmeServerException.class, AcmeException.class })
 	private Account findExistingAccount(Session session, KeyPair accountKey) throws AcmeCaException {
 		try {
 			return new AccountBuilder().useKeyPair(accountKey).onlyExisting().create(session);
@@ -429,6 +437,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue finding or registering an account.
 	 */
+	@FFDCIgnore(AcmeException.class)
 	private Account findOrRegisterAccount(Session session, KeyPair accountKey) throws AcmeCaException {
 
 		/*
@@ -465,7 +474,7 @@ public class AcmeClient {
 				 * Log that we are accepting the terms of the CA on behalf of
 				 * the account.
 				 */
-				Tr.info(tc,
+				Tr.audit(tc,
 						"Accepted the ACME CA's terms of service on behalf of the account. See the terms of service here: "
 								+ tosURI);
 			}
@@ -494,7 +503,7 @@ public class AcmeClient {
 			}
 		}
 
-		Tr.info(tc, "Fetched account from ACME CA. URL: " + account.getLocation());
+		Tr.audit(tc, "URL for ACME CA account: " + account.getLocation());
 		return account;
 	}
 
@@ -518,6 +527,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue loading the account key pair.
 	 */
+	@FFDCIgnore(IOException.class)
 	private KeyPair loadAccountKeyPair() throws AcmeCaException {
 
 		File accountKeyFile = null;
@@ -546,6 +556,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue loading the domain key pair.
 	 */
+	@FFDCIgnore(IOException.class)
 	private KeyPair loadDomainKeyPair() throws AcmeCaException {
 
 		File domainKeyFile = null;
@@ -579,6 +590,7 @@ public class AcmeClient {
 	 *             if there was an error reading or writing the account key pair
 	 *             file.
 	 */
+	@FFDCIgnore(IOException.class)
 	private KeyPair loadOrCreateAccountKeyPair() throws AcmeCaException {
 
 		/*
@@ -598,6 +610,14 @@ public class AcmeClient {
 			File accountKeyFile = null;
 			if (accountKeyFilePath != null) {
 				accountKeyFile = new File(accountKeyFilePath);
+
+				/*
+				 * Create parent directories if the abstract path contains
+				 * parent directories.
+				 */
+				if (accountKeyFile.getParentFile() != null) {
+					accountKeyFile.getParentFile().mkdirs();
+				}
 			}
 			if (accountKeyFile != null) {
 				try (FileWriter fw = new FileWriter(accountKeyFile)) {
@@ -623,6 +643,7 @@ public class AcmeClient {
 	 *             if there was an error reading or writing the account key pair
 	 *             file.
 	 */
+	@FFDCIgnore(IOException.class)
 	private KeyPair loadOrCreateDomainKeyPair() throws AcmeCaException {
 
 		/*
@@ -642,6 +663,14 @@ public class AcmeClient {
 			File domainKeyFile = null;
 			if (domainKeyFilePath != null) {
 				domainKeyFile = new File(domainKeyFilePath);
+
+				/*
+				 * Create parent directories if the abstract path contains
+				 * parent directories.
+				 */
+				if (domainKeyFile.getParentFile() != null) {
+					domainKeyFile.getParentFile().mkdirs();
+				}
 			}
 			if (domainKeyFile != null) {
 				try (FileWriter fw = new FileWriter(domainKeyFile)) {
@@ -674,7 +703,7 @@ public class AcmeClient {
 	 */
 	public Challenge prepareHttpChallenge(Authorization auth) throws AcmeCaException {
 		/*
-		 * Find a single http-01 challenge
+		 * Find a single HTTP-01 challenge
 		 */
 		Http01Challenge challenge = auth.findChallenge(Http01Challenge.TYPE);
 		if (challenge == null) {
@@ -688,7 +717,7 @@ public class AcmeClient {
 		 */
 		httpTokenToAuthzMap.put(challenge.getToken(), challenge.getAuthorization());
 
-		Tr.debug(tc, "Prepared the following challenge with token '" + challenge.getToken() + "' and authorization '"
+		Tr.debug(tc, "Prepared the HTTP-01 challenge with token '" + challenge.getToken() + "' and authorization '"
 				+ challenge.getAuthorization() + "'.");
 		return challenge;
 	}
@@ -702,6 +731,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue revoking the certificate.
 	 */
+	@FFDCIgnore(AcmeException.class)
 	public void revoke(X509Certificate certificate) throws AcmeCaException {
 
 		/*
@@ -716,7 +746,7 @@ public class AcmeClient {
 		/*
 		 * Create a session to the ACME CA directory service.
 		 */
-		Session session = new Session(this.directoryURI);
+		Session session = getNewSession();
 
 		/*
 		 * Get the Account.
@@ -808,6 +838,7 @@ public class AcmeClient {
 	 * @param sleepMs
 	 *            The number of milliseconds to sleep.
 	 */
+	@FFDCIgnore(InterruptedException.class)
 	private static void sleep(long sleepMs) {
 
 		long current, terminate = System.currentTimeMillis() + sleepMs;
@@ -842,6 +873,44 @@ public class AcmeClient {
 		}
 		if (file.exists() && !file.canWrite()) {
 			throw new AcmeCaException("Cannot write to specified " + type + " key file location.");
+		}
+	}
+
+	/**
+	 * Create a new session with the ACME CA server.
+	 * 
+	 * @return the session
+	 * @throws AcmeCaException
+	 *             If there was an error trying to create the new session.
+	 */
+	@FFDCIgnore({ PrivilegedActionException.class })
+	private Session getNewSession() throws AcmeCaException {
+
+		try {
+			return AccessController.doPrivileged(new PrivilegedExceptionAction<Session>() {
+
+				@Override
+				public Session run() throws Exception {
+					ClassLoader origLoader = null;
+					try {
+						/*
+						 * Acme4J tries to load the providers using
+						 * ServiceLoader, which requires the ClassLoader is for
+						 * this bundle. If it isn't, calls through our HTTP
+						 * end-points will cause Acme4J to fail to load the
+						 * providers.
+						 */
+						origLoader = Thread.currentThread().getContextClassLoader();
+						Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+
+						return new Session(AcmeClient.this.directoryURI);
+					} finally {
+						Thread.currentThread().setContextClassLoader(origLoader);
+					}
+				}
+			});
+		} catch (PrivilegedActionException e) {
+			throw new AcmeCaException("Failed to create a new session with the ACME CA server.", e.getCause());
 		}
 	}
 }

@@ -15,10 +15,7 @@ Bundle-Name: CDI integration for JCache
 Bundle-SymbolicName: com.ibm.ws.jcache.cdi
 Bundle-Description: CDI integration for JCache providers, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-javac.source: 1.8
-javac.target: 1.8
 
 Private-Package: com.ibm.ws.jcache.cdi
 

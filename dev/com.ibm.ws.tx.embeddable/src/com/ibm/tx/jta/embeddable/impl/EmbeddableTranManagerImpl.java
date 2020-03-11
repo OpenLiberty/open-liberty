@@ -33,7 +33,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "begin (SPI)");
+            Tr.entry(tc, "begin", "(SPI)");
 
         if (tx != null) {
             if (tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL) {
@@ -42,7 +42,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
 
                 FFDCFilter.processException(nse, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.begin", "63", this);
                 if (traceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "begin (SPI)", nse);
+                    Tr.exit(tc, "begin", new Object[] {"(SPI)", nse});
                 throw nse;
             } else {
                 if (tc.isDebugEnabled())
@@ -65,7 +65,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
         invokeEventListener(tx, UOWEventListener.POST_BEGIN, null);
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "begin (SPI)");
+            Tr.exit(tc, "begin", "(SPI)");
     }
 
     @Override

@@ -298,6 +298,7 @@ public class ComponentIDBndTestServlet extends FATServlet {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + componentIDName + " and context " + contextString);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.out);
                     fail("home.create() for lookup " + lookupName + " should have worked for " + componentIDName + " and context " + contextString);
                 }
             } else {
@@ -307,6 +308,7 @@ public class ComponentIDBndTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
                 fail("lookup " + lookupName + " should have worked for " + componentIDName + " and context " + contextString);
             } else {
                 // expected to fail in other cases
@@ -328,6 +330,7 @@ public class ComponentIDBndTestServlet extends FATServlet {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + componentIDName + " and context " + contextString);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.out);
                     fail("home.create() for lookup " + lookupName + " should have worked for " + componentIDName + " and context " + contextString);
                 }
             } else {
@@ -337,6 +340,7 @@ public class ComponentIDBndTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
                 fail("lookup " + lookupName + " should have worked for " + componentIDName + " and context " + contextString);
             } else {
                 // expected to fail in other cases

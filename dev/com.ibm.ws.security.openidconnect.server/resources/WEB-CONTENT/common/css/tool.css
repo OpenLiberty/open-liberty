@@ -451,7 +451,6 @@ th.table_sort_column:hover {      /* ....except for the button in the sortable c
     animation-timing-function: cubic-bezier(0,0,.3,1.6);
     border-top: 4px solid #3D70B2;
     box-shadow: 0 12px 24px 0 rgba(0,0,0,0.10);
-    overflow: hidden;
 }
 
 /* Small dialog centered on the page */

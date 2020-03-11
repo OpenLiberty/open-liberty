@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,7 +190,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         BeanMetaData bmd = hr.getBeanMetaData();
         boolean priorToVersion3 = bmd.ivModuleVersion < BeanMetaData.J2EE_EJB_VERSION_3_0;
 
-        // only bind to local: if EJB2.X binding and the simpleBindingName did not specify ejblocal
+        // only bind to local: if EJB2.X binding
         if (priorToVersion3) {
             if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "binding to local:");
@@ -217,6 +217,45 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         bh.ivEJBLocalBindings.add(bindingName);
 
         sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingName, bmd);
+    }
+
+    /**
+     * Binds the localHomeBindingName custom binding
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    @Override
+    public void bindLocalHomeBindingName(EJBBinding bindingObject, HomeRecord hr) {
+        BeanMetaData bmd = hr.getBeanMetaData();
+        String bindingName = bmd.localHomeJndiBindingName;
+
+        ejbLocalNamingHelper.bind(bindingObject, bindingName);
+
+        BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
+        bh.ivEJBLocalBindings.add(bindingName);
+
+        sendBindingMessage(bindingObject.interfaceName, bindingName, bmd);
+    }
+
+    /**
+     * Binds the interface binding-name custom binding for local
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    @Override
+    public void bindLocalBusinessInterface(EJBBinding bindingObject, HomeRecord hr) {
+        BeanMetaData bmd = hr.getBeanMetaData();
+        String interfaceName = bindingObject.interfaceName;
+        String bindingName = bmd.businessInterfaceJndiBindingNames.get(interfaceName);
+
+        ejbLocalNamingHelper.bind(bindingObject, bindingName);
+
+        BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
+        bh.ivEJBLocalBindings.add(bindingName);
+
+        sendBindingMessage(bindingObject.interfaceName, bindingName, bmd);
     }
 
     private void sendBindingMessage(String interfaceName, String jndiName, BeanMetaData bmd) {
@@ -252,16 +291,35 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
 
         if (ContainerProperties.customBindingsEnabledBeta) {
             BeanMetaData bmd = hr.getBeanMetaData();
+            boolean hasCustomBindings = false;
 
-            if (bmd.simpleJndiBindingName == null || bmd.simpleJndiBindingName.isEmpty()) {
-                // Bind defaults
-                if (local) {
-                    bindDefaultEJBLocal(bindingObject, hr);
-                }
-            } else {
+            if (bmd.simpleJndiBindingName != null) {
+                hasCustomBindings = true;
                 bindSimpleBindingName(bindingObject, hr, local);
             }
 
+            // if the interface Index is -1 it is a home interface
+            if (bmd.localHomeJndiBindingName != null && local && interfaceIndex == -1) {
+                hasCustomBindings = true;
+                bindLocalHomeBindingName(bindingObject, hr);
+            }
+
+            if (bmd.businessInterfaceJndiBindingNames != null && interfaceIndex >= 0 && bmd.businessInterfaceJndiBindingNames.containsKey(interfaceName)) {
+                hasCustomBindings = true;
+                if (local) {
+                    bindLocalBusinessInterface(bindingObject, hr);
+                } else {
+                    // TODO: Remote Business Interface Binding
+                }
+            }
+
+            // bind default traditional specific JNDI bindings
+            if (!hasCustomBindings) {
+
+                if (local) {
+                    bindDefaultEJBLocal(bindingObject, hr);
+                }
+            }
         }
     }
 
