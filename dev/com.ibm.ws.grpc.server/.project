@@ -10,12 +10,12 @@
             <arguments>
             </arguments>
         </buildCommand>
-    </buildSpec>
-    <buildCommand>
+        <buildCommand>
             <name>bndtools.core.bndbuilder</name>
             <arguments>
             </arguments>
-    </buildCommand>
+        </buildCommand>
+    </buildSpec>
     <natures>
         <nature>org.eclipse.jdt.core.javanature</nature>
         <nature>bndtools.core.bndnature</nature>

@@ -10,4 +10,4 @@
  *******************************************************************************/
 
 @org.osgi.annotation.versioning.Version("1.0")
-package io.grpc.servlet;
+package com.ibm.ws.grpc.servlet;
