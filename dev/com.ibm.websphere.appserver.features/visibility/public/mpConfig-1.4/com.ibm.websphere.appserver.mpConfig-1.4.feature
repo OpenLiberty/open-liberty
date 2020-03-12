@@ -23,6 +23,6 @@ Subsystem-Name: MicroProfile Config 1.4
  com.ibm.ws.microprofile.config.1.4.services, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.lang3
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
