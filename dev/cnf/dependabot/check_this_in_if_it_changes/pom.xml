@@ -14,12 +14,32 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.annotation</artifactId>
-      <version>4.1.0</version>
+      <version>4.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.gradle</artifactId>
+      <version>4.3.0</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd</artifactId>
-      <version>4.1.0</version>
+      <version>4.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.resolve</artifactId>
+      <version>4.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.repository</artifactId>
+      <version>4.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <version>4.3.0</version>
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
