@@ -36,7 +36,6 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
-import com.ibm.ws.http2.Http2Connection;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -50,7 +49,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 /**
  *
  */
-public class H2InboundLink extends HttpInboundLink implements Http2Connection {
+public class H2InboundLink extends HttpInboundLink {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2InboundLink.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -1349,7 +1348,6 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
      *
      * @return authority String
      */
-    @Override
     public String getAuthority() {
         return this.authority;
     }
@@ -1362,10 +1360,5 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
 
     protected int getconfiguredInactivityTimeout() {
         return configuredInactivityTimeout;
-    }
-
-    @Override
-    public int getPort() {
-        return this.myTSC.getLocalPort();
     }
 }
