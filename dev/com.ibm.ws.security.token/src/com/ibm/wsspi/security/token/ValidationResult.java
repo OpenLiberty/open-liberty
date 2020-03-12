@@ -27,7 +27,7 @@ package com.ibm.wsspi.security.token;
 public interface ValidationResult {
 
     /**
-     * This method always return true.
+     * This method returns true.
      */
     boolean requiresLogin();
 
