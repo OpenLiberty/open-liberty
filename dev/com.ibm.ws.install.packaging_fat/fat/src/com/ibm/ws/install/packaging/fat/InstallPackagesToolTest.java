@@ -18,9 +18,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-public abstract class InstallUtilityToolTest {
+public abstract class InstallPackagesToolTest {
 
-    private static final Class<?> c = InstallUtilityToolTest.class;
+    private static final Class<?> c = InstallPackagesToolTest.class;
     public static LibertyServer server;
     public static String installRoot;
     public static boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
