@@ -46,6 +46,13 @@
     <lookup-name>eis/ds1</lookup-name>
   </resource-ref>
 
+  <resource-ref>
+    <res-ref-name>java:module/env/eis/ds5ref-unshareable</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <lookup-name>eis/ds5</lookup-name>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
   <resource-env-ref>
     <resource-env-ref-name>eis/map1ref</resource-env-ref-name>
     <resource-env-ref-type>java.util.Map</resource-env-ref-type>
