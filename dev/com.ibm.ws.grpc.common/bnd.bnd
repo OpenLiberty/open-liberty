@@ -31,6 +31,8 @@ Export-Package: com.ibm.ws.grpc,\
   org.checkerframework.checker.nullness.qual,\
   org.checkerframework.checker.nullness.compatqual
 	
+javac.args.release: current
+
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
   
 Include-Resource: \
