@@ -41,7 +41,6 @@
   <!-- ACME account related fields. -->
   <AD id="accountKeyFile"       name="internal" description="internal use only" type="String"  required="false" default="${server.config.dir}/resources/security/acmeAccountKey.pem" />
   <AD id="accountContact"       name="internal" description="internal use only" type="String"  required="false" cardinality="2147483647" />
-  <AD id="acceptTermsOfService" name="internal" description="internal use only" type="Boolean" required="false" default="false" />
   <AD id="domainKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.config.dir}/resources/security/acmeDomainKey.pem" />
 
  </OCD>

@@ -118,11 +118,6 @@ public class AcmeClient {
 	private long orderRetryWaitMs = 3000L;
 
 	/**
-	 * Whether the account accepts any terms of service.
-	 */
-	private boolean termsOfServiceAgreed = false;
-
-	/**
 	 * Create a new {@link AcmeClient} instance.
 	 * 
 	 * @param directoryURI
@@ -460,27 +455,17 @@ public class AcmeClient {
 			}
 
 			/*
-			 * If the server provides terms of service, the account must accept
-			 * them.
+			 * Log that we are accepting the terms of the CA on behalf of
+			 * the account.
 			 */
-			if (tosURI != null && !termsOfServiceAgreed) {
-				String msg = "The account must accept the terms of service by setting the ACME CA configuration to have a value of \"true\" for '"
-						+ AcmeConstants.ACCEPT_TERMS
-						+ "' in the server.xml. The terms of service can be found at the following URI: " + tosURI;
-				Tr.error(tc, msg);
-				throw new AcmeCaException(msg);
-			} else if (tosURI != null) {
-				/*
-				 * Log that we are accepting the terms of the CA on behalf of
-				 * the account.
-				 */
+			if (tosURI != null) {
 				Tr.audit(tc,
 						"Accepted the ACME CA's terms of service on behalf of the account. See the terms of service here: "
 								+ tosURI);
 			}
 
 			/*
-			 * Create the account using the account account key pair.
+			 * Create the account using the account key pair.
 			 */
 			AccountBuilder accountBuilder = new AccountBuilder().agreeToTermsOfService().useKeyPair(accountKey);
 
@@ -766,19 +751,6 @@ public class AcmeClient {
 		} else {
 			throw new AcmeCaException(
 					"Unable to find account to revoke certificate.  Revoking a certificate requires a valid account.");
-		}
-	}
-
-	/**
-	 * Set the accept terms of service response. If the ACME CA service has
-	 * terms of service, this needs to be set to 'true'.
-	 * 
-	 * @param acceptTos
-	 *            Whether to accept any terms of service issued by the ACME CA.
-	 */
-	public void setAcceptTos(Boolean acceptTos) {
-		if (acceptTos != null) {
-			this.termsOfServiceAgreed = acceptTos;
 		}
 	}
 
