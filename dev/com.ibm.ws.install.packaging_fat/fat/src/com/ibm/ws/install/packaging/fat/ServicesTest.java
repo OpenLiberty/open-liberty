@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
-public class ServicesTest extends InstallUtilityToolTest {
+public class ServicesTest extends InstallPackagesToolTest {
     private static final Class<?> c = ServicesTest.class;
 
     @BeforeClass
