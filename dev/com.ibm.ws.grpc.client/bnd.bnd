@@ -34,6 +34,8 @@ Import-Package: !sun.*,\
 
 Export-Package: io.grpc.netty.shaded.io.*
 
+javac.args.release: current
+
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 # include the service providers

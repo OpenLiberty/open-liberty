@@ -16,8 +16,7 @@ Bundle-Name: gRPC Server 1.0.
 Bundle-SymbolicName: com.ibm.ws.grpc.server.1.0
 Bundle-Description: gRPC Server, version 1.0
 
-javac.source: 1.8
-javac.target: 1.8
+javac.args.release: current
 
 -dsannotations: \
   com.ibm.ws.grpc.GrpcApplicationManager

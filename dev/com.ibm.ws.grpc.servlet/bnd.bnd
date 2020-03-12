@@ -27,10 +27,9 @@ Import-Package: !sun.*,\
 Export-Package: io.grpc.servlet,\
   com.ibm.ws.grpc.servlet
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+javac.args.release: current
 
-javac.source: 1.8
-javac.target: 1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 -buildpath: \
   com.ibm.ws.container.service;version=latest,\
