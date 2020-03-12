@@ -44,7 +44,7 @@ com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.ibm.ws.componenttest:provider.api:1.0.0
 com.ibm.ws.componenttest:public.api:1.0.0
 com.icegreen:greenmail:1.5.10
-com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8
+com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8
 com.netflix.archaius:archaius2-api:2.1.10
 com.netflix.archaius:archaius2-core:2.1.10
 com.nimbusds:nimbus-jose-jwt:4.23

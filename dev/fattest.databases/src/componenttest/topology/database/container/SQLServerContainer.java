@@ -20,9 +20,11 @@ public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends J
 
     public static final String NAME = "sqlserver";
     public static final String IMAGE = "mcr.microsoft.com/mssql/server";
-    public static final String DEFAULT_TAG = "2019-GA-ubuntu-16.04";
+    public static final String DEFAULT_TAG = "2019-CU2-ubuntu-16.04";
 
     public static final Integer MS_SQL_SERVER_PORT = 1433;
+    public static final Integer MSSQL_DTC_TCP_PORT = 51000;
+    public static final Integer MSSQL_RPC_PORT = 135;
     private String username = "SA";
     private String password = "A_Str0ng_Required_Password";
 
@@ -60,6 +62,11 @@ public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends J
         }
 
         addExposedPort(MS_SQL_SERVER_PORT);
+        addExposedPort(MSSQL_DTC_TCP_PORT);
+        addExposedPort(MSSQL_RPC_PORT);
+        
+        addEnv("MSSQL_RPC_PORT", MSSQL_RPC_PORT.toString());
+        addEnv("MSSQL_DTC_TCP_PORT", MSSQL_DTC_TCP_PORT.toString());
         addEnv("SA_PASSWORD", password);
     }
 
