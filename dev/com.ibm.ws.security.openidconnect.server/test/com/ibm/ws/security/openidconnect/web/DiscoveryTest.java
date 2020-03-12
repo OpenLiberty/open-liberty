@@ -82,8 +82,8 @@ public class DiscoveryTest {
     private final static boolean REQUEST_URI = false;
     private final static boolean REQUIRE_REQUEST_URI_REGISTRATION = false;
     private final static String REVOCATION_URI = ISSUER_URI + "/revoke";
-    private final static String APP_PASSWORDS_URI = ISSUER_URI + "/app_passwords";
-    private final static String APP_TOKENS_URI = ISSUER_URI + "/app_tokens";
+    private final static String APP_PASSWORDS_URI = ISSUER_URI + "/app-passwords";
+    private final static String APP_TOKENS_URI = ISSUER_URI + "/app-tokens";
     private final static String CLIENT_MGMT_URI = ISSUER_URI + "/clientManagement";
     private final static String PERSONAL_TOKEN_MGMT_URI = ISSUER_URI + "/personalTokenManagement";
     private final static String USERS_TOKEN_MGMT_URI = ISSUER_URI + "/usersTokenManagement";
