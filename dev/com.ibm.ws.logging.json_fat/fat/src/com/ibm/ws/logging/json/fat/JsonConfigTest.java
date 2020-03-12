@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,7 +90,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(true, consoleLogFile, "WARNING", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev"/>
     @Test
     public void testInfo() throws Exception {
         setServerConfig(SERVER_XML_CLLINFO_BASIC_CONSOLE);
@@ -100,7 +100,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //Test 6 consoleLL="INFO" consoleFormat=basic messageFormat=json
+    //Test 6 consoleLL="INFO" consoleFormat=dev messageFormat=json
     @Test
     public void testBasicConsoleJsonMessage() throws Exception {
         setServerConfig(SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE);
@@ -121,7 +121,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="basic" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" messageFormat="simple" maxFileSize="100"/>
     @Test
     public void testBasicConsoleBasicMessage() throws Exception {
         setServerConfig(SERVER_XML_BASIC_CONSOLE_BASIC_MESSAGE);
@@ -131,7 +131,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="json" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" messageFormat="json" maxFileSize="100"/>
     @Test
     public void testBasicConsoleJsonMessageMaxFileSize() throws Exception {
         setServerConfig(SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE_MAXFILESIZE);
@@ -141,7 +141,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
     @Test
     public void testJsonMessageSrcTraceAccess() throws Exception {
         ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
@@ -163,7 +163,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "finest");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" consoleSource="trace" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" consoleSource="trace" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
     @Test
     public void testTraceConsoleAccessTraceMessage() throws Exception {
         ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
