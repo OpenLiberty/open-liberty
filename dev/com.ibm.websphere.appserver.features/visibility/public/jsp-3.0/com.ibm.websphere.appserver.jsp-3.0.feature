@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jsp-2.3
+symbolicName=com.ibm.websphere.appserver.jsp-3.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -31,7 +31,7 @@ IBM-API-Package: jakarta.servlet.jsp;  type="spec", \
  org.apache.jasper.el;  type="internal"
 IBM-ShortName: jsp-3.0
 IBM-SPI-Package: com.ibm.wsspi.jsp.taglib.config
-Subsystem-Name: JavaServer Pages 2.3
+Subsystem-Name: JavaServer Pages 3.0
 -features=com.ibm.websphere.appserver.jakarta.jsp-3.0, \
  com.ibm.websphere.appserver.jakarta.el-4.0, \
  com.ibm.websphere.appserver.servlet-5.0; \
@@ -44,6 +44,6 @@ Subsystem-Name: JavaServer Pages 2.3
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  com.ibm.websphere.javaee.jsp.tld.2.2; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
-kind=ga
+kind=noship
 edition=core
 WLP-Activation-Type: parallel
