@@ -529,6 +529,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
 
         if (bmd.ivComponent_Id != null) {
             if (bmd.ivComponent_Id.contains(":")) {
+                String providedBinding = bmd.ivComponent_Id;
                 bmd.ivComponent_Id = null;
                 OnError onError = ContainerProperties.customBindingsOnErr;
                 switch (onError) {
@@ -536,13 +537,13 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                         Tr.warning(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W",
                                    new Object[] { bmd.enterpriseBeanName,
                                                   bmd._moduleMetaData.ivName,
-                                                  bmd.ivComponent_Id });
+                                                  providedBinding });
                         break;
                     case FAIL:
                         Tr.error(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W",
                                  new Object[] { bmd.enterpriseBeanName,
                                                 bmd._moduleMetaData.ivName,
-                                                bmd.ivComponent_Id });
+                                                providedBinding });
                         throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
                                                             " bean or home in the " + bmd._moduleMetaData.ivName +
                                                             " module contains a namespace in the string value for the" +
@@ -846,6 +847,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                         break;
                 }
             } else if (trimmedBindingValue.contains(":")) {
+                String providedBinding = bmd.localHomeJndiBindingName;
                 bmd.localHomeJndiBindingName = null;
                 OnError onError = ContainerProperties.customBindingsOnErr;
                 switch (onError) {
@@ -853,13 +855,13 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                         Tr.warning(tcContainer, "NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W",
                                    new Object[] { bmd.enterpriseBeanName,
                                                   bmd._moduleMetaData.ivName,
-                                                  bmd.localHomeJndiBindingName });
+                                                  providedBinding });
                         break;
                     case FAIL:
                         Tr.error(tcContainer, "NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W",
                                  new Object[] { bmd.enterpriseBeanName,
                                                 bmd._moduleMetaData.ivName,
-                                                bmd.localHomeJndiBindingName });
+                                                providedBinding });
                         throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
                                                             " bean or home in the " + bmd._moduleMetaData.ivName +
                                                             " module contains a namespace in the string value for the" +
@@ -919,6 +921,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                         break;
                 }
             } else if (bmd.remoteHomeJndiBindingName.contains(":")) {
+                String providedBinding = bmd.remoteHomeJndiBindingName;
                 bmd.remoteHomeJndiBindingName = null;
                 OnError onError = ContainerProperties.customBindingsOnErr;
                 switch (onError) {
@@ -926,13 +929,13 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                         Tr.warning(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W",
                                    new Object[] { bmd.enterpriseBeanName,
                                                   bmd._moduleMetaData.ivName,
-                                                  bmd.localHomeJndiBindingName });
+                                                  providedBinding });
                         break;
                     case FAIL:
                         Tr.error(tcContainer, "NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W",
                                  new Object[] { bmd.enterpriseBeanName,
                                                 bmd._moduleMetaData.ivName,
-                                                bmd.localHomeJndiBindingName });
+                                                providedBinding });
                         throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
                                                             " bean or home in the " + bmd._moduleMetaData.ivName +
                                                             " module contains a namespace in the string value for the" +

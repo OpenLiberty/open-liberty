@@ -45,12 +45,17 @@ public class BndErrorTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.startServer(false, false);
+
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
+        server.startServer(true, false);
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
+
             server.stopServer("CNTR4002E", "CWWKZ0106E", "CWWKZ0002E", "CNTR0136E", "CNTR0137E", "CNTR0138E", "CNTR0139E", "CNTR0130E", "CNTR0140", "CNTR0141E", "CNTR0339W",
                               "CNTR0340W", "CWWKZ0004E");
         }
@@ -233,7 +238,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamepsaceInLocalHomeBindingName() throws Exception {
-        testHelper(18, "CNTR0340W:", false);
+        testHelper(18, "CNTR0340W:.*ejblocal:local:ejb/myBean", false);
     }
 
     /**
@@ -242,7 +247,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamepsaceInBindingName() throws Exception {
-        testHelper(19, "CNTR0339W:", false);
+        testHelper(19, "CNTR0339W:.*ejblocal:local:ejb/myBean", false);
     }
 
     /**
@@ -251,7 +256,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamepsaceInRemoteHomeBindingName() throws Exception {
-        testHelper(20, "CNTR0339W:", false);
+        testHelper(20, "CNTR0339W:.*local:RemoteTargetHome", false);
     }
 
     /**
@@ -260,7 +265,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testRandomColonInRemoteHomeBindingName() throws Exception {
-        testHelper(21, "CNTR0339W:", false);
+        testHelper(21, "CNTR0339W:.*myBean:RemoteTargetHome", false);
     }
 
     /**
@@ -269,7 +274,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testJavaAppInSimpleBindingName() throws Exception {
-        testHelper(22, "CNTR0339W:", false);
+        testHelper(22, "CNTR0339W:.*java:app/MyLocalTargetBean", false);
     }
 
     /**
@@ -278,7 +283,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamespaceInBindingName() throws Exception {
-        testHelper(23, "CNTR0339W:", false);
+        testHelper(23, "CNTR0339W:.*local:ejb/RemoteTargetBiz", false);
     }
 
     /**
@@ -287,7 +292,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamespaceInComponentId() throws Exception {
-        testHelper(24, "CNTR0339W:", false);
+        testHelper(24, "CNTR0339W:.*local:ejb/MyLocalTargetBean", false);
     }
 
     /**
@@ -305,7 +310,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamespaceInJNDIName() throws Exception {
-        testHelper(26, "CNTR0339W:", false);
+        testHelper(26, "CNTR0339W:.*local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome1", false);
     }
 
     /**
@@ -323,7 +328,7 @@ public class BndErrorTest extends FATServletClient {
     @Test
     @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testDoubleColonInLocalHomeBindingName() throws Exception {
-        testHelper(28, "CNTR0340W:", false);
+        testHelper(28, "CNTR0340W:.*ejblocal::ejb/myBean", false);
     }
 
     /**
