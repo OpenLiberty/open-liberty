@@ -39,8 +39,6 @@ src: \
         
 	
 	
-javac.source: 1.7
-javac.target: 1.7
 
 tested.features:\
 	cdi-2.0,\

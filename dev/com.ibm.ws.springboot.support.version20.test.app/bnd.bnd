@@ -21,10 +21,7 @@ publish.wlp.jar.disabled: true
 
 bVersion=1.0
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-javac.source: 1.8
-javac.target: 1.8
 
 -testpath: \
 	org.springframework:spring-core;strategy=exact;version=5.0.8.RELEASE, \

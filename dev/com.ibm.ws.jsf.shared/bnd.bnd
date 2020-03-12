@@ -19,7 +19,6 @@ Import-Package: javax.faces.*;version="[1.0,2.4)", \
 Private-Package: \
  com.ibm.ws.jsf.shared.resources
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 

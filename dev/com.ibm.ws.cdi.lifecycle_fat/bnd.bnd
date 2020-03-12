@@ -27,8 +27,6 @@ src: \
     test-applications/WebListener.war/src
 	
 	
-javac.source: 1.7
-javac.target: 1.7
 	
 test.project: true
 

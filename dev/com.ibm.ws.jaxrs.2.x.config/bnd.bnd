@@ -15,9 +15,6 @@ Bundle-Name: JAX-RS 2.X Configuration
 Bundle-SymbolicName: com.ibm.ws.jaxrs.2.x.config
 Bundle-Description: IBM JAX-RS 2.x configuration; version=${bVersion}
 
-# jaxrs-2.1 is part of EE7 and therefore requires java 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
-
 WS-TraceGroup: JAXRS
 
 Include-Resource: \

@@ -15,8 +15,6 @@ Bundle-Name: JAX-RS 2.0 Engine
 Bundle-SymbolicName: com.ibm.ws.jaxrs.2.0.common
 Bundle-Description: IBM JAX-RS 2.0 engine; version=${bVersion}
 
-# jaxrs-2.0 is part of EE7 and therefore requires java 1.7
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 WS-TraceGroup: JAXRS
 

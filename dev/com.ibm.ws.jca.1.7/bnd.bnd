@@ -14,7 +14,6 @@ bVersion=1.0
 Bundle-Name: JCA 1.7
 Bundle-SymbolicName: com.ibm.ws.jca.1.7
 Bundle-Description: JCA 1.7; version=${bVersion}
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 WS-TraceGroup: WAS.j2c
 

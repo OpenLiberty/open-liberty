@@ -158,7 +158,7 @@ public class ConfigIntrospection implements Introspector {
         Map<String, Object> retVal = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             ExtendedAttributeDefinition ad = attributeMap.get(entry.getKey());
-            if (isPasswordType(ad)) {
+            if (isObscured(ad)) {
                 retVal.put(entry.getKey(), "*******");
             } else {
                 retVal.put(entry.getKey(), entry.getValue());
@@ -173,11 +173,11 @@ public class ConfigIntrospection implements Introspector {
      * @param ad
      * @return
      */
-    private boolean isPasswordType(ExtendedAttributeDefinition ad) {
+    private boolean isObscured(ExtendedAttributeDefinition ad) {
         if (ad == null)
             return false;
 
-        if (ad.getType() == MetaTypeFactory.PASSWORD_TYPE || ad.getType() == MetaTypeFactory.HASHED_PASSWORD_TYPE)
+        if (ad.isObscured() || ad.getType() == MetaTypeFactory.PASSWORD_TYPE || ad.getType() == MetaTypeFactory.HASHED_PASSWORD_TYPE)
             return true;
 
         return false;

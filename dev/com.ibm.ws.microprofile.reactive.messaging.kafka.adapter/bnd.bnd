@@ -14,8 +14,6 @@
 bSymbolicName=com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
@@ -32,7 +30,6 @@ Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 Import-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.resources,\
                 *
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 #testsrc: test/src

@@ -17,8 +17,6 @@ Bundle-Description: IBM JAX-RS-2.0 BeanValidation support; version=${bVersion}
 
 WS-TraceGroup: JAXRS
 
-# jaxrs-2.0-beanValidation is part of EE7 and therefore requires java 1.7 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
 
 # Technically we should never have allowed javax.validation packages at the 1.0 version
 # but to maintain backwards compatibility we will allow it 
