@@ -200,6 +200,10 @@ public class ProcessorUtils {
         int lastSlash = entryPath.lastIndexOf("/") + 1;
         if (lastSlash != 0) {
             entryPath = entryPath.substring(0, lastSlash) + "expanded/" + entryPath.substring(lastSlash);
+            // Make sure dropins is swiched to apps folder
+            if (entryPath.indexOf("dropins") != 0) {
+                entryPath = entryPath.replace("dropins", "apps");
+            }
         }
 
         Iterator<LooseConfig> configIter = looseConfig.iteration();
