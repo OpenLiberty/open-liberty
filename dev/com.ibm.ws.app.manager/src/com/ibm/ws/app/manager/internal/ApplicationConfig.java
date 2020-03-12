@@ -198,6 +198,18 @@ public final class ApplicationConfig {
         return _applicationManager.getUseJandex();
     }
 
+    public String[] getStartAfter() {
+        String[] resultPids = null;
+        if (_config != null) {
+            resultPids = (String[]) _config.get(AppManagerConstants.START_AFTER);
+        }
+
+        if (resultPids == null)
+            resultPids = new String[0];
+        return resultPids;
+
+    }
+
     void describe(StringBuilder sb) {
         sb.append("app[" + getName() + "," + getType() + "]");
     }

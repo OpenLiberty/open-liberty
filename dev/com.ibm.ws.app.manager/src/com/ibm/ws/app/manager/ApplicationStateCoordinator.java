@@ -173,6 +173,7 @@ public final class ApplicationStateCoordinator {
         if (unstarted != null) {
             unstarted.removeAppPid(appPid);
         }
+        appConfigurator.unblockAppStartDependencies(appPid);
     }
 
     public static String[] getSlowlyStoppingApps() {
