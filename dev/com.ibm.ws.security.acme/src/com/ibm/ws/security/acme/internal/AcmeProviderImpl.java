@@ -265,7 +265,8 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 			try {
 				existingCertificate = (X509Certificate) keyStore.getCertificate(DEFAULT_ALIAS);
 			} catch (KeyStoreException e) {
-				throw new AcmeCaException("Unable to retrieve certificate for alias '" + DEFAULT_ALIAS + "'.");
+				throw new AcmeCaException(
+						Tr.formatMessage(tc, "CWPKI2029E", keyStoreFile, DEFAULT_ALIAS, e.getMessage()), e);
 			}
 		}
 
@@ -294,8 +295,8 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 					keyStore.store(new FileOutputStream(keyStoreFile), password.toCharArray());
 				}
 			} catch (CertificateException | KeyStoreException | NoSuchAlgorithmException | IOException ex) {
-				throw new AcmeCaException("Unable to install the certificate under the alias '" + DEFAULT_ALIAS
-						+ "' into the '" + DEFAULT_KEY_STORE + "' keystore.", ex);
+				throw new AcmeCaException(
+						Tr.formatMessage(tc, "CWPKI2030E", DEFAULT_ALIAS, DEFAULT_KEY_STORE, ex.getMessage()), ex);
 			}
 
 			/*
@@ -318,7 +319,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 			 * 
 			 * TODO Use CWPKI0803A?
 			 */
-			Tr.audit(tc, "Installed new certificate from ACME CA server.");
+			Tr.audit(tc, "CWPKI2007I", directoryURI, acmeCertificate.getCertificate().getNotAfter());
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "Previous certificate requested from ACME CA server is still valid.");
@@ -664,7 +665,10 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 				hasWrongDomains = true;
 			}
 		} catch (InvalidNameException e) {
-			throw new AcmeCaException("The certificate's subject name " + certificate.getSubjectX500Principal().getName() + " is not a valid distinguished name.", e);
+			throw new AcmeCaException(
+					Tr.formatMessage(tc, "CWPKI2031E", certificate.getSubjectX500Principal().getName(),
+							certificate.getSerialNumber(), e.getMessage()),
+					e);
 		}
 
 		/*
@@ -706,7 +710,8 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 				}
 
 			} catch (CertificateParsingException e) {
-				throw new AcmeCaException("The certificate's subject alternative names could not be decoded.", e);
+				throw new AcmeCaException(
+						Tr.formatMessage(tc, "CWPKI2032E", certificate.getSerialNumber(), e.getMessage()), e);
 			}
 		}
 
@@ -856,8 +861,8 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		try {
 			return getKeystoreService().getX509CertificateFromKeyStore(DEFAULT_KEY_STORE, DEFAULT_ALIAS);
 		} catch (KeyStoreException | CertificateException e) {
-			throw new AcmeCaException("Unable to get the certificate for alias '" + DEFAULT_ALIAS
-					+ "' from the keystore '" + DEFAULT_KEY_STORE + "'.", e);
+			throw new AcmeCaException(
+					Tr.formatMessage(tc, "CWPKI2033E", DEFAULT_ALIAS, DEFAULT_KEY_STORE, e.getMessage()), e);
 		}
 	}
 
@@ -915,27 +920,41 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 			/*
 			 * Create a new keystore instance.
 			 */
-			KeyStore keyStore = KeyStore.getInstance(setKeyStoreType);
-			keyStore.load(null, password.toCharArray());
-			keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(), password.toCharArray(),
-					convertChainToArray(acmeCertificate.getCertificateChain()));
-
-			/*
-			 * Write the store to a file.
-			 */
-			File file = new File(filePath);
-			if (file.getParentFile() != null && !file.getParentFile().exists()) {
-				file.getParentFile().mkdirs();
+			KeyStore keyStore = null;
+			try {
+				keyStore = KeyStore.getInstance(setKeyStoreType);
+				keyStore.load(null, password.toCharArray());
+				keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(), password.toCharArray(),
+						convertChainToArray(acmeCertificate.getCertificateChain()));
+			} catch (KeyStoreException | NoSuchAlgorithmException | IOException ee) {
+				throw new CertificateException(
+						Tr.formatMessage(tc, "CWPKI2034E", directoryURI, filePath, ee.getMessage()), ee);
 			}
-			FileOutputStream fos = new FileOutputStream(file);
-			keyStore.store(fos, password.toCharArray());
 
-			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-				Tr.exit(tc, methodName, file);
+			File file = new File(filePath);
+
+			try {
+				/*
+				 * Write the store to a file.
+				 */
+
+				if (file.getParentFile() != null && !file.getParentFile().exists()) {
+					file.getParentFile().mkdirs();
+				}
+				FileOutputStream fos = new FileOutputStream(file);
+				keyStore.store(fos, password.toCharArray());
+
+				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+					Tr.exit(tc, methodName, file);
+				}
+
+			} catch (KeyStoreException | NoSuchAlgorithmException | IOException e) {
+				throw new CertificateException(
+						Tr.formatMessage(tc, "CWPKI2035E", directoryURI, file.getName(), e.getMessage()), e);
 			}
 			return file;
-		} catch (KeyStoreException | NoSuchAlgorithmException | IOException | AcmeCaException e) {
-			throw new CertificateException(e.getMessage(), e);
+		} catch (AcmeCaException ace) {
+			throw new CertificateException(ace.getMessage(), ace);
 		}
 	}
 
@@ -961,7 +980,8 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 
 				boolean signalled = false, keepWaiting = true;
 				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.MINUTE, 2); // Wait 2 minutes, maximum
+				int timeToWait = 2;
+				cal.add(Calendar.MINUTE, timeToWait); // Wait 2 minutes, maximum
 				while (keepWaiting) {
 					try {
 						keepWaiting = false;
@@ -980,7 +1000,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 				 * application did not start, we can't proceed.
 				 */
 				if (!signalled) {
-					throw new AcmeCaException("Timed out waiting for ACME web authorization application to start.");
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2036E", timeToWait));
 				} else if (!isAppStarted) {
 					/*
 					 * This should never happen, but throw an exception if it
