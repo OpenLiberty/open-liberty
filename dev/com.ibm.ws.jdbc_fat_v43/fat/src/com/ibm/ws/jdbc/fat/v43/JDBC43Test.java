@@ -106,4 +106,27 @@ public class JDBC43Test extends FATServletClient {
         runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1");
         runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2");
     }
+
+    /**
+     * testHandleListClosesLeakedConnectionsFromSeparateRequests - make two separate servlet requests that each intentionally leak a connection,
+     * using up all of the connections in the pool. Make a third servlet request that requires a connection and expect it to work because the
+     * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
+     */
+    //@Test TODO enable once HandleList is added
+    public void testHandleListClosesLeakedConnectionsFromSeparateRequests() throws Exception {
+        runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
+        runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
+        runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSeparateRequests");
+    }
+
+    /**
+     * testHandleListClosesLeakedConnectionsFromSingleRequests - make a single servlet request that each intentionally leaks both of the
+     * connections from the pool. Make second servlet request that requires a connection and expect it to work because the
+     * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
+     */
+    //@Test TODO enable once HandleList is added
+    public void testHandleListClosesLeakedConnectionsFromSingleRequest() throws Exception {
+        runTest(server, "app43/JDBC43TestServlet", "testLeakConnections");
+        runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSingleRequest");
+    }
 }
