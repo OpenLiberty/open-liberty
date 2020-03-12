@@ -21,7 +21,7 @@ Export-Package: \
 
 Import-Package: !javax.servlet.jsp.*, \
   jakarta.el; version="4.0.0", \
-  jakarta.servlet.*; version="[5.0.0,6.0.0)", \
+  jakarta.servlet.*; version="[3.0.0,6.0.0)", \
   javax.xml.parsers; resolution:=optional, \
   org.apache.taglibs.standard.resources; resolution:=optional, \
   org.apache.taglibs.standard.tag.common.fmt; resolution:=optional, \
