@@ -183,6 +183,7 @@ public class CollectorJsonUtils_JSON {
         jsonBuilder.addField(LogTraceData.getMessageKeyJSON(isMessageEvent), formattedValue.toString(), false, true)
         .addField(LogTraceData.getThreadIdKeyJSON(isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
         .addField(LogTraceData.getDatetimeKeyJSON(isMessageEvent), datetime, false, true)
+        .addField(LogTraceData.getMessageIdKeyJSON(isMessageEvent), logData.getMessageId(), false, true)
         .addField(LogTraceData.getModuleKeyJSON(isMessageEvent), logData.getModule(), false, true)
         .addField(LogTraceData.getLoglevelKeyJSON(isMessageEvent), logData.getLoglevel(), false, true)
         .addField(LogTraceData.getMethodNameKeyJSON(isMessageEvent), logData.getMethodName(), false, true)
@@ -197,13 +198,13 @@ public class CollectorJsonUtils_JSON {
                 for (KeyValuePair k : extensions) {
                     String extKey = k.getKey();
                     if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Integer.toString(k.getIntValue()), false, true);
+                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), k.getIntValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Float.toString(k.getFloatValue()), false, true);
+                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), k.getFloatValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Long.toString(k.getLongValue()), false, true);
+                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), k.getLongValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), Boolean.toString(k.getBooleanValue()), false, true);
+                        jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), k.getBooleanValue(), false);
                     } else {
                         jsonBuilder.addField(LogTraceData.getExtensionNameKeyJSON(isMessageEvent, extKey), k.getStringValue(), false, true);
                     }
