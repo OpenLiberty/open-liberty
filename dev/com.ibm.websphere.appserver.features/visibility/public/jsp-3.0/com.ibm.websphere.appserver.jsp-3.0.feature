@@ -29,7 +29,7 @@ IBM-API-Package: jakarta.servlet.jsp;  type="spec", \
  org.apache.el;  type="internal", \
  org.apache.el.lang;  type="internal", \
  org.apache.jasper.el;  type="internal"
-IBM-ShortName: jsp-2.3
+IBM-ShortName: jsp-3.0
 IBM-SPI-Package: com.ibm.wsspi.jsp.taglib.config
 Subsystem-Name: JavaServer Pages 2.3
 -features=com.ibm.websphere.appserver.jakarta.jsp-3.0, \
