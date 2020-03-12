@@ -910,7 +910,14 @@ public class AcmeClient {
 				}
 			});
 		} catch (PrivilegedActionException e) {
-			throw new AcmeCaException("Failed to create a new session with the ACME CA server.", e.getCause());
+			if (tc.isDebugEnabled()) {
+				Tr.debug(tc, "Getting a new session failed for " + directoryURI + ", full stack trace is", e);
+			}
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2028E", directoryURI), e.getCause()); // during test,
+																										// the getCause
+																										// provided
+																										// better
+																										// information
 		}
 	}
 }

@@ -130,3 +130,39 @@ CWPKI2026W.useraction=Review the certificate authority URI. Review the keystore 
 CWPKI2027E=CWPKI2027E: The {0} file path for the ACME service is null or empty. The path provided is '{1}'.
 CWPKI2027E.explanation=The file path was null or empty and cannot be used for the domain and account keys.
 CWPKI2027E.useraction=Provide a valid file path in the configuration.
+
+CWPKI2028E=CWPKI2028E: The ACME service could not create a new session to connect to the ACME certificate authority at the {0} URI. The error is {1}.
+CWPKI2028E.explanation=The certificate authority could not be contacted and a signed certificate cannot be requested.
+CWPKI2028E.useraction=Review the error message for details on the failure. Review the configured certificate authority URI. Verify that the URI can be successfully accessed by the calling server. Verify that the calling server can receive a response from the certificate authority.
+
+CWPKI2029E=CWPKI2029E: The ACME service could not access the keystore at the {0} file path to find the {1} alias certificate. The error is {2}.
+CWPKI2029E.explanation=The keystore could not be accessed while checking for an existing certificate. The request to fetch a new certificate will not be completed because the keystore cannot be accessed.
+CWPKI2029E.useraction=Review the error message for details on the failure. Verify the file location is correct and the server has write file permissions.
+
+CWPKI2030E=CWPKI2030E: The ACME service could not install a certificate under the {0} alias into the {2} keystore. The error is {2}.
+CWPKI2030E.explanation=The ACME service received a new certificate from the certificate authority but the certificate cannot be installed locally.
+CWPKI2030E.useraction=Review the error message for details on the failure.
+
+CWPKI2031E=CWPKI2031E: The {0} certificate subject name in the default certificate with the {1} serial number is an invalid distinguished name. The error is {2}.
+CWPKI2031E.explanation=The certificate subject name must be formatted as a distinguished name as defined by RFC 2253, similar to a distinguished name that is used in an LDAP server.
+CWPKI2031E.useraction=Review the error message for details on the failure. Revoke or remove the invalid certificate.
+
+CWPKI2032E=CWPKI2032E: The certificate subject alternative names in the default certificate with the {1} serial number could not be parsed. The error is {2}.
+CWPKI2032E.explanation=The certificate is an invalid DER-encoded certificate or contains unsupported DER features.
+CWPKI2032E.useraction=Review the error message for details on the failure. Revoke or remove the invalid certificate.
+
+CWPKI2033E=CWPKI2033E: The ACME service could not find the certificate for the {0} alias in the {1} keystore. The error is {2}.
+CWPKI2033E.explanation=A certificate authority signed certificate is stored in the default keystore and replaces any existing default certificate, but keystore or default certificate could not be accessed.
+CWPKI2033E.useraction=Review the error message for details on the failure.
+
+CWPKI2034E=CWPKI2034E: The ACME service could not create a keystore in the {1} directory path. The error is {2}.
+CWPKI2034E.explanation=The ACME service fetched a new certificate, but creating or initializing a keystore for storing the certificate failed.
+CWPKI2034E.useraction=Review the error message for details on the failure. Verify the directory location is correct and the server has write file permissions.
+
+CWPKI2035E=CWPKI2035E: The ACME service could not store the signed certificate in the {1) keystore. The error is {2}.
+CWPKI2035E.explanation=The certificate was successfully retrieved from the certificate authority, but it cannot be stored locally.
+CWPKI2035E.useraction=Review the error message for details on the failure. Verify the keystore file location is correct and the server has write file permissions.
+
+CWPKI2036E=CWPKI2036E: The ACME service timed out waiting for the web authorization application to start. The application is required to complete a certificate request with an ACME certificate authority. The service waited for {0} minutes.
+CWPKI2036E.explanation=The application used to complete a certificate request did not start in the expected time frame. A signed certificate cannot be requested.
+CWPKI2036E.useraction=Review the log for earlier messages or errors.

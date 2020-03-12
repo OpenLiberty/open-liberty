@@ -337,7 +337,7 @@ public class AcmeFatUtils {
 	 */
 	public static final void waitForAcmeToReplaceCertificate(LibertyServer server) {
 		assertNotNull("ACME did not update replace the certificate.",
-				server.waitForStringInLog("Installed new certificate from ACME CA server"));
+				server.waitForStringInLog("CWPKI2007I"));
 	}
 
 	/**
