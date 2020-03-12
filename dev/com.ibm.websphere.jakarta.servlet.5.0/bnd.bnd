@@ -15,7 +15,7 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-SymbolicName: com.ibm.websphere.jakarta.servlet.5.0; singleton:=true
+Bundle-SymbolicName: com.ibm.websphere.jakartaee.servlet.5.0; singleton:=true
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
