@@ -54,6 +54,7 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 DumpCommandTest.class,
                 PackageCommandTest.class,
                 PackageLooseConfigTest.class,
+                PackageLooseConfigDropinsTest.class,
                 PackageLooseConfigParameterizedTest.class,
                 LogLevelPropertyTest.class,
                 CreateCommandTest.class,
