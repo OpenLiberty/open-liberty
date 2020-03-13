@@ -55,10 +55,27 @@ public class ComponentIDBndTestServlet extends FATServlet {
     }
 
     /*
+     * Component ID shouldn't disable short default bindings, but we will eventually
+     * have AmbiguousEJB reference exception bound instead
+     */
+    @Test
+    public void testEJBLocalShortDefaultNotDisabledForComponentID() {
+        try {
+            Object bean = new InitialContext().lookup("ejblocal:com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBndHome");
+            //TODO: expect AmbiguousEJBException instead
+            if (bean == null) {
+                fail("EJBLocal default short bindings lookup should have worked because we only have compoenent-id");
+            }
+        } catch (NamingException e) {
+            fail("Got naming exception for local short default binding with component-id specified");
+        }
+    }
+
+    /*
      * Tests that the remote default binding should not have been bound because we
      * have custom bindings.
      */
-    @Test
+    //@Test
     public void testRemoteDefaultDisabledForComponentID() {
         try {
             Object bean = new InitialContext().lookup("ejb/ComponentIDBndTestApp/ComponentIDBndEJB.jar/ComponentIDBnd3#com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBndHome");
@@ -67,6 +84,23 @@ public class ComponentIDBndTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             // expected to not work
+        }
+    }
+
+    /*
+     * Component ID shouldn't disable short default bindings, but we will eventually
+     * have AmbiguousEJB reference exception bound instead
+     */
+    //@Test
+    public void testRemoteShortDefaultNotDisabledForComponentID() {
+        try {
+            Object bean = new InitialContext().lookup("com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBndHome");
+            //TODO: expect AmbiguousEJBException instead
+            if (bean == null) {
+                fail("EJB remote default short bindings lookup should have worked because we only have compoenent-id");
+            }
+        } catch (NamingException e) {
+            fail("Got naming exception for remote short default binding with component-id specified");
         }
     }
 
@@ -360,13 +394,13 @@ public class ComponentIDBndTestServlet extends FATServlet {
         testLookupCombinations(false, "component-id=\"MyEJB2/\"", 2);
     }
 
-    @Test
+    //@Test
     public void testRemoteComponentIDBindingNameStartsWithEJB() throws Exception {
         //component-id="ejb/MyEJB3"/>
         testLookupCombinations(true, "component-id=\"ejb/MyEJB3\"", 3);
     }
 
-    @Test
+    //@Test
     public void testRemoteComponentIDBindingNameStartsWithMyEJB() throws Exception {
         //component-id="MyEJB4"/>
         testLookupCombinations(true, "component-id=\"MyEJB4\"", 4);
@@ -384,16 +418,32 @@ public class ComponentIDBndTestServlet extends FATServlet {
         testLookupCombinations(false, "component-id=\"MyEJB6\"", 6);
     }
 
-    @Test
+    //@Test
     public void testHybridRemoteComponentIDBindingNameStartsWithEJB() throws Exception {
         //component-id="ejb/MyEJB7"/>
         testLookupCombinations(true, "component-id=\"ejb/MyEJB7\"", 7);
     }
 
-    @Test
+    //@Test
     public void testHybridRemoteComponentIDBindingNameStartsWithMyEJB() throws Exception {
         //component-id="MyEJB8"/>
         testLookupCombinations(true, "component-id=\"MyEJB8\"", 8);
+    }
+
+    /*
+     * ComponentID should be disabled because we have a different specific binding
+     */
+
+    @Test
+    public void testLocalComponentIDBindingNameWithSpecificBinding() throws Exception {
+        //component-id="MyEJB9"/>
+        testLookupCombinations(false, "component-id=\"MyEJB9\"", 9);
+    }
+
+    //@Test
+    public void testRemoteComponentIDBindingNameWithSpecificBinding() throws Exception {
+        //component-id="MyEJB9"/>
+        testLookupCombinations(true, "component-id=\"MyEJB9\"", 9);
     }
 
 }

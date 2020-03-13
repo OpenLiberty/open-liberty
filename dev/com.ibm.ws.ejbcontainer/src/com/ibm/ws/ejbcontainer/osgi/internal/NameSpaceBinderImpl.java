@@ -139,8 +139,15 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         if (hrImpl.bindToContextRoot()) {
             BeanMetaData bmd = hr.getBeanMetaData();
             J2EEName eeName = hrImpl.getJ2EEName();
-            // <app>/<module.jar>/<bean>#<interface>
-            String bindingName = eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+
+            // if component-id binding was specified use that, otherwise use defaul long form
+            String bindingName = null;
+            if (bmd.ivComponent_Id != null) {
+                bindingName = bmd.ivComponent_Id + "#" + bindingObject.interfaceName;
+            } else {
+                // <app>/<module.jar>/<bean>#<interface>
+                bindingName = eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+            }
             ejbLocalNamingHelper.bind(bindingObject, bindingName);
 
             BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
