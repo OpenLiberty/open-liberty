@@ -37,6 +37,8 @@ Include-Resource: \
 
 WS-TraceGroup: METRICS
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: \
 	io.astefanutti.metrics.cdi23.MetricsExtension

@@ -16,11 +16,12 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.clientcontainer.security
 Bundle-Description: IBM JAX-WS ClientContainer Security; version=${bVersion}
 
 Import-Package: \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
-   *
+  !com.ibm.ws.jaxws.clientcontainer.security, \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+  *
 
 Export-Package: \
-   com.ibm.ws.jaxws.clientcontainer.security
+  com.ibm.ws.jaxws.clientcontainer.security
 
 -dsannotations: com.ibm.ws.jaxws.clientcontainer.security.JaxWsSecurityConfigurationServiceImpl
 

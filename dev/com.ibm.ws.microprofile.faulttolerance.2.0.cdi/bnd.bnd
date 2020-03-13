@@ -29,6 +29,8 @@ Include-Resource: \
 
 WS-TraceGroup: FAULTTOLERANCE
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.faulttolerance.cdi20.FaultToleranceCDI20Extension
 

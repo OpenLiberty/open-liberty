@@ -47,7 +47,8 @@ Private-Package: \
     com.ibm.ws.security.mp.jwt.tai, \
     com.ibm.ws.security.mp.jwt.config, \
     com.ibm.ws.security.mp.jwt.resources.*,
-    
+
+
 -dsannotations: com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtConfigImpl, \
 	com.ibm.ws.security.mp.jwt.impl.utils.JsonWebTokenUtilImpl, \
         com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtServiceImpl, \
@@ -55,7 +56,6 @@ Private-Package: \
 
 
 -dsannotations-inherit = true
-
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF

@@ -20,7 +20,11 @@ Bundle-ActivationPolicy: lazy
 WS-TraceGroup: Authorization
 
 Export-Package: \
- com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true, \
+  com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true, \
+
+Import-Package: \
+  !com.ibm.ws.security.authorization.jacc.ejb.impl, \
+  ${defaultPackageImport}
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.ejb.impl.EJBServiceImpl

@@ -15,14 +15,19 @@ Bundle-Name: Messaging Utils
 Bundle-SymbolicName: com.ibm.ws.messaging.utils
 Bundle-Description: Messaging Utils; version=${bVersion}
 
-Export-Package: com.ibm.ws.sib.shell.util,\
- com.ibm.ws.sib.utils,\
- com.ibm.ws.sib.utils.collections.linkedlist,\
- com.ibm.ws.sib.utils.comms,\
- com.ibm.ws.sib.utils.ffdc,\
- com.ibm.ws.sib.utils.ras,\
- com.ibm.wsspi.sib.utils.ras,\
- com.ibm.ejs.util.am
+Export-Package: \
+  com.ibm.ws.sib.shell.util,\
+  com.ibm.ws.sib.utils,\
+  com.ibm.ws.sib.utils.collections.linkedlist,\
+  com.ibm.ws.sib.utils.comms,\
+  com.ibm.ws.sib.utils.ffdc,\
+  com.ibm.ws.sib.utils.ras,\
+  com.ibm.wsspi.sib.utils.ras,\
+  com.ibm.ejs.util.am
+
+Import-Package: \
+  !com.ibm.ejs.util.am, \
+  ${defaultPackageImport}
 
 Service-Component=messaging.util.AlarmManager; \
   implementation:=com.ibm.ejs.util.am.AlarmManager; \

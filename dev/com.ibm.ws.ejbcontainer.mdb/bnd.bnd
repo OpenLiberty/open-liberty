@@ -25,6 +25,13 @@ Require-Bundle: com.ibm.ws.container.service
 
 Import-Package: \
   !com.ibm.websphere.pmi.*, \
+  com.ibm.websphere.csi, \
+  com.ibm.ws.container.service.app.deploy, \
+  com.ibm.ws.container.service.metadata, \
+  com.ibm.ws.container.service.state, \
+  com.ibm.ws.runtime.metadata, \
+  com.ibm.ws.threadContext, \
+  com.ibm.ws.util, \
   *
 
 Export-Package: \

@@ -16,6 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2
 
 
 Import-Package: \
+!org.apache.cxf.ws.addressing.wsdl, \
 !com.ctc.wstx.*,\
 !org.codehaus.stax2.*,\
 !com.sun.msv.*,\

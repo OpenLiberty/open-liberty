@@ -18,6 +18,10 @@ Bundle-Description: ServletRequestProbe: Security Audit Servlet Request Probe; v
 
 Export-Package: com.ibm.ws.request.probe.audit.servlet
 
+Import-Package: \
+  !com.ibm.ws.request.probe.audit.servlet, \
+  ${defaultPackageImport}
+
 -dsannotations: \
    com.ibm.ws.request.probe.audit.servlet.AuditRPTD, \
    com.ibm.ws.request.probe.audit.servlet.AuditPE

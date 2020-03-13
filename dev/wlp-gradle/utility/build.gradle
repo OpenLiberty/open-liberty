@@ -1,0 +1,69 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.apache.aries:org.apache.aries.util:1.1.3'
+    }
+}
+
+import java.lang.reflect.Method
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.jar.Manifest
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import org.apache.aries.util.manifest.ManifestProcessor
+
+def sortManifestFileInZip(String zipPath) throws IOException {
+    ZipFile zipFile = new ZipFile(zipPath)
+    ZipEntry manifestEntry = zipFile.getEntry("META-INF/MANIFEST.MF")
+    InputStream stream = zipFile.getInputStream(manifestEntry)
+
+    try {
+        Manifest mf = ManifestProcessor.parseManifest(stream)
+        if (mf != null) {
+            Map<String, String> manifestEntries = ManifestProcessor.readManifestIntoMap(mf)
+            ArrayList<String> lines = new ArrayList<>()
+            manifestEntries.each { k, v ->
+                if (["Import-Package", "Private-Package", "Export-Package", "Require-Capability"].contains(k)) {
+                    lines.add(k + ": " + v.replaceAll("\",", "\",\n"))
+                } else {
+                    lines.add(k + ": " + v)
+                }
+            }
+
+            Path zipFilePath = Paths.get(zipPath)
+            Method newFS = FileSystems.class.getMethod("newFileSystem", Path.class, ClassLoader.class)
+            FileSystem fs = newFS.invoke(null, zipFilePath, null)
+            Path dest = fs.getPath("/META-INF/MANIFEST.MF")
+
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(dest)))
+            for (String line : lines) {
+                bw.write(line)
+                bw.newLine()
+            }
+            bw.close()
+            fs.close()
+        }
+    } catch (StringIndexOutOfBoundsException e) {
+        // Invalid manifests are skipped
+    } finally {
+        stream.close()
+        zipFile.close()
+    }
+}
+
+task sortWlpBundleManifests {
+    doLast {
+        fileTree(dir: file(workspaceDir + '/build.image/wlp/lib'), includes: ['*.jar']).each {
+            if (!it.isDirectory()) {
+                println it.toString()
+                sortManifestFileInZip(it.getPath())
+            }
+        }
+    }
+}

@@ -2,10 +2,10 @@
     <featureManager>
       <feature>componenttest-1.0</feature>
       <feature>concurrent-1.0</feature>
+      <feature>ejb-3.2</feature>
       <feature>jca-1.7</feature>
       <feature>jndi-1.0</feature>
       <feature>localConnector-1.0</feature>
-      <feature>mdb-3.2</feature>
       <feature>servlet-3.1</feature>
       <feature>monitor-1.0</feature>
     </featureManager>
@@ -36,6 +36,11 @@
       <connectionManager enableSharingForDirectLookups="false"/>
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.DerbyRA/>
+    </connectionFactory>
+
+    <connectionFactory jndiName="eis/ds5">
+      <connectionManager maxPoolSize="1" connectionTimeout="0"/>
+      <properties.DerbyRA dissociatable="false" lazyEnlistable="true" userName="DS1USER" password="{xor}GwxuDwgb"/>
     </connectionFactory>
 
     <activationSpec id="derbyRAApp/fvtweb/DerbyRAMessageDrivenBean">

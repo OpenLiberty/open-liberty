@@ -383,8 +383,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                 TxRecoveryAgentImpl txAgent = createRecoveryAgent(_recoveryDirector);
 
-                // For now I'll code such that the presence of a RecoveryIdentity attribute says that we are operating in the Cloud
-                if (_recoveryIdentity != null && !_recoveryIdentity.isEmpty()) {
+                // We will do peer recovery if the recovery identity and group are set
+                if (_recoveryIdentity != null && _recoveryGroup != null && !_recoveryIdentity.isEmpty() && !_recoveryGroup.isEmpty()) {
                     _recLogService.setPeerRecoverySupported(true);
                     txAgent.setPeerRecoverySupported(true);
                     // Override the disable2PC property if it has been set
