@@ -11,7 +11,6 @@
 package com.ibm.ws.jaxrs.fat.jerseywithinjection;
 
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,9 +21,6 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/helloworld2")
 public class MyResource2 {
-
-    @Inject
-    InjectableObject injectableObject;
 
     @Resource(description = "Application Data Source", name = "jdbc/TestDataSource")
     private DataSource datasource;
