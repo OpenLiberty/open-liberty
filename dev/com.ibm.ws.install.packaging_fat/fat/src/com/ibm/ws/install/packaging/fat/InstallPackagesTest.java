@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
-public class InstallPackagesTest extends InstallUtilityToolTest {
+public class InstallPackagesTest extends InstallPackagesToolTest {
     private static final Class<?> c = InstallPackagesTest.class;
 
     @BeforeClass

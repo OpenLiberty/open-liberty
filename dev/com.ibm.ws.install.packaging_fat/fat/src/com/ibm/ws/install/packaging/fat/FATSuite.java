@@ -18,9 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 DummyTest.class,
-                InstallPackagesTest.class
-
-//              ,ServicesTest.class
+                InstallPackagesTest.class,
+                ServicesTest.class
 })
 public class FATSuite {
 
