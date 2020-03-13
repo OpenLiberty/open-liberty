@@ -240,49 +240,6 @@ public class AcmeClientTest {
 	}
 
 	/**
-	 * Validate that an exception is thrown if the terms of service are no
-	 * accepted.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void fetchCertificate_RejectTermsOfService() throws Exception {
-
-		/**
-		 * We want a new account so delete the existing account key file.
-		 */
-		File accountKeyFile = new File(FILE_ACCOUNT_KEY);
-		if (accountKeyFile.exists()) {
-			accountKeyFile.delete();
-		}
-
-		/*
-		 * Without accepting the terms of service, fetchCertificate is going to
-		 * fail. Expect the following exception and message.
-		 */
-		expectedException.expect(AcmeCaException.class);
-		expectedException.expectMessage(
-				"The account must accept the terms of service by setting the ACME CA configuration to have a value of \"true\" for 'acceptTermsOfService' "
-						+ "in the server.xml. The terms of service can be found at the following URI: data:text/plain,Do%20what%20thou%20wilt");
-
-		/*
-		 * Create an AcmeService to test.
-		 */
-		AcmeClient acmeClient = new AcmeClient(acmeDirectoryURI, FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(false);
-
-		/*
-		 * Link the new client to the challenge response server.
-		 */
-		challengeServer.setAcmeClient(acmeClient);
-
-		/*
-		 * Get the certificate from the ACME CA server.
-		 */
-		acmeClient.fetchCertificate(new CSROptions(Arrays.asList(new String[] { TEST_DOMAIN_1 })));
-	}
-
-	/**
 	 * Verify that we can revoke a fetched certificate.
 	 * 
 	 * @throws Exception
