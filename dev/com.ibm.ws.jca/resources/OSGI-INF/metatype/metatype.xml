@@ -86,7 +86,8 @@
  <OCD id="com.ibm.ws.jca.resourceAdapter.supertype" ibm:extends="com.ibm.ws.app.manager" 
 	 ibm:supportHiddenExtensions="true" name="internal" 
 	 description="internal use only" 
-	 ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, 	 	
+	 ibm:excludeChildren="startAfter,
+	    com.ibm.ws.jca.embeddedResourceAdapter, 	 	
 	 	com.ibm.ws.javaee.dd.appbnd.ApplicationBnd,
 	 	com.ibm.ws.javaee.dd.appext.ApplicationExt,
 	 	com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd,
