@@ -16,5 +16,5 @@ Subsystem-Name: gRPC Servlet 1.0
   com.ibm.websphere.appserver.internal.grpc-1.0, \
   com.ibm.websphere.appserver.servlet-4.0
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

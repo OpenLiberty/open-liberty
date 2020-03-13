@@ -17,5 +17,5 @@ Subsystem-Name: gRPC Server 1.0
 -bundles=\
   com.ibm.ws.grpc.server.1.0
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel
