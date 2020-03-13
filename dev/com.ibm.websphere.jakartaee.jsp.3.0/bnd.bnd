@@ -33,4 +33,5 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
+  com.ibm.ws.javax.j2ee:servlet.jsp.resources;version=2.3, \
   jakarta.servlet.jsp-api;version=3.0.0
