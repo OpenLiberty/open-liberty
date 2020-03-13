@@ -20,6 +20,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.narayana.lra.filter.ServerLRAFilter;
+
 /**
  * A declarative services component can be completely POJO based
  * (no awareness/use of OSGi services).
@@ -36,7 +38,7 @@ public class SampleComponent2 {
      * Best practice: this should be a protected method, not public or private
      *
      * @param properties : Map containing service & config properties
-     *                       populated/provided by config admin
+     *            populated/provided by config admin
      */
     @Activate
     protected void activate(Map<String, Object> properties) {
@@ -45,6 +47,8 @@ public class SampleComponent2 {
         }
 
         Tr.warning(tc, "Alert, Another activation!. Has the world not ended yet?");
+        String name = ServerLRAFilter.class.getName();
+        Tr.warning(tc, "The name is " + name);
     }
 
     /**
