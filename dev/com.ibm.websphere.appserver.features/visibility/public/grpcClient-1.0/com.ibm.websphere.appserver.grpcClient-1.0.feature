@@ -25,5 +25,5 @@ Subsystem-Name: gRPC Server 1.0
   com.ibm.ws.grpc.client.1.0, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel
