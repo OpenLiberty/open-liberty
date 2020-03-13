@@ -1,0 +1,17 @@
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" version="3.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd">
+    <enterprise-beans>
+        <session>
+            <ejb-name>BookResource</ejb-name>
+<!-- 
+            <resource-ref>
+                <description>The default URL</description>
+                <res-ref-name>jdbc/TestDataSource</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>
+             -->
+        </session>
+    </enterprise-beans>
+</ejb-jar>
