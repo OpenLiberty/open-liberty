@@ -106,7 +106,12 @@ public class WCSameSiteCookieAttributeTests {
             // W CWWKT0037W: A cookie name or pattern [cookieOne], which is marked as a duplicate, was found in the SameSite [strict]
             // configuration. The [cookieOne] cookie name or pattern is ignored. Any cookie name or pattern that is defined by the lax,
             // none, and strict configurations can be defined in only one of the three configurations.
-            sameSiteServer.stopServer("CWWKG0032W", "CWWKT0035W", "CWWKT0036W", "CWWKT0037W");
+
+            // LogService-114-com.ibm.ws.ssl E CWWKE0701E: FrameworkEvent ERROR java.lang.IllegalStateException: BundleContext is no longer valid
+            // This can occur when changing the server configuration back to the original in testSameSiteConfig_Lax_WebAppSecurity_Strict.
+            // We should ignore it as it is harmless.
+            sameSiteServer.stopServer("CWWKG0032W", "CWWKT0035W", "CWWKT0036W", "CWWKT0037W",
+                                      "com.ibm.ws.ssl.*CWWKE0701E.*java.lang.IllegalStateException: BundleContext is no longer valid");
         }
     }
 
