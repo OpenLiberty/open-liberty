@@ -52,22 +52,24 @@ public class OidcServerImpl implements OidcServer {
     public static final String REGEX_REGISTRATION = "registration(/\\S*)?";
     public static final String apwPattern = OAuth20Constants.APP_PASSWORD_URI + "|" + OAuth20Constants.APP_PASSWORD_URI + "/.*";
     public static final String atokPattern = OAuth20Constants.APP_TOKEN_URI + "|" + OAuth20Constants.APP_TOKEN_URI + "/.*";
-    private static final Pattern PATH_RE = Pattern.compile("^" + REGEX_COMPONENT_ID + 
-                    "(authorize|token|introspect|revoke|.well-known/openid-configuration|userinfo|"
-                     + REGEX_REGISTRATION + "|check_session_iframe|end_session|coverage_map"
-                     + "|proxy|"+ apwPattern + "|" + atokPattern + ")$");
+    public static final String usersTokMgmtPattern = OAuth20Constants.USERS_TOKEN_MGMT_URI + "|" + OAuth20Constants.USERS_TOKEN_MGMT_URI + "/.*";
+    public static final String persTokMgmtPattern = OAuth20Constants.PERS_TOKEN_MGMT_URI + "|" + OAuth20Constants.PERS_TOKEN_MGMT_URI + "/.*";
+    private static final Pattern PATH_RE = Pattern.compile("^" + REGEX_COMPONENT_ID +
+                                                           "(authorize|token|introspect|revoke|.well-known/openid-configuration|userinfo|"
+                                                           + REGEX_REGISTRATION + "|check_session_iframe|end_session|coverage_map"
+                                                           + "|proxy|" + apwPattern + "|" + atokPattern + "|" +
+                                                           usersTokMgmtPattern + "|" + persTokMgmtPattern +
+                                                           ")$");
 
     public static final String CFG_KEY_ID = "id";
     public static final String CFG_KEY_OIDC_SERVER_CONFIG = "oidcServerConfig";
-    private final ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef =
-                    new ConcurrentServiceReferenceMap<String, OidcServerConfig>(CFG_KEY_OIDC_SERVER_CONFIG);
+    private final ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef = new ConcurrentServiceReferenceMap<String, OidcServerConfig>(CFG_KEY_OIDC_SERVER_CONFIG);
     private boolean bOidcUpdated = false;
     HashMap<String, OidcServerConfig> oidcMap = new HashMap<String, OidcServerConfig>();
     ConfigUtils configUtils = new ConfigUtils();
     static protected final String KEY_ID = "id";
     static protected final String KEY_oauth20Provider = "oauth20Provider";
-    static protected final ConcurrentServiceReferenceMap<String, OAuth20Provider> oauth20ProviderRef =
-                    new ConcurrentServiceReferenceMap<String, OAuth20Provider>(KEY_oauth20Provider);
+    static protected final ConcurrentServiceReferenceMap<String, OAuth20Provider> oauth20ProviderRef = new ConcurrentServiceReferenceMap<String, OAuth20Provider>(KEY_oauth20Provider);
 
     protected void setOauth20Provider(ServiceReference<OAuth20Provider> ref) {
         String id = (String) ref.getProperty(KEY_ID);
@@ -152,7 +154,6 @@ public class OidcServerImpl implements OidcServer {
     public boolean isOIDCSpecificURI(HttpServletRequest req, boolean protectedOrAll) {
         String contextPath = req.getContextPath();
         String uri = req.getRequestURI();
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "contextPath=" + contextPath + " uri=" + uri);
             Tr.debug(tc, "check " + (protectedOrAll ? "Protected-Endpoints" : "All-endpoints"));
@@ -166,31 +167,49 @@ public class OidcServerImpl implements OidcServer {
                     if (protectedOrAll) {
                         // protected
                         Matcher matcherEndpoint = oidcServerConfig.getProtectedEndpointsPattern().matcher(uri);
-                        if (matcherEndpoint.matches())
+                        if (matcherEndpoint.matches()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "matched, return true");
+                            }
                             return true;
+                        }
                     } else {
                         // all
                         // we will excklude end_session and check_session_iframe
                         Matcher matcherEndpoint = oidcServerConfig.getEndpointsPattern().matcher(uri);
                         if (matcherEndpoint.matches()) {
                             Matcher matcherNonEndpoint = oidcServerConfig.getNonEndpointsPattern().matcher(uri);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "return nonEndpointPattern not match, pattern: " + oidcServerConfig.getNonEndpointsPattern());
+
+                            }
                             return !matcherNonEndpoint.matches(); // when end_session and check_session_iframe, return false
-                        };
+                        } ;
                     }
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "matcher was null");
                 }
             }
         }
 
         if (!protectedOrAll) {
-            // when all, let's check if misc 
+            // when all, let's check if misc
             synchronized (oauth20ProviderRef) {
                 Iterator<OAuth20Provider> oauth20Providers = oauth20ProviderRef.getServices();
                 while (oauth20Providers.hasNext()) {
                     OAuth20Provider provider = oauth20Providers.next();
                     if (provider.isMiscUri(req))
-                        return true;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "is miscuri, return true");
+                        }
+                    return true;
                 }
             }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "default fallthrough, return false");
         }
         return false;
     }
@@ -231,6 +250,7 @@ public class OidcServerImpl implements OidcServer {
         return null;
     }
 
+    @Override
     public boolean allowDefaultSsoCookieName() {
         synchronized (oidcServerConfigRef) {
             if (bOidcUpdated) {
@@ -246,8 +266,7 @@ public class OidcServerImpl implements OidcServer {
                 OidcServerConfig cfg = it.next().getValue();
                 if (cfg.allowDefaultSsoCookieName()) {
                     allow = true;
-                }
-                else {
+                } else {
                     allow = false;
                     break;
                 }
