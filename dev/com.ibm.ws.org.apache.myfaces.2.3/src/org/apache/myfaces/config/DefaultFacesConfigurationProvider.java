@@ -110,6 +110,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         FACTORY_NAMES.add(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY);
     }
     
     /**
@@ -283,6 +284,10 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     else if(factoryName.equals(FactoryFinder.FACELET_CACHE_FACTORY)) 
                     {
                         factory.addFaceletCacheFactory(className);
+                    }
+                    else if(factoryName.equals(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY)) 
+                    {
+                        factory.addSearchExpressionContextFactory(className);
                     }
                     else
                     {
@@ -464,7 +469,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     private void validateFacesConfig(ExternalContext ectx, URL url) throws IOException, SAXException
     {
         String version = ConfigFilesXmlValidationUtils.getFacesConfigVersion(url);
-        if ("1.2".equals(version) || "2.0".equals(version) || "2.1".equals(version))
+        if ("1.2".equals(version) || "2.0".equals(version) || "2.1".equals(version) 
+            || "2.2".equals(version) || "2.3".equals(version))
         {
             ConfigFilesXmlValidationUtils.validateFacesConfigFile(url, ectx, version);
         }
