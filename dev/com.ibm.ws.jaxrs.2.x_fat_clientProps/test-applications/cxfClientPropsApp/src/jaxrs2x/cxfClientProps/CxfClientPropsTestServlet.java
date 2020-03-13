@@ -256,8 +256,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
         
         // Repeating the tests but adding the "Expect", "100-continue" header.  In this case a 100 will
         // be sent prior to the 200 containing the output.  The JDK will catch and handle this 100 and 
-        // JAXRS will only get the 200 response when in streaming mode (which for now is only chunking).  
-        // If not in chunking then JAXRS will receive the 100 response which will contain no returned data.
+        // JAXRS will only get the 200 response when in streaming mode (Chunking or FixedLengthStreamingMode)
         client = ClientBuilder.newBuilder()
                         .property("client.ChunkingThreshold", "10000")
                         .build();
@@ -271,6 +270,8 @@ public class CxfClientPropsTestServlet extends FATServlet {
         assertEquals(200,status);
         assertEquals("CHUNKING", result);
 
+        // Forcing the ChunkingThreahold above the payload size of 30000 in order to force
+        // fixedLengthStreaming mode.
         client = ClientBuilder.newBuilder()
                         .property("client.ChunkingThreshold", "40000")
                         .build();
@@ -280,9 +281,8 @@ public class CxfClientPropsTestServlet extends FATServlet {
         status = response.getStatus();
         result = response.readEntity(String.class);
 
-        // If a 100 response is received then no data will be sent.
-        assertEquals(100,status);
-        assertEquals("", result);
+        assertEquals(200,status);
+        assertEquals("30000:30000", result);
 
     }
 

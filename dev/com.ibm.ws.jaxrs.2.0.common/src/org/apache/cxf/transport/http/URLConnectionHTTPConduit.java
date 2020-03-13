@@ -33,6 +33,7 @@ import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -69,6 +70,9 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         DEFAULT_USE_REFLECTION = Boolean.valueOf(SystemPropertyAction.getProperty(HTTPURL_CONNECTION_METHOD_REFLECTION, "false"));
         SET_REASON_PHRASE = Boolean.valueOf(SystemPropertyAction.getProperty(SET_REASON_PHRASE_NOT_NULL, "false"));
     }
+    
+    private Boolean allowFixedLengthStreamMode = null;
+    private Message message = null;
 
     /**
      * This field holds the connection factory, which primarily is used to
@@ -129,7 +133,10 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
     @FFDCIgnore(java.net.ProtocolException.class)
     @Override
     protected void setupConnection(Message message, Address address, HTTPClientPolicy csPolicy) throws IOException {
+        this.message = message;
+        
         HttpURLConnection connection = createConnection(message, address, csPolicy);
+        
         connection.setDoOutput(true);
 
         int ctimeout = determineConnectionTimeout(message, csPolicy);
@@ -463,6 +470,30 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         protected void setFixedLengthStreamingMode(int i) {
             // [CXF-6227] do not call connection.setFixedLengthStreamingMode(i)
             // to prevent https://bugs.openjdk.java.net/browse/JDK-8044726
+            
+            //Allow this mode to be set only if the Expect header has been set to "100-continue"           
+            if ((message != null) && (allowFixedLengthStreamMode == null)) {
+                // If the Expect header is set to "100-continue" then currently the JDK
+                // will not handle the returned 100 and will pass that message on the JAXRS (that is expecting
+                // the 200, not the 100).   This causes issues and potentially hangs.   To work around this
+                // issue we will allow URLConnectionHttpConduit.setFixedLengthStreamingMode() to be used.  
+                // Normally FixedLengthStreamMode is disabled due to a JDK performance issue [CXF-6227].
+                Map<String, List<String>> headers = CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));
+                List<String> expectList = headers.get("Expect");
+                
+                if (expectList != null) {
+                    Iterator<String> expects = expectList.iterator();
+                    while (expects.hasNext()) {
+                        if (expects.next().equalsIgnoreCase("100-continue")) {
+                            allowFixedLengthStreamMode = Boolean.TRUE;                            
+                        }
+                    }
+                }               
+
+            }
+            if ((allowFixedLengthStreamMode != null) && (allowFixedLengthStreamMode.booleanValue())) {
+                connection.setFixedLengthStreamingMode(i);
+            }
         }
         @Override
         protected void handleNoOutput() throws IOException {
