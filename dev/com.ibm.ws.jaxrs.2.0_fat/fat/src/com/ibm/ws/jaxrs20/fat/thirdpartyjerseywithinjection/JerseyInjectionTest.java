@@ -87,12 +87,12 @@ public class JerseyInjectionTest {
 
     @Test
     public void testRS20ServerwithJerseyInjectGet() throws IOException {
-        runtGetMethod(200, "Hello World", "/thirdpartyjerseypfwithinjection/rest/helloworld");
+        runtGetMethod(200, "Hello World", "WSJdbcDataSource", "/thirdpartyjerseypfwithinjection/rest/helloworld");
     }
 
     @Test
     public void testRS20ServerwithJerseyResourceGet() throws IOException {
-        runtGetMethod(200, "Hello World2", "/thirdpartyjerseypfwithinjection/rest2/helloworld2");
+        runtGetMethod(200, "Hello World2", "WSJdbcDataSource","/thirdpartyjerseypfwithinjection/rest2/helloworld2");
     }
 
     @Test
@@ -116,7 +116,9 @@ public class JerseyInjectionTest {
                                                 "isReadable",
                                                 "readFrom",
                                                 "isWriteable",
-                                                "writeTo"
+                                                "writeTo",
+                                                "Hello World",
+                                                "WSJdbcDataSource"
         });
 
         assertEquals(200, resp.getStatusLine().getStatusCode());
@@ -132,7 +134,7 @@ public class JerseyInjectionTest {
         }
     }
 
-    private StringBuilder runtGetMethod(int exprc, String testOut, String path)
+    private StringBuilder runtGetMethod(int exprc, String testOut, String testOut2, String path)
                     throws IOException {
         URL url = new URL("http://localhost:" + getPort() + path);
         int retcode;
@@ -157,6 +159,8 @@ public class JerseyInjectionTest {
 
             if (lines.indexOf(testOut) < 0)
                 fail("Missing success message in output. " + lines);
+
+            assertStatesExsited(5000, new String[] {testOut2});
 
             if (retcode != exprc)
                 fail("Bad return Code from Get. Expected " + exprc + "Got"
