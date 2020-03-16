@@ -87,6 +87,10 @@ public class TimedCache<K, V> {
      */
     public V get(K key, Function<K, V> lookupFunction) {
 
+        if (delay == 0) {
+            return lookupFunction.apply(key);
+        }
+
         Object cacheValue = cache.get(key);
 
         if (cacheValue == null) {

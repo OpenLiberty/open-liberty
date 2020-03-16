@@ -50,7 +50,7 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
      */
     public Config14Impl(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval) {
         super(conversionManager, sources);
-        rawValueCache = new TimedCache<>(executor, 500, TimeUnit.MILLISECONDS);
+        rawValueCache = new TimedCache<>(executor, refreshInterval, TimeUnit.MILLISECONDS);
     }
 
     /** {@inheritDoc} */
