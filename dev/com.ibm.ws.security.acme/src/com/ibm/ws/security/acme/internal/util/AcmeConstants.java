@@ -48,4 +48,11 @@ public class AcmeConstants {
 	 * Key size for generated domain and account key pairs.
 	 */
 	public static final int KEY_SIZE = 2048;
+	
+	public static final String DEFAULT_KEY_STORE = "defaultKeyStore";
+	public static final String DEFAULT_ALIAS = "default";
+	public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";
+	
+	public static final String ACCOUNT_TYPE = "account";
+	public static final String DOMAIN_TYPE = "domain";
 }

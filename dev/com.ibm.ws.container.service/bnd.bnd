@@ -44,6 +44,7 @@ Export-Package: \
    com.ibm.ws.container.service.security; provide:=true, \
    com.ibm.ws.container.service.state; provide:=true, \
    com.ibm.ws.exception;provide:=true, \
+   com.ibm.ws.jca.cm.handle, \
    com.ibm.ws.runtime.metadata, \
    com.ibm.ws.threadContext, \
    com.ibm.ws.util;provide:=true, \
@@ -53,6 +54,7 @@ Export-Package: \
    com.ibm.ws.URL
 
 Import-Package: \
+    !com.ibm.ws.container.service.naming, \
     !*.internal.*, *
 
 Private-Package: \

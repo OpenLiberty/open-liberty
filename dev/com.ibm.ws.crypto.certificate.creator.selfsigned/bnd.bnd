@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Certificate Creator 1.0
+Bundle-SymbolicName: com.ibm.ws.crypto.certificate.creator.selfsigned
+Bundle-Description: Self-Signed Certificate Creator; version=${bVersion}
+
+Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Export-Package: com.ibm.ws.crypto.certificate.creator.selfsigned;provide:=true
+
+-dsannotations: \
+    com.ibm.ws.crypto.certificate.creator.selfsigned.KeytoolSSLCertificateCreator
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.crypto.certificateutil;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	

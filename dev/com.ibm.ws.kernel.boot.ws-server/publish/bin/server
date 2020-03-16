@@ -561,7 +561,6 @@ serverEnvDefaults()
         substitutePrefixVar "${WLP_DEFAULT_JAVA_HOME}" WLP_INSTALL_DIR "${WLP_INSTALL_DIR}"
         JAVA_HOME=${substitutePrefixVarResult}
         JAVA_CMD=${JAVA_HOME}/bin/java
-        WLP_SKIP_MAXPERMSIZE=${WLP_DEFAULT_SKIP_MAXPERMSIZE}
       fi
     else
       JAVA_HOME=${JRE_HOME}
@@ -644,11 +643,6 @@ serverEnvAndJVMOptions()
   # Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
   JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
   SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
-
-  # Add -XX:MaxPermSize unless WLP_SKIP_MAXPERMSIZE is set.
-  if [ -z "${WLP_SKIP_MAXPERMSIZE}" ]; then
-    SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} -XX:MaxPermSize=256m"
-  fi
 
   rc=0
 

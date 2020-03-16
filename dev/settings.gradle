@@ -119,7 +119,21 @@ pluginManagement {
             artifact()
           }
       }
+      maven {
+        url uri(bnd_repourl)
+        metadataSources {
+          mavenPom()
+          artifact()
+        }
+      }
     } else {
+      maven {
+        url uri(bnd_repourl)
+        metadataSources {
+          mavenPom()
+          artifact()
+        }
+      }
       maven {
         url "https://plugins.gradle.org/m2/"
         metadataSources {

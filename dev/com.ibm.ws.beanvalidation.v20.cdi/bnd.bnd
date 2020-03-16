@@ -12,8 +12,6 @@
 
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: BeanValidation CDI 2.0
 Bundle-SymbolicName: com.ibm.ws.beanvalidation.v20.cdi
@@ -21,7 +19,6 @@ Bundle-Description: Bean Validation v2.0 CDI Integration Bundle; version=${bVers
 
 WS-TraceGroup: BeanValidation
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Private-Package: \
   com.ibm.ws.beanvalidation.v20.cdi.*

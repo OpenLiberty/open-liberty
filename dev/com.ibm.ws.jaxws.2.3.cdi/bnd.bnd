@@ -15,10 +15,7 @@ Bundle-Name: JAX-WS CDI
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.cdi
 Bundle-Description: IBM JAX-WS CDI support; version=${bVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))" 
 
 Import-Package: \
   javax.enterprise.inject.spi; version="[2.0,3)",\

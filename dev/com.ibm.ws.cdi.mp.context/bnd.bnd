@@ -12,13 +12,10 @@
 bVersion=1.0
 bSymbolicName=com.ibm.ws.cdi.mp.context
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: CDI Context for MicroProfile Context Propagation 1.0
 Bundle-Description: CDI Context for MicroProfile Context Propagation 1.0; version=${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: JCDI
 

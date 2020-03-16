@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2732,73 +2732,78 @@ public class JmsMessageImpl implements Message, JmsInternalConstants, Serializab
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "getBody", new Object[] { paramClass });
 
-        int bodyType = msg.getBodyType().toInt();
         T returnObj = null;
-        Object _messageObject = null;
-        switch (bodyType) {
-            case JmsBodyType.TEXT_INT:
-                try {
-                    _messageObject = ((JsJmsTextMessage) msg).getText();
-                } catch (UnsupportedEncodingException exp) {
-                    throw getJMSException(paramClass, exp);
-                }
-                break;
+        try {
+            int bodyType = msg.getBodyType().toInt();
+            Object _messageObject = null;
+            switch (bodyType) {
+                case JmsBodyType.TEXT_INT:
+                    try {
+                        _messageObject = ((JsJmsTextMessage) msg).getText();
+                    } catch (UnsupportedEncodingException exp) {
+                        throw getJMSException(paramClass, exp);
+                    }
+                    break;
 
-            case JmsBodyType.OBJECT_INT:
-                try {
-                    _messageObject = ((JsJmsObjectMessage) msg).getRealObject();
+                case JmsBodyType.OBJECT_INT:
+                    try {
+                        _messageObject = ((JsJmsObjectMessage) msg).getRealObject();
 
-                    //As per spec: if the message is an ObjectMessage and object deserialization fails 
-                    //then throw MessageFormatException.
-                    if (_messageObject != null && !Serializable.class.isAssignableFrom(paramClass)) {
+                        //As per spec: if the message is an ObjectMessage and object deserialization fails 
+                        //then throw MessageFormatException.
+                        if (_messageObject != null && !Serializable.class.isAssignableFrom(paramClass)) {
+                            throw getMessageFormatException(paramClass);
+                        }
+
+                    } catch (ClassNotFoundException cnfe) {
+                        throw getJMSException(paramClass, cnfe);
+                    } catch (IOException ioe) {
+                        throw getJMSException(paramClass, ioe);
+                    }
+                    break;
+
+                case JmsBodyType.MAP_INT:
+                    try {
+                        _messageObject = getMapMessage();
+
+                        //As per spec: If the message is a MapMessage then this parameter must be set to java.util.Map.class (or java.lang.Object.class). 
+                        //then throw MessageFormatException.
+                        if (_messageObject != null && !paramClass.isAssignableFrom(Map.class)) {
+                            throw getMessageFormatException(paramClass);
+                        }
+                    } catch (UnsupportedEncodingException uee) {
+                        throw getJMSException(paramClass, uee);
+                    }
+                    break;
+
+                case JmsBodyType.BYTES_INT:
+                    byte[] byteMsg = ((JsJmsBytesMessage) msg).getBytes();
+                    _messageObject = (byteMsg != null && byteMsg.length > 0) ? byteMsg : null;
+
+                    if (_messageObject != null && !paramClass.isAssignableFrom(byte[].class)) {
                         throw getMessageFormatException(paramClass);
                     }
+                    break;
 
-                } catch (ClassNotFoundException cnfe) {
-                    throw getJMSException(paramClass, cnfe);
-                } catch (IOException ioe) {
-                    throw getJMSException(paramClass, ioe);
-                }
-                break;
+                case JmsBodyType.STREAM_INT:
+                    throw getMessageFormatException(paramClass);
 
-            case JmsBodyType.MAP_INT:
-                try {
-                    _messageObject = getMapMessage();
-
-                    //As per spec: If the message is a MapMessage then this parameter must be set to java.util.Map.class (or java.lang.Object.class). 
-                    //then throw MessageFormatException.
-                    if (_messageObject != null && !paramClass.isAssignableFrom(Map.class)) {
-                        throw getMessageFormatException(paramClass);
-                    }
-                } catch (UnsupportedEncodingException uee) {
-                    throw getJMSException(paramClass, uee);
-                }
-                break;
-
-            case JmsBodyType.BYTES_INT:
-                byte[] byteMsg = ((JsJmsBytesMessage) msg).getBytes();
-                _messageObject = (byteMsg != null && byteMsg.length > 0) ? byteMsg : null;
-
-                if (_messageObject != null && !paramClass.isAssignableFrom(byte[].class)) {
+                case JmsBodyType.NULL_INT:
+                    _messageObject = null;
+                    break;
+            }
+            if (_messageObject != null) {
+                if (paramClass.isAssignableFrom(_messageObject.getClass())) {
+                    returnObj = (T) _messageObject;
+                } else {
                     throw getMessageFormatException(paramClass);
                 }
-                break;
-
-            case JmsBodyType.STREAM_INT:
-                throw getMessageFormatException(paramClass);
-
-            case JmsBodyType.NULL_INT:
-                _messageObject = null;
-                break;
-        }
-        if (_messageObject != null) {
-            if (paramClass.isAssignableFrom(_messageObject.getClass())) {
-                returnObj = (T) _messageObject;
-            } else {
-                throw getMessageFormatException(paramClass);
             }
+            return returnObj;
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "getBody", returnObj);
         }
-        return returnObj;
     }
 
     /**

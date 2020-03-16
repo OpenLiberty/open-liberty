@@ -17,8 +17,6 @@ src: \
 
 fat.project: true
 
-javac.source: 1.8
-javac.target: 1.8
 
 -buildpath: \
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\

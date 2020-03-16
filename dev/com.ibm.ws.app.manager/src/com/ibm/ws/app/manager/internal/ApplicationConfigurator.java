@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.ExecutionException;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.DynamicMBean;
@@ -307,6 +307,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
     private final Map<String, ApplicationConfig> _blockedConfigFromPid = new HashMap<String, ApplicationConfig>();
     private final Map<String, List<String>> _blockedPidsFromName = new HashMap<String, List<String>>();
+    private final Map<String, List<ApplicationDependency>> _startAfterDependencies = new HashMap<String, List<ApplicationDependency>>();
 
     /**
      * An instance of this class exists with each type of application we have
@@ -1272,6 +1273,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         return apps;
     }
 
+    private void addStartDependency(String pid, ApplicationDependency dependency) {
+
+        List<ApplicationDependency> deps = _startAfterDependencies.get(pid);
+        if (deps == null) {
+            deps = new LinkedList<ApplicationDependency>();
+            _startAfterDependencies.put(pid, deps);
+        }
+        deps.add(dependency);
+    }
+
     private void blockApplication(String pid, ApplicationConfig newAppConfig, String newAppName) {
         _blockedConfigFromPid.put(pid, newAppConfig);
         List<String> blockedPids = _blockedPidsFromName.get(newAppName);
@@ -1533,12 +1544,29 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         void configureApp(NamedApplication app) {
             ApplicationConfig appConfig = app.getConfig();
             final boolean isRARApp = "rar".equals(appConfig.getType());
-            final Collection<ApplicationDependency> appStartingFutures;
+
+            final Collection<ApplicationDependency> appStartingFutures = new LinkedList<ApplicationDependency>();
             if (isRARApp) {
-                appStartingFutures = Arrays.asList(_appManagerRARSupportDependency, appsStarting);
+                appStartingFutures.add(_appManagerRARSupportDependency);
+                appStartingFutures.add(appsStarting);
             } else {
-                appStartingFutures = Arrays.asList(_appManagerReadyDependency, rarsHaveStarted);
+                appStartingFutures.add(_appManagerReadyDependency);
+                appStartingFutures.add(rarsHaveStarted);
             }
+
+            if (containsCycles(app))
+                return;
+
+            for (String dependency : appConfig.getStartAfter()) {
+                NamedApplication depApp = _appFromPid.get(dependency);
+                if (depApp == null || depApp.appStateRef.get() != ApplicationState.STARTED) {
+                    ApplicationDependency startAfter = createDependency("resolves when the app " + dependency + " has started");
+                    appStartingFutures.add(startAfter);
+                    addStartDependency(dependency, startAfter);
+                }
+
+            }
+
             final String appPid = appConfig.getConfigPid();
             ApplicationDependency stoppedFuture = appStoppedFutureMap.get(appPid);
             if (stoppedFuture == null) {
@@ -1589,6 +1617,52 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 }
             });
             app.getStateMachine().configure(appConfig, appStartingFutures, stoppedFuture, startingFuture, installCalledFuture, startedFuture);
+
+        }
+
+        private class CycleException extends Exception {
+
+            /**  */
+            private static final long serialVersionUID = 3260293053577638179L;
+        }
+
+        @FFDCIgnore(CycleException.class)
+        private boolean containsCycles(NamedApplication app) {
+            LinkedList<NamedApplication> existing = new LinkedList<NamedApplication>();
+            existing.add(app);
+            try {
+                checkForCycles(app, existing);
+                return false;
+            } catch (CycleException ex) {
+                return true;
+            }
+        }
+
+        private void checkForCycles(NamedApplication app, LinkedList<NamedApplication> existing) throws CycleException {
+            for (String pid : app.getConfig().getStartAfter()) {
+                NamedApplication dependency = _appFromPid.get(pid);
+                if (dependency != null) {
+                    // Don't worry about dependency == null, either it was reported by config as invalid
+                    // or it hasn't arrived yet. The cycle will be found from some other application.
+
+                    if (existing.contains(dependency)) {
+                        String names = "";
+                        for (int i = 0; i < existing.size(); i++) {
+                            names = names + existing.get(i).getAppName() + " ";
+                        }
+                        Tr.error(_tc, "error.startAfter.cycle", names);
+                        throw new CycleException();
+                    }
+
+                    existing.add(dependency);
+
+                    checkForCycles(dependency, existing);
+
+                    existing.removeLast();
+
+                }
+            }
+
         }
 
         void unsetAppHandler(Collection<NamedApplication> appsUsingHandler) {
@@ -1636,11 +1710,13 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 if (asm != null) {
                     ApplicationConfig appConfig = app.getConfig();
                     final boolean isRARApp = "rar".equals(appConfig.getType());
-                    final Collection<ApplicationDependency> appStartingFutures;
+                    final Collection<ApplicationDependency> appStartingFutures = new LinkedList<ApplicationDependency>();
                     if (isRARApp) {
-                        appStartingFutures = Arrays.asList(_appManagerRARSupportDependency, appsStarting);
+                        appStartingFutures.add(_appManagerRARSupportDependency);
+                        appStartingFutures.add(appsStarting);
                     } else {
-                        appStartingFutures = Arrays.asList(_appManagerReadyDependency, rarsHaveStarted);
+                        appStartingFutures.add(_appManagerReadyDependency);
+                        appStartingFutures.add(rarsHaveStarted);
                     }
                     final String appPid = appConfig.getConfigPid();
                     ApplicationDependency stoppedFuture = appStoppedFutureMap.get(appPid);
@@ -1658,6 +1734,13 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                         startedFuture = createDependency("resolves when the " + appConfig.getLabel() + " has started");
                         rarAppsStartedFutures.add(startedFuture);
                     }
+
+                    for (String dependency : appConfig.getStartAfter()) {
+                        ApplicationDependency startAfter = createDependency("resolves when the app " + dependency + " has started");
+                        appStartingFutures.add(startAfter);
+                        addStartDependency(dependency, startAfter);
+                    }
+
                     asm.recycle(appStartingFutures, stoppedFuture, installCalledFuture, startedFuture);
                 }
             }
@@ -1684,11 +1767,13 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                     final ApplicationStateMachine asm = app.getStateMachine();
                     if (asm != null) {
                         final boolean isRARApp = "rar".equals(appConfig.getType());
-                        final Collection<ApplicationDependency> appStartingFutures;
+                        final Collection<ApplicationDependency> appStartingFutures = new LinkedList<ApplicationDependency>();
                         if (isRARApp) {
-                            appStartingFutures = Arrays.asList(_appManagerRARSupportDependency, appsStarting);
+                            appStartingFutures.add(_appManagerRARSupportDependency);
+                            appStartingFutures.add(appsStarting);
                         } else {
-                            appStartingFutures = Arrays.asList(_appManagerReadyDependency, rarsHaveStarted);
+                            appStartingFutures.add(_appManagerReadyDependency);
+                            appStartingFutures.add(rarsHaveStarted);
                         }
                         stoppedFuture = createDependency("resolves when the " + appConfig.getLabel() + " has stopped");
                         appStoppedFutureMap.put(appPid, stoppedFuture);
@@ -1702,6 +1787,13 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                             startedFuture = createDependency("resolves when the " + appConfig.getLabel() + " has started");
                             rarAppsStartedFutures.add(startedFuture);
                         }
+
+                        for (String dependency : appConfig.getStartAfter()) {
+                            ApplicationDependency startAfter = createDependency("resolves when the app " + dependency + " has started");
+                            appStartingFutures.add(startAfter);
+                            addStartDependency(dependency, startAfter);
+                        }
+
                         asm.recycle(appStartingFutures, stoppedFuture, installCalledFuture, startedFuture);
                     }
                 }
@@ -1753,7 +1845,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             if (_tc.isEventEnabled()) {
                 Tr.event(_tc, "CCE: failedCompletion: appStopped, future " + future + ", throwable " + t);
             }
-            if (t !=null && t instanceof ExecutionException) {
+            if (t != null && t instanceof ExecutionException) {
                 com.ibm.ws.ffdc.FFDCFilter.processException(t, "com.ibm.ws.app.manager.internal.ApplicationConfigurator.UpdateEpisodeState.failedCompletion", "1385");
             }
 
@@ -1865,5 +1957,18 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             }
         });
         return appRemoved;
+    }
+
+    /**
+     * @param appPid
+     */
+    public void unblockAppStartDependencies(String appPid) {
+        List<ApplicationDependency> deps = _startAfterDependencies.get(appPid);
+        if (deps == null)
+            return;
+        for (ApplicationDependency dep : deps) {
+            dep.setResult(true);
+        }
+
     }
 }

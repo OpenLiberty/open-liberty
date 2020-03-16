@@ -28,6 +28,14 @@
     </custom-login-configuration>
   </resource-ref>
 
+  <resource-ref name="java:app/env/jdbc/sldsLoginModuleFromWebAppNotFoundInEAR">
+    <custom-login-configuration name="notFoundInEarLogin">
+      <property name="shape" value="parallelogram"/>
+      <property name="sides" value="4"/>
+      <property name="sumOfAngles" value="360"/>
+    </custom-login-configuration>
+  </resource-ref>
+
   <resource-ref name="java:app/env/jdbc/sldsLoginModuleFromWebModuleInApp">
     <custom-login-configuration name="web1login">
       <property name="shape" value="triangle"/>

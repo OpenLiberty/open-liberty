@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,7 @@ public class PeerLeaseTable {
 
     protected final ArrayList<PeerLeaseData> _peerLeaseTable;
 
-    public PeerLeaseTable()
-    {
+    public PeerLeaseTable() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "PeerLeaseTable");
 
@@ -35,8 +34,7 @@ public class PeerLeaseTable {
             Tr.exit(tc, "PeerLeaseTable");
     }
 
-    public void addPeerEntry(PeerLeaseData leaseData)
-    {
+    public void addPeerEntry(PeerLeaseData leaseData) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "addPeerEntry", leaseData);
 
@@ -46,17 +44,14 @@ public class PeerLeaseTable {
             Tr.exit(tc, "addPeerEntry");
     }
 
-    public ArrayList<String> getExpiredPeers()
-    {
+    public ArrayList<String> getExpiredPeers() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getExpiredPeers");
         ArrayList<String> peersToRecover = new ArrayList<String>();
 
-        for (PeerLeaseData p : _peerLeaseTable)
-        {
+        for (PeerLeaseData p : _peerLeaseTable) {
             // Has the peer expired
-            if (p.isExpired())
-            {
+            if (p.isExpired()) {
                 peersToRecover.add(p.getRecoveryIdentity());
             }
         }
@@ -64,6 +59,10 @@ public class PeerLeaseTable {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getExpiredPeers", peersToRecover);
         return peersToRecover;
+    }
+
+    public int size() {
+        return _peerLeaseTable.size();
     }
 
 }

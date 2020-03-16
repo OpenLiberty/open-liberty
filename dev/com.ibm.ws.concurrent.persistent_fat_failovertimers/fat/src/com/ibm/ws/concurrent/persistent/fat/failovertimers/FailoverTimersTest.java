@@ -47,7 +47,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -83,8 +84,7 @@ public class FailoverTimersTest extends FATServletClient {
     @Rule
     public TestName testName = new TestName();
 
-    @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DatabaseContainerType.DerbyClient);
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     private static final ExecutorService testThreads = Executors.newFixedThreadPool(3);
 

@@ -15,10 +15,7 @@ Bundle-Name: JCache Store for HTTP Sessions
 Bundle-SymbolicName: com.ibm.ws.session.cache
 Bundle-Description: Allows persistence of sessions via a JCache provider, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-javac.source: 1.8
-javac.target: 1.8
 
 Private-Package: \
     com.ibm.ws.session.store.cache,\

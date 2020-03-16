@@ -10,8 +10,6 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-transports-http;3.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 1.8
-javac.target: 1.8
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-transports-http;3.3.0}!/!META-INF/*,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,14 +26,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
-import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
@@ -63,9 +60,6 @@ public class FATTest extends AbstractAppManagerTest {
     @Rule
     public TestName testName = new TestName();
 
-    /** Holds paths of files that need to be cleaned up after the test run. */
-    List<String> pathsToCleanup = new ArrayList<String>();
-
     @Override
     protected Class<?> getLogClass() {
         return c;
@@ -91,7 +85,7 @@ public class FATTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKZ0058I:"));
 
             //install file
-            server.copyFileToLibertyServerRoot(PUBLISH_FILES, DROPINS_DIR, TEST_WAR_APPLICATION);
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, DROPINS_FISH_DIR, TEST_WAR_APPLICATION);
 
             // Pause for application to start properly and server to say it's listening on ports
             final int httpDefaultPort = server.getHttpDefaultPort();
@@ -113,7 +107,7 @@ public class FATTest extends AbstractAppManagerTest {
             con.disconnect();
 
             //replace original application with new version to test that it updates
-            server.copyFileToLibertyServerRoot(PUBLISH_UPDATED, DROPINS_DIR, "testWarApplication.war");
+            server.copyFileToLibertyServerRoot(PUBLISH_UPDATED, DROPINS_FISH_DIR, "testWarApplication.war");
 
             //make sure the application is claiming to have been updated
             assertNotNull("The application testWarApplication did not appear to have been updated.",
@@ -129,7 +123,7 @@ public class FATTest extends AbstractAppManagerTest {
 
             // remove file
             boolean deleted = deleteFile(server.getMachine(),
-                                         server.getServerRoot() + "/" + DROPINS_DIR + "/testWarApplication.war");
+                                         server.getServerRoot() + "/" + DROPINS_FISH_DIR + "/testWarApplication.war");
 
             if (!deleted) {
                 // Occasionally on Windows something else will hold onto a file while we are trying to delete it. If
@@ -153,7 +147,7 @@ public class FATTest extends AbstractAppManagerTest {
             }
         } finally {
             //if we failed to delete file before, try to delete it now.
-            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
+            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
             server.stopServer("CWWKZ0014W");
         }
     }
@@ -172,7 +166,7 @@ public class FATTest extends AbstractAppManagerTest {
 
             //unzip snoop into folder structure
             TestUtils.unzip(new File(PUBLISH_FILES + "/testWarApplication.war"),
-                            new File(server.getServerRoot() + "/" + DROPINS_DIR + "/war/testWarApplication"));
+                            new File(server.getServerRoot() + "/" + DROPINS_FISH_DIR + "/war/testWarApplication"));
 
             // Wait for the application to be installed before proceeding
             assertNotNull("The testWarApplication application never came up",
@@ -193,7 +187,7 @@ public class FATTest extends AbstractAppManagerTest {
             //replace original application with new version to test that it updates
             server.setMarkToEndOfLog();
             TestUtils.unzip(new File(PUBLISH_UPDATED + "/testWarApplication.war"),
-                            new File(server.getServerRoot() + "/" + DROPINS_DIR + "/war/testWarApplication"));
+                            new File(server.getServerRoot() + "/" + DROPINS_FISH_DIR + "/war/testWarApplication"));
 
             //make sure the application is claiming to have been updated - one of two possible messages here:
             //0003I for an app restart or 0062I for incremental publishing (update without app restart)
@@ -218,7 +212,7 @@ public class FATTest extends AbstractAppManagerTest {
 
             //add a file, only WEB-INF is monitored so add it in there
             server.setMarkToEndOfLog();
-            server.copyFileToLibertyServerRoot("/" + DROPINS_DIR + "/war/testWarApplication/WEB-INF",
+            server.copyFileToLibertyServerRoot("/" + DROPINS_FISH_DIR + "/war/testWarApplication/WEB-INF",
                                                "updatedApplications/blankFile.txt");
 
             //make sure the application is claiming to have been updated
@@ -227,7 +221,7 @@ public class FATTest extends AbstractAppManagerTest {
 
             //remove a file
             server.setMarkToEndOfLog();
-            server.deleteFileFromLibertyServerRoot("/" + DROPINS_DIR + "/war/testWarApplication/WEB-INF/blankFile.txt");
+            server.deleteFileFromLibertyServerRoot("/" + DROPINS_FISH_DIR + "/war/testWarApplication/WEB-INF/blankFile.txt");
 
             //make sure the application is claiming to have been updated
             assertNotNull("The application testWarApplication did not appear to have been updated.",
@@ -236,7 +230,7 @@ public class FATTest extends AbstractAppManagerTest {
             //delete application then check it is deleted
             server.setMarkToEndOfLog();
             boolean deleted = deleteFile(server.getMachine(),
-                                         server.getServerRoot() + "/" + DROPINS_DIR + "/war");
+                                         server.getServerRoot() + "/" + DROPINS_FISH_DIR + "/war");
 
             if (!deleted) {
                 // Occasionally on Windows something else will hold onto a file while we are trying to delete it. If
@@ -260,7 +254,7 @@ public class FATTest extends AbstractAppManagerTest {
             }
         } finally {
             //if we failed to delete file before, try to delete it now.
-            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
+            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
             pathsToCleanup.add(server.getServerRoot() + "/testWarApplication.war");
             server.stopServer("CWWKZ0014W");
         }
@@ -478,76 +472,6 @@ public class FATTest extends AbstractAppManagerTest {
         }
     }
 
-    @Test
-    public void testAppOrder() throws Exception {
-        final String method = testName.getMethodName();
-        try {
-            //load a new server xml
-            server.setServerConfigurationFile("/appOrder/serverFooBar.xml");
-            //copy file to correct location
-            LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getServerRoot() + "/apps", "foo.war",
-                                                   PUBLISH_FILES + "/snoop.war");
-            LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getServerRoot() + "/apps", "bar.war",
-                                                   PUBLISH_FILES + "/snoop.war");
-            server.startServer(method + ".log");
-            // Wait for the application to be installed before proceeding
-            assertNotNull("The foo application never came up", server.waitForStringInLog("CWWKZ0001I.* foo"));
-            assertNotNull("The bar application never came up", server.waitForStringInLog("CWWKZ0001I.* bar"));
-
-            URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/foo");
-            Log.info(c, method, "Calling Snoop Application with URL=" + url.toString());
-            //check application is installed
-            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String line = br.readLine();
-            assertTrue("The response did not contain the \'Snoop Servlet\'",
-                       line.contains("Snoop Servlet"));
-            con.disconnect();
-
-            url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/bar");
-            Log.info(c, method, "Calling Snoop Application with URL=" + url.toString());
-            //check application is installed
-            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
-            br = HttpUtils.getConnectionStream(con);
-            line = br.readLine();
-            assertTrue("The response did not contain the \'Snoop Servlet\'",
-                       line.contains("Snoop Servlet"));
-            con.disconnect();
-
-            // Change the server.xml file to scan a different directory
-            server.setMarkToEndOfLog();
-            server.setServerConfigurationFile("/appOrder/serverBarFoo.xml");
-            // make sure configuration was reloaded
-            assertNotNull("The server config was not reloaded", server.waitForStringInLog("CWWKG0017I"));
-            // Wait for the application to be installed before proceeding
-            assertNotNull("The foo application never came up", server.waitForStringInLog("CWWKZ000[13]I.* foo"));
-            assertNotNull("The bar application never came up", server.waitForStringInLog("CWWKZ000[13]I.* bar"));
-
-            url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/foo");
-            Log.info(c, method, "Calling Snoop Application with URL=" + url.toString());
-            //check application is installed
-            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
-            br = HttpUtils.getConnectionStream(con);
-            line = br.readLine();
-            assertTrue("The response did not contain the \'Snoop Servlet\'",
-                       line.contains("Snoop Servlet"));
-            con.disconnect();
-
-            url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/bar");
-            Log.info(c, method, "Calling Snoop Application with URL=" + url.toString());
-            //check application is installed
-            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
-            br = HttpUtils.getConnectionStream(con);
-            line = br.readLine();
-            assertTrue("The response did not contain the \'Snoop Servlet\'",
-                       line.contains("Snoop Servlet"));
-            con.disconnect();
-
-        } finally {
-            pathsToCleanup.add(server.getServerRoot() + "/apps");
-        }
-    }
-
     /**
      * Using dropins we install a loose config application. We then test that it is installed,
      * add an excluded file to make sure that it doesn't update and then add a non-exluded file
@@ -573,7 +497,7 @@ public class FATTest extends AbstractAppManagerTest {
 
             TestUtils.unzip(new File(PUBLISH_UPDATED + "/testWarApplication.war"),
                             new File(server.getServerRoot() + "/testWarApplication"));
-            server.copyFileToLibertyServerRoot(DROPINS_DIR, "looseApplication/testWarApplication.war.xml");
+            server.copyFileToLibertyServerRoot(DROPINS_FISH_DIR, "looseApplication/testWarApplication.war.xml");
 
             // Pause for application to start properly and server to say it's listening on ports
             final int httpDefaultPort = server.getHttpDefaultPort();
@@ -601,7 +525,7 @@ public class FATTest extends AbstractAppManagerTest {
             assertNotNull("The application testWarApplication did not appear to have been updated when we added a valid file type.",
                           server.waitForStringInLog("CWWKZ0003I.* testWarApplication"));
         } finally {
-            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
+            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
             pathsToCleanup.add(server.getServerRoot() + "/testWarApplication");
             pathsToCleanup.add(server.getServerRoot() + "/testWarApplication.war");
         }
@@ -624,7 +548,7 @@ public class FATTest extends AbstractAppManagerTest {
 
             TestUtils.unzip(new File(PUBLISH_UPDATED + "/testWarApplication.war"),
                             new File(server.getServerRoot() + "/testWarApplication"));
-            server.copyFileToLibertyServerRoot(DROPINS_DIR, "looseApplication/testWarApplication.war.xml");
+            server.copyFileToLibertyServerRoot(DROPINS_FISH_DIR, "looseApplication/testWarApplication.war.xml");
 
             // Pause for application to start properly and server to say it's listening on ports
             final int httpDefaultPort = server.getHttpDefaultPort();
@@ -659,7 +583,7 @@ public class FATTest extends AbstractAppManagerTest {
             assertNotNull("The application testWarApplication did not appear to have been updated when we added a valid file type.",
                           server.waitForStringInLog("CWWKZ0003I.* testWarApplication"));
         } finally {
-            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
+            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
             pathsToCleanup.add(server.getServerRoot() + "/testWarApplication");
             pathsToCleanup.add(server.getServerRoot() + "/testWarApplication.war");
         }
@@ -695,7 +619,7 @@ public class FATTest extends AbstractAppManagerTest {
                            LibertyFileManager.renameLibertyFile(server.getMachine(),
                                                                 serverRoot + "/symbolicLink/WEB-INF",
                                                                 serverRoot + "/symbolicLink/somethingelse"));
-                server.copyFileToLibertyServerRoot(DROPINS_DIR, "looseApplication/testWarApplication.war.xml");
+                server.copyFileToLibertyServerRoot(DROPINS_FISH_DIR, "looseApplication/testWarApplication.war.xml");
 
                 String hardPath = serverRoot + "/symbolicLink/somethingelse/Classes";
                 String symPath = serverRoot + "/testWarApplication/WEB-INF/classes";
@@ -732,7 +656,7 @@ public class FATTest extends AbstractAppManagerTest {
                 LibertyFileManager.deleteLibertyDirectoryAndContents(server.getMachine(),
                                                                      serverRoot + "/testWarApplication");
                 LibertyFileManager.deleteLibertyDirectoryAndContents(server.getMachine(),
-                                                                     serverRoot + "/" + DROPINS_DIR);
+                                                                     serverRoot + "/" + DROPINS_FISH_DIR);
                 LibertyFileManager.deleteLibertyFile(server.getMachine(),
                                                      serverRoot + "/testWarApplication.war");
             }
@@ -1226,7 +1150,7 @@ public class FATTest extends AbstractAppManagerTest {
                               server.waitForStringInLog("CWWKZ0058I:"));
 
                 //install application
-                server.copyFileToLibertyServerRoot(PUBLISH_FILES, DROPINS_DIR, DATA_SOURCE_APP_EAR);
+                server.copyFileToLibertyServerRoot(PUBLISH_FILES, DROPINS_FISH_DIR, DATA_SOURCE_APP_EAR);
 
                 //check for text from postConstruct method
                 assertNotNull("The EJB was not constructed.",
@@ -1254,7 +1178,7 @@ public class FATTest extends AbstractAppManagerTest {
 
         } finally {
             //if we failed to delete file before, try to delete it now.
-            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
+            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
             pathsToCleanup.add(server.getServerRoot() + "/" + DERBY_DIR);
             pathsToCleanup.add(server.getServerSharedPath() + "/" + "resources/data");
             server.postStopServerArchive();
@@ -1313,7 +1237,7 @@ public class FATTest extends AbstractAppManagerTest {
             server.installSystemFeature("test.app.notifications");
             server.installSystemBundle("test.app.notifications");
             //copy files to correct location to have everything ready
-            server.copyFileToLibertyServerRoot(DROPINS_DIR, "appNotifications/apps/app.tan");
+            server.copyFileToLibertyServerRoot(DROPINS_FISH_DIR, "appNotifications/apps/app.tan");
 
             //load a new server xml and start server
             server.setServerConfigurationFile("/noFeatures/server.xml");
@@ -1334,7 +1258,7 @@ public class FATTest extends AbstractAppManagerTest {
                 throw new Exception("Server configuration update did complete within the allotted interval");
             }
         } finally {
-            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
+            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
             server.stopServer("CWWKZ0005E");
         }
     }
@@ -1424,7 +1348,7 @@ public class FATTest extends AbstractAppManagerTest {
             Log.info(c, method, "Testing existing default timeout of 30 seconds for app shutdown is preserved.");
             server = LibertyServerFactory.getLibertyServer("slowAppServer");
             // copy app to dropins
-            server.copyFileToLibertyServerRoot(PUBLISH_FILES, DROPINS_DIR, SLOW_APP);
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, DROPINS_FISH_DIR, SLOW_APP);
             server.startServer(method + ".log");
             assertNotNull("Test application not started", server.waitForStringInLog("CWWKT0016I:.*/slowapp"));
             HttpUtils.findStringInUrl(server, "/slowapp/TestServlet?timeout=5", "test servlet");
@@ -1542,21 +1466,9 @@ public class FATTest extends AbstractAppManagerTest {
 
     }
 
-    @After
-    public void tearDown() throws Exception {
-        // stop the server first so that the server gives up any locks on
-        // files we need to clean up
-        if (server.isStarted()) {
-            server.stopServer();
-        }
-
-        Machine machine = server.getMachine();
-        for (String path : pathsToCleanup) {
-            LibertyFileManager.deleteLibertyFile(machine, path);
-        }
-
-        // clear so next test populates fresh list
-        pathsToCleanup.clear();
+    @Override
+    protected LibertyServer getServer() {
+        return FATTest.server;
     }
 
 }

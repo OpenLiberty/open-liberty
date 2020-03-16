@@ -36,6 +36,10 @@ Export-Package: \
     javax.faces.view.facelets;version="1.0.16", \
     javax.faces.webapp;version="1.0.16"
 
+Import-Package: \
+    !javax.enterprise.inject.spi,\
+    *
+
 Include-Resource: \
     javax/faces=resources/javax/faces, \
     META-INF=@src/META-INF

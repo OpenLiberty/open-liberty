@@ -38,8 +38,6 @@ src: \
 	test-applications/simultaneousRequests.war/src,\
 	test-applications/cdiConfig.jar/src
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 

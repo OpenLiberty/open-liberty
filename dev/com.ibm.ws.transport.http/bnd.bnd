@@ -41,6 +41,10 @@ Export-Package: \
     com.ibm.ws.http.logging.source, \
     com.ibm.ws.http2.upgrade
 
+Import-Package: \
+    !com.ibm.ws.http.logging.source, \
+    ${defaultPackageImport}
+
 Private-Package: \
 	com.ibm.ws.http.*, \
 	com.ibm.ws.genericbnf.internal

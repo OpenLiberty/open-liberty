@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,13 +47,15 @@ public class ConversionTest extends AbstractConfigTest {
     }
 
     @Test
-    public void testConverterCache() {
+    public void testConverterCache() throws InterruptedException {
         Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().withConverter(TestType.class, 100, new TestTypeConverter()).build();
         String key = "testConverterCache";
 
         String rawString = "This is the RAW String 1";
         String expected = rawString + " - 1";
         System.setProperty(key, rawString);
+
+        Thread.sleep(700); // Let the raw value cache expire
 
         TestType value = config.getValue(key, TestType.class);
         assertEquals(expected, value.toString());
@@ -66,8 +68,12 @@ public class ConversionTest extends AbstractConfigTest {
         expected = rawString + " - 2";
         System.setProperty(key, rawString);
 
+        Thread.sleep(700); // Let the raw value cache expire
+
         value = config.getValue(key, TestType.class);
         assertEquals(expected, value.toString());
+
+        Thread.sleep(700); // Let the raw value cache expire
         //should not be reconverted
         value = config.getValue(key, TestType.class);
         assertEquals(expected, value.toString());

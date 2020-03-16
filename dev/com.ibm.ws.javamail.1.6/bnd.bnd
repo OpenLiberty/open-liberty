@@ -12,8 +12,6 @@
 
 bVersion=1.6
 
-javac.source: 1.8
-javac.target: 1.8
 
 bSymbolicName=com.ibm.ws.javamail.1.6
 
@@ -23,7 +21,6 @@ Bundle-Description: JavaMail 1.6 API; This feature allows applications to utiliz
 
 WS-TraceGroup: Mail
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"   
 
 ## Resources that were moved from the original javax.mail.jar to
 ## the new feature jar, included the mailcap file which is needed
