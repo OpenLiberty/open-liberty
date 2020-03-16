@@ -46,7 +46,7 @@
 
   <dataSource id="poolOf1" jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
               enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
-    <connectionManager maxPoolSize="1"/>
+    <connectionManager maxPoolSize="1" connectionTimeout="0"/>
     <jdbcDriver libraryRef="D43Lib"/>
     <properties databaseName="memory:testdb;create=true"/>
     <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
