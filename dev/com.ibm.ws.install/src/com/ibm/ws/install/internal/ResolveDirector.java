@@ -74,8 +74,6 @@ import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.SampleResource;
 
-import com.ibm.ws.repository.resources.internal.EsaResourceImpl;
-import com.ibm.ws.repository.resources.internal.SampleResourceImpl;
 import wlp.lib.extract.SelfExtractor;
 
 class ResolveDirector extends AbstractDirector {
@@ -639,13 +637,10 @@ class ResolveDirector extends AbstractDirector {
                                                                           && System.getProperty("INTERNAL_DOWNLOAD_FROM_FOR_BUILD") == null ? Collections.<ProvisioningFeatureDefinition> emptySet() : installedFeatureDefinitions.values();
             Collection<IFixInfo> installedIFixes = download ? Collections.<IFixInfo> emptySet() : FixAdaptor.getInstalledIFixes(product.getInstallDir());
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
-            if (InstallUtils.getIsServerXmlInstall()) {
-                Set<String> allServerFeatures = new HashSet<>(InstallUtils.getAllServerFeatures());
-                allServerFeatures.addAll(assetsToInstall);
-
+            if (InstallUtils.isServerXmlInstall()) {
                 // call resolveAsSet --> detects singleton exceptions and tolerated features
                 log(Level.FINE, "Calling resolveAsSet api");
-                installResources = resolver.resolveAsSet(allServerFeatures); // use new api
+                installResources = resolver.resolveAsSet(assetsToInstall); // use new api
                 resolveAutoFeatures(installResources, new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo));
             } else {
                 log(Level.FINE, "Using old resolve API");
