@@ -1165,8 +1165,6 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     @Override
     public String toString() {
         return super.toString() + ",active=" + _activeAssociations + ",suspended=" + _suspendedAssociations + ","
-               + (_thread != null ? "thread=" + String.format("%08X", _thread.getId())
-                                  : "Not on a thread, globalId=" + (null!=_globalId?_globalId:"<null>,getGlobalId()="+getGlobalId())
-                 );
+               + (_thread != null ? "thread=" + String.format("%08X", _thread.getId()) : "Not on a thread, globalId=" + _globalId);
     }
 }
