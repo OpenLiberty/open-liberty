@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import javax.management.StandardMBean;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import com.ibm.ejs.j2c.J2CConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.management.j2ee.JCAManagedConnectionFactoryMBean;
@@ -36,7 +35,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 public class JCAManagedConnectionFactoryMBeanImpl extends StandardMBean implements JCAManagedConnectionFactoryMBean {
 
     /////////////////////////////////// Variables used in tracing. ///////////////////////////////////
-    private static final TraceComponent tc = Tr.register(JCAManagedConnectionFactoryMBeanImpl.class, J2CConstants.traceSpec);
+    private static final TraceComponent tc = Tr.register(JCAManagedConnectionFactoryMBeanImpl.class, "WAS.j2c");
     private static final boolean IS_DEBUGGING = false; //Change to true if testing needed only.
     private static final String className = "JCAManagedConnectionFactoryMBeanImpl";
 
