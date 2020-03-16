@@ -396,6 +396,8 @@
 					<sysproperty key="isPersonalBuild" value="${isPersonalBuild}" />
 					<sysproperty key="user.dir" value="${dir.test.current.directory}" />
 					<sysproperty key="console.log" value="console.${buildLabel}.log" />
+					<!-- Tell Junit what the timeout is -->
+					<sysproperty key="fat.timeout" value="${fattest.timeout}" />
 					<!-- set the temp directory -->
 					<sysproperty key="java.io.tmpdir" value="${build.tmp.dir}" />
 					<!-- Tell jUnit where the main property file is -->
