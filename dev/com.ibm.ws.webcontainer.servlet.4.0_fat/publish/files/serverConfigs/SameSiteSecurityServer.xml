@@ -18,21 +18,21 @@
         <feature>jsp-2.3</feature>
     </featureManager>
 
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg=="/> <!-- pwd: Liberty, expires 1/4/2099 -->
 
     <basicRegistry id="basic1" realm="TestRealm">
-        <user name="user1" password="user1Login" />
+        <user name="user1" password="user1Login"/>
         <group name="group1">
-            <member name="user1" />
+            <member name="user1"/>
         </group>
     </basicRegistry>
 
      <application type="war" id="SameSiteSecurityTest" name="SameSiteSecurityTest" location="SameSiteSecurityTest.war">
          <application-bnd>
             <security-role name="sameSiteSecurity_basic">
-                <user name="user1" />
-                <group name="group1" />
-            </security-role>	
+                <user name="user1"/>
+                <group name="group1"/>
+            </security-role>
         </application-bnd>
     </application>
 
