@@ -201,6 +201,14 @@ public interface NameSpaceBinder<T> {
     void bindLocalHomeBindingName(T bindingObject, HomeRecord hr);
 
     /**
+     * Binds the interface binding-name custom binding for local
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    void bindLocalBusinessInterface(T bindingObject, HomeRecord hr);
+
+    /**
      * Undoes the bindings from local namespace.
      */
     void unbindLocalColonEJB(List<String> names) throws NamingException;

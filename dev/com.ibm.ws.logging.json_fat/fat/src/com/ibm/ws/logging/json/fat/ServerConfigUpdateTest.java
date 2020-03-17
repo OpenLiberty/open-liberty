@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public class ServerConfigUpdateTest {
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         Assert.assertTrue("Log is in unexpected basic format.  line=" + line, line.startsWith("{"));
 
-        // Switch back to basic format
+        // Switch back to simple (basic) format
         line = setConfig(SERVER_XML_BASIC);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         Assert.assertFalse("Log is in unexpected JSON format.  line=" + line, line.startsWith("{"));
@@ -68,7 +68,7 @@ public class ServerConfigUpdateTest {
 
     @Test
     public void enableAndDisableConsoleLog() throws Exception {
-        // Server is start with basic logging
+        // Server is start with simple (basic) logging
         RemoteFile consoleLogFile = server.getConsoleLogFile();
         String line = server.waitForStringInLog("CWWKF0011I", consoleLogFile);
         Assert.assertNotNull("CWWKF0011I is not found", line);
@@ -79,7 +79,7 @@ public class ServerConfigUpdateTest {
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         Assert.assertTrue("Log is in unexpected basic format.  line=" + line, line.startsWith("{"));
 
-        // Switch back to basic format
+        // Switch back to simple (basic) format
         line = setConfig(SERVER_XML_BASIC);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         Assert.assertFalse("Log is in unexpected JSON format.  line=" + line, line.startsWith("{"));

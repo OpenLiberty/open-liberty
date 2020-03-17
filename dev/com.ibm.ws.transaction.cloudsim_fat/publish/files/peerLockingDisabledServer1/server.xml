@@ -20,12 +20,14 @@
  
     <!-- Same Transaction element as LKCLOUD001 -->   
     <transaction
-        dataSourceRef="tranlogDataSource"
-        recoverOnStartup="true"
-        waitForRecovery="false"
-        heuristicRetryInterval="10"
-        recoveryIdentity="cloud001"
-        recoveryGroup="defaultGroup"
+      dataSourceRef="tranlogDataSource"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="10"
+      recoveryIdentity="cloud001"
+      recoveryGroup="defaultGroup"
+      leaseLength="20"
+      leaseCheckInterval="25"
     />
     <application location="transaction.war"/>
 	<dataSource id="tranlogDataSource" 

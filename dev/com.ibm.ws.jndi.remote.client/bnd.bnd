@@ -26,7 +26,10 @@ WS-TraceGroup: Naming
 Export-Package: com.ibm.ws.jndi.remote.client
 
 DynamicImport-Package: *
-Import-Package: javax.rmi.*;version="[2.4,3)",\
+
+Import-Package: \
+ !com.ibm.ws.jndi.remote.client, \
+ javax.rmi.*;version="[2.4,3)",\
  org.omg.*;version="[2.4,3)",\
  *
 

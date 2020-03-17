@@ -22,7 +22,9 @@ WS-TraceGroup: \
 Export-Package: \
   com.ibm.ws.security.mp.jwt.proxy; provide:=true
 
-Import-Package: !*.internal.*, *
+Import-Package: \
+  !com.ibm.ws.security.mp.jwt.proxy, \
+  !*.internal.*, *
    
 -dsannotations: \
   com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper

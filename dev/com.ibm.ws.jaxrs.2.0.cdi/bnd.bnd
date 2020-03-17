@@ -17,8 +17,6 @@ Bundle-Description: IBM JAX-RS-2.0 CDI support; version=${bVersion}
 
 WS-TraceGroup: JAXRS
 
-# jaxrs-2.0-cdi is part of EE7 and therefore requires java 1.7
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
 
 Import-Package: \
   javax.enterprise.context;version="[1.1,3)",\

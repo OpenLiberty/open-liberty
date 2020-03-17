@@ -39,7 +39,12 @@ Export-Package: \
     com.ibm.ws.http.channel.outstream, \
     com.ibm.ws.http.channel.inputstream, \
     com.ibm.ws.http.logging.source, \
+    com.ibm.ws.http2, \
     com.ibm.ws.http2.upgrade
+
+Import-Package: \
+    !com.ibm.ws.http.logging.source, \
+    ${defaultPackageImport}
 
 Private-Package: \
 	com.ibm.ws.http.*, \
@@ -87,7 +92,6 @@ Service-Component: \
     	modified:='modified';\
     	immediate:=true;\
     	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=samesite"
-    	
 
 Provide-Capability: \
     welcome.translation.provider; \

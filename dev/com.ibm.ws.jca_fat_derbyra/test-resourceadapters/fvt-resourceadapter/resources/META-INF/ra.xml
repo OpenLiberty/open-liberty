@@ -35,6 +35,12 @@
           <config-property-value>true</config-property-value> 
         </config-property>
         <config-property>
+          <description>Indicates if connection handles may lazily enlist in transactions</description>
+          <config-property-name>lazyEnlistable</config-property-name>
+          <config-property-type>java.lang.Boolean</config-property-type>
+          <config-property-value>false</config-property-value>
+        </config-property>
+        <config-property>
           <description>User name</description>
           <config-property-name>userName</config-property-name> 
           <config-property-type>java.lang.String</config-property-type> 

@@ -26,7 +26,7 @@ import com.ibm.ws.security.acme.docker.PebbleContainer;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AcmeClientTest.class, AcmeConfigBringUp.class })
+@SuiteClasses({ AcmeClientTest.class, AcmeConfigBringUp.class, AcmeSimpleTest.class, AcmeCaRestHandlerTest.class })
 public class FATSuite {
 
 	public static ChalltestsrvContainer challtestsrv = null;
@@ -44,9 +44,13 @@ public class FATSuite {
 
 	@AfterClass
 	public static void afterClass() {
+
+		Log.info(FATSuite.class, "afterClass()", "Stopping PebbleContainer.");
 		if (pebble != null) {
 			pebble.stop();
 		}
+
+		Log.info(FATSuite.class, "afterClass()", "Stopping ChalltestsrvContainer.");
 		if (challtestsrv != null) {
 			challtestsrv.stop();
 		}
@@ -64,7 +68,6 @@ public class FATSuite {
 
 		Log.info(FATSuite.class, METHOD_NAME, "Starting Pebble environment bring up");
 
-
 		/*
 		 * Need to expose the HTTP port that is used to answer the HTTP-01
 		 * challenge.
@@ -78,8 +81,8 @@ public class FATSuite {
 		 * container.
 		 */
 		Log.info(FATSuite.class, METHOD_NAME, "Starting ChalltestsrvContainer");
-			challtestsrv = new ChalltestsrvContainer();
-			challtestsrv.start();
+		challtestsrv = new ChalltestsrvContainer();
+		challtestsrv.start();
 
 		Log.info(FATSuite.class, METHOD_NAME,
 				"Challtestserv ContainerIpAddress: " + challtestsrv.getContainerIpAddress());
@@ -90,9 +93,9 @@ public class FATSuite {
 		 * Startup the pebble server.
 		 */
 		Log.info(FATSuite.class, METHOD_NAME, "Starting PebbleContainer");
-			pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT,
-					challtestsrv.getNetwork());
-			pebble.start();
+		pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT,
+				challtestsrv.getNetwork());
+		pebble.start();
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerIpAddress: " + pebble.getContainerIpAddress());
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble DockerImageName:    " + pebble.getDockerImageName());
 		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerInfo:      " + pebble.getContainerInfo());

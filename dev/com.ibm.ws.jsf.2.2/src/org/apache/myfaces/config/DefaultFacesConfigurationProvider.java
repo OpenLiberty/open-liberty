@@ -94,6 +94,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
+    static
     {
         FACTORY_NAMES.add(FactoryFinder.APPLICATION_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.CLIENT_WINDOW_FACTORY);

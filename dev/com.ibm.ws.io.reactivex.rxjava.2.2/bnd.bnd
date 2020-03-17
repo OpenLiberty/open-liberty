@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.ws.io.reactivex.rxjava.2.2; singleton:=true
 
@@ -25,7 +23,6 @@ Export-Package: \
   io.reactivex.*; version=2.2.13, \
   !io.reactivex.internal.*
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: REACTIVESTREAMS
 

@@ -13,7 +13,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsonp.1.0
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 #Doesn't get automatically imported since it's referenced by Class.forName()
 Import-Package: \

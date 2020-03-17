@@ -68,16 +68,12 @@
     <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear">
     </application>
 
-    <library id="ignore">
-      <file name="${server.config.dir}/ignoreThisUselessLibrary.jar"/>
-    </library>
-
     <jaasLoginContextEntry id="jar1LoginContextEntry" name="jar1login">
-      <loginModule className="fat.jca.resourceadapter.jar1.JAR1LoginModule" classProviderRef="FAT1" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
+      <loginModule className="fat.jca.resourceadapter.jar1.JAR1LoginModule" classProviderRef="FAT1"/>
     </jaasLoginContextEntry>
 
     <jaasLoginContextEntry id="jar2LoginContextEntry" name="jar2login">
-      <loginModule className="fat.jca.resourceadapter.jar2.JAR2LoginModule" classProviderRef="FAT1" libraryRef="ignore"/> <!-- TODO remove libraryRef once made optional -->
+      <loginModule className="fat.jca.resourceadapter.jar2.JAR2LoginModule" classProviderRef="FAT1"/>
     </jaasLoginContextEntry>
 
     <!-- 

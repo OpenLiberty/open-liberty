@@ -16,14 +16,18 @@ Bundle-SymbolicName: com.ibm.rls.jdbc
 Bundle-Description: RLS JDBC support, version ${bVersion}
 
 WS-TraceGroup: Transaction
-    
+
 Service-Component: com.ibm.rls.jdbc; \
     implementation:=com.ibm.rls.jdbc.SQLRecoveryLogFactory; \
     provide:='com.ibm.ws.recoverylog.spi.RecoveryLogFactory'
-            
+
 Export-Package: com.ibm.rls.jdbc;version=1.0.16,\
- com.ibm.ws.recoverylog.custom.jdbc.impl;version=1.0.0
-	
+  com.ibm.ws.recoverylog.custom.jdbc.impl;version=1.0.0
+
+Import-Package: \
+  !com.ibm.rls.jdbc, \
+  ${defaultPackageImport}
+
 instrument.disabled: true
 
 -buildpath: \

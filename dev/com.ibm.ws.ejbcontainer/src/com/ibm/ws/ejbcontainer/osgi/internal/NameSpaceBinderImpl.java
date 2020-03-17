@@ -139,8 +139,15 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         if (hrImpl.bindToContextRoot()) {
             BeanMetaData bmd = hr.getBeanMetaData();
             J2EEName eeName = hrImpl.getJ2EEName();
-            // <app>/<module.jar>/<bean>#<interface>
-            String bindingName = eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+
+            // if component-id binding was specified use that, otherwise use defaul long form
+            String bindingName = null;
+            if (bmd.ivComponent_Id != null) {
+                bindingName = bmd.ivComponent_Id + "#" + bindingObject.interfaceName;
+            } else {
+                // <app>/<module.jar>/<bean>#<interface>
+                bindingName = eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+            }
             ejbLocalNamingHelper.bind(bindingObject, bindingName);
 
             BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
@@ -238,6 +245,26 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         sendBindingMessage(bindingObject.interfaceName, bindingName, bmd);
     }
 
+    /**
+     * Binds the interface binding-name custom binding for local
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    @Override
+    public void bindLocalBusinessInterface(EJBBinding bindingObject, HomeRecord hr) {
+        BeanMetaData bmd = hr.getBeanMetaData();
+        String interfaceName = bindingObject.interfaceName;
+        String bindingName = bmd.businessInterfaceJndiBindingNames.get(interfaceName);
+
+        ejbLocalNamingHelper.bind(bindingObject, bindingName);
+
+        BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
+        bh.ivEJBLocalBindings.add(bindingName);
+
+        sendBindingMessage(bindingObject.interfaceName, bindingName, bmd);
+    }
+
     private void sendBindingMessage(String interfaceName, String jndiName, BeanMetaData bmd) {
         Tr.info(tc, "JNDI_BINDING_LOCATION_INFO_CNTR0167I",
                 new Object[] { interfaceName,
@@ -279,9 +306,18 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             }
 
             // if the interface Index is -1 it is a home interface
-            if (bmd.localHomeJndiBindingName != null && bindingObject.isLocal && bindingObject.interfaceIndex == -1) {
+            if (bmd.localHomeJndiBindingName != null && local && interfaceIndex == -1) {
                 hasCustomBindings = true;
                 bindLocalHomeBindingName(bindingObject, hr);
+            }
+
+            if (bmd.businessInterfaceJndiBindingNames != null && interfaceIndex >= 0 && bmd.businessInterfaceJndiBindingNames.containsKey(interfaceName)) {
+                hasCustomBindings = true;
+                if (local) {
+                    bindLocalBusinessInterface(bindingObject, hr);
+                } else {
+                    // TODO: Remote Business Interface Binding
+                }
             }
 
             // bind default traditional specific JNDI bindings

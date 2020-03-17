@@ -247,12 +247,6 @@ public final class ThreadPoolController {
     private final static int highCpu;
 
     /**
-     * The controller will not invoke hang resolution logic if the java process cpu exceeds
-     * this level.
-     */
-    private final static int lowCpu;
-
-    /**
      * The controller will not grow the pool if the ratio of the current work rate (tput) to the
      * current poolsize (threads) is below this threshold.
      */
@@ -369,9 +363,6 @@ public final class ThreadPoolController {
 
         String tpcHighCpu = getSystemProperty("tpcHighCpu");
         highCpu = (tpcHighCpu == null) ? 90 : Integer.parseInt(tpcHighCpu);
-
-        String tpcLowCpu = getSystemProperty("tpcLowCpu");
-        lowCpu = (tpcLowCpu == null) ? 5 : Integer.parseInt(tpcLowCpu);
 
         String tpcLowTputThreadsRatio = getSystemProperty("tpcLowTputThreadsRatio");
         lowTputThreadsRatio = (tpcLowTputThreadsRatio == null) ? 1.00 : Double.parseDouble(tpcLowTputThreadsRatio);
@@ -1294,24 +1285,20 @@ public final class ThreadPoolController {
                 return "monitoring paused";
             }
 
-            // only invoke hang resolution logic in 'hung idle' case,
-            // not 'hung busy'
-            if (!cpuHigh && (processCpuUtil < lowCpu)) {
-                if (resolveHang(deltaCompleted, queueEmpty, poolSize)) {
-                    /**
-                     * Sleep the controller thread briefly after increasing the poolsize
-                     * then update task count before returning to reduce the likelihood
-                     * of a false negative hang check next cycle due to a few non-hung
-                     * tasks executing on the newly created threads
-                     */
-                    try {
-                        Thread.sleep(10);
-                    } catch (Exception ex) {
-                        // do nothing
-                    }
-                    completedWork = threadPool.getCompletedTaskCount();
-                    return "action take to resolve hang";
+            if (resolveHang(deltaCompleted, queueEmpty, poolSize)) {
+                /**
+                 * Sleep the controller thread briefly after increasing the poolsize
+                 * then update task count before returning to reduce the likelihood
+                 * of a false negative hang check next cycle due to a few non-hung
+                 * tasks executing on the newly created threads
+                 */
+                try {
+                    Thread.sleep(10);
+                } catch (Exception ex) {
+                    // do nothing
                 }
+                completedWork = threadPool.getCompletedTaskCount();
+                return "action take to resolve hang";
             }
 
             if (checkTargetPoolSize(poolSize)) {

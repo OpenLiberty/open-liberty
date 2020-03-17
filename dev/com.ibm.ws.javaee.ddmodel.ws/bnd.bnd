@@ -23,11 +23,12 @@ com.ibm.ws.javaee.ddmodel.ws.adapter;\
     properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.ws.Webservices"
 
 Export-Package: \
-com.ibm.ws.javaee.dd.ws,\
-com.ibm.ws.javaee.ddmodel.ws;provide:=true
+  com.ibm.ws.javaee.dd.ws,\
+  com.ibm.ws.javaee.ddmodel.ws;provide:=true
 
 Import-Package: \
-   *
+  !com.ibm.ws.javaee.ddmodel.ws, \
+  *
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

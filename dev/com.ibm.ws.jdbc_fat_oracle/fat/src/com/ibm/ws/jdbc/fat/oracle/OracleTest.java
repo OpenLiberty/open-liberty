@@ -17,13 +17,10 @@ import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.OracleContainer;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,15 +41,7 @@ public class OracleTest extends FATServletClient {
     public static LibertyServer server;
     
     //TODO replace this container with the official oracle-xe container if/when it is available without a license
-    @ClassRule
-    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g").withLogConsumer(OracleTest::log);
-    
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(OracleTest.class, "oracle", msg);
-    }
+    public static OracleContainer oracle = FATSuite.oracle;
 
     @BeforeClass
     public static void setUp() throws Exception {

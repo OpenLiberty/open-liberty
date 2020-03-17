@@ -28,6 +28,10 @@ Export-Package: \
   com.ibm.wsspi.classloading;provide:=true, \
   com.ibm.wsspi.library;provide:=true
 
+Import-Package: \
+  !com.ibm.ws.classloading.java2sec, \
+  ${defaultPackageImport}
+
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 

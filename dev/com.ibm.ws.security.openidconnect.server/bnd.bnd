@@ -41,6 +41,7 @@ Private-Package: \
         com.ibm.ws.security.openidconnect.web
 
 Import-Package: \
+   !com.ibm.wsspi.security.oauth20, \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
    com.ibm.websphere.ras, \

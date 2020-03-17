@@ -18,7 +18,6 @@ Bundle-Name: WAS Class Loading Configuration Service
 Bundle-SymbolicName: com.ibm.ws.classloading.configuration
 Bundle-Description: WAS Class Loading Configuration Service
 
-
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
@@ -26,9 +25,12 @@ Bundle-Description: WAS Class Loading Configuration Service
 Export-Package: \
   com.ibm.ws.classloading.configuration;provide:=true, \
 
+Import-Package: \
+  !com.ibm.ws.classloading.configuration, \
+  ${defaultPackageImport}
+
  Include-Resource: \
     OSGI-INF=resources/OSGI-INF
-
 
 -dsannotations: \
   com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration

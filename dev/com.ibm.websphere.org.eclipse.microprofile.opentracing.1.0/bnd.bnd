@@ -11,8 +11,6 @@
 -include ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0; singleton:=true
 
@@ -23,7 +21,6 @@ Import-Package: \
 Export-Package: \
 	org.eclipse.microprofile.opentracing;version=1.0.1
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"
 
 Include-Resource: \
   @${repo;org.eclipse.microprofile.opentracing:microprofile-opentracing-api;1.0.1;EXACT}

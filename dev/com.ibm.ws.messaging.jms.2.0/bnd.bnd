@@ -23,7 +23,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Include-Resource: \
   OSGI-INF/wlp=resources/OSGI-INF/wlp
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: com.ibm.websphere.sib.api.jms,\
   com.ibm.ws.sib.api.jms.impl;thread-context=true

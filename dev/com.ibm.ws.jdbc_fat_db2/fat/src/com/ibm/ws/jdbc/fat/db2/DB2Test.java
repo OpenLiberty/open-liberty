@@ -10,17 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
 
-import java.time.Duration;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Db2Container;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -39,19 +34,7 @@ public class DB2Test extends FATServletClient {
     @TestServlet(servlet = DB2TestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
-    @ClassRule
-    public static Db2Container db2 = new Db2Container()
-                    .acceptLicense()
-                    // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
-                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25))
-                    .withLogConsumer(DB2Test::log);
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(DB2Test.class, "db2", msg);
-    }
+    public static Db2Container db2 = FATSuite.db2;
 
     @BeforeClass
     public static void setUp() throws Exception {

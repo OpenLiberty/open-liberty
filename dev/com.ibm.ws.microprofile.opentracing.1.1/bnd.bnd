@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.opentracing.1.1
 Bundle-SymbolicName: com.ibm.ws.microprofile.opentracing.1.1
@@ -20,11 +18,14 @@ Bundle-Description: MicroProfile.OpenTracing, version 1.1
 
 WS-TraceGroup: OPENTRACING
 
+-cdiannotations:
+
 -dsannotations: \
     com.ibm.ws.microprofile.opentracing.OpenTracingFilterHelper, \
     com.ibm.ws.microprofile.opentracing.cdi.OpenTracingCDIInjectionExtension
 
 Import-Package: \
+  !com.ibm.ws.microprofile.opentracing.cdi, \
   javax.enterprise.inject.spi;version="[1.1,2.1)",\
   *
 
@@ -32,7 +33,6 @@ Export-Package: \
 	com.ibm.ws.microprofile.opentracing;version=1.1,\
 	com.ibm.ws.microprofile.opentracing.cdi;version=1.1
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Include-Resource: \
   META-INF=resources/META-INF

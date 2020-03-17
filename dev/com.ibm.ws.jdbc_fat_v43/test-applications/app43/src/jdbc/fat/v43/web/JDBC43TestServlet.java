@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package jdbc.fat.v43.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -27,11 +28,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLTransientConnectionException;
 import java.sql.ShardingKey;
 import java.sql.ShardingKeyBuilder;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -70,6 +77,8 @@ public class JDBC43TestServlet extends FATServlet {
      */
     private static final long TIMEOUT_NS = TimeUnit.SECONDS.toNanos(90);
 
+    private final static Map<String, CompletableFuture<?>> completionStages = new HashMap<>();
+
     @Resource
     DataSource defaultDataSource;
 
@@ -102,6 +111,9 @@ public class JDBC43TestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/poolOf1", shareable = false)
     DataSource unsharablePool1DataSource;
+
+    @Resource(lookup = "jdbc/poolOf2", shareable = false) // HandleList is enabled on the connection manager for this data source
+    DataSource unsharablePool2DataSource;
 
     @Resource(lookup = "jdbc/xa", shareable = false)
     DataSource unsharableXADataSource;
@@ -146,6 +158,14 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
+     * Provides data sources to the HandleListTestServlet, which lacks access to resource injection due to SingleThreadModel.
+     */
+    public void populateDataSources() {
+        HandleListTestServlet.unsharablePool1DataSource = unsharablePool1DataSource;
+        HandleListTestServlet.unsharablePool2DataSource = unsharablePool2DataSource;
+    }
+
+    /**
      * Test that attempting to use the connection builder methods on an unwrapped connection are blocked.
      */
     @Test
@@ -166,6 +186,150 @@ public class JDBC43TestServlet extends FATServlet {
         } catch (SQLFeatureNotSupportedException ex) {
             if (!ex.getMessage().contains("DSRA9130E"))
                 throw ex;
+        }
+    }
+
+    /**
+     * Invoked by JDBC43Test as the first of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1() throws Exception {
+        final Connection con = unsharablePool1DataSource.getConnection();
+        CompletableFuture<Statement> stage = CompletableFuture
+                        .completedFuture(con.createStatement())
+                        .thenApply(s -> {
+                            try {
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Meadow Crossing Road SW', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApplyAsync(s -> {
+                            try {
+                                Thread.sleep(1000); // this encourages the current servlet request to go out of scope, if it hasn't already
+                            } catch (InterruptedException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApply(s -> {
+                            try {
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Meadow Run Drive SW', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .whenComplete((s, failure) -> {
+                            try {
+                                s.getConnection().close();
+                            } catch (SQLException x) {
+                                if (failure == null)
+                                    throw new CompletionException(x);
+                            }
+                        });
+
+        Object previous = completionStages.put("testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary", stage);
+        assertNull("Test method was invoked more the once, invalidating the test logic", previous);
+    }
+
+    /**
+     * Invoked by JDBC43Test as the second of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart2() throws Exception {
+        @SuppressWarnings("unchecked")
+        CompletableFuture<Statement> stage = (CompletableFuture<Statement>) completionStages.get("testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary");
+        Statement s = stage.join();
+        assertTrue(s.isClosed());
+
+        // confirm that the SQL command ran and committed
+        try (Connection con = unsharablePool1DataSource.getConnection();
+                        Statement st = con.createStatement();
+                        ResultSet result = st.executeQuery("SELECT NAME FROM STREETS WHERE NAME LIKE 'Meadow%'")) {
+            assertTrue(result.next());
+            String name1 = result.getString(1);
+            assertTrue("only found " + name1, result.next());
+            String name2 = result.getString(1);
+            if (result.next())
+                fail("found too many: " + name1 + ", " + name2 + ", " + result.getString(1));
+            List<String> found = Arrays.asList(name1, name2);
+            assertTrue(found.toString(), found.contains("Meadow Crossing Road SW"));
+            assertTrue(found.toString(), found.contains("Meadow Run Drive SW"));
+        }
+    }
+
+    /**
+     * Invoked by JDBC43Test as the first of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1() throws Exception {
+        final Connection con = unsharablePool1DataSource.getConnection();
+        con.setAutoCommit(false);
+        CompletableFuture<Statement> stage = CompletableFuture
+                        .completedFuture(con.createStatement())
+                        .thenApply(s -> {
+                            try {
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Century Valley Road NE', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApplyAsync(s -> {
+                            try {
+                                Thread.sleep(5000); // this encourages the current servlet request to go out of scope, if it hasn't already
+                            } catch (InterruptedException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .thenApply(s -> {
+                            try {
+                                assertFalse(s.getConnection().getAutoCommit());
+                                s.executeUpdate("INSERT INTO STREETS VALUES ('Century Hills Drive NE', 'Rochester', 'MN')");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                            return s;
+                        })
+                        .whenComplete((s, failure) -> {
+                            try {
+                                Connection c = s.getConnection();
+                                try {
+                                    if (failure == null)
+                                        c.commit();
+                                    else
+                                        c.rollback();
+                                } finally {
+                                    c.close();
+                                }
+                            } catch (SQLException x) {
+                                if (failure == null)
+                                    throw new CompletionException(x);
+                            }
+                        });
+
+        Object previous = completionStages.put("testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary", stage);
+        assertNull("Test method was invoked more the once, invalidating the test logic", previous);
+    }
+
+    /**
+     * Invoked by JDBC43Test as the second of a two part test that caches an unshared connection across servlet requests.
+     */
+    public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2() throws Exception {
+        @SuppressWarnings("unchecked")
+        CompletableFuture<Statement> stage = (CompletableFuture<Statement>) completionStages.get("testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary");
+        Statement s = stage.join();
+        assertTrue(s.isClosed());
+
+        // confirm that the SQL command ran and committed
+        try (Connection con = unsharablePool1DataSource.getConnection();
+                        Statement st = con.createStatement();
+                        ResultSet result = st.executeQuery("SELECT NAME FROM STREETS WHERE NAME LIKE 'Century%'")) {
+            assertTrue(result.next());
+            String name1 = result.getString(1);
+            assertFalse("Found multiple entries, " + name1 + " and " + result.getString(1)
+                        + " which means that the database local transaction was not rolled back when the servlet goes out of scope", result.next());
+            assertEquals("Century Hills Drive NE", name1);
         }
     }
 
@@ -646,6 +810,44 @@ public class JDBC43TestServlet extends FATServlet {
             fail("Built a connection with sharding " + con + " for JDBC 4.2 driver");
         } catch (SQLFeatureNotSupportedException x) {
         }
+    }
+
+    /**
+     * Obtain an unshared connection and intentionally exit the servlet request without closing it.
+     */
+    public void testLeakConnection() throws Exception {
+        Connection con = unsharablePool2DataSource.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT CITY,STATE FROM STREETS WHERE NAME='Civic Center Drive NW'");
+        assertTrue(result.next());
+        assertEquals("Rochester", result.getString(1));
+    }
+
+    /**
+     * Obtain 2 unshared connections and intentionally exit the servlet request without closing them.
+     */
+    public void testLeakConnections() throws Exception {
+        Connection con1 = unsharablePool2DataSource.getConnection();
+        Statement stmt1 = con1.createStatement();
+        ResultSet result = stmt1.executeQuery("SELECT CITY,STATE FROM STREETS WHERE NAME='Valleyhigh Drive NW'");
+        assertTrue(result.next());
+        assertEquals("Rochester", result.getString(1));
+
+        assertNotNull(unsharablePool2DataSource.getConnection());
+    }
+
+    /**
+     * Obtain all 2 of the connections from the pool, proving that no connections were leaked.
+     */
+    public void testLeakedConnectionsWereReturned() throws Exception {
+        Connection con1 = unsharablePool2DataSource.getConnection();
+        Statement stmt1 = con1.createStatement();
+        Connection con2 = unsharablePool2DataSource.getConnection();
+        Statement stmt2 = con2.createStatement();
+        stmt1.close();
+        stmt2.close();
+        con1.close();
+        con2.close();
     }
 
     /**
@@ -2483,6 +2685,30 @@ public class JDBC43TestServlet extends FATServlet {
             ps.close();
         } finally {
             c.close();
+        }
+    }
+
+    /**
+     * Invoked by HandleListTestServlet.testUnsharedConnectionNotReassociatedAcrossServletRequests, as an inline, but separate, servlet request.
+     */
+    public void testUnsharedConnectionNotReassociatedAcrossServletRequestsInnerRequest() throws Exception {
+        try {
+            Connection con = unsharablePool1DataSource.getConnection();
+            con.close();
+            fail();
+        } catch (SQLTransientConnectionException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Invoked by HandleListTestServlet.testUnsharedConnectionReassociatedAcrossServletRequests, as an inline, but separate, servlet request.
+     */
+    public void testUnsharedConnectionReassociatedAcrossServletRequestsInnerRequest() throws Exception {
+        Connection con = unsharablePool2DataSource.getConnection();
+        try {
+        } finally {
+            con.close();
         }
     }
 

@@ -19,8 +19,10 @@ Bundle-Description: WebSphere Web Application Support, version ${bVersion}
 Private-Package: com.ibm.ws.app.manager.war.*, com.ibm.ws.app.manager.ear.*, com.ibm.ws.app.manager.web.*
 
 Include-Resource: OSGI-INF=resources/OSGI-INF
-    
+
 Import-Package: \
+    !com.ibm.ws.container.service.metadata, \
+    !com.ibm.ws.container.service.state, \
     com.ibm.ws.app.manager.module.internal, \
     *
 
@@ -39,7 +41,7 @@ instrument.classesExcludes: com/ibm/ws/app/manager/war/internal/resources/*.clas
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.module;version=latest,\
-        com.ibm.ws.anno;version=latest,\
+    com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.artifact.zip;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\

@@ -17,7 +17,6 @@ Bundle-Description: Database connectivity infrastructure, version ${bVersion}
 
 WS-TraceGroup: RRA
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
     com.ibm.ws.rsadapter.jdbc.v41
