@@ -56,9 +56,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
+import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.PebbleContainer;
-import com.ibm.ws.security.acme.fat.FATSuite;
-
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -239,7 +238,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, String... domains)
+	public static void configureAcmeCA(LibertyServer server, CAContainer container, ServerConfiguration originalConfig, String... domains)
 			throws Exception {
 		configureAcmeCA(server, originalConfig, false, domains);
 	}
@@ -353,7 +352,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             If there was an error communicating with the mock DNS server.
 	 */
-	public static void configureDnsForDomains(String... domains) throws Exception {
+	public static void configureDnsForDomains(CAContainer dnscontainer, CAContainer container, String... domains) throws Exception {
 
 		Log.info(AcmeFatUtils.class, "configureDnsForDomains(String...)",
 				"Configuring DNS with the following domains: " + domains);
@@ -364,8 +363,8 @@ public class AcmeFatUtils {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			FATSuite.challtestsrv.addARecord(domain, FATSuite.pebble.getClientHost());
-			FATSuite.challtestsrv.addAAAARecord(domain, "");
+			dnscontainer.addARecord(domain, container.getClientHost());
+			dnscontainer.addAAAARecord(domain, "");
 		}
 	}
 
@@ -377,7 +376,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             If there was an error communicating with the mock DNS server.
 	 */
-	public static void clearDnsForDomains(String... domains) throws Exception {
+	public static void clearDnsForDomains(CAContainer dnscontainer, String... domains) throws Exception {
 
 		Log.info(AcmeFatUtils.class, "clearDnsForDomains(String...)",
 				"Clearning the following domains from the DNS: " + domains);
@@ -388,8 +387,8 @@ public class AcmeFatUtils {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			FATSuite.challtestsrv.clearARecord(domain);
-			FATSuite.challtestsrv.clearAAAARecord(domain);
+			dnscontainer.clearARecord(domain);
+			dnscontainer.clearAAAARecord(domain);
 		}
 	}
 
@@ -504,6 +503,7 @@ public class AcmeFatUtils {
 
 	/**
 	 * Assert that the server is using a certificate signed by the ACME CA.
+	 * @param <assertAndGetServerCertificate>
 	 * 
 	 * @param server
 	 *            the liberty server to communicate with.
@@ -512,14 +512,14 @@ public class AcmeFatUtils {
 	 *             If the server is not using a certificate signed by the ACME
 	 *             CA.
 	 */
-	public static final Certificate[] assertAndGetServerCertificate(LibertyServer server) throws Exception {
+	public static final <assertAndGetServerCertificate> Certificate[] assertAndGetServerCertificate(LibertyServer server, CAContainer container) throws Exception {
 		final String methodName = "assertServerCertificate()";
 
 		/*
 		 * Get the CA's intermediate certificate.
 		 */
 		X509Certificate caCertificate = AcmeFatUtils
-				.getX509Certificate(FATSuite.pebble.getAcmeCaIntermediateCertificate());
+				.getX509Certificate(container.getAcmeCaIntermediateCertificate());
 
 		/*
 		 * Make a request to the root context just to grab the certificate.

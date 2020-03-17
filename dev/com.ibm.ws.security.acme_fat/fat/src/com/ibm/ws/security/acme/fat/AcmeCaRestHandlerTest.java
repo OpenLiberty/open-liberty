@@ -32,12 +32,16 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.Testcontainers;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.acme.docker.CAContainer;
+import com.ibm.ws.security.acme.docker.ChalltestsrvContainer;
 import com.ibm.ws.security.acme.docker.PebbleContainer;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
@@ -45,6 +49,7 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 /**
  * Test the {@link AcmeCaRestHandler} REST endpoint.
@@ -64,16 +69,59 @@ public class AcmeCaRestHandlerTest {
 	private static final String READER_PASS = "readerpass";
 	private static final String UNAUTHORIZED_USER = "unauthorized";
 	private static final String UNAUTHORIZED_PASS = "unauthorizedpass";
-
+	public static CAContainer challtestsrv = null;
+	public static CAContainer pebble = null;
+	
+	static {
+		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+	}
+	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
+		final String METHOD_NAME = "beforeClass()";
 		ORIGINAL_CONFIG = server.getServerConfiguration();
+		
 
+		/*
+		 * Need to expose the HTTP port that is used to answer the HTTP-01
+		 * challenge.
+		 */
+		Log.info(FATSuite.class, METHOD_NAME, "Running Testcontainers.exposeHostPorts");
+		Testcontainers.exposeHostPorts(PebbleContainer.HTTP_PORT);
+		
+		/*
+		 * Startup the challtestsrv container first. This container will serve
+		 * as a mock DNS server to the Pebble server that starts on the other
+		 * container.
+		 */
+		challtestsrv = new ChalltestsrvContainer();
+		challtestsrv.start();
+
+		/*
+		 * Startup the pebble server.
+		 */
+		pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT, challtestsrv.getNetwork());
+		pebble.start();
+		
+
+		Log.info(AcmeCaRestHandlerTest.class, METHOD_NAME, "Pebble ContainerIpAddress: " + pebble.getContainerIpAddress());
+		Log.info(AcmeCaRestHandlerTest.class, METHOD_NAME, "Pebble DockerImageName:    " + pebble.getDockerImageName());
+		Log.info(AcmeCaRestHandlerTest.class, METHOD_NAME, "Pebble ContainerInfo:      " + pebble.getContainerInfo());
 		/*
 		 * Configure mock DNS server.
 		 */
-		AcmeFatUtils.configureDnsForDomains(DOMAINS);
+		AcmeFatUtils.configureDnsForDomains(challtestsrv, pebble, DOMAINS);
 		AcmeFatUtils.checkPortOpen(PebbleContainer.HTTP_PORT, 60000);
+	}
+	
+	@AfterClass
+	public static void afterClass() {
+		if (pebble != null) {
+			pebble.stop();
+		}
+		if (challtestsrv != null) {
+			challtestsrv.stop();
+		}
 	}
 
 	@After
@@ -98,7 +146,7 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();
@@ -145,7 +193,7 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();
@@ -199,7 +247,7 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();

@@ -33,13 +33,7 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 /**
  * Testcontainer implementation for the letsencrypt/pebble container.
  */
-public class PebbleContainer extends GenericContainer<PebbleContainer> {
-
-	/**
-	 * The port that ACME HTTP validation requests will be sent to the domain
-	 * on. Must match the port in 'publish/files/pebble-config.json'.
-	 */
-	public static final int HTTP_PORT = 5002;
+public class PebbleContainer extends CAContainer {
 
 	/** The port used to listen for incoming ACME requests. */
 	public static final int LISTEN_PORT = 14000;
@@ -71,7 +65,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		super(new ImageFromDockerfile()
 				.withDockerfileFromBuilder(builder -> builder.from("letsencrypt/pebble")
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
-				.withFileFromFile("pebble-config.json", new File("lib/LibertyFATTestFiles/pebble-config.json")));
+				.withFileFromFile("pebble-config.json", new File("lib/LibertyFATTestFiles/pebble-config.json")), MANAGEMENT_PORT);
 
 		this.withCommand("pebble", "-dnsserver", dnsServer, "-config", "/test/config/pebble-config.json", "-strict",
 				"false");
@@ -80,136 +74,11 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		this.withLogConsumer(PebbleContainer::log);
 	}
 
-	/**
-	 * Get Pebble's intermediate certificate.
-	 * 
-	 * @return Pebble's root CA certificate in the form of a PEM file.
-	 * @throws Exception
-	 *             If we failed to receive the certificate.
-	 */
-	public byte[] getAcmeCaIntermediateCertificate() throws Exception {
-		final String METHOD_NAME = "getAcmeCaIntermediateCertificate()";
-		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT)
-				+ "/intermediates/0";
-
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
-			/*
-			 * Create a GET request to the ACME CA server.
-			 */
-			HttpGet httpGet = new HttpGet(url);
-
-			/*
-			 * Send the GET request and process the response.
-			 */
-			try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-				AcmeFatUtils.logHttpResponse(PebbleContainer.class, METHOD_NAME, httpGet, response);
-
-				StatusLine statusLine = response.getStatusLine();
-
-				if (statusLine.getStatusCode() != 200) {
-					throw new IOException(
-							METHOD_NAME + ": Expected response 200, but received response: " + statusLine);
-				}
-
-				byte[] result = EntityUtils.toByteArray(response.getEntity());
-
-				Log.info(PebbleContainer.class, METHOD_NAME, new String(result));
-				return result;
-			}
-		}
-	}
+	
 
 	/**
-	 * Get Pebble's root certificate.
-	 * 
-	 * @return Pebble's root CA certificate in the form of a PEM file.
-	 * @throws Exception
-	 *             If we failed to receive the certificate.
-	 */
-	public byte[] getAcmeCaRootCertificate() throws Exception {
-		final String METHOD_NAME = "getAcmeCaRootCertificate()";
-		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT) + "/roots/0";
 
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
-			/*
-			 * Create a GET request to the ACME CA server.
-			 */
-			HttpGet httpGet = new HttpGet(url);
 
-			/*
-			 * Send the GET request and process the response.
-			 */
-			try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-				AcmeFatUtils.logHttpResponse(PebbleContainer.class, METHOD_NAME, httpGet, response);
-
-				StatusLine statusLine = response.getStatusLine();
-
-				if (statusLine.getStatusCode() != 200) {
-					throw new IOException(
-							METHOD_NAME + ": Expected response 200, but received response: " + statusLine);
-				}
-
-				byte[] result = EntityUtils.toByteArray(response.getEntity());
-
-				Log.info(PebbleContainer.class, METHOD_NAME, new String(result));
-				return result;
-			}
-		}
-	}
-
-	/**
-	 * Get the status of the certificate from the ACME CA server.
-	 * 
-	 * @param certificate
-	 *            The certificate to check.
-	 * @return The status of the certificate.
-	 * @throws Exception
-	 */
-	public String getAcmeCertificateStatus(X509Certificate certificate) throws Exception {
-		final String METHOD_NAME = "getAcmeCertificateStatus()";
-		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT)
-				+ "/cert-status-by-serial/" + certificate.getSerialNumber().toString(16);
-
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
-			/*
-			 * Create a GET request to the ACME CA server.
-			 */
-			HttpGet httpGet = new HttpGet(url);
-
-			/*
-			 * Send the GET request and process the response.
-			 */
-			try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-				AcmeFatUtils.logHttpResponse(PebbleContainer.class, METHOD_NAME, httpGet, response);
-
-				StatusLine statusLine = response.getStatusLine();
-
-				if (statusLine.getStatusCode() != 200) {
-					throw new IOException(
-							METHOD_NAME + ": Expected response 200, but received response: " + statusLine);
-				}
-
-				String result = EntityUtils.toString(response.getEntity());
-
-				/*
-				 * The result is in JSON, lets just parse out the status.
-				 */
-				Pattern p = Pattern.compile(".*\"Status\": \"(\\w+)\",.*", Pattern.DOTALL);
-				Matcher m = p.matcher(result);
-				if (m.find()) {
-					result = m.group(1);
-				} else {
-					throw new Exception(
-							"Certificate status response was not in expected JSON format. Response: " + result);
-				}
-
-				Log.info(PebbleContainer.class, METHOD_NAME, new String(result));
-				return result;
-			}
-		}
-	}
-
-	/**
 	 * Get the URI to the ACME CA's directory.
 	 * 
 	 * @param usePebbleURI
@@ -232,25 +101,5 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 			 */
 			return "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(LISTEN_PORT) + "/dir";
 		}
-	}
-
-	/**
-	 * Retrieves the client host's IP address that is reachable from the
-	 * container.
-	 * 
-	 * @return The client host's IP address that is reachable from the
-	 *         container.
-	 * @throws IllegalStateException
-	 *             If the address was not found.
-	 */
-	public String getClientHost() throws IllegalStateException {
-		for (String extraHost : this.getExtraHosts()) {
-			if (extraHost.startsWith("host.testcontainers.internal:")) {
-				return extraHost.replace("host.testcontainers.internal:", "");
-			}
-		}
-
-		throw new IllegalStateException(
-				"Unable to resolve local host from docker container. Could not find 'host.testcontainers.internal' property.");
 	}
 }

@@ -12,34 +12,27 @@ package com.ibm.ws.security.acme.fat;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.config.AcmeCA;
-import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.acme.docker.PebbleContainer;
+import com.ibm.ws.security.acme.docker.CAContainer;
+import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
-
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,30 +47,27 @@ public class AcmeSimpleTest {
 	@Server("com.ibm.ws.security.acme.fat.simple")
 	public static LibertyServer server;
 
-	private static ServerConfiguration ORIGINAL_CONFIG;
+	protected static ServerConfiguration ORIGINAL_CONFIG;
+	private boolean usePebbleURI = false;
 	private static final String[] DOMAINS_ALL = { "domain1.com", "domain2.com", "domain3.com" };
 	private static final String[] DOMAINS1 = { "domain1.com" };
 	private static final String[] DOMAINS2 = { "domain1.com", "domain2.com", "domain3.com" };
 	private static final String[] DOMAINS3 = { "domain1.com", "domain2.com" };
 	private static final String[] DOMAINS4 = { "domain2.com" };
+	
+	public static CAContainer caContainer;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		ORIGINAL_CONFIG = server.getServerConfiguration();
-
-		/*
-		 * Configure mock DNS server.
-		 */
-		AcmeFatUtils.configureDnsForDomains(DOMAINS_ALL);
-		AcmeFatUtils.checkPortOpen(PebbleContainer.HTTP_PORT, 60000);
+		caContainer = new PebbleContainer();
 	}
 
 	@AfterClass
 	public static void afterClass() throws Exception {
-		/*
-		 * Clear the DNS records for the domain.
-		 */
-		AcmeFatUtils.clearDnsForDomains(DOMAINS_ALL);
+		if (caContainer != null) {
+			caContainer.stop();
+		}
 	}
 
 	@After
@@ -118,7 +108,7 @@ public class AcmeSimpleTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS3);
+		AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS3);
 
 		/***********************************************************************
 		 * 
@@ -141,11 +131,9 @@ public class AcmeSimpleTest {
 			 * Verify that the server is now using a certificate signed by the
 			 * CA.
 			 */
-			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server);
-
+			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 		} finally {
 			Log.info(this.getClass(), methodName, "TEST 1: Shutdown.");
-
 			/*
 			 * Stop the server.
 			 */
@@ -179,7 +167,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Verify that the server is using a certificate signed by the CA.
 			 */
-			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server);
+			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			assertEquals("The certificate should not have been updated.",
 					((X509Certificate) startingCertificateChain[0]).getSerialNumber(),
@@ -218,7 +206,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Verify that the server is using a certificate signed by the CA.
 			 */
-			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server);
+			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			BigInteger serial1 = ((X509Certificate) startingCertificateChain[0]).getSerialNumber();
 			BigInteger serial2 = ((X509Certificate) endingCertificateChain[0]).getSerialNumber();
@@ -232,7 +220,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2038W");
+			server.stopServer();
 		}
 	}
 
@@ -244,7 +232,7 @@ public class AcmeSimpleTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS1);
+		AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS1);
 
 		try {
 
@@ -259,7 +247,7 @@ public class AcmeSimpleTest {
 			 * Verify that the server is now using a certificate signed by the
 			 * CA.
 			 */
-			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			/***********************************************************************
 			 * 
@@ -268,14 +256,14 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 1: START");
-			AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS2);
+			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS2);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
 			 * Verify that the server is now using a certificate signed by the
 			 * CA.
 			 */
-			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			BigInteger serial1 = ((X509Certificate) certificates1[0]).getSerialNumber();
 			BigInteger serial2 = ((X509Certificate) certificates2[0]).getSerialNumber();
@@ -289,14 +277,14 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 2: START");
-			AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS3);
+			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS3);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
 			/*
 			 * Verify that the server is now using a certificate signed by the
 			 * CA.
 			 */
-			Certificate[] certificates3 = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates3 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			serial1 = ((X509Certificate) certificates2[0]).getSerialNumber();
 			serial2 = ((X509Certificate) certificates3[0]).getSerialNumber();
@@ -310,14 +298,14 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 3: START");
-			AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS4);
+			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS4);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
 			 * Verify that the server is now using a certificate signed by the
 			 * CA.
 			 */
-			Certificate[] certificates4 = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates4 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			serial1 = ((X509Certificate) certificates3[0]).getSerialNumber();
 			serial2 = ((X509Certificate) certificates4[0]).getSerialNumber();
@@ -346,7 +334,7 @@ public class AcmeSimpleTest {
 		configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
 		configuration.getFeatureManager().getFeatures().add("transportSecurity-1.0");
 		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
-		AcmeFatUtils.configureAcmeCA(server, configuration, useAcmeURIs(), DOMAINS1);
+		AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
 
 		try {
 
@@ -363,7 +351,7 @@ public class AcmeSimpleTest {
 			 * ACME CA.
 			 */
 			try {
-				AcmeFatUtils.assertAndGetServerCertificate(server);
+				AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 				fail("Expected SignatureException.");
 			} catch (SignatureException e) {
 				assertEquals("Expected error message was not found.", "Signature does not match.", e.getMessage());
@@ -378,14 +366,14 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 1: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().add("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, configuration, useAcmeURIs(), DOMAINS1);
+			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
 			 * Verify that the server is now using a certificate signed by the
 			 * CA.
 			 */
-			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			Log.info(this.getClass(), methodName, "TEST 1: FINISH");
 
 			/***********************************************************************
@@ -397,7 +385,7 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 2: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, configuration, useAcmeURIs(), DOMAINS1);
+			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
 			AcmeFatUtils.waitAcmeFeatureUninstall(server);
 
 			/*
@@ -405,7 +393,7 @@ public class AcmeSimpleTest {
 			 * CA. The default certificate generator doesn't update the
 			 * certificate.
 			 */
-			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			BigInteger serial1 = ((X509Certificate) certificates1[0]).getSerialNumber();
 			BigInteger serial2 = ((X509Certificate) certificates2[0]).getSerialNumber();
@@ -421,14 +409,14 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 3: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().add("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, configuration, useAcmeURIs(), DOMAINS1);
+			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
 			/*
 			 * Verify that the server is now using a certificate signed by the
 			 * CA.
 			 */
-			Certificate[] certificates3 = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates3 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			serial1 = ((X509Certificate) certificates2[0]).getSerialNumber();
 			serial2 = ((X509Certificate) certificates3[0]).getSerialNumber();
@@ -442,6 +430,7 @@ public class AcmeSimpleTest {
 			server.stopServer("CWPKI2038W");
 		}
 	}
+
 
 	/**
 	 * This test will start with ACME configuration that has a multitude of
