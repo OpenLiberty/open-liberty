@@ -131,6 +131,9 @@ jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0-RC1
 jakarta.servlet:jakarta.servlet-api:5.0.0-M1
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0-M1
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0-RC1
+jakarta.json.bind:jakarta.json.bind-api:2.0.0-RC1
+jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0-M1
+jakarta.interceptor:jakarta.interceptor-api:2.0.0-RC2
 javax.activation:activation:1.1
 javax.annotation:javax.annotation-api:1.2
 javax.annotation:javax.annotation-api:1.3.1

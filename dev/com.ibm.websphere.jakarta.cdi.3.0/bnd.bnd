@@ -1,0 +1,58 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-SymbolicName: com.ibm.websphere.jakarta.cdi.3.0; singleton:=true
+
+Export-Package: jakarta.decorator; version=3.0, \
+ jakarta.enterprise.context; version=3.0, \
+ jakarta.enterprise.context.control; version=3.0, \
+ jakarta.enterprise.context.spi; version=3.0, \
+ jakarta.enterprise.event; version=3.0, \
+ jakarta.enterprise.inject; version=3.0, \
+ jakarta.enterprise.inject.literal; version=3.0, \
+ jakarta.enterprise.inject.se; version=3.0, \
+ jakarta.enterprise.inject.spi; version=3.0, \
+ jakarta.enterprise.inject.spi.configurator; version=3.0, \
+ jakarta.enterprise.util; version=3.0, \
+ jakarta.inject; version=2.0
+ 
+
+Import-Package:  jakarta.el; version="[4.0.0,5.0.0)", \
+ jakarta.decorator; version=3.0, \
+ jakarta.enterprise.context; version=3.0, \
+ jakarta.enterprise.context.control; version=3.0, \
+ jakarta.enterprise.context.spi; version=3.0, \
+ jakarta.enterprise.event; version=3.0, \
+ jakarta.enterprise.inject; version=3.0, \
+ jakarta.enterprise.inject.literal; version=3.0, \
+ jakarta.enterprise.inject.spi; version=3.0, \
+ jakarta.enterprise.inject.spi.configurator; version=3.0, \
+ jakarta.enterprise.util; version=3.0, \
+ jakarta.inject; version=2.0, \
+ jakarta.interceptor;version=2.0
+
+Include-Resource: \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[3.0,4)}!/beans_1_0.xsd, \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[3.0,4)}!/beans_1_1.xsd, \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[3.0,4)}!/beans_2_0.xsd
+
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	jakarta.inject:jakarta.inject-api=2.0,\
+	jakarta.enterprise:jakarta.enterprise.cdi-api;version=3.0
+	

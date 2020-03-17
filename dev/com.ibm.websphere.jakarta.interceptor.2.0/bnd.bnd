@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,10 +8,18 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.glassfish:javax.json;1.0.4;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
--includeresource: \
-   @${repo;org.glassfish:javax.json;1.0.4;EXACT}!/org/glassfish/json/*
+Bundle-SymbolicName: com.ibm.websphere.jakarta.interceptor.2.0; singleton:=true
+
+
+Export-Package: jakarta.interceptor
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	org.glassfish:javax.json;version=1.0.4
+	jakarta.interceptor:jakarta.interceptor-api;version=2.0.0
+
