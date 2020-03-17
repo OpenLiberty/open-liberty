@@ -22,6 +22,7 @@ import com.ibm.ws.kernel.boot.commandport.ServerCommandPortTest;
 import com.ibm.ws.kernel.boot.internal.commands.LogLevelPropertyTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageCommandTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageLooseConfigTest;
+import com.ibm.ws.kernel.boot.internal.commands.PackageLooseConfigDropinsTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageLooseConfigParameterizedTest;
 import com.ibm.ws.kernel.osgi.OSGiEmbedManagerTest;
 import com.ibm.ws.kernel.provisioning.KernelChangeTest;
