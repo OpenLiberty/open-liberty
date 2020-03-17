@@ -15,7 +15,8 @@ src: \
   fat/src,\
   test-applications/atinjectapp/src,\
   test-applications/interceptorapp/src,\
-  test-applications/contextandclient/src
+  test-applications/contextandclient/src,\
+  test-applications/resourceinfoatstartup/src
 
 fat.project: true
 
@@ -25,4 +26,6 @@ fat.project: true
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-  com.ibm.websphere.javaee.interceptor.1.2;version=latest
+  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+  javax.validation:validation-api;version=2.0.1.Final
