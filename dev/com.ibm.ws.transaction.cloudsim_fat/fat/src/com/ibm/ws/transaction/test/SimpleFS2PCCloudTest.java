@@ -209,9 +209,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             throw ex;
         }
 
-        // Defect 209842: Pull in a jvm.options file that ensures that we have a long (5 minute) timeout
+        // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
         // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
-        server1.copyFileToLibertyServerRoot("jvm.options");
+        server1.copyFileToLibertyServerRoot("longLeaseLengthFSServer/server.xml");
 
         // Now re-start cloud1
         server1.startServerExpectFailure("recovery-log-fail.log", false, true);
@@ -226,7 +226,8 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         // defect 210055: Now we need to tidy up the environment, start by releasing the lock.
         releaseServerLease("FScloud001");
 
-        server1.deleteFileFromLibertyServerRoot("jvm.options");
+        // Ensure we have the original "default" server.xml at the end of the test.
+        server1.copyFileToLibertyServerRoot("defaultLeaseLengthFSServer/server.xml");
 
         // And allow server2 to clear up for its peer.
         server2.setHttpDefaultPort(FScloud2ServerPort);
