@@ -44,5 +44,5 @@ Private-Package: com.ibm.ws.repository.resources.internal, \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.org.glassfish.json.1.0;version=latest
-    
+
 jakartaeeMe: true
