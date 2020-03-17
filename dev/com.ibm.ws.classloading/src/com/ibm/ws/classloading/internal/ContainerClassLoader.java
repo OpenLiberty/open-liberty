@@ -75,6 +75,9 @@ import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
 abstract class ContainerClassLoader extends IdentifiedLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     static final TraceComponent tc = Tr.register(ContainerClassLoader.class);
 
     /**

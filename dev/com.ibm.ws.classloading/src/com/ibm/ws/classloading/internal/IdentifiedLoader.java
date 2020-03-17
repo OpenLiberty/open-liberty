@@ -14,6 +14,9 @@ import com.ibm.ws.classloading.internal.util.Keyed;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 
 abstract class IdentifiedLoader extends LibertyLoader implements Keyed<ClassLoaderIdentity> {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     public IdentifiedLoader(ClassLoader parent) {
         super(parent);
     }

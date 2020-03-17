@@ -37,6 +37,9 @@ import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
  * to discover the special methods:
  */
 public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     private final static TraceComponent tc = Tr.register(UnifiedClassLoader.class);
 
     /**
