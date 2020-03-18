@@ -96,7 +96,6 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	// ACME account related fields.
 	private String accountKeyFile = null;
 	private List<String> accountContact = null;
-	private Boolean acceptTermsOfService = null;
 	private String domainKeyFile = null;
 
 	private AcmeClient acmeClient = null;
@@ -190,14 +189,12 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		orderRetryWaitMs = getLongValue(properties, AcmeConstants.ORDER_RETRY_WAIT);
 		accountKeyFile = getStringValue(properties, AcmeConstants.ACCOUNT_KEY_FILE);
 		accountContact = getStringList(properties, AcmeConstants.ACCOUNT_CONTACT);
-		acceptTermsOfService = getBooleanValue(properties, AcmeConstants.ACCEPT_TERMS);
 		domainKeyFile = getStringValue(properties, AcmeConstants.DOMAIN_KEY_FILE);
 
 		/*
 		 * Construct a new ACME client.
 		 */
 		acmeClient = new AcmeClient(directoryURI, accountKeyFile, domainKeyFile, accountContact);
-		acmeClient.setAcceptTos(acceptTermsOfService);
 		acmeClient.setChallengeRetries(challengeRetries);
 		acmeClient.setChallengeRetryWait(challengeRetryWaitMs);
 		acmeClient.setOrderRetries(orderRetries);

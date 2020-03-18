@@ -118,11 +118,6 @@ public class AcmeClient {
 	private long orderRetryWaitMs = 3000L;
 
 	/**
-	 * Whether the account accepts any terms of service.
-	 */
-	private boolean termsOfServiceAgreed = false;
-
-	/**
 	 * Create a new {@link AcmeClient} instance.
 	 * 
 	 * @param directoryURI
@@ -753,19 +748,6 @@ public class AcmeClient {
 			}
 		} else {
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", directoryURI));
-		}
-	}
-
-	/**
-	 * Set the accept terms of service response. If the ACME CA service has
-	 * terms of service, this needs to be set to 'true'.
-	 * 
-	 * @param acceptTos
-	 *            Whether to accept any terms of service issued by the ACME CA.
-	 */
-	public void setAcceptTos(Boolean acceptTos) {
-		if (acceptTos != null) {
-			this.termsOfServiceAgreed = acceptTos;
 		}
 	}
 

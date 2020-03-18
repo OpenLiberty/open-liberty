@@ -182,7 +182,6 @@ public class AcmeClientTest {
 		 * Create an AcmeService to test.
 		 */
 		AcmeClient acmeClient = new AcmeClient(acmeDirectoryURI, FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
 
 		/*
 		 * Link the new client to the challenge response server.
@@ -215,7 +214,6 @@ public class AcmeClientTest {
 		 * Create an AcmeService to test.
 		 */
 		AcmeClient acmeClient = new AcmeClient(acmeDirectoryURI, FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
 
 		/*
 		 * Link the new client to the challenge response server.
@@ -250,7 +248,6 @@ public class AcmeClientTest {
 		 * Create an AcmeService to test.
 		 */
 		AcmeClient acmeClient = new AcmeClient(acmeDirectoryURI, FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
 
 		/*
 		 * Link the new client to the challenge response server.

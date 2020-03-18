@@ -37,7 +37,6 @@ public class AcmeConstants {
 	// ACME account related fields.
 	public static final String ACCOUNT_KEY_FILE = "accountKeyFile";
 	public static final String ACCOUNT_CONTACT = "accountContact";
-	public static final String ACCEPT_TERMS = "acceptTermsOfService";
 	public static final String DOMAIN_KEY_FILE = "domainKeyFile";
 
 	/*
