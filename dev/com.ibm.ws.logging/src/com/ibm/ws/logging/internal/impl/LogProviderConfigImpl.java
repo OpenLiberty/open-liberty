@@ -439,6 +439,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         sb.append(",consoleLogLevel=").append(consoleLogLevel.getName());
         sb.append(",copySystemStreams=").append(copySystemStreams);
         sb.append(",messageFileName=").append(messageFileName);
+        sb.append(",messageFormat=").append(messageFormat);
+        sb.append(",consoleFormat=").append(consoleFormat);
         sb.append(",traceFormat=").append(traceFormat);
         sb.append(",isoDateFormat=").append(isoDateFormat);
         sb.append(",traceFileName=").append(traceFileName);

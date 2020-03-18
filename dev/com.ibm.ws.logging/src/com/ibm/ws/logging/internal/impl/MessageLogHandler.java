@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
             }
             messageOutput = genData.getJsonMessage();
 
-        } else if (currFormat.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) && basicFormatter != null) {
+        } else if ((currFormat.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) || currFormat.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT)) && basicFormatter != null) {
             messageOutput = basicFormatter.messageLogFormat(genData);
 
         }
@@ -79,7 +79,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
 
     /**
      * Set BaseTraceFormatter passed from BaseTraceService
-     * This formatter is used to format the BASIC log events
+     * This formatter is used to format the SIMPLE or BASIC (deprecated format name) log events
      * that pass through
      *
      * @param formatter the BaseTraceFormatter to use
@@ -89,9 +89,9 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     /**
-     * The format to set (i.e. BASIC or JSON)
+     * The format to set (i.e. SIMPLE, JSON, or BASIC (deprecated))
      *
-     * @param format the format to set (i.e. BASIC or JSON)
+     * @param format the format to set (i.e. SIMPLE, JSON, or BASIC (deprecated))
      */
     public void setFormat(String format) {
         this.format = format;
