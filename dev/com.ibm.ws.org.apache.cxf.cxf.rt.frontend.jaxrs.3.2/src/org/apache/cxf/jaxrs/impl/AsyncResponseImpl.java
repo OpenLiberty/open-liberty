@@ -45,8 +45,8 @@ import org.apache.cxf.continuations.ContinuationProvider;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs21.component.LibertyJaxRsThreadPoolAdapter;
 
 public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
@@ -347,7 +347,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
 
     private void initContinuation() {
         ContinuationProvider provider =
-            (ContinuationProvider)inMessage.get(ContinuationProvider.class.getName());
+            (ContinuationProvider)((MessageImpl) inMessage).getContinuationProvider();
         if (provider == null) {
             throw new IllegalArgumentException("Continuation not supported. Please ensure that all servlets and servlet filters support async operations");
         }

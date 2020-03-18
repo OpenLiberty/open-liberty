@@ -33,6 +33,7 @@ import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 
 public class ContainerRequestContextImpl extends AbstractRequestContextImpl
     implements ContainerRequestContext {
@@ -131,14 +132,14 @@ public class ContainerRequestContextImpl extends AbstractRequestContextImpl
         HttpUtils.resetRequestURI(m, requestUri.toString());
         String query = requestUri.getRawQuery();
         if (query != null) {
-            m.put(Message.QUERY_STRING, query);
+            ((MessageImpl) m).setQueryString(query);
         }
     }
 
     @Override
     public void setRequestUri(URI baseUri, URI requestUri) throws IllegalStateException {
         doSetRequestUri(requestUri);
-        Object servletRequest = m.get("HTTP.REQUEST");
+        Object servletRequest = ((MessageImpl) m).getHttpRequest();
         if (servletRequest != null) {
             ((javax.servlet.http.HttpServletRequest)servletRequest)
                 .setAttribute(ENDPOINT_ADDRESS_PROPERTY, baseUri.toString());

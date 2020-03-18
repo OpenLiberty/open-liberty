@@ -67,6 +67,7 @@ import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.AbstractInvoker;
 
@@ -233,7 +234,7 @@ public class JAXRSInvoker extends AbstractInvoker {
             try {
                 MultivaluedMap<String, String> values = getTemplateValues(inMessage);
                 String subResourcePath = values.getFirst(URITemplate.FINAL_MATCH_GROUP);
-                String httpMethod = (String)inMessage.get(Message.HTTP_REQUEST_METHOD);
+                String httpMethod = (String)((MessageImpl) inMessage).getHttpRequestMethod();
                 String contentType = (String)inMessage.get(Message.CONTENT_TYPE);
                 if (contentType == null) {
                     contentType = "*/*";
@@ -271,7 +272,7 @@ public class JAXRSInvoker extends AbstractInvoker {
                                                          contentType,
                                                          acceptContentType);
                 exchange.put(OperationResourceInfo.class, subOri);
-                inMessage.put(URITemplate.TEMPLATE_PARAMETERS, values);
+                ((MessageImpl) inMessage).setTemplateParameters(values);
 
                 if (!subOri.isSubResourceLocator()
                     && JAXRSUtils.runContainerRequestFilters(providerFactory,
@@ -296,7 +297,7 @@ public class JAXRSInvoker extends AbstractInvoker {
             } catch (WebApplicationException ex) {
                 Response excResponse;
                 if (JAXRSUtils.noResourceMethodForOptions(ex.getResponse(),
-                        (String)inMessage.get(Message.HTTP_REQUEST_METHOD))) {
+                        (String)((MessageImpl) inMessage).getHttpRequestMethod())) {
                     excResponse = JAXRSUtils.createResponse(Collections.singletonList(subCri),
                                                             null, null, 200, true);
                 } else {
@@ -427,7 +428,7 @@ public class JAXRSInvoker extends AbstractInvoker {
     protected MultivaluedMap<String, String> getTemplateValues(Message msg) {
         MultivaluedMap<String, String> values = new MetadataMap<>();
         MultivaluedMap<String, String> oldValues =
-            (MultivaluedMap<String, String>)msg.get(URITemplate.TEMPLATE_PARAMETERS);
+            (MultivaluedMap<String, String>)((MessageImpl) msg).getTemplateParameters();
         if (oldValues != null) {
             values.putAll(oldValues);
         }
