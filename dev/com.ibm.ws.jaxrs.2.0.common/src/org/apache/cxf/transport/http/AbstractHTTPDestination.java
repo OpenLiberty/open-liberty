@@ -673,7 +673,10 @@ public abstract class AbstractHTTPDestination
             headers = new Headers(outMessage);
         }
         headers.copyToResponse(response);
+<<<<<<< HEAD
 >>>>>>> Performance improvements to cxf code
+=======
+>>>>>>> 2cee81c9a23a88fe8f02aad6782585d49b9e8027
         //Liberty code change end
 
         outMessage.put(RESPONSE_HEADERS_COPIED, "true");
