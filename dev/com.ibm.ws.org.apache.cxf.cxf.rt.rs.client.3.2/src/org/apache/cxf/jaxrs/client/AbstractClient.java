@@ -1029,7 +1029,7 @@ public abstract class AbstractClient implements Client {
 
         m.setContent(List.class, getContentsList(body));
 
-        m.put(URITemplate.TEMPLATE_PARAMETERS, getState().getTemplates());
+        ((MessageImpl) m).setTemplateParameters(getState().getTemplates());
 
         PhaseInterceptorChain chain = setupOutInterceptorChain(cfg);
         chain.setFaultObserver(setupInFaultObserver(cfg));
@@ -1050,7 +1050,7 @@ public abstract class AbstractClient implements Client {
     }
 
     private void setRequestMethod(Message m, String httpMethod) {
-        m.put(Message.HTTP_REQUEST_METHOD, httpMethod);
+        ((MessageImpl) m).setHttpRequestMethod(httpMethod);
         if (!KNOWN_METHODS.contains(httpMethod)) {
             if (!m.containsKey("use.async.http.conduit")) {
                 // if the async conduit is loaded then let it handle this method without users

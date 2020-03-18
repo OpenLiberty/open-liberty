@@ -299,7 +299,7 @@ public abstract class AbstractHTTPDestination
                                   final HttpServletRequest req,
                                   final HttpServletResponse resp,
                                   Message m) throws IOException {
-        ContinuationProvider p = m.get(ContinuationProvider.class);
+        ContinuationProvider p = (ContinuationProvider) ((MessageImpl) m).getContinuationProvider();
         if (p != null) {
             p.complete();
         }
@@ -309,15 +309,16 @@ public abstract class AbstractHTTPDestination
         message.put(SERVICE_REDIRECTION, request.getAttribute(SERVICE_REDIRECTION));
     }
 
-    protected void setupMessage(final Message inMessage,
+    protected void setupMessage(final Message message,
                                 final ServletConfig config,
                                 final ServletContext context,
                                 final HttpServletRequest req,
                                 final HttpServletResponse resp) throws IOException {
-        setupContinuation(inMessage,
+        setupContinuation(message,
                           req,
                           resp);
 
+        MessageImpl inMessage = (MessageImpl) message;
         final Exchange exchange = inMessage.getExchange();
         DelegatingInputStream in = new DelegatingInputStream(req.getInputStream()) {
             @Override
@@ -328,7 +329,7 @@ public abstract class AbstractHTTPDestination
                     //so they can be queried later for things like paths and schemes
                     //and such like that.
                     //Please note, exchange used to always get the "current" message
-                    exchange.getInMessage().put(HTTP_REQUEST, new HttpServletRequestSnapshot(req));
+                    ((MessageImpl) exchange.getInMessage()).setHttpRequest(new HttpServletRequestSnapshot(req));
                 }
                 super.cacheInput();
             }
@@ -341,17 +342,17 @@ public abstract class AbstractHTTPDestination
 
         inMessage.setContent(DelegatingInputStream.class, in);
         inMessage.setContent(InputStream.class, in);
-        inMessage.put(HTTP_REQUEST, req);
-        inMessage.put(HTTP_RESPONSE, resp);
+        inMessage.setHttpRequest(req);
+        inMessage.setHttpResponse(resp);
         inMessage.put(HTTP_CONTEXT, context);
         inMessage.put(HTTP_CONFIG, config);
         inMessage.put(HTTP_CONTEXT_MATCH_STRATEGY, contextMatchStrategy);
 
-        inMessage.put(Message.HTTP_REQUEST_METHOD, req.getMethod());
+        inMessage.setHttpRequestMethod(req.getMethod());
         String requestURI = req.getRequestURI();
-        inMessage.put(Message.REQUEST_URI, requestURI);
+        inMessage.setRequestUri(requestURI);
         String requestURL = req.getRequestURL().toString();
-        inMessage.put(Message.REQUEST_URL, requestURL);
+        inMessage.setRequestUrl(requestURL);
         String contextPath = req.getContextPath();
         if (contextPath == null) {
             contextPath = "";
@@ -363,9 +364,9 @@ public abstract class AbstractHTTPDestination
         String contextServletPath = contextPath + servletPath;
         String pathInfo = req.getPathInfo();
         if (pathInfo != null) {
-            inMessage.put(Message.PATH_INFO, contextServletPath + pathInfo);
+            inMessage.setPathInfo(contextServletPath + pathInfo);
         } else {
-            inMessage.put(Message.PATH_INFO, requestURI);
+            inMessage.setPathInfo(requestURI);
         }
         if (!StringUtils.isEmpty(requestURI)) {
             int index = requestURL.indexOf(requestURI);
@@ -385,17 +386,17 @@ public abstract class AbstractHTTPDestination
             }
         }
         String contentType = req.getContentType();
-        inMessage.put(Message.CONTENT_TYPE, contentType);
+        inMessage.setContentType(contentType);
         setEncoding(inMessage, req, contentType);
 
-        inMessage.put(Message.QUERY_STRING, req.getQueryString());
+        inMessage.setQueryString(req.getQueryString());
 
-        inMessage.put(Message.ACCEPT_CONTENT_TYPE, req.getHeader("Accept"));
+        inMessage.setAccept(req.getHeader("Accept"));
         String basePath = getBasePath(contextServletPath);
         if (!StringUtils.isEmpty(basePath)) {
-            inMessage.put(Message.BASE_PATH, basePath);
+            inMessage.setBasePath(basePath);
         }
-        inMessage.put(Message.FIXED_PARAMETER_ORDER, isFixedParameterOrder());
+        inMessage.setFixedParamOrder(isFixedParameterOrder());
         inMessage.put(Message.ASYNC_POST_RESPONSE_DISPATCH, Boolean.TRUE);
 
         SecurityContext httpSecurityContext = new SecurityContext() {
@@ -422,8 +423,7 @@ public abstract class AbstractHTTPDestination
         propogateSecureSession(req, inMessage);
 
         inMessage.put(CertConstraints.class.getName(), certConstraints);
-        inMessage.put(Message.IN_INTERCEPTORS,
-                Arrays.asList(new Interceptor[] {CertConstraintsInterceptor.INSTANCE}));
+        inMessage.setInInterceptors(Arrays.asList(new Interceptor[] {CertConstraintsInterceptor.INSTANCE}));
 
     }
 
@@ -470,7 +470,7 @@ public abstract class AbstractHTTPDestination
                 Tr.warning(tc, m);
                 throw new IOException(m);
             }
-            inMessage.put(Message.ENCODING, normalizedEncoding);
+            ((MessageImpl) inMessage).setEncoding(normalizedEncoding);
         }
         return contentType;
     }
@@ -494,12 +494,11 @@ public abstract class AbstractHTTPDestination
                                      final HttpServletResponse resp) {
         try {
             if (/* Liberty change - removing refs to isServlet3 */req.isAsyncSupported()) {
-                inMessage.put(ContinuationProvider.class.getName(),
-                              new Servlet3ContinuationProvider(req, resp, inMessage));
+                ((MessageImpl) inMessage).setContinuationProvider(new Servlet3ContinuationProvider(req, resp, inMessage));
             } else if (cproviderFactory != null) {
                 ContinuationProvider p = cproviderFactory.createContinuationProvider(inMessage, req, resp);
                 if (p != null) {
-                    inMessage.put(ContinuationProvider.class.getName(), p);
+                    ((MessageImpl) inMessage).setContinuationProvider(p);
                 }
             }
         } catch (Throwable ex) {
@@ -548,7 +547,7 @@ public abstract class AbstractHTTPDestination
      */
     @Override
     protected Conduit getInbuiltBackChannel(Message inMessage) {
-        HttpServletResponse response = (HttpServletResponse) inMessage.get(HTTP_RESPONSE);
+        HttpServletResponse response = (HttpServletResponse) ((MessageImpl) inMessage).getHttpResponse();
         return new BackChannelConduit(response);
     }
 
@@ -600,7 +599,7 @@ public abstract class AbstractHTTPDestination
         Object o = inMessage.get("cxf.io.cacheinput");
         DelegatingInputStream in = inMessage.getContent(DelegatingInputStream.class);
         if (PropertyUtils.isTrue(o)) {
-            Collection<Attachment> atts = inMessage.getAttachments();
+            Collection<Attachment> atts = (Collection<Attachment>) inMessage.getAttachments();
             if (atts != null) {
                 for (Attachment a : atts) {
                     if (a.getDataHandler().getDataSource() instanceof AttachmentDataSource) {
@@ -682,7 +681,7 @@ public abstract class AbstractHTTPDestination
         }
 
         if (oneWay) {
-            outMessage.remove(HTTP_RESPONSE);
+            ((MessageImpl) outMessage).removeHttpResponse();
         }
         return responseStream;
     }
@@ -697,13 +696,13 @@ public abstract class AbstractHTTPDestination
     }
 
     private int getReponseCodeFromMessage(Message message) {
-        Integer i = (Integer) message.get(Message.RESPONSE_CODE);
+        Integer i = (Integer) ((MessageImpl) message).getResponseCode();
         if (i != null) {
             return i.intValue();
         }
         int code = hasNoResponseContent(message) ? HttpURLConnection.HTTP_ACCEPTED : HttpURLConnection.HTTP_OK;
         // put the code in the message so that others can get it
-        message.put(Message.RESPONSE_CODE, code);
+        ((MessageImpl) message).setResponseCode(code);
         return code;
     }
 
@@ -730,7 +729,7 @@ public abstract class AbstractHTTPDestination
     }
 
     private HttpServletResponse getHttpResponseFromMessage(Message message) throws IOException {
-        Object responseObj = message.get(HTTP_RESPONSE);
+        Object responseObj = ((MessageImpl) message).getHttpResponse();
         if (responseObj instanceof HttpServletResponse) {
             return (HttpServletResponse) responseObj;
         } else if (null != responseObj) {
@@ -771,7 +770,7 @@ public abstract class AbstractHTTPDestination
          */
         @Override
         public void prepare(Message message) throws IOException {
-            message.put(HTTP_RESPONSE, response);
+            ((MessageImpl) message).setHttpResponse(response);
             OutputStream os = message.getContent(OutputStream.class);
             if (os == null) {
                 message.setContent(OutputStream.class,

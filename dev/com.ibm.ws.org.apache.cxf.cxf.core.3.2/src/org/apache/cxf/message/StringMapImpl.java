@@ -42,7 +42,6 @@ public class StringMapImpl
     public StringMapImpl(Map<String, Object> i) {
         super(i);
     }
-
     @Override
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> key) {
@@ -54,8 +53,8 @@ public class StringMapImpl
         put(key.getName(), value);
     }
 
-
     public <T> T remove(Class<T> key) {
         return key.cast(remove(key.getName()));
     }
+
 }
