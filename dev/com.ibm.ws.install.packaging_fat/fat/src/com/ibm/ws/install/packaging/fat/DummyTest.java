@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import junit.framework.Assert;
 
-public class DummyTest extends InstallUtilityToolTest {
+public class DummyTest extends InstallPackagesToolTest {
     private static final Class<?> c = DummyTest.class;
 
     /**

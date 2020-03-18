@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,10 @@ import java.nio.channels.OverlappingFileLockException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -31,13 +33,13 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
 
     // The file system directory where the tx recovery logs are stored. This location is retrieved from the RecoveryLogManager at server startup.
-    static String _tranRecoveryLogDirStem = null;
-    static String _localRecoveryIdentity = null;
-    static File _leaseLogDirectory = null;
+    static String _tranRecoveryLogDirStem;
+    static String _localRecoveryIdentity;
+    static File _leaseLogDirectory;
     // The file system directory where the lease files will be stored
-    static String _serverInstallLeaseLogDir = null;
-    boolean leaseLogWrittenInThisRun = false;
-    static File _controlFile = null;
+    static File _serverInstallLeaseLogDir;
+    boolean leaseLogWrittenInThisRun;
+    static File _controlFile;
     private int _leaseTimeout;
     // Some design points here
     //
@@ -90,7 +92,8 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     private static final FileSharedServerLeaseLog _fileLeaseLog = new FileSharedServerLeaseLog();
 
     //to prevent creating another instance of Singleton
-    public FileSharedServerLeaseLog() {}
+    public FileSharedServerLeaseLog() {
+    }
 
     /**
      * WebSphere RAS TraceComponent registration.
@@ -105,13 +108,13 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     public static FileSharedServerLeaseLog getFileSharedServerLeaseLog(String logDirStem, String localRecoveryIdentity, String recoveryGroup) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "FileSharedServerLeaseLog", new Object[] { logDirStem, localRecoveryIdentity, recoveryGroup });
+            Tr.entry(tc, "getFileSharedServerLeaseLog", new Object[] { logDirStem, localRecoveryIdentity, recoveryGroup });
 
         if (_serverInstallLeaseLogDir == null)
             setLeaseLog(logDirStem, localRecoveryIdentity, recoveryGroup);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "FileSharedServerLeaseLog", _fileLeaseLog);
+            Tr.exit(tc, "getFileSharedServerLeaseLog", _fileLeaseLog);
         return _fileLeaseLog;
     }
 
@@ -119,23 +122,37 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setLeaseLog", new Object[] { tranRecoveryLogDirStem, localRecoveryIdentity, recoveryGroup });
 
-        final String serverInstallLeaseLogDirStem = System.getenv("WLP_USER_DIR") +
-                                                    String.valueOf(File.separatorChar) + "shared";
-        _serverInstallLeaseLogDir = serverInstallLeaseLogDirStem + String.valueOf(File.separatorChar) + "leaselog";
-
-        // Postpend the recovery group to the directory
+        // append the recovery group to the directory
         if (recoveryGroup == null)
             recoveryGroup = "defaultGroup";
-        _serverInstallLeaseLogDir = _serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryGroup;
+
+        try {
+            final File leasesDir = new File(tranRecoveryLogDirStem).getParentFile();
+
+            if (leasesDir.getCanonicalPath().equals(new File(System.getenv("WLP_USER_DIR") + File.separator + "servers" + File.separator
+                                                             + ConfigurationProviderManager.getConfigurationProvider().getServerName()).getCanonicalPath())
+                ||
+                (localRecoveryIdentity == null || localRecoveryIdentity.trim().isEmpty())) {
+                _serverInstallLeaseLogDir = new File(System.getenv("WLP_USER_DIR") + File.separator + "shared" + File.separator + "leases" + File.separator + recoveryGroup);
+            } else {
+                _serverInstallLeaseLogDir = new File(leasesDir.getCanonicalPath() + File.separator + "leases" + File.separator
+                                                     + recoveryGroup);
+            }
+        } catch (IOException e) {
+            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.FileSharedServerLeaseLog.setLeaseLog", "139");
+        }
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "_serverInstallLeaseLogDir: " + _serverInstallLeaseLogDir.getAbsolutePath());
 
         // Cache the supplied information
         if (tranRecoveryLogDirStem != null) {
             _tranRecoveryLogDirStem = tranRecoveryLogDirStem;
 
             if (_leaseLogDirectory == null) {
-                _leaseLogDirectory = new File(_serverInstallLeaseLogDir); // logDirectory = _multiScopeRecoveryLog.getLogDirectory()
+                _leaseLogDirectory = _serverInstallLeaseLogDir; // logDirectory = _multiScopeRecoveryLog.getLogDirectory()
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Have instantiated directory, " + _leaseLogDirectory);
+                    Tr.debug(tc, "Have instatiated directory: " + _leaseLogDirectory.getAbsolutePath());
 
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     @Override
@@ -155,7 +172,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                                         Tr.debug(tc, "Lease log directory has been created");
                                     if (_controlFile.createNewFile()) {
                                         if (tc.isDebugEnabled())
-                                            Tr.debug(tc, "Control has been created");
+                                            Tr.debug(tc, "Control has been created: " + _controlFile.getAbsolutePath());
                                     }
                                 }
                             } catch (IOException e) {
@@ -207,7 +224,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                             fChannel.force(false);
                             leaseLogWrittenInThisRun = true;
                             if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Have written to file");
+                                Tr.debug(tc, "Have written \"" + byteBuffer.toString() + "\" to lease file");
                         } catch (IOException iox) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Caught I/O exception when trying to write to file");
@@ -408,10 +425,10 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                         String line = new String(buffer.array());
 
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "We have retrieved " + line);
+                            Tr.debug(tc, "Lease file contained " + line);
 
                         // Set the string into the LeaseInfo object
-                        leaseInfo.setLeaseDetail(line);
+                        leaseInfo.setLeaseDetail(new File(line));
                         claimedLease = true;
                     } else {
                         if (tc.isDebugEnabled())

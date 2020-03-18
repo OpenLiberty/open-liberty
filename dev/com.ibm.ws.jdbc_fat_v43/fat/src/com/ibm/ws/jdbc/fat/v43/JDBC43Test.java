@@ -27,9 +27,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import jdbc.fat.v43.web.HandleListTestServlet;
 import jdbc.fat.v43.web.JDBC43TestServlet;
 
 @RunWith(FATRunner.class)
@@ -37,7 +39,10 @@ public class JDBC43Test extends FATServletClient {
     public static final String APP_NAME = "app43";
 
     @Server("com.ibm.ws.jdbc.fat.v43")
-    @TestServlet(servlet = JDBC43TestServlet.class, contextRoot = APP_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = JDBC43TestServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = HandleListTestServlet.class, contextRoot = APP_NAME)
+    })
     public static LibertyServer server;
 
     @BeforeClass
@@ -66,6 +71,7 @@ public class JDBC43Test extends FATServletClient {
                           "DSRA0302E.*XA_RBROLLBACK", // expected when invoking end on JDBC driver during an abort
                           "DSRA0304E", // expected when invoking end on JDBC driver during an abort
                           "DSRA8790W", // expected for begin/endRequest invoked by application being ignored
+                          "J2CA0045E.*poolOf1", // expected when testing that no more connections are available
                           "J2CA0081E", // TODO why does Derby think a transaction is still active?
                           "WLTC0018E", // TODO remove once transactions bug is fixed
                           "WLTC0032W", // local tran rolled back, expected when trying to keep unshared connection open across servlet boundary
@@ -105,5 +111,28 @@ public class JDBC43Test extends FATServletClient {
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary() throws Exception {
         runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1");
         runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2");
+    }
+
+    /**
+     * testHandleListClosesLeakedConnectionsFromSeparateRequests - make two separate servlet requests that each intentionally leak a connection,
+     * using up all of the connections in the pool. Make a third servlet request that requires a connection and expect it to work because the
+     * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
+     */
+    //@Test TODO enable once HandleList is added
+    public void testHandleListClosesLeakedConnectionsFromSeparateRequests() throws Exception {
+        runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
+        runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
+        runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSeparateRequests");
+    }
+
+    /**
+     * testHandleListClosesLeakedConnectionsFromSingleRequests - make a single servlet request that each intentionally leaks both of the
+     * connections from the pool. Make second servlet request that requires a connection and expect it to work because the
+     * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
+     */
+    //@Test TODO enable once HandleList is added
+    public void testHandleListClosesLeakedConnectionsFromSingleRequest() throws Exception {
+        runTest(server, "app43/JDBC43TestServlet", "testLeakConnections");
+        runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSingleRequest");
     }
 }

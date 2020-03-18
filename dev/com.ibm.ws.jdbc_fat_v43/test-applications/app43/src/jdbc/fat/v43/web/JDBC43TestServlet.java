@@ -12,6 +12,7 @@ package jdbc.fat.v43.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -27,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLTransientConnectionException;
 import java.sql.ShardingKey;
 import java.sql.ShardingKeyBuilder;
 import java.sql.Statement;
@@ -110,6 +112,9 @@ public class JDBC43TestServlet extends FATServlet {
     @Resource(lookup = "jdbc/poolOf1", shareable = false)
     DataSource unsharablePool1DataSource;
 
+    @Resource(lookup = "jdbc/poolOf2", shareable = false) // HandleList is enabled on the connection manager for this data source
+    DataSource unsharablePool2DataSource;
+
     @Resource(lookup = "jdbc/xa", shareable = false)
     DataSource unsharableXADataSource;
 
@@ -150,6 +155,14 @@ public class JDBC43TestServlet extends FATServlet {
         } catch (SQLException x) {
             throw new ServletException(x);
         }
+    }
+
+    /**
+     * Provides data sources to the HandleListTestServlet, which lacks access to resource injection due to SingleThreadModel.
+     */
+    public void populateDataSources() {
+        HandleListTestServlet.unsharablePool1DataSource = unsharablePool1DataSource;
+        HandleListTestServlet.unsharablePool2DataSource = unsharablePool2DataSource;
     }
 
     /**
@@ -797,6 +810,44 @@ public class JDBC43TestServlet extends FATServlet {
             fail("Built a connection with sharding " + con + " for JDBC 4.2 driver");
         } catch (SQLFeatureNotSupportedException x) {
         }
+    }
+
+    /**
+     * Obtain an unshared connection and intentionally exit the servlet request without closing it.
+     */
+    public void testLeakConnection() throws Exception {
+        Connection con = unsharablePool2DataSource.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet result = stmt.executeQuery("SELECT CITY,STATE FROM STREETS WHERE NAME='Civic Center Drive NW'");
+        assertTrue(result.next());
+        assertEquals("Rochester", result.getString(1));
+    }
+
+    /**
+     * Obtain 2 unshared connections and intentionally exit the servlet request without closing them.
+     */
+    public void testLeakConnections() throws Exception {
+        Connection con1 = unsharablePool2DataSource.getConnection();
+        Statement stmt1 = con1.createStatement();
+        ResultSet result = stmt1.executeQuery("SELECT CITY,STATE FROM STREETS WHERE NAME='Valleyhigh Drive NW'");
+        assertTrue(result.next());
+        assertEquals("Rochester", result.getString(1));
+
+        assertNotNull(unsharablePool2DataSource.getConnection());
+    }
+
+    /**
+     * Obtain all 2 of the connections from the pool, proving that no connections were leaked.
+     */
+    public void testLeakedConnectionsWereReturned() throws Exception {
+        Connection con1 = unsharablePool2DataSource.getConnection();
+        Statement stmt1 = con1.createStatement();
+        Connection con2 = unsharablePool2DataSource.getConnection();
+        Statement stmt2 = con2.createStatement();
+        stmt1.close();
+        stmt2.close();
+        con1.close();
+        con2.close();
     }
 
     /**
@@ -2634,6 +2685,30 @@ public class JDBC43TestServlet extends FATServlet {
             ps.close();
         } finally {
             c.close();
+        }
+    }
+
+    /**
+     * Invoked by HandleListTestServlet.testUnsharedConnectionNotReassociatedAcrossServletRequests, as an inline, but separate, servlet request.
+     */
+    public void testUnsharedConnectionNotReassociatedAcrossServletRequestsInnerRequest() throws Exception {
+        try {
+            Connection con = unsharablePool1DataSource.getConnection();
+            con.close();
+            fail();
+        } catch (SQLTransientConnectionException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Invoked by HandleListTestServlet.testUnsharedConnectionReassociatedAcrossServletRequests, as an inline, but separate, servlet request.
+     */
+    public void testUnsharedConnectionReassociatedAcrossServletRequestsInnerRequest() throws Exception {
+        Connection con = unsharablePool2DataSource.getConnection();
+        try {
+        } finally {
+            con.close();
         }
     }
 

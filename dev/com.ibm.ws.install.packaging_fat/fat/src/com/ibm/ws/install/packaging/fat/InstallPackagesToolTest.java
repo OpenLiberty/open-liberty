@@ -18,9 +18,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-public abstract class InstallUtilityToolTest {
+public abstract class InstallPackagesToolTest {
 
-    private static final Class<?> c = InstallUtilityToolTest.class;
+    private static final Class<?> c = InstallPackagesToolTest.class;
     public static LibertyServer server;
     public static String installRoot;
     public static boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
@@ -32,6 +32,7 @@ public abstract class InstallUtilityToolTest {
     public static boolean connectedToRepo = true;
     public static Logger logger = Logger.getLogger("com.ibm.ws.install.packaging.fat");
     public static String javaHome;
+    public static Boolean isjavaHomeExecutable = false;
     public static String currentDirectory = ".";
     public static String autoFVTRoot = currentDirectory;
     public static String publishPath = autoFVTRoot + "/publish";
@@ -102,6 +103,9 @@ public abstract class InstallUtilityToolTest {
         Log.info(c, METHOD_NAME, "installRoot: " + installRoot);
         javaHome = server.getMachineJavaJDK();
         Log.info(c, METHOD_NAME, "javaHome: " + javaHome);
+        // check if javaHome is executable
+        isjavaHomeExecutable = isFileExecutable(javaHome);
+
         cleanDirectories = new ArrayList<String>();
         cleanFiles = new ArrayList<String>();
 
@@ -142,6 +146,22 @@ public abstract class InstallUtilityToolTest {
             Log.info(c, METHOD_NAME, "package not found");
             packagesBuilt = false;
         }
+    }
+
+    protected static Boolean isFileExecutable(String filePath) throws Exception {
+        String METHOD_NAME = "isFileExecutable";
+        Boolean RC = false;
+        String[] po1args = { "-m -v " + filePath + "|sed \"1 d\" | cut -c 10 |grep -v x" };
+        ProgramOutput po1 = runCommand(METHOD_NAME, "namei", po1args);
+        if (po1.getReturnCode() == 0) {
+            RC = false;
+            String[] po2args = { "-m -v " + filePath };
+            ProgramOutput po2 = runCommand(METHOD_NAME, "namei", po2args);
+            Log.info(c, METHOD_NAME, "Non executable directory or file found.:\n" + po2.getStdout());
+        } else {
+            RC = true;
+        }
+        return RC;
     }
 
     protected static void entering(Class<?> c, String METHOD_NAME) {
