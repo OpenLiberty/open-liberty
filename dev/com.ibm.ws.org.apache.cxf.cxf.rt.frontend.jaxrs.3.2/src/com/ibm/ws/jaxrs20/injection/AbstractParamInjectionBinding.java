@@ -25,10 +25,10 @@ import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.model.OperationResourceInfo;
 import org.apache.cxf.jaxrs.model.Parameter;
 import org.apache.cxf.jaxrs.model.ParameterType;
-import org.apache.cxf.jaxrs.model.URITemplate;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -179,7 +179,9 @@ public abstract class AbstractParamInjectionBinding<A extends Annotation> extend
         Message message = paramInjectionMetadata.getInMessage();
         OperationResourceInfo ori = paramInjectionMetadata.getOperationResourceInfo();
         BeanResourceInfo cri = ori.getClassResourceInfo();
-        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>) message.get(URITemplate.TEMPLATE_PARAMETERS);
+        //Liberty code change start
+        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>) ((MessageImpl) message).getTemplateParameters();
+        //Liberty code change end
         if (p.getType() == ParameterType.BEAN && cri instanceof ClassResourceInfo) {
             injectedObject = JAXRSUtils.createBeanParamValue(message, classType, ori);
         } else {

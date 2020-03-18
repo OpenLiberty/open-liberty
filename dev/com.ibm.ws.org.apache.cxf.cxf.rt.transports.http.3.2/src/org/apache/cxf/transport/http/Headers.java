@@ -45,6 +45,7 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.helpers.HttpHeaderHelper;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.HTTPServerPolicy;
@@ -185,7 +186,9 @@ public class Headers {
                     createMutableList(policy.getAcceptLanguage()));
         }
         if (policy.isSetContentType()) {
-            message.put(Message.CONTENT_TYPE, policy.getContentType());
+            //Liberty code change start
+            ((MessageImpl) message).setContentType(policy.getContentType());
+            //Liberty code change end
         }
         if (policy.isSetCookie()) {
             headers.put("Cookie",
@@ -263,17 +266,18 @@ public class Headers {
      * @return The PROTOCOL_HEADERS map
      */
     public static Map<String, List<String>> getSetProtocolHeaders(final Message message) {
-        Map<String, List<String>> headers =
-            CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));
+        @SuppressWarnings("unchecked")
         //Liberty code change start
+        Map<String, List<String>> headers =
+            ((MessageImpl) message).getProtocolHeaders();
         if (null == headers) {
             headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-            message.put(Message.PROTOCOL_HEADERS, headers);
+            ((MessageImpl) message).setProtocolHeaders(headers);
         } else if (headers instanceof HashMap) {
             Map<String, List<String>> headers2
                 = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             headers2.putAll(headers);
-            message.put(Message.PROTOCOL_HEADERS, headers2);
+            ((MessageImpl) message).setProtocolHeaders(headers2);
             headers = headers2;
         }
         //Liberty code change end
@@ -344,7 +348,9 @@ public class Headers {
         if (!contentTypeSet) {
             // if CT is not set then assume it has to be set by default
             boolean dropContentType = false;
-            boolean getRequest = "GET".equals(message.get(Message.HTTP_REQUEST_METHOD));
+            //Liberty code change start
+            boolean getRequest = "GET".equals(((MessageImpl) message).getHttpRequestMethod());
+            //Liberty code change end
             boolean emptyRequest = getRequest || PropertyUtils.isTrue(message.get(EMPTY_REQUEST_PROPERTY));
             // If it is an empty request (without a request body) then check further if CT still needs be set
             if (emptyRequest) {
@@ -378,10 +384,12 @@ public class Headers {
         if (ctList != null && ctList.size() == 1 && ctList.get(0) != null) {
             ct = ctList.get(0).toString();
         } else {
-            ct = (String)message.get(Message.CONTENT_TYPE);
+            //Liberty code change start
+            ct = (String)((MessageImpl) message).getContentType();
         }
 
-        String enc = (String)message.get(Message.ENCODING);
+        String enc = (String)((MessageImpl) message).getEncoding();
+        //Liberty code change end
 
         if (null != ct) {
             if (enc != null
@@ -465,8 +473,10 @@ public class Headers {
     }
 
     private String getContentTypeFromMessage() {
-        final String ct = (String)message.get(Message.CONTENT_TYPE);
-        final String enc = (String)message.get(Message.ENCODING);
+        //Liberty code change start
+        final String ct = (String)((MessageImpl) message).getContentType();
+        final String enc = (String)((MessageImpl) message).getEncoding();
+        //Liberty code change end
 
         if (null != ct
             && null != enc
