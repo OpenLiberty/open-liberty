@@ -27,6 +27,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
                 HandleResponsesTest.class,
                 HeaderPropagationTest.class,
                 HeaderPropagation12Test.class,
+                HostnameVerifierTest.class,
                 JsonbContextTest.class,
                 MultiClientCdiTest.class,
                 ProduceConsumeTest.class,
