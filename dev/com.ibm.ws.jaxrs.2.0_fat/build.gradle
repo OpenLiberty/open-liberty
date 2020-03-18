@@ -99,12 +99,7 @@ task addJackson2x(type: Copy) {
 
 task addJersey(type: Copy) {
   from configurations.jersey
-  into "${buildDir}/autoFVT/publish/shared/resources/jersey/"  
-}
-
-task addJersey2(type: Copy) {
-  from configurations.jersey
-  into "${buildDir}/autoFVT/publish/shared/resources/jerseywithinjection/"  
+  into "${buildDir}/autoFVT/publish/shared/resources/jersey/"
 }
 
 task addJson(type: Copy) {
@@ -123,8 +118,6 @@ addRequiredLibraries {
   dependsOn addJackson1x
   dependsOn addJackson2x
   dependsOn addJersey
-  dependsOn addJersey2
   dependsOn addJson
   dependsOn createWadlTempDir
-  dependsOn addDerby
 }

@@ -56,7 +56,6 @@ import com.ibm.ws.jaxrs20.fat.servletcoexist.JAXRSServletCoexistTest;
 import com.ibm.ws.jaxrs20.fat.standard.StandardProvidersTest;
 import com.ibm.ws.jaxrs20.fat.subresource.ExceptionsSubresourcesTest;
 import com.ibm.ws.jaxrs20.fat.thirdpartyjersey.JerseyTest;
-import com.ibm.ws.jaxrs20.fat.thirdpartyjerseywithinjection.JerseyInjectionTest;
 import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
@@ -93,7 +92,6 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRSValidationDisabledTest.class,
                 JAXRSWebContainerTest.class,
                 JerseyTest.class,
-                JerseyInjectionTest.class,
                 LinkHeaderTest.class,
                 ManagedBeansTest.class,
                 ParamConverterTest.class,
