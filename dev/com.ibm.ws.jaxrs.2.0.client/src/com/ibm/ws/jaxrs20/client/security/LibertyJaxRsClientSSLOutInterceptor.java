@@ -12,6 +12,7 @@ package com.ibm.ws.jaxrs20.client.security;
 
 import java.lang.reflect.Method;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
@@ -40,6 +41,14 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
 
     private static final String HTTPS_SCHEMA = "https";
 
+    private static final boolean overrideUserTLS = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+        @Override
+        public Boolean run() {
+            return Boolean.getBoolean("com.ibm.ws.jaxrs.client.security.overrideUserTLSConfig");
+        }
+    });
+
     private TLSConfiguration secConfig = null;
 
     /**
@@ -57,7 +66,11 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         String address = (String) message.get(Message.ENDPOINT_ADDRESS);
         if (!address.startsWith(HTTPS_SCHEMA)) {
             return; // only process HTTPS requests
-        } ;
+        }
+
+        if (!overrideUserTLS && PropertyUtils.isTrue(message.get("com.ibm.ws.jaxrs.client.security.skipSSLConfigInterceptor"))) {
+            return; // SSL config already provided
+        }
 
         //see if SSL Ref id is used
         Object sslRefObj = message.get(JAXRSClientConstants.SSL_REFKEY);
@@ -71,35 +84,34 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         // getSocketFactory will return null if either the ssl feature is not enabled
         // or if it is enabled but there is no SSL configuration defined.  A null here
         // means to use the JDK's SSL implementation.
-        if (getSocketFactory(sslRef) != null) {
+        SSLSocketFactory socketFactory = getSocketFactory(sslRef);
+        if (socketFactory != null) {
             Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
             Conduit cd = message.getExchange().getConduit(message);
-            configClientSSL(cd, sslRef, PropertyUtils.isTrue(disableCNCheckObj));
+            configClientSSL(cd, sslRef, PropertyUtils.isTrue(disableCNCheckObj), socketFactory);
         }
     }
 
-    private void configClientSSL(Conduit conduit, String sslRef, boolean disableCNCheck) {
+    private void configClientSSL(Conduit conduit, String sslRef, boolean disableCNCheck, SSLSocketFactory socketFactory) {
 
         //for HTTPS protocol
         if (conduit instanceof HTTPConduit) {
             HTTPConduit httpConduit = (HTTPConduit) conduit;
 
-            TLSClientParameters tlsClientParams = retriveHTTPTLSClientParametersUsingSSLRef(httpConduit, sslRef, disableCNCheck);
+            TLSClientParameters tlsClientParams = retriveHTTPTLSClientParametersUsingSSLRef(httpConduit, sslRef, disableCNCheck, socketFactory);
             if (null != tlsClientParams) {
                 httpConduit.setTlsClientParameters(tlsClientParams);
             }
         }
     }
 
-    private TLSClientParameters retriveHTTPTLSClientParametersUsingSSLRef(HTTPConduit httpConduit, String sslRef, boolean disableCNCheck) {
+    private TLSClientParameters retriveHTTPTLSClientParametersUsingSSLRef(HTTPConduit httpConduit, String sslRef, boolean disableCNCheck, SSLSocketFactory sslSocketFactory) {
         TLSClientParameters tlsClientParams = null;
         if (this.secConfig == null) {
             tlsClientParams = httpConduit.getTlsClientParameters();
         } else {
             tlsClientParams = this.secConfig.getTlsClientParams();
         }
-
-        SSLSocketFactory sslSocketFactory = null;
 
         if (!StringUtils.isEmpty(sslRef)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -110,7 +122,6 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
                 Tr.debug(tc, "Get Liberty default SSLSocketFactory.");
             }
         }
-        sslSocketFactory = getSocketFactory(sslRef);
 
         if (null != sslSocketFactory) {
             if (null == tlsClientParams) {
