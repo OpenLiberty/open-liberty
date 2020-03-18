@@ -36,7 +36,7 @@ tool.project: true
 generate.replacement: false
 
 -buildpath: \
-	com.ibm.ws:jakartaee-transformer;strategy=exact;version=0.0.3,\
+	com.ibm.ws:jakartaee-transformer;strategy=exact;version=0.0.4,\
 	biz.aQute.bnd:biz.aQute.bndlib;version=4.3.1,\
     commons-cli:commons-cli;version=1.4,\
     org.slf4j:slf4j-simple;version=1.7.29
