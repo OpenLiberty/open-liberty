@@ -143,6 +143,7 @@ import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
 import org.apache.cxf.jaxrs.utils.multipart.AttachmentUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
@@ -280,7 +281,6 @@ public final class JAXRSUtils {
         injectParameters(ori, ori.getClassResourceInfo(), requestObject, message);
     }
 
-    @SuppressWarnings("unchecked")
     public static void injectParameters(OperationResourceInfo ori,
                                         BeanResourceInfo bri,
                                         Object requestObject,
@@ -293,7 +293,7 @@ public final class JAXRSUtils {
             }
         }
         // Param methods
-        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>) message.get(URITemplate.TEMPLATE_PARAMETERS);
+        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>)((MessageImpl) message).getTemplateParameters();
         for (Method m : bri.getParameterMethods()) {
             Parameter p = ResourceUtils.getParameter(0, m.getAnnotations(),
                                                      m.getParameterTypes()[0]);
@@ -543,7 +543,7 @@ public final class JAXRSUtils {
         }
         Map.Entry<ClassResourceInfo, MultivaluedMap<String, String>> firstCri = matchedResources.entrySet().iterator().next();
         String name = firstCri.getKey().isRoot() ? "NO_OP_EXC" : "NO_SUBRESOURCE_METHOD_FOUND";
-        org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, message.get(Message.REQUEST_URI), getCurrentPath(firstCri.getValue()), httpMethod, mediaTypeToString(requestType), convertTypesToString(acceptContentTypes));
+        org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, ((MessageImpl) message).getRequestUri(), getCurrentPath(firstCri.getValue()), httpMethod, mediaTypeToString(requestType), convertTypesToString(acceptContentTypes));
         if (!"OPTIONS".equalsIgnoreCase(httpMethod)) {
             Level logLevel = getExceptionLogLevel(message, ClientErrorException.class);
             if (logLevel != null && logLevel.intValue() >= Level.WARNING.intValue()) {
@@ -996,7 +996,7 @@ public final class JAXRSUtils {
                                              String defaultValue,
                                              boolean decode) {
         List<PathSegment> segments = JAXRSUtils.getPathSegments(
-                                                                (String) m.get(Message.REQUEST_URI), decode);
+                                                                (String) ((MessageImpl) m).getRequestUri(), decode);
         if (!segments.isEmpty()) {
             MultivaluedMap<String, String> params = new MetadataMap<>();
             for (PathSegment ps : segments) {
@@ -1161,7 +1161,7 @@ public final class JAXRSUtils {
     public static Message getContextMessage(Message m) {
 
         Message contextMessage = m.getExchange() != null ? m.getExchange().getInMessage() : m;
-        if (contextMessage == null && !PropertyUtils.isTrue(m.get(Message.INBOUND_MESSAGE))) {
+        if (contextMessage == null && !PropertyUtils.isTrue(((MessageImpl) m).getInboundMessage())) {
             contextMessage = m;
         }
         return contextMessage;
@@ -1212,12 +1212,11 @@ public final class JAXRSUtils {
         return clazz.cast(o);
     }
 
-    @SuppressWarnings("unchecked")
     private static UriInfo createUriInfo(Message m) {
         if (MessageUtils.isRequestor(m)) {
             m = m.getExchange() != null ? m.getExchange().getOutMessage() : m;
         }
-        MultivaluedMap<String, String> templateParams = (MultivaluedMap<String, String>) m.get(URITemplate.TEMPLATE_PARAMETERS);
+        MultivaluedMap<String, String> templateParams = (MultivaluedMap<String, String>)((MessageImpl) m).getTemplateParameters();
         return new UriInfoImpl(m, templateParams);
     }
 
@@ -1939,10 +1938,10 @@ public final class JAXRSUtils {
     public static void pushOntoStack(OperationResourceInfo ori,
                                      MultivaluedMap<String, String> params,
                                      Message msg) {
-        OperationResourceInfoStack stack = msg.get(OperationResourceInfoStack.class);
+        OperationResourceInfoStack stack = (OperationResourceInfoStack) ((MessageImpl) msg).getOperationResourceInfoStack();
         if (stack == null) {
             stack = new OperationResourceInfoStack();
-            msg.put(OperationResourceInfoStack.class, stack);
+            ((MessageImpl) msg).setOperationResourceInfoStack(stack);
         }
 
         List<String> values = null;

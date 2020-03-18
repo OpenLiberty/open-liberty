@@ -44,6 +44,7 @@ import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CacheAndWriteOutputStream;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.https.HttpsURLConnectionFactory;
@@ -155,10 +156,10 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
 
         // If the HTTP_REQUEST_METHOD is not set, the default is "POST".
         String httpRequestMethod = 
-            (String)message.get(Message.HTTP_REQUEST_METHOD);
+            (String)((MessageImpl) message).getHttpRequestMethod();
         if (httpRequestMethod == null) {
             httpRequestMethod = "POST";
-            message.put(Message.HTTP_REQUEST_METHOD, "POST");
+            ((MessageImpl) message).setHttpRequestMethod("POST");
         }
         try {
             connection.setRequestMethod(httpRequestMethod);
