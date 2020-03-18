@@ -47,17 +47,21 @@ Before Development Starts or 8 weeks before Onboarding
 
 ## **Focal Point Approvals**
 2 to 1 week before Onboarding
+#### You **MUST** have the Design Approved or No Design Approved label before requesting focal point approvals.
 
-You **MUST** have the Design Approved or No Design Approved label before requesting focal point approvals.
-- [ ] **Accessibility** - (G Scott Johnston). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
-- [ ] **FAT Liberty SOE** - (Kevin Smith). SOE FATS are running successfully or N/A . Approver adds label focalApproved:fat to the Epic in Github.
+All features (both "Design Approved" and "No Design Approved")
+- [ ] **FAT** - (Kevin Smith). SOE FATS are running successfully or N/A . Approver adds label focalApproved:fat to the Epic in Github.
+- [ ] **Demo** - (Tom Evans or Chuck Bridgham). Demo is scheduled for an upcoming EOI. Approver adds label focalApproved:demo to the Epic in Github.
 - [ ] **Globalization** (Sam Wong - Liberty / Simy Cheeran - tWAS). Translation is complete or N/A. TVT - complete or N/A. Approver adds label focalApproved:globalization to the Epic in Github.
+
+"Design Approved" features
+- [ ] **Accessibility** - (G Scott Johnston). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
 - [ ] **ID** - (Kareen Deen). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
 - [ ] **Performance** - (Jared Anderson). Performance testing is complete with no high severity defects or N/A . Approver adds label focalApproved:performance to the Epic in Github.
 - [ ] **Serviceability** - (Don Bourne). Serviceability has been addressed.
 - [ ] **STE** - (Swati Kasundra). STE chart deck is complete or N/A . Approver adds label focalApproved:ste to the Epic in Github.
 - [ ] **SVT** - (Greg Ecock - Cloud, Brian Hanczaryk- APS). SVT is complete or N/A . Approver adds label focalApproved:svt to the Epic in Github.
-- [ ] **Demo** - (Tom Evans or Chuck Bridgham). Demo is scheduled for an upcoming EOI. Approver adds label focalApproved:demo to the Epic in Github.
+
 
 ## **Ready for GA**
 1 week before Onboarding
