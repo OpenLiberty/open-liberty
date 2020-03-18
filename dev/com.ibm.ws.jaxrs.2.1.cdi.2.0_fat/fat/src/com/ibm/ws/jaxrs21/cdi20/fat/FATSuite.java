@@ -20,7 +20,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 AtInjectRxTest.class,
                 InterceptorTest.class,
                 InterceptorRxTest.class,
-                ContextAndClientTest.class,
-                ResourceInfoAtStartupTest.class
+                ContextAndClientTest.class
 })
 public class FATSuite {}
