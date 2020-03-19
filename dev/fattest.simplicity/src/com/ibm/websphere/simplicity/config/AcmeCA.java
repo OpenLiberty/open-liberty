@@ -26,6 +26,8 @@ public class AcmeCA extends ConfigElement {
 
     private String accountKeyFile;
 
+    private AcmeTransportConfig acmeTransportConfig;
+
     private Integer challengeRetries;
 
     private String challengeRetryWait; // Duration
@@ -71,6 +73,13 @@ public class AcmeCA extends ConfigElement {
      */
     public String getAccountKeyFile() {
         return accountKeyFile;
+    }
+
+    /**
+     * @return the acmeTransportConfig
+     */
+    public AcmeTransportConfig getAcmeTransportConfig() {
+        return (acmeTransportConfig == null) ? (acmeTransportConfig = new AcmeTransportConfig()) : acmeTransportConfig;
     }
 
     /**
@@ -186,6 +195,14 @@ public class AcmeCA extends ConfigElement {
     @XmlElement(name = "accountKeyFile")
     public void setAccountKeyFile(String accountKeyFile) {
         this.accountKeyFile = accountKeyFile;
+    }
+
+    /**
+     * @param acmeTransportConfig the acmeTransportConfig to set
+     */
+    @XmlElement(name = "acmeTransportConfig")
+    public void setAcmeTransportConfig(AcmeTransportConfig acmeTransportConfig) {
+        this.acmeTransportConfig = acmeTransportConfig;
     }
 
     /**
@@ -307,6 +324,9 @@ public class AcmeCA extends ConfigElement {
         if (accountKeyFile != null) {
             sb.append("accountKeyFile=\"").append(accountKeyFile).append("\" ");;
         }
+        if (acmeTransportConfig != null) {
+            sb.append("acmeTransportConfig=\"").append(acmeTransportConfig).append("\" ");;
+        }
         if (challengeRetries != null) {
             sb.append("challengeRetries=\"").append(challengeRetries).append("\" ");;
         }
@@ -350,5 +370,103 @@ public class AcmeCA extends ConfigElement {
         sb.append("}");
 
         return sb.toString();
+    }
+
+    /**
+     * Transport configuration for the acmeCA-2.0 feature.
+     */
+    public static class AcmeTransportConfig {
+
+        private String protocol;
+
+        private String trustStore;
+
+        private String trustStorePassword;
+
+        private String trustStoreType;
+
+        /**
+         * @return the protocol
+         */
+        public String getProtocol() {
+            return protocol;
+        }
+
+        /**
+         * @return the trustStore
+         */
+        public String getTrustStore() {
+            return trustStore;
+        }
+
+        /**
+         * @return the trustStorePassword
+         */
+        public String getTrustStorePassword() {
+            return trustStorePassword;
+        }
+
+        /**
+         * @return the trustStoreType
+         */
+        public String getTrustStoreType() {
+            return trustStoreType;
+        }
+
+        /**
+         * @param protocol the protocol to set
+         */
+        @XmlAttribute(name = "protocol")
+        public void setProtocol(String protocol) {
+            this.protocol = protocol;
+        }
+
+        /**
+         * @param trustStore the trustStore to set
+         */
+        @XmlAttribute(name = "trustStore")
+        public void setTrustStore(String trustStore) {
+            this.trustStore = trustStore;
+        }
+
+        /**
+         * @param trustStorePassword the trustStorePassword to set
+         */
+        @XmlAttribute(name = "trustStorePassword")
+        public void setTrustStorePassword(String trustStorePassword) {
+            this.trustStorePassword = trustStorePassword;
+        }
+
+        /**
+         * @param trustStoreType the trustStoreType to set
+         */
+        @XmlAttribute(name = "trustStoreType")
+        public void setTrustStoreType(String trustStoreType) {
+            this.trustStoreType = trustStoreType;
+        }
+
+        @Override
+        public String toString() {
+            StringBuffer sb = new StringBuffer();
+
+            sb.append(getClass().getSimpleName()).append("{ ");
+
+            if (protocol != null) {
+                sb.append("protocol=\"").append(protocol).append("\" ");;
+            }
+            if (trustStore != null) {
+                sb.append("trustStore=\"").append(trustStore).append("\" ");;
+            }
+            if (trustStorePassword != null) {
+                sb.append("trustStorePassword=\"").append(trustStorePassword).append("\" ");;
+            }
+            if (trustStoreType != null) {
+                sb.append("trustStoreType=\"").append(trustStoreType).append("\" ");;
+            }
+
+            sb.append("}");
+
+            return sb.toString();
+        }
     }
 };

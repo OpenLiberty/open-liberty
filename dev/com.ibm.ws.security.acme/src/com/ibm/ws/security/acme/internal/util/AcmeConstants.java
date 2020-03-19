@@ -40,6 +40,13 @@ public class AcmeConstants {
 	public static final String ACCEPT_TERMS = "acceptTermsOfService";
 	public static final String DOMAIN_KEY_FILE = "domainKeyFile";
 
+	// Transport configuration.
+	public static final String TRANSPORT_CONFIG = "acmeTransportConfig";
+	public static final String TRANSPORT_PROTOCOL = "protocol";
+	public static final String TRANSPORT_TRUST_STORE = "trustStore";
+	public static final String TRANSPORT_TRUST_STORE_PASSWORD = "trustStorePassword";
+	public static final String TRANSPORT_TRUST_STORE_TYPE = "trustStoreType";
+	
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -48,7 +55,7 @@ public class AcmeConstants {
 	 * Key size for generated domain and account key pairs.
 	 */
 	public static final int KEY_SIZE = 2048;
-	
+
 	public static final String DEFAULT_KEY_STORE = "defaultKeyStore";
 	public static final String DEFAULT_ALIAS = "default";
 	public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";

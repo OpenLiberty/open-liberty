@@ -16,6 +16,6 @@
 
  	<include location="../fatTestCommon.xml" />
 	
-	<keyStore id="defaultKeyStore" password="password"/>
+	<keyStore id="defaultKeyStore" password="acmepassword"/>
 
 </server>

@@ -66,7 +66,9 @@ import componenttest.topology.impl.LibertyServer;
 public class AcmeFatUtils {
 
 	public static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
-	private static final String KEYSTORE_PASSWORD = "password";
+	public static final String SELF_SIGNED_KEYSTORE_PASSWORD = "acmepassword";
+	public static final String PEBBLE_TRUSTSTORE_PASSWORD = "acmepassword";
+	public static final String DEFAULT_KEYSTORE_PASSWORD = "acmepassword";
 
 	/**
 	 * Get an X.509 certificate from a PEM certificate.
@@ -238,6 +240,26 @@ public class AcmeFatUtils {
 	 */
 	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, String... domains)
 			throws Exception {
+		configureAcmeCA(server, originalConfig, false, domains);
+	}
+
+	/**
+	 * Convenience method for dynamically configuring the acmeCA-2.0
+	 * configuration.
+	 * 
+	 * @param server
+	 *            Liberty server to update.
+	 * @param originalConfig
+	 *            The original configuration to update from.
+	 * @param userAcmeURIs
+	 *            Use "acme://" style URIs for ACME providers.
+	 * @param domains
+	 *            Domains to request the certificate for.
+	 * @throws Exception
+	 *             IF there was an error updating the configuration.
+	 */
+	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, boolean useAcmeURIs,
+			String... domains) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -248,9 +270,15 @@ public class AcmeFatUtils {
 		 * Configure the acmeCA-2.0 feature.
 		 */
 		AcmeCA acmeCA = clone.getAcmeCA();
-		acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI());
+		acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI(useAcmeURIs));
 		acmeCA.setDomain(Arrays.asList(domains));
 		acmeCA.setAcceptTermsOfService(true);
+
+		if (!useAcmeURIs) {
+			acmeCA.getAcmeTransportConfig()
+					.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
+			acmeCA.getAcmeTransportConfig().setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
+		}
 
 		/*
 		 * The defaultHttpEndpoint needs to point to the port the CA has been
@@ -416,7 +444,7 @@ public class AcmeFatUtils {
 		 * Generate the new keystore with the self-signed certificate.
 		 */
 		KeytoolSSLCertificateCreator creator = new KeytoolSSLCertificateCreator();
-		certFile = creator.createDefaultSSLCertificate(filePath, KEYSTORE_PASSWORD,
+		certFile = creator.createDefaultSSLCertificate(filePath, SELF_SIGNED_KEYSTORE_PASSWORD,
 				DefaultSSLCertificateCreator.DEFAULT_VALIDITY, "cn=localhost",
 				DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG, null);
 
@@ -424,7 +452,7 @@ public class AcmeFatUtils {
 		 * Load the keystore and return the certificate.
 		 */
 		KeyStore keystore = KeyStore.getInstance("PKCS12");
-		keystore.load(new FileInputStream(certFile), KEYSTORE_PASSWORD.toCharArray());
+		keystore.load(new FileInputStream(certFile), SELF_SIGNED_KEYSTORE_PASSWORD.toCharArray());
 		return keystore.getCertificateChain(DefaultSSLCertificateCreator.ALIAS);
 	}
 
