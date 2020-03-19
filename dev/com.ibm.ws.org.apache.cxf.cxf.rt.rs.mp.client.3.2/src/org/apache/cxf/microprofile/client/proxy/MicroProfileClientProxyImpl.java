@@ -42,7 +42,6 @@ import org.apache.cxf.jaxrs.model.OperationResourceInfo;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.microprofile.client.MPRestClientCallback;
 import org.apache.cxf.microprofile.client.MicroProfileClientProviderFactory;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
@@ -127,7 +126,7 @@ public class MicroProfileClientProxyImpl extends ClientProxyImpl {
     protected void checkResponse(Method m, Response r, Message inMessage) throws Throwable {
         MicroProfileClientProviderFactory factory = MicroProfileClientProviderFactory.getInstance(inMessage);
         if (r.getLocation() == null) {
-            r.getMetadata().putSingle(HttpHeaders.LOCATION, URI.create((String)((MessageImpl) inMessage).getRequestUri()));
+            r.getMetadata().putSingle(HttpHeaders.LOCATION, URI.create((String)inMessage.get(Message.REQUEST_URI)));
         }
         List<ResponseExceptionMapper<?>> mappers = factory.createResponseExceptionMapper(inMessage,
                 Throwable.class);
