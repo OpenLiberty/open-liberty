@@ -22,9 +22,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # We will whittle this down once it is working
 Export-Package: \
-  io.narayana.lra.client; version=1.0, \
-  io.narayana.lra.filter; version=1.0, \
-  io.narayana.lra.provider; version=1.0
+  io.narayana.lra.*; version=1.0, \
+  io.narayana.lra; version=1.0, \
 
 # TODO what should this be?
 #WS-TraceGroup: REACTIVESTREAMS
@@ -33,4 +32,6 @@ instrument.disabled: true
 
 -buildpath: \
   org.jboss.narayana.rts:lra-client;version=5.10.1.Final, \
-  org.jboss.narayana.rts:narayana-lra;version=5.10.1.Final
+  org.jboss.narayana.rts:narayana-lra;version=5.10.1.Final, \
+  org.jboss.narayana.rts:lra-proxy-api;version=5.10.1.Final, \
+  org.jboss.narayana.rts:lra-service-base;version=5.10.1.Final
