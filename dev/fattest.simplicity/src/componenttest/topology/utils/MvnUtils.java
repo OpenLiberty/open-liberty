@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -980,60 +981,61 @@ public class MvnUtils {
         pb.redirectErrorStream(true);
 
         Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
-
-        int hardTimeout = Integer.parseInt(System.getProperty("fat.timeout"));
+        
+        int hardTimeout;
+        
+        try {
+            hardTimeout = Integer.parseInt(System.getProperty("fat.timeout"));
+        }catch (NumberFormatException e) {
+            hardTimeout = 10800000;  // 10800000ms = 3hr
+        }
+        
         long softTimeout = -1;
-        long startTime = System.currentTimeMillis();
 
         // We need to ensure that the hard timeout is large enough to avoid future issues
         if (hardTimeout >= 30000) {
-            softTimeout = hardTimeout - 10000; // Soft timeout is 10 seconds less than hard timeout
-            //softTimeout = 1000;   //ONLY FOR TESTING REMOVE THIS LINE WHEN COMPLETE
+            softTimeout = hardTimeout - 15000; // Soft timeout is 15 seconds less than hard timeout
         }
 
         Process p = pb.start();
-        int exitCode = -1;
+        int returnCode = 1;
+        boolean returnStatus;
         if (softTimeout > -1) {
-            boolean exitStatus = false;
-            boolean softTimeOutFailed = false;
-            while (!exitStatus) {
-                try {
-                    exitCode = p.exitValue();
-                    exitStatus = true;
-                } catch (IllegalThreadStateException e) {
-                    if ((System.currentTimeMillis() - startTime > softTimeout) && !softTimeOutFailed) {
-                        // Parse through the MVN logs for potential networking issues
-                        if (outputFile.exists() && outputFile.canRead()) {
-                            try (Scanner s = new Scanner(outputFile)) {
-                                // Get the last two lines from the MVN log
-                                String lastLine = "";
-                                String secondLastLine = ""; 
-                                while (s.hasNextLine()) {
-                                    secondLastLine = lastLine;
-                                    lastLine = s.nextLine().toLowerCase();
-                                }
-                                // Check if the last or second line has the text "downloading" or "downloaded"
-                                // Throw custom timeout error rather then the one provided by the JUnitTask
-                                if ((lastLine.contains("downloaded") || lastLine.contains("downloading")) || (secondLastLine.contains("downloaded") || secondLastLine.contains("downloading"))) {       
-                                    String timeoutMsg = "Timeout occurred. FAT timeout set to: " + System.getProperty("fat.timeout") + 
-                                                    ". It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
-                                    Log.info(c, "runCmd", timeoutMsg);
-                                    throw new AssertionFailedError(timeoutMsg);
-                                }
-                                softTimeOutFailed = true;
-                            } catch (FileNotFoundException FileError) {
-                                // Do nothing as we can't look at the MVN log. This leads to hard timeout handled by JUnitTask.
-                                softTimeOutFailed = true;
-                            }
+            returnStatus = p.waitFor(softTimeout, TimeUnit.MILLISECONDS);  // Requires Java 8+
+            if (returnStatus == false) {
+                // Parse through the MVN logs for potential networking issues
+                if (outputFile.exists() && outputFile.canRead()) {
+                    try (Scanner s = new Scanner(outputFile)) {
+                        // Get the last two lines from the MVN log
+                        String lastLine = "";
+                        String secondLastLine = ""; 
+                        while (s.hasNextLine()) {
+                            secondLastLine = lastLine;
+                            lastLine = s.nextLine().toLowerCase();
                         }
+                        // Check if the last or second line has the text "downloading" or "downloaded"
+                        // Throw custom timeout error rather then the one provided by the JUnitTask
+                        if ((lastLine.contains("downloaded") || lastLine.contains("downloading")) || (secondLastLine.contains("downloaded") || secondLastLine.contains("downloading"))) {       
+                            String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + 
+                                                ". It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
+                            Log.info(c, "runCmd", timeoutMsg);  // Log the timeout message into messages.log or the default log 
+                            throw new AssertionFailedError(timeoutMsg);
+                        }
+                    } catch (FileNotFoundException FileError) {
+                        // Do nothing as we can't look at the MVN log. This leads to hard timeout handled by JUnitTask.
                     }
                 }
-            }
+                // If the timeout is not for a reason we checked above then return to normal behavior and let it timeout through the Junit Task
+                returnCode = p.waitFor();
+            } else {
+                returnCode = 0;
+            }      
         } else {
-            exitCode = p.waitFor();
+            // The softTimeout could not be used so return to normal behavior and let the Junit Task take care of the timeout
+            returnCode = p.waitFor();
         }
         
-        return exitCode;
+        return returnCode;
     }
 
     /**
