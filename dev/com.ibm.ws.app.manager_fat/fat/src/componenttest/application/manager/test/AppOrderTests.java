@@ -267,6 +267,11 @@ public class AppOrderTests extends AbstractAppManagerTest {
         assertTrue("The application 'snoop' should be stopped", snoop.getState() == ApplicationState.STOPPED);
         assertTrue("The application 'j2ee' should be stopped", j2ee.getState() == ApplicationState.STOPPED);
 
+        j2ee.start();
+
+        // J2EE should start despite being blocked by snoop
+        server.waitForStringInLog("CWWKZ0001I.* j2ee");
+
         slow.start();
 
         // Slow should start
@@ -274,9 +279,6 @@ public class AppOrderTests extends AbstractAppManagerTest {
 
         // Snoop should start because it was blocked on slow
         server.waitForStringInLog("CWWKZ0001I.* snoop");
-
-        // j2ee should still be stopped
-        assertTrue("The application 'j2ee' should be stopped", j2ee.getState() == ApplicationState.STOPPED);
 
     }
 

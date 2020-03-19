@@ -86,6 +86,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         final ApplicationDependency appDep = createDependency("resolves when app " + getAppName() + " finishes starting");
         _notifyAppStarted.add(appDep);
         completeExplicitStartFuture();
+        // We ignore startAfter when starting manually
+        completeStartAfterFutures();
         attemptStateChange(StateChangeAction.START);
         return appDep.getFuture();
     }
@@ -153,6 +155,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     @Override
     public void configure(ApplicationConfig appConfig,
                           Collection<ApplicationDependency> appStartingFutures,
+                          Collection<ApplicationDependency> startAfterFutures,
                           ApplicationDependency notifyAppStopped,
                           ApplicationDependency notifyAppStarting,
                           ApplicationDependency notifyAppInstallCalled,
@@ -166,6 +169,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         final boolean checkForUnprocessedConfigChange = _nextAppConfig.getAndSet(appConfig) != null;
         addAppStartingFutures(appStartingFutures);
+        addStartAfterFutures(startAfterFutures);
         if (notifyAppStopped != null) {
             _notifyAppStopped.add(notifyAppStopped);
         }
@@ -652,6 +656,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private final Set<ApplicationDependency> blockAppStartingFutures = Collections.newSetFromMap(new ConcurrentHashMap<ApplicationDependency, Boolean>());
     private final AtomicReference<ApplicationDependency> waitingForAppHandlerFuture = new AtomicReference<ApplicationDependency>();
     private final AtomicReference<ApplicationDependency> waitingForExplicitStartFuture = new AtomicReference<ApplicationDependency>();
+    private final Set<ApplicationDependency> startAfterFutures = Collections.newSetFromMap(new ConcurrentHashMap<ApplicationDependency, Boolean>());
     private final AtomicReference<CancelableCompletionListenerWrapper<Boolean>> completionListener = new AtomicReference<CancelableCompletionListenerWrapper<Boolean>>();
 
     private final ConcurrentLinkedQueue<ApplicationDependency> _notifyAppStopped = new ConcurrentLinkedQueue<ApplicationDependency>();
@@ -995,6 +1000,14 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         blockAppStartingFutures.addAll(appStartingFutures);
     }
 
+    private void addStartAfterFutures(Collection<ApplicationDependency> startAfters) {
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, asmLabel() + "addSTartAfterFutures: interruptible=" + isInterruptible());
+        }
+        startAfterFutures.addAll(startAfters);
+        blockAppStartingFutures.addAll(startAfters);
+    }
+
     private void addAppHandlerFuture() {
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, asmLabel() + "addAppHandlerFuture: interruptible=" + isInterruptible());
@@ -1025,6 +1038,15 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         final ApplicationDependency explicitStartFuture = waitingForExplicitStartFuture.getAndSet(null);
         if (explicitStartFuture != null) {
             resolveDependency(explicitStartFuture);
+        }
+    }
+
+    private void completeStartAfterFutures() {
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, asmLabel() + "completeStartAfterFutures: interruptible=" + isInterruptible());
+        }
+        for (ApplicationDependency ad : startAfterFutures) {
+            resolveDependency(ad);
         }
     }
 
