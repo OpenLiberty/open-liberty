@@ -982,14 +982,7 @@ public class MvnUtils {
 
         Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
         
-        int hardTimeout;
-        
-        try {
-            hardTimeout = Integer.parseInt(System.getProperty("fat.timeout"));
-        }catch (NumberFormatException e) {
-            hardTimeout = 10800000;  // 10800000ms = 3hr
-        }
-        
+        int  hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
         long softTimeout = -1;
 
         // We need to ensure that the hard timeout is large enough to avoid future issues
@@ -1006,32 +999,45 @@ public class MvnUtils {
                 // Parse through the MVN logs for potential networking issues
                 if (outputFile.exists() && outputFile.canRead()) {
                     try (Scanner s = new Scanner(outputFile)) {
-                        // Get the last two lines from the MVN log
-                        String lastLine = "";
-                        String secondLastLine = ""; 
+                        // Get the last few lines from the MVN log
+                        ArrayList<String> lastLines = new ArrayList<String>();
+                        int numOfLinesToInclude = 7;  // We will include the last 7 lines of the output file in the timeout message
                         while (s.hasNextLine()) {
-                            secondLastLine = lastLine;
-                            lastLine = s.nextLine().toLowerCase();
+                            if (lastLines.size() < numOfLinesToInclude) {
+                                lastLines.add(s.nextLine());
+                            } else {
+                                lastLines.remove(0);
+                                lastLines.add(s.nextLine());
+                            }
                         }
-                        // Check if the last or second line has the text "downloading" or "downloaded"
+                        
+                        // Prepare the timeout message
+                        String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
+                                            numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
+                        for (String line : lastLines) {
+                            timeoutMsg += line + "\n";
+                        }
+                        
+                        // Special Case: Check if the last or second line has the text "downloading" or "downloaded"
+                        if ((lastLines.get(lastLines.size() - 1).toLowerCase().matches(".* downloading .*|.* downloaded .*")) 
+                                        || (lastLines.get(lastLines.size() - 2).toLowerCase().matches(".* downloading .*|.* downloaded .*"))) {       
+                            timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
+                        }
+                        
                         // Throw custom timeout error rather then the one provided by the JUnitTask
-                        if ((lastLine.contains("downloaded") || lastLine.contains("downloading")) || (secondLastLine.contains("downloaded") || secondLastLine.contains("downloading"))) {       
-                            String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + 
-                                                ". It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
-                            Log.info(c, "runCmd", timeoutMsg);  // Log the timeout message into messages.log or the default log 
-                            throw new AssertionFailedError(timeoutMsg);
-                        }
+                        Log.info(c, "runCmd", timeoutMsg);  // Log the timeout message into messages.log or the default log 
+                        throw new AssertionFailedError(timeoutMsg);
                     } catch (FileNotFoundException FileError) {
-                        // Do nothing as we can't look at the MVN log. This leads to hard timeout handled by JUnitTask.
+                        // Do nothing as we can't look at the MVN log. This leads to hard timeout handled by the JUnit Task in p.waitFor()                     
                     }
                 }
-                // If the timeout is not for a reason we checked above then return to normal behavior and let it timeout through the Junit Task
+                // Return to normal behavior and let it timeout through the Junit Task using the hard timeout 
                 returnCode = p.waitFor();
             } else {
                 returnCode = 0;
             }      
         } else {
-            // The softTimeout could not be used so return to normal behavior and let the Junit Task take care of the timeout
+            // The soft timeout could not be used so return to normal behavior and let the Junit Task take care of the timeout
             returnCode = p.waitFor();
         }
         
