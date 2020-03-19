@@ -65,6 +65,8 @@ public abstract class AbstractAppManagerTest {
 
     // MBean
     protected static final String APP_MBEAN = "WebSphere:service=com.ibm.websphere.application.ApplicationMBean";
+    /**  */
+    protected static final String UPDATED_MESSAGE = "this is an updated test servlet.";
 
     protected abstract Class<?> getLogClass();
 
