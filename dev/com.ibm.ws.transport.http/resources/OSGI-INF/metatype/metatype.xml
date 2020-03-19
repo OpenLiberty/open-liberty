@@ -247,19 +247,19 @@
     </Designate>
     
     <OCD name="%http.compression" description="%http.compression.desc"
-    	id="com.ibm.ws.http.compression"
-    	ibm:alias="compression">
-    	
-    	<AD name="%http.compression.types" description="%http.compression.types.desc"
-		id="types" required="false" type="String" cardinality="5000" 
-    	default="text/*, application/javascript"/>
-    	
-    	<AD name="%http.compression.serverPreferredAlgorithm" description="%http.compression.serverPreferredAlgorithm.desc"
-		id="serverPreferredAlgorithm" required="false" type="String" 
-    	default="none"/> 
+        id="com.ibm.ws.http.compression"
+        ibm:alias="compression">
 
-    	<AD name="internal" description="internal use only"
-    		id="service.ranking" required="false" type="Integer" default="0"/>
+        <AD name="%http.compression.types" description="%http.compression.types.desc"
+            id="types" required="false" type="String" cardinality="5000"
+            default="text/*, application/javascript"/>
+
+        <AD name="%http.compression.serverPreferredAlgorithm" description="%http.compression.serverPreferredAlgorithm.desc"
+            id="serverPreferredAlgorithm" required="false" type="String"
+            default="none"/>
+
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
 
     </OCD>
 
