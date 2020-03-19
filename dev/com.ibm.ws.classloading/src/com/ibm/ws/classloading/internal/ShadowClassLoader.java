@@ -44,6 +44,9 @@ import com.ibm.wsspi.classloading.ClassLoaderIdentity;
  * any associated resources to be cleared up.
  */
 class ShadowClassLoader extends IdentifiedLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     static final TraceComponent tc = Tr.register(ShadowClassLoader.class);
 
     private static final Enumeration<URL> EMPTY_ENUMERATION = new Enumeration<URL>() {
