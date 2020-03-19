@@ -30,7 +30,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 })
 public class FATSuite {
 
-    static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04").withLogConsumer(FATSuite::log);
+    static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04").withLogConsumer(FATSuite::log);
 
     //Private Method: used to setup logging for containers to this class.
     private static void log(OutputFrame frame) {
