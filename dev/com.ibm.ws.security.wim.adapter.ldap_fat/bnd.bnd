@@ -23,7 +23,7 @@ tested.features: \
     vmmapi-1.0
 
 -buildpath: \
-    com.unboundid:unboundid-ldapsdk;version=latest,\
+    com.unboundid:unboundid-ldapsdk;version=4.0.14,\
 	com.ibm.ws.com.unboundid;version=latest,\
 	com.ibm.ws.org.apache.directory.server;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
