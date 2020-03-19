@@ -996,7 +996,7 @@ public class MvnUtils {
         if (softTimeout > -1) {
             returnStatus = p.waitFor(softTimeout, TimeUnit.MILLISECONDS);  // Requires Java 8+
             if (returnStatus == false) {
-                // Parse through the MVN logs for potential networking issues
+                // Parse through the mvn logs
                 if (outputFile.exists() && outputFile.canRead()) {
                     try (Scanner s = new Scanner(outputFile)) {
                         // Get the last few lines from the MVN log
@@ -1024,11 +1024,11 @@ public class MvnUtils {
                             timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
                         }
                         
-                        // Throw custom timeout error rather then the one provided by the JUnitTask
+                        // Throw custom timeout error message rather then the one provided by the JUnitTask
                         Log.info(c, "runCmd", timeoutMsg);  // Log the timeout message into messages.log or the default log 
                         throw new AssertionFailedError(timeoutMsg);
                     } catch (FileNotFoundException FileError) {
-                        // Do nothing as we can't look at the MVN log. This leads to hard timeout handled by the JUnit Task in p.waitFor()                     
+                        // Do nothing as we can't look at the mvn log. This leads to hard timeout handled by the JUnit Task in p.waitFor()                     
                     }
                 }
                 // Return to normal behavior and let it timeout through the Junit Task using the hard timeout 
@@ -1043,7 +1043,6 @@ public class MvnUtils {
         
         return returnCode;
     }
-
 
     /**
      * @param  version
