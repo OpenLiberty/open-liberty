@@ -31,6 +31,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
+@Mode(TestMode.FULL)
 public class LPSDisabledTest extends WSATTest {
 
 	private static LibertyServer server;
@@ -79,58 +80,52 @@ public class LPSDisabledTest extends WSATTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "java.lang.IllegalStateException" })
 	public void testWSTXLPS003FVT() {
 		callServlet("WSTXLPS003FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.RollbackException" })
 	public void testWSTXLPS004FVT() {
 		callServlet("WSTXLPS004FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.RollbackException" })
 	public void testWSTXLPS005FVT() {
 		callServlet("WSTXLPS005FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void testWSTXLPS006FVT() {
 		callServlet("WSTXLPS006FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS007FVT() {
 		callServlet("WSTXLPS007FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS008FVT() {
 		callServlet("WSTXLPS008FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void testWSTXLPS009FVT() {
 		callServlet("WSTXLPS009FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS010FVT() {
 		callServlet("WSTXLPS010FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.RollbackException", "java.lang.IllegalStateException" })
 	public void testWSTXLPS011FVT() {
 		callServlet("WSTXLPS011FVT");

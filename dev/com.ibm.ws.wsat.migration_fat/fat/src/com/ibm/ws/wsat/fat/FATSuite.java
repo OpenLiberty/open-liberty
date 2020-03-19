@@ -22,19 +22,12 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 	AlwaysPassesTest.class,
-	AssertionTest.class,
-	DBTest.class,
-	DBOptionalTest.class,
-	DBOptionalTestDisabled.class,
-	DBServiceTest.class,
-	DBServiceTestDisabled.class,
-	DBServiceOptionalTestDisabled.class,
-	DBServiceOptionalTest.class,
-	DBTestDisabled.class,
-	DBWithoutAssertionTest.class,
-	EJBCDITest.class,
-	MultiServerTest.class,
-	SSLTest.class,
+	SimpleTest.class,
+	ComplexTest.class,
+	SleepTest.class,
+	LPSTest.class,
+	LPSDisabledTest.class,
+	MultiThreadedTest.class
 })
 public class FATSuite {
 

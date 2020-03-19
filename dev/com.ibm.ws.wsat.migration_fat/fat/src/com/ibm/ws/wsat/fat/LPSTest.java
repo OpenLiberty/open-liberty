@@ -34,6 +34,7 @@ import componenttest.topology.utils.HttpUtils;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+@Mode(TestMode.FULL)
 public class LPSTest extends WSATTest {
 
 	private static LibertyServer server;
@@ -99,84 +100,76 @@ public class LPSTest extends WSATTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "java.lang.IllegalStateException" })
 	public void testWSTXLPS103FVT() {
 		callServlet("WSTXLPS103FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS104FVT() {
 		callServlet("WSTXLPS104FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS105FVT() {
 		callServlet("WSTXLPS105FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void testWSTXLPS106FVT() {
 		callServlet("WSTXLPS106FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS107FVT() {
 		callServlet("WSTXLPS107FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS108FVT() {
 		callServlet("WSTXLPS108FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void testWSTXLPS109FVT() {
 		callServlet("WSTXLPS109FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS110FVT() {
 		callServlet("WSTXLPS110FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSTXLPS111FVT() {
 		callServlet("WSTXLPS111FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSTXLPS112FVT() {
 		callServlet("WSTXLPS112FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSTXLPS113FVT() {
 		callServlet("WSTXLPS113FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "java.lang.IllegalStateException" })
 	public void testWSTXLPS114FVT() {
 		callServlet("WSTXLPS114FVT");
 	}
 	
-	
 	@Test
+  @Mode(TestMode.LITE)
 	public void testWSTXLPS201FVT() {
 		callServlet("WSTXLPS201FVT");
 	}
@@ -192,27 +185,24 @@ public class LPSTest extends WSATTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSTXLPS203FVT() {
 		callServlet("WSTXLPS203FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSTXLPS204FVT() {
 		callServlet("WSTXLPS204FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSTXLPS205FVT() {
 		callServlet("WSTXLPS205FVT");
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException"})
 	public void testWSTXLPS206FVT() {
@@ -220,7 +210,7 @@ public class LPSTest extends WSATTest {
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void testWSTXLPS207FVT() {
 		callServlet("WSTXLPS207FVT");
 	}

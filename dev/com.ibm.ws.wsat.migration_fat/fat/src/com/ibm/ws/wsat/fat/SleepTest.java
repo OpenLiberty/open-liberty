@@ -85,54 +85,48 @@ public class SleepTest extends WSATTest {
     }
 	
 	@Test
-	@Mode(TestMode.FULL)
+	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
 	public void testWSATRE094FVT() {
 		callServlet("WSATRE094FVT");
 	}
 	
 	@Test
-	//@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE095FVT() {
 		callServlet("WSATRE095FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	public void testWSATRE096FVT() {
 		callServlet("WSATRE096FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+	@Mode(TestMode.LITE)
 	public void testWSATRE097FVT() {
 		callServlet("WSATRE097FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	public void testWSATRE098FVT() {
 		callServlet("WSATRE098FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
-	//@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE099FVT() {
 		callServlet("WSATRE099FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	public void testWSATRE100FVT() {
 		callServlet("WSATRE100FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSATRE101FVT() {
 		callServlet("WSATRE101FVT");
 	}
@@ -144,18 +138,17 @@ public class SleepTest extends WSATTest {
 	}
 	
 	@Test
+	@Mode(TestMode.LITE)
 	public void testWSATRE103FVT() {
 		callServlet("WSATRE103FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSATRE104FVT() {
 		callServlet("WSATRE104FVT");
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void testWSATRE105FVT() {
 		callServlet("WSATRE105FVT");
 	}

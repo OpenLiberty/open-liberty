@@ -75,15 +75,14 @@ public class MultiThreadedTest extends WSATTest {
 	}
 
 	@AfterClass
-    public static void tearDown() throws Exception {
+  public static void tearDown() throws Exception {
 		ServerUtils.stopServer(server);
 		ServerUtils.stopServer(server2);
 
 		DBTestBase.cleanupWSATTest(server);
-    }
+  }
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "com.ibm.ws.wsat.service.WSATException", "java.lang.IllegalStateException", "com.ibm.ws.wsat.service.WSATFaultException"})
 	public void testWSATMT001FVT() {
 		int count = 100;

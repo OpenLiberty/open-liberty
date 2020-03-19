@@ -26,10 +26,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
+@Mode(TestMode.FULL)
 @AllowedFFDC(value = { "javax.transaction.SystemException" })
 public class ComplexTest extends WSATTest {
 
@@ -106,6 +109,7 @@ public class ComplexTest extends WSATTest {
 	}
 	
 	@Test
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
 	public void testWSATRE066FVT() {
 		callServlet("WSATRE066FVT");
@@ -124,6 +128,7 @@ public class ComplexTest extends WSATTest {
 	}
 	
 	@Test
+  @Mode(TestMode.LITE)
 	public void testWSATRE069FVT() {
 		callServlet("WSATRE069FVT");
 	}
@@ -140,6 +145,7 @@ public class ComplexTest extends WSATTest {
 	}
 	
 	@Test
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
 	public void testWSATRE072FVT() {
 		callServlet("WSATRE072FVT");
