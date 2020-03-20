@@ -107,7 +107,7 @@ public class URAPIs_ADLDAP_SSLTest {
         ServerConfiguration serverConfig = server.getServerConfiguration();
         LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort("LDAPS")));
+        ldap.setPort(String.valueOf(ds.getSecureListenPort()));
         ldap.setBindDN(InMemoryADLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryADLDAPServer.getBindPassword());
         server.updateServerConfiguration(serverConfig);

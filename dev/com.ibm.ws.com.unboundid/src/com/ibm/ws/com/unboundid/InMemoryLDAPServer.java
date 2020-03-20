@@ -60,6 +60,8 @@ public class InMemoryLDAPServer {
 
     private static final String keystorePassword = "LDAPpassword";
     private String keystore;
+    private static final String listenerName = "LDAP";
+    private static final String secureListenerName = "LDAPS";
 
     /**
      * Creates a new instance of the in memory LDAP server. It initializes the directory
@@ -79,9 +81,9 @@ public class InMemoryLDAPServer {
         final SSLUtil serverSSLUtil = new SSLUtil(new KeyStoreKeyManager(keystore, keystorePassword
                         .toCharArray(), "JKS", "cert-alias"), new TrustAllTrustManager());
         ArrayList<InMemoryListenerConfig> configs = new ArrayList<InMemoryListenerConfig>();
-        InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig("LDAPS", 0, serverSSLUtil.createSSLServerSocketFactory());
+        InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig(secureListenerName, 0, serverSSLUtil.createSSLServerSocketFactory());
         configs.add(secure);
-        InMemoryListenerConfig insecure = InMemoryListenerConfig.createLDAPConfig("LDAP", null, 0, null);
+        InMemoryListenerConfig insecure = InMemoryListenerConfig.createLDAPConfig(listenerName, null, 0, null);
         configs.add(insecure);
         config.setListenerConfigs(configs);
         Schema schema = null;
@@ -200,7 +202,7 @@ public class InMemoryLDAPServer {
      * @return the port this directory server is listening to
      */
     public int getListenPort() {
-        return ds.getListenPort("LDAP");
+        return ds.getListenPort(listenerName);
     }
 
     /**
@@ -280,7 +282,7 @@ public class InMemoryLDAPServer {
      * @param listenerName - The name of the listener for which to retrieve the listen port. It may be null in order to obtain the listen port for the first active listener
      * @return The configured listen port for the specified listener, or -1 if there is no such listener or the listener is not active.
      */
-    public int getListenPort(String listenerName) {
-        return ds.getListenPort(listenerName);
+    public int getSecureListenPort() {
+        return ds.getListenPort(secureListenerName);
     }
 }
