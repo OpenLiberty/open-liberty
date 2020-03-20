@@ -118,7 +118,7 @@ public class JAXRSInvoker extends AbstractInvoker {
             return handleFault(ex, inMessage);
         } finally {
             boolean suspended = isSuspended(exchange);
-            if (suspended || exchange.isOneWay() || inMessage.get(Message.THREAD_CONTEXT_SWITCHED) != null) {
+            if (suspended || exchange.isOneWay() || ((MessageImpl) inMessage).getThreadContextSwitched() != null) {
                 ServerProviderFactory.clearThreadLocalProxies(inMessage);
             }
             if (suspended || isServiceObjectRequestScope(inMessage)) {
@@ -201,7 +201,7 @@ public class JAXRSInvoker extends AbstractInvoker {
                     .setThreadContextClassloader(resourceObject.getClass().getClassLoader());
             }
             if (!ori.isSubResourceLocator()) {
-                asyncResponse = (AsyncResponseImpl)inMessage.get(AsyncResponse.class);
+                asyncResponse = (AsyncResponseImpl)((MessageImpl) inMessage).getAsyncResponse();
             }
             result = invoke(exchange, resourceObject, methodToInvoke, params);
             if (asyncResponse == null && !ori.isSubResourceLocator()) {

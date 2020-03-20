@@ -268,7 +268,7 @@ public abstract class AbstractHTTPDestination
 
         copyKnownRequestAttributes(req, inMessage);
 
-        inMessage.put(HttpServletResponse.class, resp); // Liberty change - reqd for SSE see LibertySseEventSinkImpl
+        ((MessageImpl) inMessage).setHttpServletResponse(resp); // Liberty change - reqd for SSE see LibertySseEventSinkImpl
 
         try {
             incomingObserver.onMessage(inMessage);
@@ -306,7 +306,7 @@ public abstract class AbstractHTTPDestination
     }
 
     private void copyKnownRequestAttributes(HttpServletRequest request, Message message) {
-        message.put(SERVICE_REDIRECTION, request.getAttribute(SERVICE_REDIRECTION));
+        ((MessageImpl) message).setServiceRedirection(request.getAttribute(SERVICE_REDIRECTION));
     }
 
     protected void setupMessage(final Message message,
@@ -344,9 +344,9 @@ public abstract class AbstractHTTPDestination
         inMessage.setContent(InputStream.class, in);
         inMessage.setHttpRequest(req);
         inMessage.setHttpResponse(resp);
-        inMessage.put(HTTP_CONTEXT, context);
-        inMessage.put(HTTP_CONFIG, config);
-        inMessage.put(HTTP_CONTEXT_MATCH_STRATEGY, contextMatchStrategy);
+        inMessage.setHttpContext(context);
+        inMessage.setHttpConfig(config);
+        inMessage.setHttpContextMatchStrategy(contextMatchStrategy);
 
         inMessage.setHttpRequestMethod(req.getMethod());
         String requestURI = req.getRequestURI();
@@ -377,12 +377,12 @@ public abstract class AbstractHTTPDestination
                 // http://localhost:8080/app will make it easy to refer to non CXF resources
                 String schemaInfo = requestURL.substring(0, index);
                 String basePathWithContextOnly = schemaInfo + contextPath;
-                inMessage.put(HTTP_BASE_PATH, basePathWithContextOnly);
+                inMessage.setHttpBasePath(basePathWithContextOnly);
             }
         } else if (!StringUtils.isEmpty(servletPath) && requestURL.endsWith(servletPath)) {
             int index = requestURL.lastIndexOf(servletPath);
             if (index > 0) {
-                inMessage.put(HTTP_BASE_PATH, requestURL.substring(0, index));
+                inMessage.setHttpBasePath(requestURL.substring(0, index));
             }
         }
         String contentType = req.getContentType();
@@ -397,7 +397,7 @@ public abstract class AbstractHTTPDestination
             inMessage.setBasePath(basePath);
         }
         inMessage.setFixedParamOrder(isFixedParameterOrder());
-        inMessage.put(Message.ASYNC_POST_RESPONSE_DISPATCH, Boolean.TRUE);
+        inMessage.setAsyncPostDispatch(Boolean.TRUE);
 
         SecurityContext httpSecurityContext = new SecurityContext() {
             @Override
@@ -411,18 +411,18 @@ public abstract class AbstractHTTPDestination
             }
         };
 
-        inMessage.put(SecurityContext.class, httpSecurityContext);
+        inMessage.setSecurityContext(httpSecurityContext);
 
         Headers headers = new Headers(inMessage);
         headers.copyFromRequest(req);
         String credentials = headers.getAuthorization();
         AuthorizationPolicy authPolicy = getAuthorizationPolicyFromMessage(credentials,
                                                                            httpSecurityContext);
-        inMessage.put(AuthorizationPolicy.class, authPolicy);
+        inMessage.setAuthorizationPolicy(authPolicy);
 
         propogateSecureSession(req, inMessage);
 
-        inMessage.put(CertConstraints.class.getName(), certConstraints);
+        inMessage.setCertConstraints(certConstraints);
         inMessage.setInInterceptors(Arrays.asList(new Interceptor[] {CertConstraintsInterceptor.INSTANCE}));
 
     }
@@ -596,7 +596,7 @@ public abstract class AbstractHTTPDestination
         if (inMessage == null) {
             return;
         }
-        Object o = inMessage.get("cxf.io.cacheinput");
+        Object o = ((MessageImpl) inMessage).getCacheInputProperty();
         DelegatingInputStream in = inMessage.getContent(DelegatingInputStream.class);
         if (PropertyUtils.isTrue(o)) {
             Collection<Attachment> atts = (Collection<Attachment>) inMessage.getAttachments();
@@ -668,7 +668,7 @@ public abstract class AbstractHTTPDestination
         }
         //Liberty code change end
 
-        outMessage.put(RESPONSE_HEADERS_COPIED, "true");
+        ((MessageImpl) outMessage).setResponseHeadersCopied("true");
 
         if (hasNoResponseContent(outMessage)) {
             response.setContentLength(0);
