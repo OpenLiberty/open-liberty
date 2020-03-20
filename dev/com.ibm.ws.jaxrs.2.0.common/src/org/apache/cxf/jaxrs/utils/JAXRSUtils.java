@@ -49,6 +49,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Produces;
@@ -141,6 +142,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
+import org.codehaus.jackson.JsonParseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -1435,10 +1437,12 @@ public final class JAXRSUtils {
                 });
             } catch (PrivilegedActionException e) {
                 Exception e1 = e.getException();
-                if (e1 instanceof IOException)
+                if (e1 instanceof JsonParseException) {
+                    throw new BadRequestException(e1);
+                } else if (e1 instanceof IOException) {
                     throw (IOException) e1;
-                else
-                    throw (WebApplicationException) e1;
+                }
+                throw (WebApplicationException) e1;
             }
             // Liberty change end
         }
