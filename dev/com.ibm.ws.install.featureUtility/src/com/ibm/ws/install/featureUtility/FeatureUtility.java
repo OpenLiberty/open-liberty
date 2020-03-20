@@ -34,6 +34,7 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.featureUtility.props.FeatureUtilityRepoProperties;
 import com.ibm.ws.install.internal.ExceptionUtils;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
@@ -88,6 +89,16 @@ public class FeatureUtility {
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }
+
+        // log repo properties file TODO remove this?
+        fine("featureUtility.repo.properties file:");
+        logger.fine("host:" +FeatureUtilityRepoProperties.getProxyHost());
+        logger.fine("port: " +FeatureUtilityRepoProperties.getProxyPort());
+        logger.fine("user: " + FeatureUtilityRepoProperties.getProxyUser());
+        logger.fine("password: " + FeatureUtilityRepoProperties.getProxyPassword());
+        logger.fine("local repo:" + FeatureUtilityRepoProperties.getFeatureLocalRepo());
+        logger.fine("mirror repos:" + FeatureUtilityRepoProperties.getMirrorRepositories());
+
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
         for (String key: envMapKeys) {

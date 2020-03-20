@@ -7,6 +7,7 @@ public class MavenRepository {
     private String password;
 
     public MavenRepository(String name, String repositoryUrl, String userId, String password) {
+        // todo throw exception if any of these parameters are null?
         this.name = name;
         this.repositoryUrl = repositoryUrl;
         this.userId = userId;
@@ -29,7 +30,9 @@ public class MavenRepository {
         return password;
     }
 
-
+    public String toString(){
+        return this.repositoryUrl;
+    }
 
 
 }
