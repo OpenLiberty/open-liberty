@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.FileUtils;
@@ -59,7 +61,8 @@ public class ProductInfo {
         File versionPropertyDirectory = new File(installDir, VERSION_PROPERTY_DIRECTORY);
         File[] coreFiles = versionPropertyDirectory.listFiles();
         if (coreFiles == null) {
-            throw new IllegalArgumentException(versionPropertyDirectory.toString());
+            throw new LaunchException(versionPropertyDirectory.toString(), MessageFormat.format(BootstrapConstants.messages.getString("error.missing.version.files"),
+                                                                                                versionPropertyDirectory.getAbsolutePath()));
         }
 
         ArrayList<File> list = new ArrayList<File>();
@@ -209,7 +212,7 @@ public class ProductInfo {
     }
 
     public boolean isReplacedProductLogged() {
-      return "true".equalsIgnoreCase(properties.getProperty("com.ibm.websphere.logReplacedProduct"));
+        return "true".equalsIgnoreCase(properties.getProperty("com.ibm.websphere.logReplacedProduct"));
     }
 
     public String getProperty(String key) {
