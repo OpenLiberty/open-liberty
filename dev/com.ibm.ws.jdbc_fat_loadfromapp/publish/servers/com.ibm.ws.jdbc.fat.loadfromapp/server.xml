@@ -104,9 +104,21 @@
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanTrustPermission" name="register"/>
 
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="javax.management.MBeanTrustPermission" name="register"/>
+
     <!-- permissions for Derby in the shared library -->
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
@@ -120,8 +132,13 @@
     <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
 
     <!-- permissions for login modules -->
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
     <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
+
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
 
     <variable name="onError" value="FAIL"/>
 </server>
