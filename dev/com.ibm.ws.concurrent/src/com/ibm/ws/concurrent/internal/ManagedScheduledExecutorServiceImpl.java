@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,17 +45,10 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-/**
- * All declarative services annotations on this class are ignored.
- * The annotations on
- * com.ibm.ws.concurrent.ee.ManagedScheduledExecutorServiceImpl and
- * com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
- * apply instead.
- */
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
                        ManagedScheduledExecutorService.class },
-           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
+           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
