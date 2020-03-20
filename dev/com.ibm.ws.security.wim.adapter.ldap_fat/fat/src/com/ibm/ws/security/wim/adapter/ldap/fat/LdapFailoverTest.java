@@ -171,7 +171,7 @@ public class LdapFailoverTest {
         ldap.setId("ldap1");
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds1.getListenPort()));
+        ldap.setPort(String.valueOf(ds1.getLdapPort()));
         ldap.setIgnoreCase(true);
         ldap.setBaseDN(BASE_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
@@ -181,7 +181,7 @@ public class LdapFailoverTest {
         FailoverServers failover = new FailoverServers();
         failover.setName("failoverLdapServers");
         ConfigElementList<Server> servers = new ConfigElementList<Server>();
-        servers.add(new Server("localhost", String.valueOf(ds2.getListenPort())));
+        servers.add(new Server("localhost", String.valueOf(ds2.getLdapPort())));
         failover.setServers(servers);
         ldap.setFailoverServer(failover);
         SearchResultsCache src = new SearchResultsCache();
@@ -203,7 +203,7 @@ public class LdapFailoverTest {
     @Test
     @ExpectedFFDC(value = "javax.naming.CommunicationException")
     public void testReturnToPrimaryServer() throws Exception {
-        String primaryServerJNDICall = "JNDI_CALL search\\(Name,String,SearchControls\\) \\[ldap://localhost:" + String.valueOf(ds1.getListenPort()) + "\\]";
+        String primaryServerJNDICall = "JNDI_CALL search\\(Name,String,SearchControls\\) \\[ldap://localhost:" + String.valueOf(ds1.getLdapPort()) + "\\]";
 
 //        ServerConfiguration config = libertyServer.getServerConfiguration();
 //        ConfigElementList<LdapRegistry> ldaps = config.getLdapRegistries();

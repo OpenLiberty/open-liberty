@@ -14,13 +14,13 @@ package com.ibm.ws.com.unboundid;
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
- * An in memory UnboundID LDAP server designed to contain the same data as the Active Directory instance of the ApacheDS stand-alone LDAP Servers.
+ * An in memory UnboundID LDAP server designed to contain the same data as the Tivoli Directory Server instance of the ApacheDS stand-alone LDAP Servers.
  *
- * This InMemoryADLDAPServer is currently using a null schema to host the data, this could be replaced in the future with a robust activeDirectory schema design
+ * This InMemoryTDSLDAPServer is currently using a null schema to host the data, this could be replaced in the future with a robust TDS schema design
  */
-public class InMemoryADLDAPServer extends InMemoryLDAPServer {
-    protected static final Class<?> c = InMemoryADLDAPServer.class;
-    public static final String BASE_DN = "DC=SECFVT2,DC=AUSTIN,DC=IBM,DC=COM";
+public class InMemoryTDSLDAPServer extends InMemoryLDAPServer {
+    protected static final Class<?> c = InMemoryTDSLDAPServer.class;
+    public static final String BASE_DN = "o=ibm,c=us";
 
     /**
      * Creates a new instance of the in memory LDAP server. It initializes the directory
@@ -28,14 +28,14 @@ public class InMemoryADLDAPServer extends InMemoryLDAPServer {
      *
      * @throws Exception If something went wrong
      */
-    public InMemoryADLDAPServer() throws Exception {
+    public InMemoryTDSLDAPServer() throws Exception {
         super(false, BASE_DN);
 
         /*
-         * Load the Active Directory data LDIF. This contains users and groups that were originally
-         * in the ApacheDS AD stand-alone LDAP instance.
+         * Load the TDS data LDIF. This contains users and groups that were originally
+         * in the ApacheDS Tivoli stand-alone LDAP instance.
          */
-        int entriesAdded = this.importFromLDIF(true, extractResourceToFile("/resources/AD.ldif", "addata", "ldif").getAbsolutePath());
+        int entriesAdded = this.importFromLDIF(true, extractResourceToFile("/resources/TDS.ldif", "tdsdata", "ldif").getAbsolutePath());
         Log.info(c, "setupLdapServer", "Adding " + entriesAdded + " changes to LDAP Server");
     }
 
