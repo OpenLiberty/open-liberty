@@ -11,14 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.security.javaeesec.cdi
 Bundle-Description: WAS Java EE Security 1.0 CDI, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.javaeesec.cdi
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: \
     JAVAEESEC
@@ -28,10 +25,17 @@ Export-Package: \
     com.ibm.ws.security.javaeesec.cdi.beans, \
     com.ibm.ws.security.javaeesec.cdi.beans.hash
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: \
+    !com.ibm.ws.security.javaeesec.cdi.extensions, \
+    !*.internal.*, \
+    !com.ibm.ws.kernel.boot.cmdline, \
+    com.ibm.ws.common.internal.encoder, \
+    *
  
 Private-Package: \
     com.ibm.ws.security.javaeesec.cdi.internal.resources
+
+-cdiannotations:
 
 -dsannotations: \
     com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension,\

@@ -15,6 +15,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-applications/jaxrsResourceInjection.war/src,\
 	test-applications/jeeInjectionTargetTest.war/src,\
 	test-applications/jeeInjectionTargetTestEJB.jar/src,\
 	test-applications/jeeInjectionTargetTestJSP2.3.war/src,\
@@ -34,8 +35,6 @@ tested.features:\
         jaxrs-2.1,\
         jsf-2.3
 	
-javac.source: 1.7
-javac.target: 1.7
 	
 test.project: true
 
@@ -43,6 +42,7 @@ test.project: true
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	javax.jws:jsr181-api;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\

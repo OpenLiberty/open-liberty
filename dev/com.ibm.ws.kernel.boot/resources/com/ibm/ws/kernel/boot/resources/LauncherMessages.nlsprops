@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -440,7 +440,7 @@ error.create.unknownJavaLevel.useraction=Ensure that you are using a supported J
 
 error.create.java8serverenv=CWWKE0103E: Unable to create a server.env file in the following location: {0}
 error.create.java8serverenv.explanation=The process that is attempting to create the server was not able to generate a server.env file in the specified location.  This file provides the required JVM arguments for the server to function properly.
-error.create.java8serverenv.useraction=Ensure that you have write access to the server directory and that you have sufficient disk space.  Additionally, you can manually create the server.env file with the following value:  WLP_SKIP_MAXPERMSIZE=true.  You must ensure that the server process has read access to this file.
+error.create.java8serverenv.useraction=Ensure that you have write access to the server directory and that you have sufficient disk space. You must ensure that the server process has read access to this file.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: This product is a beta and cannot be used in production. The full license terms can be viewed here: {0}
 audit.licenseRestriction.early_access.ilar.explanation=This product is a beta and must be used according to the terms of the beta license.
@@ -699,6 +699,10 @@ error.package.extension.useraction=Supply a file name to --archive with a file e
 error.package.usr.jar=CWWKE0951E: The archive file name must not end with a .jar file extension when the usr option is used.
 error.package.usr.jar.explanation=The --archive option must not end with a .jar file extension when --include=usr is specified.
 error.package.usr.jar.useraction=Supply a file name to --archive with a file extension other than a .jar file extension when --include=usr is specified.
+
+error.missing.version.files=CWWKE0952E: Version information cannot be read from the directory {0}.
+error.missing.version.files.explanation=The directory that contains version information files either does not exist or cannot be read by the current user.
+error.missing.version.files.useraction=Ensure that the directory exists and can be read by the current user. 
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.

@@ -11,15 +11,13 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.jaxws.2.3; singleton:=true
 
 Export-Package: javax.xml.ws.*; version="2.3"
 
 Import-Package: javax.xml.bind.*; version="[2.3,3)", \
+  !org.glassfish.hk2.osgiresourcelocator,\
   *
 
 instrument.disabled: true

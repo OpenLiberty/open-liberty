@@ -54,6 +54,6 @@ apply from: 'wlp-gradle/java.gradle'
  */
 apply from: 'wlp-gradle/biz.aQute.bnd.gradle'
 
-wrapper {
+tasks.named('wrapper') {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
 }

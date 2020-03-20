@@ -32,4 +32,3 @@ DynamicImport-Package: *
 Include-Resource: \
   @${repo;net.jodah:failsafe;1.0.4}!/!META-INF/maven/*
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"

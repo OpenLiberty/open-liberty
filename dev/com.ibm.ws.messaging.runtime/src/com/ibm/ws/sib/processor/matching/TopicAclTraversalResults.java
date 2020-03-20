@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Iterator;
 
 import java.security.Principal;
-import java.security.acl.Group;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.processor.SIMPConstants;
@@ -100,7 +99,7 @@ public class TopicAclTraversalResults
              accumUsersAllowedToPublish.clear();
              accumGroupAllowedToPublish.clear();
            }
-           else if(principal instanceof Group)
+           else if(principal instanceof MPGroup)
            {
              levelGroupAllowedToPublish.add(principal);
            }
@@ -117,7 +116,7 @@ public class TopicAclTraversalResults
                accumUsersAllowedToSubscribe.clear();
                accumGroupAllowedToSubscribe.clear();
            }
-           else if(principal instanceof Group)
+           else if(principal instanceof MPGroup)
            {
              levelGroupAllowedToSubscribe.add(principal);
            }
@@ -201,7 +200,7 @@ public class TopicAclTraversalResults
               Iterator itr = accumGroupAllowedToPublish.iterator();
               while (itr.hasNext())
               {
-                Group group = (Group)itr.next();
+                MPGroup group = (MPGroup)itr.next();
                 if(group.isMember(user))
                 {
                   allowed = true;
@@ -250,7 +249,7 @@ public class TopicAclTraversalResults
            
               while (itr.hasNext())
               {
-                Group group = (Group)itr.next();
+                MPGroup group = (MPGroup)itr.next();
                 if(group.isMember(user))
                 {
                   allowed = true;

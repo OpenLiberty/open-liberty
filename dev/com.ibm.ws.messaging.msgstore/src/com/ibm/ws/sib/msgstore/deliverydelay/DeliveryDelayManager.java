@@ -1,7 +1,7 @@
 package com.ibm.ws.sib.msgstore.deliverydelay;
 
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -776,7 +776,7 @@ public class DeliveryDelayManager implements AlarmListener, XmlConstants
     private void scheduleAlarm(long timeOut)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "scheduleAlarm timeOut=" + timeOut);
+            SibTr.entry(this, tc, "scheduleAlarm", "timeOut=" + timeOut);
 
         // NB PM27294 implementation now means you cannot decrease the the timeOut if an alarm is already scheduled.
         // This is OK for the DeliveryDelayManager as the timeout does not change once DeliveryDelayManager is started.

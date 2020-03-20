@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * Generic exception for exceptions thrown by the acmeCA-2.0 feature.
  */
+@Trivial
 public class AcmeCaException extends Exception {
 
 	private static final long serialVersionUID = -6633013527567654476L;

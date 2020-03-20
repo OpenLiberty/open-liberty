@@ -55,8 +55,9 @@ public class DataSourceJaasTest extends FATServletClient {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/derbyfat");
 
         //Get driver type
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-        server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("ANON_DRIVER", type.getAnonymousDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 

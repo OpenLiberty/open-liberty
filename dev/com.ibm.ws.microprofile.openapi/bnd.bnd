@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: MicroProfile OpenAPI
 Bundle-SymbolicName: com.ibm.ws.microprofile.openapi
@@ -27,6 +25,7 @@ Web-ContextPath: /openapi
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+    !com.ibm.ws.microprofile.openapi.impl, \
 	org.eclipse.microprofile.config.*;version="[1.0,2)",\
 	javax.xml.bind.annotation;version=!,\
 	*
@@ -50,7 +49,6 @@ Include-Resource: \
     WEB-INF=resources/WEB-INF, \
   	META-INF/services=resources/META-INF/services
   	
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.openapi.ApplicationListener, \

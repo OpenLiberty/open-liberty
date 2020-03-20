@@ -19,8 +19,13 @@ WS-TraceGroup: JPA
 
 -dsannotations: com.ibm.ws.jpa.container.eclipselink.EclipseLinkJPAProvider
 
-Export-Package: com.ibm.ws.jpa.container.eclipselink, \
+Export-Package: \
+ com.ibm.ws.jpa.container.eclipselink, \
  com.ibm.ws.jpa.container.eclipselink.logging
+
+Import-Package: \
+ !com.ibm.ws.jpa.container.eclipselink, \
+ *
 
 -buildpath: \
 	com.ibm.ws.jpa.container.core;version=latest,\

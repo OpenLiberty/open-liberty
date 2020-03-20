@@ -19,6 +19,9 @@ import org.osgi.framework.Bundle;
 import com.ibm.ws.classloading.LibertyClassLoader;
 
 public abstract class LibertyLoader extends LibertyClassLoader implements DeclaredApiAccess {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     public LibertyLoader(ClassLoader parent) {
         super(parent);
     }

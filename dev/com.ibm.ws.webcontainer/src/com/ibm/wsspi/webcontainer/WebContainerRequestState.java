@@ -201,13 +201,13 @@ public class WebContainerRequestState {
      *
      * Currently the only Cookie attribute that is supported by the runtime here
      * is the SameSite Cookie attribute.  All other existing Cookie attributes must 
-     * be added via the Cookie API.  Using this API to add anything but SameSite attribute
+     * be added via the Cookie API.  Using this API to add anything but the SameSite attribute
      * will be ignored.
      *
      * The cookieAttribute should be in the form: attributeName=attributeValue.
      *
      * @param cookieName - The Cookie name to add the attribute to.
-     * @param cookieAttribute - The Cookie attributes to be added in  the form: attributeName = attributeValue.  Currently, only SameSite=Lax|None|Strict is supported.
+     * @param cookieAttributes - The Cookie attributes to be added in  the form: attributeName = attributeValue.  Currently, only SameSite=Lax|None|Strict is supported.
      */
     public void setCookieAttributes(String cookieName, String cookieAttributes) {
         String methodName = "setCookieAttributes";
@@ -232,11 +232,11 @@ public class WebContainerRequestState {
     }
     
     /**
-     * Return the Cookie attribute associated with the provided cookieName that is
+     * Return the Cookie attributes associated with the provided cookieName that were
      * added via the setCookieAttributes()
      *
-     * @param cookieName - The name of the Cookie the attribute was set for.
-     * @return - The Cookie attribute associated with the specified Cookie name.
+     * @param cookieName - The name of the Cookie the attributes were set for.
+     * @return - The Cookie attributes associated with the specified Cookie name.
      */
     public String getCookieAttributes(String cookieName) {
         String methodName = "getCookieAttributes";
@@ -259,11 +259,11 @@ public class WebContainerRequestState {
     } 
     
     /**
-     * Removes the Cookie attribute associated with the cookieName that is added via 
+     * Removes the Cookie attributes associated with the cookieName that were added via 
      * setCookieAttributes().  It does not remove any other attributes which were added via 
      * the Cookie API.
      *
-     * @param cookieName - The name of the Cookie the attribute was set for.
+     * @param cookieName - The name of the Cookie the attributes were set for.
      */
     public void removeCookieAttributes(String cookieName) {
         String methodName = "removeCookieAttributes";

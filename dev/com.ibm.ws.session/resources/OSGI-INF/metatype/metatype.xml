@@ -115,7 +115,7 @@
         <AD id="cookieSameSite"
             name="%cookie.same.site"
             description="%cookie.same.site.desc"
-            required="false" type="String" default="Disabled" ibm:beta="true">
+            required="false" type="String" default="Disabled">
             <Option label="%cookie.same.site.disabled" value="Disabled"/>
             <Option label="%cookie.same.site.lax" value="Lax"/>
             <Option label="%cookie.same.site.none" value="None"/>

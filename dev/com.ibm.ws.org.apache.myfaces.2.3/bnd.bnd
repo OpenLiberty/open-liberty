@@ -26,9 +26,6 @@ app-resources= \
   META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \
   META-INF/services/javax.faces.application.ApplicationFactory
 
-javac.source: 1.8
-javac.target: 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Service-Component: \
   com.ibm.ws.jsf_2_3; \
@@ -143,6 +140,7 @@ Export-Package: \
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: \
+  !com.ibm.ws.jsf.ee, \
   !com.google.inject, \
   !javax.ejb, \
   !javax.persistence, \

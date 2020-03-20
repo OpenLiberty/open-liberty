@@ -16,10 +16,7 @@ Bundle-Name: JAX-WS ClientContainer
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.clientcontainer
 Bundle-Description: IBM JAX-WS ClientContainer; version=${bVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # in cxf-rt-frontend-jaxws-2.6.2 bundle, we exposed: 
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl

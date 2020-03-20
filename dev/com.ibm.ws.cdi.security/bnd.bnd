@@ -15,10 +15,7 @@ Bundle-Name: com.ibm.ws.cdi.security
 Bundle-SymbolicName: com.ibm.ws.cdi.security
 Bundle-Description: CDI app security dependent code, version=${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
-javac.source: 1.7
-javac.target: 1.7
 
 Private-Package: \
   com.ibm.ws.cdi.security.fallback

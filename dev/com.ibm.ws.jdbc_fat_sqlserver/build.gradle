@@ -25,7 +25,7 @@ dependencies {
                'net.java.dev.jna:jna:5.2.0',
                'org.slf4j:slf4j-api:1.7.7',
                'org.slf4j:slf4j-jdk14:1.7.7'
-  sqlserver 'com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8'
+  sqlserver 'com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8'
 }
 
 task copySharedSqlServerAnon(type: Copy) {

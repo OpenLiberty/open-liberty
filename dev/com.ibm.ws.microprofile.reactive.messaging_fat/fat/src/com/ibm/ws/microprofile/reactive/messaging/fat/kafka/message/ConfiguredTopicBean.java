@@ -40,7 +40,7 @@ public class ConfiguredTopicBean {
     public ProducerRecord<String, String> reverseString(String in) throws UnsupportedEncodingException {
 
         ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(PRODUCER_RECORD_TOPIC, null, PRODUCER_RECORD_KEY, PRODUCER_RECORD_VALUE);
-        for (int i = 0; i < ConsumerRecordBean.NUM_TEST_HEADERS; i++) {
+        for (int i = 0; i < NUM_HEADERS; i++) {
             producerRecord.headers().add(HEADER_KEY_PREFIX + i, (HEADER_VALUE_PREFIX + i).getBytes("UTF-8"));
         }
 

@@ -48,6 +48,15 @@
         <AD name="%transaction.log.directory" description="%transaction.log.directory.desc"
             id="transactionLogDirectory" required="false" type="String" default="${server.output.dir}/tranlog/" />
 
+        <AD name="internal" description="%lease.check.strategy.desc"
+            id="leaseCheckStrategy" required="false" type="String" default="round-robin" />            
+
+        <AD name="internal" description="%lease.check.interval.desc"
+            id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
+        <AD name="internal" description="%lease.length.desc"
+            id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
         <AD name="%transaction.log.size" description="%transaction.log.size.desc"
             id="transactionLogSize" required="false" type="Integer" default="1024" />
             

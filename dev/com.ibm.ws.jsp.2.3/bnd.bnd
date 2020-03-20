@@ -32,6 +32,10 @@ Export-Package: \
 	org.apache.jasper.runtime;thread-context=true;version="2.3"
 
 Import-Package: \
+   !com.ibm.ws.jsp23.translator.visitor.generator, \
+   !com.ibm.ws.jsp23.translator.visitor.validator, \
+   !com.ibm.ws.jsp23.webcontainerext, \
+   !com.ibm.ws.jsp23.webcontainerext.ws, \
    org.apache.xml.*;resolution:=optional, \
    org.apache.xpath.*;resolution:=optional, \
    javax.el;version=3.0, \
@@ -76,7 +80,6 @@ Import-Package: \
    sun.io;resolution:=optional, \
    *
    
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -includeresource: \
    org/apache/jasper/runtime/packageinfo=src/org/apache/jasper/runtime/packageinfo

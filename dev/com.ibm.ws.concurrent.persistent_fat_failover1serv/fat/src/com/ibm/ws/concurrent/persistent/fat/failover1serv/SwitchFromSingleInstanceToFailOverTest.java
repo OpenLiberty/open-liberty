@@ -494,19 +494,19 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
                 try {
                     if (taskIdD != null)
                         runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                                "testCancelTask&taskId=" + taskIdD + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[9]");
+                                "testCancelTask&taskId=" + taskIdD + "&jndiName=" + persistentExec.getJndiName() + "&test=testNewFailOverEnabledInstanceWhileServerIsRunning[9]");
 
                     if (taskIdC != null)
                         runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                                "testCancelTask&taskId=" + taskIdC + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[10]");
+                                "testCancelTask&taskId=" + taskIdC + "&jndiName=" + persistentExec.getJndiName() + "&test=testNewFailOverEnabledInstanceWhileServerIsRunning[10]");
 
                     if (taskIdB != null)
                         runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                                "testCancelTask&taskId=" + taskIdB + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[11]");
+                                "testCancelTask&taskId=" + taskIdB + "&jndiName=" + persistentExec.getJndiName() + "&test=testNewFailOverEnabledInstanceWhileServerIsRunning[11]");
 
                     if (taskIdA != null)
                         runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                                "testCancelTask&taskId=" + taskIdA + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[12]");
+                                "testCancelTask&taskId=" + taskIdA + "&jndiName=" + persistentExec.getJndiName() + "&test=testNewFailOverEnabledInstanceWhileServerIsRunning[12]");
                 } catch (Error | Exception x) {
                     if (successful)
                         throw x;
@@ -731,6 +731,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * While the server is running, removes the original instance, creating a new one with fail over enabled. Then verifies
      * that the previous, as well as new, tasks run.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // Attempting to execute an operation on a closed EntityManager // possible when task is still attempting to run after executor instance is removed
     @Test
     public void testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning() throws Exception {
         ServerConfiguration config = originalConfig.clone();

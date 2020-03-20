@@ -74,6 +74,7 @@ instrument.classesExcludes: com/ibm/ws/security/jaas/common/internal/resources/*
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.classloading;version=latest,\

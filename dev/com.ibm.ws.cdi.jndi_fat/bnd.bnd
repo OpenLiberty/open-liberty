@@ -30,8 +30,6 @@ tested.features:\
         jaxrs-2.1,\
         jsf-2.3
 	
-javac.source: 1.7
-javac.target: 1.7
 	
 test.project: true
 

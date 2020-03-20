@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public enum RuntimeSecurityService {
                                                       MSTraceConstants.MESSAGING_SECURITY_RESOURCE_BUNDLE);
 
     // Absolute class name along with the package used for tracing
-    private static final String CLASS_NAME = "com.ibm.ws.messaging.security.RuntimeSecurityService";
+    private static final String CLASS_NAME = "com.ibm.ws.messaging.security.RuntimeSecurityService.";
 
     // MessagingSecurityService variable which is null when Messaging Security 
     // is disabled, it will be initialized only when Messaging Security is enabled

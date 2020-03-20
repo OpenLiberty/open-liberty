@@ -1,8 +1,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: WAS WebContainer
 Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.4.0.factories
@@ -11,14 +9,14 @@ WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
 -dsannotations: \
- com.ibm.ws.webcontainer40.async.factory.AsyncContextFactory40Impl, \
- com.ibm.ws.webcontainer40.osgi.container.config.factory.WebAppConfiguratorFactory40Impl, \
- com.ibm.ws.webcontainer40.osgi.response.factory.IRequestResponseFactory40Impl, \
- com.ibm.ws.webcontainer40.osgi.srt.factory.SRTConnectionContextPool40Impl, \
- com.ibm.ws.webcontainer40.osgi.webapp.factory.WebAppFactory40Impl, \
- com.ibm.ws.webcontainer40.servlet.factory.CacheServletWrapperFactory40Impl, \
- com.ibm.ws.webcontainer40.session.impl.factory.SessionContextRegistryImplFactory40Impl, \
- com.ibm.wsspi.webcontainer40.util.factory.URIMatcherFactory40Impl
+  com.ibm.ws.webcontainer40.async.factory.AsyncContextFactory40Impl, \
+  com.ibm.ws.webcontainer40.osgi.container.config.factory.WebAppConfiguratorFactory40Impl, \
+  com.ibm.ws.webcontainer40.osgi.response.factory.IRequestResponseFactory40Impl, \
+  com.ibm.ws.webcontainer40.osgi.srt.factory.SRTConnectionContextPool40Impl, \
+  com.ibm.ws.webcontainer40.osgi.webapp.factory.WebAppFactory40Impl, \
+  com.ibm.ws.webcontainer40.servlet.factory.CacheServletWrapperFactory40Impl, \
+  com.ibm.ws.webcontainer40.session.impl.factory.SessionContextRegistryImplFactory40Impl, \
+  com.ibm.wsspi.webcontainer40.util.factory.URIMatcherFactory40Impl
 
 Service-Component: \
   com.ibm.ws.webcontainer.v40.dd; \
@@ -33,16 +31,25 @@ Service-Component: \
   	implementation:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
   	provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
   	properties:="httpVersionSetting:String=2.0_Optional_On"
-    
+
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
-Export-Package: !*.internal.*, \
+Export-Package: \
+    !*.internal.*, \
     com.ibm.ws.webcontainer40.*factory*;provide:=true, \
     com.ibm.wsspi.webcontainer40.*factory*;provide:=true
 
 Import-Package: \
+    !com.ibm.ws.webcontainer40.async.factory, \
+    !com.ibm.ws.webcontainer40.osgi.container.config.factory, \
+    !com.ibm.ws.webcontainer40.osgi.response.factory, \
+    !com.ibm.ws.webcontainer40.osgi.srt.factory, \
+    !com.ibm.ws.webcontainer40.osgi.webapp.factory, \
+    !com.ibm.ws.webcontainer40.servlet.factory, \
+    !com.ibm.ws.webcontainer40.session.impl.factory, \
+    !com.ibm.wsspi.webcontainer40.util.factory, \
     com.ibm.websphere.csi, \
     com.ibm.ws.webcontainer40.osgi.container.config, \
     com.ibm.ws.webcontainer40.osgi.request, \
@@ -58,7 +65,6 @@ Import-Package: \
     com.ibm.wsspi.injectionengine, \
     *
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
     com.ibm.ws.webcontainer.servlet.3.1;version=latest,\

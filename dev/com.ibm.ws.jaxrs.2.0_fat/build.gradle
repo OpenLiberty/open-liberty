@@ -29,6 +29,7 @@ configurations {
   jackson2x
   jersey
   json
+  httpclient
 }
 
 configurations.jersey {
@@ -80,6 +81,9 @@ dependencies {
     'javax.persistence:persistence-api:1.0.2',
     'javax.validation:validation-api:1.1.0.Final'
   json 'org.json:json:20080701'
+  httpclient 'org.apache.httpcomponents:httpclient:4.3.1',
+	'org.apache.httpcomponents:httpcore:4.3',
+	'commons-logging:commons-logging:1.2'
 }
 
 task addCXF(type: Copy) {
@@ -102,9 +106,19 @@ task addJersey(type: Copy) {
   into "${buildDir}/autoFVT/publish/shared/resources/jersey/"
 }
 
+task addJersey2(type: Copy) {
+  from configurations.jersey
+  into "${buildDir}/autoFVT/publish/shared/resources/jerseywithinjection/"  
+}
+
 task addJson(type: Copy) {
   from configurations.json
   into "${buildDir}/autoFVT/publish/shared/resources/json/"
+}
+
+task addHttpClient(type: Copy) {
+  from configurations.httpclient
+  into "${buildDir}/autoFVT/publish/shared/resources/httpclient/"
 }
 
 task createWadlTempDir {
@@ -118,6 +132,9 @@ addRequiredLibraries {
   dependsOn addJackson1x
   dependsOn addJackson2x
   dependsOn addJersey
+  dependsOn addJersey2
   dependsOn addJson
+  dependsOn addHttpClient
   dependsOn createWadlTempDir
+  dependsOn addDerby
 }

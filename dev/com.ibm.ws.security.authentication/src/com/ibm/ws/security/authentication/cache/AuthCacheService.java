@@ -21,15 +21,23 @@ public interface AuthCacheService {
 
     /**
      * Inserts the subject into the cache.
-     * 
+     *
      * @param subject
      */
     public void insert(Subject subject);
 
     /**
+     * Inserts the subject into the cache using a X509Certicate as the key.
+     *
+     * @param subject
+     * @param client certificate
+     */
+    public void insert(Subject subject, java.security.cert.X509Certificate[] certChain);
+
+    /**
      * Inserts the subject into the cache. The userid and password may be used by the BasicAuthCacheKeyProvider
      * to create a key.
-     * 
+     *
      * @param subject
      * @param userid
      * @param password
@@ -39,7 +47,7 @@ public interface AuthCacheService {
     /**
      * Gets the subject from the cache using the specified cache key.
      * Only valid subjects are returned. An invalid subject found is immediately removed from the cache.
-     * 
+     *
      * @param cacheKey
      * @return the valid subject or <code>null</code>.
      */
@@ -47,7 +55,7 @@ public interface AuthCacheService {
 
     /**
      * Removes the subject specified by the cache key from the cache.
-     * 
+     *
      * @param cacheKey
      */
     public void remove(@Sensitive Object cacheKey);

@@ -17,8 +17,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.FileUtils;
@@ -64,7 +67,8 @@ public class ProductInfo {
         File versionPropertyDirectory = new File(installDir, VERSION_PROPERTY_DIRECTORY);
         File[] coreFiles = versionPropertyDirectory.listFiles();
         if (coreFiles == null) {
-            throw new IllegalArgumentException(versionPropertyDirectory.toString());
+            throw new LaunchException(versionPropertyDirectory.toString(), MessageFormat.format(BootstrapConstants.messages.getString("error.missing.version.files"),
+                                                                                                versionPropertyDirectory.getAbsolutePath()));
         }
 
         ArrayList<File> list = new ArrayList<File>();

@@ -16,14 +16,24 @@ Bundle-Name: WebSphere sar Support
 Bundle-SymbolicName: com.ibm.ws.app.manager.sar
 Bundle-Description: WebSphere sar Support, version ${bVersion}
 
+Import-Package: \
+  !com.ibm.ws.classloading.java2sec, \
+  !com.ibm.ws.container.service.metadata, \
+  !com.ibm.ws.container.service.metadata.extended, \
+  !com.ibm.ws.container.service.state, \
+  !com.ibm.wsspi.artifact.factory, \
+  !com.ibm.wsspi.kernel.service.location, \
+  !com.ibm.wsspi.library, \
+  !org.osgi.service.cm, \
+  com.ibm.ws.app.manager.module.internal, \
+  ${defaultPackageImport}
+
 Private-Package: com.ibm.ws.app.manager.sar.*
 
-Import-Package: \
-    com.ibm.ws.app.manager.module.internal, \
-    *
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.app.manager.sar.SARApplicationTypeSupported,\
- com.ibm.ws.app.manager.sar.SARApplicationHandlerImpl,\
+-dsannotations: \
+  com.ibm.ws.app.manager.sar.SARApplicationTypeSupported, \
+  com.ibm.ws.app.manager.sar.SARApplicationHandlerImpl, \
   com.ibm.ws.app.manager.sar.SARDeployedAppInfoFactoryImpl
 
 instrument.classesExcludes: com/ibm/ws/app/manager/sar/internal/resources/*.class

@@ -49,6 +49,7 @@ public class JDBCLoadFromAppTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive derbyApp = ShrinkWrap.create(WebArchive.class, "derbyApp.war")
                         .addPackage("web.derby") //
+                        .addAsWebInfResource(new File("test-applications/derbyapp/resources/WEB-INF/ibm-ejb-jar-bnd.xml"))
                         .addAsWebInfResource(new File("test-applications/derbyapp/resources/WEB-INF/ibm-web-bnd.xml"))
                         .addAsLibrary(new File("publish/shared/resources/derby/derby.jar")) //
                         .addPackage("jdbc.driver.proxy"); // delegates to the Derby JDBC driver
@@ -63,9 +64,11 @@ public class JDBCLoadFromAppTest extends FATServletClient {
                         .addPackage("jdbc.driver.proxy"); // delegates to the "mini" JDBC driver
 
         JavaArchive ejb1JAR = ShrinkWrap.create(JavaArchive.class, "ejb1.jar")
+                        .addAsManifestResource(new File("test-applications/otherapp/resources/ejb.first/META-INF/ibm-ejb-jar-bnd.xml"))
                         .addPackage("ejb.first");
 
         JavaArchive ejb2JAR = ShrinkWrap.create(JavaArchive.class, "ejb2.jar")
+                        .addAsManifestResource(new File("test-applications/otherapp/resources/ejb.second/META-INF/ibm-ejb-jar-bnd.xml"))
                         .addPackage("ejb.second");
 
         JavaArchive lmJAR = ShrinkWrap.create(JavaArchive.class, "top-level-login-modules.jar")
@@ -79,11 +82,6 @@ public class JDBCLoadFromAppTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, otherApp);
 
-        // TODO remove this once libraryRef is made optional
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ignoreThisUselessLibrary.jar");
-        jar.addPackage("com.ibm.ws.jdbc.fat.loadfromapp"); // no login modules here
-        ShrinkHelper.exportToServer(server, "/", jar);
-
         server.addInstalledAppForValidation("derbyApp");
         server.addInstalledAppForValidation("otherApp");
 
@@ -92,7 +90,8 @@ public class JDBCLoadFromAppTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKE0701E.*JAASLoginModuleConfigImpl", // TODO remove this if we enable loading login modules from web applications
+        server.stopServer("CWWKS1148E(?=.*LoadFromAppLoginModule)(?=.*derbyApp)", // Intentional error: loginmod.LoadFromAppLoginModule not found in derbyApp
+                          "CWWKS1148E(?=.*LoadFromWebAppLoginModule)(?=.*otherApp)", // Intentional error: web.derby.LoadFromWebAppLoginModule not found in otherApp
                           "SRVE9967W.*derbyLocale" // ignore missing Derby locales
         );
     }

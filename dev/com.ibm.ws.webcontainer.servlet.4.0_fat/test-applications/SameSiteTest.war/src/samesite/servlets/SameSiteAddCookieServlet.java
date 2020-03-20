@@ -40,42 +40,44 @@ public class SameSiteAddCookieServlet extends HttpServlet {
         String cookieToAdd = req.getParameter("cookieToAdd");
 
         // Configure server to make this Cookie sameSite=Lax
-        if (cookieToAdd.equals("add_one_cookie")) {
-            Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
-            resp.addCookie(cookieOne);
-            pw.print("Adding cookieOne");
-        } else if (cookieToAdd.equals("add_one_cookie_secure")) {
-            // Configure server to make this Cookie SameSite=None , cookie already has secure flag set
-            Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
-            cookieOne.setSecure(true);
-            resp.addCookie(cookieOne);
-            pw.print("Adding cookieOne with Secure");
-        } else if (cookieToAdd.equals("add_two_cookies")) {
-            Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
-            Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
-            resp.addCookie(cookieOne);
-            resp.addCookie(cookieTwo);
-            pw.print("Adding two Cookies");
-        } else if (cookieToAdd.equals("add_two_cookies_secure")) {
-            Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
-            cookieOne.setSecure(true);
-            Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
-            cookieTwo.setSecure(true);
-            resp.addCookie(cookieOne);
-            resp.addCookie(cookieTwo);
-            pw.print("Adding two Cookies with Secure");
-        } else if (cookieToAdd.equals("add_same_cookie_twice")) {
-            Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
-            Cookie cookieTwo = new Cookie("cookieOne", "cookieOne");
-            resp.addCookie(cookieOne);
-            resp.addCookie(cookieTwo);
-            pw.print("Adding two Cookies with the same name");
-        } else if (cookieToAdd.equals("add_two_cookies_different_case")) {
-            Cookie cookieone = new Cookie("cookieone", "cookieone");
-            Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
-            resp.addCookie(cookieone);
-            resp.addCookie(cookieOne);
-            pw.print("Adding two Cookies with the same name but different case");
+        if (cookieToAdd != null) {
+            if (cookieToAdd.equals("add_one_cookie")) {
+                Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+                resp.addCookie(cookieOne);
+                pw.print("Adding cookieOne!");
+            } else if (cookieToAdd.equals("add_one_cookie_secure")) {
+                // Configure server to make this Cookie SameSite=None , cookie already has secure flag set
+                Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+                cookieOne.setSecure(true);
+                resp.addCookie(cookieOne);
+                pw.print("Adding cookieOne with Secure!");
+            } else if (cookieToAdd.equals("add_two_cookies")) {
+                Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+                Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
+                resp.addCookie(cookieOne);
+                resp.addCookie(cookieTwo);
+                pw.print("Adding two Cookies!");
+            } else if (cookieToAdd.equals("add_two_cookies_secure")) {
+                Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+                cookieOne.setSecure(true);
+                Cookie cookieTwo = new Cookie("cookieTwo", "cookieTwo");
+                cookieTwo.setSecure(true);
+                resp.addCookie(cookieOne);
+                resp.addCookie(cookieTwo);
+                pw.print("Adding two Cookies with Secure!");
+            } else if (cookieToAdd.equals("add_same_cookie_twice")) {
+                Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+                Cookie cookieTwo = new Cookie("cookieOne", "cookieOne");
+                resp.addCookie(cookieOne);
+                resp.addCookie(cookieTwo);
+                pw.print("Adding two Cookies with the same name!");
+            } else if (cookieToAdd.equals("add_two_cookies_different_case")) {
+                Cookie cookieone = new Cookie("cookieone", "cookieone");
+                Cookie cookieOne = new Cookie("cookieOne", "cookieOne");
+                resp.addCookie(cookieone);
+                resp.addCookie(cookieOne);
+                pw.print("Adding two Cookies with the same name but different case!");
+            }
         }
     }
 

@@ -17,7 +17,7 @@ Bundle-Description: WAS Security Public APIs, version ${bVersion}
 
 WS-TraceGroup: \
   security
-  
+
 
 Export-Package: \
   com.ibm.websphere.security, \
@@ -33,6 +33,10 @@ Export-Package: \
   com.ibm.ws.security.utils, \
   com.ibm.wsspi.security.audit, \
   com.ibm.wsspi.security.registry.*; provide:=true
+
+Import-Package: \
+  !com.ibm.wsspi.security.registry, \
+  ${defaultPackageImport}
 
 Service-Component: \
   wsSubjectService; \

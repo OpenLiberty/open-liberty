@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,14 +188,14 @@ public class SSLConfig extends Properties {
         // When only a trust store is specified, use it as the key store as well.
         if (keyStore == null && trustStore != null && trustStorePassword != null && trustStoreType != null) {
             setProperty(Constants.SSLPROP_KEY_STORE, trustStore);
-            setProperty(Constants.SSLPROP_KEY_STORE_NAME, trustStoreName);
+            if (trustStoreName != null) setProperty(Constants.SSLPROP_KEY_STORE_NAME, trustStoreName);
             setProperty(Constants.SSLPROP_KEY_STORE_PASSWORD, trustStorePassword);
             setProperty(Constants.SSLPROP_KEY_STORE_TYPE, trustStoreType);
         }
         // When only a key store is specified, use it as the trust store as well.
         else if (trustStore == null && keyStore != null && keyStorePassword != null && keyStoreType != null) {
             setProperty(Constants.SSLPROP_TRUST_STORE, keyStore);
-            setProperty(Constants.SSLPROP_TRUST_STORE_NAME, keyStoreName);
+            if (keyStoreName != null) setProperty(Constants.SSLPROP_TRUST_STORE_NAME, keyStoreName);
             setProperty(Constants.SSLPROP_TRUST_STORE_PASSWORD, keyStorePassword);
             setProperty(Constants.SSLPROP_TRUST_STORE_TYPE, keyStoreType);
         }
