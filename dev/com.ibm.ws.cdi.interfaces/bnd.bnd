@@ -15,8 +15,6 @@ Bundle-Name: com.ibm.ws.cdi.interfaces
 Bundle-SymbolicName: com.ibm.ws.cdi.interfaces
 Bundle-Description:CDI Liberty Interfaces, version ${bVersion}
 
-
-
 Service-Component: \
  com.ibm.ws.cdi.interfaces.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
