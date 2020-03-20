@@ -48,7 +48,7 @@ Include-Resource: \
     @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT},\
     @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
     @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
-    org=build/classes/java/main/org
+    org=${bin}/org
 
 -dsannotations: \
     com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet, \
