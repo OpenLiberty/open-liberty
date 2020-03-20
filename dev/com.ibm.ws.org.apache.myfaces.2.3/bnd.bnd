@@ -57,7 +57,7 @@ Service-Component: \
     properties:="resources=${app-resources}", \
   com.ibm.ws.jsf_2_3.cdiextension; \
     implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
-    provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
+    provide:='com.ibm.wsspi.cdi.extension.WebSphereCDIExtension'; \
     properties:="service.vendor=IBM,\
                  bean.defining.annotations=javax.faces.flow.FlowScoped;javax.faces.view.ViewScoped,\
                  api.classes=javax.faces.flow.builder.FlowDefinition;javax.faces.flow.builder.FlowBuilderParameter,\

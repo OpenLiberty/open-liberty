@@ -8,11 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension;
-
 /**
- * This is a *marker* interface for Weld Runtime extension. All runtime extensions need to register a service
- * under this interface. This bundle will find all of the services and then get hold of the bundle classloader and
- * pass onto Weld.
+ * @version 1.0
  */
-public interface WebSphereCDIExtension {}
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "JCDI")
+package com.ibm.wsspi.cdi.extension;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
+
