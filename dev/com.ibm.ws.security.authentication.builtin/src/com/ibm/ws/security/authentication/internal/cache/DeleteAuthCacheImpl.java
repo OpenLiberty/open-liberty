@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.cache.DeleteAuthCache;
 
@@ -43,7 +44,7 @@ public class DeleteAuthCacheImpl extends StandardMBean implements DeleteAuthCach
     private static boolean issuedBetaMessage = false;
 
     private static void betaFenceCheck() throws UnsupportedOperationException {
-        if (!Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+        if (!ProductInfo.getBetaEdition()) {
             throw new UnsupportedOperationException("This method is beta and is not avalible");
         } else {
             if (!issuedBetaMessage) {
