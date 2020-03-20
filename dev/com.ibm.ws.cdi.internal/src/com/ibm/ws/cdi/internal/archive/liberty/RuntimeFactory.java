@@ -100,13 +100,15 @@ public class RuntimeFactory {
     /**
      * {@inheritDoc}
      *
+     * @param extraExtensions
+     *
      * @throws CDIException
      */
     public ExtensionArchive getExtensionArchiveForBundle(Bundle bundle,
                                                          Set<String> extraClasses,
                                                          Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
-                                                         boolean extClassesOnly) throws CDIException {
+                                                         boolean extClassesOnly, Set<String> extraExtensionClasses) throws CDIException {
 
         ExtensionArchive extensionArchive = null;
         Container container = getContainerForBundle(bundle);
@@ -118,7 +120,7 @@ public class RuntimeFactory {
                                                                                                  + "_"
                                                                                                  + CDIServiceUtils.getOSGIVersionForBndName(bundle.getVersion()), extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
 
-            extensionArchive = new ExtensionArchiveImpl(containerInfo, this);
+            extensionArchive = new ExtensionArchiveImpl(containerInfo, this, extraExtensionClasses);
         }
         return extensionArchive;
     }
