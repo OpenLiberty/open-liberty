@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2017 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.resource.spi.BootstrapContext;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -34,10 +32,10 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ejs.j2c.J2CConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.resource.ResourceFactory;
 
@@ -51,7 +49,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 public class JCAMBeanRuntime {
 
     //////////////////////////////Logs & Trace variables //////////////////////////////
-    private static final TraceComponent tc = Tr.register(JCAMBeanRuntime.class, J2CConstants.traceSpec);
+    private static final TraceComponent tc = Tr.register(JCAMBeanRuntime.class, "WAS.j2c");
     private static final String className = "JCAMBeanRuntime :";
     private static int counterSetConnectionFactory = 0;
     private static int counterSetResourceAdapter = 0;
@@ -156,13 +154,13 @@ public class JCAMBeanRuntime {
     }
 
     @SuppressWarnings("unchecked")
-    @Reference(service = BootstrapContext.class,
+    @Reference(service = ApplicationRecycleContext.class,
                cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY,
                target = "(component.name=com.ibm.ws.jca.resourceAdapter.properties)")
     // Temporary work around ibm:extends behavior. In the future will only need target = (component.name=com.ibm.ws.jca.resourceAdapter.properties)
-    protected void setResourceAdapter(ServiceReference<BootstrapContext> ref) {
+    protected void setResourceAdapter(ServiceReference<ApplicationRecycleContext> ref) {
         final String methodName = "setResourceAdapter";
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -305,7 +303,7 @@ public class JCAMBeanRuntime {
             Tr.exit(tc, methodName);
     }
 
-    protected void unsetResourceAdapter(ServiceReference<BootstrapContext> ref) {
+    protected void unsetResourceAdapter(ServiceReference<ApplicationRecycleContext> ref) {
         final String methodName = "unsetResourceAdapter";
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
