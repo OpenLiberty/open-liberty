@@ -15,9 +15,9 @@ import java.util.Collection;
 
 import javax.enterprise.inject.spi.Extension;
 
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.config.cdi.ConfigCDIExtension;
 import com.ibm.ws.microprofile.config12.converters.Config12DefaultConverters;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 /**
  * The Config12CDIExtension observes all the @ConfigProperty qualified InjectionPoints and ensures that a ConfigPropertyBean is created for each type.

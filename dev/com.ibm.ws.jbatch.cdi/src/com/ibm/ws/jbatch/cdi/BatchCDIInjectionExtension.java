@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.cdi.CDIServiceUtils;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "api.classes=" +
                                                                                                                  "javax.batch.api.BatchProperty;" +

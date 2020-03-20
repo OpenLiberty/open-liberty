@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class,
            property = { "bean.defining.annotations=javax.transaction.TransactionScoped" })

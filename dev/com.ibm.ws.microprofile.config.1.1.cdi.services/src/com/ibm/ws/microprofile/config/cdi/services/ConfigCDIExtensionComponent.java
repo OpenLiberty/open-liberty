@@ -14,8 +14,8 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.config.cdi.ConfigCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 /**
  * The ConfigCDIExtension observes all the @ConfigProperty qualified InjectionPoints and ensures that a ConfigPropertyBean is created for each type.

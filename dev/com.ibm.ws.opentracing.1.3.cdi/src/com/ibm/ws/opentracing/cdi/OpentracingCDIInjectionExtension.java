@@ -15,7 +15,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {}

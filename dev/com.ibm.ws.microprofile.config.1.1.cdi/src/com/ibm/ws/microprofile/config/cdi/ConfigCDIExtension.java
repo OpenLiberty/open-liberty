@@ -32,8 +32,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.config.converters.DefaultConverters;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 /**
  * The ConfigCDIExtension observes all the @ConfigProperty qualified InjectionPoints and ensures that a ConfigPropertyBean is created for each type.

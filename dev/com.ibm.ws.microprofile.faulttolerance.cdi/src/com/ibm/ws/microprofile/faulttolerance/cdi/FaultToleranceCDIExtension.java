@@ -42,7 +42,6 @@ import com.ibm.tx.jta.cdi.interceptors.TransactionalInterceptor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIServiceUtils;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
@@ -50,6 +49,7 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true, property = { "service.vendor=IBM", "application.bdas.visible=true" })
 public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtension {

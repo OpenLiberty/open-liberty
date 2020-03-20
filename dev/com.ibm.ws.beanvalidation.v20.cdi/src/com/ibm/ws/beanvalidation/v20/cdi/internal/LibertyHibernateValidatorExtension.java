@@ -42,8 +42,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.util.ThreadContextAccessor;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,

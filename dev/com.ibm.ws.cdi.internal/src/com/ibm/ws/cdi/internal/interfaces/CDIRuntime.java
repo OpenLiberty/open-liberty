@@ -23,11 +23,11 @@ import org.osgi.framework.Bundle;
 
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 import com.ibm.wsspi.injectionengine.InjectionEngine;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 

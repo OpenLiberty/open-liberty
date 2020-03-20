@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.util.dopriv.SystemGetPropertyPrivileged;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class)
 public class JPAContainerCDIExtension implements Extension, WebSphereCDIExtension {

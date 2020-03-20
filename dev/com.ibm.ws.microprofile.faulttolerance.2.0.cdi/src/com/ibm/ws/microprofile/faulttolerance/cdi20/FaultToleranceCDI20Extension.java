@@ -18,8 +18,8 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.faulttolerance.cdi.FaultToleranceInterceptor;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 /**
  * Changes the way the FT Interceptor is registered when running with FT 2.0+ on CDI 2.0+

@@ -10,6 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.shared.ext;
 
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 public class CdiExtension implements WebSphereCDIExtension {}

@@ -60,10 +60,10 @@ import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.util.ThreadContextAccessor;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 /**
  * This class is the CDI integration point for creating the Validator and Validator Factory objects

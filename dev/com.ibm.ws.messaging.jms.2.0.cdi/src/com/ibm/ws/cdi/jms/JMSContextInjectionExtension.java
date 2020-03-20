@@ -19,7 +19,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.CDIServiceUtils;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 /*
  * This is CDI extension for CDI to identify there is a bean which produces JMSContext

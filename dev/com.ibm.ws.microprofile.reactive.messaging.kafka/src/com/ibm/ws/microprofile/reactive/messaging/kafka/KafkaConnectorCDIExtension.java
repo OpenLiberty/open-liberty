@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.cdi.CDIServiceUtils;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class KafkaConnectorCDIExtension implements Extension, WebSphereCDIExtension {

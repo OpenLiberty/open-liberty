@@ -48,13 +48,13 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIServiceUtils;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.graphql.internal.MPDateTimeScalarMapperExtension;
 import com.ibm.ws.microprofile.graphql.internal.MPDefaultInclusionStrategy;
 import com.ibm.ws.microprofile.graphql.internal.MPOperationBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 import com.ibm.wsspi.logging.Introspector;
 
 

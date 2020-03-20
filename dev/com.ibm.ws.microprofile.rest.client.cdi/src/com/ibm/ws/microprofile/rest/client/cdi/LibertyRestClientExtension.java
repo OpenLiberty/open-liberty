@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = 
     { "api.classes=org.eclipse.microprofile.rest.client.inject.RegisterRestClient;" +
