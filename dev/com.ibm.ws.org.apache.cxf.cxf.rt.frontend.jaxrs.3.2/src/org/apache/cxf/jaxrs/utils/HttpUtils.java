@@ -471,7 +471,7 @@ public final class HttpUtils {
         return value;
     }
 
-    private static String getFromHeaders(Message m, String name, String defaultValue, boolean setOnMessage) {
+    public static String getFromHeaders(Message m, String name, String defaultValue, boolean setOnMessage) {
         String value = new HttpHeadersImpl(m).getRequestHeaders().getFirst(name);
         if (value != null && setOnMessage) {
             m.put(name, value);

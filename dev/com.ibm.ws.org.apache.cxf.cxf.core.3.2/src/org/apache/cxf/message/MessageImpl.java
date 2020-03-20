@@ -25,17 +25,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import javax.ws.rs.core.MultivaluedMap;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.sse.SseEventSink;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.continuations.ContinuationProvider;
 import org.apache.cxf.endpoint.Endpoint;
-import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.InterceptorChain;
+import org.apache.cxf.interceptor.OutgoingChainInterceptor;
+import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Destination;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
+import org.apache.cxf.transport.https.CertConstraints;
 
 public class MessageImpl extends StringMapImpl implements Message {
     private static final long serialVersionUID = -3020763696429459865L;
@@ -76,12 +82,41 @@ public class MessageImpl extends StringMapImpl implements Message {
     private Object responseCode = NOT_FOUND;
     private Object attachments = NOT_FOUND;
     private Object encoding = NOT_FOUND;
+    private Object httpContext = NOT_FOUND;
+    private Object httpConfig = NOT_FOUND;
+    private Object httpContextMatchStrategy = NOT_FOUND;
+    private Object httpBasePath = NOT_FOUND;
+    private Object asyncPostDispatch = NOT_FOUND;
+    private Object securityContext = NOT_FOUND;
+    private Object authorizationPolicy = NOT_FOUND;
+    private Object certConstraints = NOT_FOUND;
+    private Object serviceRedirection = NOT_FOUND;
+    private Object httpServletResponse = NOT_FOUND;
+    private Object resourceMethod = NOT_FOUND;
+    private Object oneWayRequest = NOT_FOUND;
+    private Object asyncResponse = NOT_FOUND;
+    private Object threadContextSwitched = NOT_FOUND;
+    private Object cacheInputProperty = NOT_FOUND;
+    private Object previousMessage = NOT_FOUND;
+    private Object responseHeadersCopied = NOT_FOUND;
+    private Object sseEventSink = NOT_FOUND;
+    private Object requestorRole = NOT_FOUND;
+    private Object partialResponse = NOT_FOUND;
+    private Object emptyPartialResponse = NOT_FOUND;
     
     private static final String REQUEST_PATH_TO_MATCH_SLASH = "path_to_match_slash";
     private static final String TEMPLATE_PARAMETERS = "jaxrs.template.parameters";
     private static final String CONTINUATION_PROVIDER = ContinuationProvider.class.getName();
     private static final String DESTINATION = Destination.class.getName();
     private static final String OP_RES_INFO_STACK = "org.apache.cxf.jaxrs.model.OperationResourceInfoStack";
+    private static final String HTTP_BASE_PATH = "http.base.path";
+    private static final String SECURITY_CONTEXT = SecurityContext.class.getName();
+    private static final String AUTHORIZATION_POLICY = AuthorizationPolicy.class.getName();
+    private static final String CERT_CONSTRAINTS = CertConstraints.class.getName();
+    private static final String HTTP_SERVLET_RESPONSE = HttpServletResponse.class.getName();
+    private static final String RESOURCE_METHOD = "org.apache.cxf.resource.method";
+    private static final String ASYNC_RESPONSE = AsyncResponse.class.getName();
+    private static final String SSE_EVENT_SINK = SseEventSink.class.getName();
     private static final Set<String> KEYS;
 
     static {
@@ -114,6 +149,27 @@ public class MessageImpl extends StringMapImpl implements Message {
         keys.add(RESPONSE_CODE);
         keys.add(ATTACHMENTS);
         keys.add(ENCODING);
+        keys.add(AbstractHTTPDestination.HTTP_CONTEXT);
+        keys.add(AbstractHTTPDestination.HTTP_CONFIG);
+        keys.add(AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY);
+        keys.add(HTTP_BASE_PATH);
+        keys.add(ASYNC_POST_RESPONSE_DISPATCH);
+        keys.add(SECURITY_CONTEXT);
+        keys.add(AUTHORIZATION_POLICY);
+        keys.add(CERT_CONSTRAINTS);
+        keys.add(AbstractHTTPDestination.SERVICE_REDIRECTION);
+        keys.add(HTTP_SERVLET_RESPONSE);
+        keys.add(RESOURCE_METHOD);
+        keys.add(ONE_WAY_REQUEST);
+        keys.add(ASYNC_RESPONSE);
+        keys.add(THREAD_CONTEXT_SWITCHED);
+        keys.add(OutgoingChainInterceptor.CACHE_INPUT_PROPERTY);
+        keys.add(PhaseInterceptorChain.PREVIOUS_MESSAGE);
+        keys.add(AbstractHTTPDestination.RESPONSE_HEADERS_COPIED);
+        keys.add(SSE_EVENT_SINK);
+        keys.add(REQUESTOR_ROLE);
+        keys.add(PARTIAL_RESPONSE_MESSAGE);
+        keys.add(EMPTY_PARTIAL_RESPONSE_MESSAGE);
         KEYS = Collections.unmodifiableSet(keys);
     }
 
@@ -158,10 +214,6 @@ public class MessageImpl extends StringMapImpl implements Message {
 
     @Override
     public Destination getDestination() {
-        //System.out.println("***JTD: returningDest " + get(Destination.class));
-        //Thread.dumpStack();
-
-        //return get(Destination.class);
         return destination == NOT_FOUND ? null : (Destination) destination;
     }
 
@@ -172,38 +224,39 @@ public class MessageImpl extends StringMapImpl implements Message {
 
     @SuppressWarnings("rawtypes")
     public Map getProtocolHeaders() {
-        //System.out.println("***JTD: getProtocolHeaders returning " + protoHeaders);
         return protoHeaders == NOT_FOUND ? null : (Map) protoHeaders;
     }
     
     @SuppressWarnings("rawtypes")
     public void setProtocolHeaders(Map protoHeaders) {
-        //System.out.println("***JTD: setProtocolHeaders setting " + protoHeaders);
         this.protoHeaders = protoHeaders;
     }
 
     public Object getOperationResourceInfoStack() {
-        //System.out.println("***JTD: getORIStack returning " + opStack);
         return opStack == NOT_FOUND ? null: opStack;
     }
     
     public void setOperationResourceInfoStack(Object opStack) {
-        //System.out.println("***JTD: setORIStack setting " + opStack);
         this.opStack = opStack;
     }
 
     public String getContentType() {
-        //System.out.println("***JTD: getContentType returning " + contentType);
         return contentType == NOT_FOUND ? null : (String) contentType;
     }
     
+    public boolean containsContentType() {
+        return contentType == NOT_FOUND ? false : true;
+    }
     public void setContentType(String contentType) {
-        //System.out.println("***JTD: setContentType setting " + contentType);
         this.contentType = contentType;
     }
 
     public Object getHttpRequest() {
         return httpRequest == NOT_FOUND ? null : httpRequest;
+    }
+    
+    public boolean containsHttpRequest() {
+        return httpRequest == NOT_FOUND ? false : true;
     }
     
     public void setHttpRequest(Object httpRequest) {
@@ -346,27 +399,69 @@ public class MessageImpl extends StringMapImpl implements Message {
         this.encoding = encoding;
     }
 
+    public Object getHttpContext() {
+        return httpContext == NOT_FOUND ? null : httpContext;
+    }
+    
+    public void setHttpContext(Object httpContext) {
+        this.httpContext = httpContext;
+    }
+
+    public Object getHttpConfig() {
+        return httpConfig == NOT_FOUND ? null : httpConfig;
+    }
+    
+    public void setHttpConfig(Object httpConfig) {
+        this.httpConfig = httpConfig;
+    }
+
+    public Object getHttpContextMatchStrategy() {
+        return httpContextMatchStrategy == NOT_FOUND ? null : httpContextMatchStrategy;
+    }
+    
+    public void setHttpContextMatchStrategy(Object httpContextMatchStrategy) {
+        this.httpContextMatchStrategy = httpContextMatchStrategy;
+    }
+
+    public Object getHttpBasePath() {
+        return httpBasePath == NOT_FOUND ? null : httpBasePath;
+    }
+    
+    public void setHttpBasePath(Object httpBasePath) {
+        this.httpBasePath = httpBasePath;
+    }
+
+    public Object getAsyncPostDispatch() {
+        return asyncPostDispatch == NOT_FOUND ? null : asyncPostDispatch;
+    }
+    
+    public void setAsyncPostDispatch(Object asyncPostDispatch) {
+        this.asyncPostDispatch = asyncPostDispatch;
+    }
+    
+    public Object getSecurityContext() {
+        return securityContext == NOT_FOUND ? null : securityContext;
+    }
+    
+    public void setSecurityContext(Object securityContext) {
+        this.securityContext = securityContext;
+    }
+
     @SuppressWarnings("rawtypes")
     public Collection getInterceptorProviders() {
-        //System.out.println("***JTD: getProtocolHeaders returning " + protoHeaders);
         return interceptorProviders == NOT_FOUND ? null : (Collection) interceptorProviders;
     }
     
     @SuppressWarnings("rawtypes")
     public void setInterceptorProviders(Collection interceptorProviders) {
-        //System.out.println("***JTD: setProtocolHeaders setting " + protoHeaders);
         this.interceptorProviders = interceptorProviders;
     }
 
-    //public MultivaluedMap<String, String> getTemplateParameters() {
     public Object getTemplateParameters() {
-        //System.out.println("***JTD: getProtocolHeaders returning " + protoHeaders);
         return templateParameters == NOT_FOUND ? null :  templateParameters;
     }
     
-    //public void setTemplateParameters(MultivaluedMap<String, String> templateParameters) {    
     public void setTemplateParameters(Object templateParameters) {
-        //System.out.println("***JTD: setProtocolHeaders setting " + protoHeaders);
         this.templateParameters = templateParameters;
     }
 
@@ -469,6 +564,69 @@ public class MessageImpl extends StringMapImpl implements Message {
             } else if (key == ENCODING) {
                 ret = encoding;
                 encoding = NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT) {
+                ret = httpContext;
+                httpContext = NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_CONFIG) {
+                ret = httpConfig;
+                httpConfig = NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY) {
+                ret = httpContextMatchStrategy;
+                httpContextMatchStrategy = NOT_FOUND;
+            } else if (key == HTTP_BASE_PATH) {
+                ret = httpBasePath;
+                httpBasePath = NOT_FOUND;
+            } else if (key == ASYNC_POST_RESPONSE_DISPATCH) {
+                ret = asyncPostDispatch;
+                asyncPostDispatch = NOT_FOUND;
+            } else if (key == SECURITY_CONTEXT) {
+                ret = securityContext;
+                securityContext = NOT_FOUND;
+            } else if (key == AUTHORIZATION_POLICY) {
+                ret = authorizationPolicy;
+                authorizationPolicy = NOT_FOUND;
+            } else if (key == CERT_CONSTRAINTS) {
+                ret = certConstraints;
+                certConstraints = NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.SERVICE_REDIRECTION) {
+                ret = serviceRedirection;
+                serviceRedirection = NOT_FOUND;
+            } else if (key == HTTP_SERVLET_RESPONSE) {
+                ret = httpServletResponse;
+                httpServletResponse = NOT_FOUND;
+            } else if (key == RESOURCE_METHOD) {
+                ret = resourceMethod;
+                resourceMethod = NOT_FOUND;
+            } else if (key == ONE_WAY_REQUEST) {
+                ret = oneWayRequest;
+                oneWayRequest = NOT_FOUND;
+            } else if (key == ASYNC_RESPONSE) {
+                ret = asyncResponse;
+                asyncResponse = NOT_FOUND;
+            } else if (key == THREAD_CONTEXT_SWITCHED) {
+                ret = threadContextSwitched;
+                threadContextSwitched = NOT_FOUND;
+            } else if (key == OutgoingChainInterceptor.CACHE_INPUT_PROPERTY) {
+                ret = cacheInputProperty;
+                cacheInputProperty = NOT_FOUND;
+            } else if (key == PhaseInterceptorChain.PREVIOUS_MESSAGE) {
+                ret = previousMessage;
+                previousMessage = NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.RESPONSE_HEADERS_COPIED) {
+                ret = responseHeadersCopied;
+                responseHeadersCopied = NOT_FOUND;
+            } else if (key == SSE_EVENT_SINK) {
+                ret = sseEventSink;
+                sseEventSink = NOT_FOUND;
+            } else if (key == REQUESTOR_ROLE) {
+                ret = requestorRole;
+                requestorRole = NOT_FOUND;
+            } else if (key == PARTIAL_RESPONSE_MESSAGE) {
+                ret = partialResponse;
+                partialResponse = NOT_FOUND;
+            } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
+                ret = emptyPartialResponse;
+                emptyPartialResponse = NOT_FOUND;
             }
 
             return ret == NOT_FOUND ? null : ret;
@@ -492,19 +650,16 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
     
     public void setHttpRequestMethod(String httpRequestMethod) {
-        //System.out.println("***JTD: setQueryString setting " + queryString);
         this.httpRequestMethod = httpRequestMethod;
     }
     public void removePathToMatchSlash() {
         pathToMatchSlash = NOT_FOUND;
     }
     public String getQueryString() {
-        //System.out.println("***JTD: getQueryString returning " + queryString);
         return queryString == NOT_FOUND ? null : (String) queryString;
     }
     
     public void setQueryString(String queryString) {
-        //System.out.println("***JTD: setQueryString setting " + queryString);
         this.queryString = queryString;
     }
     @Override
@@ -525,35 +680,21 @@ public class MessageImpl extends StringMapImpl implements Message {
 
     public Object get(String key) {
         //System.out.println("***JTD: get2 " + key);
-        if (key.contains("message.Message")) {
-            Thread.dumpStack();
-        }
+        //Thread.dumpStack();
         if (KEYS.contains(key)) {
             if (key == PROTOCOL_HEADERS) {
                 return getProtocolHeaders();
             } else if (key == CONTENT_TYPE) {
-                //System.out.println("***JTD: returningCT " + super.get(key));
-                //Thread.dumpStack();
                 return getContentType();
             } else if (key == QUERY_STRING) {
-                //System.out.println("***JTD: returningQS " + super.get(key));
-                //Thread.dumpStack();
                 return getQueryString();
             } else if (key == AbstractHTTPDestination.HTTP_REQUEST) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return getHttpRequest();
             } else if (key == AbstractHTTPDestination.HTTP_RESPONSE) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return getHttpResponse();
             } else if (key == REQUEST_PATH_TO_MATCH_SLASH) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return getPathToMatchSlash();
             } else if (key == HTTP_REQUEST_METHOD) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return getHttpRequestMethod();
             } else if (key == INTERCEPTOR_PROVIDERS) {
                 return getInterceptorProviders();
@@ -597,6 +738,48 @@ public class MessageImpl extends StringMapImpl implements Message {
                 return getAttachments();
             } else if (key == ENCODING) {
                 return getEncoding();
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT) {
+                return getHttpContext();
+            } else if (key == AbstractHTTPDestination.HTTP_CONFIG) {
+                return getHttpConfig();
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY) {
+                return getHttpContextMatchStrategy();
+            } else if (key == HTTP_BASE_PATH) {
+                return getHttpBasePath();
+            } else if (key == ASYNC_POST_RESPONSE_DISPATCH) {
+                return getAsyncPostDispatch();
+            } else if (key == SECURITY_CONTEXT) {
+                return getSecurityContext();
+            } else if (key == AUTHORIZATION_POLICY) {
+                return getAuthorizationPolicy();
+            } else if (key == CERT_CONSTRAINTS) {
+                return getCertConstraints();
+            } else if (key == AbstractHTTPDestination.SERVICE_REDIRECTION) {
+                return getServiceRedirection();
+            } else if (key == HTTP_SERVLET_RESPONSE) {
+                return getHttpServletResponse();
+            } else if (key == RESOURCE_METHOD) {
+                return getResourceMethod();
+            } else if (key == ONE_WAY_REQUEST) {
+                return getOneWayRequest();
+            } else if (key == ASYNC_RESPONSE) {
+                return getAsyncResponse();
+            } else if (key == THREAD_CONTEXT_SWITCHED) {
+                return getThreadContextSwitched();
+            } else if (key == OutgoingChainInterceptor.CACHE_INPUT_PROPERTY) {
+                return getCacheInputProperty();
+            } else if (key == PhaseInterceptorChain.PREVIOUS_MESSAGE) {
+                return getPreviousMessage();
+            } else if (key == AbstractHTTPDestination.RESPONSE_HEADERS_COPIED) {
+                return getResponseHeadersCopied();
+            } else if (key == SSE_EVENT_SINK) {
+                return getSseEventSink();
+            } else if (key == REQUESTOR_ROLE) {
+                return getRequestorRole();
+            } else if (key == PARTIAL_RESPONSE_MESSAGE) {
+                return getPartialResponse();
+            } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
+                return getEmptyPartialResponse();
             }
         }
         
@@ -607,6 +790,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Object put(String key, Object value) {
         //System.out.println("***JTD: put2 " + key);
+        //Thread.dumpStack();
         if (KEYS.contains(key)) {
             Object ret = null;
             if (key == PROTOCOL_HEADERS) {
@@ -693,6 +877,69 @@ public class MessageImpl extends StringMapImpl implements Message {
             } else if (key == ENCODING) {
                 ret = getEncoding();
                 setEncoding(value);
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT) {
+                ret = getHttpContext();
+                setHttpContext(value);
+            } else if (key == AbstractHTTPDestination.HTTP_CONFIG) {
+                ret = getHttpConfig();
+                setHttpConfig(value);
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY) {
+                ret = getHttpContextMatchStrategy();
+                setHttpContextMatchStrategy(value);
+            } else if (key == HTTP_BASE_PATH) {
+                ret = getHttpBasePath();
+                setHttpBasePath(value);
+            } else if (key == ASYNC_POST_RESPONSE_DISPATCH) {
+                ret = getAsyncPostDispatch();
+                setAsyncPostDispatch(value);
+            } else if (key == SECURITY_CONTEXT) {
+                ret = getSecurityContext();
+                setSecurityContext(value);
+            } else if (key == AUTHORIZATION_POLICY) {
+                ret = getAuthorizationPolicy();
+                setAuthorizationPolicy(value);
+            } else if (key == CERT_CONSTRAINTS) {
+                ret = getCertConstraints();
+                setCertConstraints(value);
+            } else if (key == AbstractHTTPDestination.SERVICE_REDIRECTION) {
+                ret = getServiceRedirection();
+                setServiceRedirection(value);
+            } else if (key == HTTP_SERVLET_RESPONSE) {
+                ret = getHttpServletResponse();
+                setHttpServletResponse(value);
+            } else if (key == RESOURCE_METHOD) {
+                ret = getResourceMethod();
+                setResourceMethod(value);
+            } else if (key == ONE_WAY_REQUEST) {
+                ret = getOneWayRequest();
+                setOneWayRequest(value);
+            } else if (key == ASYNC_RESPONSE) {
+                ret = getAsyncResponse();
+                setAsyncResponse(value);
+            } else if (key == THREAD_CONTEXT_SWITCHED) {
+                ret = getThreadContextSwitched();
+                setThreadContextSwitched(value);
+            } else if (key == OutgoingChainInterceptor.CACHE_INPUT_PROPERTY) {
+                ret = getCacheInputProperty();
+                setCacheInputProperty(value);
+            } else if (key == PhaseInterceptorChain.PREVIOUS_MESSAGE) {
+                ret = getPreviousMessage();
+                setPreviousMessage(value);
+            } else if (key == AbstractHTTPDestination.RESPONSE_HEADERS_COPIED) {
+                ret = getResponseHeadersCopied();
+                setResponseHeadersCopied(value);
+            } else if (key == SSE_EVENT_SINK) {
+                ret = getSseEventSink();
+                setSseEventSink(value);
+            } else if (key == REQUESTOR_ROLE) {
+                ret = getRequestorRole();
+                setRequestorRole(value);
+            } else if (key == PARTIAL_RESPONSE_MESSAGE) {
+                ret = getPartialResponse();
+                setPartialResponse(value);
+            } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
+                ret = getEmptyPartialResponse();
+                setEmptyPartialResponse(value);
             }
             return ret == NOT_FOUND ? null : ret;
         }
@@ -788,6 +1035,69 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (encoding != NOT_FOUND) {
             keys.add(ENCODING);
         }
+        if (httpContext != NOT_FOUND) {
+            keys.add(AbstractHTTPDestination.HTTP_CONTEXT);
+        }
+        if (httpConfig != NOT_FOUND) {
+            keys.add(AbstractHTTPDestination.HTTP_CONFIG);
+        }
+        if (httpContextMatchStrategy != NOT_FOUND) {
+            keys.add(AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY);
+        }
+        if (httpBasePath != NOT_FOUND) {
+            keys.add(HTTP_BASE_PATH);
+        }
+        if (asyncPostDispatch != NOT_FOUND) {
+            keys.add(ASYNC_POST_RESPONSE_DISPATCH);
+        }
+        if (securityContext != NOT_FOUND) {
+            keys.add(SECURITY_CONTEXT);
+        }
+        if (authorizationPolicy != NOT_FOUND) {
+            keys.add(AUTHORIZATION_POLICY);
+        }
+        if (certConstraints != NOT_FOUND) {
+            keys.add(CERT_CONSTRAINTS);
+        }
+        if (serviceRedirection != NOT_FOUND) {
+            keys.add(AbstractHTTPDestination.SERVICE_REDIRECTION);
+        }
+        if (httpServletResponse != NOT_FOUND) {
+            keys.add(HTTP_SERVLET_RESPONSE);
+        }
+        if (resourceMethod != NOT_FOUND) {
+            keys.add(RESOURCE_METHOD);
+        }
+        if (oneWayRequest != NOT_FOUND) {
+            keys.add(ONE_WAY_REQUEST);
+        }
+        if (asyncResponse != NOT_FOUND) {
+            keys.add(ASYNC_RESPONSE);
+        }
+        if (threadContextSwitched != NOT_FOUND) {
+            keys.add(THREAD_CONTEXT_SWITCHED);
+        }
+        if (cacheInputProperty != NOT_FOUND) {
+            keys.add(OutgoingChainInterceptor.CACHE_INPUT_PROPERTY);
+        }
+        if (previousMessage != NOT_FOUND) {
+            keys.add(PhaseInterceptorChain.PREVIOUS_MESSAGE);
+        }
+        if (responseHeadersCopied != NOT_FOUND) {
+            keys.add(AbstractHTTPDestination.RESPONSE_HEADERS_COPIED);
+        }
+        if (sseEventSink != NOT_FOUND) {
+            keys.add(SSE_EVENT_SINK);
+        }
+        if (requestorRole != NOT_FOUND) {
+            keys.add(REQUESTOR_ROLE);
+        }
+        if (partialResponse != NOT_FOUND) {
+            keys.add(PARTIAL_RESPONSE_MESSAGE);
+        }
+        if (emptyPartialResponse != NOT_FOUND) {
+            keys.add(EMPTY_PARTIAL_RESPONSE_MESSAGE);
+        }
         return keys;
     }
     
@@ -800,33 +1110,21 @@ public class MessageImpl extends StringMapImpl implements Message {
     
     @Override
     public boolean containsKey(Object key) {
-        //System.out.println("***JTD: containsKey");
+        //System.out.println("***JTD: containsKey " + key);
         if (KEYS.contains(key)) {
             if (key == PROTOCOL_HEADERS) {
                 return protoHeaders != NOT_FOUND;
             } else if (key == CONTENT_TYPE) {
-                //System.out.println("***JTD: returningCT " + super.get(key));
-                //Thread.dumpStack();
                 return contentType != NOT_FOUND;
             } else if (key == QUERY_STRING) {
-                //System.out.println("***JTD: returningQS " + super.get(key));
-                //Thread.dumpStack();
                 return queryString != NOT_FOUND;
             } else if (key == AbstractHTTPDestination.HTTP_REQUEST) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return httpRequest != NOT_FOUND;
             } else if (key == AbstractHTTPDestination.HTTP_RESPONSE) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return httpResponse != NOT_FOUND;
             } else if (key == REQUEST_PATH_TO_MATCH_SLASH) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return pathToMatchSlash != NOT_FOUND;
             } else if (key == HTTP_REQUEST_METHOD) {
-                //System.out.println("***JTD: returningRE " + super.get(key));
-                //Thread.dumpStack();
                 return httpRequestMethod != NOT_FOUND;
             } else if (key == INTERCEPTOR_PROVIDERS) {
                 return interceptorProviders != NOT_FOUND;
@@ -870,6 +1168,48 @@ public class MessageImpl extends StringMapImpl implements Message {
                 return attachments != NOT_FOUND;
             } else if (key == ENCODING) {
                 return encoding != NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT) {
+                return httpContext != NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_CONFIG) {
+                return httpConfig != NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY) {
+                return httpContextMatchStrategy != NOT_FOUND;
+            } else if (key == HTTP_BASE_PATH) {
+                return httpBasePath != NOT_FOUND;
+            } else if (key == ASYNC_POST_RESPONSE_DISPATCH) {
+                return asyncPostDispatch != NOT_FOUND;
+            } else if (key == SECURITY_CONTEXT) {
+                return securityContext != NOT_FOUND;
+            } else if (key == AUTHORIZATION_POLICY) {
+                return authorizationPolicy != NOT_FOUND;
+            } else if (key == CERT_CONSTRAINTS) {
+                return certConstraints != NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.SERVICE_REDIRECTION) {
+                return serviceRedirection != NOT_FOUND;
+            } else if (key == HTTP_SERVLET_RESPONSE) {
+                return httpServletResponse != NOT_FOUND;
+            } else if (key == RESOURCE_METHOD) {
+                return resourceMethod != NOT_FOUND;
+            } else if (key == ONE_WAY_REQUEST) {
+                return oneWayRequest != NOT_FOUND;
+            } else if (key == ASYNC_RESPONSE) {
+                return asyncResponse != NOT_FOUND;
+            } else if (key == THREAD_CONTEXT_SWITCHED) {
+                return threadContextSwitched != NOT_FOUND;
+            } else if (key == OutgoingChainInterceptor.CACHE_INPUT_PROPERTY) {
+                return cacheInputProperty != NOT_FOUND;
+            } else if (key == PhaseInterceptorChain.PREVIOUS_MESSAGE) {
+                return previousMessage != NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.RESPONSE_HEADERS_COPIED) {
+                return responseHeadersCopied != NOT_FOUND;
+            } else if (key == SSE_EVENT_SINK) {
+                return sseEventSink != NOT_FOUND;
+            } else if (key == REQUESTOR_ROLE) {
+                return requestorRole != NOT_FOUND;
+            } else if (key == PARTIAL_RESPONSE_MESSAGE) {
+                return partialResponse != NOT_FOUND;
+            } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
+                return emptyPartialResponse != NOT_FOUND;
             }
         }
         return super.containsKey(key);
@@ -961,6 +1301,69 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (m.containsKey(ENCODING)) {
             encoding = m.get(ENCODING);
         }
+        if (m.containsKey(AbstractHTTPDestination.HTTP_CONTEXT)) {
+            httpContext = m.get(AbstractHTTPDestination.HTTP_CONTEXT);
+        }
+        if (m.containsKey(AbstractHTTPDestination.HTTP_CONFIG)) {
+            httpConfig = m.get(AbstractHTTPDestination.HTTP_CONFIG);
+        }
+        if (m.containsKey(AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY)) {
+            httpContextMatchStrategy = m.get(AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY);
+        }
+        if (m.containsKey(HTTP_BASE_PATH)) {
+            httpBasePath = m.get(HTTP_BASE_PATH);
+        } 
+        if (m.containsKey(ASYNC_POST_RESPONSE_DISPATCH)) {
+            asyncPostDispatch = m.get(ASYNC_POST_RESPONSE_DISPATCH);
+        }
+        if (m.containsKey(SECURITY_CONTEXT)) {
+            securityContext = m.get(SECURITY_CONTEXT);
+        }
+        if (m.containsKey(AUTHORIZATION_POLICY)) {
+            authorizationPolicy = m.get(AUTHORIZATION_POLICY);
+        }
+        if (m.containsKey(CERT_CONSTRAINTS)) {
+            certConstraints = m.get(CERT_CONSTRAINTS);
+        }
+        if (m.containsKey(AbstractHTTPDestination.SERVICE_REDIRECTION)) {
+            serviceRedirection = m.get(AbstractHTTPDestination.SERVICE_REDIRECTION);
+        }
+        if (m.containsKey(HTTP_SERVLET_RESPONSE)) {
+            httpServletResponse = m.get(HTTP_SERVLET_RESPONSE);
+        }
+        if (m.containsKey(RESOURCE_METHOD)) {
+            resourceMethod = m.get(RESOURCE_METHOD);
+        }
+        if (m.containsKey(ONE_WAY_REQUEST)) {
+            oneWayRequest = m.get(ONE_WAY_REQUEST);
+        }
+        if (m.containsKey(ASYNC_RESPONSE)) {
+            asyncResponse = m.get(ASYNC_RESPONSE);
+        }
+        if (m.containsKey(THREAD_CONTEXT_SWITCHED)) {
+            threadContextSwitched = m.get(THREAD_CONTEXT_SWITCHED);
+        }
+        if (m.containsKey(OutgoingChainInterceptor.CACHE_INPUT_PROPERTY)) {
+            cacheInputProperty = m.get(OutgoingChainInterceptor.CACHE_INPUT_PROPERTY);
+        }
+        if (m.containsKey(PhaseInterceptorChain.PREVIOUS_MESSAGE)) {
+            previousMessage = m.get(PhaseInterceptorChain.PREVIOUS_MESSAGE);
+        }
+        if (m.containsKey(AbstractHTTPDestination.RESPONSE_HEADERS_COPIED)) {
+            responseHeadersCopied = m.get(AbstractHTTPDestination.RESPONSE_HEADERS_COPIED);
+        }
+        if (m.containsKey(SSE_EVENT_SINK)) {
+            sseEventSink = m.get(SSE_EVENT_SINK);
+        }
+        if (m.containsKey(REQUESTOR_ROLE)) {
+            requestorRole = m.get(REQUESTOR_ROLE);
+        }
+        if (m.containsKey(PARTIAL_RESPONSE_MESSAGE)) {
+            partialResponse = m.get(PARTIAL_RESPONSE_MESSAGE);
+        }
+        if (m.containsKey(EMPTY_PARTIAL_RESPONSE_MESSAGE)) {
+            emptyPartialResponse = m.get(EMPTY_PARTIAL_RESPONSE_MESSAGE);
+        }
         super.putAll(m);
     }
     @Override
@@ -1051,6 +1454,69 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (encoding != NOT_FOUND) {
             values.add(encoding);
         }
+        if (httpContext != NOT_FOUND) {
+            values.add(httpContext);
+        }
+        if (httpConfig != NOT_FOUND) {
+            values.add(httpConfig);
+        }
+        if (httpContextMatchStrategy != NOT_FOUND) {
+            values.add(httpContextMatchStrategy);
+        }
+        if (httpBasePath != NOT_FOUND) {
+            values.add(httpBasePath);
+        }
+        if (asyncPostDispatch != NOT_FOUND) {
+            values.add(asyncPostDispatch);
+        }
+        if (securityContext != NOT_FOUND) {
+            values.add(securityContext);
+        }
+        if (authorizationPolicy != NOT_FOUND) {
+            values.add(authorizationPolicy);
+        }
+        if (certConstraints != NOT_FOUND) {
+            values.add(certConstraints);
+        }
+        if (serviceRedirection != NOT_FOUND) {
+            values.add(serviceRedirection);
+        }
+        if (httpServletResponse != NOT_FOUND) {
+            values.add(httpServletResponse);
+        }
+        if (resourceMethod != NOT_FOUND) {
+            values.add(resourceMethod);
+        }
+        if (oneWayRequest != NOT_FOUND) {
+            values.add(oneWayRequest);
+        }
+        if (asyncResponse != NOT_FOUND) {
+            values.add(asyncResponse);
+        }
+        if (threadContextSwitched != NOT_FOUND) {
+            values.add(threadContextSwitched);
+        }
+        if (cacheInputProperty != NOT_FOUND) {
+            values.add(cacheInputProperty);
+        }
+        if (previousMessage != NOT_FOUND) {
+            values.add(previousMessage);
+        }
+        if (responseHeadersCopied != NOT_FOUND) {
+            values.add(responseHeadersCopied);
+        }
+        if (sseEventSink != NOT_FOUND) {
+            values.add(sseEventSink);
+        }
+        if (requestorRole != NOT_FOUND) {
+            values.add(requestorRole);
+        }
+        if (partialResponse != NOT_FOUND) {
+            values.add(partialResponse);
+        }
+        if (emptyPartialResponse != NOT_FOUND) {
+            values.add(emptyPartialResponse);
+        }
         return values;
     }
     @Override
@@ -1121,11 +1587,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
 
     public void setDestination(Destination d) {
-        //System.out.println("***JTD: puttingDest " + d);
-        //Thread.dumpStack();
-
         destination = d;
-        //super.put(Destination.class, d);
     }
 
     @Override
@@ -1265,6 +1727,90 @@ public class MessageImpl extends StringMapImpl implements Message {
                 if (encoding != NOT_FOUND) {
                     return encoding;
                 }
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT) {
+                if (httpContext != NOT_FOUND) {
+                    return httpContext;
+                }
+            } else if (key == AbstractHTTPDestination.HTTP_CONFIG) {
+                if (httpConfig != NOT_FOUND) {
+                    return httpConfig;
+                }
+            } else if (key == AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY) {
+                if (httpContextMatchStrategy != NOT_FOUND) {
+                    return httpContextMatchStrategy;
+                }
+            } else if (key == HTTP_BASE_PATH) {
+                if (httpBasePath != NOT_FOUND) {
+                    return httpBasePath;
+                }
+            } else if (key == ASYNC_POST_RESPONSE_DISPATCH) {
+                if (asyncPostDispatch != NOT_FOUND) {
+                    return asyncPostDispatch;
+                }
+            } else if (key == SECURITY_CONTEXT) {
+                if (securityContext != NOT_FOUND) {
+                    return securityContext;
+                }
+            } else if (key == AUTHORIZATION_POLICY) {
+                if (authorizationPolicy != NOT_FOUND) {
+                    return authorizationPolicy;
+                }
+            } else if (key == CERT_CONSTRAINTS) {
+                if (certConstraints != NOT_FOUND) {
+                    return certConstraints;
+                }
+            } else if (key == AbstractHTTPDestination.SERVICE_REDIRECTION) {
+                if (serviceRedirection != NOT_FOUND) {
+                    return serviceRedirection;
+                }
+            } else if (key == HTTP_SERVLET_RESPONSE) {
+                if (httpServletResponse != NOT_FOUND) {
+                    return httpServletResponse;
+                }
+            } else if (key == RESOURCE_METHOD) {
+                if (resourceMethod != NOT_FOUND) {
+                    return resourceMethod;
+                }
+            } else if (key == ONE_WAY_REQUEST) {
+                if (oneWayRequest != NOT_FOUND) {
+                    return oneWayRequest;
+                }
+            } else if (key == ASYNC_RESPONSE) {
+                if (asyncResponse != NOT_FOUND) {
+                    return asyncResponse;
+                }
+            } else if (key == THREAD_CONTEXT_SWITCHED) {
+                if (threadContextSwitched != NOT_FOUND) {
+                    return threadContextSwitched;
+                }
+            } else if (key == OutgoingChainInterceptor.CACHE_INPUT_PROPERTY) {
+                if (cacheInputProperty != NOT_FOUND) {
+                    return cacheInputProperty;
+                }
+            } else if (key == PhaseInterceptorChain.PREVIOUS_MESSAGE) {
+                if (previousMessage != NOT_FOUND) {
+                    return previousMessage;
+                }
+            } else if (key == AbstractHTTPDestination.RESPONSE_HEADERS_COPIED) {
+                if (responseHeadersCopied != NOT_FOUND) {
+                    return responseHeadersCopied;
+                }
+            } else if (key == SSE_EVENT_SINK) {
+                if (sseEventSink != NOT_FOUND) {
+                    return sseEventSink;
+                }
+            } else if (key == REQUESTOR_ROLE) {
+                if (requestorRole != NOT_FOUND) {
+                    return requestorRole;
+                }
+            } else if (key == PARTIAL_RESPONSE_MESSAGE) {
+                if (partialResponse != NOT_FOUND) {
+                    return partialResponse;
+                }
+            } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
+                if (emptyPartialResponse != NOT_FOUND) {
+                    return emptyPartialResponse;
+                }
             }
         }
 
@@ -1379,10 +1925,224 @@ public class MessageImpl extends StringMapImpl implements Message {
 
     void setContextualProperty(String key, Object v) {
         //System.out.println("***JTD: setContextualProperty " + key);
-
+        //Thread.dumpStack();
         if (!containsKey(key)) {
             put(key, v);
         }
     }
     //Liberty code change end
+
+    /**
+     * @return the authorizationPolicy
+     */
+    public Object getAuthorizationPolicy() {
+        return authorizationPolicy == NOT_FOUND ? null : authorizationPolicy;
+    }
+
+    /**
+     * @param authorizationPolicy the authorizationPolicy to set
+     */
+    public void setAuthorizationPolicy(Object authorizationPolicy) {
+        this.authorizationPolicy = authorizationPolicy;
+    }
+
+    /**
+     * @return the certConstraints
+     */
+    public Object getCertConstraints() {
+        return certConstraints == NOT_FOUND ? null : certConstraints;
+    }
+
+    /**
+     * @param certConstraints the certConstraints to set
+     */
+    public void setCertConstraints(Object certConstraints) {
+        this.certConstraints = certConstraints;
+    }
+
+    /**
+     * @return the serviceRedirection
+     */
+    public Object getServiceRedirection() {
+        return serviceRedirection == NOT_FOUND ? null : serviceRedirection;
+    }
+
+    /**
+     * @param serviceRedirection the serviceRedirection to set
+     */
+    public void setServiceRedirection(Object serviceRedirection) {
+        this.serviceRedirection = serviceRedirection;
+    }
+
+    /**
+     * @return the httpServletResponse
+     */
+    public Object getHttpServletResponse() {
+        return httpServletResponse == NOT_FOUND ? null : httpServletResponse;
+    }
+
+    /**
+     * @param httpServletResponse the httpServletResponse to set
+     */
+    public void setHttpServletResponse(Object httpServletResponse) {
+        this.httpServletResponse = httpServletResponse;
+    }
+
+    /**
+     * @return the resourceMethod
+     */
+    public Object getResourceMethod() {
+        return resourceMethod == NOT_FOUND ? null : resourceMethod;
+    }
+
+    /**
+     * @param resourceMethod the resourceMethod to set
+     */
+    public void setResourceMethod(Object resourceMethod) {
+        this.resourceMethod = resourceMethod;
+    }
+
+    /**
+     * @return the oneWayRequest
+     */
+    public Object getOneWayRequest() {
+        return oneWayRequest == NOT_FOUND ? null : oneWayRequest;
+    }
+
+    /**
+     * @param oneWayRequest the oneWayRequest to set
+     */
+    public void setOneWayRequest(Object oneWayRequest) {
+        this.oneWayRequest = oneWayRequest;
+    }
+
+    /**
+     * @return the asyncResponse
+     */
+    public Object getAsyncResponse() {
+        return asyncResponse == NOT_FOUND ? null : asyncResponse;
+    }
+
+    /**
+     * @param asyncResponse the asyncResponse to set
+     */
+    public void setAsyncResponse(Object asyncResponse) {
+        this.asyncResponse = asyncResponse;
+    }
+
+    /**
+     * @return the threadContextSwitched
+     */
+    public Object getThreadContextSwitched() {
+        return threadContextSwitched == NOT_FOUND ? null : threadContextSwitched;
+    }
+
+    /**
+     * @param threadContextSwitched the threadContextSwitched to set
+     */
+    public void setThreadContextSwitched(Object threadContextSwitched) {
+        this.threadContextSwitched = threadContextSwitched;
+    }
+
+    /**
+     * @return the previousMessage
+     */
+    public Object getPreviousMessage() {
+        return previousMessage == NOT_FOUND ? null : previousMessage;
+    }
+
+    public boolean containsPreviousMessage() {
+        return previousMessage == NOT_FOUND ? false : true;
+    }
+
+    /**
+     * @param previousMessage the previousMessage to set
+     */
+    public void setPreviousMessage(Object previousMessage) {
+        this.previousMessage = previousMessage;
+    }
+
+    /**
+     * @return the cacheInputProperty
+     */
+    public Object getCacheInputProperty() {
+        return cacheInputProperty == NOT_FOUND ? null : cacheInputProperty;
+    }
+
+    /**
+     * @param cacheInputProperty the cacheInputProperty to set
+     */
+    public void setCacheInputProperty(Object cacheInputProperty) {
+        this.cacheInputProperty = cacheInputProperty;
+    }
+
+    /**
+     * @return the sseEventSink
+     */
+    public Object getSseEventSink() {
+        return sseEventSink == NOT_FOUND ? null : sseEventSink;
+    }
+
+    /**
+     * @param sseEventSink the sseEventSink to set
+     */
+    public void setSseEventSink(Object sseEventSink) {
+        this.sseEventSink = sseEventSink;
+    }
+
+    /**
+     * @return the responseHeadersCopied
+     */
+    public Object getResponseHeadersCopied() {
+        return responseHeadersCopied == NOT_FOUND ? null : responseHeadersCopied;
+    }
+
+    /**
+     * @param responseHeadersCopied the responseHeadersCopied to set
+     */
+    public void setResponseHeadersCopied(Object responseHeadersCopied) {
+        this.responseHeadersCopied = responseHeadersCopied;
+    }
+
+    /**
+     * @return the requestorRole
+     */
+    public Object getRequestorRole() {
+        return requestorRole == NOT_FOUND ? null : requestorRole;
+    }
+
+    /**
+     * @param requestorRole the requestorRole to set
+     */
+    public void setRequestorRole(Object requestorRole) {
+        this.requestorRole = requestorRole;
+    }
+
+    /**
+     * @return the emptyPartialResponse
+     */
+    public Object getEmptyPartialResponse() {
+        return emptyPartialResponse == NOT_FOUND ? null : emptyPartialResponse;
+    }
+
+    /**
+     * @param emptyPartialResponse the emptyPartialResponse to set
+     */
+    public void setEmptyPartialResponse(Object emptyPartialResponse) {
+        this.emptyPartialResponse = emptyPartialResponse;
+    }
+
+    /**
+     * @return the partialResponse
+     */
+    public Object getPartialResponse() {
+        return partialResponse == NOT_FOUND ? null : partialResponse;
+    }
+
+    /**
+     * @param partialResponse the partialResponse to set
+     */
+    public void setPartialResponse(Object partialResponse) {
+        this.partialResponse = partialResponse;
+    }
 }

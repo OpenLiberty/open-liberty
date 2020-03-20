@@ -85,7 +85,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         try {
             processResponse(providerFactory, message);
         } finally {
-            if (message.get(SseEventSink.class) == null) {
+            if (((MessageImpl) message).getSseEventSink() == null) {
                 ServerProviderFactory.releaseRequestState(providerFactory, message);
             }
         }
@@ -494,7 +494,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
     // method is modifiable. Thus we do need to know if the initial copy has already
     // occurred: for now we will just use to ensure the correct status is set
     private boolean isResponseHeadersCopied(Message message) {
-        return PropertyUtils.isTrue(message.get(AbstractHTTPDestination.RESPONSE_HEADERS_COPIED));
+        return PropertyUtils.isTrue(((MessageImpl) message).getResponseHeadersCopied());
     }
 
     @Override

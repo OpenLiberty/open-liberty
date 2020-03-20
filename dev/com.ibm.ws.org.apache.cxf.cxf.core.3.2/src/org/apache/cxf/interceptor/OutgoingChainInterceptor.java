@@ -48,7 +48,7 @@ import org.apache.cxf.transport.Conduit;
 
 public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final Logger LOG = LogUtils.getL7dLogger(OutgoingChainInterceptor.class);
-    private static final String CACHE_INPUT_PROPERTY = "cxf.io.cacheinput";
+    public static final String CACHE_INPUT_PROPERTY = "cxf.io.cacheinput";
     private PhaseChainCache chainCache = new PhaseChainCache();
 
     public OutgoingChainInterceptor() {
@@ -62,7 +62,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         //also be "echoing" some of the content from the input.   Thus, we need to
         //mark it as requiring the input to be cached.
         if (message.getExchange().get(CACHE_INPUT_PROPERTY) == null) {
-            message.put(CACHE_INPUT_PROPERTY, Boolean.TRUE);
+            ((MessageImpl) message).setCacheInputProperty(Boolean.TRUE);
         }
         if (null != binding && null != binding.getOperationInfo() && binding.getOperationInfo().isOneWay()) {
             closeInput(message);

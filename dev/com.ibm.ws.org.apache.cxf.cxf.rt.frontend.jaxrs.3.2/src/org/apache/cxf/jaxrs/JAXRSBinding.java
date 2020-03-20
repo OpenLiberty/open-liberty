@@ -42,7 +42,7 @@ public class JAXRSBinding extends AbstractBasicInterceptorProvider implements Bi
     }
 
     public org.apache.cxf.message.Message createMessage(org.apache.cxf.message.Message m) {
-        if (!m.containsKey(org.apache.cxf.message.Message.CONTENT_TYPE)) {
+        if (!((MessageImpl) m).containsContentType()) {
 
             String ct = null;
 

@@ -304,7 +304,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         final ClassResourceInfo cri = ori.getClassResourceInfo();
         exchange.put(OperationResourceInfo.class, ori);
         exchange.put(JAXRSUtils.ROOT_RESOURCE_CLASS, cri);
-        message.put(RESOURCE_METHOD, ori.getMethodToInvoke());
+        ((MessageImpl) message).setResourceMethod(ori.getMethodToInvoke());
         ((MessageImpl) message).setTemplateParameters((Object) values);
 
         String plainOperationName = ori.getMethodToInvoke().getName();
@@ -313,9 +313,16 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         }
         exchange.put(RESOURCE_OPERATION_NAME, plainOperationName);
 
-        if (ori.isOneway()
-            || PropertyUtils.isTrue(HttpUtils.getProtocolHeader(message, Message.ONE_WAY_REQUEST, null))) {
+        if (ori.isOneway()) {
             exchange.setOneWay(true);
+        } else {
+            Object oneWay = ((MessageImpl) message).getOneWayRequest();
+            if (oneWay == null) {
+                oneWay = HttpUtils.getFromHeaders(message, Message.ONE_WAY_REQUEST, null, false);
+            }
+            if (oneWay !=null && PropertyUtils.isTrue(oneWay)) {
+                exchange.setOneWay(true);
+            }
         }
         ResourceProvider rp = cri.getResourceProvider();
         if (rp instanceof SingletonResourceProvider) {
