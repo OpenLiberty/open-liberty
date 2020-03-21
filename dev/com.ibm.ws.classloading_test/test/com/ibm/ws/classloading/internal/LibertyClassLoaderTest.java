@@ -55,7 +55,7 @@ public class LibertyClassLoaderTest {
 
     @Test
     public void testClassNotFound() {
-        assertNull(loader.findClassBytes("non.existent.Class"));
+        assertNull(loader.findClassBytes("non.existent.Class", "non/existent/Class.class"));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class LibertyClassLoaderTest {
         };
 
         try {
-            loader.findClassBytes("test");
+            loader.findClassBytes("test", "test.class");
             fail("call should have thrown an exception");
         } catch (ClassFormatError e) {
             assertTrue("Should have traced an error", outputManager.checkForStandardErr("CWWKL0002E"));

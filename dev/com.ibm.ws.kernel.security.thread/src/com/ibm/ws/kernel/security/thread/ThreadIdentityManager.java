@@ -41,12 +41,14 @@ public class ThreadIdentityManager {
      * The ThreadIdentityService references. The references are set by the
      * ThreadIdentityManagerConfigurator.
      */
-    private static List<ThreadIdentityService> threadIdentityServices = new CopyOnWriteArrayList<>();
+    private static final List<ThreadIdentityService> threadIdentityServices = new CopyOnWriteArrayList<>();
 
     /**
      * The J2CIdentityService references. The references are set by the ThreadIdentityManagerConfigurator.
      */
-    private static List<J2CIdentityService> j2cIdentityServices = new CopyOnWriteArrayList<>();
+    private static final List<J2CIdentityService> j2cIdentityServices = new CopyOnWriteArrayList<>();
+
+    private static final Object emptyToken = Collections.EMPTY_MAP;
 
     /**
      * Add a ThreadIdentityService reference. This method is called by
@@ -319,7 +321,7 @@ public class ThreadIdentityManager {
                 resetRecursionCheck();
             }
         }
-        return token == null ? Collections.EMPTY_MAP : token;
+        return token == null ? emptyToken : token;
     }
 
     /**
@@ -410,9 +412,11 @@ public class ThreadIdentityManager {
      * @see #resetChecked(Object)
      */
     public static void reset(Object token) {
-        try {
-            resetCheckedInternal(token, null);
-        } catch (ThreadIdentityException tie) {
+        if (token != emptyToken && token != null) {
+            try {
+                resetCheckedInternal(token, null);
+            } catch (ThreadIdentityException tie) {
+            }
         }
     }
 }

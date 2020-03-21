@@ -232,11 +232,11 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             sharedClassCacheURL = null;
         } else {
             String protocol = resourceURL.getProtocol();
-            if ("jar".equals(protocol)) {
-                sharedClassCacheURL = resourceURL;
-            } else if ("wsjar".equals(protocol)) {
+            // Doing the conversion that the shared class cache logic does for jar
+            // URLs in order to do less work while holding a shared class cache monitor.
+            if ("jar".equals(protocol) || "wsjar".equals(protocol)) {
                 try {
-                    sharedClassCacheURL = new URL(resourceURL.toExternalForm().substring(2));
+                    sharedClassCacheURL = new URL(resourceURL.getPath());
                 } catch (MalformedURLException e) {
                     sharedClassCacheURL = null;
                 }

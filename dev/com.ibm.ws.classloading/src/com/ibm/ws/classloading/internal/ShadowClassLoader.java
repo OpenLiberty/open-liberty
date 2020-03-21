@@ -127,7 +127,8 @@ class ShadowClassLoader extends IdentifiedLoader {
 
     @Override
     protected Class<?> findClass(final String name) throws ClassNotFoundException {
-        final ByteResourceInformation classBytesResourceInformation = shadowedLoader.findClassBytes(name);
+        String resourceName = Util.convertClassNameToResourceName(name);
+        final ByteResourceInformation classBytesResourceInformation = shadowedLoader.findClassBytes(name, resourceName);
 
         if (classBytesResourceInformation == null) {
             throw new ClassNotFoundException(name);
