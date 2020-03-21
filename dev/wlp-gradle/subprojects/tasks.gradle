@@ -168,13 +168,13 @@ task jakartaeeTransform {
                     args = [ project.buildDir.path + '/' + bundleJar.name, 
                           (project.buildDir.path + '/' + bundleJar.name).replaceAll('.jar',".jakarta.jar"),
                           "-tr",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-renames.properties').path,
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-renames.properties').path,
                           "-ts",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-selections.properties').path,
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-selections.properties').path,
                           "-tv",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-versions.properties').path,
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-versions.properties').path,
                            "-tb",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-bundles.properties').path] 
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-bundles.properties').path] 
                 }
           }
       }
