@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -234,10 +234,13 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
 
         //quick test..
         File target = new File(dir, pathAndName);
+        Boolean fileExists = null;
         if ((!isRoot && !pathAndName.startsWith("/")) || isRoot) {
             //if path is relative, and we're not root, then validate path
             //or if we are root, just validate it anyways.
-            if (!FileUtils.fileExists(target) || !PathUtils.checkCase(target, pathAndName)) {
+            boolean exists = FileUtils.fileExists(target);
+            fileExists = exists ? Boolean.TRUE : Boolean.FALSE;
+            if (!exists || !PathUtils.checkCase(target, pathAndName)) {
                 //no file/dir ? bug out early.
                 return null;
             }
@@ -245,7 +248,8 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
 
         //if there's no / in the name.. it's immediately relative to here.. build & return it.
         if (pathAndName.indexOf("/") == -1) {
-            if (FileUtils.fileExists(target) && PathUtils.checkCase(target, pathAndName))
+            boolean exists = fileExists != null ? fileExists.booleanValue() : FileUtils.fileExists(target);
+            if (exists && PathUtils.checkCase(target, pathAndName))
                 return new FileEntry(this, target, root, containerFactoryHolder);
             else
                 return null;
