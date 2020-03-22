@@ -9,22 +9,21 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
  
-package com.ibm.ws.security.acme.docker;
+package com.ibm.ws.security.acme.docker.pebble;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.testcontainers.Testcontainers;
+import com.ibm.ws.security.acme.docker.CAContainer;
 
 /**
  * Driver to start Pebble container services from within a stand-alone JVM.
  */
 public class PebbleDriver {
-	public static ChalltestsrvContainer challtestsrv = null;
 
-	public static PebbleContainer pebble = null;
+	public static CAContainer pebble;
 
 	static {
 		// TODO Should support remote docker via Consul?
@@ -88,7 +87,7 @@ public class PebbleDriver {
 		banner.append("*\n");
 		banner.append("* Pebble URI: " + pebble.getAcmeDirectoryURI(false) + " or " + pebble.getAcmeDirectoryURI(true)
 				+ "\n");
-		banner.append("* HTTP port: " + PebbleContainer.HTTP_PORT + "\n");
+		banner.append("* HTTP port: " + pebble.getHttpPort() + "\n");
 		banner.append("* Domains: " + domainList + "\n");
 		banner.append("*\n");
 		banner.append("*\n");
@@ -103,41 +102,17 @@ public class PebbleDriver {
 	private static void start() {
 
 		System.out.println("Starting Pebble environment bring up");
-
-		/*
-		 * Need to expose the HTTP port that is used to answer the HTTP-01
-		 * challenge.
-		 */
-		System.out.println("Running Testcontainers.exposeHostPorts");
-		Testcontainers.exposeHostPorts(PebbleContainer.HTTP_PORT);
-
-		/*
-		 * Startup the challtestsrv container first. This container will serve
-		 * as a mock DNS server to the Pebble server that starts on the other
-		 * container.
-		 */
-		System.out.println("Starting ChalltestsrvContainer");
-		challtestsrv = new ChalltestsrvContainer();
-		challtestsrv.start();
-
 		/*
 		 * Startup the pebble server.
 		 */
 		System.out.println("Starting PebbleContainer");
-		pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT,
-				challtestsrv.getNetwork());
-		pebble.start();
+		pebble = new PebbleContainer();
 	}
 
 	private static void stop() {
 		System.out.println("Stopping PebbleContainer.");
 		if (pebble != null) {
 			pebble.stop();
-		}
-
-		System.out.println("Stopping ChalltestsrvContainer.");
-		if (challtestsrv != null) {
-			challtestsrv.stop();
 		}
 	}
 
@@ -152,8 +127,8 @@ public class PebbleDriver {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			challtestsrv.addARecord(domain, pebble.getClientHost());
-			challtestsrv.addAAAARecord(domain, "");
+			pebble.addARecord(domain, pebble.getClientHost());
+			pebble.addAAAARecord(domain, "");
 		}
 	}
 }

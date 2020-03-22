@@ -13,7 +13,6 @@ package com.ibm.ws.security.acme.fat;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,21 +24,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.testcontainers.Testcontainers;
-
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
-import com.ibm.ws.security.acme.docker.BoulderContainer;
 import com.ibm.ws.security.acme.docker.CAContainer;
-import com.ibm.ws.security.acme.docker.ChalltestsrvContainer;
-import com.ibm.ws.security.acme.docker.PebbleContainer;
+import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.AcmeClient;
 import com.ibm.ws.security.acme.internal.AcmeConfig;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
@@ -60,69 +55,35 @@ public class AcmeClientTest {
 	private static final String TEST_DOMAIN_3 = "domain3.com";
 	private static final String TEST_DOMAIN_4 = "domain4.com";
 
+	private static HttpChallengeServer challengeServer = null;
+
 	private static String TRUSTSTORE_FILE;
 	private static String FILE_ACCOUNT_KEY;
 	private static String FILE_DOMAIN_KEY;
 	private static final String TRUSTSTORE_PASSWORD = "password";
-	private static X509Certificate pebbleIntermediateCertificate = null;
-	private static HttpChallengeServer challengeServer = null;
-	
-	private static final String acmeDirectoryURI = FATSuite.pebble.getAcmeDirectoryURI(true);
+	private static X509Certificate intermediateCertificate = null;
+	private static final String FILE_MINICA_PEM = "lib/LibertyFATTestFiles/pebble.minica.pem";
 
-	public static CAContainer challtestsrv = null;
-
-	public static CAContainer pebble = null;
+	@ClassRule
+	public static CAContainer pebble = new PebbleContainer();
 	
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 	
-
-	/**
-	 * We need to start up the containers in an orderly fashion so that we can
-	 * pass the IP address of the DNS server to the Pebble server.
-	 * @throws IOException 
-	 */
 	@BeforeClass
-	public static void beforeClass() throws IOException {
-		final String METHOD_NAME = "beforeClass()";
-
-		String os = System.getProperty("os.name").toLowerCase();
-		Assume.assumeTrue(!os.startsWith("z/os"));
-
-		/*
-		 * Need to expose the HTTP port that is used to answer the HTTP-01
-		 * challenge.
-		 */
-		Testcontainers.exposeHostPorts(BoulderContainer.HTTP_PORT);
-
-		/*
-		 * Startup the challtestsrv container first. This container will serve
-		 * as a mock DNS server to the Pebble server that starts on the other
-		 * container.
-		 */
-		challtestsrv = new ChalltestsrvContainer();
-		challtestsrv.start();
+	public static void beforeClass() throws Exception {
+	
 		/*
 		 * Start a simple HTTP server to respond to challenges.
 		 */
-		challengeServer = new HttpChallengeServer(PebbleContainer.HTTP_PORT);
-		challengeServer.start();
+		challengeServer = new HttpChallengeServer(pebble.getHttpPort());
 		
-		Log.info(FATSuite.class, METHOD_NAME,
-				"Challtestserv ContainerIpAddress: " + challtestsrv.getContainerIpAddress());
-		Log.info(FATSuite.class, METHOD_NAME, "Challtestserv DockerImageName:    " + challtestsrv.getDockerImageName());
-		Log.info(FATSuite.class, METHOD_NAME, "Challtestserv ContainerInfo:      " + challtestsrv.getContainerInfo());
-
-		/*
-		 * Startup the pebble server.
-		 */
-		pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT, challtestsrv.getNetwork());
-		pebble.start();
-
-		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerIpAddress: " + pebble.getContainerIpAddress());
-		Log.info(FATSuite.class, METHOD_NAME, "Pebble DockerImageName:    " + pebble.getDockerImageName());
-		Log.info(FATSuite.class, METHOD_NAME, "Pebble ContainerInfo:      " + pebble.getContainerInfo());
+		try {
+			challengeServer.start();
+		} catch (IOException e) {
+			Log.error(AcmeClientTest.class, "beforeClass", e);
+		}
 		
 		try {
 			/*
@@ -166,10 +127,10 @@ public class AcmeClientTest {
 			 * verify that the generated certificate is actually signed by the
 			 * root and intermediate certificates.
 			 */
-			pebbleIntermediateCertificate = AcmeFatUtils
-					.getX509Certificate(new ByteArrayInputStream(pebble.getAcmeCaIntermediateCertificate()));
+			intermediateCertificate = AcmeFatUtils
+					.getX509Certificate(pebble.getAcmeCaIntermediateCertificate());
 			Log.info(AcmeClientTest.class, "<cinit>",
-					"Pebble Intermediate Cert: " + String.valueOf(pebbleIntermediateCertificate));
+					"Pebble Intermediate Cert: " + String.valueOf(intermediateCertificate));
 
 			/*
 			 * Get the certificate generated by miniCA for the ACME HTTPS API.
@@ -186,55 +147,20 @@ public class AcmeClientTest {
 			ks.load(null, null);
 			ks.setCertificateEntry("acme-https", acmeHttpsCert);
 			ks.store(new FileOutputStream(TRUSTSTORE_FILE), TRUSTSTORE_PASSWORD.toCharArray());
-
+			
 		} catch (Exception e) {
 			Log.error(AcmeClientTest.class, "<cinit>", e);
 		}
-<<<<<<< HEAD
 	}
-
-	@BeforeClass
-	public static void beforeClass() throws IOException {
-
-		/*
-		 * Start a simple HTTP server to respond to challenges.
-		 */
-		challengeServer = new HttpChallengeServer(PebbleContainer.HTTP_PORT);
-		challengeServer.start();
-=======
-		
->>>>>>> add boulder CA to acme FAT
-	}
+	
 
 	@AfterClass
-	public static void afterClass() throws InterruptedException {
-		if (pebble != null) {
-			pebble.stop();
-		}
+	public static void afterClass() throws Exception {
 		if (challengeServer != null) {
 			challengeServer.stop();
 			challengeServer = null;
 		}
 	}
-
-	@Before
-	public void beforeTest() throws Exception {
-
-		/*
-		 * Setup the Mock DNS server to redirect requests to the test domains to
-		 * this client.
-		 */
-		for (String domain : new String[] { TEST_DOMAIN_1, TEST_DOMAIN_2, TEST_DOMAIN_3, TEST_DOMAIN_4 }) {
-			/*
-			 * Disable the IPv6 responses for this domain. The Pebble CA server
-			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
-			 * we don't currently have the testcontainer host's IPv6 address.
-			 */
-			challtestsrv.addARecord(domain, pebble.getClientHost());
-			challtestsrv.addAAAARecord(domain, "");
-		}
-	}
-
 	/**
 	 * Fetch a certificate for a single domain.
 	 * 
@@ -246,29 +172,20 @@ public class AcmeClientTest {
 		/*
 		 * Create an AcmeService to test.
 		 */
-<<<<<<< HEAD
-		AcmeClient acmeClient = new AcmeClient(getAcmeConfig(TEST_DOMAIN_1));
-=======
-		AcmeClient acmeClient = new AcmeClient(pebble.getAcmeDirectoryURI(), FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
->>>>>>> add boulder CA to acme FAT
-
-		/*
-		 * Link the new client to the challenge response server.
-		 */
-		challengeServer.setAcmeClient(acmeClient);
+		AcmeClient acmeClient = createClient(TEST_DOMAIN_1);
 
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
+		AcmeCertificate newCertificate = acmeClient
+				.fetchCertificate(false);
+
 
 		/*
 		 * Verify that the certificate returned from the ACME CA is signed by
 		 * the ACME CA's intermediate certificate public key.
 		 */
-		X509Certificate cert = newCertificate.getCertificate();
-		newCertificate.getCertificate().verify(pebbleIntermediateCertificate.getPublicKey());
+		newCertificate.getCertificate().verify(intermediateCertificate.getPublicKey());
 		assertEquals("CN=" + TEST_DOMAIN_1, newCertificate.getCertificate().getSubjectDN().getName());
 	}
 
@@ -283,18 +200,7 @@ public class AcmeClientTest {
 		/*
 		 * Create an AcmeService to test.
 		 */
-<<<<<<< HEAD
-		AcmeClient acmeClient = new AcmeClient(
-				getAcmeConfig(TEST_DOMAIN_1, TEST_DOMAIN_2, TEST_DOMAIN_3, TEST_DOMAIN_4));
-=======
-		AcmeClient acmeClient = new AcmeClient(pebble.getAcmeDirectoryURI(), FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
->>>>>>> add boulder CA to acme FAT
-
-		/*
-		 * Link the new client to the challenge response server.
-		 */
-		challengeServer.setAcmeClient(acmeClient);
+		AcmeClient acmeClient = createClient(TEST_DOMAIN_1, TEST_DOMAIN_2, TEST_DOMAIN_3, TEST_DOMAIN_4);
 
 		/*
 		 * Get the certificate from the ACME CA server.
@@ -308,7 +214,7 @@ public class AcmeClientTest {
 		 * When processing multiple domains, the subject DN will be that of the
 		 * first domain.
 		 */
-		newCertificate.getCertificate().verify(pebbleIntermediateCertificate.getPublicKey());
+		newCertificate.getCertificate().verify(intermediateCertificate.getPublicKey());
 		assertEquals("CN=" + TEST_DOMAIN_1, newCertificate.getCertificate().getSubjectDN().getName());
 	}
 
@@ -322,23 +228,12 @@ public class AcmeClientTest {
 		/*
 		 * Create an AcmeService to test.
 		 */
-<<<<<<< HEAD
-		AcmeClient acmeClient = new AcmeClient(getAcmeConfig(TEST_DOMAIN_1));
-=======
-		AcmeClient acmeClient = new AcmeClient(pebble.getAcmeDirectoryURI(), FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
->>>>>>> add boulder CA to acme FAT
-
-		/*
-		 * Link the new client to the challenge response server.
-		 */
-		challengeServer.setAcmeClient(acmeClient);
-
+		AcmeClient acmeClient = createClient(TEST_DOMAIN_1);
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
-
+		AcmeCertificate newCertificate = acmeClient
+				.fetchCertificate(false);
 		/*
 		 * The certificate should be valid.
 		 */
@@ -356,22 +251,35 @@ public class AcmeClientTest {
 		assertEquals("The new certificate should be revoked.", "Revoked",
 				pebble.getAcmeCertificateStatus(newCertificate.getCertificate()));
 	}
-
+	
 	/**
-	 * Get a {@link AcmeConfig} instance for the test.
+	 * Create the AcmeClient using the directory URI and
+	 * Account information. Also set the AcmeClient on
+	 * the challenge server.
 	 * 
-	 * @param domains
-	 *            Domains to configure.
-	 * @return The {@link AcmeConfig} instance.
-	 * @throws AcmeCaException
-	 *             If the instance could not be created.
+	 * @return the created AcmeClient
 	 */
-	private static AcmeConfig getAcmeConfig(String... domains) throws AcmeCaException {
-		Map<String, Object> acmeProperties = new HashMap<String, Object>();
-		acmeProperties.put(AcmeConstants.DOMAIN, domains);
-		acmeProperties.put(AcmeConstants.DIR_URI, acmeDirectoryURI);
-		acmeProperties.put(AcmeConstants.ACCOUNT_KEY_FILE, FILE_ACCOUNT_KEY);
-		acmeProperties.put(AcmeConstants.DOMAIN_KEY_FILE, FILE_DOMAIN_KEY);
-		return new AcmeConfig(acmeProperties);
+	public AcmeClient createClient(String... domains) throws AcmeCaException {
+		AcmeClient ac = new AcmeClient(getAcmeConfig(domains));
+		challengeServer.setAcmeClient(ac);
+		return ac;
 	}
+	
+	/**
+ 	 * Get a {@link AcmeConfig} instance for the test.
+ 	 * 
+ 	 * @param domains
+ 	 *            Domains to configure.
+ 	 * @return The {@link AcmeConfig} instance.
+ 	 * @throws AcmeCaException
+ 	 *             If the instance could not be created.
+ 	 */
+ 	private static AcmeConfig getAcmeConfig(String... domains) throws AcmeCaException {
+ 		Map<String, Object> acmeProperties = new HashMap<String, Object>();
+ 		acmeProperties.put(AcmeConstants.DOMAIN, domains);
+ 		acmeProperties.put(AcmeConstants.DIR_URI, pebble.getAcmeDirectoryURI(true));
+ 		acmeProperties.put(AcmeConstants.ACCOUNT_KEY_FILE, FILE_ACCOUNT_KEY);
+ 		acmeProperties.put(AcmeConstants.DOMAIN_KEY_FILE, FILE_DOMAIN_KEY);
+ 		return new AcmeConfig(acmeProperties);
+ 	}
 }

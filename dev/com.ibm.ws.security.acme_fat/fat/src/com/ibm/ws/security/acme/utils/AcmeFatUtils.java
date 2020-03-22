@@ -57,7 +57,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
 import com.ibm.ws.security.acme.docker.CAContainer;
-import com.ibm.ws.security.acme.docker.PebbleContainer;
+import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -238,9 +239,9 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, CAContainer container, ServerConfiguration originalConfig, String... domains)
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer, ServerConfiguration originalConfig, String... domains)
 			throws Exception {
-		configureAcmeCA(server, originalConfig, false, domains);
+		configureAcmeCA(server, caContainer, originalConfig, false, domains);
 	}
 
 	/**
@@ -258,7 +259,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, boolean useAcmeURIs,
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer, ServerConfiguration originalConfig, boolean useAcmeURIs,
 			String... domains) throws Exception {
 		/*
 		 * Choose which configuration to update.
@@ -271,7 +272,7 @@ public class AcmeFatUtils {
 		 */
 		AcmeCA acmeCA = clone.getAcmeCA();
 		acmeCA.setDomain(Arrays.asList(domains));
-		configureAcmeCaConnection(useAcmeURIs, acmeCA);
+		configureAcmeCaConnection(caContainer.getAcmeDirectoryURI(useAcmeURIs), acmeCA);
 
 		/*
 		 * The defaultHttpEndpoint needs to point to the port the CA has been
@@ -279,7 +280,7 @@ public class AcmeFatUtils {
 		 */
 		HttpEndpoint endpoint = new HttpEndpoint();
 		endpoint.setId("defaultHttpEndpoint");
-		endpoint.setHttpPort(String.valueOf(PebbleContainer.HTTP_PORT));
+		endpoint.setHttpPort(String.valueOf(caContainer.getHttpPort()));
 		endpoint.setHttpsPort("${bvt.prop.HTTP_default.secure}");
 		endpoint.setHost("*");
 		clone.getHttpEndpoints().add(endpoint);
@@ -293,14 +294,14 @@ public class AcmeFatUtils {
 	/**
 	 * Configure the connection related information for the ACME CA server.
 	 * 
-	 * @param useAcmeURIs
+	 * @param directoryUri
 	 *            Use "acme://" style URIs for ACME providers.
 	 * @param acmeCA
 	 *            The {@link AcmeCA} instance to update.
 	 */
-	public static void configureAcmeCaConnection(boolean useAcmeURIs, AcmeCA acmeCA) {
-		acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI(useAcmeURIs));
-		if (!useAcmeURIs) {
+	public static void configureAcmeCaConnection(String directoryUri, AcmeCA acmeCA) {
+		acmeCA.setDirectoryURI(directoryUri);
+		if (!directoryUri.startsWith("acme")) {
 			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
 			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
 			acmeTransportConfig.setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
@@ -319,7 +320,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig) throws Exception {
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer, ServerConfiguration originalConfig) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -332,7 +333,7 @@ public class AcmeFatUtils {
 		 */
 		HttpEndpoint endpoint = new HttpEndpoint();
 		endpoint.setId("defaultHttpEndpoint");
-		endpoint.setHttpPort(String.valueOf(PebbleContainer.HTTP_PORT));
+		endpoint.setHttpPort(String.valueOf(caContainer.getHttpPort()));
 		endpoint.setHttpsPort("${bvt.prop.HTTP_default.secure}");
 		endpoint.setHost("*");
 		clone.getHttpEndpoints().add(endpoint);
@@ -352,7 +353,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             If there was an error communicating with the mock DNS server.
 	 */
-	public static void configureDnsForDomains(CAContainer dnscontainer, CAContainer container, String... domains) throws Exception {
+	public static void configureDnsForDomains(CAContainer container, String... domains) throws Exception {
 
 		Log.info(AcmeFatUtils.class, "configureDnsForDomains(String...)",
 				"Configuring DNS with the following domains: " + domains);
@@ -363,8 +364,8 @@ public class AcmeFatUtils {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			dnscontainer.addARecord(domain, container.getClientHost());
-			dnscontainer.addAAAARecord(domain, "");
+			container.addARecord(domain, container.getClientHost());
+			container.addAAAARecord(domain, "");
 		}
 	}
 

@@ -34,6 +34,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.Testcontainers;
@@ -41,8 +42,7 @@ import org.testcontainers.Testcontainers;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
-import com.ibm.ws.security.acme.docker.ChalltestsrvContainer;
-import com.ibm.ws.security.acme.docker.PebbleContainer;
+import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
@@ -69,8 +69,10 @@ public class AcmeCaRestHandlerTest {
 	private static final String READER_PASS = "readerpass";
 	private static final String UNAUTHORIZED_USER = "unauthorized";
 	private static final String UNAUTHORIZED_PASS = "unauthorizedpass";
-	public static CAContainer challtestsrv = null;
-	public static CAContainer pebble = null;
+	private boolean usePebbleURI = true;
+
+	@ClassRule
+	public static CAContainer pebble = new PebbleContainer();
 	
 	static {
 		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
@@ -78,50 +80,7 @@ public class AcmeCaRestHandlerTest {
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		final String METHOD_NAME = "beforeClass()";
 		ORIGINAL_CONFIG = server.getServerConfiguration();
-		
-
-		/*
-		 * Need to expose the HTTP port that is used to answer the HTTP-01
-		 * challenge.
-		 */
-		Log.info(FATSuite.class, METHOD_NAME, "Running Testcontainers.exposeHostPorts");
-		Testcontainers.exposeHostPorts(PebbleContainer.HTTP_PORT);
-		
-		/*
-		 * Startup the challtestsrv container first. This container will serve
-		 * as a mock DNS server to the Pebble server that starts on the other
-		 * container.
-		 */
-		challtestsrv = new ChalltestsrvContainer();
-		challtestsrv.start();
-
-		/*
-		 * Startup the pebble server.
-		 */
-		pebble = new PebbleContainer(challtestsrv.getIntraContainerIP() + ":" + ChalltestsrvContainer.DNS_PORT, challtestsrv.getNetwork());
-		pebble.start();
-		
-
-		Log.info(AcmeCaRestHandlerTest.class, METHOD_NAME, "Pebble ContainerIpAddress: " + pebble.getContainerIpAddress());
-		Log.info(AcmeCaRestHandlerTest.class, METHOD_NAME, "Pebble DockerImageName:    " + pebble.getDockerImageName());
-		Log.info(AcmeCaRestHandlerTest.class, METHOD_NAME, "Pebble ContainerInfo:      " + pebble.getContainerInfo());
-		/*
-		 * Configure mock DNS server.
-		 */
-		AcmeFatUtils.configureDnsForDomains(challtestsrv, pebble, DOMAINS);
-		AcmeFatUtils.checkPortOpen(PebbleContainer.HTTP_PORT, 60000);
-	}
-	
-	@AfterClass
-	public static void afterClass() {
-		if (pebble != null) {
-			pebble.stop();
-		}
-		if (challtestsrv != null) {
-			challtestsrv.stop();
-		}
 	}
 
 	@After
@@ -165,13 +124,13 @@ public class AcmeCaRestHandlerTest {
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
+			
 			Log.info(this.getClass(), methodName, "Performing GET #2");
 			String html2 = performGet(200, ADMIN_USER, ADMIN_PASS);
 			assertNotNull("Should have received an HTML document from REST endpoint.", html2);
 			String serial1 = getLeafSerialFromHtml(html1);
 			String serial2 = getLeafSerialFromHtml(html2);
 			assertThat("Certificates should have been different.", serial2, not(equalTo(serial1)));
-
 		} finally {
 			/*
 			 * Stop the server.
@@ -247,7 +206,7 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server,  pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();
@@ -293,6 +252,7 @@ public class AcmeCaRestHandlerTest {
 			HttpGet httpGet = new HttpGet("https://localhost:" + server.getHttpDefaultSecurePort() + REST_ENDPOINT);
 			httpGet.setHeader("Authorization",
 					"Basic " + DatatypeConverter.printBase64Binary((user + ":" + password).getBytes()));
+
 
 			/*
 			 * Send the GET request and process the response.

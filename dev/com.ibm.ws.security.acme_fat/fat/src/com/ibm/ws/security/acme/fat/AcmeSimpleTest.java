@@ -15,24 +15,32 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.config.AcmeCA;
+import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
+
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -48,7 +56,6 @@ public class AcmeSimpleTest {
 	public static LibertyServer server;
 
 	protected static ServerConfiguration ORIGINAL_CONFIG;
-	private boolean usePebbleURI = false;
 	private static final String[] DOMAINS_ALL = { "domain1.com", "domain2.com", "domain3.com" };
 	private static final String[] DOMAINS1 = { "domain1.com" };
 	private static final String[] DOMAINS2 = { "domain1.com", "domain2.com", "domain3.com" };
@@ -61,6 +68,7 @@ public class AcmeSimpleTest {
 	public static void beforeClass() throws Exception {
 		ORIGINAL_CONFIG = server.getServerConfiguration();
 		caContainer = new PebbleContainer();
+		AcmeFatUtils.checkPortOpen(caContainer.getHttpPort(), 60000);
 	}
 
 	@AfterClass
@@ -108,7 +116,7 @@ public class AcmeSimpleTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS3);
+		AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS3);
 
 		/***********************************************************************
 		 * 
@@ -220,7 +228,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			server.stopServer("CWPKI2038W");
 		}
 	}
 
@@ -232,7 +240,7 @@ public class AcmeSimpleTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS1);
+		AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS1);
 
 		try {
 
@@ -256,7 +264,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 1: START");
-			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS2);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS2);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
@@ -277,7 +285,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 2: START");
-			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS3);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS3);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
 			/*
@@ -298,7 +306,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 3: START");
-			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), ORIGINAL_CONFIG, DOMAINS4);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, useAcmeURIs(), DOMAINS4);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
@@ -334,7 +342,7 @@ public class AcmeSimpleTest {
 		configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
 		configuration.getFeatureManager().getFeatures().add("transportSecurity-1.0");
 		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
-		AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS1);
 
 		try {
 
@@ -366,7 +374,7 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 1: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().add("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS1);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
@@ -385,7 +393,7 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 2: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS1);
 			AcmeFatUtils.waitAcmeFeatureUninstall(server);
 
 			/*
@@ -409,7 +417,7 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 3: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().add("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, caContainer.getAcmeDirectoryURI(usePebbleURI), configuration, DOMAINS1);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS1);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
 			/*
@@ -476,7 +484,7 @@ public class AcmeSimpleTest {
 		acmeCA.setAcmeTransportConfig(acmeTransportConfig);
 		acmeCA.setDomainKeyFile(unreadableFile.getAbsolutePath());
 		acmeCA.setSubjectDN("cn=baddomain.com");
-		AcmeFatUtils.configureAcmeCA(server, configuration);
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 
 		try {
 			/***********************************************************************
@@ -501,7 +509,7 @@ public class AcmeSimpleTest {
 			Log.info(AcmeSimpleTest.class, methodName, "Test 1 - empty directoryURI");
 			acmeCA.setDirectoryURI("");
 			acmeCA.setDomain(Arrays.asList(new String[] { "" }));
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2008E in logs.", server.waitForStringInLog("CWPKI2008E"));
 
 			/***********************************************************************
@@ -513,7 +521,7 @@ public class AcmeSimpleTest {
 			Log.info(AcmeSimpleTest.class, methodName, "Test 2 - subjectDN has invalid domain in cn");
 			acmeCA.setDomain(Arrays.asList(DOMAINS2));
 			acmeCA.setDirectoryURI("https://invalid.com/directory");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2039E in logs.", server.waitForStringInLog("CWPKI2039E"));
 
 			/***********************************************************************
@@ -523,7 +531,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 3 - subjectDN cn is not first RDN");
 			acmeCA.setSubjectDN("ou=liberty,cn=domain1.com");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2040E in logs.", server.waitForStringInLog("CWPKI2040E"));
 
 			/***********************************************************************
@@ -533,7 +541,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 4 - subjectDN has invalid RDN type");
 			acmeCA.setSubjectDN("badtype=domain1.com");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2041E in logs.", server.waitForStringInLog("CWPKI2041E"));
 
 			/***********************************************************************
@@ -543,7 +551,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 5 - subjectDN has invalid DN");
 			acmeCA.setSubjectDN("invaliddn");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2042E in logs.", server.waitForStringInLog("CWPKI2042E"));
 
 			/***********************************************************************
@@ -560,7 +568,7 @@ public class AcmeSimpleTest {
 			} else {
 				Log.info(AcmeSimpleTest.class, methodName, "Test 6 - unreadable account key file");
 				acmeCA.setSubjectDN("cn=domain1.com");
-				AcmeFatUtils.configureAcmeCA(server, configuration);
+				AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 				assertNotNull("Expected CWPKI2021E in logs.", server.waitForStringInLog("CWPKI2021E"));
 
 				/***********************************************************************
@@ -571,7 +579,7 @@ public class AcmeSimpleTest {
 				 **********************************************************************/
 				Log.info(AcmeSimpleTest.class, methodName, "Test 7 - unwritable account key file");
 				acmeCA.setAccountKeyFile(unwritableDir + "/unwritable.key");
-				AcmeFatUtils.configureAcmeCA(server, configuration);
+				AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 				assertNotNull("Expected CWPKI2023E in logs.", server.waitForStringInLog("CWPKI2023E"));
 
 				/***********************************************************************
@@ -582,7 +590,7 @@ public class AcmeSimpleTest {
 				 **********************************************************************/
 				Log.info(AcmeSimpleTest.class, methodName, "Test 8 - unreadable domain key file");
 				acmeCA.setAccountKeyFile(null);
-				AcmeFatUtils.configureAcmeCA(server, configuration);
+				AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 				assertNotNull("Expected CWPKI2020E in logs.", server.waitForStringInLog("CWPKI2020E"));
 
 				/***********************************************************************
@@ -593,7 +601,7 @@ public class AcmeSimpleTest {
 				 **********************************************************************/
 				Log.info(AcmeSimpleTest.class, methodName, "Test 9 - unwritable domain key file");
 				acmeCA.setDomainKeyFile(unwritableDir + "/unwritable.key");
-				AcmeFatUtils.configureAcmeCA(server, configuration);
+				AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 				assertNotNull("Expected CWPKI2022E in logs.", server.waitForStringInLog("CWPKI2022E"));
 			}
 
@@ -605,7 +613,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 10 - unwritable domain key file");
 			acmeCA.setDomainKeyFile(null);
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2016E in logs.", server.waitForStringInLog("CWPKI2016E.*INVALID_TYPE"));
 
 			/***********************************************************************
@@ -616,7 +624,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 11 - invalid truststore");
 			acmeTransportConfig.setTrustStoreType("PKCS12");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2016E in logs.", server.waitForStringInLog("CWPKI2016E.*INVALID_TRUSTSTORE"));
 
 			/***********************************************************************
@@ -627,7 +635,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 12 - invalid truststore password");
 			acmeTransportConfig.setTrustStore("resources/security/pebble-truststore.p12");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2016E in logs.", server.waitForStringInLog("CWPKI2016E"));
 
 			/***********************************************************************
@@ -638,7 +646,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 13 - invalid directoryURI");
 			acmeTransportConfig.setTrustStorePassword(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD);
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2016E in logs.",
 					server.waitForStringInLog("CWPKI2016E.*https://invalid.com/directory"));
 
@@ -649,8 +657,8 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, methodName, "Test 14 - successful certificate generation");
-			acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI(false));
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			acmeCA.setDirectoryURI(caContainer.getAcmeDirectoryURI(false));
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 
 		} finally {
@@ -676,10 +684,10 @@ public class AcmeSimpleTest {
 		 */
 		AcmeCA acmeCA = configuration.getAcmeCA();
 		acmeCA.setDomain(Arrays.asList(DOMAINS2));
-		acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI(false));
+		acmeCA.setDirectoryURI(caContainer.getAcmeDirectoryURI(false));
 		acmeCA.setSubjectDN("cn=domain2.com,ou=liberty,o=ibm.com");
-		AcmeFatUtils.configureAcmeCaConnection(useAcmeURIs(), acmeCA);
-		AcmeFatUtils.configureAcmeCA(server, configuration);
+		AcmeFatUtils.configureAcmeCaConnection(caContainer.getAcmeDirectoryURI(useAcmeURIs()), acmeCA);
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 
 		try {
 			/***********************************************************************
@@ -693,7 +701,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
-			Certificate[] certificates = AcmeFatUtils.assertAndGetServerCertificate(server);
+			Certificate[] certificates = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			assertEquals("Certificate subject DN was not the expected value.", "CN=domain2.com",
 					((X509Certificate) certificates[0]).getSubjectDN().getName());
 
@@ -705,10 +713,10 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			BigInteger serial1 = ((X509Certificate) certificates[0]).getSerialNumber();
 			acmeCA.setSubjectDN("cn=domain3.com,ou=liberty,o=ibm.com");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
-			certificates = AcmeFatUtils.assertAndGetServerCertificate(server);
+			certificates = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			BigInteger serial2 = ((X509Certificate) certificates[0]).getSerialNumber();
 			assertEquals("Certificate subject DN was not the expected value.", "CN=domain3.com",
 					((X509Certificate) certificates[0]).getSubjectDN().getName());
@@ -721,10 +729,10 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			acmeCA.setSubjectDN("cn=domain1.com,ou=liberty,o=ibm.com");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
-			certificates = AcmeFatUtils.assertAndGetServerCertificate(server);
+			certificates = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			serial2 = ((X509Certificate) certificates[0]).getSerialNumber();
 			assertEquals("Certificate subject DN was not the expected value.", "CN=domain1.com",
 					((X509Certificate) certificates[0]).getSubjectDN().getName());
@@ -739,10 +747,10 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			serial1 = ((X509Certificate) certificates[0]).getSerialNumber();
 			acmeCA.setSubjectDN("cn=domain1.com");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
-			certificates = AcmeFatUtils.assertAndGetServerCertificate(server);
+			certificates = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			serial2 = ((X509Certificate) certificates[0]).getSerialNumber();
 			assertEquals("Certificate subject DN was not the expected value.", "CN=domain1.com",
 					((X509Certificate) certificates[0]).getSubjectDN().getName());
@@ -756,10 +764,10 @@ public class AcmeSimpleTest {
 			serial1 = serial2;
 			acmeCA.setSubjectDN("cn=domain1.com");
 			acmeCA.setChallengeRetries(5); // Force config update.
-			AcmeFatUtils.configureAcmeCA(server, configuration);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
-			certificates = AcmeFatUtils.assertAndGetServerCertificate(server);
+			certificates = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			serial2 = ((X509Certificate) certificates[0]).getSerialNumber();
 			assertEquals("CN=domain1.com", ((X509Certificate) certificates[0]).getSubjectDN().getName());
 			assertThat("Certificates should have not changed.", serial1, equalTo(serial2));
