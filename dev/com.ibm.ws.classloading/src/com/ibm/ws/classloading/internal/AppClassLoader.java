@@ -492,23 +492,27 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        ClassNotFoundException cnfe = null;
         Object token = ThreadIdentityManager.runAsServer();
-        synchronized (getClassLoadingLock(name)) {
-            try {
-                return findOrDelegateLoadClass(name);
-            } catch (ClassNotFoundException e) {
+        try {
+            synchronized (getClassLoadingLock(name)) {
+                try {
+                    return findOrDelegateLoadClass(name);
+                } catch (ClassNotFoundException e) {
+                    cnfe = e;
+                }
                 // The class could not be found on the local class path or by
                 // delegating to parent/library class loaders.  Try to generate it.
                 Class<?> generatedClass = generateClass(name);
                 if (generatedClass != null)
                     return generatedClass;
-
-                // could not generate class - throw CNFE
-                throw FeatureSuggestion.getExceptionWithSuggestion(e);
-            } finally {
-                ThreadIdentityManager.reset(token);
             }
+        } finally {
+            ThreadIdentityManager.reset(token);
         }
+
+        // could not generate class - throw CNFE
+        throw FeatureSuggestion.getExceptionWithSuggestion(cnfe);
     }
 
     @Trivial
