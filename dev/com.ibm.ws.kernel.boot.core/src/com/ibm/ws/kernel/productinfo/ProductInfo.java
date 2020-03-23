@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +35,7 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.FileUtils;
 import com.ibm.ws.kernel.provisioning.ProductExtension;
 import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 public class ProductInfo {
     public static final String VERSION_PROPERTY_DIRECTORY = "lib/versions";
@@ -43,6 +47,8 @@ public class ProductInfo {
     public static final String COM_IBM_WEBSPHERE_PRODUCTEDITION_KEY = "com.ibm.websphere.productEdition";
     public static final String COM_IBM_WEBSPHERE_PRODUCTREPLACES_KEY = "com.ibm.websphere.productReplaces";
     public static final String COM_IBM_WEBSPHERE_LOG_REPLACED_PRODUCT = "com.ibm.websphere.logReplacedProduct";
+    public static final String BETA_EDITION_JVM_PROPERTY = "com.ibm.ws.beta.edition";
+    public static final String EARLY_ACCESS = "EARLY_ACCESS";
 
     private static FileFilter versionFileFilter = new FileFilter() {
         @Override
@@ -229,6 +235,61 @@ public class ProductInfo {
     }
 
     /**
+     * Helper method for determining if product is EARLY_ACCESS edition
+     */
+    public boolean isBeta() {
+        boolean isBeta;
+        String productEdition = this.getEdition();
+        if (productEdition == null) {
+            isBeta = false;
+        } else {
+            isBeta = productEdition.equals(EARLY_ACCESS);
+        }
+        return isBeta;
+    }
+
+    /**
+     * Sets the com.ibm.ws.beta.edition JVM property to true if the Liberty version is EARLY_ACCESS,
+     * otherwise sets it to false.
+     */
+    public static void setBetaEditionJVMProperty() {
+        try {
+            if (System.getProperty(BETA_EDITION_JVM_PROPERTY) == null) {
+                System.setProperty(BETA_EDITION_JVM_PROPERTY, "false");
+                final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
+                for (ProductInfo info : productInfos.values()) {
+                    if (info.isBeta()) {
+                        System.setProperty(BETA_EDITION_JVM_PROPERTY, "true");
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            //FFDC and move on ... assume not early access
+        }
+    }
+
+    /**
+     * Returns value of Beta Edition JVM Property. Runs as security context and uses J2S
+     * PrivilegedAction.
+     *
+     * @return true if edition is EARLY_ACCESS, otherwise false.
+     */
+    public static boolean getBetaEdition() {
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.getBoolean(BETA_EDITION_JVM_PROPERTY);
+                }
+            });
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
+    }
+
+    /**
      * Retrieves the product extension jar bundles located in the installation's usr directory.
      *
      * @return The array of product extension jar bundles in the default (usr) location.
@@ -281,4 +342,5 @@ public class ProductInfo {
 
         return versionFiles;
     }
+
 }
