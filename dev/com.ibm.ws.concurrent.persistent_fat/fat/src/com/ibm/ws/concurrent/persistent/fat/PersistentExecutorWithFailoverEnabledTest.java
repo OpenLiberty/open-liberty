@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.persistent.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -44,6 +45,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
     
+    @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     /**
@@ -53,8 +55,6 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        testContainer.start();
-
     	// Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
@@ -92,24 +92,20 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         try {
             runTest(server, APP_NAME, "verifyNoTasksRunning");
         } finally {
-            try {
-                if (server != null)
-                    try {
-                        if (server.isStarted())
-                            server.stopServer("CWWKC1500W", //Task rolled back
-                                              "CWWKC1501W", //Task rolled back due to failure ...
-                                              "CWWKC1502W", //Task rolled back, retry time unspecified
-                                              "CWWKC1503W", //Task rolled back due to failure ..., retry time unspecified
-                                              "CWWKC1510W", //Task rolled back and aborted
-                                              "CWWKC1511W", //Task rolled back and aborted. Failure is ...
-                                              "DSRA0174W"); //Generic Datasource Helper
-                    } finally {
-                        if (originalConfig != null)
-                            server.updateServerConfiguration(originalConfig);
-                    }
-            } finally {
-                testContainer.stop();
-            }
+            if (server != null)
+                try {
+                    if (server.isStarted())
+                        server.stopServer("CWWKC1500W", //Task rolled back
+                                          "CWWKC1501W", //Task rolled back due to failure ...
+                                          "CWWKC1502W", //Task rolled back, retry time unspecified
+                                          "CWWKC1503W", //Task rolled back due to failure ..., retry time unspecified
+                                          "CWWKC1510W", //Task rolled back and aborted
+                                          "CWWKC1511W", //Task rolled back and aborted. Failure is ...
+                                          "DSRA0174W"); //Generic Datasource Helper
+                } finally {
+                    if (originalConfig != null)
+                        server.updateServerConfiguration(originalConfig);
+                }
         }
     }
 
