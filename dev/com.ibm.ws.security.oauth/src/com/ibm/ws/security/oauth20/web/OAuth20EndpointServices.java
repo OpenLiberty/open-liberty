@@ -393,7 +393,8 @@ public class OAuth20EndpointServices {
         }
         if (requiredRole != null && !request.isUserInRole(requiredRole)) {
             throw new OidcServerException("403", OIDCConstants.ERROR_ACCESS_DENIED, HttpServletResponse.SC_FORBIDDEN);
-        }return true;
+        }
+        return true;
 
     }
 
