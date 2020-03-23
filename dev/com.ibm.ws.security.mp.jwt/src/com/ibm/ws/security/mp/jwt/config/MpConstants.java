@@ -18,4 +18,5 @@ public interface MpConstants {
     public final static String ISSUER = "mp.jwt.verify.issuer";
     public final static String PUBLIC_KEY = "mp.jwt.verify.publickey";
     public final static String KEY_LOCATION = "mp.jwt.verify.publickey.location";
+    public final static String AUDIENCES = "mp.jwt.verify.audiences";
 }
