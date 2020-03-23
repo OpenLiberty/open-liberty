@@ -95,6 +95,7 @@ public class SSLTest extends DBTestBase {
 	}
 
 	@Test
+  @Mode(TestMode.LITE)
 	public void testSSL_AllCommitByProxy() {
 		client.waitForStringInLog("CWLIB0206I");
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -134,6 +135,7 @@ public class SSLTest extends DBTestBase {
 	}
 
 	@Test
+  @Mode(TestMode.LITE)
 	public void testSSL_AllCommitByProx_WithClientAuth() throws Exception {
 		client.waitForStringInLog("CWLIB0206I");
 		client.setMarkToEndOfLog();
