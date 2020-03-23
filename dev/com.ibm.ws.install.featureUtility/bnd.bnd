@@ -33,6 +33,7 @@ instrument.disabled: true
 	com.ibm.ws.install.map;version=latest, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
 	com.ibm.ws.repository;version=latest,\
 	com.ibm.ws.repository.liberty;version=latest,\

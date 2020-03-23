@@ -1,5 +1,7 @@
 package com.ibm.ws.install.featureUtility.props;
 
+import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 import java.io.File;
@@ -22,12 +24,13 @@ public class FeatureUtilityRepoProperties {
 
     private final static String FILEPATH_EXT = "/etc/featureUtility.repo.properties";
     private final static Set<String> DEFINED_OPTIONS= new HashSet<>(Arrays.asList("proxyHost", "proxyPort", "proxyUser", "proxyPassword", "featureLocalRepo"));
-    private static Map<String, String> definedVariables;
-    private static List<MavenRepository> repositoryList;
+    private static Map<String, String> definedVariables = new HashMap<>();
+    private static List<MavenRepository> repositoryList = new ArrayList<>();
+    private static boolean didFileParse;
 
     static {
         File propertiesFile = new File(Utils.getInstallDir() + FILEPATH_EXT);
-        parseProperties(propertiesFile);
+        didFileParse = parseProperties(propertiesFile);
     }
 
     public static List<MavenRepository> getMirrorRepositories(){
@@ -44,7 +47,6 @@ public class FeatureUtilityRepoProperties {
 
     public static String getProxyUser(){
         return definedVariables.get("proxyUser");
-
     }
 
     public static String getProxyPassword(){
@@ -55,7 +57,11 @@ public class FeatureUtilityRepoProperties {
         return definedVariables.get("featureLocalRepo");
     }
 
-    private static void parseProperties(File propertiesFile) {
+    public static boolean didLoadProperties(){
+        return didFileParse;
+    }
+
+    private static boolean parseProperties(File propertiesFile) {
         Properties properties = new Properties(){
             private final HashSet<Object> keys = new LinkedHashSet<Object>();
             @Override
@@ -72,7 +78,7 @@ public class FeatureUtilityRepoProperties {
         try(FileInputStream fileIn = new FileInputStream(propertiesFile)) {
             properties.load(fileIn);
         } catch (IOException e) {
-            e.printStackTrace(); // todo log instead
+            return false;
         }
 
         definedVariables = new HashMap<>();
@@ -87,7 +93,7 @@ public class FeatureUtilityRepoProperties {
             } else {
                 String [] split = key.toString().split("\\.");
                 if(split.length < 2){ // invalid key
-                    return;
+                    continue;
                 }
                 String repoName = split[0];
                 String option = split[split.length - 1]; // incase there are periods in the key, cant use [1]
@@ -105,7 +111,10 @@ public class FeatureUtilityRepoProperties {
         repoMap.forEach((key, value) -> {
             repositoryList.add(new MavenRepository(key, value.get("url"), value.get("user"), value.get("password")));
         });
+
+        return true;
     }
+
 
 
 }
