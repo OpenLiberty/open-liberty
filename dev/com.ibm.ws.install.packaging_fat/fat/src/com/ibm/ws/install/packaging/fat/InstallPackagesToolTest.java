@@ -208,23 +208,54 @@ public abstract class InstallPackagesToolTest {
     }
 
     protected static boolean isLinuxUbuntu() throws Exception {
+        boolean rc = false;
+        String osReleaseFileName = "/etc/os-release";
         if (isLinux) {
-            String content = new Scanner(new File("/etc/os-release")).useDelimiter("\\Z").next();
-            if (content.contains("ubuntu")) {
-                return true;
+            if (new File(osReleaseFileName).exists()) {
+                String content = new Scanner(new File("/etc/os-release")).useDelimiter("\\Z").next();
+                if (content.contains("ubuntu")) {
+                    rc = true;
+                }
+            } else {
+                rc = false;
             }
         }
-        return false;
+        return rc;
     }
 
+    /**
+     * Checks if OS is RHEL or CENTOS
+     *
+     * @return
+     * @throws Exception
+     */
     protected static boolean isLinuxRHEL() throws Exception {
+        boolean rc = false;
+        String osReleaseFileName = "/etc/os-release";
+        String redhatReleaseFileName = "/etc/redhat-release";
+        String centosReleaseFileName = "/etc/centos-release";
+
         if (isLinux) {
-            String content = new Scanner(new File("/etc/os-release")).useDelimiter("\\Z").next();
-            if (content.contains("rhel")) {
-                return true;
+            if (new File(osReleaseFileName).exists()) {
+                String content = new Scanner(new File(osReleaseFileName)).useDelimiter("\\Z").next();
+                if (content.contains("rhel") || content.contains("centos")) {
+                    rc = true;
+                }
+            } else if (new File(redhatReleaseFileName).exists()) {
+                String content = new Scanner(new File(redhatReleaseFileName)).useDelimiter("\\Z").next();
+                if (content.contains("Red Hat") || content.contains("CentOS")) {
+                    rc = true;
+                }
+            } else if (new File(centosReleaseFileName).exists()) {
+                String content = new Scanner(new File(centosReleaseFileName)).useDelimiter("\\Z").next();
+                if (content.contains("CentOS")) {
+                    rc = true;
+                }
+            } else {
+                rc = false;
             }
         }
-        return false;
+        return rc;
     }
 
     protected static ProgramOutput runCommand(String testcase, String command, String[] params) throws Exception {
