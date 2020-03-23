@@ -392,6 +392,8 @@ public class OAuth20EndpointServices {
             return false;
         }
         if (requiredRole != null && !request.isUserInRole(requiredRole)) {
+            System.out.println("*** 403, Principal: " + request.getUserPrincipal() + " requiredRole: " + requiredRole);
+            System.out.println("*** user: " + request.getUserPrincipal().getName());
             throw new OidcServerException("403", OIDCConstants.ERROR_ACCESS_DENIED, HttpServletResponse.SC_FORBIDDEN);
         }
         return true;
