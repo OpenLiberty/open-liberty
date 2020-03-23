@@ -613,7 +613,7 @@ public abstract class AbstractHTTPDestination
                 }
             }
             if (in != null) {
-                in.cacheInput();
+                //in.cacheInput();
             }
         } else if (in != null) {
             //We don't need to cache it, but we may need to consume it in order for the client
@@ -659,6 +659,7 @@ public abstract class AbstractHTTPDestination
                 return null;
             }
         }
+<<<<<<< HEAD
         //Liberty code change start
         if (!response.isCommitted()) {
             response.setStatus(responseCode); //Original CXF line
@@ -667,6 +668,17 @@ public abstract class AbstractHTTPDestination
             }
             headers.copyToResponse(response);
         }
+=======
+        response.setStatus(responseCode);
+        //Liberty code change start
+        if (headers == null) {
+            headers = new Headers(outMessage);
+        }
+        headers.copyToResponse(response);
+<<<<<<< HEAD
+>>>>>>> Performance improvements to cxf code
+=======
+>>>>>>> 2cee81c9a23a88fe8f02aad6782585d49b9e8027
         //Liberty code change end
 
         outMessage.put(RESPONSE_HEADERS_COPIED, "true");
