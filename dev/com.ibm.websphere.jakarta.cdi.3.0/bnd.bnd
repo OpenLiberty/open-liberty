@@ -53,6 +53,6 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.inject:jakarta.inject-api=2.0,\
-	jakarta.enterprise:jakarta.enterprise.cdi-api;version=3.0
+	jakarta.inject:jakarta.inject-api;version=2.0.0,\
+	jakarta.enterprise:jakarta.enterprise.cdi-api;version=3.0.0
 	
