@@ -22,6 +22,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
@@ -38,8 +39,8 @@ public class PersistentExecutorTest extends FATServletClient {
     @Server("com.ibm.ws.concurrent.persistent.fat")
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
-    
-    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     /**
      * Before running any tests, start the server
@@ -48,6 +49,8 @@ public class PersistentExecutorTest extends FATServletClient {
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        testContainer.start();
+
     	// Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
@@ -56,6 +59,8 @@ public class PersistentExecutorTest extends FATServletClient {
     	//Get driver type
     	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
+    	//testContainer.stop();
+    	//testContainer.start();
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
@@ -75,12 +80,16 @@ public class PersistentExecutorTest extends FATServletClient {
         try {
             runTest(server, APP_NAME, "verifyNoTasksRunning");
         } finally {
-            if (server != null && server.isStarted())
-                server.stopServer("CWWKC1500W", //Task rolled back
-                                  "CWWKC1501W", //Task rolled back due to failure ...
-                                  "CWWKC1510W", //Task rolled back and aborted
-                                  "CWWKC1511W", //Task rolled back and aborted. Failure is ...
-                                  "DSRA0174W"); //Generic Datasource Helper
+            try {
+                if (server != null && server.isStarted())
+                    server.stopServer("CWWKC1500W", //Task rolled back
+                                      "CWWKC1501W", //Task rolled back due to failure ...
+                                      "CWWKC1510W", //Task rolled back and aborted
+                                      "CWWKC1511W", //Task rolled back and aborted. Failure is ...
+                                      "DSRA0174W"); //Generic Datasource Helper
+            } finally {
+                testContainer.stop();
+            }
         }
     }
 
