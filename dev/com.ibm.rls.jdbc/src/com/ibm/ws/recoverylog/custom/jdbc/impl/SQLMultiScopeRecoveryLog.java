@@ -2022,10 +2022,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 initialIsolation = prepareConnectionForBatch(conn);
 
                 // This will confirm that this server owns this log and will invalidate the log if not.
-                takeHADBLock(conn);
+                boolean lockSuccess = takeHADBLock(conn);
 
-                // We can go ahead and write to the Database
-                executeBatchStatements(conn);
+                if (lockSuccess) {
+                    // We can go ahead and write to the Database
+                    executeBatchStatements(conn);
+                }
 
                 conn.commit();
                 sqlSuccess = true;
@@ -2374,12 +2376,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @exception InternalLogException Thrown if an
      *                unexpected error has occured.
      */
-    private void takeHADBLock(Connection conn) throws SQLException, InternalLogException {
+    private boolean takeHADBLock(Connection conn) throws SQLException, InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "takeHADBLock", new java.lang.Object[] { conn, this });
 
         Statement lockingStmt = null;
         ResultSet lockingRS = null;
+        boolean lockSuccess = false;
 
         try {
             lockingStmt = conn.createStatement();
@@ -2398,16 +2401,26 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (_currentProcessServerName.equalsIgnoreCase(storedServerName)) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "This server OWNS the HA lock row as expected");
+                    lockSuccess = true;
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "ANOTHER server OWNS the lock row - we need to mark the log as failed");
-                    Tr.audit(tc, "WTRN0100E: " +
-                                 "Another server owns the log cannot force SQL RecoveryLog " + _logName + " for server " + _serverName);
-                    InternalLogException ile = new InternalLogException("Another server has locked the HA lock row", null);
-                    markFailed(ile);
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "takeHADBLock", "InternalLogException");
-                    throw ile;
+
+                    // How we react depends on whether we are closing the home server or a peer. In the peer case a home
+                    // server may have re-acquired its logs
+                    if (_useNewLockingScheme && !_isHomeServer) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
+                    } else {
+                        Tr.audit(tc, "WTRN0100E: " +
+                                     "Another server owns the log cannot force SQL RecoveryLog " + _logName + " for server " + _serverName);
+
+                        InternalLogException ile = new InternalLogException("Another server has locked the HA lock row", null);
+                        markFailed(ile);
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "takeHADBLock", "InternalLogException");
+                        throw ile;
+                    }
                 }
             } else {
                 // We didn't find the HA Lock row in the table, mark the log as failed
@@ -2427,8 +2440,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (lockingStmt != null && !lockingStmt.isClosed())
                 lockingStmt.close();
         }
+
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "takeHADBLock");
+            Tr.exit(tc, "takeHADBLock", Boolean.valueOf(lockSuccess));
+        return lockSuccess;
     }
 
     //------------------------------------------------------------------------------
