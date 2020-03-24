@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class FeatureUtilityRepoProperties {
 
-    private final static String FILEPATH_EXT = "/etc/featureUtility.repo.properties";
+    private final static String FILEPATH_EXT = "/etc/featureUtility.properties";
     private final static Set<String> DEFINED_OPTIONS= new HashSet<>(Arrays.asList("proxyHost", "proxyPort", "proxyUser", "proxyPassword", "featureLocalRepo"));
     private static Map<String, String> definedVariables = new HashMap<>();
     private static List<MavenRepository> repositoryList = new ArrayList<>();
@@ -59,6 +59,14 @@ public class FeatureUtilityRepoProperties {
 
     public static boolean didLoadProperties(){
         return didFileParse;
+    }
+
+    public static File getRepoPropertiesFile(){
+        return new File(Utils.getInstallDir() + FILEPATH_EXT);
+    }
+
+    public static boolean isUsingDefaultRepo(){
+        return getMirrorRepositories().size() == 0;
     }
 
     private static boolean parseProperties(File propertiesFile) {

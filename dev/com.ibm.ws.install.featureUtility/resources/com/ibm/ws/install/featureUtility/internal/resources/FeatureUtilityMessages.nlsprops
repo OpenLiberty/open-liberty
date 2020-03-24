@@ -10,186 +10,26 @@
 # NLS_MESSAGEFORMAT_VAR
 # Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
 
-ERROR_DEPENDENCIES_INVALID_OPTION=CWWKF1401E: The value {0} is not valid for --dependencies.
-ERROR_DEPENDENCIES_INVALID_OPTION.explanation=You must use valid values for the option --dependencies.
-ERROR_DEPENDENCIES_INVALID_OPTION.useraction=Run the command with a valid value for --dependencies, such as all.
-
-ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1402E: The following features were not downloaded because they are already installed: {0}. Use other value for --dependencies option, such as all or none.
-ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=The specified features have already been installed.
-ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Rerun the command with other value for --dependencies option, such as all or none.
-
-ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST=CWWKF1404E: The file {0} does not exist.
-ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.explanation=The server package archive file provided to the install action does not exist.
-ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.useraction=Ensure the server package archive file name was provided correctly and run the install action again.
-
-ERROR_ARCHIVE_NOT_SUPPORT=CWWKF1405E: The file type of {0} is not supported by the install action.
-ERROR_ARCHIVE_NOT_SUPPORT.explanation=The server package archive file should be a zip file.
-ERROR_ARCHIVE_NOT_SUPPORT.useraction=Ensure the server package archive file name was provided correctly and run the install action again.
-
-ERROR_REPO_INVALID_URL=CWWKF1409E: The URL {0} is invalid. Rerun the command with a valid URL.
-ERROR_REPO_INVALID_URL.explanation=The specified URL is not valid.
-ERROR_REPO_INVALID_URL.useraction=Rerun the command with a valid URL.
-
-ERROR_REPO_UNSUPPORT_PROTOCOL=CWWKF1416E: The protocol of the URL {0} is not supported. Only http, https, and file protocols are supported.
-ERROR_REPO_UNSUPPORT_PROTOCOL.explanation=Used unsupported URL protocol.
-ERROR_REPO_UNSUPPORT_PROTOCOL.useraction=Rerun the command with a valid URL.
-
-MSG_BETA_ERROR_LOCAL_DIR_LIMITATION=CWWKF1417E: In the beta version, the installUtility command does not support multiple local directories or local directory mixed with an on-premise repository.
-MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.explanation=The configuration being set is not supported by the installUtility command.
-MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.useraction=Remove the repository that you do not need, and add the repository that you need.
-
-ERROR_REPO_NOT_IN_LIST=CWWKF1418E: The repository name {0} is not configured in the configuration file {1}. Check the configuration file or use the viewSettings action to find the configured repository names.
-ERROR_REPO_NOT_IN_LIST.explanation=The specified repository name cannot be found in the configuration.
-ERROR_REPO_NOT_IN_LIST.useraction=Use the viewSettings action to list all the configured repositories and rerun the command with a valid repository name.
-
-ERROR_INVALID_URL=CWWKF1420E: The URL {0} of the repository {1} is invalid. Use the configure action to correct the repository.
-ERROR_INVALID_URL.explanation=The URL of the repository saved in the configuration is not valid.
-ERROR_INVALID_URL.useraction=Correct the configuration and rerun the command.
-
-ERROR_REPO_IS_FILE=CWWKF1421E: The URL {0} of the repository {1} is a file. A directory path is required. Use the configure action to correct the repository.
-ERROR_REPO_IS_FILE.explanation=The repository cannot be a file.
-ERROR_REPO_IS_FILE.useraction=Correct the configuration and rerun the command.
-
-ERROR_REPO_URL_IS_FILE=CWWKF1422E: {0} is a file. A directory path is required. 
-ERROR_REPO_URL_IS_FILE.explanation=The specified URL is not a directory.
-ERROR_REPO_URL_IS_FILE.useraction=Rerun the command with a directory or valid URL.
-
-ERROR_REPO_NOT_EXISTS=CWWKF1423E: The URL {0} of the repository {1} does not exist. Use the configure action to correct the repository.
-ERROR_REPO_NOT_EXISTS.explanation=The repository does not exist.
-ERROR_REPO_NOT_EXISTS.useraction=Correct the configuration and rerun the command.
-
-ERROR_NO_ARGUMENT=CWWKF1424E: The {0} action requires at least one item name.
-ERROR_NO_ARGUMENT.explanation=The wrong number of arguments were used to invoke the action.
-ERROR_NO_ARGUMENT.useraction=Rerun the command with the correct arguments.
-
-ERROR_TYPE_INVALID_OPTION=CWWKF1427E: The value {0} is not valid for --type. The valid value is addon, feature, opensource, sample, or all.
-ERROR_TYPE_INVALID_OPTION.explanation=Used invalid value for the option --type.
-ERROR_TYPE_INVALID_OPTION.useraction=Run the command with a valid value for --type, such as addon, feature, opensource, sample, or all.
-
-ERROR_NO_SEARCHSTRING_NAME_OPTION=CWWKF1428E: The search string is not specified.
-ERROR_NO_SEARCHSTRING_NAME_OPTION.explanation=The search string is required if using --name option.
-ERROR_NO_SEARCHSTRING_NAME_OPTION.useraction=Rerun the command with a search string.
-
-ERROR_FAILED_TO_CONNECT_REPO=CWWKF1429E: The repository server cannot be reached. Ensure that the system can access the internet and the configured repository.
-ERROR_FAILED_TO_CONNECT_REPO.explanation=An error occurred when connecting to the repository.
-ERROR_FAILED_TO_CONNECT_REPO.useraction=Ensure that the system can access the internet and the appropriate repository.
-
-ERROR_REPO_REQUIRES_AUTH=CWWKF1430E: The credentials for the configured repository cannot be authenticated. Ensure that valid credentials for the configured repository are set in the following configuration file: {0}
-ERROR_REPO_REQUIRES_AUTH.explanation=The configured repository server requires authentication, but valid credentials were not specified in the configuration file.
-ERROR_REPO_REQUIRES_AUTH.useraction=Specify valid repository server credentials in the configuration file, and run the command again.
-
-ERROR_NO_CONNECTION=CWWKF1431E: Cannot establish a connection to the configured repository server.
-ERROR_NO_CONNECTION.explanation=The connection to the repository server cannot be established.
-ERROR_NO_CONNECTION.useraction=See the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
-
-ERROR_MORE_THAN_0_OR_1_ARGUMENTS=CWWKF1432E: {0} requires at most 1 argument, but {1} were provided.
-ERROR_MORE_THAN_0_OR_1_ARGUMENTS.explanation=The wrong number of arguments were used to invoke the action.
-ERROR_MORE_THAN_0_OR_1_ARGUMENTS.useraction=Rerun the command with the correct arguments.
-
-ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWK1433E: The credentials for the configured proxy server cannot be authenticated. Ensure that valid credentials for the proxy server are set in the following configuration file: {0}
-ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=The configured proxy server requires authentication, but the credentials cannot be authenticated.
-ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Specify valid proxy server credentials in the configuration file, and run the command again.
-
-ERROR_UNABLE_TO_FIND_SERVER_XML=CWWK1434E: Unable to locate the server.xml file in directory {0}  Ensure that the file exists and is accessible.
-ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=The server.xml file for the specified server cannot be located in the server directory.
-ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Ensure that the file exists and is accessible, then rerun the command.
-
-ERROR_UNABLE_TO_ACCESS_SERVER_XML=CWWK1435E: Unable to access the file {0} Ensure that the user account can access and read the file.
-ERROR_UNABLE_TO_ACCESS_SERVER_XML.explanation=The user account does not have the required permissions to read the server.xml file.
-ERROR_UNABLE_TO_ACCESS_SERVER_XML.useraction=Ensure that the user account can access and read the file and rerun the command.
-
+MSG_FEATUREUTILITY_SETTTINGS=featureUtility Settings
+MSG_PROPERTIES_FILE_NOT_FOUND=No user configuration detected. The Maven Central Repository is the default assets repository.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=To customize featureUtility settings, create a featureUtility.properties file at the following location: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Use the following sample as a template to create your own featureUtility.properties file. Uncomment the lines marked by a single # character, and replace the values with your own customized values.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=To customize installUtility settings, create a repositories.properties file at the following location: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Use the following sample as a template to create your own repositories.properties file. Uncomment the lines marked by a single # character, and replace the values with your own customized values.
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=Use Default Repository:
+MSG_DEFAULT_REPO_NAME_LABEL=Default Assets Repository:
+MSG_DEFAULT_REPO_NAME=Maven Central Repository
+MSG_CONFIG_REPO_LABEL=Configured Repositories
+MSG_NO_CONFIG_REPO=No repositories configured
+MSG_UNSPECIFIED=<Unspecified>
+MSG_PASSWORD_NOT_ENCODED_PROXY=The password for this proxy is not encoded. You can encode the password by running the securityUtility encode command with the --encoding option set to a supported encoding type, which are xor (default), aes, and hash.
+MSG_PROXY_LABEL=Proxy Settings
+MSG_NO_CONFIG_PROXY=No proxy configured
 MSG_REPO_FILE_NOT_FOUND=No user configuration detected. The IBM WebSphere Liberty Repository is the default assets repository.
 MSG_REPO_FILE_NOT_FOUND_EXPLANATION=To customize installUtility settings, create a repositories.properties file at the following location: {0}
 MSG_REPO_FILE_NOT_FOUND_ACTION=Use the following sample as a template to create your own repositories.properties file. Uncomment the lines marked by a single # character, and replace the values with your own customized values.
-
-ERROR_UNINSTALL_FEATURES_FAIL=CWWK1436E: One or more features cannot be uninstalled: {0}
-ERROR_UNINSTALL_FEATURES_FAIL.explanation=Internal error detected while processing metadata. 
-ERROR_UNINSTALL_FEATURES_FAIL.useraction=See the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
-
-ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE=CWWK1437E: The value {0} is not valid for --downloadDependencies. The valid value is true or false.
-ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.explanation=Used invalid value for the option --downloadDependencies.
-ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.useraction=Run the command with a valid value for --downloadDependencies, such as true or false.
-
-ERROR_ALL_CONFIG_REPOS_FAIL=CWWKF1440E: All of the configured repositories that are specified in the following configuration file cannot be reached or the credentials cannot be validated: {0}. Ensure that the repositories are correctly configured in the configuration file, and use the viewSettings and testConnection actions to verify the connection.
-ERROR_ALL_CONFIG_REPOS_FAIL.explanation=The installUtility command cannot establish a connection to any of the configured repositories.
-ERROR_ALL_CONFIG_REPOS_FAIL.useraction=Verify that the system can access the internet. Ensure that the repositories are correctly configured in the configuration file. Use the viewSettings action to verify the configured repositories, and then use testConnection actions to test the connection.
-
-ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1441E: The repository server cannot be reached because the Java runtime environment (JRE) does not trust the server certificate. Add the repository server certificate as a trusted certificate in your JRE.
-ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=A java.security.cert.CertPathBuilderException exception occurred when connecting to the repository because the JRE does not recognize the repository server security certificate as a trusted certificate. A trusted certificate is required to verify the identity of the repository server.
-ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=Add the repository server certificate as a trusted certificate in your JRE.
-
-ERROR_REPO_IS_INVALID=CWWKF1442E: {0} is not a valid directory-based repository. Rerun the command with a valid directory-based repository.   
-ERROR_REPO_IS_INVALID.explanation=The specified file path is not a valid directory-based repository. You can create a valid directory-based repository by using the installUtility download command or by downloading the wlp-featureRepo-<version>.zip file from IBM Fix Central.
-ERROR_REPO_IS_INVALID.useraction=Verify that the specified path leads to a valid directory-based repository, and run the command again.
-
-ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1443E: The uninstall --force option can be specified for only one feature at a time. Run the uninstall command with the --force option for a single feature.
-ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=The --force option was specified when uninstalling more than one feature.
-ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Run the uninstall command with the --force option for a single feature.
-
-MSG_ACCEPT_LICENSE_REQUIRED=Accept all of the following licenses so that the feature {0} can be installed
-
-MSG_DEPLOY_SERVER_OK=The server deployed successfully.
-MSG_DEPLOY_SERVER_PACKAGE_OK=The server package deployed successfully.
-MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=The server does not require any additional features.  No features were installed.
-MSG_SERVER_NEW_FEATURES_REQUIRED=The server requires the following additional features: {0}.  Installing features from the repository ...
-MSG_INSTALLED_FEATURES=One or more features installed successfully: {0}.
-MSG_INSTALLED_SAMPLES=One or more samples installed successfully: {0}.
-MSG_INSTALLED_OPENSOURCE=One or more open source integrations installed successfully: {0}.
-MSG_INSTALLED_ADDONS=One or more addons installed successfully: {0}.
-
-MSG_DOWNLOADED_FEATURES=One or more features downloaded successfully: {0}.
-MSG_DOWNLOADED_SAMPLES=One or more samples downloaded successfully: {0}.
-MSG_DOWNLOADED_OPENSOURCE=One or more open source integrations downloaded successfully: {0}.
-MSG_DOWNLOADED_ADDONS=One or more addons downloaded successfully: {0}.
-MSG_UNINSTALL_FEATURES=One or more features uninstalled successfully: {0}
-
-MSG_DISABLED_REPO=Disabled repositories
-MSG_NO_ASSET_FIND=No asset was found.
-MSG_CONNECT_REPO_SUCCESS=Successfully connected to the configured repository.
-MSG_CONNECT_ALL_REPO_SUCCESS=Successfully connected to all configured repositories.\n
-MSG_CONNECT_REPO_FAILED=Failed to connect to the configured repository.
-MSG_CONNECT_NOT_TESTED=Connection to the repository is not tested.
-MSG_DEFAULT_NOT_ENABLED=The Default Assets Repository is not enabled in the following configuration file: {0}
-MSG_DEFAULT_REPO_LABEL=IBM WebSphere Liberty Repository (Default Assets Repository)
-MSG_SAVE_CONFIG_CONFIRMATION=The configuration has been modified. Save changes to {0} (Y/N)?
-MSG_UPDATE_CONFIGURATION=Successfully updated the configuration.
-MSG_VIEW_EXAMPLE=To display an example of the repositories.props file, press Enter. To skip this option, press 'x'.
-MSG_SEARCHING=Searching assets. This process might take several minutes to complete.
-MSG_ASSETMGR_SETTINGS=installUtility Settings
-MSG_CONFIG_REPO_LABEL=Configured Repositories
-MSG_NO_CONFIG_REPO=No repositories configured
-MSG_NO_CONFIG_PROXY=No proxy configured
-MSG_DEFAULT_REPO_NAME=IBM WebSphere Liberty Repository
-MSG_PROXY_LABEL=Proxy Settings
-MSG_TRUE=True
-MSG_FALSE=False
-MSG_UNSPECIFIED=<Unspecified>
-MSG_INAPPLICABLE=<Not Applicable>
-MSG_TESTING=Testing the connection to the {0} repository ...\nThis process might take several minutes to complete.\n 
-MSG_TESTING_ALL=Testing the connection to all configured repositories ...\nThis process might take several minutes to complete.\n
-MSG_REQUIRE_DOWNLOAD_DEPENDENCIES=One or more samples require open source pre-requisite libraries. 
-MSG_DOWNLOAD_DEPENDENCIES=The {0} argument was set to {1}. This indicates that you have accepted the licenses to instruct the installer to download the open source pre-requisite libraries.
-MSG_NOT_DOWNLOAD_DEPENDENCIES=The {0} argument was set to {1}. This indicates that you do not want the installer to download the open source pre-requisite libraries.
-MSG_CONNECTING=Establishing a connection to the configured repositories ...\nThis process might take several minutes to complete.\n
-MSG_AUTHENTICATION_PROMPT=Authentication is required. Enter the credentials for the following server.
-MSG_AUTHENTICATION_RETRY=Authentication failed because the specified credentials are incorrect. \nVerify that the credentials are correct, and try again. \nThe number of retry attempts remaining is: {0} \nEnter the credentials for the following server.
-MSG_AUTHENTICATION_FAIL=Failed to authenticate with the following repository: {0}
-MSG_PROXY_AUTHENTICATION_FAIL=Failed to authenticate with the following proxy server: {0}
-MSG_REACHED_MAX_RETRIES=The maximum number of retries was exceeded. You can continue without authenticating, but this repository will be excluded from the operation. The {0} operation will be attempted using other valid repositories. 
-MSG_REACHED_MAX_PROXY_RETRIES=The maximum number of retries was exceeded. You can continue without authenticating, the {0} operation will be attempted using other local repositories that are defined in the configuration file: {1} 
-MSG_WARNING_SKIPPED_REPOS=Warning: The following configured repositories were skipped in this operation because a connection cannot be established or credentials cannot be validated: {0}
-MSG_VERIFY_REPO_CONNECTION=If you want to use these repositories, ensure that the repositories are correctly configured in the configuration. Use the testConnection action to verify the connection to the configured repositories. The {0} operation will continue using other valid repositories in the configuration.
-MSG_PASSWORD_NOT_ENCODED=The password for this repository is not encoded. You can encode passwords by running the securityUtility encode command with the --encoding option set to a supported encoding type, which are xor (default), aes, and hash.
-MSG_PASSWORD_NOT_ENCODED_PROXY=The password for this proxy is not encoded. You can encode the password by running the securityUtility encode command with the --encoding option set to a supported encoding type, which are xor (default), aes, and hash.
-MSG_DIRECTORY_REPO_CONFIGURED=\nThe {0} directory is already configured as a usable repository in the repositories.properties file.
-MSG_DIRECTORY_REPO_NOT_CONFIGURED=\nYou can add the following URL to the repositories.properties to use it as a repository for the installUtility command: {0}
-MSG_ALL_DOWNLOADING_FILES_EXISTS=\nAll of the assets already exist in the following repository: {0}
-MSG_ADDITIONAL_FEATURES_FOR_SERVER_PACKAGE=To install this server package, additional Liberty features must also be installed.
-MSG_ADDITIONAL_FEATURES_FOR_SERVER=Additional Liberty features must be installed for this server.
-MSG_INSTALL_ADDITIONAL_FEATURES_FOR_SAMPLES=Additional Liberty features must be installed to install the following samples or open source integrations: {0}
-MSG_INSTALL_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=To install the additional features, review and accept the feature license agreement:
-MSG_DOWNLOAD_ADDITIONAL_FEATURES_FOR_SAMPLES=Additional Liberty features must be downloaded to download the following samples or open source integrations: {0}
-MSG_DOWNLOAD_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=To download the additional features, review and accept the feature license agreement:
 MSG_VALIDATION_SUCCESSFUL=The properties file successfully passed the validation.
 MSG_VALIDATION_FAILED_NO_MESSAGES=The properties file failed the validation. Use the --viewValidationMessages option to view detailed validation messages.
 MSG_VALIDATION_NUM_OF_ERRORS=Number of errors: {0}
@@ -212,21 +52,3 @@ FIELD_REPO=Repository Server: {0} ({1})
 FIELD_PROXY=Proxy Server: {0}
 FIELD_VALIDATION_RESULTS=Validation Results: {0}
 FIELD_VALIDATION_LINE=Line: {0}
-MSG_DEFAULT_REPO_USEAGE_LABEL=Use Default Repository:
-MSG_DEFAULT_REPO_NAME_LABEL=Default Assets Repository:
-
-
-MSG_NO_NAME=<Name>
-
-TOOL_PROMPT_USERNAME=Enter username:
-TOOL_PROMPT_PASSWORD=Enter password:
-TOOL_PROMPT_CONTINUE_OR_QUIT=Press Enter to continue, or press "x" to quit the {0} operation.
-
-LOG_PROMPT_PROXY_AUTHENTICATION=Authenticating proxy server with specified credentials.
-LOG_PROMPT_PROXY_SUCCESS=Successfully authenticated proxy server: {0}\n
-LOG_PROMPT_REPO_AUTHENTICATION=Authenticating {0} repository with specified credentials.
-LOG_PROMPT_REPO_SUCCESS=Successfully authenticated {0} repository.\n
-LOG_REPO_CONNECTION_EXCEPTION=The connection to the {0} repository failed with the following exception: {1}
-LOG_HTTP_SERVER_RESPONSE_CODE=The server returned a {0} HTTP response code for the following URL: {1}
-LOG_PASSWORD_NOT_ENCODED=Passwords for the following repositories are not encoded: {0}. You can encode passwords by running the securityUtility encode command with the --encoding option set to a supported encoding type, which are xor (default), aes, and hash. For example: securityUtility encode --encoding=aes repoPassword
-LOG_VALIDATION_FAILED=The properties file failed the validation. Run the viewSettings command with the --viewValidationMessages option to view detailed validation messages.

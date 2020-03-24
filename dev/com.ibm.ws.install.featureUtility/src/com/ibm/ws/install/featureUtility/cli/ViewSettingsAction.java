@@ -23,6 +23,8 @@ import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.RepositoryConfigValidationResult;
+import com.ibm.ws.install.featureUtility.props.FeatureUtilityRepoProperties;
+import com.ibm.ws.install.featureUtility.props.MavenRepository;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.cmdline.InstallExecutor;
@@ -61,16 +63,17 @@ public class ViewSettingsAction implements ActionHandler {
             return rc;
         }
         // Initialize the repository properties
-        repoPropertiesFile = new File(RepositoryConfigUtils.getRepoPropertiesFileLocation());
-        if (repoPropertiesFile.exists()) {
+//        repoPropertiesFile = new File(RepositoryConfigUtils.getRepoPropertiesFileLocation());
+//        if (repoPropertiesFile.exists()) {
+        if(FeatureUtilityRepoProperties.didLoadProperties()){
             // Load the repository properties instance from properties file
             try {
-                repoProperties = RepositoryConfigUtils.loadRepoProperties();
-                orderList = RepositoryConfigUtils.getOrderList(repoProperties);
+//                repoProperties = RepositoryConfigUtils.loadRepoProperties();
+//                orderList = RepositoryConfigUtils.getOrderList(repoProperties);
                 showSettings();
-                if (validationResults.size() > 0)
-//                    return ReturnCode.REPO_PROPS_VALIDATION_FAILED;
-                    return ReturnCode.BAD_ARGUMENT;
+//                if (validationResults.size() > 0)
+////                    return ReturnCode.REPO_PROPS_VALIDATION_FAILED;
+//                    return ReturnCode.BAD_ARGUMENT;
             } catch (InstallException e) {
                 logger.log(Level.SEVERE, e.getMessage());
                 return InstallExecutor.returnCode(e.getRc());
@@ -83,15 +86,15 @@ public class ViewSettingsAction implements ActionHandler {
 
     private void showHeader() throws InstallException {
         StringBuffer sb = new StringBuffer();
-        String settingsPath = RepositoryConfigUtils.getRepoPropertiesFileLocation();
+        String settingsPath = FeatureUtilityRepoProperties.getRepoPropertiesFile().getPath();
         sb.append(InstallUtils.NEWLINE);
-        sb.append(CmdUtils.getMessage("MSG_ASSETMGR_SETTINGS")).append(InstallUtils.NEWLINE);
+        sb.append(CmdUtils.getMessage("MSG_FEATUREUTILITY_SETTTINGS")).append(InstallUtils.NEWLINE);
         sb.append(CmdUtils.CmdlineConstants.DASHES).append(InstallUtils.NEWLINE);
 
         sb.append(CmdUtils.getMessage("FIELD_PROPS_FILE", settingsPath));
         sb.append(InstallUtils.NEWLINE);
 
-        String defaultRepoUseage = RepositoryConfigUtils.isWlpRepoEnabled(repoProperties) ? CmdUtils.getMessage("MSG_TRUE") : CmdUtils.getMessage("MSG_FALSE");
+        String defaultRepoUseage = FeatureUtilityRepoProperties.isUsingDefaultRepo() ? CmdUtils.getMessage("MSG_TRUE") : CmdUtils.getMessage("MSG_FALSE");
         sb.append(CmdUtils.getMessage("MSG_DEFAULT_REPO_NAME_LABEL") + " " + CmdUtils.getMessage("MSG_DEFAULT_REPO_NAME")).append(InstallUtils.NEWLINE);
         sb.append(CmdUtils.getMessage("MSG_DEFAULT_REPO_USEAGE_LABEL") + " " + defaultRepoUseage).append(InstallUtils.NEWLINE);
 
@@ -101,49 +104,49 @@ public class ViewSettingsAction implements ActionHandler {
 
     private void showRepositories() throws InstallException {
         StringBuffer sb = new StringBuffer();
-        for (String r : orderList) {
-            if (!r.equalsIgnoreCase(RepositoryConfigUtils.WLP_REPO)) {
-                String urlKey = r + RepositoryConfigUtils.URL_SUFFIX;
-                String userKey = r + RepositoryConfigUtils.USER_SUFFIX;
-                String pwdKey = r + RepositoryConfigUtils.PWD_SUFFIX;
-                String userPwdKey = r + RepositoryConfigUtils.USERPWD_SUFFIX;
-                String url = repoProperties.getProperty(urlKey);
-                String user = repoProperties.getProperty(userKey);
-                String pass = repoProperties.getProperty(pwdKey);
-                if (pass == null || pass.isEmpty()) {
-                    pass = repoProperties.getProperty(userPwdKey);
-                }
-                url = (url == null || url.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : url;
-                user = (user == null || user.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : user;
-                String warningDetail = null;
-                if (pass == null || pass.isEmpty()) {
-                    pass = CmdUtils.getMessage("MSG_UNSPECIFIED");
-                } else {
-                    try {
-                        PasswordUtil.decode(pass);
-                        pass = CmdUtils.CmdlineConstants.HIDDEN_PASSWORD;
-                    } catch (InvalidPasswordDecodingException ipde) {
-                        warningDetail = CmdUtils.getMessage("MSG_PASSWORD_NOT_ENCODED");
-                        pass = CmdUtils.CmdlineConstants.HIDDEN_PASSWORD;
-                    } catch (UnsupportedCryptoAlgorithmException ucae) {
-                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.CONNECTION_FAILED);
-                    }
-                }
-
-                sb.append(CmdUtils.getMessage("FIELD_NAME") + " " + r).append(InstallUtils.NEWLINE);
-                sb.append(CmdUtils.getMessage("FIELD_LOCATION") + " " + url).append(InstallUtils.NEWLINE);
-                if (CmdUtils.isFileProtocol(url)) {
-                    sb.append(CmdUtils.getMessage("FIELD_USER") + " " + CmdUtils.getMessage("MSG_INAPPLICABLE")).append(InstallUtils.NEWLINE);
-                    sb.append(CmdUtils.getMessage("FIELD_PASS") + " " + CmdUtils.getMessage("MSG_INAPPLICABLE")).append(InstallUtils.NEWLINE);
-                } else {
-                    sb.append(CmdUtils.getMessage("FIELD_USER") + " " + user).append(InstallUtils.NEWLINE);
-                    sb.append(CmdUtils.getMessage("FIELD_PASS") + " " + pass).append(InstallUtils.NEWLINE);
-                    if (warningDetail != null) {
-                        sb.append(CmdUtils.getMessage("FIELD_REPO_WARNING", warningDetail)).append(InstallUtils.NEWLINE);
-                    }
-                }
-                sb.append(InstallUtils.NEWLINE);
-            }
+        for (MavenRepository mvnRepository : FeatureUtilityRepoProperties.getMirrorRepositories()) {
+            sb.append(mvnRepository.getRepositoryUrl());
+//            if (!r.equalsIgnoreCase(RepositoryConfigUtils.WLP_REPO)) {
+//                String urlKey = r + RepositoryConfigUtils.URL_SUFFIX;
+//                String userKey = r + RepositoryConfigUtils.USER_SUFFIX;
+//                String pwdKey = r + RepositoryConfigUtils.PWD_SUFFIX;
+//                String userPwdKey = r + RepositoryConfigUtils.USERPWD_SUFFIX;
+//                String url = repoProperties.getProperty(urlKey);
+//                String user = repoProperties.getProperty(userKey);
+//                String pass = repoProperties.getProperty(pwdKey);
+//                if (pass == null || pass.isEmpty()) {
+//                    pass = repoProperties.getProperty(userPwdKey);
+//                }
+//                url = (url == null || url.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : url;
+//                user = (user == null || user.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : user;
+//                String warningDetail = null;
+//                if (pass == null || pass.isEmpty()) {
+//                    pass = CmdUtils.getMessage("MSG_UNSPECIFIED");
+//                } else {
+//                    try {
+//                        PasswordUtil.decode(pass);
+//                        pass = CmdUtils.CmdlineConstants.HIDDEN_PASSWORD;
+//                    } catch (InvalidPasswordDecodingException ipde) {
+//                        warningDetail = CmdUtils.getMessage("MSG_PASSWORD_NOT_ENCODED");
+//                        pass = CmdUtils.CmdlineConstants.HIDDEN_PASSWORD;
+//                    } catch (UnsupportedCryptoAlgorithmException ucae) {
+//                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.CONNECTION_FAILED);
+//                    }
+//                }
+//
+//                sb.append(CmdUtils.getMessage("FIELD_NAME") + " " + r).append(InstallUtils.NEWLINE);
+//                sb.append(CmdUtils.getMessage("FIELD_LOCATION") + " " + url).append(InstallUtils.NEWLINE);
+//                if (CmdUtils.isFileProtocol(url)) {
+//                    sb.append(CmdUtils.getMessage("FIELD_USER") + " " + CmdUtils.getMessage("MSG_INAPPLICABLE")).append(InstallUtils.NEWLINE);
+//                    sb.append(CmdUtils.getMessage("FIELD_PASS") + " " + CmdUtils.getMessage("MSG_INAPPLICABLE")).append(InstallUtils.NEWLINE);
+//                } else {
+//                    sb.append(CmdUtils.getMessage("FIELD_USER") + " " + user).append(InstallUtils.NEWLINE);
+//                    sb.append(CmdUtils.getMessage("FIELD_PASS") + " " + pass).append(InstallUtils.NEWLINE);
+//                    if (warningDetail != null) {
+//                        sb.append(CmdUtils.getMessage("FIELD_REPO_WARNING", warningDetail)).append(InstallUtils.NEWLINE);
+//                    }
+//                }
+            sb.append(InstallUtils.NEWLINE);
         }
 
         System.out.println(CmdUtils.getMessage("MSG_CONFIG_REPO_LABEL"));
@@ -159,22 +162,22 @@ public class ViewSettingsAction implements ActionHandler {
     private void showProxyInfo() throws InstallException {
         StringBuffer proxInfo = new StringBuffer();
         String pHost = null;
-
-        if (repoProperties != null) {
-            pHost = repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_HOST);
+        if (FeatureUtilityRepoProperties.didLoadProperties()) {
+            pHost = FeatureUtilityRepoProperties.getProxyHost();
             if (pHost != null && !pHost.isEmpty()) {
                 proxInfo.append(CmdUtils.getMessage("FIELD_PROXY_SERVER") + " " + pHost).append(InstallUtils.NEWLINE);
             }
 
-            String pPort = repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_PORT);
+            String pPort = FeatureUtilityRepoProperties.getProxyPort();
             pPort = (pPort == null || pPort.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : pPort;
             proxInfo.append(CmdUtils.getMessage("FIELD_PORT") + " " + pPort).append(InstallUtils.NEWLINE);
 
-            String pUser = repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_USER);
+            String pUser = FeatureUtilityRepoProperties.getProxyUser();
             pUser = (pUser == null || pUser.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : pUser;
             proxInfo.append(CmdUtils.getMessage("FIELD_USER") + " " + pUser).append(InstallUtils.NEWLINE);
 
-            String pUserPwd = repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_USERPWD) != null ? repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_USERPWD) : repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_PWD) != null ? repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_PWD) : null;
+//            String pUserPwd = repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_USERPWD) != null ? repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_USERPWD) : repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_PWD) != null ? repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_PWD) : null;
+            String pUserPwd = FeatureUtilityRepoProperties.getProxyPassword();
             String warning = null;
             if (pUserPwd == null || pUserPwd.isEmpty())
                 pUserPwd = CmdUtils.getMessage("MSG_UNSPECIFIED");
@@ -212,11 +215,11 @@ public class ViewSettingsAction implements ActionHandler {
 
     private void showSettingsTemplate() {
         StringBuffer sb = new StringBuffer();
-        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_REPO_FILE_NOT_FOUND"), "");
+        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND"), "");
         sb.append(InstallUtils.NEWLINE);
-        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_REPO_FILE_NOT_FOUND_EXPLANATION", RepositoryConfigUtils.getRepoPropertiesFileLocation()), "");
+        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION", RepositoryConfigUtils.getRepoPropertiesFileLocation()), "");
         sb.append(InstallUtils.NEWLINE);
-        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_REPO_FILE_NOT_FOUND_ACTION"), "");
+        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND_ACTION"), "");
         System.out.print(sb.toString());
 
         System.out.println(CmdUtils.CmdlineConstants.DASHES);
@@ -249,7 +252,7 @@ public class ViewSettingsAction implements ActionHandler {
 
     private void showSettings() throws InstallException {
         showHeader();
-        showValidationResults();
+//        showValidationResults();
         showRepositories();
         showProxyInfo();
 
