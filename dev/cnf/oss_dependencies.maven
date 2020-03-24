@@ -101,6 +101,7 @@ httpunit:httpunit:1.5.4
 httpunit:httpunit:1.7
 io.github.classgraph:classgraph:4.6.7
 io.grpc:grpc-api:1.27.0
+io.grpc:grpc-census:1.27.0
 io.grpc:grpc-context:1.27.0
 io.grpc:grpc-core:1.27.0
 io.grpc:grpc-netty-shaded:1.27.0
