@@ -62,4 +62,18 @@ public class TimedCacheTest {
         assertEquals("foobaz", cache.get("foo", lookupFunction));
     }
 
+    @Test
+    public void testCachingNegative() {
+        // Negative delay should be equivalent to zero, i.e. no caching
+        TimedCache<String, String> cache = new TimedCache<>(null, -3000, TimeUnit.MILLISECONDS);
+        AtomicReference<String> suffix = new AtomicReference<>("bar");
+        Function<String, String> lookupFunction = k -> k + suffix.get();
+
+        assertEquals("foobar", cache.get("foo", lookupFunction));
+
+        suffix.set("baz");
+
+        assertEquals("foobaz", cache.get("foo", lookupFunction));
+    }
+
 }

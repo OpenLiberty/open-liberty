@@ -90,7 +90,7 @@ public class TimedCache<K, V> {
     public V get(K key, Function<K, V> lookupFunction) {
 
         // If no expiry time is set, do no caching
-        if (delay == 0) {
+        if (delay <= 0) {
             return lookupFunction.apply(key);
         }
 
