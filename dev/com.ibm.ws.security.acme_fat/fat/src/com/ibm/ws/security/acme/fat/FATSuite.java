@@ -26,7 +26,8 @@ import com.ibm.ws.security.acme.docker.PebbleContainer;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AcmeClientTest.class, AcmeConfigBringUp.class, AcmeSimpleTest.class, AcmeCaRestHandlerTest.class })
+@SuiteClasses({ AcmeClientTest.class, AcmeConfigBringUp.class, AcmeSimpleTest.class, AcmeCaRestHandlerTest.class,
+		AcmeURISimpleTest.class })
 public class FATSuite {
 
 	public static ChalltestsrvContainer challtestsrv = null;

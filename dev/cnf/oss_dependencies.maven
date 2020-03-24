@@ -53,7 +53,7 @@ com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.ibm.ws.componenttest:provider.api:1.0.0
 com.ibm.ws.componenttest:public.api:1.0.0
 com.icegreen:greenmail:1.5.10
-com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8
+com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8
 com.netflix.archaius:archaius2-api:2.1.10
 com.netflix.archaius:archaius2-core:2.1.10
 com.nimbusds:nimbus-jose-jwt:4.23
@@ -80,7 +80,7 @@ com.sun.xml.stream.buffer:streambuffer:1.5.3
 com.sun.xml.ws:jaxws-rt:2.2.10
 com.sun.xml.ws:jaxws-tools:2.2.10
 com.sun.xml.ws:policy:2.4
-com.unboundid:unboundid-ldapsdk:4.0.9
+com.unboundid:unboundid-ldapsdk:4.0.14
 commons-beanutils:commons-beanutils:1.9.4
 commons-codec:commons-codec:1.10
 commons-codec:commons-codec:1.11
@@ -127,6 +127,7 @@ io.reactivex.rxjava2:rxjava:2.2.13
 io.smallrye.reactive:smallrye-reactive-converter-api:1.0.10
 io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.8
 io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.10
+jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0-RC1
 jakarta.servlet:jakarta.servlet-api:5.0.0-M1
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0-M1
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0-RC1

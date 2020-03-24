@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2019 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,6 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.enterprise.concurrent.ManagedThreadFactory;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -295,7 +293,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * Injected or looked up managed thread factory instance.
      */
-    class ManagedThreadFactoryImpl implements ManagedThreadFactory {
+    class ManagedThreadFactoryImpl implements jakarta.enterprise.concurrent.ManagedThreadFactory, javax.enterprise.concurrent.ManagedThreadFactory {
         /**
          * Identifier of the component metadata (if any) that looked up or injected this managed thread factory.
          */

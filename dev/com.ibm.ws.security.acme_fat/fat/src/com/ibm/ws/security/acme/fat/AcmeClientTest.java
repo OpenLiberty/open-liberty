@@ -61,7 +61,7 @@ public class AcmeClientTest {
 	private static final String TRUSTSTORE_PASSWORD = "password";
 	private static X509Certificate pebbleIntermediateCertificate = null;
 	private static HttpChallengeServer challengeServer = null;
-	private static final String acmeDirectoryURI = FATSuite.pebble.getAcmeDirectoryURI();
+	private static final String acmeDirectoryURI = FATSuite.pebble.getAcmeDirectoryURI(true);
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();

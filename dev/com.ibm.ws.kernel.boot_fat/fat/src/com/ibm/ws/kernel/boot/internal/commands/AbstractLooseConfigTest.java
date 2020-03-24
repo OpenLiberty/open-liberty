@@ -31,6 +31,7 @@ public abstract class AbstractLooseConfigTest {
     protected static final String CONFIG_SOURCE = PUBLISH_RESOURCES + "configs/";
     protected static final String TMP_SOURCE = PUBLISH_RESOURCES + "tmp/";
     protected static final String APPS_DIR = "apps";
+    protected static final String DROPINS_DIR = "dropins";
     private static final String[] CONFIGS = new String[] {
                                                            "DefaultArchive.war.xml",
                                                            "SimpleElements.war.xml",
@@ -60,11 +61,11 @@ public abstract class AbstractLooseConfigTest {
         checkMatch.put(key, match + value);
     }
 
-    public static void packageWithConfig(LibertyServer server, String[] cmd) throws Exception {
+    public void packageWithConfig(LibertyServer server, String[] cmd) throws Exception {
         packageWithConfig(server, "DefaultArchive.war.xml", cmd);
     }
 
-    public static void packageWithConfig(LibertyServer server, String config) throws Exception {
+    public void packageWithConfig(LibertyServer server, String config) throws Exception {
         String[] cmd = new String[] { "--archive=" + ARCHIVE_PACKAGE, "--include=usr", "--server-root=" + SERVER_ROOT };
         packageWithConfig(server, config, cmd);
     }
@@ -78,17 +79,24 @@ public abstract class AbstractLooseConfigTest {
      * @param cmd
      * @throws Exception
      */
-    public static void packageWithConfig(LibertyServer server, String config, String[] cmd) throws Exception {
+    public void packageWithConfig(LibertyServer server, String config, String[] cmd) throws Exception {
         System.out.printf("%2s-config: %s%n", "", config);
 
         server.getFileFromLibertyInstallRoot("lib/extract");
 
         // Find the config in PUBLISH_RESOURCES and move it to APPS_DIR in the server
-        server.copyFileToLibertyServerRoot(CONFIG_SOURCE, APPS_DIR, config);
+        server.copyFileToLibertyServerRoot(CONFIG_SOURCE, getAppsTargetDir(), config);
 
         // Package the server and ensure it completes
         String stdout = server.executeServerScript("package", cmd).getStdout();
         assertTrue("The package command did not complete as expected. STDOUT = " + stdout,
                    stdout.contains("package complete"));
+    }
+
+    /**
+     * @return
+     */
+    public String getAppsTargetDir() {
+        return APPS_DIR;
     }
 }

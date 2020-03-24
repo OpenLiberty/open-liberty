@@ -39,11 +39,25 @@
   <AD id="orderRetryWait"       name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="3s" />
 
   <!-- ACME account related fields. -->
-  <AD id="accountKeyFile"       name="internal" description="internal use only" type="String"  required="false" default="${server.config.dir}/resources/security/acmeAccountKey.pem" />
+  <AD id="accountKeyFile"       name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeAccountKey.pem" />
   <AD id="accountContact"       name="internal" description="internal use only" type="String"  required="false" cardinality="2147483647" />
   <AD id="acceptTermsOfService" name="internal" description="internal use only" type="Boolean" required="false" default="false" />
-  <AD id="domainKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.config.dir}/resources/security/acmeDomainKey.pem" />
+  <AD id="domainKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeDomainKey.pem" />
 
+  <!-- Transport configuration. -->
+  <AD id="acmeTransportConfig"  name="internal" description="internal use only" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.transport" />
+
+ </OCD>
+  
+ <Designate factoryPid="com.ibm.ws.security.acme.transport">
+   <Object ocdref="com.ibm.ws.security.acme.transport.metatype" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.security.acme.transport.metatype" name="internal" description="internal use only" ibm:alias="acmeTransportConfig">
+   <AD id="protocol"             name="internal" description="internal use only" required="false" type="String" />
+   <AD id="trustStore"           name="internal" description="internal use only" required="false" type="String" />
+   <AD id="trustStorePassword"   name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
+   <AD id="trustStoreType"       name="internal" description="internal use only" required="false" type="String" />
  </OCD>
 
 </metatype:MetaData>

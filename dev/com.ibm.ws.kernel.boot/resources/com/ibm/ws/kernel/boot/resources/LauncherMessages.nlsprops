@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -699,6 +699,10 @@ error.package.extension.useraction=Supply a file name to --archive with a file e
 error.package.usr.jar=CWWKE0951E: The archive file name must not end with a .jar file extension when the usr option is used.
 error.package.usr.jar.explanation=The --archive option must not end with a .jar file extension when --include=usr is specified.
 error.package.usr.jar.useraction=Supply a file name to --archive with a file extension other than a .jar file extension when --include=usr is specified.
+
+error.missing.version.files=CWWKE0952E: Version information cannot be read from the directory {0}.
+error.missing.version.files.explanation=The directory that contains version information files either does not exist or cannot be read by the current user.
+error.missing.version.files.useraction=Ensure that the directory exists and can be read by the current user. 
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.

@@ -35,16 +35,6 @@ import componenttest.rules.repeater.RepeatTests;
 	EJBCDITest.class,
 	MultiServerTest.class,
 	SSLTest.class,
-	
-	/**
-	 * tWAS migration FAT
-	 */
-	SimpleTest.class,
-	ComplexTest.class,
-	SleepTest.class,
-	LPSTest.class,
-	LPSDisabledTest.class,
-	MultiThreadedTest.class
 })
 public class FATSuite {
 

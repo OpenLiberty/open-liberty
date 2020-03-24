@@ -289,7 +289,7 @@
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
-      <version>7.4.1.jre8</version>
+      <version>8.2.1.jre8</version>
     </dependency>
     <dependency>
       <groupId>com.netflix.archaius</groupId>
@@ -424,7 +424,7 @@
     <dependency>
       <groupId>com.unboundid</groupId>
       <artifactId>unboundid-ldapsdk</artifactId>
-      <version>4.0.9</version>
+      <version>4.0.14</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -655,6 +655,11 @@
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-streams-operators</artifactId>
       <version>1.0.10</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.enterprise.concurrent</groupId>
+      <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+      <version>2.0.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>

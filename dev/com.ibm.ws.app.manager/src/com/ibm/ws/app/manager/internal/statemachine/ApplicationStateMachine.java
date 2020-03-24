@@ -59,6 +59,7 @@ public abstract class ApplicationStateMachine {
 
     public abstract void configure(ApplicationConfig appConfig,
                                    Collection<ApplicationDependency> appStartingFutures,
+                                   Collection<ApplicationDependency> startAfterFutures,
                                    ApplicationDependency notifyAppStopped,
                                    ApplicationDependency notifyAppStarting,
                                    ApplicationDependency notifyAppInstalled,

@@ -36,10 +36,12 @@
 	<classpathentry kind="src" path="test-applications/servletcoexist3/src"/>
 	<classpathentry kind="src" path="test-applications/testManagedBeans/src"/>
 	<classpathentry kind="src" path="test-applications/thirdpartyjersey/src"/>
+        <classpathentry kind="src" path="test-applications/thirdpartyjerseywithinjection/src"/>
 	<classpathentry kind="src" path="test-applications/uriInfo/src"/>
 	<classpathentry kind="src" path="test-applications/validation/src"/>
 	<classpathentry kind="src" path="test-applications/wadl/src"/>
 	<classpathentry kind="src" path="test-applications/webcontainer/src"/>
+	<classpathentry kind="src" path="test-applications/simpleJson/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

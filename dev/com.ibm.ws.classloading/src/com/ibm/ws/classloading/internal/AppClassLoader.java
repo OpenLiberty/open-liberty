@@ -280,9 +280,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                     // it will attempt to define the class a 2nd time.
                     clazz = findLoadedClass(name);
                     if (clazz == null) {
-                        ByteResourceInformation byteResInfo = this.findClassBytes(name);
+                        String resourceName = Util.convertClassNameToResourceName(name);
+                        ByteResourceInformation byteResInfo = this.findClassBytes(name, resourceName);
                         if (byteResInfo != null) {
-                            clazz = definePackageAndClass(name, byteResInfo, byteResInfo.getBytes());
+                            clazz = definePackageAndClass(name, resourceName, byteResInfo, byteResInfo.getBytes());
                         } else {
                             // Check the common libraries.
                             clazz = findClassCommonLibraryClassLoaders(name);
@@ -295,7 +296,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return clazz;
         }
 
-        ByteResourceInformation byteResourceInformation = findClassBytes(name);
+        String resourceName = Util.convertClassNameToResourceName(name);
+        ByteResourceInformation byteResourceInformation = findClassBytes(name, resourceName);
         if (byteResourceInformation == null) {
             // Check the common libraries.
             return findClassCommonLibraryClassLoaders(name);
@@ -319,7 +321,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
         }
 
-        return definePackageAndClass(name, byteResourceInformation, bytes);
+        return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
     }
 
     byte[] transformClassBytes(final byte[] originalBytes, String name) throws ClassNotFoundException {
@@ -349,7 +351,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         return bytes;
     }
 
-    private Class<?> definePackageAndClass(final String name, final ByteResourceInformation byteResourceInformation, byte[] bytes) throws ClassFormatError {
+    private Class<?> definePackageAndClass(final String name, String resourceName, final ByteResourceInformation byteResourceInformation, byte[] bytes) throws ClassFormatError {
         final TraceComponent cltc;
         // Now define a package for this class if it has one
         int lastDotIndex = name.lastIndexOf('.');
@@ -368,7 +370,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         }
 
         URL resourceURL = byteResourceInformation.getResourceUrl();
-        ProtectionDomain pd = getClassSpecificProtectionDomain(name, resourceURL);
+        ProtectionDomain pd = getClassSpecificProtectionDomain(resourceName, resourceURL);
 
         Class<?> clazz = null;
         try {
@@ -398,13 +400,13 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
-    private ProtectionDomain getClassSpecificProtectionDomain(final String name, final URL resourceUrl) {
+    private ProtectionDomain getClassSpecificProtectionDomain(final String resourceName, final URL resourceUrl) {
         ProtectionDomain pd = config.getProtectionDomain();
         try {
             pd = AccessController.doPrivileged(new PrivilegedExceptionAction<ProtectionDomain>() {
                 @Override
                 public ProtectionDomain run() {
-                    return getClassSpecificProtectionDomainPrivileged(name, resourceUrl);
+                    return getClassSpecificProtectionDomainPrivileged(resourceName, resourceUrl);
                 }
             });
         } catch (PrivilegedActionException paex) {
@@ -415,8 +417,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     }
 
-    ProtectionDomain getClassSpecificProtectionDomainPrivileged(String className, URL resourceUrl) {
-        ProtectionDomain pdFromConfig = config.getProtectionDomain();
+    ProtectionDomain getClassSpecificProtectionDomainPrivileged(String resourceName, URL resourceUrl) {
         ProtectionDomain pd;
 
         try {
@@ -430,19 +431,22 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 // this is most likely a file URL - i.e. the contents of the classes are expanded on the disk.
                 // so a path like:  .../myServer/dropins/myWar.war/WEB-INF/classes/com/myPkg/MyClass.class
                 // should convert to: .../myServer/dropins/myWar.war/WEB-INF/classes/
-                containerUrl = new URL(resourceUrl.toString().replace(Util.convertClassNameToResourceName(className), ""));
+                containerUrl = new URL(resourceUrl.toString().replace(resourceName, ""));
             }
             String containerUrlString = containerUrl.toString();
             pd = protectionDomains.get(containerUrlString);
             if (pd == null) {
+                ProtectionDomain pdFromConfig = config.getProtectionDomain();
                 CodeSource cs = new CodeSource(containerUrl, pdFromConfig.getCodeSource().getCertificates());
                 pd = new ProtectionDomain(cs, pdFromConfig.getPermissions());
-                protectionDomains.putIfAbsent(containerUrlString, pd);
-                pd = protectionDomains.get(containerUrlString);
+                ProtectionDomain oldPD = protectionDomains.putIfAbsent(containerUrlString, pd);
+                if (oldPD != null) {
+                    pd = oldPD;
+                }
             }
         } catch (IOException ex) {
             // Auto-FFDC - and then use the protection domain from the classloader configuration
-            pd = pdFromConfig;
+            pd = config.getProtectionDomain();
         }
         return pd;
     }
@@ -472,8 +476,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         }
     }
 
-    final ByteResourceInformation findClassBytes(String className) {
-        String resourceName = Util.convertClassNameToResourceName(className);
+    final ByteResourceInformation findClassBytes(String className, String resourceName) {
         try {
             return findClassBytes(className, resourceName, hook);
         } catch (IOException e) {
