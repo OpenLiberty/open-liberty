@@ -7,6 +7,6 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.autoSecurityS4U2-1.0
 -jars=com.ibm.websphere.appserver.api.security.spnego; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security.spnego_1.0-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security.spnego_1.1-javadoc.zip
 kind=ga
 edition=core
