@@ -19,13 +19,19 @@ task copyTestPackages(type: Copy ) {
 		into ("${buildDir}/autoFVT/publish/packages.test")
 }
 
+
 task copyCurrentPackages(type: Copy ) {
-	from "${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/"
-		into ("${buildDir}/autoFVT/publish/packages.current")
-        include '*.rpm'
+	into ("${buildDir}/autoFVT/publish")
+	
+	into ("packages.current") {
 	from "${project(':build.image').projectDir}/packaging/debuild/"
-		into ("${buildDir}/autoFVT/publish/packages.current")
-  	        include '*.deb'
+	    include ('*.deb', '*.build', '*.buildinfo', '*.changes')
+	}
+
+	into ("packages.current") {
+	from "${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/"
+        include ('*.rpm')
+    }
 }
 
 zipAutoFVT.dependsOn copyServerFolder, copyTestPackages, copyCurrentPackages
