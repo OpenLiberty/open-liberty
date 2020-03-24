@@ -79,26 +79,20 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
             return super.loadClass(name, resolve);
         }
 
+        Class<?> result = null;
         synchronized (getClassLoadingLock(name)) {
-            Class<?> result = null;
-
             result = findLoadedClass(name);
             if (result == null) {
                 // Try to load the class from this classpath
                 result = findClass(name, true);
-                if (result == null) {
-                    if (parent == null || resolve) {
-                        result = super.loadClass(name, resolve);
-                    } else {
-                        // calling using this way to avoid calling findLoadedClass
-                        // and findClass again
-                        result = parent.loadClass(name);
-                    }
-                }
             }
-
-            return result;
         }
+
+        if (result == null) {
+            result = parent.loadClass(name);
+        }
+
+        return result;
     }
 
     @Override
