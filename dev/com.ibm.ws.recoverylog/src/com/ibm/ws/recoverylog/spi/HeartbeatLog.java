@@ -23,7 +23,7 @@ public interface HeartbeatLog {
 
     /**
      * Used to maintain the liveness of the Recovery Log.
-     * 
+     *
      * @throws LogClosedException
      *
      */
@@ -54,4 +54,9 @@ public interface HeartbeatLog {
      * scheme.
      */
     public void setTimeBetweenHeartbeats(int timeBetweenHeartbeats);
+
+    /**
+     * Signals to the Recovery Log that the server is stopping.
+     */
+    public void serverStopping();
 }
