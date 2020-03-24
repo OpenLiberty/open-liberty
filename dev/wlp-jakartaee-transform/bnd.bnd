@@ -24,11 +24,6 @@ Bundle-SymbolicName: wlp-jakartaeeTransformer
 Bundle-Description: Unshipped bundle that houses jakartaaee transformer for use during build
 
 Export-Package: com.ibm.ws.jakarta.transformer.*;version="1.0"
-Private-Package: \
-    com.ibm.ws.jakarta.transformer.*
-
--plugin.build.bnd.plugins:
--pluginpath:
 
 globalize: false
 
