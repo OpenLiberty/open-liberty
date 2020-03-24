@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>RABValWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <servlet-name>BVal Servlet</servlet-name>
+    <display-name>BVal Servlet</display-name>
+    <servlet-class>web.RABValServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="Test">
+    <servlet-name>Test Servlet</servlet-name>
+    <display-name>Test Servlet</display-name>
+    <servlet-class>web.TestServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>BVal Servlet</servlet-name>
+    <url-pattern>/BValApp</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_test">
+    <servlet-name>Test Servlet</servlet-name>
+    <url-pattern>/Test</url-pattern>
+  </servlet-mapping>
+
+</web-app>
