@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-*******************************************************************************
-=======
 #*******************************************************************************
->>>>>>> Add in SmallRye GraphQL implementation
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -13,11 +9,18 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
--include=\
-	jar:${fileuri;${repo;org.jboss.jandex;2.1.2.Final}}!/META-INF/MANIFEST.MF,\
-	bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
-instrument.disabled: true
+Bundle-Name: GraphQL-Java
+Bundle-SymbolicName: com.ibm.ws.com.graphql.java
+Bundle-Description: Provides GraphQL as a bundle
 
--buildpath:\
-	org.jboss.jandex;version=2.1.2.Final
+-includeresource: \
+  @${repo;com.graphql-java:graphql-java;14.0},\
+  @${repo;com.graphql-java:java-dataloader;2.2.1},\
+  @${repo;org.antlr:antlr4-runtime;4.7.1}
+  
+Export-Package: \
+  graphql.*;version=13.0,\
+  org.dataloader.*;version=2.2.1
