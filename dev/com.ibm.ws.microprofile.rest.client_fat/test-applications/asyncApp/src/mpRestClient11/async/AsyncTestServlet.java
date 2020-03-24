@@ -50,7 +50,7 @@ import componenttest.app.FATServlet;
 public class AsyncTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(AsyncTestServlet.class.getName());
     final static int TIMEOUT = 10;
-    final static int MULTISTAGE_TIMEOUT = 40;
+    final static int MULTISTAGE_TIMEOUT = 120;
 
     final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/asyncApp/";
 
