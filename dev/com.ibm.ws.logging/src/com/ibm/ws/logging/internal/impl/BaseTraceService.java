@@ -52,6 +52,8 @@ import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
+import com.ibm.ws.logging.data.JSONObject;
+import com.ibm.ws.logging.data.JSONObject.JSONObjectBuilder;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.ws.logging.internal.PackageProcessor;
@@ -325,6 +327,7 @@ public class BaseTraceService implements TrService {
             BaseTraceFormatter.useIsoDateFormat = isoDateFormat;
         }
 
+        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
         initializeWriters(trConfig);
         if (hideMessageids.size() > 0) {
             String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
@@ -463,8 +466,6 @@ public class BaseTraceService implements TrService {
                 updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
             }
         }
-
-        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
     }
 
     public static void applyJsonFields(String value, Boolean omitJsonFields) {
@@ -1191,22 +1192,19 @@ public class BaseTraceService implements TrService {
         String datetime = getDatetime();
         String sequenceNumber = getSequenceNumber();
         //construct json header
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"type\":\"liberty_message\"");
-        sb.append(",\"host\":\"");
-        jsonEscape(sb, serverHostName);
-        sb.append("\",\"ibm_userDir\":\"");
-        jsonEscape(sb, wlpUserDir);
-        sb.append("\",\"ibm_serverName\":\"");
-        jsonEscape(sb, serverName);
-        sb.append("\",\"message\":\"");
-        jsonEscape(sb, logHeader);
-        sb.append("\",\"ibm_datetime\":\"");
-        jsonEscape(sb, datetime);
-        sb.append("\",\"ibm_sequence\":\"");
-        jsonEscape(sb, sequenceNumber);
-        sb.append("\"}\n");
-        return sb.toString();
+        JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
+
+        //@formatter:off
+        jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), "liberty_message", false, false)
+        .addField(LogTraceData.getHostKeyJSON(true), serverHostName, false, true)
+        .addField(LogTraceData.getUserDirKeyJSON(true), wlpUserDir, false, true)
+        .addField(LogTraceData.getServerNameKeyJSON(true), serverName, false, true)
+        .addField(LogTraceData.getMessageKeyJSON(true), logHeader, false, true)
+        .addField(LogTraceData.getDatetimeKeyJSON(true), datetime, false, true)
+        .addField(LogTraceData.getSequenceKeyJSON(true), sequenceNumber, false, true);
+        //@formatter:on
+
+        return jsonBuilder.build().toString().concat("\n");
     }
 
     private String getSequenceNumber() {
@@ -1257,49 +1255,6 @@ public class BaseTraceService implements TrService {
             serverHostName = containerHost;
         }
         return serverHostName;
-    }
-
-    /**
-     * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
-     *
-     * @param sb String builder to append to
-     * @param s String to escape
-     */
-    private void jsonEscape(StringBuilder sb, String s) {
-        if (s == null) {
-            sb.append(s);
-            return;
-        }
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            switch (c) {
-                case '\b':
-                    sb.append("\\b");
-                    break;
-                case '\f':
-                    sb.append("\\f");
-                    break;
-                case '\n':
-                    sb.append("\\n");
-                    break;
-                case '\r':
-                    sb.append("\\r");
-                    break;
-                case '\t':
-                    sb.append("\\t");
-                    break;
-
-                // Fall through because we just need to add \ (escaped) before the character
-                case '\\':
-                case '\"':
-                case '/':
-                    sb.append("\\");
-                    sb.append(c);
-                    break;
-                default:
-                    sb.append(c);
-            }
-        }
     }
 
     public final static class SystemLogHolder extends Level implements TraceWriter {
