@@ -71,13 +71,15 @@ public class InMemoryLDAPServer {
      * @throws Exception If something went wrong
      */
     public InMemoryLDAPServer(boolean useWimSchema, String... bases) throws Exception {
+        System.setProperty("com.unboundid.ldap.sdk.debug.enabled", "true");
+        System.setProperty("com.unboundid.ldap.sdk.debug.level", "ALL");
 
         config = new InMemoryDirectoryServerConfig(bases);
         config.addAdditionalBindCredentials(getBindDN(), getBindPassword());
 
-        keystore = extractResourceToFile("/resources/keystore.jks", "keystore", ".jks").getAbsolutePath();
+        keystore = extractResourceToFile("/resources/keystore.p12", "keystore", ".p12").getAbsolutePath();
         final SSLUtil serverSSLUtil = new SSLUtil(new KeyStoreKeyManager(keystore, keystorePassword
-                        .toCharArray(), "JKS", "cert-alias"), new TrustAllTrustManager());
+                        .toCharArray(), "PKCS12", "cert-alias"), new TrustAllTrustManager());
         ArrayList<InMemoryListenerConfig> configs = new ArrayList<InMemoryListenerConfig>();
         InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig("LDAPS", 0, serverSSLUtil.createSSLServerSocketFactory());
         configs.add(secure);
