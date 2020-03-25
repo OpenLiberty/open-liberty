@@ -116,7 +116,6 @@ Include-Resource: \
     WEB-INF=resources/WEB-INF, \
     OSGI-INF=resources/OSGI-INF, \
     scripts=resources/scripts, \
-    resources/authzMgmt.jsp, \
     resources/clienttable.jsp, \
     resources/login.jsp, \
     resources/sessionMgmt.jsp, \
