@@ -64,7 +64,9 @@ public class OSGiJPAPXml extends JPAPXml {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
         // Obtain the xsd file from the jpa container bundle
-        String resName = "com/ibm/ws/jpa/schemas/javaee/" + xsdName;
+        final boolean isJavaEE = (xsdName != null && (xsdName.endsWith("1_0.xsd") || xsdName.endsWith("2_0.xsd")
+                                                      || xsdName.endsWith("2_1.xsd") || xsdName.endsWith("2_2.xsd")));
+        String resName = "com/ibm/ws/jpa/schemas/" + ((isJavaEE) ? "javaee/" : "jakartaee/") + xsdName;
         URL xsdUrl = JPAPXml.class.getClassLoader().getResource(resName);
         if (xsdUrl == null) {
             throw new RuntimeException(resName + " not found");

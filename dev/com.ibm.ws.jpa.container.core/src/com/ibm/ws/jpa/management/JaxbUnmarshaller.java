@@ -58,6 +58,7 @@ final class JaxbUnmarshaller extends DefaultHandler {
 
     private static final String PERSISTENCE_NAMESPACE_URI = "http://java.sun.com/xml/ns/persistence"; // d656864
     private static final String JCP_PERSISTENCE_NAMESPACE_URI = "http://xmlns.jcp.org/xml/ns/persistence";
+    private static final String JAKARTA_PERSISTENCE_NAMESPACE_URI = "https://xmlns.jakarta.ee/xml/ns/persistence";
 
     private static final String PERSISTENCE_LOCAL_NAME = "persistence"; // d656864
     private static final String VERSION_ATTRIBUTE_NAME = "version"; // d656864
@@ -264,7 +265,8 @@ final class JaxbUnmarshaller extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
         if (ivHandler == null) {
             if (!PERSISTENCE_LOCAL_NAME.equals(localName) ||
-                (!(PERSISTENCE_NAMESPACE_URI.equals(uri)) && !(JCP_PERSISTENCE_NAMESPACE_URI.equals(uri)))) {
+                (!(PERSISTENCE_NAMESPACE_URI.equals(uri)) && !(JCP_PERSISTENCE_NAMESPACE_URI.equals(uri))
+                 && !(JAKARTA_PERSISTENCE_NAMESPACE_URI.contentEquals(uri)))) {
                 throw new SAXParseException("expected root element {" +
                                             PERSISTENCE_NAMESPACE_URI + "}" +
                                             PERSISTENCE_LOCAL_NAME, ivLocator);
@@ -278,8 +280,12 @@ final class JaxbUnmarshaller extends DefaultHandler {
                 ivPersistence = new JaxbPersistence20(ivJPAPXml);
             } else if (JaxbPersistence21.SCHEMA_VERSION.equals(version)) {
                 ivPersistence = new JaxbPersistence21(ivJPAPXml);
-            } else {
+            } else if (JaxbPersistence22.SCHEMA_VERSION.equals(version)) {
                 ivPersistence = new JaxbPersistence22(ivJPAPXml);
+            } else if (JaxbPersistence30.SCHEMA_VERSION.equals(version)) {
+                ivPersistence = new JaxbPersistence30(ivJPAPXml);
+            } else {
+                // TODO, this is a new situation, in the past we've always been able to default to the latest spec.
             }
 
             // Now that we've determined which JAXBContext to use, create a

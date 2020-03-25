@@ -8,6 +8,7 @@ Subsystem-Version: 9.0.0
 Subsystem-Name: Jakarta EE Web Profile 9.0
 -features=\
   com.ibm.websphere.appserver.el-4.0,\
+  com.ibm.websphere.appserver.jpaContainer-3.0,\
   com.ibm.websphere.appserver.jsonb-2.0,\
   com.ibm.websphere.appserver.jsonp-2.0,\
   com.ibm.websphere.appserver.jsp-3.0,\
