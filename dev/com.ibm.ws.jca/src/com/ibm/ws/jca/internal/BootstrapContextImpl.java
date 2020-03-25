@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jca.cm.JcaServiceUtilities;
 import com.ibm.ws.jca.security.JCASecurityContext;
@@ -165,6 +166,11 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * Service reference to the context service.
      */
     private ServiceReference<WSContextService> contextSvcRef;
+
+    /**
+     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    int eeVersion;
 
     /**
      * Liberty executor
@@ -1005,6 +1011,22 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     }
 
     /**
+     * Declarative Services method for setting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
+        }
+    }
+
+    /**
      * Declarative Services method for setting the ExecutorService service
      *
      * @param svc the service
@@ -1227,6 +1249,15 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * @param ref reference the service
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {}
+
+    /**
+     * Declarative Services method for unsetting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        eeVersion = 0;
+    }
 
     /**
      * Declarative Services method for unsetting the ExecutorService service
