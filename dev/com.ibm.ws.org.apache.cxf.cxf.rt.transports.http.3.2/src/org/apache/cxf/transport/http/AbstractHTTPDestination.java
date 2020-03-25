@@ -102,7 +102,6 @@ public abstract class AbstractHTTPDestination
     public static final String CXF_ASYNC_CONTEXT = "cxf.async.context";
 
     public static final String SERVICE_REDIRECTION = "http.service.redirection";
-    private static final String HTTP_BASE_PATH = "http.base.path";
 
     private static final String SSL_CIPHER_SUITE_ATTRIBUTE = "javax.servlet.request.cipher_suite";
     private static final String SSL_PEER_CERT_CHAIN_ATTRIBUTE = "javax.servlet.request.X509Certificate";

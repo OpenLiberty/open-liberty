@@ -247,6 +247,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     public boolean containsContentType() {
         return contentType == NOT_FOUND ? false : true;
     }
+    
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
@@ -635,17 +636,14 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
     
     public String getPathToMatchSlash() {
-        //System.out.println("***JTD: getQueryString returning " + queryString);
         return pathToMatchSlash == NOT_FOUND ? null : (String) pathToMatchSlash;
     }
     
     public void setPathToMatchSlash(String pathToMatchSlash) {
-        //System.out.println("***JTD: setQueryString setting " + queryString);
         this.pathToMatchSlash = pathToMatchSlash;
     }
     
     public String getHttpRequestMethod() {
-        //System.out.println("***JTD: getQueryString returning " + queryString);
         return httpRequestMethod == NOT_FOUND ? null : (String) httpRequestMethod;
     }
     
@@ -685,6 +683,16 @@ public class MessageImpl extends StringMapImpl implements Message {
             if (key == PROTOCOL_HEADERS) {
                 return getProtocolHeaders();
             } else if (key == CONTENT_TYPE) {
+                return getContentType();
+            } else if (key == QUERY_STRING) {
+                return getQueryString();
+            } else if (key == AbstractHTTPDestination.HTTP_REQUEST) {
+                return getHttpRequest();
+            } else if (key == AbstractHTTPDestination.HTTP_RESPONSE) {
+                return getHttpResponse();
+            } else if (key == REQUEST_PATH_TO_MATCH_SLASH) {
+                return getPathToMatchSlash();
+            } else if (key == HTTP_REQUEST_METHOD) {
                 return getContentType();
             } else if (key == QUERY_STRING) {
                 return getQueryString();
@@ -940,6 +948,7 @@ public class MessageImpl extends StringMapImpl implements Message {
             } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
                 ret = getEmptyPartialResponse();
                 setEmptyPartialResponse(value);
+
             }
             return ret == NOT_FOUND ? null : ret;
         }
@@ -1098,6 +1107,7 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (emptyPartialResponse != NOT_FOUND) {
             keys.add(EMPTY_PARTIAL_RESPONSE_MESSAGE);
         }
+
         return keys;
     }
     
@@ -1115,6 +1125,16 @@ public class MessageImpl extends StringMapImpl implements Message {
             if (key == PROTOCOL_HEADERS) {
                 return protoHeaders != NOT_FOUND;
             } else if (key == CONTENT_TYPE) {
+                return contentType != NOT_FOUND;
+            } else if (key == QUERY_STRING) {
+                return queryString != NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_REQUEST) {
+                return httpRequest != NOT_FOUND;
+            } else if (key == AbstractHTTPDestination.HTTP_RESPONSE) {
+                return httpResponse != NOT_FOUND;
+            } else if (key == REQUEST_PATH_TO_MATCH_SLASH) {
+                return pathToMatchSlash != NOT_FOUND;
+            } else if (key == HTTP_REQUEST_METHOD) {
                 return contentType != NOT_FOUND;
             } else if (key == QUERY_STRING) {
                 return queryString != NOT_FOUND;
