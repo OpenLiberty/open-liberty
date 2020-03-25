@@ -65,6 +65,10 @@ public class FeatureUtilityRepoProperties {
         return new File(Utils.getInstallDir() + FILEPATH_EXT);
     }
 
+    public static String getRepoPropertiesFileLocation(){
+        return new File(Utils.getInstallDir() + FILEPATH_EXT).getPath();
+    }
+
     public static boolean isUsingDefaultRepo(){
         return getMirrorRepositories().size() == 0;
     }

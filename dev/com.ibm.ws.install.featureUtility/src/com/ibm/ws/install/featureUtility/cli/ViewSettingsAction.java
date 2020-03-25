@@ -23,6 +23,7 @@ import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.RepositoryConfigValidationResult;
+import com.ibm.ws.install.featureUtility.props.FeatureUtilityPropertiesUtils;
 import com.ibm.ws.install.featureUtility.props.FeatureUtilityRepoProperties;
 import com.ibm.ws.install.featureUtility.props.MavenRepository;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -71,9 +72,9 @@ public class ViewSettingsAction implements ActionHandler {
 //                repoProperties = RepositoryConfigUtils.loadRepoProperties();
 //                orderList = RepositoryConfigUtils.getOrderList(repoProperties);
                 showSettings();
-//                if (validationResults.size() > 0)
-////                    return ReturnCode.REPO_PROPS_VALIDATION_FAILED;
-//                    return ReturnCode.BAD_ARGUMENT;
+                if (validationResults.size() > 0)
+//                    return ReturnCode.REPO_PROPS_VALIDATION_FAILED;
+                    return ReturnCode.BAD_ARGUMENT;
             } catch (InstallException e) {
                 logger.log(Level.SEVERE, e.getMessage());
                 return InstallExecutor.returnCode(e.getRc());
@@ -88,15 +89,15 @@ public class ViewSettingsAction implements ActionHandler {
         StringBuffer sb = new StringBuffer();
         String settingsPath = FeatureUtilityRepoProperties.getRepoPropertiesFile().getPath();
         sb.append(InstallUtils.NEWLINE);
-        sb.append(CmdUtils.getMessage("MSG_FEATUREUTILITY_SETTTINGS")).append(InstallUtils.NEWLINE);
-        sb.append(CmdUtils.CmdlineConstants.DASHES).append(InstallUtils.NEWLINE);
+        sb.append(FeatureUtilityPropertiesUtils.getMessage("MSG_FEATUREUTILITY_SETTTINGS")).append(InstallUtils.NEWLINE);
+        sb.append(FeatureUtilityPropertiesUtils.CmdlineConstants.DASHES).append(InstallUtils.NEWLINE);
 
-        sb.append(CmdUtils.getMessage("FIELD_PROPS_FILE", settingsPath));
+        sb.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_PROPS_FILE", settingsPath));
         sb.append(InstallUtils.NEWLINE);
 
-        String defaultRepoUseage = FeatureUtilityRepoProperties.isUsingDefaultRepo() ? CmdUtils.getMessage("MSG_TRUE") : CmdUtils.getMessage("MSG_FALSE");
-        sb.append(CmdUtils.getMessage("MSG_DEFAULT_REPO_NAME_LABEL") + " " + CmdUtils.getMessage("MSG_DEFAULT_REPO_NAME")).append(InstallUtils.NEWLINE);
-        sb.append(CmdUtils.getMessage("MSG_DEFAULT_REPO_USEAGE_LABEL") + " " + defaultRepoUseage).append(InstallUtils.NEWLINE);
+        String defaultRepoUseage = FeatureUtilityRepoProperties.isUsingDefaultRepo() ? FeatureUtilityPropertiesUtils.getMessage("MSG_TRUE") : FeatureUtilityPropertiesUtils.getMessage("MSG_FALSE");
+        sb.append(FeatureUtilityPropertiesUtils.getMessage("MSG_DEFAULT_REPO_NAME_LABEL") + " " + FeatureUtilityPropertiesUtils.getMessage("MSG_DEFAULT_REPO_NAME")).append(InstallUtils.NEWLINE);
+        sb.append(FeatureUtilityPropertiesUtils.getMessage("MSG_DEFAULT_REPO_USEAGE_LABEL") + " " + defaultRepoUseage).append(InstallUtils.NEWLINE);
 
         System.out.println(sb.toString());
 
@@ -149,12 +150,12 @@ public class ViewSettingsAction implements ActionHandler {
             sb.append(InstallUtils.NEWLINE);
         }
 
-        System.out.println(CmdUtils.getMessage("MSG_CONFIG_REPO_LABEL"));
-        System.out.println(CmdUtils.CmdlineConstants.DASHES);
+        System.out.println(FeatureUtilityPropertiesUtils.getMessage("MSG_CONFIG_REPO_LABEL"));
+        System.out.println(FeatureUtilityPropertiesUtils.CmdlineConstants.DASHES);
         if (sb.length() > 0) {
             System.out.print(sb.toString());
         } else {
-            System.out.println(CmdUtils.getMessage("MSG_NO_CONFIG_REPO"));
+            System.out.println(FeatureUtilityPropertiesUtils.getMessage("MSG_NO_CONFIG_REPO"));
             System.out.println();
         }
     }
@@ -165,83 +166,83 @@ public class ViewSettingsAction implements ActionHandler {
         if (FeatureUtilityRepoProperties.didLoadProperties()) {
             pHost = FeatureUtilityRepoProperties.getProxyHost();
             if (pHost != null && !pHost.isEmpty()) {
-                proxInfo.append(CmdUtils.getMessage("FIELD_PROXY_SERVER") + " " + pHost).append(InstallUtils.NEWLINE);
+                proxInfo.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_PROXY_SERVER") + " " + pHost).append(InstallUtils.NEWLINE);
             }
 
             String pPort = FeatureUtilityRepoProperties.getProxyPort();
-            pPort = (pPort == null || pPort.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : pPort;
-            proxInfo.append(CmdUtils.getMessage("FIELD_PORT") + " " + pPort).append(InstallUtils.NEWLINE);
+            pPort = (pPort == null || pPort.isEmpty()) ? FeatureUtilityPropertiesUtils.getMessage("MSG_UNSPECIFIED") : pPort;
+            proxInfo.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_PORT") + " " + pPort).append(InstallUtils.NEWLINE);
 
             String pUser = FeatureUtilityRepoProperties.getProxyUser();
-            pUser = (pUser == null || pUser.isEmpty()) ? CmdUtils.getMessage("MSG_UNSPECIFIED") : pUser;
-            proxInfo.append(CmdUtils.getMessage("FIELD_USER") + " " + pUser).append(InstallUtils.NEWLINE);
+            pUser = (pUser == null || pUser.isEmpty()) ? FeatureUtilityPropertiesUtils.getMessage("MSG_UNSPECIFIED") : pUser;
+            proxInfo.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_USER") + " " + pUser).append(InstallUtils.NEWLINE);
 
 //            String pUserPwd = repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_USERPWD) != null ? repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_USERPWD) : repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_PWD) != null ? repoProperties.getProperty(InstallConstants.REPO_PROPERTIES_PROXY_PWD) : null;
             String pUserPwd = FeatureUtilityRepoProperties.getProxyPassword();
             String warning = null;
             if (pUserPwd == null || pUserPwd.isEmpty())
-                pUserPwd = CmdUtils.getMessage("MSG_UNSPECIFIED");
+                pUserPwd = FeatureUtilityPropertiesUtils.getMessage("MSG_UNSPECIFIED");
             else {
-                pUserPwd = CmdUtils.CmdlineConstants.HIDDEN_PASSWORD;
+                pUserPwd = FeatureUtilityPropertiesUtils.CmdlineConstants.HIDDEN_PASSWORD;
                 try {
                     //Decode encrypted proxy server password
                     PasswordUtil.decode(pUserPwd);
-                    proxInfo.append(CmdUtils.getMessage("FIELD_PASS") + " " + pUserPwd).append(InstallUtils.NEWLINE);
+                    proxInfo.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_PASS") + " " + pUserPwd).append(InstallUtils.NEWLINE);
                     //Check proxy server credentials for Authentication
                 } catch (InvalidPasswordDecodingException ipde) {
-                    String warningMessage = CmdUtils.getMessage("MSG_PASSWORD_NOT_ENCODED_PROXY");
-                    warning = CmdUtils.getMessage("FIELD_REPO_WARNING", warningMessage);
+                    String warningMessage = FeatureUtilityPropertiesUtils.getMessage("MSG_PASSWORD_NOT_ENCODED_PROXY");
+                    warning = FeatureUtilityPropertiesUtils.getMessage("FIELD_REPO_WARNING", warningMessage);
                 } catch (UnsupportedCryptoAlgorithmException ucae) {
                     throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.RUNTIME_EXCEPTION);
                 }
             }
-            proxInfo.append(CmdUtils.getMessage("FIELD_PASS") + " " + pUserPwd).append(InstallUtils.NEWLINE);
+            proxInfo.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_PASS") + " " + pUserPwd).append(InstallUtils.NEWLINE);
             if (warning != null)
                 proxInfo.append(warning).append(InstallUtils.NEWLINE);
         }
 
-        System.out.println(CmdUtils.getMessage("MSG_PROXY_LABEL"));
-        System.out.println(CmdUtils.CmdlineConstants.DASHES);
+        System.out.println(FeatureUtilityPropertiesUtils.getMessage("MSG_PROXY_LABEL"));
+        System.out.println(FeatureUtilityPropertiesUtils.CmdlineConstants.DASHES);
 
         // Only show proxy info if host is specified
         if (pHost != null) {
             System.out.print(proxInfo.toString());
             System.out.println();
         } else {
-            System.out.print(CmdUtils.getMessage("MSG_NO_CONFIG_PROXY"));
+            System.out.print(FeatureUtilityPropertiesUtils.getMessage("MSG_NO_CONFIG_PROXY"));
             System.out.println();
         }
     }
 
     private void showSettingsTemplate() {
         StringBuffer sb = new StringBuffer();
-        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND"), "");
+        InstallUtils.wordWrap(sb, FeatureUtilityPropertiesUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND"), "");
         sb.append(InstallUtils.NEWLINE);
-        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION", RepositoryConfigUtils.getRepoPropertiesFileLocation()), "");
+        InstallUtils.wordWrap(sb, FeatureUtilityPropertiesUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION", FeatureUtilityRepoProperties.getRepoPropertiesFileLocation()), "");
         sb.append(InstallUtils.NEWLINE);
-        InstallUtils.wordWrap(sb, CmdUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND_ACTION"), "");
+        InstallUtils.wordWrap(sb, FeatureUtilityPropertiesUtils.getMessage("MSG_PROPERTIES_FILE_NOT_FOUND_ACTION"), "");
         System.out.print(sb.toString());
 
-        System.out.println(CmdUtils.CmdlineConstants.DASHES);
-        System.out.println(CmdUtils.getSampleConfig());
+        System.out.println(FeatureUtilityPropertiesUtils.CmdlineConstants.DASHES);
+        System.out.println(FeatureUtilityPropertiesUtils.getSampleConfig());
     }
 
     private void showValidationResults() throws InstallException {
         StringBuffer sb = new StringBuffer();
-        sb.append(CmdUtils.getMessage("MSG_VALIDATION_MESSAGES")).append(InstallUtils.NEWLINE);;
-        sb.append(CmdUtils.CmdlineConstants.DASHES).append(InstallUtils.NEWLINE);
-        validationResults = RepositoryConfigUtils.validateRepositoryPropertiesFile(repoProperties);
+        sb.append(FeatureUtilityPropertiesUtils.getMessage("MSG_VALIDATION_MESSAGES")).append(InstallUtils.NEWLINE);;
+        sb.append(FeatureUtilityPropertiesUtils.CmdlineConstants.DASHES).append(InstallUtils.NEWLINE);
+        validationResults = FeatureUtilityPropertiesUtils.validateRepositoryPropertiesFile(repoProperties);
         if (validationResults.size() == 0)
-            sb.append(CmdUtils.getMessage("FIELD_VALIDATION_RESULTS", CmdUtils.getMessage("MSG_VALIDATION_SUCCESSFUL"))).append(InstallUtils.NEWLINE);
+            sb.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_VALIDATION_RESULTS", FeatureUtilityPropertiesUtils.getMessage("MSG_VALIDATION_SUCCESSFUL"))).append(InstallUtils.NEWLINE);
         else {
             if (!isViewValidationMessages)
-                sb.append(CmdUtils.getMessage("FIELD_VALIDATION_RESULTS", CmdUtils.getMessage("MSG_VALIDATION_FAILED_NO_MESSAGES"))).append(InstallUtils.NEWLINE);
+                sb.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_VALIDATION_RESULTS", FeatureUtilityPropertiesUtils.getMessage("MSG_VALIDATION_FAILED_NO_MESSAGES"))).append(InstallUtils.NEWLINE);
             else {
-                sb.append(CmdUtils.getMessage("MSG_VALIDATION_NUM_OF_ERRORS", validationResults.size())).append(InstallUtils.NEWLINE);
+                sb.append(FeatureUtilityPropertiesUtils.getMessage("MSG_VALIDATION_NUM_OF_ERRORS", validationResults.size())).append(InstallUtils.NEWLINE);
                 sb.append(InstallUtils.NEWLINE);
                 for (RepositoryConfigValidationResult vr : validationResults) {
-                    sb.append(CmdUtils.getMessage("FIELD_VALIDATION_LINE", vr.getLineNum())).append(InstallUtils.NEWLINE);
-                    sb.append(CmdUtils.getMessage("MSG_VALIDATION_MESSAGE_FORMAT", vr.getFailedReason(), vr.getValidationMessage())).append(InstallUtils.NEWLINE);
+                    sb.append(FeatureUtilityPropertiesUtils.getMessage("FIELD_VALIDATION_LINE", vr.getLineNum())).append(InstallUtils.NEWLINE);
+                    sb.append(FeatureUtilityPropertiesUtils.getMessage("MSG_VALIDATION_MESSAGE_FORMAT", vr.getFailedReason(), vr.getValidationMessage())).append(InstallUtils.NEWLINE);
                     sb.append(InstallUtils.NEWLINE);
                 }
             }
@@ -252,7 +253,7 @@ public class ViewSettingsAction implements ActionHandler {
 
     private void showSettings() throws InstallException {
         showHeader();
-//        showValidationResults();
+        showValidationResults();
         showRepositories();
         showProxyInfo();
 
