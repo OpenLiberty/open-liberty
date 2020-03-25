@@ -38,9 +38,10 @@
                     
              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.UnsecuredPingTest" />             
              <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationTest" /> 
-             <class name="org.eclipse.microprofile.jwt.tck.config.AudValidationTest" /> 
-              <class name="org.eclipse.microprofile.jwt.tck.config.AudValidationBadAudTest" /> 
-               <class name="org.eclipse.microprofile.jwt.tck.config.AudValidationMissingAudTest" /> 
+             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationTest" /> 
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationTest2" /> 
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationBadAudTest" /> 
+               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationMissingAudTest" /> 
                 
              <!--  this needs key and issuer overridden in server.env, and needs null audiences.  
               This one initially had two failing tests due to returning empty set instead of null: verifyAudience, veryifyOptionalAudience
