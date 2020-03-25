@@ -28,10 +28,6 @@ mkdir -p %{buildroot}/opt/ol
 tar -zxf %{_topdir}/SOURCES/%{name}-%{version}.tar.gz -C %{buildroot}/opt/ol
 
 #Creating the share folder and moving defaultServer tar to /usr/share/openliberty
-#mkdir -p %{buildroot}/usr/share/%{name}
-#cp %{_topdir}/SOURCES/defaultServer.tar %{buildroot}/usr/share/%{name}
-
-#Creating the share folder and moving defaultServer tar to /usr/share/openliberty
 mkdir -p %{buildroot}/usr/share/%{name}
 cp %{_topdir}/SOURCES/defaultServer.tar %{buildroot}/usr/share/%{name}
 
@@ -101,12 +97,11 @@ mkdir -p /var/log/openliberty
 
 #echo "Setting up defaultServer for user"
 if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
-    tar -vf /usr/share/openliberty/defaultServer.tar -C /var/lib/openliberty/usr/servers
+    tar -xf /usr/share/openliberty/defaultServer.tar -C /var/lib/openliberty/usr/servers
     printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
 fi
 
 #echo "Setting permissions to files/folders"
-#chown -R openliberty:openliberty /opt/ol/lib
 chmod -R a+r /opt/ol/
 chmod -R o+X /opt/ol/lib/versions
 chmod 755 /usr/libexec/openliberty
