@@ -96,8 +96,8 @@
 	<keyStore id="LDAPTrustStore" location="${server.config.dir}/trust.p12" type="PKCS12" password="{xor}CDo9Hgw=" /-->
 	
 	<!-- PKCS12 keystore does not work with SUN JDK, so using JKS -->
-	<keyStore id="LDAPKeyStore" location="${server.config.dir}/keystore.jks" type="JKS" password="LDAPpassword" />
-	<keyStore id="LDAPTrustStore" location="${server.config.dir}/keystore.jks" type="JKS" password="LDAPpassword" />
+	<keyStore id="LDAPKeyStore" location="${server.config.dir}/keystore.p12" type="PKCS12" password="LDAPpassword" />
+	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
 	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
 	<keyStore id="defaultKeyStore" location="defaultkey.jks" type="JKS" password="default" />
