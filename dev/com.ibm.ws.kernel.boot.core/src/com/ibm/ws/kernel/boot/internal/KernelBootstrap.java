@@ -541,24 +541,26 @@ public class KernelBootstrap {
         String envFieldMappings = System.getenv("WLP_LOGGING_JSON_FIELD_MAPPINGS");
         String fieldMappings = bsFieldMappings != null ? bsFieldMappings : envFieldMappings;
 
-        String[] keyValuePairs = fieldMappings.split(",");
-        for (String pair : keyValuePairs) {
-            pair = pair.trim();
-            if (pair.endsWith(":") && omitJsonFields) //omitJsonFields beta guard
-                pair = pair + OMIT_FIELDS_STRING;
+        if (fieldMappings != null && !fieldMappings.isEmpty() && fieldMappings != "") {
+            String[] keyValuePairs = fieldMappings.split(",");
+            for (String pair : keyValuePairs) {
+                pair = pair.trim();
+                if (pair.endsWith(":") && omitJsonFields) //omitJsonFields beta guard
+                    pair = pair + OMIT_FIELDS_STRING;
 
-            String[] entry = pair.split(":");
-            entry[0] = entry[0].trim();
+                String[] entry = pair.split(":");
+                entry[0] = entry[0].trim();
 
-            if (headerFieldNames.contains(entry[entry.length - 2])) {
                 if (entry.length == 2 && !pair.endsWith(":")) {
                     entry[1] = entry[1].trim();
-                    headerFieldNames.set(headerFieldNames.indexOf(entry[0]), entry[1]);
+                    if (headerFieldNames.contains(entry[0]))
+                        headerFieldNames.set(headerFieldNames.indexOf(entry[0]), entry[1]);
 
                 } else if (entry.length == 3 && entry[0].equals("message")) {
                     entry[1] = entry[1].trim();
                     entry[2] = entry[2].trim();
-                    headerFieldNames.set(headerFieldNames.indexOf(entry[1]), entry[2]);
+                    if (headerFieldNames.contains(entry[1]))
+                        headerFieldNames.set(headerFieldNames.indexOf(entry[1]), entry[2]);
                 }
             }
         }
