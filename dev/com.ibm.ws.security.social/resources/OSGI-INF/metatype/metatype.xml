@@ -458,7 +458,7 @@
         <Object ocdref="com.ibm.ws.security.social.okdServiceLogin.metatype" />
     </Designate>
     <OCD id="com.ibm.ws.security.social.okdServiceLogin.metatype" name="%social.okdServiceLogin.conf" description="%social.okdServiceLogin.conf.desc"
-         ibm:alias="okdServiceLogin" ibm:beta="true" >
+         ibm:alias="okdServiceLogin" >
         <AD id="id" name="%uniqueId" description="%uniqueId.desc" required="false" type="String" default="okdServiceLogin" ibm:unique="uniqueId"/>
         <AD id="userValidationApi" name="%userValidationApi" description="%userValidationApi.desc" required="false" type="String" ibm:type="token" default="https://openshift.default.svc/apis/user.openshift.io/v1/users/~" />
         <AD id="apiResponseCacheTime" name="%apiResponseCacheTime" description="%apiResponseCacheTime.desc" required="false" type="String" default="600s" ibm:type="duration" />
