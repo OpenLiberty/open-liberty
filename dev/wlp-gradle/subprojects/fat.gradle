@@ -41,6 +41,7 @@ configurations {
   jdbcDrivers { transitive = false; }
   databaseRotationDrivers
   derby
+  jakartaeeTransformJars
 }
 
 dependencies {
@@ -67,6 +68,12 @@ dependencies {
        'net.java.dev.jna:jna:5.2.0',
        'org.slf4j:slf4j-api:1.7.7',
        'org.slf4j:slf4j-jdk14:1.7.7'
+
+  jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bndlib:4.3.1',
+        'commons-cli:commons-cli:1.4',
+        'org.slf4j:slf4j-simple:1.7.29',
+        'org.slf4j:slf4j-api:1.7.26',
+        'com.ibm.ws:jakartaee-transformer:0.0.4'
 }
 
 task addRequiredLibraries(type: Copy) {
@@ -495,14 +502,101 @@ build {
   }
 }
 
+task createjakartafat {
+ def sibling = bnd('sibling')
+ dependsOn ":${sibling}:autoFVT"
+ mustRunAfter build
+
+ doLast {
+  def features = new Properties()
+  file(bndWorkspace.getProject('wlp-jakartaee-transform').getFile("rules/fats/jakarta-features.properties")).withInputStream {
+   features.load(it);
+  }
+  Set < String > keys = features.stringPropertyNames();
+  mkdir new File(project.buildDir, "autoFVT")
+  copy {
+   from(new File(project(":${sibling}").buildDir, "autoFVT"))
+   exclude "publish"
+   exclude "results"
+   exclude "output"
+   exclude "fat-metadata.json"
+   exclude "lib/LibertyFATTestFiles/"
+   into autoFvtDir
+  }
+
+  copy {
+   from(new File(project(":${sibling}").buildDir, "autoFVT/fat-metadata.json"))
+   filter {
+    String line ->
+     for (String key: keys) {
+      line = line.replaceAll(key.toString(), features.getProperty(key).toString())
+     }
+    return line;
+   }
+   into autoFvtDir
+  }
+
+  mkdir new File(project.buildDir, "autoFVT/publish")
+  copy {
+   from(new File(project(":${sibling}").buildDir, "autoFVT/publish"))
+   filter {
+    String line ->
+     for (String key: keys) {
+      line = line.replaceAll(key.toString(), features.getProperty(key).toString())
+     }
+    return line;
+   }
+   into new File(project.buildDir, "autoFVT/publish")
+  }
+
+  mkdir new File(project.buildDir, "autoFVT/lib/LibertyFATTestFiles/");
+  copy {
+   from(new File(project(":${sibling}").buildDir, "autoFVT/lib/LibertyFATTestFiles/"))
+   filter {
+    String line ->
+     for (String key: keys) {
+      line = line.replaceAll(key.toString(), features.getProperty(key).toString())
+     }
+    return line;
+   }
+   into new File(project.buildDir, "autoFVT/lib/LibertyFATTestFiles/");
+  }
+
+
+  def source = fileTree(new File(autoFvtDir, "/build/lib/")).matching { include '*fat.jar'}.getSingleFile()
+  def destination = new File(autoFvtDir, "/build/lib/${project.name}.jar")
+  javaexec {
+   classpath configurations.jakartaeeTransformJars
+   main = "com.ibm.ws.jakarta.transformer.JakartaTransformer"
+   args = [source,
+    destination,
+    "-tr",
+    bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-renames.properties').path,
+    "-ts",
+    bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-selections.properties').path,
+    "-tv",
+    bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-versions.properties').path,
+    "-tb",
+    bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jars/jakarta-bundles.properties').path
+   ]
+  }
+
+  fileTree(new File(autoFvtDir, "/build/lib/")).matching {include "*${sibling}*" }.each { println it; delete it }
+ }
+}
+
 buildfat {
-  dependsOn cleanFat
+ dependsOn cleanFat
+ if (bnd('sibling') == null) {
   dependsOn assemble
   dependsOn build
   dependsOn zipProjectFVT
+ } else {
+  dependsOn createjakartafat
+ }
 }
 
 task buildandrun {
-  dependsOn buildfat
-  dependsOn runfat
+ dependsOn buildfat
+ dependsOn runfat
 }
