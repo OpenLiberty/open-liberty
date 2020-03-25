@@ -27,7 +27,7 @@
 	
     <OCD description="%appmgr.desc" name="%appmgr.name" id="com.ibm.ws.app.manager" ibm:supportExtensions="true" ibm:alias="application">
         <AD id="name" name="%appmgr.name.name" description="%appmgr.name.desc" required="false" type="String"/>
-        <AD id="location" name="%appmgr.location.name" description="%appmgr.location.desc" type="String" required="true" ibm:type="location"/>
+        <AD id="location" ibm:obscure="true" ibm:foo="bar" name="%appmgr.location.name" description="%appmgr.location.desc" type="String" required="true" ibm:type="location"/>
         <AD id="type" name="%appmgr.type.name" description="%appmgr.type.desc" type="String" required="false"/>
         <AD id="context-root" name="%appmgr.contextRoot.name" description="%appmgr.contextRoot.desc" type="String" required="false"/>
         <AD id="autoStart" name="%appmgr.autoStart.name" description="%appmgr.autoStart.desc" type="Boolean" required="false" default="true"/>

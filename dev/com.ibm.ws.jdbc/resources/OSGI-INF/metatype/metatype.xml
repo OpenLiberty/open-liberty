@@ -1244,7 +1244,7 @@
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
   <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumber.desc"/>
-  <AD id="URL"                                required="false" type="String"  name="%URL" description="%URL.oracle.desc"/>
+  <AD id="URL"                                required="false" type="String"  name="%URL" ibm:obscure="true" description="%URL.oracle.desc"/>
   <!-- Advanced properties for properties.oracle -->
   <AD id="connectionProperties"               ibmui:group="Advanced" required="false" type="String"  name="%connectionProperties" description="%connectionProperties.desc"/>
   <AD id="loginTimeout"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" min="0" name="%loginTimeout" description="%loginTimeout.desc"/>
