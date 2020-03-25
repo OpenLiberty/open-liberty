@@ -51,9 +51,7 @@
         
         <AD name="%message.format" description="%message.format.desc" 
             ibm:variable="com.ibm.ws.logging.message.format"
-            id="messageFormat" required="false" type="String" default="SIMPLE">
-            <Option label="%message.format.simple" value="SIMPLE"/>
-            <Option label="%message.format.json" value="JSON"/>
+            id="messageFormat" required="false" type="String" default="basic">
         </AD>
         
         <AD name="%console.source" description="%console.source.desc" 
@@ -63,10 +61,7 @@
         
         <AD name="%console.format" description="%console.format.desc" 
             ibm:variable="com.ibm.ws.logging.console.format"
-            id="consoleFormat" required="false" type="String" default="DEV">
-            <Option label="%console.format.dev" value="DEV"/>
-            <Option label="%console.format.simple" value="SIMPLE"/>
-            <Option label="%console.format.json" value="JSON"/>
+            id="consoleFormat" required="false" type="String" default="basic">
         </AD>
         
         <AD name="%trace.format" description="%trace.format.desc" 
