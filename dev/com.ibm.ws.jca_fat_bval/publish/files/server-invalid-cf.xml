@@ -10,10 +10,10 @@
  -->
 <server>
   <featureManager>
-    <feature>jca-1.6</feature>
-    <feature>servlet-3.0</feature>
+    <feature>jca-1.7</feature>
+    <feature>servlet-3.1</feature>
     <feature>osgiconsole-1.0</feature>
-    <feature>beanValidation-1.0</feature>
+    <feature>beanValidation-1.1</feature>
   </featureManager>
 
   <include optional="true" location="../fatTestPorts.xml"/>

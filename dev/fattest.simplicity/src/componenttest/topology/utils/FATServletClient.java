@@ -102,8 +102,9 @@ public class FATServletClient {
      * Runs a test in the servlet and returns the servlet output.
      *
      * @param  server      the started server containing the started application
-     * @param  the         url path (e.g. myApp/myServlet)
+     * @param  path        the url path (e.g. myApp/myServlet)
      * @param  queryString query string including at least the test name
+     *                         (e.g. testName or testname&key=value&key=value)
      * @return             output of the servlet
      */
     public StringBuilder runTestWithResponse(LibertyServer server, String path, String queryString) throws Exception {

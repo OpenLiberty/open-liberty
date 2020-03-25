@@ -23,10 +23,12 @@ import javax.resource.cci.Interaction;
 import javax.resource.cci.InteractionSpec;
 import javax.resource.cci.MappedRecord;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@WebServlet("/*")
 public class RABValServlet extends HttpServlet {
     private static final long serialVersionUID = 7709282314904580335L;
 
@@ -57,7 +59,7 @@ public class RABValServlet extends HttpServlet {
             MappedRecord output = conFactory.getRecordFactory().createMappedRecord("output");
             MappedRecord input = conFactory.getRecordFactory().createMappedRecord("input");
             for (Map.Entry<String, String[]> param : request.getParameterMap().entrySet())
-                if (!"functionName".equalsIgnoreCase(param.getKey()) && !"testName".equalsIgnoreCase(param.getKey()))
+                if (!"functionName".equalsIgnoreCase(param.getKey()) && !"testMethod".equalsIgnoreCase(param.getKey()))
                     input.put(param.getKey(), param.getValue()[0]);
 
             InteractionSpec ispec = "ADD"
@@ -67,14 +69,16 @@ public class RABValServlet extends HttpServlet {
             Connection con = conFactory.getConnection(conSpec);
             try {
                 Interaction interaction = con.createInteraction();
-                message = interaction.execute(ispec, input,
-                                              output) ? ("Successfully performed " + function + " with output: " + output) : ("Did not " + function + " any entries.");
+                message = interaction.execute(ispec, input, output) ? //
+                                ("Successfully performed " + function + " with output: " + output) : //
+                                ("Did not " + function + " any entries.");
                 interaction.close();
             } finally {
                 con.close();
             }
 
             out.println(message);
+            out.println("SUCCESS");
             System.out.println("<<<< Exiting servlet. " + message);
         } catch (Throwable x) {
             while (x instanceof InvocationTargetException)

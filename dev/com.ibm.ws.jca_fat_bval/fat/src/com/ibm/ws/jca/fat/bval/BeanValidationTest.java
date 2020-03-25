@@ -13,40 +13,36 @@ package com.ibm.ws.jca.fat.bval;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FATServletClient;
 
-public class BeanValidationTest {
-    private final Class<? extends BeanValidationTest> c = this.getClass();
+@RunWith(FATRunner.class)
+public class BeanValidationTest extends FATServletClient {
     private static final String BVAL_APP = "jca-bval";
+    private static final String BVAL_RAR = "BvalRA";
 
-    @Rule
-    public TestName testName = new TestName();
-
-    protected static LibertyServer server;
+    @Server("com.ibm.ws.jca.fat.bval")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.bval");
-        server.addInstalledAppForValidation(BVAL_APP);
+        // Create applications
+        ShrinkHelper.defaultApp(server, BVAL_APP, "web", "web.mdb");
+        ShrinkHelper.defaultRar(server, BVAL_RAR, "com.ibm.bval.jca.adapter");
     }
 
     @AfterClass
@@ -55,17 +51,8 @@ public class BeanValidationTest {
             server.stopServer();
     }
 
-    @Before
-    public void beforeEach() throws Exception {
-        System.out.println(">>> " + testName.getMethodName());
-        Log.info(c, testName.getMethodName(), "Starting test: " + testName.getMethodName());
-    }
-
     @After
     public void afterEach() throws Exception {
-        System.out.println("<<< " + testName.getMethodName());
-        Log.info(c, testName.getMethodName(), "Ending test: " + testName.getMethodName());
-
         if (server.isStarted())
             server.stopServer();
     }
@@ -77,32 +64,8 @@ public class BeanValidationTest {
      * @return output of the servlet
      * @throws IOException if an error occurs
      */
-    private StringBuilder runInServlet(String query) throws IOException {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + BVAL_APP + "/BValApp?testName=" + testName.getMethodName() + "&" + query);
-        Log.info(c, "runInJDBCFATServlet", "URL is " + url);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("ERROR:") >= 0)
-                fail("Error in servlet output: " + lines);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
+    private StringBuilder runInServlet(String queryString) throws Exception {
+        return runTestWithResponse(server, BVAL_APP, "testBeanValidation&" + queryString);
     }
 
     @Test
@@ -165,6 +128,10 @@ public class BeanValidationTest {
     }
 
     @Test
+    @ExpectedFFDC({ "javax.validation.ConstraintViolationException",
+                    "com.ibm.wsspi.injectionengine.InjectionException",
+                    "javax.servlet.UnavailableException"
+    })
     public void testInvalidActivationSpec() throws Exception {
 
         server.setServerConfigurationFile("server-invalid-interaction-spec.xml");
@@ -187,6 +154,9 @@ public class BeanValidationTest {
     }
 
     @Test
+    @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException",
+                    "javax.servlet.UnavailableException"
+    })
     public void testInvalidConnectionFactory() throws Exception {
 
         server.setServerConfigurationFile("server-invalid-cf.xml");
@@ -206,6 +176,9 @@ public class BeanValidationTest {
     }
 
     @Test
+    @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException",
+                    "javax.servlet.UnavailableException"
+    })
     public void testInvalidResourceAdapter() throws Exception {
 
         server.setServerConfigurationFile("server-invalid-ra.xml");
