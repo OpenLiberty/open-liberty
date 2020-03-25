@@ -1576,15 +1576,15 @@ NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corrigez le fichier de liaison de l
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: Le nom de liaison JNDI (Java Naming and Directory Interface) {2} pour le bean ou l''interface home {0} dans le module {1} contient un espace de nom.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=Les noms de liaison JNDI ne doivent pas contenir de signe deux-points (:) car celui-ci indique un espace de nom. La cha\u00eene enti\u00e8re situ\u00e9e avant le signe deux-points (:) et incluant ce signe est consid\u00e9r\u00e9e comme un espace de nom.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=Corrigez le fichier de liaison ibm-ejb-jar-bnd.xml pour attribuer \u00e0 ce bean un nom de liaison JNDI valide en retirant l'espace de nom.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: Le nom de liaison JNDI (Java Naming and Directory Interface) {2} pour le bean ou l''interface home {0} dans le module {1} contient un espace de nom.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=Les noms de liaison JNDI ne doivent pas contenir de signe deux-points (:) car celui-ci indique un espace de nom. La cha\u00eene enti\u00e8re situ\u00e9e avant le signe deux-points (:) et incluant ce signe est consid\u00e9r\u00e9e comme un espace de nom.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Corrigez le fichier de liaison ibm-ejb-jar-bnd.xml pour attribuer \u00e0 ce bean un nom de liaison JNDI valide en retirant l'espace de nom.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: Le nom de liaison JNDI (Java Naming and Directory Interface) {2} pour le bean ou l''interface home locale {0} dans le module {1} contient un espace de nom qui n''est pas valide.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=Le nom de liaison locale ne peut contenir qu'un seul espace de nom et doit commencer par ejblocal:. Les espaces de nom sont indiqu\u00e9s par le signe deux-points (:). La cha\u00eene enti\u00e8re situ\u00e9e avant le signe deux-points (:) et incluant ce signe est consid\u00e9r\u00e9e comme un espace de nom.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Corrigez le fichier de liaison ibm-ejb-jar-bnd.xml pour attribuer \u00e0 ce bean un nom de liaison JNDI valide en retirant l'espace de nom qui n'est pas valide.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: Le nom de liaison JNDI (Java Naming and Directory Interface) {2} pour le bean ou l''interface home locale {0} dans le module {1} contient un espace de nom qui n''est pas valide.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Le nom de liaison locale ne peut contenir qu'un seul espace de nom et doit commencer par ejblocal:. Les espaces de nom sont indiqu\u00e9s par le signe deux-points (:). La cha\u00eene enti\u00e8re situ\u00e9e avant le signe deux-points (:) et incluant ce signe est consid\u00e9r\u00e9e comme un espace de nom.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Corrigez le fichier de liaison ibm-ejb-jar-bnd.xml pour attribuer \u00e0 ce bean un nom de liaison JNDI valide en retirant l'espace de nom qui n'est pas valide.
 
 #-------------------------------------------------------------------------------
 #

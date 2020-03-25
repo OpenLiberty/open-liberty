@@ -1566,15 +1566,15 @@ NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corrija el archivo de enlace de una
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: El nombre de enlace de JNDI (Java Naming and Directory Interface) {2} para el bean {0} o interfaz inicial en el m\u00f3dulo {1} contiene un espacio de nombres.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=Los nombres de enlace JNDI no deben contener el car\u00e1cter de dos puntos (:), que indica un espacio de nombres. La serie entera anterior e incluyendo el car\u00e1cter de dos puntos (:) se considera un espacio de nombres.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=Corrija el archivo de enlaces ibm-ejb-jar-bnd.xml para asignar a este bean un nombre de enlace JNDI v\u00e1lido eliminando el espacio de nombres.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: El nombre de enlace de JNDI (Java Naming and Directory Interface) {2} para el bean {0} o interfaz inicial en el m\u00f3dulo {1} contiene un espacio de nombres.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=Los nombres de enlace JNDI no deben contener el car\u00e1cter de dos puntos (:), que indica un espacio de nombres. La serie entera anterior e incluyendo el car\u00e1cter de dos puntos (:) se considera un espacio de nombres.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Corrija el archivo de enlaces ibm-ejb-jar-bnd.xml para asignar a este bean un nombre de enlace JNDI v\u00e1lido eliminando el espacio de nombres.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: El nombre de enlace de JNDI (Java Naming and Directory Interface) {2} para el bean {0} o interfaz inicial local en el m\u00f3dulo {1} contiene un espacio de nombres que no es v\u00e1lido.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=El nombre de enlace local s\u00f3lo puede contener un espacio de nombres y debe empezar con ejblocal:. Los espacios de nombres se indican mediante el car\u00e1cter de dos puntos (:). La serie entera anterior e incluyendo el car\u00e1cter de dos puntos (:) se considera un espacio de nombres.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Corrija el archivo de enlaces ibm-ejb-jar-bnd.xml para asignar a este bean un nombre de enlace JNDI v\u00e1lido eliminando el espacio de nombres que no es v\u00e1lido.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: El nombre de enlace de JNDI (Java Naming and Directory Interface) {2} para el bean {0} o interfaz inicial local en el m\u00f3dulo {1} contiene un espacio de nombres que no es v\u00e1lido.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=El nombre de enlace local s\u00f3lo puede contener un espacio de nombres y debe empezar con ejblocal:. Los espacios de nombres se indican mediante el car\u00e1cter de dos puntos (:). La serie entera anterior e incluyendo el car\u00e1cter de dos puntos (:) se considera un espacio de nombres.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Corrija el archivo de enlaces ibm-ejb-jar-bnd.xml para asignar a este bean un nombre de enlace JNDI v\u00e1lido eliminando el espacio de nombres que no es v\u00e1lido.
 
 #-------------------------------------------------------------------------------
 #

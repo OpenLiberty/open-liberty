@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -216,3 +216,9 @@ APPLICATION_JANDEX_ENABLED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {0}\uc5d0 \ub300\ud574 Jandex \uc0ac\uc6a9\uc774 \uc0ac\uc6a9 \uc548\ud568\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 APPLICATION_JANDEX_DISABLED.explanation=\uc9c0\uc815\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 Jandex \uc0c9\uc778\uc774 \uc0ac\uc6a9 \uc548\ud568\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 APPLICATION_JANDEX_DISABLED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: \ud574\ub2f9 startAfter \uc18d\uc131 \uac12\uc73c\ub85c \uc778\ud574 \uc21c\ud658\uc774 \ubc1c\uc0dd\ud558\ubbc0\ub85c {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.  
+error.startAfter.cycle.explanation=\ud55c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uba3c\uc800 \uc2dc\uc791\ud558\ub294 \ub2e4\ub978 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc911 \ud558\ub098\uc5d0 \uc885\uc18d\ub418\ubbc0\ub85c \uc5b4\ub5a4 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\ub3c4 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+error.startAfter.cycle.useraction=\uc21c\ud658 \uc885\uc18d\uc131\uc744 \uac00\uc9c0\uc9c0 \uc54a\ub3c4\ub85d \uc21c\ud658\uc5d0 \ud3ec\ud568\ub418\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 startAfter \uc18d\uc131 \uac12\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+

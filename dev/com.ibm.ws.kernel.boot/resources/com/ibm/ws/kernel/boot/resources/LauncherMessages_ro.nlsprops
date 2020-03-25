@@ -439,7 +439,7 @@ error.create.unknownJavaLevel.useraction=Asigura\u0163i-v\u0103 c\u0103 utiliza\
 
 error.create.java8serverenv=CWWKE0103E: Nu se poate crea un fi\u015fier server.env file \u00een urm\u0103toarea loca\u0163ie: {0}
 error.create.java8serverenv.explanation=Procesul care \u00eencearc\u0103 s\u0103 creeze serverul nu a putut genera un fi\u015fier server.env file \u00een loca\u0163ia specificat\u0103.  Acest fi\u015fier furnizeaz\u0103 argumentele JVM necesare pentru ca serverul s\u0103 func\u0163ioneze corespunz\u0103tor.
-error.create.java8serverenv.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere la directorul de server \u015fi c\u0103 ave\u0163i suficient spa\u0163iu pe disc.  \u00cen plus, pute\u0163i crea manual fi\u015fierul server.env cu urm\u0103toarea valoare:  WLP_SKIP_MAXPERMSIZE=true.  Trebuie s\u0103 v\u0103 asigura\u0163i c\u0103 procesul de server are acces de citire pe acest fi\u015fier.
+error.create.java8serverenv.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere la directorul de server \u015fi c\u0103 ave\u0163i suficient spa\u0163iu pe disc. Trebuie s\u0103 v\u0103 asigura\u0163i c\u0103 procesul de server are acces de citire pe acest fi\u015fier.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Acest produs este un produs beta \u015fi nu poate fi utilizat \u00een produc\u0163ie. Termenii de licen\u0163\u0103 pot fi vizualiza\u0163i aici: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Acest produs este un produs beta \u015fi trebuie s\u0103 fie folosit \u00een conformitate cu termenii din acordul de licen\u0163\u0103 beta.

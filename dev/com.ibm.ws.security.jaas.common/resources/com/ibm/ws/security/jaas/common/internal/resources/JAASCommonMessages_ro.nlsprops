@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=verifica\u0163i c\u0103 toate 
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Nu poate fi specificat\u0103 o intrare {0} jaasLoginContext ca o intrare de configura\u0163ie JAAS \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Runtime-ul utilizeaz\u0103 o configura\u0163ie Krb5LoginModule implicit\u0103 \u015fi configura\u0163ia SPNEGO \u00een fi\u015fierul server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=\u00cenl\u0103tura\u0163i intrarea jaasLoginContext din fi\u015fierul server.xml sau l\u0103sa\u0163i runtime-ul s\u0103 foloseasc\u0103 intrarea implicit\u0103.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Modulul de logare personalizat JAAS {0} nu este \u00eenc\u0103rcat deoarece elementul de configura\u0163ie {1} specific\u0103 at\u00e2t atributul libraryRef, c\u00e2t \u015fi classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Trebuie s\u0103 specifica\u0163i doar un atribut, libraryRef sau classProviderRef, pentru a indica artefactul din care s\u0103 \u00eenc\u0103rca\u0163i modulul de logare personalizat JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=\u00cenl\u0103tura\u0163i fie atributul libraryRef, fie atributul classProviderRef, oricare dintre ele care nu con\u0163ine clasa de module de logare personalizat\u0103 JAAS.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Modulul de logare personalizat JAAS {0} nu este g\u0103sit deoarece elementul de configura\u0163ie {1} nu specific\u0103 atributul libraryRef sau classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Trebuie s\u0103 specifica\u0163i exact un atribut, libraryRef sau classProviderRef, pentru a indica artefactul de la care s\u0103 \u00eenc\u0103rca\u0163i modulul de logare personalizat JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Specifica\u0163i fie atributul libraryRef, fie classProviderRef pentru a indica loca\u0163ia de la care s\u0103 \u00eenc\u0103rca\u0163i clasa de module de logare personalizat\u0103 JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: Modulul de logare personalizat\u0103 JAAS {0} nu este g\u0103sit \u00een artefactul {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=Aplica\u0163ia specificat\u0103 sau adaptorul de resurse nu con\u0163ine clasa de modul de logare personalizat\u0103 JAAS cerut\u0103 sau clasa de modul de logare personalizat\u0103 JAAS este prezent\u0103 \u00een aplica\u0163ie, dar \u00eentr-o loca\u0163ie din care nu poate fi \u00eenc\u0103rcat\u0103.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa de modul de logare personalizat\u0103 JAAS configurat\u0103 \u015fi numele pachetului s\u0103u sunt corecte. Dac\u0103 este specificat\u0103 o aplica\u0163ie, clasa modulului de logare trebuie con\u0163inut\u0103 \u00een aplica\u0163ie, fie \u00eentr-un JAR de nivel superior sau \u00eentr-un modul de adaptor de resurse.

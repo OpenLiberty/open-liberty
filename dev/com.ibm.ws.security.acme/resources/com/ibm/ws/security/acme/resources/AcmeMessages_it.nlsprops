@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2019,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,19 +10,123 @@
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security.acme/resources/com/ibm/ws/security/acme/resources/AcmeMessages.nlsprops
-#COMPONENTPREFIX CWWKX
+#COMPONENTPREFIX CWPKI
 #COMPONENTNAMEFOR WebSphere ACME
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-
-# TODO: Get the correct Message Prefix block for ACME feature
-# liberty wiki should have a list of the Message Prefix
-# Message prefix block: CWWKJ0200 - CWWKJ0299
-
+# Message prefix block: CWPKI2000 - CWPKI2299
 #-----  ACME messages
 
-CWWKX0000I=CWWKX0000I: Messaggio di prova
-CWWKX0000I.explanation= Descrizione del messaggio di prova
-CWWKX0000I.useraction= Non \u00e8 necessaria alcuna azione al momento
+# The ACME referred to in these messages stands for Automatic Certificate Management Environment.
+# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
+
+CWPKI2001E=CWPKI2001E: La CA (certificate authority) ACME all''URI {0} ha risposto che la richiesta di autorizzazione non \u00e8 riuscita per il dominio {1}. Lo stato di sfida \u00e8 {2}.  Errore: {3}.
+CWPKI2001E.explanation=Lo stato della richiesta indica che la richiesta di autorizzazione non \u00e8 riuscita e non \u00e8 possibile creare un certificato.
+CWPKI2001E.useraction=Esaminare il messaggio di stato e l'errore per i dettagli.
+
+CWPKI2002E=CWPKI2002E: Il polling del servizio ACME \u00e8 scadente durante il controllo dell''esistenza di una richiesta di autorizzazione riuscita per il dominio {0} dalla CA ACME all''URI {1}. Lo stato \u00e8 {2}. Il timeout configurato \u00e8 {3}.
+CWPKI2002E.explanation=La richiesta della CA non \u00e8 stata convalidata nel tempo configurato e non \u00e8 stato possibile creare un certificato.
+CWPKI2002E.useraction=Esaminare l'URI della CA configurata. Verificare il server chiamate possa accedere correttamente all'URI. Verificare che il server chiamante possa ricevere una risposta dalla CA. Esaminare il codice di stato. Alcune CA potrebbero richiedere un timeout pi\u00f9 lungo.
+
+CWPKI2003E=CWPKI2003E: La CA (certificate authority) ACME all''URI {0} ha risposto che l''ordine certificato non \u00e8 riuscito per i domini {1}. Lo stato dell''ordine \u00e8 {2}. Errore: {3}.
+CWPKI2003E.explanation=Lo stato dell'ordine indica che la richiesta di ordine autorizzazione non \u00e8 riuscita e non \u00e8 possibile creare un certificato.
+CWPKI2003E.useraction=Esaminare il messaggio di stato e l'errore per i dettagli.
+
+CWPKI2004E=CWPKI2004E: Il polling del servizio ACME \u00e8 scadente durante il controllo dell''esistenza di un ordine riuscito per il dominio {0} dalla CA ACME all''URI {1}. Lo stato \u00e8 {2}. Il timeout configurato \u00e8 {3}.
+CWPKI2004E.explanation=La richiesta di ordine certificato dominio della CA non \u00e8 stata completata nel tempo configurato e non \u00e8 stato possibile creare un certificato.
+CWPKI2004E.useraction=Esaminare l'URI della CA configurata. Verificare il server chiamate possa accedere correttamente all'URI. Verificare che il server chiamante possa ricevere una risposta dalla CA. Esaminare il codice di stato. Alcune CA potrebbero richiedere un timeout pi\u00f9 lungo.
+
+CWPKI2005E=CWPKI2005E: L''autorizzazione restituita dalla CA ACME all''URI {0} non include un tipo di richiesta valido. I tipi di richiesta supportati includono {1}.
+CWPKI2005E.explanation=La CA ha restituito un tipo di richiesta attualmente non supportato. Verificare che la CA utilizzi un tipo presente nell'elenco dei supportati.
+CWPKI2005E.useraction=Selezionare una CA che fornisca un tipo di richiesta supportato.
+
+CWPKI2006I=CWPKI2006I: La CA (certificate authority) ACME all''URI {0} ha fornito i seguenti termini di servizio: {1}
+CWPKI2006I.explanation=La CA fornisce termini di servizio.
+CWPKI2006I.useraction= Esaminare i termini di servizio forniti.
+
+CWPKI2007I=CWPKI2007I: Il servizio ACME ha installato un certificato firmato dalla CA ACME all''URI {0}. La data di scadenza \u00e8 {1}.
+CWPKI2007I.explanation=Il servizio ACME ha richiamato e installato correttamente un certificato dalla CA configurata.
+CWPKI2007I.useraction=Nessuna
+
+CWPKI2008E=CWPKI2008E: Un URI della directory della CA ACME deve essere un URI valido. URI ricevuto null o vuoto. URI ricevuto '{0}'.
+CWPKI2008E.explanation=L'URI della directory della CA non \u00e8 stato configurato correttamente.
+CWPKI2008E.useraction=Immettere un URI directory CA ACME corretto nella configurazione.
+
+CWPKI2009E=CWPKI2009E: La richiesta alla CA ACME all''URI {0} non \u00e8 riuscita. Errore: {1}.
+CWPKI2009E.explanation=La richiesta non \u00e8 riuscita e non \u00e8 possibile creare un certificato.
+CWPKI2009E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2010E=CWPKI2010E: L''aggiornamento richiesta alla CA ACME all''URI {0} non \u00e8 riuscito . L''errore \u00e8 {1}.
+CWPKI2010E.explanation=L'aggiornamento richiesta non \u00e8 riuscito e non \u00e8 stato possibile aggiornare un certificato.
+CWPKI2010E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2011E=CWPKI2011E: Il servizio ACME non \u00e8 riuscito a creare l''ordine certificato per la CA ACME all''URI {0}. Errore: {1}.
+CWPKI2011E.explanation=La creazione dell'ordine del certificato non \u00e8 riuscita e un certificato firmato non pu\u00f2 essere richiesto.
+CWPKI2011E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2012E=CWPKI2012E: Il servizio ACME non \u00e8 riuscito a firmare la richiesta di firma del certificato per la CA ACME all''URI {0}. Errore: {1}.
+CWPKI2012E.explanation=L'ordine del certificato \u00e8 stato creato, ma la firma della richiesta non \u00e8 riuscita e un certificato firmato non pu\u00f2 essere richiesto.
+CWPKI2012E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2013E=CWPKI2013E: La richiesta di firma del certificato \u00e8 stata creata e firmata, ma la richiesta di ordine alla CA ACME all''URI {0} non \u00e8 riuscita. Errore: {1}.
+CWPKI2013E.explanation=L'ordine del certificato \u00e8 stato creato e firmato, ma l'ordinazione del certificato dalla CA non \u00e8 riuscita.
+CWPKI2013E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2014E=CWPKI2014E: La richiesta di firma del certificato per la CA ACME all''URI {0} \u00e8 stata creata e firmata, ma la codifica della richiesta non \u00e8 riuscita. Errore: {1}.
+CWPKI2014E.explanation=La codifica della richiesta di firma del certificato non \u00e8 riuscita e non \u00e8 possibile creare un certificato firmato.
+CWPKI2014E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2015E=CWPKI2015E: La richiesta di stato dell''ordine del certificato di servizio ACME dalla CA ACME all''URI {0} non \u00e8 riuscita. Errore: {1}.
+CWPKI2015E.explanation=Un ordine  \u00e8 stato completato in modo asincrono dalla CA. Il servizio ACME ha ricevuto un errore durante il controllo dello stato dell'ordine. Un certificato firmato non pu\u00f2 essere richiesto.
+CWPKI2015E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2016E=CWPKI2016E: La richiesta di servizio ACME per un account esistente dalla CA ACME all''URI {0} non \u00e8 riuscita. Errore: {1}.
+CWPKI2016E.explanation=Un account esistente non \u00e8 stato trovato o si \u00e8 verificato un altro errore. Impossibile effettuare modifiche all'account o certificato.
+CWPKI2016E.useraction=Esaminare il messaggio di errore per i dettagli. Verificare il server chiamate possa accedere correttamente all'URI. Verificare che il server chiamante possa ricevere una risposta dalla CA.
+
+CWPKI2017E=CWPKI2017E: La richiesta ACME per i termini di servizio dalla CA ACME all''URI {0} non \u00e8 riuscita. Errore: {1}.
+CWPKI2017E.explanation=I termini di servizio per la CA ACME non possono essere registrati. 
+CWPKI2017E.useraction=Esaminare il messaggio di errore per i dettagli. Visitare il sito web della CA ACME per esaminare i termini di servizio.
+
+CWPKI2018E=CWPKI2018E: L''account utente non \u00e8 stato creato sulla CA ACME all''URI {0}. Errore: {1}.
+CWPKI2018E.explanation=La richiesta di creazione dell'account utente non \u00e8 riuscita.
+CWPKI2018E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2019I=CWPKI2019I: L''URL dell''account fornito dalla CA ACME all''URI {0} \u00e8 {1}.
+CWPKI2019I.explanation=L'account \u00e8 stato creato correttamente.
+CWPKI2019I.useraction=Nessuna
+
+CWPKI2020E=CWPKI2020E: Il servizio ACME non \u00e8 stato in grado di leggere il file di chiavi di dominio per l''account CA ACME all''URI {0}. La posizione del file \u00e8 {1}. Errore: {2}.
+CWPKI2020E.explanation=Impossibile aprire il file di chiavi di dominio per l'account CA. Questo pu\u00f2 verificarsi se le autorizzazioni file sono errate o se il file non esiste.
+CWPKI2020E.useraction=Esaminare il messaggio di errore per i dettagli. Verificare che l'ubicazione file sia corretta e che il server abbia autorizzazioni di lettura per il file.
+
+CWPKI2021E=CWPKI2021E: Il servizio ACME non \u00e8 stato in grado di leggere il file di chiavi dell''account per l''account CA ACME all''URI {0}. La posizione del file \u00e8 {1}. Errore: {2}.
+CWPKI2021E.explanation=Impossibile aprire il file di chiavi dell'account per l'account CA. Questo pu\u00f2 verificarsi se le autorizzazioni file sono errate o se il file non esiste.
+CWPKI2021E.useraction=Esaminare il messaggio di errore per i dettagli. Verificare che l'ubicazione file sia corretta e che il server abbia autorizzazioni di lettura per il file.
+
+CWPKI2022E=CWPKI2022E: Il servizio ACME non \u00e8 stato in grado di scrivere nel file di chiavi di dominio per l''account CA ACME all''URI {0}. La posizione del file \u00e8 {1}. Errore: {2}.
+CWPKI2022E.explanation=Le chiavi di dominio non sono state memorizzate nel file chiavi di dominio. Questo pu\u00f2 verificarsi se le autorizzazioni file sono errate o se il file non esiste.
+CWPKI2022E.useraction=Esaminare il messaggio di errore per i dettagli. Verificare che l'ubicazione file sia corretta e che il server abbia autorizzazioni di scrittura per il file.
+
+CWPKI2023E=CWPKI2023E: Scrittura del file di chiavi account non riuscita per l''account CA ACME all''URI {0}. La posizione del file \u00e8 {1}. Errore: {2}.
+CWPKI2023E.explanation=Le chiavi account non sono state memorizzate nel file chiavi account. Questo pu\u00f2 verificarsi se le autorizzazioni file sono errate o se il file non esiste.
+CWPKI2023E.useraction=Esaminare il messaggio di errore per i dettagli. Verificare che l'ubicazione file sia corretta e che il server abbia autorizzazioni di scrittura per il file.
+
+CWPKI2024E=CWPKI2024E: Il servizio ACME non \u00e8 riuscito a revocare il certificato richiesto per la CA ACME all''URI {0}. Il numero di serie certificato \u00e8 {1}. Errore: {2}.
+CWPKI2024E.explanation=Richiesta di revoca certificato non riuscita. Il certificato non \u00e8 stato revocato e potrebbe essere ancora in uso.
+CWPKI2024E.useraction=Esaminare il messaggio di errore per i dettagli.
+
+CWPKI2025W=CWPKI2025W: Il servizio ACME ha ricevuto una richiesta di revoca del certificato, ma non \u00e8 stato possibile caricare la coppia di chiavi account per la CA ACME all''URI {0}.
+CWPKI2025W.explanation=La richiesta di revoca del certificato non \u00e8 riuscita perch\u00e9 non \u00e8 stato possibile caricare la coppia di chiavi account.
+CWPKI2025W.useraction=Esaminare eventuali errori precedenti nel log, per i dettagli. Esaminare il file keystore per verificare che il certificato esista.
+
+CWPKI2026W=CWPKI2026W: Il servizio ACME ha ricevuto una richiesta di revoca del certificato, ma non \u00e8 stato trovato l''account alla CA ACME all''URI {0}.
+CWPKI2026W.explanation=La richiesta di revoca del certificato non \u00e8 riuscita perch\u00e9 non \u00e8 stato trovato l'account.
+CWPKI2026W.useraction=Esaminare l'URI della CA. Esaminare il file keystore per verificare che il certificato esista.
+
+CWPKI2027E=CWPKI2027E: Il percorso file {0} per il servizio ACME \u00e8 null o vuoto. Il percorso fornito \u00e8 '{1}'.
+CWPKI2027E.explanation=Il percorso file era null o vuoto e non pu\u00f2 essere utilizzato per le chiavi dominio e account.
+CWPKI2027E.useraction=Fornire un percorso file valido nella configurazione.
