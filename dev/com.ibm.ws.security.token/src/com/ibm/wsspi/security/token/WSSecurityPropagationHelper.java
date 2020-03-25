@@ -22,6 +22,7 @@ import com.ibm.websphere.security.WebSphereRuntimePermission;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.websphere.security.auth.ValidationFailedException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.ws.security.token.internal.ValidationResultImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -41,6 +42,21 @@ public class WSSecurityPropagationHelper {
     private static final AtomicServiceReference<TokenManager> tokenManagerRef = new AtomicServiceReference<TokenManager>("tokenManager");
     private final static WebSphereRuntimePermission VALIDATE_TOKEN = new WebSphereRuntimePermission("validateLTPAToken");
 
+    /********* BETA FENCING CODE. REMOVE WHEN GA (START) *******/
+    private static boolean issuedBetaMessage = false;
+
+    private static void betaFenceCheck() throws UnsupportedOperationException {
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("This method is beta and is not avalible");
+        } else {
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + WSSecurityPropagationHelper.class.getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+    }
+
+    /********* BETA FENCING CODE. REMOVE WHEN GA (END) *******/
     /**
      * <p>
      * This method validates an LTPA token and will return a ValidationResult object.
@@ -56,6 +72,8 @@ public class WSSecurityPropagationHelper {
      * @exception ValidationFailedException
      **/
     public static ValidationResult validateToken(byte[] token) throws ValidationFailedException {
+        betaFenceCheck();
+
         ValidationResult validationResult = null;
         java.lang.SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
