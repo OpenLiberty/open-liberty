@@ -236,9 +236,6 @@ public class OAuth20ClientMetatypeService {
 
     @Trivial
     private boolean isAttributeToIgnore(AttributeDefinition attrDef) {
-        if (attrDef.getID().equals(LibertyOAuth20Provider.KEY_CLIENT_TRUSTED_URI_PREFIXES)) {
-            return false;
-        }
         return "internal".equals(attrDef.getName()) || isUnsupportedRegistrationAttribute(attrDef);
     }
 

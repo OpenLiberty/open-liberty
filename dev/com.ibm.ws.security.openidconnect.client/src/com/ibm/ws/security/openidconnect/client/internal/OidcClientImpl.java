@@ -427,10 +427,12 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
     private boolean requestHasOidcCookie(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
-        for (int i = 0; i < cookies.length; i++) {
-            Cookie ck = cookies[i];
-            if (ck.getName().startsWith(ClientConstants.COOKIE_NAME_OIDC_CLIENT_PREFIX)) {
-                return true;
+        if (cookies != null) {
+            for (int i = 0; i < cookies.length; i++) {
+                Cookie ck = cookies[i];
+                if (ck.getName().startsWith(ClientConstants.COOKIE_NAME_OIDC_CLIENT_PREFIX)) {
+                    return true;
+                }
             }
         }
         return false;
