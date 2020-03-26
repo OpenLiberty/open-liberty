@@ -76,7 +76,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES, JakartaEEAction.ID })
     public void testEE7Only() throws Exception {
         // This test will skip for the EE8 feature iteration
 
@@ -89,7 +89,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION, JakartaEEAction.ID })
     public void testEE8Only() throws Exception {
         // This test will skip for the EE7 feature (i.e. NO_MODIFICATION) iteration
 
@@ -97,6 +97,19 @@ public class SimpleTest extends FATServletClient {
         Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
         assertTrue("Expected the Java EE 8 feature 'servlet-4.0' to be enabled but was not: " + features,
                    features.contains("servlet-4.0"));
+        assertTrue("No EE7 features should be enabled when this test runs: " + features,
+                   !features.contains("servlet-3.1"));
+    }
+
+    @Test
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    public void testEE9Only() throws Exception {
+        // This test will skip for the EE7 feature (i.e. NO_MODIFICATION) and EE8 feature iterations
+
+        // Verify only EE8 features are enabled
+        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        assertTrue("Expected the Java EE 9 feature 'servlet-5.0' to be enabled but was not: " + features,
+                   features.contains("servlet-5.0"));
         assertTrue("No EE7 features should be enabled when this test runs: " + features,
                    !features.contains("servlet-3.1"));
     }
