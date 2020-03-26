@@ -20,3 +20,5 @@ dependencies {
     'org.apache.httpcomponents:httpclient:4.1.2',
     'org.apache.httpcomponents:httpcore:4.1.2'
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
