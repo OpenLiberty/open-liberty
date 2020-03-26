@@ -52,6 +52,7 @@ public class InterceptorConfigImplTest {
     static final String KEY_ENABLED = "enabled";
     static final String KEY_INVOKE_BEFORE_SSO = "invokeBeforeSSO";
     static final String KEY_INVOKE_AFTER_SSO = "invokeAfterSSO";
+    static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
 
     static final String KEY_CONFIGURATION_ADMIN = "configurationAdmin";
     static final String KEY_SHARED_LIB = "sharedLib";
@@ -96,6 +97,7 @@ public class InterceptorConfigImplTest {
         InterceptorConfigImpl interceptorCfg = new InterceptorConfigImpl(props);
         assertFalse("invoke before SSO is false", interceptorCfg.isInvokeBeforeSSO());
         assertFalse("invoke after SSO is false", interceptorCfg.isInvokeAfterSSO());
+        assertFalse("disable ltpa cookie is false", interceptorCfg.isDisableLtpaCookie());
     }
 
     @Test
@@ -120,6 +122,7 @@ public class InterceptorConfigImplTest {
         assertEquals("id is id", KEY_ID, interceptorCfg.getId());
         assertTrue("invoke before SSO is true", interceptorCfg.isInvokeBeforeSSO());
         assertTrue("invoke after SSO is true", interceptorCfg.isInvokeAfterSSO());
+        assertTrue("disable ltpa cookie is true", interceptorCfg.isDisableLtpaCookie());
     }
 
     @Test
@@ -169,6 +172,7 @@ public class InterceptorConfigImplTest {
         props.put(KEY_ENABLED, value);
         props.put(KEY_INVOKE_BEFORE_SSO, value);
         props.put(KEY_INVOKE_AFTER_SSO, value);
+        props.put(KEY_DISABLE_LTPA_COOKIE, value);
         props.put(KEY_LIBRARY_REF, "libraryRef");
         return props;
     }
