@@ -289,7 +289,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    @FFDCIgnore({SuspendedInvocationException.class})
+    @FFDCIgnore({SuspendedInvocationException.class,RuntimeException.class})
     public synchronized boolean doIntercept(Message message) {
         updateIterator();
 

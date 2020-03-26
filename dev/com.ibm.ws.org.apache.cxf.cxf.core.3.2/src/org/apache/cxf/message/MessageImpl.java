@@ -693,7 +693,7 @@ public class MessageImpl extends StringMapImpl implements Message {
             } else if (key == REQUEST_PATH_TO_MATCH_SLASH) {
                 return getPathToMatchSlash();
             } else if (key == HTTP_REQUEST_METHOD) {
-                return getContentType();
+                return getHttpRequestMethod();
             } else if (key == QUERY_STRING) {
                 return getQueryString();
             } else if (key == AbstractHTTPDestination.HTTP_REQUEST) {
@@ -702,8 +702,6 @@ public class MessageImpl extends StringMapImpl implements Message {
                 return getHttpResponse();
             } else if (key == REQUEST_PATH_TO_MATCH_SLASH) {
                 return getPathToMatchSlash();
-            } else if (key == HTTP_REQUEST_METHOD) {
-                return getHttpRequestMethod();
             } else if (key == INTERCEPTOR_PROVIDERS) {
                 return getInterceptorProviders();
             } else if (key == TEMPLATE_PARAMETERS) {
