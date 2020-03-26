@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.sse.SseEventSink;
 
 import org.apache.cxf.Bus;
@@ -37,6 +36,7 @@ import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.interceptor.InterceptorChain;
 import org.apache.cxf.interceptor.OutgoingChainInterceptor;
 import org.apache.cxf.phase.PhaseInterceptorChain;
+import org.apache.cxf.security.SecurityContext;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Destination;
