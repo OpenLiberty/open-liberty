@@ -88,11 +88,10 @@ public class JakartaEEAction extends FeatureReplacementAction {
         Path outputPath = appPath.resolveSibling(appPath.getFileName() + ".jakarta");
         Path backupPath = appPath.resolveSibling(appPath.getFileName() + ".backup");
         try {
-            String[] args = new String[4];
+            String[] args = new String[3];
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
-            args[2] = "-o";
-            args[3] = "-v";
+            args[2] = "-v"; // verbose
             JakartaTransformer.main(args);
             if (outputPath.toFile().exists()) {
                 Files.move(appPath, backupPath);
