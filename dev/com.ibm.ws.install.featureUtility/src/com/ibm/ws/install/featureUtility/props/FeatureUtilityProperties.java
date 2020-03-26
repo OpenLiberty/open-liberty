@@ -6,6 +6,7 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-public class FeatureUtilityRepoProperties {
+public class FeatureUtilityProperties {
 
     private final static String FILEPATH_EXT = "/etc/featureUtility.properties";
     private final static Set<String> DEFINED_OPTIONS= new HashSet<>(Arrays.asList("proxyHost", "proxyPort", "proxyUser", "proxyPassword", "featureLocalRepo"));
@@ -29,8 +30,14 @@ public class FeatureUtilityRepoProperties {
     private static boolean didFileParse;
 
     static {
-        File propertiesFile = new File(Utils.getInstallDir() + FILEPATH_EXT);
-        didFileParse = parseProperties(propertiesFile);
+        Properties properties = null;
+        try {
+            properties = loadProperties();
+            didFileParse = parseProperties(properties);
+        } catch (InstallException e) {
+            // log here that could not be found.
+            didFileParse = false;
+        }
     }
 
     public static List<MavenRepository> getMirrorRepositories(){
@@ -73,7 +80,7 @@ public class FeatureUtilityRepoProperties {
         return getMirrorRepositories().size() == 0;
     }
 
-    private static boolean parseProperties(File propertiesFile) {
+    public static Properties loadProperties() throws InstallException {
         Properties properties = new Properties(){
             private final HashSet<Object> keys = new LinkedHashSet<Object>();
             @Override
@@ -87,12 +94,18 @@ public class FeatureUtilityRepoProperties {
                 return super.put(key, value);
             }
         };
-        try(FileInputStream fileIn = new FileInputStream(propertiesFile)) {
+        try(FileInputStream fileIn = new FileInputStream(getRepoPropertiesFileLocation())) {
             properties.load(fileIn);
+
+            return properties;
         } catch (IOException e) {
-            return false;
+            throw new InstallException(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED",
+                    getRepoPropertiesFileLocation()), InstallException.IO_FAILURE);
         }
 
+    }
+
+    private static boolean parseProperties(Properties properties) {
         definedVariables = new HashMap<>();
         Map<String, Map<String, String>> repoMap = new LinkedHashMap<>();
 

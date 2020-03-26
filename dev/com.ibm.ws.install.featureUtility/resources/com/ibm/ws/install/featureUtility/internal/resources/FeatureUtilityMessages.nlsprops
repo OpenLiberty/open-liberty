@@ -35,6 +35,7 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=The properties file failed the validation. Use
 MSG_VALIDATION_NUM_OF_ERRORS=Number of errors: {0}
 MSG_VALIDATION_MESSAGES=Properties File Validation
 MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_PASSWORD_NOT_ENCODED=The password for this repository is not encoded. You can encode passwords by running the securityUtility encode command with the --encoding option set to a supported encoding type, which are xor (default), aes, and hash.
 
 FIELD_REPO_NAME=Name: {0}
 FIELD_REPO_LOCATION=Location: {0}

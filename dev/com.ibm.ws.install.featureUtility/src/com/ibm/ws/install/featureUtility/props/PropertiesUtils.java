@@ -25,26 +25,24 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FeatureUtilityPropertiesUtils {
+public class PropertiesUtils {
 //    private static final Logger logger = Logger.getLogger(InstallConstants.LOGGER_NAME);
     private static Locale locale;
     private static ResourceBundle featureUtilityMessages;
     private static ResourceBundle featureUtilitySampleConfigurations;
     public final static String WLP_REPO = "default";
     public final static String USE_WLP_REPO = "useDefaultRepository";
-    public final static String ORDER = "order";
     public final static String URL_SUFFIX = ".url";
-//    public final static String APIKEY_SUFFIX = ".apiKey";
     public final static String USER_SUFFIX = ".user";
-//    public final static String USERPWD_SUFFIX = ".userPassword";
     public final static String PWD_SUFFIX = ".password";
     public final static String COMMENT_PREFIX = "#";
     public final static String PROXY_HOST = "proxyHost";
     public final static String PROXY_PORT = "proxyPort";
     public final static String PROXY_USER = "proxyUser";
     public final static String PROXY_PASSWORD = "proxyPassword";
+    public final static String FEATURE_LOCAL_REPO = "featureLocalRepo";
     public final static String EQUALS = "=";
-    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD };
+    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD, FEATURE_LOCAL_REPO };
     private static final Logger logger = Logger.getLogger(InstallConstants.LOGGER_NAME);
 
 
@@ -78,23 +76,7 @@ public class FeatureUtilityPropertiesUtils {
             featureUtilitySampleConfigurations = ResourceBundle.getBundle("com.ibm.ws.install.featureUtility.internal.resources.FeatureUtilitySampleConfiguration", locale);
         }
         String message = featureUtilitySampleConfigurations.getString("SAMPLE_CONFIG");
-        // ??? below stuff
-//        File path = new File(InstallUtils.isWindows ? "C:\\IBM\\LibertyRepository" : "/usr/LibertyRepository");
-//        String url = null;
-//        try {
-//            url = path.toURI().toURL().toString();
-//        } catch (MalformedURLException e) {
-//            url = InstallUtils.isWindows ? "file:/C:/IBM/LibertyRepository" : "file:///usr/LibertyRepository";
-//        }
-//        String featureRepo = null;
-//        try {
-//            ProductInfo product = ProductInfo.getAllProductInfo().get("com.ibm.websphere.appserver");
-//            featureRepo = product == null ? "wlp-featureRepo.zip" : "wlp-featureRepo-" + product.getVersion() + ".zip";
-//        } catch (Exception e) {
-//            featureRepo = "wlp-featureRepo.zip";
-//        }
-//        File zipRepoPath = new File(InstallUtils.isWindows ? "C:\\IBM" : "/usr", featureRepo);
-//        MessageFormat messageFormat = new MessageFormat(message, locale);
+
         return message;
     }
 
@@ -122,7 +104,7 @@ public class FeatureUtilityPropertiesUtils {
 
         List<RepositoryConfigValidationResult> validationResults = new ArrayList<RepositoryConfigValidationResult>();
         // Retrieves the Repository Properties file
-        File repoPropertiesFile = FeatureUtilityRepoProperties.getRepoPropertiesFile();
+        File repoPropertiesFile = FeatureUtilityProperties.getRepoPropertiesFile();
         Map<String, String> configMap = new HashMap<String, String>();
         Map<String, Integer> lineMap = new HashMap<String, Integer>();
 

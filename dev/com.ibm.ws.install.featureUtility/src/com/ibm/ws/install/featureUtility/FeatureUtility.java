@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,17 +29,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.featureUtility.props.FeatureUtilityRepoProperties;
-import com.ibm.ws.install.internal.ExceptionUtils;
+import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
-import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 //import com.sun.org.apache.xpath.internal.operations.Bool;
 
@@ -92,12 +88,12 @@ public class FeatureUtility {
 
         // log repo properties file TODO remove this?
         fine("featureUtility.repo.properties file:");
-        logger.fine("host:" +FeatureUtilityRepoProperties.getProxyHost());
-        logger.fine("port: " +FeatureUtilityRepoProperties.getProxyPort());
-        logger.fine("user: " + FeatureUtilityRepoProperties.getProxyUser());
-        logger.fine("password: " + FeatureUtilityRepoProperties.getProxyPassword());
-        logger.fine("local repo:" + FeatureUtilityRepoProperties.getFeatureLocalRepo());
-        logger.fine("mirror repos:" + FeatureUtilityRepoProperties.getMirrorRepositories());
+        logger.fine("host:" + FeatureUtilityProperties.getProxyHost());
+        logger.fine("port: " + FeatureUtilityProperties.getProxyPort());
+        logger.fine("user: " + FeatureUtilityProperties.getProxyUser());
+        logger.fine("password: " + FeatureUtilityProperties.getProxyPassword());
+        logger.fine("local repo:" + FeatureUtilityProperties.getFeatureLocalRepo());
+        logger.fine("mirror repos:" + FeatureUtilityProperties.getMirrorRepositories());
 
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();

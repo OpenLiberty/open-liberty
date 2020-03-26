@@ -88,3 +88,14 @@ installServerFeatures.option-key.--noCache=\
 installServerFeatures.option-desc.--noCache=\
 \tFeatures installed from a remote repository                          \n\
 \t(for example, Maven Central) are not cached locally.
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\
+\tView the repositories and proxy settings.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\
+\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\
+\tUse this option to display the detailed messages from the            \n\
+\tvalidation of the configured repositories.properties file.           \n\
+\tEach message contains an error code, the line number where the error \n\
+\twas found, and the cause of the error.
