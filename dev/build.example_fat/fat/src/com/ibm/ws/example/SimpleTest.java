@@ -11,6 +11,7 @@
 package com.ibm.ws.example;
 
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
@@ -76,9 +77,9 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES, JakartaEEAction.ID })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testEE7Only() throws Exception {
-        // This test will skip for the EE8 feature iteration
+        // This test will only run for the EE7 feature iteration (i.e. NO_MODIFICATION)
 
         // Verify only EE7 features are enabled
         Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
@@ -89,9 +90,9 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ NO_MODIFICATION, JakartaEEAction.ID })
+    @SkipForRepeat({ NO_MODIFICATION, EE9_FEATURES })
     public void testEE8Only() throws Exception {
-        // This test will skip for the EE7 feature (i.e. NO_MODIFICATION) iteration
+        // This test will only run for the EE 8 iteration
 
         // Verify only EE8 features are enabled
         Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
@@ -104,7 +105,7 @@ public class SimpleTest extends FATServletClient {
     @Test
     @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     public void testEE9Only() throws Exception {
-        // This test will skip for the EE7 feature (i.e. NO_MODIFICATION) and EE8 feature iterations
+        // This test will only run for the EE9 iteration
 
         // Verify only EE8 features are enabled
         Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();

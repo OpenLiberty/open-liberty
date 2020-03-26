@@ -1,7 +1,14 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
-package com.ibm.ws.example;
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package componenttest.rules.repeater;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -16,16 +23,16 @@ import java.util.Set;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jakarta.transformer.JakartaTransformer;
 
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
-
 /**
- *
+ * Test repeat action that will do 2 things:
+ * <ol>
+ * <li>Invoke the Jakarta transformer on all war/ear files under the autoFVT/publish/servers/ folder</li>
+ * <li>Update all server.xml configs under the autoFVT/publish/servers/ folder to use EE 9 features</li>
+ * </ol>
  */
-public class JakartaEEAction extends FeatureReplacementAction {
+public class JakartaEE9Action extends FeatureReplacementAction {
 
-    private static final Class<?> c = JakartaEEAction.class;
+    private static final Class<?> c = JakartaEE9Action.class;
 
     public static final String ID = "EE9_FEATURES";
 
@@ -34,7 +41,7 @@ public class JakartaEEAction extends FeatureReplacementAction {
                                                  "componenttest-2.0" };
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
 
-    public JakartaEEAction() {
+    public JakartaEE9Action() {
         super(removeFeatures(), EE9_FEATURE_SET);
         withMinJavaLevel(8);
         forceAddFeatures(false);
@@ -55,27 +62,26 @@ public class JakartaEEAction extends FeatureReplacementAction {
 
     @Override
     public void setup() throws Exception {
-        Log.info(c, "setup", "@AGG invoking EE9 action...");
-        try {
-            invokeTransformer();
-        } catch (Throwable t) {
-            Log.info(c, "setup", "@AGG error invoking xformer...");
-            Log.error(c, "setup", t);
-        }
+        // Transform apps
+        Files.walk(Paths.get("publish", "servers"))
+                        .forEach(JakartaEE9Action::transformApp);
+        // Transform server.xml's
         super.setup();
     }
 
-    private void invokeTransformer() throws Exception {
-        Log.info(c, "@AGG", "Path is: " + Paths.get("publish", "servers").toAbsolutePath());
-        Files.walk(Paths.get("publish", "servers"))
-                        .forEach(this::transformApp);
-        Log.info(c, "@AGG", "Done with xformer");
-    }
-
-    private void transformApp(Path appPath) {
-        if (!appPath.getFileName().toString().endsWith(".war"))
+    /**
+     * Invokes the Jakarta transformer on a given application (ear or war).
+     * After completion, the transformed application will be available at the $appPath,
+     * and the original application will be available at $appPath.backup
+     * 
+     * @param appPath The application path to be transformed to Jakarta
+     */
+    public static void transformApp(Path appPath) {
+        final String m = "transformApp";
+        if (!appPath.getFileName().toString().endsWith(".war") &&
+            !appPath.getFileName().toString().endsWith(".ear"))
             return;
-        Log.info(c, "@AGG", "Transform app: " + appPath);
+        Log.info(c, m, "Transforming app: " + appPath);
 
         // Capture stdout/stderr streams
         final PrintStream originalOut = System.out;
@@ -85,14 +91,24 @@ public class JakartaEEAction extends FeatureReplacementAction {
         System.setOut(ps);
         System.setErr(ps);
 
+        try {
+            Class.forName("com.ibm.ws.jakarta.transformer.JakartaTransformer");
+        } catch (Throwable e) {
+            throw new RuntimeException("Unable to load the JakartaTransformer class. " +
+                                       "Did you remember to include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FATs build.gradle file?");
+        }
+
         Path outputPath = appPath.resolveSibling(appPath.getFileName() + ".jakarta");
         Path backupPath = appPath.resolveSibling(appPath.getFileName() + ".backup");
         try {
+            // Invoke the jakarta transformer
             String[] args = new String[3];
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
             args[2] = "-v"; // verbose
             JakartaTransformer.main(args);
+
+            // Swap out the transformed file with the original
             if (outputPath.toFile().exists()) {
                 Files.move(appPath, backupPath);
                 Files.move(outputPath, appPath);
@@ -100,12 +116,12 @@ public class JakartaEEAction extends FeatureReplacementAction {
                 throw new RuntimeException("Jakarta transformer failed for: " + appPath);
             }
         } catch (Exception e) {
-            Log.info(c, "@AGG", "Unable to transform app at path: " + appPath);
-            Log.error(c, "@AGG", e);
+            Log.info(c, m, "Unable to transform app at path: " + appPath);
+            Log.error(c, m, e);
         } finally {
             System.setOut(originalOut);
             System.setErr(originalErr);
-            Log.info(c, "@AGG", baos.toString());
+            Log.info(c, m, baos.toString());
         }
     }
 
