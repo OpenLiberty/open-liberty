@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,7 @@ import javax.sql.DataSource;
  * that take a <code>DataSource</code> object get, use, and close their own connection.
  */
 @SuppressWarnings("serial")
-public abstract class FATDatabaseServlet extends FATServlet
-{
+public abstract class FATDatabaseServlet extends FATServlet {
     /**
      * Creates a table with the given name and schema. Gets a new connection and closes it.
      */
@@ -84,8 +83,7 @@ public abstract class FATDatabaseServlet extends FATServlet
      * <code>id int not null primary key, val varchar(30)</code><br>
      * Does not close the connection.
      */
-    public static void createBasicTable(Connection conn, String tableName) throws SQLException
-    {
+    public static void createBasicTable(Connection conn, String tableName) throws SQLException {
         createTable(conn, tableName, "id int not null primary key, val varchar(30)");
     }
 
@@ -105,8 +103,7 @@ public abstract class FATDatabaseServlet extends FATServlet
     /**
      * Creates a table with the given name and schema. Does not close the connection.
      */
-    public static void createTable(Connection conn, String tableName, String tableSchema) throws SQLException
-    {
+    public static void createTable(Connection conn, String tableName, String tableSchema) throws SQLException {
         Statement stmt1 = conn.createStatement();
         stmt1.executeUpdate("create table " + tableName + " (" + tableSchema + ")");
         stmt1.close();
