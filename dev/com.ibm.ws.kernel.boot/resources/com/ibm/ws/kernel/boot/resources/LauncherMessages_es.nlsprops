@@ -439,7 +439,7 @@ error.create.unknownJavaLevel.useraction=Aseg\u00farese de que est\u00e1 utiliza
 
 error.create.java8serverenv=CWWKE0103E: No se ha podido crear un archivo server.env en la ubicaci\u00f3n siguiente: {0}
 error.create.java8serverenv.explanation=El proceso que est\u00e1 intentando crear el servidor no ha podido generar un archivo server.env en la ubicaci\u00f3n especificada.  Este archivo proporciona los argumentos de JVM necesarios para que el servidor pueda funcionar correctamente.
-error.create.java8serverenv.useraction=Aseg\u00farese de que tiene acceso de escritura al directorio del servidor y de que dispone de suficiente espacio de disco.  Adem\u00e1s, puede crear manualmente el archivo server.env con el valor siguiente: WLP_SKIP_MAXPERMSIZE=true.  Debe asegurarse de que el proceso de servidor tenga acceso de lectura para este archivo.
+error.create.java8serverenv.useraction=Aseg\u00farese de que tiene acceso de escritura al directorio del servidor y de que dispone de suficiente espacio de disco. Debe asegurarse de que el proceso de servidor tenga acceso de lectura para este archivo.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Este producto es una versi\u00f3n no definitiva (beta) y no puede utilizarse en producci\u00f3n. Los t\u00e9rminos completos de la licencia pueden verse aqu\u00ed: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Este producto es una versi\u00f3n no definitiva (beta) y debe utilizarse seg\u00fan los t\u00e9rminos de la licencia de versi\u00f3n no definitiva (beta).

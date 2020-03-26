@@ -1564,15 +1564,15 @@ NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corecta\u0163i fi\u015fierul de leg
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: Numele de legare JNDI (Java Naming and Directory Interface) {2} pentru bean-ul {0} sau interfa\u0163a de baz\u0103 din modulul {1} con\u0163ine un spa\u0163iu de nume.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=Numele de legare JNDI nu trebuie s\u0103 con\u0163in\u0103 caracterul dou\u0103 puncte (:), care denot\u0103 un spa\u0163iu de nume. \u00centregul \u015fir de dinainte \u015fi inclusiv caracterul dou\u0103 puncte (:) este considerat un spa\u0163iu de nume.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=Corecta\u0163i fi\u015fierul de leg\u0103ri ibm-ejb-jar-bnd.xml pentru a da acestui bean un nume de legare JNDI valid prin \u00eenl\u0103turarea spa\u0163iului de nume.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: Numele de legare JNDI (Java Naming and Directory Interface) {2} pentru bean-ul {0} sau interfa\u0163a de baz\u0103 din modulul {1} con\u0163ine un spa\u0163iu de nume.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=Numele de legare JNDI nu trebuie s\u0103 con\u0163in\u0103 caracterul dou\u0103 puncte (:), care denot\u0103 un spa\u0163iu de nume. \u00centregul \u015fir de dinainte \u015fi inclusiv caracterul dou\u0103 puncte (:) este considerat un spa\u0163iu de nume.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Corecta\u0163i fi\u015fierul de leg\u0103ri ibm-ejb-jar-bnd.xml pentru a da acestui bean un nume de legare JNDI valid prin \u00eenl\u0103turarea spa\u0163iului de nume.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: Numele de legare JNDI (Java Naming and Directory Interface) {2} pentru bean-ul {0} sau interfa\u0163a de baz\u0103 local\u0103 din modulul {1} con\u0163ine un spa\u0163iu de nume care nu este valid.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=Numele leg\u0103rii locale poate con\u0163ine doar un spa\u0163iu de nume \u015fi trebuie s\u0103 \u00eenceap\u0103 cu ejblocal:. Spa\u0163iile de nume sunt indicate de caracterul dou\u0103 puncte (:). \u00centregul \u015fir de dinainte \u015fi inclusiv caracterul dou\u0103 puncte (:) este considerat un spa\u0163iu de nume.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Corecta\u0163i fi\u015fierul de leg\u0103ri ibm-ejb-jar-bnd.xml pentru a da acestui bean un nume de legare JNDI valid prin \u00eenl\u0103turarea spa\u0163iului de nume care nu este valid.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: Numele de legare JNDI (Java Naming and Directory Interface) {2} pentru bean-ul {0} sau interfa\u0163a de baz\u0103 local\u0103 din modulul {1} con\u0163ine un spa\u0163iu de nume care nu este valid.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Numele leg\u0103rii locale poate con\u0163ine doar un spa\u0163iu de nume \u015fi trebuie s\u0103 \u00eenceap\u0103 cu ejblocal:. Spa\u0163iile de nume sunt indicate de caracterul dou\u0103 puncte (:). \u00centregul \u015fir de dinainte \u015fi inclusiv caracterul dou\u0103 puncte (:) este considerat un spa\u0163iu de nume.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Corecta\u0163i fi\u015fierul de leg\u0103ri ibm-ejb-jar-bnd.xml pentru a da acestui bean un nume de legare JNDI valid prin \u00eenl\u0103turarea spa\u0163iului de nume care nu este valid.
 
 #-------------------------------------------------------------------------------
 #

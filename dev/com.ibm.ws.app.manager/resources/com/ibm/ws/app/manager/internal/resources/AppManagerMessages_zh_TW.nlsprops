@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -210,3 +210,9 @@ APPLICATION_JANDEX_ENABLED.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: \u91dd\u5c0d\u61c9\u7528\u7a0b\u5f0f {0} \u505c\u7528 Jandex\u3002
 APPLICATION_JANDEX_DISABLED.explanation=\u91dd\u5c0d\u6307\u5b9a\u7684\u61c9\u7528\u7a0b\u5f0f\u505c\u7528 Jandex \u7d22\u5f15\u3002
 APPLICATION_JANDEX_DISABLED.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: \u4e0b\u5217\u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5b83\u5011\u7684 startAfter \u5c6c\u6027\u503c\u5c0e\u81f4\u5faa\u74b0\uff1a{0} 
+error.startAfter.cycle.explanation=\u6240\u6709\u61c9\u7528\u7a0b\u5f0f\u5747\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u6bcf\u4e00\u500b\u61c9\u7528\u7a0b\u5f0f\u90fd\u76f8\u4f9d\u65bc\u53e6\u4e00\u500b\u61c9\u7528\u7a0b\u5f0f\u5148\u555f\u52d5\u3002
+error.startAfter.cycle.useraction=\u8acb\u8b8a\u66f4\u5faa\u74b0\u4e2d\u6240\u6d89\u53ca\u4e4b\u61c9\u7528\u7a0b\u5f0f\u7684 startAfter \u5c6c\u6027\u503c\uff0c\u4ee5\u4fbf\u5b83\u5011\u4e0d\u5177\u6709\u5faa\u74b0\u76f8\u4f9d\u95dc\u4fc2\u3002
+

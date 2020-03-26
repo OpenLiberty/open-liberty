@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verifique se todas as op\u00e7
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Uma entrada jaasLoginContext {0} n\u00e3o pode ser especificada como uma entrada de configura\u00e7\u00e3o JAAS no arquivo server.xml, no arquivo jaas.conf ou em ambos os arquivos.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=O tempo de execu\u00e7\u00e3o usa uma configura\u00e7\u00e3o Krb5LoginModule padr\u00e3o e a configura\u00e7\u00e3o SPNEGO no arquivo server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Remova a entrada jaasLoginContext do arquivo server.xml ou deixe o tempo de execu\u00e7\u00e3o usar a entrada padr\u00e3o.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: O m\u00f3dulo de login customizado JAAS {0} n\u00e3o foi carregado porque o elemento de configura\u00e7\u00e3o {1} especifica os atributos libraryRef e classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Deve-se especificar somente um atributo, libraryRef ou classProviderRef, para indicar o artefato do qual carregar o m\u00f3dulo de login customizado JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Remova o atributo libraryRef ou o atributo classProviderRef, qualquer um que n\u00e3o contiver a classe do m\u00f3dulo de login customizado JAAS.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: O m\u00f3dulo de login customizado JAAS {0} n\u00e3o foi localizado porque o elemento de configura\u00e7\u00e3o {1} n\u00e3o especifica o atributo libraryRef ou classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Deve-se especificar exatamente um atributo, libraryRef ou classProviderRef, para indicar o artefato do qual carregar o m\u00f3dulo de login customizado JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Especifique o atributo libraryRef ou classProviderRef para indicar o local do qual carregar a classe do m\u00f3dulo de login customizado JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: A classe do m\u00f3dulo de login customizado JAAS {0} n\u00e3o foi localizada no artefato {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=O aplicativo ou adaptador de recursos especificado n\u00e3o cont\u00e9m a classe do m\u00f3dulo de login customizado JAAS solicitada ou a classe do m\u00f3dulo de login customizado JAAS est\u00e1 presente no aplicativo, mas em um local do qual ela n\u00e3o pode ser carregada.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Certifique-se de que a classe do m\u00f3dulo de login customizado JAAS configurada e seu nome de pacote estejam corretos. Se um aplicativo for especificado, a classe do m\u00f3dulo de login dever\u00e1 estar contida no aplicativo, em um JAR de n\u00edvel superior ou em um m\u00f3dulo de adaptador de recursos.

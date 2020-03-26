@@ -48,11 +48,15 @@ property.not.found.CWMCG5004E=CWMCG5004E: Die Konfigurationseigenschaft "{0}" wu
 property.not.found.CWMCG5004E.explanation=Die benannte Eigenschaft wurde in keiner der konfigurierten Quellen gefunden. 
 property.not.found.CWMCG5004E.useraction=Stellen Sie sicher, dass die Eigenschaft in einer der Konfigurationsquellen vorhanden ist.
 
-#The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: Die InjektionPoint-Abh\u00e4ngigkeit wurde f\u00fcr die Observer-Methode nicht aufgel\u00f6st: {0}. Fehler: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=Eine eingef\u00fcgte Konfigurationseigenschaft wurde nicht aufgel\u00f6st. Entweder wurde die benannte Eigenschaft nicht gefunden oder ein Converter f\u00fcr den erforderlichen Typ wurde nicht aufgel\u00f6st. 
 unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=\u00dcberpr\u00fcfen Sie die Servernachricht und die FFDC-Protokolle, um die Ursache zu ermitteln. Stellen Sie sicher, dass die Eigenschaft in einer der Konfigurationsquellen vorhanden ist, und dass die erforderlichen Converter konfiguriert wurden.
 
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: Die InjectionPoint-Abh\u00e4ngigkeit wurde nicht f\u00fcr die Observer-Bean verarbeitet: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=Es ist ein unbekannter Fehler aufgetreten. Es war nicht m\u00f6glich, eine Observer-Methode ordnungsgem\u00e4\u00df zu verarbeiten.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=\u00dcberpr\u00fcfen Sie die Servernachricht und die FFDC-Protokolle, um die Ursache zu ermitteln. 
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
