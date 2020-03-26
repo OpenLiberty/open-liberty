@@ -86,15 +86,6 @@ public class FeatureUtility {
         	throw new InstallException((String) map.get("action.error.message"));
         }
 
-        // log repo properties file TODO remove this?
-        fine("featureUtility.repo.properties file:");
-        logger.fine("host:" + FeatureUtilityProperties.getProxyHost());
-        logger.fine("port: " + FeatureUtilityProperties.getProxyPort());
-        logger.fine("user: " + FeatureUtilityProperties.getProxyUser());
-        logger.fine("password: " + FeatureUtilityProperties.getProxyPassword());
-        logger.fine("local repo:" + FeatureUtilityProperties.getFeatureLocalRepo());
-        logger.fine("mirror repos:" + FeatureUtilityProperties.getMirrorRepositories());
-
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
         for (String key: envMapKeys) {
