@@ -72,6 +72,7 @@ public class WSSecurityPropagationHelper {
      * @exception ValidationFailedException
      **/
     public static ValidationResult validateToken(byte[] token) throws ValidationFailedException {
+
         betaFenceCheck();
 
         ValidationResult validationResult = null;
