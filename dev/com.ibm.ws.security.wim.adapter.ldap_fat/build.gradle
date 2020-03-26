@@ -16,7 +16,6 @@ def appBuildDir = "${buildDir}/test-application"
 
 dependencies { 
   requiredLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
-    'com.unboundid:unboundid-ldapsdk:4.0.9',
     'commons-logging:commons-logging:1.1.1',
     'commons-codec:commons-codec:1.4',
     'org.apache.httpcomponents:httpclient:4.1.2',

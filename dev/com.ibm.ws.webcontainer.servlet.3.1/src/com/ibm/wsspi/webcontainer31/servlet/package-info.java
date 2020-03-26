@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * there is a packageinfo file in the lib/web.webcontainerspi.jar indicating the version is 2.0.0
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")

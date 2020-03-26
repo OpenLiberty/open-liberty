@@ -60,9 +60,11 @@ public class TimedCache<K, V> {
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     /**
-     * @param executor
-     * @param delay
-     * @param unit
+     * Create a new TimedCache instance
+     *
+     * @param executor the executor to use to schedule cache removal tasks
+     * @param delay    the delay before items are removed from the cache
+     * @param unit     the unit of {@code delay}
      */
     public TimedCache(ScheduledExecutorService executor, long delay, TimeUnit unit) {
         if (executor == null) {
@@ -86,6 +88,11 @@ public class TimedCache<K, V> {
      * @return the value
      */
     public V get(K key, Function<K, V> lookupFunction) {
+
+        // If no expiry time is set, do no caching
+        if (delay <= 0) {
+            return lookupFunction.apply(key);
+        }
 
         Object cacheValue = cache.get(key);
 

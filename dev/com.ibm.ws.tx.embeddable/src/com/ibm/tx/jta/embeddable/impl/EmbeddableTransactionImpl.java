@@ -1164,7 +1164,10 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
     @Override
     public String toString() {
+        // Use a local copy of _thread so that it can't change under this code after the not-null test and thus avoid a possible
+        // NullPointerException when getId() is called
+        Thread local_thread = _thread;
         return super.toString() + ",active=" + _activeAssociations + ",suspended=" + _suspendedAssociations + ","
-               + (_thread != null ? "thread=" + String.format("%08X", _thread.getId()) : "Not on a thread, globalId=" + _globalId);
+               + (local_thread != null ? "thread=" + String.format("%08X", local_thread.getId()) : "Not on a thread, globalId=" + _globalId);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,10 +33,12 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.jar.Manifest;
@@ -82,21 +84,21 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     static final List<SearchLocation> PARENT_FIRST_SEARCH_ORDER = freeze(list(PARENT, SELF, DELEGATES));
 
+    private final Set<String> packagesDefined = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>()); 
+
     static final String CLASS_LOADING_TRACE_PREFIX = "com.ibm.ws.class.load.";
     static final String DEFAULT_PACKAGE = "default.package";
     /** per class loader collection of per-package trace components */
     final ConcurrentMap<String, TraceComponent> perPackageClassLoadingTraceComponents = new ConcurrentHashMap<String, TraceComponent>();
 
-    private TraceComponent registerClassLoadingTraceComponent(String pkg) {
-        TraceComponent tc = Tr.register(CLASS_LOADING_TRACE_PREFIX + pkg, AppClassLoader.class, (String) null);
-        perPackageClassLoadingTraceComponents.put(pkg, tc);
-        return tc;
-    }
-
     private TraceComponent getClassLoadingTraceComponent(String pkg) {
-        TraceComponent tc = perPackageClassLoadingTraceComponents.get(pkg);
         // tc will be null if this is the first time we used the default package or a package defined by another CL
-        return tc == null ? registerClassLoadingTraceComponent(pkg) : tc;
+        TraceComponent tc = perPackageClassLoadingTraceComponents.get(pkg);
+        if (tc == null) {
+            tc = Tr.register(CLASS_LOADING_TRACE_PREFIX + pkg, AppClassLoader.class, (String) null);
+            perPackageClassLoadingTraceComponents.put(pkg, tc);
+        }
+        return tc;
     }
 
     protected final ClassLoaderConfiguration config;
@@ -280,9 +282,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                     // it will attempt to define the class a 2nd time.
                     clazz = findLoadedClass(name);
                     if (clazz == null) {
-                        ByteResourceInformation byteResInfo = this.findClassBytes(name);
+                        String resourceName = Util.convertClassNameToResourceName(name);
+                        ByteResourceInformation byteResInfo = this.findClassBytes(name, resourceName);
                         if (byteResInfo != null) {
-                            clazz = definePackageAndClass(name, byteResInfo, byteResInfo.getBytes());
+                            clazz = definePackageAndClass(name, resourceName, byteResInfo, byteResInfo.getBytes());
                         } else {
                             // Check the common libraries.
                             clazz = findClassCommonLibraryClassLoaders(name);
@@ -295,7 +298,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return clazz;
         }
 
-        ByteResourceInformation byteResourceInformation = findClassBytes(name);
+        String resourceName = Util.convertClassNameToResourceName(name);
+        ByteResourceInformation byteResourceInformation = findClassBytes(name, resourceName);
         if (byteResourceInformation == null) {
             // Check the common libraries.
             return findClassCommonLibraryClassLoaders(name);
@@ -319,7 +323,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
         }
 
-        return definePackageAndClass(name, byteResourceInformation, bytes);
+        return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
     }
 
     byte[] transformClassBytes(final byte[] originalBytes, String name) throws ClassNotFoundException {
@@ -349,32 +353,24 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         return bytes;
     }
 
-    private Class<?> definePackageAndClass(final String name, final ByteResourceInformation byteResourceInformation, byte[] bytes) throws ClassFormatError {
-        final TraceComponent cltc;
+    private Class<?> definePackageAndClass(final String name, String resourceName, final ByteResourceInformation byteResourceInformation, byte[] bytes) throws ClassFormatError {
+        URL resourceURL = byteResourceInformation.getResourceUrl();
         // Now define a package for this class if it has one
         int lastDotIndex = name.lastIndexOf('.');
+        String packageName = DEFAULT_PACKAGE;
         if (lastDotIndex != -1) {
-            String packageName = name.substring(0, lastDotIndex);
-
-            // See if this package is already defined, we will handle multi-threaded code with a try catch later
-            if (this.getPackage(packageName) == null) {
-                definePackage(byteResourceInformation, packageName);
-                cltc = registerClassLoadingTraceComponent(packageName);
-            } else {
-                cltc = getClassLoadingTraceComponent(packageName);
-            }
-        } else {
-            cltc = getClassLoadingTraceComponent(DEFAULT_PACKAGE);
+            packageName = name.substring(0, lastDotIndex);
+            definePackage(byteResourceInformation, resourceURL, packageName);
         }
 
-        URL resourceURL = byteResourceInformation.getResourceUrl();
-        ProtectionDomain pd = getClassSpecificProtectionDomain(name, resourceURL);
+        ProtectionDomain pd = getClassSpecificProtectionDomain(resourceName, resourceURL);
 
         Class<?> clazz = null;
         try {
             clazz = defineClass(name, bytes, 0, bytes.length, pd);
         } finally {
-            if (cltc.isDebugEnabled()) {
+            final TraceComponent cltc;
+            if (TraceComponent.isAnyTracingEnabled() && (cltc = getClassLoadingTraceComponent(packageName)).isDebugEnabled()) {
                 String loc = "" + byteResourceInformation.getResourceUrl();
                 String path = byteResourceInformation.getResourcePath();
                 if (loc.endsWith(path))
@@ -398,13 +394,13 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
-    private ProtectionDomain getClassSpecificProtectionDomain(final String name, final URL resourceUrl) {
+    private ProtectionDomain getClassSpecificProtectionDomain(final String resourceName, final URL resourceUrl) {
         ProtectionDomain pd = config.getProtectionDomain();
         try {
             pd = AccessController.doPrivileged(new PrivilegedExceptionAction<ProtectionDomain>() {
                 @Override
                 public ProtectionDomain run() {
-                    return getClassSpecificProtectionDomainPrivileged(name, resourceUrl);
+                    return getClassSpecificProtectionDomainPrivileged(resourceName, resourceUrl);
                 }
             });
         } catch (PrivilegedActionException paex) {
@@ -415,8 +411,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     }
 
-    ProtectionDomain getClassSpecificProtectionDomainPrivileged(String className, URL resourceUrl) {
-        ProtectionDomain pdFromConfig = config.getProtectionDomain();
+    ProtectionDomain getClassSpecificProtectionDomainPrivileged(String resourceName, URL resourceUrl) {
         ProtectionDomain pd;
 
         try {
@@ -430,19 +425,22 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 // this is most likely a file URL - i.e. the contents of the classes are expanded on the disk.
                 // so a path like:  .../myServer/dropins/myWar.war/WEB-INF/classes/com/myPkg/MyClass.class
                 // should convert to: .../myServer/dropins/myWar.war/WEB-INF/classes/
-                containerUrl = new URL(resourceUrl.toString().replace(Util.convertClassNameToResourceName(className), ""));
+                containerUrl = new URL(resourceUrl.toString().replace(resourceName, ""));
             }
             String containerUrlString = containerUrl.toString();
             pd = protectionDomains.get(containerUrlString);
             if (pd == null) {
+                ProtectionDomain pdFromConfig = config.getProtectionDomain();
                 CodeSource cs = new CodeSource(containerUrl, pdFromConfig.getCodeSource().getCertificates());
                 pd = new ProtectionDomain(cs, pdFromConfig.getPermissions());
-                protectionDomains.putIfAbsent(containerUrlString, pd);
-                pd = protectionDomains.get(containerUrlString);
+                ProtectionDomain oldPD = protectionDomains.putIfAbsent(containerUrlString, pd);
+                if (oldPD != null) {
+                    pd = oldPD;
+                }
             }
         } catch (IOException ex) {
             // Auto-FFDC - and then use the protection domain from the classloader configuration
-            pd = pdFromConfig;
+            pd = config.getProtectionDomain();
         }
         return pd;
     }
@@ -455,25 +453,35 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * @param packageName The name of the package to create
      */
     @FFDCIgnore(value = { IllegalArgumentException.class })
-    private void definePackage(ByteResourceInformation byteResourceInformation, String packageName) {
-        // If the package is in a JAR then we can load the JAR manifest to see what package definitions it's got
-        Manifest manifest = byteResourceInformation.getManifest();
+    private void definePackage(ByteResourceInformation byteResourceInformation, URL resourceURL, String packageName) {
 
-        try {
-            // The URLClassLoader.definePackage() will NPE with a null manifest so use the other definePackage if we don't have a manifest
-            if (manifest == null) {
-                definePackage(packageName, null, null, null, null, null, null, null);
-            } else {
-                definePackage(packageName, manifest, byteResourceInformation.getResourceUrl());
+        // Using packagesDefined instead of getPackage since getPackage has a lot of path length
+        // and in the race condition we avoid all the Manifest length.
+        if (!packagesDefined.contains(packageName)) {
+            synchronized (getClassLoadingLock(packageName)) {
+                // have to check again
+                if (!packagesDefined.contains(packageName)) {
+                    // If the package is in a JAR then we can load the JAR manifest to see what package definitions it's got
+                    Manifest manifest = byteResourceInformation.getManifest();
+
+                    try {
+                        // The URLClassLoader.definePackage() will NPE with a null manifest so use the other definePackage if we don't have a manifest
+                        if (manifest == null) {
+                            definePackage(packageName, null, null, null, null, null, null, null);
+                        } else {
+                            definePackage(packageName, manifest, resourceURL);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        // Ignore, this happens if the package is already defined but it is hard to guard against this in a thread safe way. See:
+                        // http://bugs.sun.com/view_bug.do?bug_id=4841786
+                    }
+                    packagesDefined.add(packageName);
+                }
             }
-        } catch (IllegalArgumentException e) {
-            // Ignore, this happens if the package is already defined but it is hard to guard against this in a thread safe way. See:
-            // http://bugs.sun.com/view_bug.do?bug_id=4841786
         }
     }
 
-    final ByteResourceInformation findClassBytes(String className) {
-        String resourceName = Util.convertClassNameToResourceName(className);
+    final ByteResourceInformation findClassBytes(String className, String resourceName) {
         try {
             return findClassBytes(className, resourceName, hook);
         } catch (IOException e) {
@@ -489,23 +497,27 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        ClassNotFoundException cnfe = null;
         Object token = ThreadIdentityManager.runAsServer();
-        synchronized (getClassLoadingLock(name)) {
-            try {
-                return findOrDelegateLoadClass(name);
-            } catch (ClassNotFoundException e) {
+        try {
+            synchronized (getClassLoadingLock(name)) {
+                try {
+                    return findOrDelegateLoadClass(name);
+                } catch (ClassNotFoundException e) {
+                    cnfe = e;
+                }
                 // The class could not be found on the local class path or by
                 // delegating to parent/library class loaders.  Try to generate it.
                 Class<?> generatedClass = generateClass(name);
                 if (generatedClass != null)
                     return generatedClass;
-
-                // could not generate class - throw CNFE
-                throw FeatureSuggestion.getExceptionWithSuggestion(e);
-            } finally {
-                ThreadIdentityManager.reset(token);
             }
+        } finally {
+            ThreadIdentityManager.reset(token);
         }
+
+        // could not generate class - throw CNFE
+        throw FeatureSuggestion.getExceptionWithSuggestion(cnfe);
     }
 
     @Trivial

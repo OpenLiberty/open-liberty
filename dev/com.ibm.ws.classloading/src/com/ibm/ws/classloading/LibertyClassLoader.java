@@ -24,6 +24,9 @@ import com.ibm.wsspi.classloading.ApiType;
  * </strong> work predictably with the Liberty
  */
 public abstract class LibertyClassLoader extends SecureClassLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     protected LibertyClassLoader(ClassLoader parent) {
         super(parent);
     }

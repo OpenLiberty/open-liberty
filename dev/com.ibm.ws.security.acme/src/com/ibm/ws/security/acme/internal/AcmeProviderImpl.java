@@ -56,6 +56,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.ssl.Constants;
+import com.ibm.websphere.ssl.SSLConfig;
+import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
@@ -66,6 +69,7 @@ import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet;
 import com.ibm.ws.ssl.KeyStoreService;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 /**
  * ACME 2.0 support component service.
@@ -76,7 +80,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 
 	private final TraceComponent tc = Tr.register(AcmeProviderImpl.class);
 
-	private final AtomicReference<KeyStoreService> keyStoreServiceRef = new AtomicReference<KeyStoreService>();
+	private final static AtomicReference<KeyStoreService> keyStoreServiceRef = new AtomicReference<KeyStoreService>();
 
 	private String directoryURI = null;
 	private List<String> domains = null;
@@ -98,6 +102,12 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	private List<String> accountContact = null;
 	private Boolean acceptTermsOfService = null;
 	private String domainKeyFile = null;
+
+	// Transport related fields.
+	private static String protocol = null;
+	private static String trustStore = null;
+	private static SerializableProtectedString trustStorePassword = null;
+	private static String trustStoreType = null;
 
 	private AcmeClient acmeClient = null;
 
@@ -167,6 +177,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 * @throws AcmeCaException
 	 *             If there was an issue initializing the {@link AcmeClient}.
 	 */
+	@SuppressWarnings("unchecked")
 	public void initialize(ComponentContext context, Map<String, Object> properties) throws AcmeCaException {
 		final String methodName = "initialize(ComponentContext, Map<String,Object>)";
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -193,6 +204,17 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		acceptTermsOfService = getBooleanValue(properties, AcmeConstants.ACCEPT_TERMS);
 		domainKeyFile = getStringValue(properties, AcmeConstants.DOMAIN_KEY_FILE);
 
+		List<Map<String, Object>> transportConfig = Nester.nest(AcmeConstants.TRANSPORT_CONFIG, properties);
+		if (!transportConfig.isEmpty()) {
+			Map<String, Object> transportProps = transportConfig.get(0);
+
+			protocol = getStringValue(transportProps, AcmeConstants.TRANSPORT_PROTOCOL);
+			trustStore = getStringValue(transportProps, AcmeConstants.TRANSPORT_TRUST_STORE);
+			trustStorePassword = getSerializableProtectedStringValue(transportProps,
+					AcmeConstants.TRANSPORT_TRUST_STORE_PASSWORD);
+			trustStoreType = getStringValue(transportProps, AcmeConstants.TRANSPORT_TRUST_STORE_TYPE);
+		}
+
 		/*
 		 * Construct a new ACME client.
 		 */
@@ -202,6 +224,8 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		acmeClient.setChallengeRetryWait(challengeRetryWaitMs);
 		acmeClient.setOrderRetries(orderRetries);
 		acmeClient.setOrderRetryWait(orderRetryWaitMs);
+		
+		// TODO Need to verify connection.
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
 			Tr.exit(tc, methodName);
@@ -243,9 +267,9 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 */
 	private void checkAndInstallCertificate(boolean forceRefresh, KeyStore keyStore, File keyStoreFile, String password)
 			throws AcmeCaException {
-		final String methodName = "checkAndInstallCertificate(KeyStore,File,String)";
+		final String methodName = "checkAndInstallCertificate(boolean,KeyStore,File,String)";
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, keyStore, keyStoreFile, "******");
+			Tr.entry(tc, methodName, forceRefresh, keyStore, keyStoreFile, "******");
 		}
 
 		/*
@@ -394,7 +418,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 *             If the {@link KeyStoreService} instance is null.
 	 */
 	@Trivial
-	private KeyStoreService getKeystoreService() throws AcmeCaException {
+	public static KeyStoreService getKeystoreService() throws AcmeCaException {
 		if (keyStoreServiceRef.get() == null) {
 			throw new AcmeCaException("Internal error. KeyStoreService was not registered.");
 		}
@@ -493,6 +517,25 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		}
 
 		return values;
+	}
+
+	/**
+	 * Get a {@link String} value from the config properties.
+	 * 
+	 * @param configProps
+	 *            The configuration properties passed in by declarative
+	 *            services.
+	 * @param property
+	 *            The property to lookup.
+	 * @return The {@link String} value, or null if it doesn't exist.
+	 */
+	private static SerializableProtectedString getSerializableProtectedStringValue(Map<String, Object> configProps,
+			String property) {
+		Object value = configProps.get(property);
+		if (value == null) {
+			return null;
+		}
+		return (SerializableProtectedString) value;
 	}
 
 	/**
@@ -1110,5 +1153,39 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
 			Tr.exit(tc, methodName);
 		}
+	}
+
+	/**
+	 * Get the {@link SSLConfig} object that contains the user-specified SSL
+	 * configuration.
+	 * 
+	 * @return The {@link SSLConfig}.
+	 */
+	public static SSLConfig getSSLConfig() {
+		SSLConfig sslConfig = new SSLConfig();
+
+		/*
+		 * Set any configured SSL properties into the SSLConfig instance.
+		 */
+		if (protocol != null) {
+			sslConfig.setProperty(Constants.SSLPROP_PROTOCOL, protocol);
+		}
+		if (trustStore != null) {
+			sslConfig.setProperty(Constants.SSLPROP_TRUST_STORE, trustStore);
+		}
+		if (trustStorePassword != null) {
+			sslConfig.setProperty(Constants.SSLPROP_TRUST_STORE_PASSWORD,
+					String.valueOf(trustStorePassword.getChars()));
+		}
+		if (trustStoreType != null) {
+			sslConfig.setProperty(Constants.SSLPROP_TRUST_STORE_TYPE, trustStoreType);
+		}
+
+		/*
+		 * Always allow default certificates (CACERTS).
+		 */
+		sslConfig.setProperty(Constants.SSLPROP_USE_DEFAULTCERTS, "true");
+
+		return sslConfig;
 	}
 }

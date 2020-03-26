@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -245,20 +245,29 @@ public class RecoveryTest extends FATServletClient {
                 Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
                 Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
                 Exception ex = new Exception("Could not restart the server");
-                Log.error(this.getClass(), "recoveryTest", ex);
+                Log.error(this.getClass(), method, ex);
                 throw ex;
             }
         }
 
         // Server appears to have started ok
         server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
-        Log.info(this.getClass(), method, "calling checkRec" + id);
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "checkRec" + id);
-        } catch (Exception e) {
-            Log.error(this.getClass(), "recoveryTest", e);
-            throw e;
+
+        int attempt = 0;
+        while (true) {
+            Log.info(this.getClass(), method, "calling checkRec" + id);
+            try {
+                sb = runTestWithResponse(server, SERVLET_NAME, "checkRec" + id);
+                Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+                break;
+            } catch (Exception e) {
+                Log.error(this.getClass(), method, e);
+                if (++attempt < 5) {
+                    Thread.sleep(10000);
+                } else {
+                    throw e;
+                }
+            }
         }
-        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
     }
 }

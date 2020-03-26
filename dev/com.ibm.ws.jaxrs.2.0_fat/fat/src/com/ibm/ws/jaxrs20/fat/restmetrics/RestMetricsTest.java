@@ -12,6 +12,7 @@ package com.ibm.ws.jaxrs20.fat.restmetrics;
 
 import static com.ibm.ws.jaxrs20.fat.TestUtils.getBaseTestUri;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -96,6 +97,13 @@ public class RestMetricsTest {
             System.out.println(e.toString());
         }
 
+        // Pause for the smarter planet message
+        assertNotNull("The smarter planet message did not get printed on server",
+                      server.waitForStringInLog("CWWKF0011I"));
+
+        // wait for LTPA key to be available to avoid CWWKS4000E
+        assertNotNull("CWWKS4105I.* not recieved on server",
+                      server.waitForStringInLog("CWWKS4105I.*"));
     }
 
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2019 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,6 +294,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         this.archiveFileLock = null;
         this.archiveFile = archiveFile;
         String useArchivePath = archiveFile.getAbsolutePath();
+        this.archiveFileURI = getURI(archiveFile);
         this.archiveFilePath = useArchivePath;
         this.archiveName = archiveFile.getName();
 
@@ -353,6 +354,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             this.archiveFileLock = null;
             String useArchivePath =  archiveFile.getAbsolutePath();
             this.archiveFilePath = useArchivePath;
+            this.archiveFileURI = getURI(archiveFile);
             this.zipFileNotifier = new ZipFileArtifactNotifier(this, useArchivePath);
             this.archiveName = archiveFile.getName();
         } else {
@@ -589,6 +591,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     // Get this once: the usual java file implementation does not
     // cache file absolute paths.
     private String archiveFilePath;
+    private URI archiveFileURI;
 
     /**
      * Answer the archive file.  Extract it if necessary.  Answer null
@@ -621,6 +624,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
                         if ( archiveFile != null ) {
                             archiveFilePath = archiveFile.getAbsolutePath();
+                            archiveFileURI = getURI(archiveFile);
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                                 Tr.debug(tc, methodName + " Archive file [ " + archiveFilePath + " ]");
                             }
@@ -1315,7 +1319,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
 
         try {
-            return Collections.singleton( getURI(useArchiveFile).toURL() );
+            return Collections.singleton( archiveFileURI.toURL() );
         } catch ( MalformedURLException e ) {
             // FFDC
             return Collections.emptySet();
@@ -1328,7 +1332,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         if ( useArchiveFile == null ) {
             return null;
         }
-        return createEntryUri(r_entryPath, useArchiveFile);
+        return createEntryUri(r_entryPath, archiveFileURI);
     }
 
     /**
@@ -1351,8 +1355,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
      *       protection allows it to be used from
      *       "com.ibm.ws.artifact.zip.internal.ZipFileContainerTest".
      */
-    URI createEntryUri(String r_entryPath, File useArchiveFile) {
-        URI archiveUri = getURI(useArchiveFile);
+    URI createEntryUri(String r_entryPath, URI archiveUri) {
         if ( archiveUri == null ) {
             return null;
         }

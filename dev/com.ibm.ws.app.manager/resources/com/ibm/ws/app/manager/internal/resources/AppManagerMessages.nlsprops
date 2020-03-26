@@ -222,3 +222,6 @@ error.startAfter.cycle=CWWKZ0066E: The following applications cannot start becau
 error.startAfter.cycle.explanation=None of the applications can start because each one depends on one of the other applications to be started first.
 error.startAfter.cycle.useraction=Change the value of the startAfter attribute for applications involved in the cycle so that they do not have circular dependencies.
 
+dropins.app.also.configured=CWWKZ0067W: The drop-ins application at location {0} cannot start because it is also configured. 
+dropins.app.also.configured.explanation=An application in the server configuration specifies a location in the monitored drop-ins directory. 
+dropins.app.also.configured.useraction=Move the application to a different location. 

@@ -46,6 +46,7 @@ import org.shredzone.acme4j.util.KeyPairUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
@@ -413,13 +414,17 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue requesting an existing account.
 	 */
-	@FFDCIgnore({ AcmeServerException.class, AcmeException.class })
+	@FFDCIgnore({ AcmeServerException.class })
 	private Account findExistingAccount(Session session, KeyPair accountKey) throws AcmeCaException {
 		try {
 			return new AccountBuilder().useKeyPair(accountKey).onlyExisting().create(session);
 		} catch (AcmeServerException e) {
 			return null;
-		} catch (AcmeException e) {
+		} catch (Exception e) {
+			/*
+			 * We want FFDC here as this will usually be the first communication
+			 * we try with the ACME server. We want to capture why we failed.
+			 */
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2016E", directoryURI, e.getMessage()), e);
 		}
 	}
@@ -914,5 +919,29 @@ public class AcmeClient {
 																										// better
 																										// information
 		}
+	}
+
+	/**
+	 * Get the root cause message. The acme4j library has a tendency to
+	 * genericize the exception messages which makes it hard to determine root
+	 * cause.
+	 * 
+	 * @param t
+	 *            Throwable to get the root cause's message from.
+	 * @return The message from the lowest level cause that isn't empty or null.
+	 */
+	@Trivial
+	private static String getRootCauseMessage(Throwable t) {
+		Throwable cause;
+		String rootMessage = t.getMessage();
+
+		for (cause = t; cause != null; cause = cause.getCause()) {
+			String msg = cause.getMessage();
+			if (msg != null && !msg.trim().isEmpty()) {
+				rootMessage = msg;
+			}
+		}
+
+		return rootMessage;
 	}
 }

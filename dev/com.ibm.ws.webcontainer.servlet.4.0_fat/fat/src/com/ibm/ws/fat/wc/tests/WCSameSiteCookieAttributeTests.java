@@ -43,9 +43,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -58,7 +56,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import junit.framework.Assert;
 
 /**
  * A set of tests to verify the SameSite attribute on a Cookie
@@ -70,9 +67,6 @@ public class WCSameSiteCookieAttributeTests {
     private static final Logger LOG = Logger.getLogger(WCSameSiteCookieAttributeTests.class.getName());
     private static final String APP_NAME_SAMESITE = "SameSiteTest";
     private static final String APP_NAME_SAMESITE_SECURITY = "SameSiteSecurityTest";
-
-    @Rule
-    public TestName name = new TestName();
 
     @Server("servlet40_sameSite")
     public static LibertyServer sameSiteServer;
@@ -408,8 +402,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -443,15 +435,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfigurationFile());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -488,8 +478,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -523,14 +511,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -575,8 +562,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -612,14 +597,13 @@ public class WCSameSiteCookieAttributeTests {
 
             assertNull("The Channel Framework incorrectly added the Secure attribute.",
                        sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -658,8 +642,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -693,14 +675,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -741,8 +722,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -778,15 +757,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -827,8 +805,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -864,15 +840,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -914,8 +889,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -953,15 +926,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1001,8 +973,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1036,14 +1006,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1083,8 +1052,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1118,14 +1085,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1169,8 +1135,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1208,15 +1172,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1256,8 +1219,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1288,14 +1249,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1335,8 +1295,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1367,14 +1325,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1426,8 +1383,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1462,8 +1417,8 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
@@ -1471,7 +1426,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1512,8 +1466,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1544,14 +1496,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertNotNull("The CWWKT0037W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0037W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1590,8 +1541,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1622,14 +1571,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertNotNull("The CWWKT0036W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0036W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1670,8 +1618,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1707,15 +1653,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1756,8 +1701,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1793,15 +1736,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1842,8 +1784,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1879,15 +1819,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -1928,8 +1867,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -1965,15 +1902,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2020,8 +1956,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2059,15 +1993,14 @@ public class WCSameSiteCookieAttributeTests {
 
             assertNull("The Channel Framework incorrectly added the Secure attribute.",
                        sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2108,8 +2041,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2146,15 +2077,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2196,8 +2126,6 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.updateServerConfiguration(configuration);
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
-
-        LOG.info("Updated server configuration: " + configuration);
 
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
@@ -2241,7 +2169,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2276,8 +2203,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2314,14 +2239,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2356,8 +2280,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2394,14 +2316,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2440,8 +2361,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2478,14 +2397,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2524,8 +2442,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2562,14 +2478,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2609,8 +2524,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2646,15 +2559,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2694,8 +2606,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2729,14 +2639,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2782,8 +2691,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2817,14 +2724,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
             assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2872,8 +2778,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -2916,7 +2820,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -2966,8 +2869,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -3010,7 +2911,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3060,8 +2960,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -3104,7 +3002,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3154,8 +3051,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -3198,7 +3093,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3249,8 +3143,6 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
 
-        LOG.info("Updated server configuration: " + configuration);
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -3297,7 +3189,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3365,14 +3256,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3440,14 +3330,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute or the Secure attribute was found.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute or the Secure attribute was found.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3518,14 +3407,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3596,14 +3484,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3667,13 +3554,12 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertFalse("The JSESSIONID Set-Cookie header contained the SameSite attribute and it should not have.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertFalse("The JSESSIONID Set-Cookie header contained the SameSite attribute and it should not have.", headerFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3728,9 +3614,9 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertFalse("The JSESSIONID Set-Cookie header contained the SameSite or Secure attributes and it should not have.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertFalse("The JSESSIONID Set-Cookie header contained the SameSite or Secure attributes and it should not have.", headerFound);
         }
     }
 
@@ -3797,15 +3683,14 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertFalse("The JSESSIONID Set-Cookie header contained a SameSite attribute and it should not have.", headerFound);
-            Assert.assertTrue("The following Warning was not found in the logs: CWWKG0032W: Unexpected value specified for property [cookieSameSite]",
-                              sameSiteServer.waitForStringInLogUsingMark("CWWKG0032W.*cookieSameSite.*InvalidValue") != null);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertFalse("The JSESSIONID Set-Cookie header contained a SameSite attribute and it should not have.", headerFound);
+            assertTrue("The following Warning was not found in the logs: CWWKG0032W: Unexpected value specified for property [cookieSameSite]",
+                       sameSiteServer.waitForStringInLogUsingMark("CWWKG0032W.*cookieSameSite.*InvalidValue") != null);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3877,14 +3762,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute or the Secure attribute was found.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute or the Secure attribute was found.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -3956,14 +3840,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The uniqueSessionIdCookieName Set-Cookie header did not contain the SameSite=None attribute or the Secure attribute was found.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The uniqueSessionIdCookieName Set-Cookie header did not contain the SameSite=None attribute or the Secure attribute was found.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -4032,14 +3915,13 @@ public class WCSameSiteCookieAttributeTests {
             LOG.info("\n" + "Response Text:");
             LOG.info("\n" + responseText);
 
-            Assert.assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                              responseText.equals(expectedResponse));
-            Assert.assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict and Secure attributes.", headerFound);
+            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                       responseText.equals(expectedResponse));
+            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict and Secure attributes.", headerFound);
             assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }
     }
@@ -4578,7 +4460,6 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            LOG.info("Server configuration after it was restored: " + sameSiteServer.getServerConfiguration());
             // Wait for the application that is still deployed to start.
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), true);
         }

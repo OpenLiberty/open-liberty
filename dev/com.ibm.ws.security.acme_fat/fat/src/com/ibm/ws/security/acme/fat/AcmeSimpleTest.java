@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.PebbleContainer;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
+import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -79,6 +80,18 @@ public class AcmeSimpleTest {
 	}
 
 	/**
+	 * Configure the acmeCA-2.0 feature.
+	 */
+	protected void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, String... domains)
+			throws Exception {
+		
+		/*
+		 * Always request an https:// URI.
+		 */
+		AcmeFatUtils.configureAcmeCA(server, originalConfig, false, domains);
+	}
+
+	/**
 	 * This test will verify that the server starts up and requests a new
 	 * certificate from the ACME server when required.
 	 * 
@@ -86,6 +99,7 @@ public class AcmeSimpleTest {
 	 *             If the test failed for some reason.
 	 */
 	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
 	public void startupServer() throws Exception {
 		final String methodName = "startupServer()";
 		Certificate[] startingCertificateChain = null, endingCertificateChain = null;
@@ -93,7 +107,7 @@ public class AcmeSimpleTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS3);
+		configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS3);
 
 		/***********************************************************************
 		 * 
@@ -197,7 +211,9 @@ public class AcmeSimpleTest {
 
 			BigInteger serial1 = ((X509Certificate) startingCertificateChain[0]).getSerialNumber();
 			BigInteger serial2 = ((X509Certificate) endingCertificateChain[0]).getSerialNumber();
-			assertFalse("Expected new certificate when starting with self-signed certificate: " + serial1 +", "+ serial2, serial1.equals(serial2));
+			assertFalse(
+					"Expected new certificate when starting with self-signed certificate: " + serial1 + ", " + serial2,
+					serial1.equals(serial2));
 
 		} finally {
 			Log.info(this.getClass(), methodName, "TEST 3: Shutdown");
@@ -210,13 +226,14 @@ public class AcmeSimpleTest {
 	}
 
 	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
 	public void updateDomains() throws Exception {
 		final String methodName = "updateDomains()";
 
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS1);
+		configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS1);
 
 		try {
 
@@ -240,7 +257,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 1: START");
-			AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS2);
+			configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS2);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
@@ -261,7 +278,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 2: START");
-			AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS3);
+			configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS3);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
 			/*
@@ -282,7 +299,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), methodName, "TEST 3: START");
-			AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS4);
+			configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS4);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
@@ -305,6 +322,7 @@ public class AcmeSimpleTest {
 	}
 
 	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
 	public void dynamicallyEnableDisableAcmeFeature() throws Exception {
 		final String methodName = "dynamicallyEnableDisableAcmeFeature()";
 
@@ -317,7 +335,7 @@ public class AcmeSimpleTest {
 		configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
 		configuration.getFeatureManager().getFeatures().add("transportSecurity-1.0");
 		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
-		AcmeFatUtils.configureAcmeCA(server, configuration, DOMAINS1);
+		configureAcmeCA(server, configuration, DOMAINS1);
 
 		try {
 
@@ -349,7 +367,7 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 1: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().add("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, configuration, DOMAINS1);
+			configureAcmeCA(server, configuration, DOMAINS1);
 			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
 
 			/*
@@ -368,7 +386,7 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 2: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, configuration, DOMAINS1);
+			configureAcmeCA(server, configuration, DOMAINS1);
 			AcmeFatUtils.waitAcmeFeatureUninstall(server);
 
 			/*
@@ -392,7 +410,7 @@ public class AcmeSimpleTest {
 			Log.info(this.getClass(), methodName, "TEST 3: START");
 			configuration = configuration.clone();
 			configuration.getFeatureManager().getFeatures().add("acmeCA-2.0");
-			AcmeFatUtils.configureAcmeCA(server, configuration, DOMAINS1);
+			configureAcmeCA(server, configuration, DOMAINS1);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
 			/*

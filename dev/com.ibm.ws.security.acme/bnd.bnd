@@ -35,6 +35,7 @@ Export-Package: \
     com.ibm.ws.security.acme;version="1.0.0"
  
 Private-Package: \
+    com.ibm.ws.config.xml.internal.nester, \
     com.ibm.ws.security.acme.internal.*,\
     org.bouncycastle.*,\
     org.shredzone.*,\
@@ -46,7 +47,8 @@ Include-Resource: \
     @${repo;org.shredzone.acme4j:acme4j-utils;2.7;EXACT},\
     @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT},\
     @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
-    @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT}
+    @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
+    org=${bin}/org
 
 -dsannotations: \
     com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet, \

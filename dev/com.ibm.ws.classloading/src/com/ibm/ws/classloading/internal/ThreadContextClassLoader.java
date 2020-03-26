@@ -37,6 +37,9 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * A specific type of UnifiedClassLoader: ThreadContextClassLoader
  */
 public class ThreadContextClassLoader extends UnifiedClassLoader implements Keyed<String> {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     static final TraceComponent tc = Tr.register(ThreadContextClassLoader.class);
     private final AtomicReference<Bundle> bundle = new AtomicReference<Bundle>();
     protected final String key;

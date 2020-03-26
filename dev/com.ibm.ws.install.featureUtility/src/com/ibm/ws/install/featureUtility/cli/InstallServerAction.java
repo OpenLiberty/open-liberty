@@ -170,7 +170,9 @@ public class InstallServerAction implements ActionHandler {
                 try {
                         featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
                         // get original server features now
-                        featuresToInstall.addAll(InstallUtils.getAllServerFeatures());
+
+                        //TODO
+                        //featuresToInstall.addAll(InstallUtils.getAllServerFeatures());
                         logger.fine("all server features: " + featuresToInstall);
                 } catch (InstallException ie) {
                         logger.log(Level.SEVERE, ie.getMessage(), ie);

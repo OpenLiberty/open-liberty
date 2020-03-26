@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +59,7 @@ import com.ibm.ws.fat.util.Props;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
+import junit.framework.AssertionFailedError;
 
 /**
  * MvnUtils allows an arquillian based MicroProfile TCK suite to be launched via Maven. The results will then be converted to junit format and presented
@@ -979,10 +981,67 @@ public class MvnUtils {
         pb.redirectErrorStream(true);
 
         Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-        return exitCode;
+        
+        int  hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
+        long softTimeout = -1;
 
+        // We need to ensure that the hard timeout is large enough to avoid future issues
+        if (hardTimeout >= 30000) {
+            softTimeout = hardTimeout - 15000; // Soft timeout is 15 seconds less than hard timeout
+        }
+
+        Process p = pb.start();
+        int returnCode = 1;
+        boolean returnStatus;
+        if (softTimeout > -1) {
+            returnStatus = p.waitFor(softTimeout, TimeUnit.MILLISECONDS);  // Requires Java 8+
+            if (returnStatus == false) {
+                // Parse through the mvn logs
+                if (outputFile.exists() && outputFile.canRead()) {
+                    try (Scanner s = new Scanner(outputFile)) {
+                        // Get the last few lines from the MVN log
+                        ArrayList<String> lastLines = new ArrayList<String>();
+                        int numOfLinesToInclude = 7;  // We will include the last 7 lines of the output file in the timeout message
+                        while (s.hasNextLine()) {
+                            if (lastLines.size() < numOfLinesToInclude) {
+                                lastLines.add(s.nextLine());
+                            } else {
+                                lastLines.remove(0);
+                                lastLines.add(s.nextLine());
+                            }
+                        }
+                        
+                        // Prepare the timeout message
+                        String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
+                                            numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
+                        for (String line : lastLines) {
+                            timeoutMsg += line + "\n";
+                        }
+                        
+                        // Special Case: Check if the last or second line has the text "downloading" or "downloaded"
+                        if ((lastLines.get(lastLines.size() - 1).toLowerCase().matches(".* downloading .*|.* downloaded .*")) 
+                                        || (lastLines.get(lastLines.size() - 2).toLowerCase().matches(".* downloading .*|.* downloaded .*"))) {       
+                            timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
+                        }
+                        
+                        // Throw custom timeout error message rather then the one provided by the JUnitTask
+                        Log.info(c, "runCmd", timeoutMsg);  // Log the timeout message into messages.log or the default log 
+                        throw new AssertionFailedError(timeoutMsg);
+                    } catch (FileNotFoundException FileError) {
+                        // Do nothing as we can't look at the mvn log. This leads to hard timeout handled by the JUnit Task in p.waitFor()                     
+                    }
+                }
+                // Return to normal behavior and let it timeout through the Junit Task using the hard timeout 
+                returnCode = p.waitFor();
+            } else {
+                returnCode = 0;
+            }      
+        } else {
+            // The soft timeout could not be used so return to normal behavior and let the Junit Task take care of the timeout
+            returnCode = p.waitFor();
+        }
+        
+        return returnCode;
     }
 
     /**

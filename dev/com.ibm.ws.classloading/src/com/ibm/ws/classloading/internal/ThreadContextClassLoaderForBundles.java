@@ -23,6 +23,9 @@ import org.osgi.framework.BundleReference;
  */
 public class ThreadContextClassLoaderForBundles extends ThreadContextClassLoader implements BundleReference
 {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
 
     public ThreadContextClassLoaderForBundles(GatewayClassLoader augLoader, ClassLoader appLoader, String key, ClassLoadingServiceImpl clSvc) {
         super(augLoader, appLoader, key, clSvc);

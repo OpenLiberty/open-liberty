@@ -1557,11 +1557,12 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             if (containsCycles(app))
                 return;
 
+            final Collection<ApplicationDependency> startAfterFutures = new LinkedList<ApplicationDependency>();
             for (String dependency : appConfig.getStartAfter()) {
                 NamedApplication depApp = _appFromPid.get(dependency);
                 if (depApp == null || depApp.appStateRef.get() != ApplicationState.STARTED) {
                     ApplicationDependency startAfter = createDependency("resolves when the app " + dependency + " has started");
-                    appStartingFutures.add(startAfter);
+                    startAfterFutures.add(startAfter);
                     addStartDependency(dependency, startAfter);
                 }
 
@@ -1616,7 +1617,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                     startedFuture.setResult(t);
                 }
             });
-            app.getStateMachine().configure(appConfig, appStartingFutures, stoppedFuture, startingFuture, installCalledFuture, startedFuture);
+            app.getStateMachine().configure(appConfig, appStartingFutures, startAfterFutures, stoppedFuture, startingFuture, installCalledFuture, startedFuture);
 
         }
 

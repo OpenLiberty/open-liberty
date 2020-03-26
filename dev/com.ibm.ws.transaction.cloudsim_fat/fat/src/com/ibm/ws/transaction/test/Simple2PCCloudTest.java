@@ -223,9 +223,9 @@ public class Simple2PCCloudTest extends FATServletClient {
 
         server1.waitForStringInLog("Dump State:");
 
-        // Defect 209842: Pull in a jvm.options file that ensures that we have a long (5 minute) timeout
+        // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
         // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
-        server1.copyFileToLibertyServerRoot("jvm.options");
+        server1.copyFileToLibertyServerRoot("longLeaseLengthServer/server.xml");
 
         // Now re-start cloud1 but we fully expect this to fail
         try {
@@ -243,7 +243,8 @@ public class Simple2PCCloudTest extends FATServletClient {
             throw ex;
         }
 
-        server1.deleteFileFromLibertyServerRoot("jvm.options");
+        // Ensure we have the original "default" server.xml at the end of the test.
+        server1.copyFileToLibertyServerRoot("defaultLeaseLengthServer/server.xml");
 
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.

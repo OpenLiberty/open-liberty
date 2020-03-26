@@ -52,6 +52,8 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import javax.json.bind.JsonbException;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HttpMethod;
@@ -95,7 +97,6 @@ import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
@@ -1411,7 +1412,7 @@ public final class JAXRSUtils {
     }
 
     @SuppressWarnings("unchecked")
-    @FFDCIgnore(PrivilegedActionException.class)
+    @FFDCIgnore({ PrivilegedActionException.class, JsonbException.class })
     public static Object readFromMessageBodyReader(List<ReaderInterceptor> readers,
                                                    Class<?> targetTypeClass,
                                                    final Type parameterType,
@@ -1441,9 +1442,13 @@ public final class JAXRSUtils {
             });
         } catch (PrivilegedActionException e) {
             Exception e1 = e.getException();
-            if (e1 instanceof IOException)
+            if (e1 instanceof IOException) {
                 throw (IOException) e1;
+            }
             throw (WebApplicationException) e1;
+        } catch (JsonbException e) { // JsonBProvider throws a RuntimeException
+            // return HTTP 400 instead of 500
+            throw new BadRequestException(e);
         }
         // Liberty change end
     }
