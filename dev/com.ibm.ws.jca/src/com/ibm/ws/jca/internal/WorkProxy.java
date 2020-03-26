@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2013 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,14 +128,16 @@ public class WorkProxy implements Callable<Void>, Runnable {
                     // JCA 11.6.1.2 Long-running Work instance Hint
                     // The value of the hint must be a valid boolean value (true or false).
                     value = hints.get(HintsContext.LONGRUNNING_HINT);
-                    if (value instanceof Boolean)
-                        executionProperties.put("javax.enterprise.concurrent.LONGRUNNING_HINT", value.toString());
-                    else if (value != null)
+                    if (value instanceof Boolean) {
+                        String key = bootstrapContext.eeVersion < 9 ? "javax.enterprise.concurrent.LONGRUNNING_HINT" : "jakarta.enterprise.concurrent.LONGRUNNING_HINT";
+                        executionProperties.put(key, value.toString());
+                    } else if (value != null)
                         hintsContextSetupFailure = new ClassCastException(Tr.formatMessage(TC, "J2CA8687.hint.datatype.invalid", "HintsContext.LONGRUNNING_HINT",
                                                                                            Boolean.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
                 }
-        executionProperties.put("javax.enterprise.concurrent.IDENTITY_NAME", workName == null ? work == null ? null : work.getClass().getName() : workName);
+        String identityNameKey = bootstrapContext.eeVersion < 9 ? "javax.enterprise.concurrent.IDENTITY_NAME" : "jakarta.enterprise.concurrent.IDENTITY_NAME";
+        executionProperties.put(identityNameKey, workName == null ? work == null ? null : work.getClass().getName() : workName);
         executionProperties.put(WSContextService.TASK_OWNER, bootstrapContext.resourceAdapterID);
         if (bootstrapContext.propagateThreadContext)
             if (applyDefaultContext)

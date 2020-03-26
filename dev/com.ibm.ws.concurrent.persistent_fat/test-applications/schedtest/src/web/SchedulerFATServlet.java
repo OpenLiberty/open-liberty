@@ -889,7 +889,7 @@ public class SchedulerFATServlet extends HttpServlet {
             foundIds = new LinkedHashSet<Long>();
             for (Object[] entry : foundAgain)
                 foundIds.add((Long) entry[0]);
-            if (foundIds.size() < found.size())
+            if (foundIds.size() < foundAgain.size())
                 throw new Exception("On the second query, duplicate task entries might have been returned. " + foundIds + " vs " + foundAgain);
             if (!foundIds.containsAll(expected))
                 throw new Exception("On the second query, should have found at least task ids " + expected + " within " + foundIds);

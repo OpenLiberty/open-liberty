@@ -1,6 +1,9 @@
 #!/bin/sh -e
 
 ##OBJECTIVE - used as server service script for users ##
+#
+# chkconfig: 345 85 15
+# description: A lightweight open framework for building fast and efficient cloud-native Java microservices.
 
 # load configuration variables
 iD=/opt/ol
@@ -18,11 +21,15 @@ if [ -z $templateOpt ]; then
 fi
 
 usage() {
-    echo "Usage: $0 {start|stop|restart} serverName {defaultServer|javaee7|javee8|microProfile1|microProfile2|microProfile3|springBoot1|springBoot2|webProfile7|webProfile8}"
+    echo "Usage: $0 {status|start|stop|restart} serverName"
 }
 
 start() {
     $iD/bin/server start $serverName
+}
+
+status() {
+    $iD/bin/server status $serverName
 }
 
 stop() {
@@ -37,6 +44,9 @@ create() {
 case "$1" in
 "start" )
 start
+;;
+"status" )
+status
 ;;
 "stop" )
 stop

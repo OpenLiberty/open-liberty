@@ -12,24 +12,34 @@
         IBM Corporation - initial API and implementation
 -->
 
+<%!
+//  only guards against xss in HTML element content 
+public String xssguard(String name){
+    if (name == null || name.isEmpty()) return name;
+    String buf =  name.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+       .replace("\"","&quot;").replace("'","&apos;").replace("/","&#x2F;");  
+    return buf;
+  }
+%>
+
 <%
-    String errTitle = request.getParameter("title");
+    String errTitle = xssguard(request.getParameter("title"));
     if( errTitle  == null || errTitle.isEmpty() ){
         errTitle = "HTTP Error Message";
     }
-    String errMessage = request.getParameter("message");
+    String errMessage = xssguard(request.getParameter("message"));
     if( errMessage  == null || errMessage.isEmpty() ){
         errMessage = "HTTP Error 403 - Forbidden"; // "The verification on the SAML Response failed";
     }
-    String errUserAction = request.getParameter("userAction");
+    String errUserAction = xssguard(request.getParameter("userAction"));
     if( errUserAction  == null || errUserAction.isEmpty() ){
         errUserAction = "Please contact the administrator for further information";
     }
-    String errFormAction = request.getParameter("action");
+    String errFormAction = xssguard(request.getParameter("action"));
     if( errFormAction  == null || errFormAction.isEmpty() ){
         errFormAction = "";
     }
-    String errMethod = request.getParameter("method");
+    String errMethod = xssguard(request.getParameter("method"));
     if( errMethod  == null || errMethod.isEmpty() ){
         errMethod = "get";
     }
@@ -72,9 +82,7 @@
                </tr>
                <tr>
                   <td style="background-color:#ffffff;color:#000000" nowrap="nowrap" width="100%">
-                     <!--  form action="<%=errFormAction%>" method="<%=errMethod%>">
-                        <button type="submit">OK</BUTTON>
-                     </form -->
+                 
                   </td>
                </tr>
             </tbody>

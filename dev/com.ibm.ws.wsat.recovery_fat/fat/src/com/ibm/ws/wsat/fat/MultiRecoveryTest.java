@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.wsat.fat;
 
 import static org.junit.Assert.assertNotNull;
@@ -15,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
@@ -26,6 +37,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
+@Mode(TestMode.FULL)
 public class MultiRecoveryTest {
 	private static LibertyServer server = LibertyServerFactory
 			.getLibertyServer("WSATRecovery1");
@@ -46,6 +58,11 @@ public class MultiRecoveryTest {
 		if (server2 != null && server2.isStarted()){
 			server2.stopServer(true, true);
 		}
+
+    ShrinkHelper.defaultDropinApp(server, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
+    ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
+    ShrinkHelper.defaultDropinApp(server2, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
+    ShrinkHelper.defaultDropinApp(server2, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
 	}
 	
 	@AfterClass
@@ -88,12 +105,12 @@ public class MultiRecoveryTest {
 	
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
+  @Mode(TestMode.LITE)
 	public void WSTXMPR001AFVT() throws Exception {
 		recoveryTest("101","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	// Need Jon Review:
@@ -108,13 +125,12 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXMPR001CFVT() throws Exception {
 		recoveryTest("103","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void WSTXMPR002AFVT() throws Exception {
 		recoveryTest("201","server1", 30 /* needs review */);
 	}
@@ -134,20 +150,18 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXMPR002CFVT() throws Exception {
 		recoveryTest("203","both", 30 /* needs review */);
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR003AFVT() throws Exception {
 		recoveryTest("301","server1", 30 /* needs review */);
 	}
 
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR003BFVT() throws Exception {
 		recoveryTest("302","server2", 30 /* needs review */);
@@ -163,14 +177,13 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR004AFVT() throws Exception {
 		recoveryTest("401","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR004BFVT() throws Exception {
 		recoveryTest("402","server2", 30 /* needs review */);
@@ -180,20 +193,18 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXMPR004CFVT() throws Exception {
 		recoveryTest("403","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR005AFVT() throws Exception {
 		recoveryTest("501","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	// Need Jon Review:
@@ -211,21 +222,19 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	//@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR005CFVT() throws Exception {
 		recoveryTest("503","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR006AFVT() throws Exception {
 		recoveryTest("601","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	public void WSTXMPR006BFVT() throws Exception {
@@ -239,13 +248,12 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXMPR006CFVT() throws Exception {
 		recoveryTest("603","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR007AFVT() throws Exception {
 		recoveryTest("701","server1", 30 /* needs review */);
@@ -255,7 +263,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
@@ -267,7 +274,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// Need Jon Review:
@@ -284,7 +290,7 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR008AFVT() throws Exception {
 		recoveryTest("801","server1", 30 /* needs review */);
@@ -294,7 +300,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
@@ -306,7 +311,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// Need Jon Review:
@@ -323,7 +327,7 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
 	public void WSTXMPR009AFVT() throws Exception {
 		recoveryTest("901","server1", 30 /* needs review */);
@@ -333,7 +337,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	@AllowedFFDC(value = {"javax.transaction.SystemException"})
 	//Caused by: javax.transaction.xa.XAException
@@ -347,7 +350,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	//javax.transaction.xa.XAException 
 	//Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
@@ -360,7 +362,7 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
 	public void WSTXMPR010AFVT() throws Exception {
 		recoveryTest("1001","server1", 30 /* needs review */);
@@ -370,7 +372,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "javax.transaction.SystemException"})
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	// Need Jon Review:
@@ -385,7 +386,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	// Need Jon Review:
 	// javax.transaction.xa.XAException 
@@ -402,28 +402,26 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011AFVT() throws Exception {
 		recoveryTest("1101","server1", 0);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011BFVT() throws Exception {
 		recoveryTest("1102","server2", 0);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011CFVT() throws Exception {
 		recoveryTest("1103","both", 0);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR012AFVT() throws Exception {
@@ -431,7 +429,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = {"javax.transaction.SystemException" })
 	public void WSTXMPR012BFVT() throws Exception {
@@ -442,21 +439,19 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR012CFVT() throws Exception {
 		recoveryTest("1203","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR013AFVT() throws Exception {
 		recoveryTest("1301","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException","javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	@ExpectedFFDC(value = {"javax.transaction.RollbackException"})
 	public void WSTXMPR013BFVT() throws Exception {
@@ -468,19 +463,17 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXMPR013CFVT() throws Exception {
 		recoveryTest("1303","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void WSTXMPR014AFVT() throws Exception {
 		recoveryTest("1401","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException"})
 	@AllowedFFDC(value = {"javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
@@ -492,7 +485,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException"})
 	public void WSTXMPR014CFVT() throws Exception {
 		recoveryTest("1403","both", 30 /* needs review */);
@@ -502,40 +494,36 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void WSTXMPR015AFVT() throws Exception {
 		recoveryTest("1501","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException" })
 	public void WSTXMPR015BFVT() throws Exception {
 		recoveryTest("1502","server2", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXMPR015CFVT() throws Exception {
 		recoveryTest("1503","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR016AFVT() throws Exception {
 		recoveryTest("1601","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR016BFVT() throws Exception {
 		recoveryTest("1602","server2", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR016CFVT() throws Exception {
 		recoveryTest("1603","both", 30 /* needs review */);
@@ -548,13 +536,12 @@ public class MultiRecoveryTest {
 	 */
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void WSTXLPS301AFVT() throws Exception {
 		recoveryTest("3011","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
 	public void WSTXLPS301BFVT() throws Exception {
 		recoveryTest("3012","server2", 30 /* needs review */);
@@ -564,19 +551,17 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXLPS301CFVT() throws Exception {
 		recoveryTest("3013","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	public void WSTXLPS302AFVT() throws Exception {
 		recoveryTest("3021","server1", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
 	public void WSTXLPS302BFVT() throws Exception {
 		recoveryTest("3022","server2", 30 /* needs review */);
@@ -586,13 +571,12 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
 	public void WSTXLPS302CFVT() throws Exception {
 		recoveryTest("3023","both", 30 /* needs review */);
 	}
 	
 	@Test
-	@Mode(TestMode.FULL)
+  @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"})
 	public void WSTXLPS303AFVT() throws Exception {
 		recoveryTest("3031","server1", 30 /* needs review */);
@@ -650,7 +634,7 @@ public class MultiRecoveryTest {
 					+ id + " end");
         } catch (Exception e)
         {
-            Log.error(this.getClass(), "recoveryTest", e);
+            Log.error(this.getClass(), method, e);
             throw e;
         }
         Log.info(this.getClass(), method, "checkRec" + id + " returned: " + result);

@@ -19,5 +19,5 @@ Subsystem-Name: MicroProfile Metrics 2.3
  com.ibm.ws.microprofile.metrics.cdi.2.3, \
  com.ibm.ws.microprofile.metrics.private, \
  com.ibm.ws.microprofile.metrics.public
-kind=beta
+kind=ga
 edition=core

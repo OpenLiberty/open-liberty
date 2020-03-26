@@ -48,12 +48,12 @@ property.not.found.CWMCG5004E=CWMCG5004E: The "{0}" configuration property was n
 property.not.found.CWMCG5004E.explanation=The named property was not found in any of the configured sources. 
 property.not.found.CWMCG5004E.useraction=Ensure that the property exists in one of the Config Sources.
 
-The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=An injected ConfigProperty did not resolve. Either the named property was not able to be found or a Converter for the required type did not resolve. 
 unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=Check the server message and FFDC logs to determine the cause. Ensure that the property exists in one of the ConfigSources and that the required Converters were configured.
 
-The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
 unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: The InjectionPoint dependency was not processed for the Observer bean: {0}.
 unable.to.process.observer.injection.point.CWMCG5006E.explanation=An unknown error occurred. It was not possible to properly process an Observer method.
 unable.to.process.observer.injection.point.CWMCG5006E.useraction=Check the server message and FFDC logs to determine the cause.

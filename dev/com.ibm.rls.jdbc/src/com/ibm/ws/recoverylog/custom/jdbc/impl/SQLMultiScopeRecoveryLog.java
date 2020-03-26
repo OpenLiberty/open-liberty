@@ -218,7 +218,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /**
      * A flag to indicate whether the recovery log belongs to the home server.
      */
-    private boolean _isHomeServer = true;
+    private final boolean _isHomeServer;
 
     /**
      * These strings are used for Database table creation. DDL is
@@ -290,8 +290,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                                               12571, 17002, 17008, 17009, 17410, 17401, 17430, 25408, 24794, 17447, 30006 }; // N.B. POSITIVE - is that correct?
     private int _sqlTransientErrorCodes[];
     private final int DEFAULT_TRANSIENT_RETRY_SLEEP_TIME = 10000; // In milliseconds, ie 10 seconds
+    private final int LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME = 1000; // In milliseconds, ie 1 second
     private final int _transientRetrySleepTime;
     private final int DEFAULT_TRANSIENT_RETRY_ATTEMPTS = 180; // We'll keep retrying for 30 minutes. Excessive?
+    private final int LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS = 2; // We'll keep retrying for 2 seconds in the lightweight case
     private final int _transientRetryAttempts;
     private boolean sqlTransientErrorHandlingEnabled = false;
 
@@ -2022,10 +2024,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 initialIsolation = prepareConnectionForBatch(conn);
 
                 // This will confirm that this server owns this log and will invalidate the log if not.
-                takeHADBLock(conn);
+                boolean lockSuccess = takeHADBLock(conn);
 
-                // We can go ahead and write to the Database
-                executeBatchStatements(conn);
+                if (lockSuccess) {
+                    // We can go ahead and write to the Database
+                    executeBatchStatements(conn);
+                }
 
                 conn.commit();
                 sqlSuccess = true;
@@ -2374,12 +2378,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @exception InternalLogException Thrown if an
      *                unexpected error has occured.
      */
-    private void takeHADBLock(Connection conn) throws SQLException, InternalLogException {
+    private boolean takeHADBLock(Connection conn) throws SQLException, InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "takeHADBLock", new java.lang.Object[] { conn, this });
 
         Statement lockingStmt = null;
         ResultSet lockingRS = null;
+        boolean lockSuccess = false;
 
         try {
             lockingStmt = conn.createStatement();
@@ -2398,16 +2403,26 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (_currentProcessServerName.equalsIgnoreCase(storedServerName)) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "This server OWNS the HA lock row as expected");
+                    lockSuccess = true;
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "ANOTHER server OWNS the lock row - we need to mark the log as failed");
-                    Tr.audit(tc, "WTRN0100E: " +
-                                 "Another server owns the log cannot force SQL RecoveryLog " + _logName + " for server " + _serverName);
-                    InternalLogException ile = new InternalLogException("Another server has locked the HA lock row", null);
-                    markFailed(ile);
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "takeHADBLock", "InternalLogException");
-                    throw ile;
+
+                    // How we react depends on whether we are closing the home server or a peer. In the peer case a home
+                    // server may have re-acquired its logs
+                    if (_useNewLockingScheme && !_isHomeServer) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
+                    } else {
+                        Tr.audit(tc, "WTRN0100E: " +
+                                     "Another server owns the log cannot force SQL RecoveryLog " + _logName + " for server " + _serverName);
+
+                        InternalLogException ile = new InternalLogException("Another server has locked the HA lock row", null);
+                        markFailed(ile);
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "takeHADBLock", "InternalLogException");
+                        throw ile;
+                    }
                 }
             } else {
                 // We didn't find the HA Lock row in the table, mark the log as failed
@@ -2427,8 +2442,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (lockingStmt != null && !lockingStmt.isClosed())
                 lockingStmt.close();
         }
+
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "takeHADBLock");
+            Tr.exit(tc, "takeHADBLock", Boolean.valueOf(lockSuccess));
+        return lockSuccess;
     }
 
     //------------------------------------------------------------------------------
@@ -3065,9 +3082,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     //------------------------------------------------------------------------------
     // Method: SQLMultiScopeRecoveryLog.serverStopping
     //------------------------------------------------------------------------------
-    /**
-     * Signals to the Recovery Log that the server is stopping.
-     */
+    @Override
     public synchronized void serverStopping() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "serverStopping ", new Object[] { this });
@@ -3814,7 +3829,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (nonTransientException == null) {
                         // In this case we will retry if we are operating in an HA DB environment
                         HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
-                        sqlSuccess = heartbeatRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _transientRetryAttempts, _transientRetrySleepTime);
+                        sqlSuccess = heartbeatRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS,
+                                                                   LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME);
                     } else {
                         // Exception not able to be retried
                         Tr.debug(tc, "Cannot recover from Exception when heartbeating for server " + _serverName + " Exception: "
@@ -4241,7 +4257,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (nonTransientException == null) {
                     // In this case we will retry if we are operating in an HA DB environment
                     ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
-                    sqlSuccess = claimPeerRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _transientRetryAttempts, _transientRetrySleepTime);
+                    sqlSuccess = claimPeerRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS,
+                                                               LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME);
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
                         isClaimed = claimPeerRetry.isClaimed();
@@ -4364,9 +4381,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
-            takeHADBLock(conn);
+            // This will confirm that this server owns this log and will invalidate the log if not.
+            boolean lockSuccess = takeHADBLock(conn);
 
-            executeBatchStatements(conn);
+            if (lockSuccess) {
+                // We can go ahead and write to the Database
+                executeBatchStatements(conn);
+            }
         }
 
         @Override

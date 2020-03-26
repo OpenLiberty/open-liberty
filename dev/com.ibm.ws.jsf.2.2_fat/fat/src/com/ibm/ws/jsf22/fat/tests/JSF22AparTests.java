@@ -1017,6 +1017,9 @@ public class JSF22AparTests {
     @Test
     public void testPI90507NonBindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {
+            // Set up search mark and restart the app so that we can check to see if preDestroy is called
+            jsfAparServer.setMarkToEndOfLog();
+            jsfAparServer.restartDropinsApplication("PI90507.war");
 
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI90507", "actionListenerNonBinding.xhtml");
 
@@ -1032,18 +1035,15 @@ public class JSF22AparTests {
             submitButton.click();
 
             // Verify that PostConstruct is called
-            assertTrue("PostConstruct was not called",
-                       jsfAparServer.findStringsInLogs("Post construct from TestActionListener").size() == 1);
-
-            // Restart the app so that preDestory gets called;
-            // make sure we reset log offsets correctly
-            jsfAparServer.setMarkToEndOfLog();
-            jsfAparServer.restartDropinsApplication("PI90507.war");
-            jsfAparServer.resetLogOffsets();
+            assertNotNull("PostConstruct was not called",
+                       jsfAparServer.waitForStringInLogUsingMark("Post construct from TestActionListener"));
 
             // Verify that PreDestroy is not being called
             assertTrue("PreDestroy was called",
                        jsfAparServer.findStringsInLogs("Pre destroy from TestActionListener").size() == 0);
+
+            // clean up the log marks
+            jsfAparServer.resetLogMarks();
         }
     }
 
@@ -1061,6 +1061,9 @@ public class JSF22AparTests {
     @Test
     public void testPI90507BindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {
+            // Set up search mark and restart the app so that we can check to see if preDestroy is called
+            jsfAparServer.setMarkToEndOfLog();
+            jsfAparServer.restartDropinsApplication("PI90507.war");
 
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI90507", "actionListenerBinding.xhtml");
 
@@ -1077,17 +1080,14 @@ public class JSF22AparTests {
 
             // Verify that PostConstruct is called
             assertNotNull("PostConstruct was not called",
-                          jsfAparServer.waitForStringInLogUsingMark("Post construct from TestActionListener"));
-
-            // Restart the app so that preDestory gets called;
-            // make sure we reset log offsets correctly
-            jsfAparServer.setMarkToEndOfLog();
-            jsfAparServer.restartDropinsApplication("PI90507.war");
-            jsfAparServer.resetLogOffsets();
+                       jsfAparServer.waitForStringInLogUsingMark("Post construct from TestActionListener"));
 
             // Verify that PreDestroy is not being called
             assertTrue("PreDestroy was called",
                        jsfAparServer.findStringsInLogs("Pre destroy from TestActionListener").size() == 0);
+
+            // clean up the log marks
+            jsfAparServer.resetLogMarks();
         }
     }
 
