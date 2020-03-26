@@ -31,10 +31,12 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
+import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.http2.Http2ConnectionHandler;
 import com.ibm.ws.http2.Http2Consumers;
 import com.ibm.ws.http2.Http2StreamHandler;
@@ -43,6 +45,7 @@ import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  *
@@ -118,9 +121,43 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                         break;
                     }
                 }
+            } else if (GrpcServletServices.getServletGrpcServices() != null) {
+
+                HashMap<String, String> servicePaths = GrpcServletServices.getServletGrpcServices();
+                if (servicePaths != null) {
+                    routeGrpcServletRequest(servicePaths);
+                }
             }
         }
         super.ready(inVC);
+    }
+
+    /**
+     * Existing gRPC clients don't know anything about application context roots. For example, a request
+     * might come in to "/helloworld.Greeter/SayHello"; so as a convenience, we will automatically append
+     * the correct application context root to the request. For this example, the URL will change from
+     * "/helloworld.Greeter/SayHello" -> "/app_context_root/helloworld.Greeter/SayHello"
+     */
+    private void routeGrpcServletRequest(HashMap<String, String> servicePaths) {
+        String requestContentType = getContentType().toLowerCase();
+        if ("application/grpc".equalsIgnoreCase(requestContentType)) {
+
+            String currentURL = this.pseudoHeaders.get(HpackConstants.PATH);
+
+            String searchURL = currentURL;
+            searchURL = searchURL.substring(1);
+            int index = searchURL.lastIndexOf('/');
+            searchURL = searchURL.substring(0, index);
+
+            String contextRoot = servicePaths.get(searchURL);
+
+            if (contextRoot != null && !!!"/".equals(contextRoot)) {
+                String newPath = contextRoot + currentURL;
+                this.pseudoHeaders.put(HpackConstants.PATH, newPath);
+                Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+            }
+            Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
+        }
     }
 
     /**
@@ -525,7 +562,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
     private String getContentType() {
         for (H2HeaderField header : this.headers) {
-            if (header.getName().equalsIgnoreCase("Content-Type")) {
+            if (header.getName().equalsIgnoreCase(HttpHeaderKeys.HDR_CONTENT_TYPE.getName())) {
                 return header.getValue();
             }
         }

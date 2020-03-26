@@ -24,6 +24,7 @@ import static java.util.logging.Level.FINEST;
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.grpc.servlet.GrpcServletUtils;
 
 import io.grpc.Attributes;
 import io.grpc.ExperimentalApi;
@@ -37,6 +38,7 @@ import io.grpc.internal.GrpcUtil;
 import io.grpc.internal.ReadableBuffers;
 import io.grpc.internal.ServerTransportListener;
 import io.grpc.internal.StatsTraceContext;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -123,6 +125,14 @@ public final class ServletAdapter {
     AsyncContext asyncCtx = req.startAsync(req, resp);
 
     String method = req.getRequestURI().substring(1); // remove the leading "/"
+
+    // Liberty change: remove application context root from path 
+    method = GrpcServletUtils.translateLibertyPath(method);
+
+    if (logger.isLoggable(FINEST)) {
+        logger.log(FINE, "Liberty inbound gRPC request path translated to {0}" + method);
+    }
+
     Metadata headers = getHeaders(req);
 
     if (logger.isLoggable(FINEST)) {

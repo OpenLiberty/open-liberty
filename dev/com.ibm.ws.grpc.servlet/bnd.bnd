@@ -46,6 +46,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
   com.ibm.ws.anno;version=latest,\
   com.ibm.ws.logging.core,\
   com.ibm.ws.grpc.common.1.0;version=latest,\
+  com.ibm.ws.transport.http;version=latest,\
   com.ibm.ws.webcontainer,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:guava;version=27.0.1
