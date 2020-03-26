@@ -395,6 +395,7 @@ public class OAuth20EndpointServices {
             throw new OidcServerException("403", OIDCConstants.ERROR_ACCESS_DENIED, HttpServletResponse.SC_FORBIDDEN);
         }
         return true;
+
     }
 
     void serveClientMetatypeRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

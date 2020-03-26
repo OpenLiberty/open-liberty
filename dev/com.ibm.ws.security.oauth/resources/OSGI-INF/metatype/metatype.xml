@@ -371,7 +371,7 @@
            
            <AD id="allowRegexpRedirects" name="%allowRegexpRedirects" description="%allowRegexpRedirects.desc" required="false" type="Boolean" default="false"/>
              
-           <AD id="trustedUriPrefixes" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647"/>
+           <AD id="trustedUriPrefixes" name="%trustedUriPrefixes" description="%trustedUriPrefixes.desc" required="false" type="String" cardinality="2147483647"/>
            
            <AD id="resourceIds" name="%resourceIds" description="%resourceIds.desc" required="false" type="String" cardinality="2147483647"/>
            
