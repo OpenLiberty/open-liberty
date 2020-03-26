@@ -259,6 +259,7 @@
         </AD>
         <!--  this is fixing a corner bug and has to be behind a property to protect existing users.  -->
         <AD id="ropcPreferUserSecurityName" name="%ropcPreferUserSecurityName" description="%ropcPreferUserSecurityName.desc" required="false" type="Boolean"  default="false"/>
+        <AD id="trackRelyingParties" name="internal" description="internal use only" required="false" type="Boolean" default="false" />
     </OCD>
    <!--   
     <Designate factoryPid="com.ibm.ws.security.oauth20.provider.config">

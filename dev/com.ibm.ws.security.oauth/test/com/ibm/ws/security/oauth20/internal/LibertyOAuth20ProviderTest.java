@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -652,6 +652,7 @@ public class LibertyOAuth20ProviderTest {
         properties.put(LibertyOAuth20Provider.KEY_APP_TOKEN_OR_PASSWORD_LIMIT, 100L);
         properties.put(LibertyOAuth20Provider.KEY_STORE_ACCESSTOKEN_ENCODING, "plain");
         properties.put(LibertyOAuth20Provider.KEY_ROPC_PREFER_USERSECURITYNAME, Boolean.FALSE);
+        properties.put(LibertyOAuth20Provider.KEY_TRACK_RELYING_PARTIES, Boolean.FALSE);
 
         return properties;
     }
