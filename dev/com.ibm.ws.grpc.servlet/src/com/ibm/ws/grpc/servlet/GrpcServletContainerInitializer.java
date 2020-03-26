@@ -2,6 +2,7 @@ package com.ibm.ws.grpc.servlet;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,44 +40,35 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	private static final Logger logger = Logger.getLogger(GrpcServletContainerInitializer.class.getName());
 
 	private static ConcurrentHashMap<String, Set<String>> grpcServiceClassNames;
+	GrpcServlet grpcServlet;
 
 	/**
 	 * Search for all implementors of io.grpc.BindableService and register them with
 	 * the Liberty gRPC server
 	 */
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void onStartup(Set<Class<?>> ctx, ServletContext sc) throws ServletException {
 
 		if (grpcServiceClassNames != null) {
-			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup", "Attempting to load gRPC services for app " + sc.getServletContextName());
-
-			Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
+			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
+					"Attempting to load gRPC services for app " + sc.getServletContextName());
 
 			// TODO: optionally load classes with CDI to allow injection in service classes
 			// init all other BindableService classes via reflection
-			Set<String> services = grpcServiceClassNames.get(((WebApp)sc).getApplicationName());
+			Set<String> services = grpcServiceClassNames.get(((WebApp) sc).getApplicationName());
 			if (services != null) {
+				Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
 				for (String serviceClassName : services) {
-					try {
-						// use the TCCL to load app classes
-						ClassLoader cl = Thread.currentThread().getContextClassLoader();
-						Class serviceClass = Class.forName(serviceClassName, true, cl);
-						// get the no-arg constructor and ensure it's accessible
-						Constructor ctor = serviceClass.getDeclaredConstructor();
-						ctor.setAccessible(true);
-						BindableService service = (BindableService) ctor.newInstance();
+					BindableService service = newServiceInstanceFromClassName(serviceClassName);
+					if (service != null) {
 						grpcServiceClasses.put(serviceClassName, service);
-					} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-							| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						// FFDC
 					}
 				}
 				if (!grpcServiceClasses.isEmpty()) {
 					// pass all of our grpc service implementors into a new GrpcServlet
 					// and register that new Servlet on this context
-					ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet",
-							new GrpcServlet(new ArrayList(grpcServiceClasses.values())));
+					grpcServlet = new GrpcServlet(new ArrayList<BindableService>(grpcServiceClasses.values()));
+					ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet", grpcServlet);
 					servletRegistration.setAsyncSupported(true);
 
 					// register URL mappings for each gRPC service we've registered
@@ -84,14 +76,44 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 						String serviceName = service.bindService().getServiceDescriptor().getName();
 						String urlPattern = "/" + serviceName + "/*";
 						servletRegistration.addMapping(urlPattern);
-						Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup", "Registered gRPC service at URL: " + urlPattern);
+						Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup",
+								"Registered gRPC service at URL: " + urlPattern);
 					}
+					return;
 				}
-			} else {
-				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
-						"No gRPC services have been registered for app " + sc.getServletContextName());
 			}
 		}
+		Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
+				"No gRPC services have been registered for app " + sc.getServletContextName());
+	}
+
+	/**
+	 * Create a new io.grpc.BindableService from a class name
+	 * 
+	 * @param String classname of the io.grpc.BindableService
+	 * @return BindableService or null if the class could not be initialized
+	 */
+	private BindableService newServiceInstanceFromClassName(String serviceClassName) {
+		try {
+			// use the TCCL to load app classes
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			Class<?> serviceClass = Class.forName(serviceClassName, true, cl);
+			// don't init the class if it's abstract
+			if (!Modifier.isAbstract(serviceClass.getModifiers())) {
+				// get the no-arg constructor and ensure it's accessible
+				Constructor<?> ctor = serviceClass.getDeclaredConstructor();
+				ctor.setAccessible(true);
+				BindableService service = (BindableService) ctor.newInstance();
+				return service;
+			}
+		} catch (InvocationTargetException | ClassNotFoundException | NoSuchMethodException | SecurityException
+				| InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+			// FFDC
+			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
+					"The following class extended io.grpc.BindableService but could not be loaded: " + serviceClassName
+							+ " due to " + e);
+		}
+		return null;
 	}
 
 	/**
@@ -105,10 +127,8 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 			WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(appInfo.getContainer());
 			AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
 			Set<String> services = annoTargets.getAllImplementorsOf("io.grpc.BindableService");
-			
+
 			if (services != null && !services.isEmpty()) {
-				// TODO: we'll ignore inner classes for now, but this should be revisited
-				services.removeIf((String s) -> s.contains("$"));
 				if (!services.isEmpty()) {
 					if (grpcServiceClassNames == null) {
 						grpcServiceClassNames = new ConcurrentHashMap<String, Set<String>>();
@@ -133,6 +153,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	@Override
 	public void applicationStopping(ApplicationInfo appInfo) {
 		grpcServiceClassNames = null;
+		grpcServlet = null;
 	}
 
 	@Override

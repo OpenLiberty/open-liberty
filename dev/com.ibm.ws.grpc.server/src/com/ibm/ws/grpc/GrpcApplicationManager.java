@@ -12,6 +12,9 @@
 package com.ibm.ws.grpc;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -122,9 +125,6 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 			WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(appInfo.getContainer());
 			AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
 			Set<String> serviceClassNames = annoTargets.getAllImplementorsOf(BINDABLE_SERVICE_INTERFACE);
-			
-			// TODO: we'll ignore inner classes for now, but this should be revisited
-			serviceClassNames.removeIf((String s) -> s.contains("$"));
 			return serviceClassNames;
 		} catch (UnableToAdaptException e) {
 			// FFDC
@@ -139,7 +139,6 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 	 * @param Set<String> grpcServiceClassNames 
 	 * @return Set<BindableService> the set of BindableServices for this application
 	 */
-	@SuppressWarnings("unchecked")
 	private Set<BindableService> initGrpcServices(ApplicationInfo appInfo, Set<String> grpcServiceClassNames) {
 
 		if (grpcServiceClassNames != null && !grpcServiceClassNames.isEmpty()) {
@@ -150,7 +149,6 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 			for (String service : grpcServiceClassNames) {
 				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "initGrpcServices", service);
 			}
-			
 			try {
 				ClassLoader cl = null;
 				NonPersistentCache overlayCache = appInfo.getContainer().adapt(NonPersistentCache.class);
@@ -158,19 +156,10 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 				if (moduleInfo != null) {
 					cl = moduleInfo.getClassLoader();
 				}
-
 				for (String serviceClassName : grpcServiceClassNames) {
-
-					BindableService s = null;
-					Class<BindableService> bindableServiceInstance = null;
-					try {
-						bindableServiceInstance = (Class<BindableService>) Class.forName(serviceClassName, false, cl);
-						s = (BindableService) bindableServiceInstance.newInstance();
+					BindableService s = newServiceInstanceFromClassName(cl, serviceClassName);
+					if (s != null) {
 						services.add(s);
-					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException
-							| ClassNotFoundException e) {
-						Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "initGrpcServices",
-								"caught " + e.getClass().getName() + " attempting to load class " + serviceClassName, e);
 					}
 				}
 				return services;
@@ -181,4 +170,33 @@ public class GrpcApplicationManager implements ApplicationStateListener {
 		}
 		return null;
 	}
+
+	/**
+	 * Create a new io.grpc.BindableService from a class name
+	 *
+	 * @param ClassLoader
+	 * @param String classname of the io.grpc.BindableService
+	 * @return BindableService or null if the class could not be initialized
+	 */
+	private BindableService newServiceInstanceFromClassName(ClassLoader loader, String serviceClassName) {
+		try {
+			Class<?> serviceClass = Class.forName(serviceClassName, true, loader);
+			// don't init the class if it's abstract
+			if (!Modifier.isAbstract(serviceClass.getModifiers())) {
+				// get the no-arg constructor and ensure it's accessible
+				Constructor<?> ctor = serviceClass.getDeclaredConstructor();
+				ctor.setAccessible(true);
+				BindableService service = (BindableService) ctor.newInstance();
+				return service;
+			}
+		} catch (InvocationTargetException | ClassNotFoundException | NoSuchMethodException | SecurityException
+				| InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+			// FFDC
+			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
+					"The following class extended io.grpc.BindableService but could not be loaded: " + serviceClassName
+							+ " due to " + e);
+		}
+		return null;
+	}
+
 }
