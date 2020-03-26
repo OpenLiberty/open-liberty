@@ -12,6 +12,8 @@ package com.ibm.websphere.simplicity;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -35,6 +37,16 @@ import componenttest.topology.impl.LibertyServer;
  * Helper utilities for working with the ShrinkWrap APIs.
  */
 public class ShrinkHelper {
+
+    private static final Set<File> exportedArchives = new HashSet<>();
+
+    public static void cleanAllExportedArchives() {
+        for (File exportedArchive : exportedArchives) {
+            Log.info(ShrinkHelper.class, "cleanAllExportedArchives", "Deleting arhive at: " + exportedArchive.getAbsolutePath());
+            exportedArchive.delete();
+        }
+        exportedArchives.clear();
+    }
 
     public static enum DeployOptions {
         /**
@@ -187,6 +199,7 @@ public class ShrinkHelper {
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite) {
         Log.info(c, "exportArtifact", "Exporting shrinkwrap artifact: " + a.toString() + " to " + dest);
         File outputFile = new File(dest, a.getName());
+        exportedArchives.add(outputFile);
         if (outputFile.exists() && !overWrite) {
             Log.info(ShrinkHelper.class, "exportArtifact", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
             if (JakartaEE9Action.isActive()) {
