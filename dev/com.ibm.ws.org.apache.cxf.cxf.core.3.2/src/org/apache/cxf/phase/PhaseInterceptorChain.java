@@ -50,6 +50,8 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.transport.MessageObserver;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 /**
  * A PhaseInterceptorChain orders Interceptors according to the phase they
  * participate in and also according to the before & after properties on an
@@ -287,6 +289,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
+    @FFDCIgnore({SuspendedInvocationException.class})
     public synchronized boolean doIntercept(Message message) {
         updateIterator();
 
