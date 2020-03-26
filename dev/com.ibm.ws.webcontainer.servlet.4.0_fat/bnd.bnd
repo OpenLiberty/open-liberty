@@ -28,7 +28,7 @@ src: \
 	
 fat.project: true
 
-
+tested.features: servlet-5.0
 
 -buildpath:\
     com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\

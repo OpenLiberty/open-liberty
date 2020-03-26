@@ -15,16 +15,22 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.jakarta.transformer.JakartaTransformer;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FileUtils;
 
 /**
  * Test repeat action that will do 2 things:
@@ -144,18 +150,14 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     @Override
     public void setup() throws Exception {
-//        // Transform apps
-//        Set<Path> paths = Files.walk(Paths.get("publish"))
-//                        .collect(Collectors.toSet());
-//        paths.removeIf(appPath -> {
-//            return !appPath.getFileName().toString().endsWith(".war") &&
-//                   !appPath.getFileName().toString().endsWith(".ear");
-//        });
-//        if (selectPathsFunction != null) {
-//            selectPathsFunction.apply(paths);
-//        }
-//        for (Path p : paths)
-//            transformApp(p);
+        // Ensure all shared servers are stopped and applications are cleaned
+        LibertyServerFactory.tidyAllKnownServers(SharedServer.class.getCanonicalName());
+        LibertyServerFactory.recoverAllServers(SharedServer.class.getCanonicalName());
+        for (LibertyServer server : LibertyServerFactory.getKnownLibertyServers(SharedServer.class.getCanonicalName())) {
+            Path rootPath = Paths.get(server.getServerRoot());
+            FileUtils.recursiveDelete(rootPath.toFile());
+        }
+        ShrinkHelper.cleanAllExportedArchives();
 
         // Transform server.xml's
         super.setup();
@@ -187,8 +189,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         try {
             Class.forName("com.ibm.ws.jakarta.transformer.JakartaTransformer");
         } catch (Throwable e) {
-            throw new RuntimeException("Unable to load the JakartaTransformer class. " +
-                                       "Did you remember to include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FATs build.gradle file?");
+            String mesg = "Unable to load the com.ibm.ws.jakarta.transformer.JakartaTransformer class. " +
+                          "Did you remember to include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FATs build.gradle file?";
+            Log.error(c, m, e, mesg);
+            throw new RuntimeException(mesg, e);
         }
 
         Path outputPath = appPath.resolveSibling(appPath.getFileName() + ".jakarta");
