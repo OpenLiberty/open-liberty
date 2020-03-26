@@ -120,7 +120,7 @@ public class DatabaseContainerFactory {
 					cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
 					break;
 	            case Oracle:          	
-	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("oracleinanutshell/oracle-xe-11g");
+	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("kyleaure/oracle-18.4.0-xe-prebuilt:1.0");
 	                break;
 	            case Postgres:
 	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();

@@ -12,7 +12,6 @@ package com.ibm.ws.jdbc.fat.oracle;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -31,7 +30,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 public class FATSuite {
 	
     //TODO replace this container with the official oracle-xe container if/when it is available without a license
-    static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g").withLogConsumer(FATSuite::log);
+    static OracleContainer oracle = new OracleContainer("kyleaure/oracle-18.4.0-xe-prebuilt:1.0").withLogConsumer(FATSuite::log);
     
     private static void log(OutputFrame frame) {
         String msg = frame.getUtf8String();
