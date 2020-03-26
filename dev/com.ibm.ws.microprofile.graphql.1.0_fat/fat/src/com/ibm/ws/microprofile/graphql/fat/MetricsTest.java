@@ -29,10 +29,6 @@ import mpGraphQL10.metrics.MetricsTestServlet;
 @RunWith(FATRunner.class)
 public class MetricsTest extends FATServletClient {
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction("mpMetrics-1.1", "mpMetrics-2.0"));
-
     private static final String SERVER = "mpGraphQL10.metrics";
     private static final String APP_NAME = "metricsApp";
 

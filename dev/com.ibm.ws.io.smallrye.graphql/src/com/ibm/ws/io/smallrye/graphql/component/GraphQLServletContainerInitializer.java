@@ -32,7 +32,6 @@ import io.smallrye.graphql.execution.ExecutionService;
 import io.smallrye.graphql.execution.GraphQLConfig;
 import io.smallrye.graphql.servlet.SmallRyeGraphQLExecutionServlet;
 import io.smallrye.graphql.servlet.SmallRyeGraphQLSchemaServlet;
-//import io.smallrye.graphql.servlet.StartupListener;
 
 import org.osgi.service.component.annotations.Component;
 import org.jboss.jandex.IndexView;

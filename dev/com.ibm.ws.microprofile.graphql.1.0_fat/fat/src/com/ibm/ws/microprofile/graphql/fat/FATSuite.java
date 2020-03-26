@@ -20,7 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 BasicQueryTest.class,
                 BasicQueryWithConfigTest.class,
                 DefaultValueTest.class,
-                DeprecationTest.class,
+                //DeprecationTest.class, // Deprecation behavior was removed from the 1.0 spec
                 GraphQLInterfaceTest.class,
                 IfaceTest.class,
                 IgnoreTest.class,

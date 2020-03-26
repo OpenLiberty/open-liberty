@@ -2,9 +2,7 @@ package com.ibm.ws.io.smallrye.graphql.component;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -17,14 +15,12 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
 
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-
-import io.smallrye.graphql.execution.ExecutionService;
-import io.smallrye.graphql.execution.GraphQLConfig;
-import io.smallrye.graphql.servlet.SmallRyeGraphQLExecutionServlet;
 
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.osgi.service.component.annotations.Component;
@@ -42,6 +38,14 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension {
     static Map<ClassLoader, BeanManager> beanManagers = new WeakHashMap<>();
 
     static Map<ClassLoader, Set<Bean<?>>> graphQLApiBeans = new WeakHashMap<>();
+
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
+        //register the tracing interceptor binding and the interceptor itself
+        AnnotatedType<GraphQLApi> bindingType = beanManager.createAnnotatedType(GraphQLApi.class);
+        beforeBeanDiscovery.addInterceptorBinding(bindingType);
+        AnnotatedType<TracingInterceptor> interceptorType = beanManager.createAnnotatedType(TracingInterceptor.class);
+        beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
+    }
 
     public <X> void detectGraphQLComponent(@Observes ProcessBean<X> event, BeanManager beanManager) {
         Annotated annotated = event.getAnnotated();
