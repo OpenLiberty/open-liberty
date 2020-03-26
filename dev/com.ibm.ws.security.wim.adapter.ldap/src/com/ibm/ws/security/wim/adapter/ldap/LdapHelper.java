@@ -279,8 +279,8 @@ public class LdapHelper {
             e.getMessage();
             DN = DN.trim();
             int pos1 = DN.indexOf(',');
-            if (DN.charAt(pos1 - 1) == '\\') {
-                pos1 = DN.indexOf(pos1, ',');
+            while (DN.charAt(pos1 - 1) == '\\') {
+                pos1 = DN.indexOf(',', pos1 + 1);
             }
             if (pos1 > -1) {
                 RDN = DN.substring(0, pos1).trim();
