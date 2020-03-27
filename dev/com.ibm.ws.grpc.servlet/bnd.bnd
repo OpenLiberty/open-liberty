@@ -50,3 +50,15 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
   com.ibm.ws.webcontainer,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:guava;version=27.0.1
+
+-testpath: \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+    org.jmock:jmock;strategy=exact;version=2.5.1, \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest, \
+    cglib:cglib-nodep;version=3.3.0, \
+    org.jmock:jmock-legacy;version=2.5.0, \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+    com.ibm.ws.logging;version=latest, \
+    com.ibm.ws.kernel.boot;version=latest
