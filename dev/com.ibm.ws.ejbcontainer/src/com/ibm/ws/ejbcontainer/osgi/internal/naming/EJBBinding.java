@@ -38,7 +38,7 @@ public class EJBBinding {
         this.isLocal = local;
     }
 
-    boolean isHome() {
+    public boolean isHome() {
         return interfaceIndex == -1;
     }
 
