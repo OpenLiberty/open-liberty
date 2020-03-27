@@ -117,7 +117,10 @@ public class PersistentExecutorConfigUpdateTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-        	server.stopServer("CWNEN1000E");
+            server.stopServer(
+                    "CWNEN1000E",
+                    "CWWKC1556W" // Execution of tasks deferred during config update
+                    );
         }
     }
 
