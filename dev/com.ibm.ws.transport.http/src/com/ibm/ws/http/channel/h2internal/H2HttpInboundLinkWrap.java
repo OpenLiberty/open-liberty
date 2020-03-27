@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -123,7 +124,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 }
             } else if (GrpcServletServices.getServletGrpcServices() != null) {
 
-                HashMap<String, String> servicePaths = GrpcServletServices.getServletGrpcServices();
+                Map<String, String> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null) {
                     routeGrpcServletRequest(servicePaths);
                 }
@@ -138,7 +139,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      * the correct application context root to the request. For this example, the URL will change from
      * "/helloworld.Greeter/SayHello" -> "/app_context_root/helloworld.Greeter/SayHello"
      */
-    private void routeGrpcServletRequest(HashMap<String, String> servicePaths) {
+    private void routeGrpcServletRequest(Map<String, String> servicePaths) {
         String requestContentType = getContentType().toLowerCase();
         if ("application/grpc".equalsIgnoreCase(requestContentType)) {
 
