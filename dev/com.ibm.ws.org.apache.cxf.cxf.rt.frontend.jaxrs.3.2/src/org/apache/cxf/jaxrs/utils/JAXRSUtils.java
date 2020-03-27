@@ -1159,7 +1159,7 @@ public final class JAXRSUtils {
     public static Message getContextMessage(Message m) {
 
         Message contextMessage = m.getExchange() != null ? m.getExchange().getInMessage() : m;
-        if (contextMessage == null && !PropertyUtils.isTrue(m.get(Message.INBOUND_MESSAGE))) {
+        if (contextMessage == null && !PropertyUtils.isTrue(((MessageImpl) m).getInboundMessage())) {
             contextMessage = m;
         }
         return contextMessage;

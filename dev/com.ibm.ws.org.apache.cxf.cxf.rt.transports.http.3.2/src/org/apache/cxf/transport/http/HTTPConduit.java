@@ -714,20 +714,20 @@ public abstract class HTTPConduit
      */
     private Address setupAddress(Message m) throws URISyntaxException {
         MessageImpl message = (MessageImpl) m;
-        String result = (String)message.get(Message.ENDPOINT_ADDRESS);
+        String result = (String)message.getEndpointAddress();
         String pathInfo = (String)message.getPathInfo();
         String queryString = (String) message.getQueryString();
         setAndGetDefaultAddress();
         if (result == null) {
             if (pathInfo == null && queryString == null) {
                 if (defaultAddress != null) {
-                    message.put(Message.ENDPOINT_ADDRESS, defaultAddress.getString());
+                    message.setEndpointAddress(defaultAddress.getString());
                 }
                 return defaultAddress;
             }
             if (defaultAddress != null) {
                 result = defaultAddress.getString();
-                message.put(Message.ENDPOINT_ADDRESS, result);
+                message.setEndpointAddress(result);
             }
         }
 

@@ -493,6 +493,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
     }
 
     @SuppressWarnings("unchecked")
+    @FFDCIgnore({RuntimeException.class})
     public void unwind(Message message) {
         while (iterator.hasPrevious()) {
             Interceptor<Message> currentInterceptor = (Interceptor<Message>)iterator.previous();

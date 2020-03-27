@@ -586,10 +586,10 @@ public final class HttpUtils {
                 address = property != null ? property.toString() : ((AbstractHTTPDestination) d).getEndpointInfo().getAddress();
                 //Liberty code change end
             } else {
-                address = m.containsKey(Message.BASE_PATH) ? (String) ((MessageImpl) m).getBasePath() : d.getAddress().getAddress().getValue();
+                address = ((MessageImpl) m).containsBasePath() ? (String) ((MessageImpl) m).getBasePath() : d.getAddress().getAddress().getValue();
             }
         } else {
-            address = (String) m.get(Message.ENDPOINT_ADDRESS);
+            address = (String) ((MessageImpl) m).getEndpointAddress();
         }
         if (address.startsWith("http") && address.endsWith("//")) {
             address = address.substring(0, address.length() - 1);

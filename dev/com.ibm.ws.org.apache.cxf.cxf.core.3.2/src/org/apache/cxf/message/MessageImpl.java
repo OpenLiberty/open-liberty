@@ -19,6 +19,7 @@
 
 package org.apache.cxf.message;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -103,6 +104,8 @@ public class MessageImpl extends StringMapImpl implements Message {
     private Object requestorRole = NOT_FOUND;
     private Object partialResponse = NOT_FOUND;
     private Object emptyPartialResponse = NOT_FOUND;
+    private Object endpointAddress = NOT_FOUND;
+    private Object inboundMessage = NOT_FOUND;
     
     private static final String REQUEST_PATH_TO_MATCH_SLASH = "path_to_match_slash";
     private static final String TEMPLATE_PARAMETERS = "jaxrs.template.parameters";
@@ -170,6 +173,8 @@ public class MessageImpl extends StringMapImpl implements Message {
         keys.add(REQUESTOR_ROLE);
         keys.add(PARTIAL_RESPONSE_MESSAGE);
         keys.add(EMPTY_PARTIAL_RESPONSE_MESSAGE);
+        keys.add(ENDPOINT_ADDRESS);
+        keys.add(INBOUND_MESSAGE);
         KEYS = Collections.unmodifiableSet(keys);
     }
 
@@ -230,250 +235,6 @@ public class MessageImpl extends StringMapImpl implements Message {
     @SuppressWarnings("rawtypes")
     public void setProtocolHeaders(Map protoHeaders) {
         this.protoHeaders = protoHeaders;
-    }
-
-    public Object getOperationResourceInfoStack() {
-        return opStack == NOT_FOUND ? null: opStack;
-    }
-    
-    public void setOperationResourceInfoStack(Object opStack) {
-        this.opStack = opStack;
-    }
-
-    public String getContentType() {
-        return contentType == NOT_FOUND ? null : (String) contentType;
-    }
-    
-    public boolean containsContentType() {
-        return contentType == NOT_FOUND ? false : true;
-    }
-    
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public Object getHttpRequest() {
-        return httpRequest == NOT_FOUND ? null : httpRequest;
-    }
-    
-    public boolean containsHttpRequest() {
-        return httpRequest == NOT_FOUND ? false : true;
-    }
-    
-    public void setHttpRequest(Object httpRequest) {
-        this.httpRequest = httpRequest;
-    }
-    
-    public Object getHttpResponse() {
-        return httpResponse == NOT_FOUND ? null : httpResponse;
-    }
-    
-    public void setHttpResponse(Object httpResponse) {
-        this.httpResponse = httpResponse;
-    }
-
-    public Object getAccept() {
-        return accept == NOT_FOUND ? null : accept;
-    }
-    
-    public void setAccept(Object accept) {
-        this.accept = accept;
-    }
-
-    public Object getContinuationProvider() {
-        return continuationProvider == NOT_FOUND ? null : continuationProvider;
-    }
-    
-    public void setContinuationProvider(Object continuationProvider) {
-        this.continuationProvider = continuationProvider;
-    }
-
-    public Object getWsdlDescription() {
-        return wsdlDescription == NOT_FOUND ? null : wsdlDescription;
-    }
-    
-    public void setWsdlDescription(Object wsdlDescription) {
-        this.wsdlDescription = wsdlDescription;
-    }
-
-    public Object getWsdlInterface() {
-        return wsdlInterface == NOT_FOUND ? null : wsdlInterface;
-    }
-    
-    public void setWsdlInterface(Object wsdlInterface) {
-        this.wsdlInterface = wsdlInterface;
-    }
-
-    public Object getWsdlOperation() {
-        return wsdlOperation == NOT_FOUND ? null : wsdlOperation;
-    }
-    
-    public void setWsdlOperation(Object wsdlOperation) {
-        this.wsdlOperation = wsdlOperation;
-    }
-
-    public Object getWsdlPort() {
-        return wsdlPort == NOT_FOUND ? null : wsdlPort;
-    }
-    
-    public void setWsdlPort(Object wsdlPort) {
-        this.wsdlPort = wsdlPort;
-    }
-
-    public Object getWsdlService() {
-        return wsdlService == NOT_FOUND ? null : wsdlService;
-    }
-    
-    public void setWsdlService(Object wsdlService) {
-        this.wsdlService = wsdlService;
-    }
-
-    public Object getRequestUrl() {
-        return requestUrl == NOT_FOUND ? null : requestUrl;
-    }
-    
-    public void setRequestUrl(Object requestUrl) {
-        this.requestUrl = requestUrl;
-    }
-
-    public Object getRequestUri() {
-        return requestUri == NOT_FOUND ? null : requestUri;
-    }
-    
-    public void setRequestUri(Object requestUri) {
-        this.requestUri = requestUri;
-    }
-    
-    public Object getPathInfo() {
-        return pathInfo == NOT_FOUND ? null : pathInfo;
-    }
-    
-    public void setPathInfo(Object pathInfo) {
-        this.pathInfo = pathInfo;
-    }
-    
-    public Object getBasePath() {
-        return basePath == NOT_FOUND ? null : basePath;
-    }
-    
-    public void setBasePath(Object basePath) {
-        this.basePath = basePath;
-    }
-
-    public Object getFixedParamOrder() {
-        return fixedParamOrder == NOT_FOUND ? null : fixedParamOrder;
-    }
-    
-    public void setFixedParamOrder(Object fixedParamOrder) {
-        this.fixedParamOrder = fixedParamOrder;
-    }
-
-    public Object getInInterceptors() {
-        return inInterceptors == NOT_FOUND ? null : inInterceptors;
-    }
-    
-    public void setInInterceptors(Object inInterceptors) {
-        this.inInterceptors = inInterceptors;
-    }
-
-    public Object getOutInterceptors() {
-        return outInterceptors == NOT_FOUND ? null : outInterceptors;
-    }
-    
-    public void setOutInterceptors(Object outInterceptors) {
-        this.outInterceptors = outInterceptors;
-    }
-
-    public Object getResponseCode() {
-        return responseCode == NOT_FOUND ? null : responseCode;
-    }
-    
-    public void setResponseCode(Object responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    public Object getEncoding() {
-        return encoding == NOT_FOUND ? null : encoding;
-    }
-    
-    public void setEncoding(Object encoding) {
-        this.encoding = encoding;
-    }
-
-    public Object getHttpContext() {
-        return httpContext == NOT_FOUND ? null : httpContext;
-    }
-    
-    public void setHttpContext(Object httpContext) {
-        this.httpContext = httpContext;
-    }
-
-    public Object getHttpConfig() {
-        return httpConfig == NOT_FOUND ? null : httpConfig;
-    }
-    
-    public void setHttpConfig(Object httpConfig) {
-        this.httpConfig = httpConfig;
-    }
-
-    public Object getHttpContextMatchStrategy() {
-        return httpContextMatchStrategy == NOT_FOUND ? null : httpContextMatchStrategy;
-    }
-    
-    public void setHttpContextMatchStrategy(Object httpContextMatchStrategy) {
-        this.httpContextMatchStrategy = httpContextMatchStrategy;
-    }
-
-    public Object getHttpBasePath() {
-        return httpBasePath == NOT_FOUND ? null : httpBasePath;
-    }
-    
-    public void setHttpBasePath(Object httpBasePath) {
-        this.httpBasePath = httpBasePath;
-    }
-
-    public Object getAsyncPostDispatch() {
-        return asyncPostDispatch == NOT_FOUND ? null : asyncPostDispatch;
-    }
-    
-    public void setAsyncPostDispatch(Object asyncPostDispatch) {
-        this.asyncPostDispatch = asyncPostDispatch;
-    }
-    
-    public Object getSecurityContext() {
-        return securityContext == NOT_FOUND ? null : securityContext;
-    }
-    
-    public void setSecurityContext(Object securityContext) {
-        this.securityContext = securityContext;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public Collection getInterceptorProviders() {
-        return interceptorProviders == NOT_FOUND ? null : (Collection) interceptorProviders;
-    }
-    
-    @SuppressWarnings("rawtypes")
-    public void setInterceptorProviders(Collection interceptorProviders) {
-        this.interceptorProviders = interceptorProviders;
-    }
-
-    public Object getTemplateParameters() {
-        return templateParameters == NOT_FOUND ? null :  templateParameters;
-    }
-    
-    public void setTemplateParameters(Object templateParameters) {
-        this.templateParameters = templateParameters;
-    }
-
-    public void removeContentType() {
-        contentType = NOT_FOUND;
-    }
-    public void removeHttpResponse() {
-        httpResponse = NOT_FOUND;
-    }
-    public void removeHttpRequest() {
-        httpRequest = NOT_FOUND;
     }
     
     @Override
@@ -628,6 +389,12 @@ public class MessageImpl extends StringMapImpl implements Message {
             } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
                 ret = emptyPartialResponse;
                 emptyPartialResponse = NOT_FOUND;
+            } else if (key == ENDPOINT_ADDRESS) {
+                ret = endpointAddress;
+                endpointAddress = NOT_FOUND;
+            } else if (key == INBOUND_MESSAGE) {
+                ret = inboundMessage;
+                inboundMessage = NOT_FOUND;
             }
 
             return ret == NOT_FOUND ? null : ret;
@@ -635,31 +402,6 @@ public class MessageImpl extends StringMapImpl implements Message {
         return super.remove(key);
     }
     
-    public String getPathToMatchSlash() {
-        return pathToMatchSlash == NOT_FOUND ? null : (String) pathToMatchSlash;
-    }
-    
-    public void setPathToMatchSlash(String pathToMatchSlash) {
-        this.pathToMatchSlash = pathToMatchSlash;
-    }
-    
-    public String getHttpRequestMethod() {
-        return httpRequestMethod == NOT_FOUND ? null : (String) httpRequestMethod;
-    }
-    
-    public void setHttpRequestMethod(String httpRequestMethod) {
-        this.httpRequestMethod = httpRequestMethod;
-    }
-    public void removePathToMatchSlash() {
-        pathToMatchSlash = NOT_FOUND;
-    }
-    public String getQueryString() {
-        return queryString == NOT_FOUND ? null : (String) queryString;
-    }
-    
-    public void setQueryString(String queryString) {
-        this.queryString = queryString;
-    }
     @Override
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> key) {
@@ -786,6 +528,10 @@ public class MessageImpl extends StringMapImpl implements Message {
                 return getPartialResponse();
             } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
                 return getEmptyPartialResponse();
+            } else if (key == ENDPOINT_ADDRESS) {
+                return getEndpointAddress();
+            } else if (key == INBOUND_MESSAGE) {
+                return getInboundMessage();
             }
         }
         
@@ -946,7 +692,12 @@ public class MessageImpl extends StringMapImpl implements Message {
             } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
                 ret = getEmptyPartialResponse();
                 setEmptyPartialResponse(value);
-
+            } else if (key == ENDPOINT_ADDRESS) {
+                ret = getEndpointAddress();
+                setEndpointAddress(value);
+            } else if (key == INBOUND_MESSAGE) {
+                ret = getInboundMessage();
+                setInboundMessage(value);
             }
             return ret == NOT_FOUND ? null : ret;
         }
@@ -1105,15 +856,228 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (emptyPartialResponse != NOT_FOUND) {
             keys.add(EMPTY_PARTIAL_RESPONSE_MESSAGE);
         }
+        if (endpointAddress != NOT_FOUND) {
+            keys.add(ENDPOINT_ADDRESS);
+        }
+        if (inboundMessage != NOT_FOUND) {
+            keys.add(INBOUND_MESSAGE);
+        }
 
         return keys;
     }
     
     @Override
     public Set<Map.Entry<String,Object>> entrySet() {
-        //JTD - how do we do this one???
         //System.out.println("***JTD: entrySet");
-        return super.entrySet();
+        Set<Map.Entry<String,Object>> entrySet = super.entrySet();
+        HashSet<Map.Entry<String,Object>> myEntrySet = new HashSet<Map.Entry<String,Object>>();
+        myEntrySet.addAll(entrySet);
+        Map.Entry<String,Object> entry;
+        if (protoHeaders != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(PROTOCOL_HEADERS, protoHeaders);
+            myEntrySet.add(entry);
+        } 
+        if (contentType != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(CONTENT_TYPE, contentType);
+            myEntrySet.add(entry);
+        }
+        if (queryString != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(QUERY_STRING, queryString);
+            myEntrySet.add(entry);
+        }
+        if (httpRequest != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AbstractHTTPDestination.HTTP_REQUEST, httpRequest);
+            myEntrySet.add(entry);
+        }
+        if (httpResponse != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AbstractHTTPDestination.HTTP_RESPONSE, httpResponse);
+            myEntrySet.add(entry);
+        }
+        if (pathToMatchSlash != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(REQUEST_PATH_TO_MATCH_SLASH, pathToMatchSlash);
+            myEntrySet.add(entry);
+        }
+        if (httpRequestMethod != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(HTTP_REQUEST_METHOD, httpRequestMethod);
+            myEntrySet.add(entry);
+        }
+        if (interceptorProviders != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(INTERCEPTOR_PROVIDERS, interceptorProviders);
+            myEntrySet.add(entry);
+        }
+        if (templateParameters != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(TEMPLATE_PARAMETERS, templateParameters);
+            myEntrySet.add(entry);
+        }
+        if (accept != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(ACCEPT_CONTENT_TYPE, accept);
+            myEntrySet.add(entry);
+        }
+        if (continuationProvider != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(CONTINUATION_PROVIDER, continuationProvider);
+            myEntrySet.add(entry);
+        }
+        if (opStack != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(OP_RES_INFO_STACK, opStack);
+            myEntrySet.add(entry);
+        }
+        if (destination != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(DESTINATION, destination);
+            myEntrySet.add(entry);
+        }
+        if (wsdlDescription != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(WSDL_DESCRIPTION, wsdlDescription);
+            myEntrySet.add(entry);
+        }
+        if (wsdlInterface != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(WSDL_INTERFACE, wsdlInterface);
+            myEntrySet.add(entry);
+        }
+        if (wsdlOperation != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(WSDL_OPERATION, wsdlOperation);
+            myEntrySet.add(entry);
+        }
+        if (wsdlPort != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(WSDL_PORT, wsdlPort);
+            myEntrySet.add(entry);
+        }
+        if (wsdlService != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(WSDL_SERVICE, wsdlService);
+            myEntrySet.add(entry);
+        }
+        if (requestUrl != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(REQUEST_URL, requestUrl);
+            myEntrySet.add(entry);
+        }
+        if (requestUri != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(REQUEST_URI, requestUri);
+            myEntrySet.add(entry);
+        }
+        if (pathInfo != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(PATH_INFO, pathInfo);
+            myEntrySet.add(entry);
+        }
+        if (basePath != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(BASE_PATH, basePath);
+            myEntrySet.add(entry);
+        }
+        if (fixedParamOrder != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(FIXED_PARAMETER_ORDER, fixedParamOrder);
+            myEntrySet.add(entry);
+        }
+        if (inInterceptors != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(IN_INTERCEPTORS, inInterceptors);
+            myEntrySet.add(entry);
+        }
+        if (outInterceptors != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(OUT_INTERCEPTORS, outInterceptors);
+            myEntrySet.add(entry);
+        }
+        if (responseCode != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(RESPONSE_CODE, responseCode);
+            myEntrySet.add(entry);
+        }
+        if (attachments != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(ATTACHMENTS, attachments);
+            myEntrySet.add(entry);
+        }
+        if (encoding != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(ENCODING, encoding);
+            myEntrySet.add(entry);
+        }
+        if (httpContext != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AbstractHTTPDestination.HTTP_CONTEXT, httpContext);
+            myEntrySet.add(entry);
+        }
+        if (httpConfig != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AbstractHTTPDestination.HTTP_CONFIG, httpConfig);
+            myEntrySet.add(entry);
+        }
+        if (httpContextMatchStrategy != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AbstractHTTPDestination.HTTP_CONTEXT_MATCH_STRATEGY, httpContextMatchStrategy);
+            myEntrySet.add(entry);
+        }
+        if (httpBasePath != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(HTTP_BASE_PATH, httpBasePath);
+            myEntrySet.add(entry);
+        }
+        if (asyncPostDispatch != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(ASYNC_POST_RESPONSE_DISPATCH, asyncPostDispatch);
+            myEntrySet.add(entry);
+        }
+        if (securityContext != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(SECURITY_CONTEXT, securityContext);
+            myEntrySet.add(entry);
+        }
+        if (authorizationPolicy != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AUTHORIZATION_POLICY, authorizationPolicy);
+            myEntrySet.add(entry);
+        }
+        if (certConstraints != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(CERT_CONSTRAINTS, certConstraints);
+            myEntrySet.add(entry);
+        }
+        if (serviceRedirection != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AbstractHTTPDestination.SERVICE_REDIRECTION, serviceRedirection);
+            myEntrySet.add(entry);
+        }
+        if (httpServletResponse != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(HTTP_SERVLET_RESPONSE, httpServletResponse);
+            myEntrySet.add(entry);
+        }
+        if (resourceMethod != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(RESOURCE_METHOD, resourceMethod);
+            myEntrySet.add(entry);
+        }
+        if (oneWayRequest != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(ONE_WAY_REQUEST, oneWayRequest);
+            myEntrySet.add(entry);
+        }
+        if (asyncResponse != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(ASYNC_RESPONSE, asyncResponse);
+            myEntrySet.add(entry);
+        }
+        if (threadContextSwitched != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(THREAD_CONTEXT_SWITCHED, threadContextSwitched);
+            myEntrySet.add(entry);
+        }
+        if (cacheInputProperty != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(OutgoingChainInterceptor.CACHE_INPUT_PROPERTY, cacheInputProperty);
+            myEntrySet.add(entry);
+        }
+        if (previousMessage != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(PhaseInterceptorChain.PREVIOUS_MESSAGE, previousMessage);
+            myEntrySet.add(entry);
+        }
+        if (responseHeadersCopied != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(AbstractHTTPDestination.RESPONSE_HEADERS_COPIED, responseHeadersCopied);
+            myEntrySet.add(entry);
+        }
+        if (sseEventSink != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(SSE_EVENT_SINK, sseEventSink);
+            myEntrySet.add(entry);
+        }
+        if (requestorRole != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(REQUESTOR_ROLE, requestorRole);
+            myEntrySet.add(entry);
+        }
+        if (partialResponse != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(PARTIAL_RESPONSE_MESSAGE, partialResponse);
+            myEntrySet.add(entry);
+        }
+        if (emptyPartialResponse != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(EMPTY_PARTIAL_RESPONSE_MESSAGE, emptyPartialResponse);
+            myEntrySet.add(entry);
+        }
+        if (endpointAddress != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(ENDPOINT_ADDRESS, endpointAddress);
+            myEntrySet.add(entry);
+        }
+        if (inboundMessage != NOT_FOUND) {
+            entry = new AbstractMap.SimpleEntry<String,Object>(INBOUND_MESSAGE, inboundMessage);
+            myEntrySet.add(entry);
+        }
+        return myEntrySet;
     }
     
     @Override
@@ -1228,6 +1192,10 @@ public class MessageImpl extends StringMapImpl implements Message {
                 return partialResponse != NOT_FOUND;
             } else if (key == EMPTY_PARTIAL_RESPONSE_MESSAGE) {
                 return emptyPartialResponse != NOT_FOUND;
+            } else if (key == ENDPOINT_ADDRESS) {
+                return endpointAddress != NOT_FOUND;
+            } else if (key == INBOUND_MESSAGE) {
+                return inboundMessage != NOT_FOUND;
             }
         }
         return super.containsKey(key);
@@ -1382,6 +1350,12 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (m.containsKey(EMPTY_PARTIAL_RESPONSE_MESSAGE)) {
             emptyPartialResponse = m.get(EMPTY_PARTIAL_RESPONSE_MESSAGE);
         }
+        if (m.containsKey(ENDPOINT_ADDRESS)) {
+            endpointAddress = m.get(ENDPOINT_ADDRESS);
+        }
+        if (m.containsKey(INBOUND_MESSAGE)) {
+            inboundMessage = m.get(INBOUND_MESSAGE);
+        }
         super.putAll(m);
     }
     @Override
@@ -1534,6 +1508,12 @@ public class MessageImpl extends StringMapImpl implements Message {
         }
         if (emptyPartialResponse != NOT_FOUND) {
             values.add(emptyPartialResponse);
+        }
+        if (endpointAddress != NOT_FOUND) {
+            values.add(endpointAddress);
+        }
+        if (inboundMessage != NOT_FOUND) {
+            values.add(inboundMessage);
         }
         return values;
     }
@@ -1829,6 +1809,14 @@ public class MessageImpl extends StringMapImpl implements Message {
                 if (emptyPartialResponse != NOT_FOUND) {
                     return emptyPartialResponse;
                 }
+            } else if (key == ENDPOINT_ADDRESS) {
+                if (endpointAddress != NOT_FOUND) {
+                    return endpointAddress;
+                }
+            } else if (key == INBOUND_MESSAGE) {
+                if (inboundMessage != NOT_FOUND) {
+                    return inboundMessage;
+                }
             }
         }
 
@@ -1950,217 +1938,416 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
     //Liberty code change end
 
-    /**
-     * @return the authorizationPolicy
-     */
     public Object getAuthorizationPolicy() {
         return authorizationPolicy == NOT_FOUND ? null : authorizationPolicy;
     }
 
-    /**
-     * @param authorizationPolicy the authorizationPolicy to set
-     */
     public void setAuthorizationPolicy(Object authorizationPolicy) {
         this.authorizationPolicy = authorizationPolicy;
     }
 
-    /**
-     * @return the certConstraints
-     */
     public Object getCertConstraints() {
         return certConstraints == NOT_FOUND ? null : certConstraints;
     }
 
-    /**
-     * @param certConstraints the certConstraints to set
-     */
     public void setCertConstraints(Object certConstraints) {
         this.certConstraints = certConstraints;
     }
 
-    /**
-     * @return the serviceRedirection
-     */
     public Object getServiceRedirection() {
         return serviceRedirection == NOT_FOUND ? null : serviceRedirection;
     }
 
-    /**
-     * @param serviceRedirection the serviceRedirection to set
-     */
     public void setServiceRedirection(Object serviceRedirection) {
         this.serviceRedirection = serviceRedirection;
     }
 
-    /**
-     * @return the httpServletResponse
-     */
     public Object getHttpServletResponse() {
         return httpServletResponse == NOT_FOUND ? null : httpServletResponse;
     }
 
-    /**
-     * @param httpServletResponse the httpServletResponse to set
-     */
     public void setHttpServletResponse(Object httpServletResponse) {
         this.httpServletResponse = httpServletResponse;
     }
 
-    /**
-     * @return the resourceMethod
-     */
     public Object getResourceMethod() {
         return resourceMethod == NOT_FOUND ? null : resourceMethod;
     }
 
-    /**
-     * @param resourceMethod the resourceMethod to set
-     */
     public void setResourceMethod(Object resourceMethod) {
         this.resourceMethod = resourceMethod;
     }
 
-    /**
-     * @return the oneWayRequest
-     */
     public Object getOneWayRequest() {
         return oneWayRequest == NOT_FOUND ? null : oneWayRequest;
     }
 
-    /**
-     * @param oneWayRequest the oneWayRequest to set
-     */
     public void setOneWayRequest(Object oneWayRequest) {
         this.oneWayRequest = oneWayRequest;
     }
 
-    /**
-     * @return the asyncResponse
-     */
     public Object getAsyncResponse() {
         return asyncResponse == NOT_FOUND ? null : asyncResponse;
     }
 
-    /**
-     * @param asyncResponse the asyncResponse to set
-     */
     public void setAsyncResponse(Object asyncResponse) {
         this.asyncResponse = asyncResponse;
     }
 
-    /**
-     * @return the threadContextSwitched
-     */
     public Object getThreadContextSwitched() {
         return threadContextSwitched == NOT_FOUND ? null : threadContextSwitched;
     }
 
-    /**
-     * @param threadContextSwitched the threadContextSwitched to set
-     */
     public void setThreadContextSwitched(Object threadContextSwitched) {
         this.threadContextSwitched = threadContextSwitched;
     }
 
-    /**
-     * @return the previousMessage
-     */
     public Object getPreviousMessage() {
         return previousMessage == NOT_FOUND ? null : previousMessage;
     }
 
     public boolean containsPreviousMessage() {
-        return previousMessage == NOT_FOUND ? false : true;
+        return previousMessage != NOT_FOUND;
     }
 
-    /**
-     * @param previousMessage the previousMessage to set
-     */
     public void setPreviousMessage(Object previousMessage) {
         this.previousMessage = previousMessage;
     }
 
-    /**
-     * @return the cacheInputProperty
-     */
     public Object getCacheInputProperty() {
         return cacheInputProperty == NOT_FOUND ? null : cacheInputProperty;
     }
 
-    /**
-     * @param cacheInputProperty the cacheInputProperty to set
-     */
     public void setCacheInputProperty(Object cacheInputProperty) {
         this.cacheInputProperty = cacheInputProperty;
     }
 
-    /**
-     * @return the sseEventSink
-     */
     public Object getSseEventSink() {
         return sseEventSink == NOT_FOUND ? null : sseEventSink;
     }
 
-    /**
-     * @param sseEventSink the sseEventSink to set
-     */
     public void setSseEventSink(Object sseEventSink) {
         this.sseEventSink = sseEventSink;
     }
 
-    /**
-     * @return the responseHeadersCopied
-     */
     public Object getResponseHeadersCopied() {
         return responseHeadersCopied == NOT_FOUND ? null : responseHeadersCopied;
     }
 
-    /**
-     * @param responseHeadersCopied the responseHeadersCopied to set
-     */
     public void setResponseHeadersCopied(Object responseHeadersCopied) {
         this.responseHeadersCopied = responseHeadersCopied;
     }
 
-    /**
-     * @return the requestorRole
-     */
     public Object getRequestorRole() {
         return requestorRole == NOT_FOUND ? null : requestorRole;
     }
 
-    /**
-     * @param requestorRole the requestorRole to set
-     */
     public void setRequestorRole(Object requestorRole) {
         this.requestorRole = requestorRole;
     }
 
-    /**
-     * @return the emptyPartialResponse
-     */
     public Object getEmptyPartialResponse() {
         return emptyPartialResponse == NOT_FOUND ? null : emptyPartialResponse;
     }
 
-    /**
-     * @param emptyPartialResponse the emptyPartialResponse to set
-     */
     public void setEmptyPartialResponse(Object emptyPartialResponse) {
         this.emptyPartialResponse = emptyPartialResponse;
     }
 
-    /**
-     * @return the partialResponse
-     */
     public Object getPartialResponse() {
         return partialResponse == NOT_FOUND ? null : partialResponse;
     }
 
-    /**
-     * @param partialResponse the partialResponse to set
-     */
     public void setPartialResponse(Object partialResponse) {
         this.partialResponse = partialResponse;
+    }
+
+    public Object getEndpointAddress() {
+        return endpointAddress == NOT_FOUND ? null : endpointAddress;
+    }
+
+    public void setEndpointAddress(Object endpointAddress) {
+        this.endpointAddress = endpointAddress;
+    }
+    
+    public Object getInboundMessage() {
+        return inboundMessage == NOT_FOUND ? null : inboundMessage;
+    }
+
+    public void setInboundMessage(Object inboundMessage) {
+        this.inboundMessage = inboundMessage;
+    }
+    public String getPathToMatchSlash() {
+        return pathToMatchSlash == NOT_FOUND ? null : (String) pathToMatchSlash;
+    }
+    
+    public void setPathToMatchSlash(String pathToMatchSlash) {
+        this.pathToMatchSlash = pathToMatchSlash;
+    }
+    
+    public String getHttpRequestMethod() {
+        return httpRequestMethod == NOT_FOUND ? null : (String) httpRequestMethod;
+    }
+    
+    public void setHttpRequestMethod(String httpRequestMethod) {
+        this.httpRequestMethod = httpRequestMethod;
+    }
+
+    public void removePathToMatchSlash() {
+        pathToMatchSlash = NOT_FOUND;
+    }
+    public String getQueryString() {
+        return queryString == NOT_FOUND ? null : (String) queryString;
+    }
+    
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
+    public Object getOperationResourceInfoStack() {
+        return opStack == NOT_FOUND ? null: opStack;
+    }
+    
+    public void setOperationResourceInfoStack(Object opStack) {
+        this.opStack = opStack;
+    }
+
+    public String getContentType() {
+        return contentType == NOT_FOUND ? null : (String) contentType;
+    }
+    
+    public boolean containsContentType() {
+        return contentType != NOT_FOUND;
+    }
+    
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Object getHttpRequest() {
+        return httpRequest == NOT_FOUND ? null : httpRequest;
+    }
+    
+    public boolean containsHttpRequest() {
+        return httpRequest != NOT_FOUND;
+    }
+    
+    public void setHttpRequest(Object httpRequest) {
+        this.httpRequest = httpRequest;
+    }
+    
+    public Object getHttpResponse() {
+        return httpResponse == NOT_FOUND ? null : httpResponse;
+    }
+    
+    public void setHttpResponse(Object httpResponse) {
+        this.httpResponse = httpResponse;
+    }
+
+    public Object getAccept() {
+        return accept == NOT_FOUND ? null : accept;
+    }
+    
+    public void setAccept(Object accept) {
+        this.accept = accept;
+    }
+
+    public Object getContinuationProvider() {
+        return continuationProvider == NOT_FOUND ? null : continuationProvider;
+    }
+    
+    public void setContinuationProvider(Object continuationProvider) {
+        this.continuationProvider = continuationProvider;
+    }
+
+    public Object getWsdlDescription() {
+        return wsdlDescription == NOT_FOUND ? null : wsdlDescription;
+    }
+    
+    public void setWsdlDescription(Object wsdlDescription) {
+        this.wsdlDescription = wsdlDescription;
+    }
+
+    public Object getWsdlInterface() {
+        return wsdlInterface == NOT_FOUND ? null : wsdlInterface;
+    }
+    
+    public void setWsdlInterface(Object wsdlInterface) {
+        this.wsdlInterface = wsdlInterface;
+    }
+
+    public Object getWsdlOperation() {
+        return wsdlOperation == NOT_FOUND ? null : wsdlOperation;
+    }
+    
+    public void setWsdlOperation(Object wsdlOperation) {
+        this.wsdlOperation = wsdlOperation;
+    }
+
+    public Object getWsdlPort() {
+        return wsdlPort == NOT_FOUND ? null : wsdlPort;
+    }
+    
+    public void setWsdlPort(Object wsdlPort) {
+        this.wsdlPort = wsdlPort;
+    }
+
+    public Object getWsdlService() {
+        return wsdlService == NOT_FOUND ? null : wsdlService;
+    }
+    
+    public void setWsdlService(Object wsdlService) {
+        this.wsdlService = wsdlService;
+    }
+
+    public Object getRequestUrl() {
+        return requestUrl == NOT_FOUND ? null : requestUrl;
+    }
+    
+    public void setRequestUrl(Object requestUrl) {
+        this.requestUrl = requestUrl;
+    }
+
+    public Object getRequestUri() {
+        return requestUri == NOT_FOUND ? null : requestUri;
+    }
+    
+    public void setRequestUri(Object requestUri) {
+        this.requestUri = requestUri;
+    }
+    
+    public Object getPathInfo() {
+        return pathInfo == NOT_FOUND ? null : pathInfo;
+    }
+    
+    public void setPathInfo(Object pathInfo) {
+        this.pathInfo = pathInfo;
+    }
+    
+    public Object getBasePath() {
+        return basePath == NOT_FOUND ? null : basePath;
+    }
+    
+    public boolean containsBasePath() {
+        return basePath != NOT_FOUND;
+    }
+    
+    public void setBasePath(Object basePath) {
+        this.basePath = basePath;
+    }
+
+    public Object getFixedParamOrder() {
+        return fixedParamOrder == NOT_FOUND ? null : fixedParamOrder;
+    }
+    
+    public void setFixedParamOrder(Object fixedParamOrder) {
+        this.fixedParamOrder = fixedParamOrder;
+    }
+
+    public Object getInInterceptors() {
+        return inInterceptors == NOT_FOUND ? null : inInterceptors;
+    }
+    
+    public void setInInterceptors(Object inInterceptors) {
+        this.inInterceptors = inInterceptors;
+    }
+
+    public Object getOutInterceptors() {
+        return outInterceptors == NOT_FOUND ? null : outInterceptors;
+    }
+    
+    public void setOutInterceptors(Object outInterceptors) {
+        this.outInterceptors = outInterceptors;
+    }
+
+    public Object getResponseCode() {
+        return responseCode == NOT_FOUND ? null : responseCode;
+    }
+    
+    public void setResponseCode(Object responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public Object getEncoding() {
+        return encoding == NOT_FOUND ? null : encoding;
+    }
+    
+    public void setEncoding(Object encoding) {
+        this.encoding = encoding;
+    }
+
+    public Object getHttpContext() {
+        return httpContext == NOT_FOUND ? null : httpContext;
+    }
+    
+    public void setHttpContext(Object httpContext) {
+        this.httpContext = httpContext;
+    }
+
+    public Object getHttpConfig() {
+        return httpConfig == NOT_FOUND ? null : httpConfig;
+    }
+    
+    public void setHttpConfig(Object httpConfig) {
+        this.httpConfig = httpConfig;
+    }
+
+    public Object getHttpContextMatchStrategy() {
+        return httpContextMatchStrategy == NOT_FOUND ? null : httpContextMatchStrategy;
+    }
+    
+    public void setHttpContextMatchStrategy(Object httpContextMatchStrategy) {
+        this.httpContextMatchStrategy = httpContextMatchStrategy;
+    }
+
+    public Object getHttpBasePath() {
+        return httpBasePath == NOT_FOUND ? null : httpBasePath;
+    }
+    
+    public void setHttpBasePath(Object httpBasePath) {
+        this.httpBasePath = httpBasePath;
+    }
+
+    public Object getAsyncPostDispatch() {
+        return asyncPostDispatch == NOT_FOUND ? null : asyncPostDispatch;
+    }
+    
+    public void setAsyncPostDispatch(Object asyncPostDispatch) {
+        this.asyncPostDispatch = asyncPostDispatch;
+    }
+    
+    public Object getSecurityContext() {
+        return securityContext == NOT_FOUND ? null : securityContext;
+    }
+    
+    public void setSecurityContext(Object securityContext) {
+        this.securityContext = securityContext;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public Collection getInterceptorProviders() {
+        return interceptorProviders == NOT_FOUND ? null : (Collection) interceptorProviders;
+    }
+    
+    @SuppressWarnings("rawtypes")
+    public void setInterceptorProviders(Collection interceptorProviders) {
+        this.interceptorProviders = interceptorProviders;
+    }
+
+    public Object getTemplateParameters() {
+        return templateParameters == NOT_FOUND ? null :  templateParameters;
+    }
+    
+    public void setTemplateParameters(Object templateParameters) {
+        this.templateParameters = templateParameters;
+    }
+
+    public void removeContentType() {
+        contentType = NOT_FOUND;
+    }
+    public void removeHttpResponse() {
+        httpResponse = NOT_FOUND;
+    }
+    public void removeHttpRequest() {
+        httpRequest = NOT_FOUND;
     }
 }
