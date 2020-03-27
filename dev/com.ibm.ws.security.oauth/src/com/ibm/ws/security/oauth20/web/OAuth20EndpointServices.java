@@ -767,6 +767,11 @@ public class OAuth20EndpointServices {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
         }
 
+        if (provider.isTrackRelyingParties()) {
+            RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response);
+            rpTracker.trackRelyingParty(clientId);
+        }
+
         consent.handleConsent(provider, request, prompt, clientId);
         getExternalClaimsFromWSSubject(request, options);
         oauthResult = provider.processAuthorization(request, response, options);
