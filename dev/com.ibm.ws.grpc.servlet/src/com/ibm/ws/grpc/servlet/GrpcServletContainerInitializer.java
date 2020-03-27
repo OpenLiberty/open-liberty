@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +25,6 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.grpc.Utils;
-import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
@@ -68,7 +66,6 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 					}
 				}
 				if (!grpcServiceClasses.isEmpty()) {
-					Set<String> serviceNames = new HashSet<String>();
 					// pass all of our grpc service implementors into a new GrpcServlet
 					// and register that new Servlet on this context
 					grpcServlet = new GrpcServlet(new ArrayList<BindableService>(grpcServiceClasses.values()));
@@ -81,12 +78,10 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 						String urlPattern = "/" + serviceName + "/*";
 						servletRegistration.addMapping(urlPattern);
 						// keep track of this service name -> application path mapping
-						GrpcServletServices.addServletGrpcService(serviceName, sc.getContextPath());
-						serviceNames.add(serviceName);
+						currentApp.addServiceName(serviceName, sc.getContextPath());
 						Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup",
 								"Registered gRPC service at URL: " + urlPattern);
 					}
-					currentApp.addServiceNames(serviceNames);
 					return;
 				}
 			}
@@ -177,39 +172,5 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 	@Override
 	public void applicationStopped(ApplicationInfo appInfo) {
-	}
-
-	/**
-	 * Keep track of gRPC service names and their class names
-	 */
-	private class GrpcServletApplication {
-
-		Set<String> serviceNames;
-		Set<String> serviceClassNames;
-
-		GrpcServletApplication() {
-			serviceNames = new HashSet<String>();
-			serviceClassNames = new HashSet<String>();
-		}
-
-		void addServiceNames(Set<String> serviceNames) {
-			serviceNames.addAll(serviceNames);
-		}
-
-		void addServiceClassNames(Set<String> serviceNames) {
-			serviceClassNames.addAll(serviceNames);
-		}
-
-		Set<String> getServiceClassNames() {
-			return serviceClassNames;
-		}
-
-		private void destroy() {
-			for (String service : serviceNames) {
-				GrpcServletServices.removeServletGrpcService(service);
-			}
-			serviceNames = null;
-			serviceClassNames = null;
-		}
 	}
 }

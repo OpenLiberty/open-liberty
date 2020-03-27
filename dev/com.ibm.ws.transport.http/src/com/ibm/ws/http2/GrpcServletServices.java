@@ -46,6 +46,9 @@ public class GrpcServletServices {
         if (servletGrpcServices != null) {
             servletGrpcServices.remove(service);
         }
+        if (servletGrpcServices.isEmpty()) {
+            servletGrpcServices = null;
+        }
     }
 
     /**
@@ -54,9 +57,13 @@ public class GrpcServletServices {
      * @return HashMap<String service, String contextRoot> or null if the set is empty
      */
     public static Map<String, String> getServletGrpcServices() {
-        if (servletGrpcServices == null || servletGrpcServices.isEmpty()) {
+        if (servletGrpcServices == null) {
             return null;
         }
         return servletGrpcServices;
+    }
+
+    public static void destroy() {
+        servletGrpcServices = null;
     }
 }
