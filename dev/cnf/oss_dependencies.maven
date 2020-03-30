@@ -519,6 +519,16 @@ org.springframework:spring-webmvc:4.3.13.RELEASE
 org.springframework:spring-webmvc:5.0.8.RELEASE
 org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework:spring-websocket:5.0.8.RELEASE
+org.springframework.security:spring-security-web:5.2.2.RELEASE
+org.springframework.security:spring-security-config:5.2.2.RELEASE
+org.springframework.security:spring-security-core:5.2.2.RELEASE
+org.springframework:spring-core:5.2.4.RELEASE
+org.springframework:spring-beans:5.2.4.RELEASE
+org.springframework:spring-context:5.2.4.RELEASE
+org.springframework:spring-web:5.2.4.RELEASE
+org.springframework:spring-webmvc:5.2.4.RELEASE
+org.springframework.boot:spring-boot:2.2.5.RELEASE
+org.springframework.boot:spring-boot-autoconfigure:2.2.5.RELEASE
 org.testcontainers:database-commons:1.12.3
 org.testcontainers:db2:1.12.3
 org.testcontainers:jdbc:1.12.3
