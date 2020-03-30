@@ -379,7 +379,7 @@ public class ConfigTest extends FATServletClient {
 
         try {
             updateServerConfig(config, EMPTY_EXPR_LIST);
-            // Behavior should now reflect the new setting of 1 for maxPoolSize
+            // Behavior should now reflect the new setting of 2 for maxPoolSize
             runTest(basicfat, "testMaxPoolSize2");
         } catch (Throwable x) {
             System.out.println("Failure during " + method + " with the following config:");
