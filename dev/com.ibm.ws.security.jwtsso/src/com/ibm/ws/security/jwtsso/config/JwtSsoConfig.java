@@ -40,4 +40,6 @@ public interface JwtSsoConfig extends MicroProfileJwtConfig {
 
 	String getCookieName();
 
+	boolean isDisableJwtCookie();
+
 }

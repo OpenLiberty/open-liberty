@@ -24,6 +24,7 @@ public class JwtSsoConstants {
 	public static final String CFG_KEY_INCLUDELTPACOOKIE = "includeLtpaCookie";
 	public static final String CFG_USE_LTPA_IF_JWT_ABSENT = "useLtpaIfJwtAbsent";
 	public static final String CFG_KEY_COOKIESECUREFLAG = "setCookieSecureFlag";
+	public static final String CFG_KEY_DISABLE_JWT_COOKIE = "disableJwtCookie";
 
 	public static final String CFG_KEY_JWTBUILDERREF = "jwtBuilderRef";
 	public static final String CFG_KEY_JWTCONSUMERREF = "mpjwtConsumerRef";

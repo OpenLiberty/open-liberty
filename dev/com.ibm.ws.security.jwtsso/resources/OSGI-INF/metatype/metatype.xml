@@ -44,6 +44,8 @@
          <AD id="useLtpaIfJwtAbsent"  name="%fallbackToLtpa" description="%fallbackToLtpa.desc"
              required="false"  type="Boolean" default="false" />
            
+         <AD id="disableJwtCookie" name ="disableJwtCookie" description="%disableJwtCookie.desc"
+            required="false" type="Boolean" default="false"/>    
          <!-- 
              <AD id="groupBaseDnOmitted" name="%groupBaseDnOmitted" description="%groupBaseDnOmitted"
              required="false"  type="String"  />
