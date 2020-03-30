@@ -10,11 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.internal;
 
-import static com.ibm.ws.security.acme.internal.util.AcmeConstants.ACME_CONFIG_PID;
 import static com.ibm.ws.security.acme.internal.util.AcmeConstants.DEFAULT_ALIAS;
 import static com.ibm.ws.security.acme.internal.util.AcmeConstants.DEFAULT_KEY_STORE;
 import static com.ibm.ws.security.acme.internal.util.AcmeConstants.KEY_KEYSTORE_SERVICE;
-import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +24,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -35,20 +32,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.bouncycastle.asn1.x509.GeneralName;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
@@ -56,181 +47,37 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLConfig;
-import com.ibm.ws.config.xml.internal.nester.Nester;
-import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
-import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
-import com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet;
 import com.ibm.ws.ssl.KeyStoreService;
-import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 /**
  * ACME 2.0 support component service.
  */
-@Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = ACME_CONFIG_PID, property = {
-		"service.vendor=IBM", "includeAppsWithoutConfig=true" })
-public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener {
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+public class AcmeProviderImpl implements AcmeProvider {
 
-	private final TraceComponent tc = Tr.register(AcmeProviderImpl.class);
+	private static final TraceComponent tc = Tr.register(AcmeProviderImpl.class);
 
+	/** KeyStoreService to retrieve configured KeyStores from. */
 	private final static AtomicReference<KeyStoreService> keyStoreServiceRef = new AtomicReference<KeyStoreService>();
 
-	private String directoryURI = null;
-	private List<String> domains = null;
-	private Long validFor = null;
-	private String country = null;
-	private String locality = null;
-	private String state = null;
-	private String organization = null;
-	private String organizationalUnit = null;
-
-	// Challenge and order related fields.
-	private Integer challengeRetries = null;
-	private Long challengeRetryWaitMs = null;
-	private Integer orderRetries = null;
-	private Long orderRetryWaitMs = null;
-
-	// ACME account related fields.
-	private String accountKeyFile = null;
-	private List<String> accountContact = null;
-	private Boolean acceptTermsOfService = null;
-	private String domainKeyFile = null;
-
-	// Transport related fields.
-	private static String protocol = null;
-	private static String trustStore = null;
-	private static SerializableProtectedString trustStorePassword = null;
-	private static String trustStoreType = null;
-
-	private AcmeClient acmeClient = null;
-
-	private final Lock lock = new ReentrantLock();
-	private final Condition appStartedCondition = lock.newCondition();
-	private boolean isAppStarted = false;
-
-	@Activate
-	public void activate(ComponentContext context, Map<String, Object> properties) throws AcmeCaException {
-		final String methodName = "activate(ComponentContext, Map<String,Object>)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, context, properties);
-		}
-
-		initialize(context, properties);
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
-	}
-
-	@Deactivate
-	public void deactivate(ComponentContext context, int reason) {
-		final String methodName = "deactivate(ComponentContext, Map<String,Object>)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, context, reason);
-		}
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
-	}
-
-	@Modified
-	public void modify(ComponentContext context, Map<String, Object> properties) throws AcmeCaException {
-		final String methodName = "modify(ComponentContext, Map<String,Object>)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, context, properties);
-		}
-
-		/*
-		 * TODO We need to determine which configuration changes will result in
-		 * requiring a certificate to be refreshed. Some that might trigger a
-		 * refresh: validFor, directoryURI, country, locality, state,
-		 * organization, organizationUnit
-		 * 
-		 * We can't necessarily just check the certificate, b/c they don't
-		 * always honor them.
-		 */
-
-		initialize(context, properties);
-		checkAndInstallCertificate(false, null, null, null);
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
-	}
-
 	/**
-	 * Initialize the {@link AcmeClient} instance that will be used to
-	 * communicate with the ACME CA server.
-	 * 
-	 * @param context
-	 *            The context passed in from DS.
-	 * @param properties
-	 *            Configuration properties.
-	 * @throws AcmeCaException
-	 *             If there was an issue initializing the {@link AcmeClient}.
+	 * An {@link ApplicationStateListener} used to validate whether the ACME
+	 * authorization web application has started.
 	 */
-	@SuppressWarnings("unchecked")
-	public void initialize(ComponentContext context, Map<String, Object> properties) throws AcmeCaException {
-		final String methodName = "initialize(ComponentContext, Map<String,Object>)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, context, properties);
-		}
+	private final static AtomicReference<AcmeApplicationStateListener> applicationStateListenerRef = new AtomicReference<AcmeApplicationStateListener>();
 
-		/*
-		 * Retrieve the configuration.
-		 */
-		directoryURI = getStringValue(properties, AcmeConstants.DIR_URI);
-		domains = getStringList(properties, AcmeConstants.DOMAIN);
-		validFor = getLongValue(properties, AcmeConstants.VALID_FOR);
-		country = getStringValue(properties, AcmeConstants.COUNTRY);
-		locality = getStringValue(properties, AcmeConstants.LOCALITY);
-		state = getStringValue(properties, AcmeConstants.STATE);
-		organization = getStringValue(properties, AcmeConstants.ORG);
-		organizationalUnit = getStringValue(properties, AcmeConstants.OU);
-		challengeRetries = getIntegerValue(properties, AcmeConstants.CHALL_RETRIES);
-		challengeRetryWaitMs = getLongValue(properties, AcmeConstants.CHALL_RETRY_WAIT);
-		orderRetries = getIntegerValue(properties, AcmeConstants.ORDER_RETRIES);
-		orderRetryWaitMs = getLongValue(properties, AcmeConstants.ORDER_RETRY_WAIT);
-		accountKeyFile = getStringValue(properties, AcmeConstants.ACCOUNT_KEY_FILE);
-		accountContact = getStringList(properties, AcmeConstants.ACCOUNT_CONTACT);
-		acceptTermsOfService = getBooleanValue(properties, AcmeConstants.ACCEPT_TERMS);
-		domainKeyFile = getStringValue(properties, AcmeConstants.DOMAIN_KEY_FILE);
+	/** Client used to communicate with the ACME CA server. */
+	private static AcmeClient acmeClient;
 
-		List<Map<String, Object>> transportConfig = Nester.nest(AcmeConstants.TRANSPORT_CONFIG, properties);
-		if (!transportConfig.isEmpty()) {
-			Map<String, Object> transportProps = transportConfig.get(0);
-
-			protocol = getStringValue(transportProps, AcmeConstants.TRANSPORT_PROTOCOL);
-			trustStore = getStringValue(transportProps, AcmeConstants.TRANSPORT_TRUST_STORE);
-			trustStorePassword = getSerializableProtectedStringValue(transportProps,
-					AcmeConstants.TRANSPORT_TRUST_STORE_PASSWORD);
-			trustStoreType = getStringValue(transportProps, AcmeConstants.TRANSPORT_TRUST_STORE_TYPE);
-		}
-
-		/*
-		 * Construct a new ACME client.
-		 */
-		acmeClient = new AcmeClient(directoryURI, accountKeyFile, domainKeyFile, accountContact);
-		acmeClient.setAcceptTos(acceptTermsOfService);
-		acmeClient.setChallengeRetries(challengeRetries);
-		acmeClient.setChallengeRetryWait(challengeRetryWaitMs);
-		acmeClient.setOrderRetries(orderRetries);
-		acmeClient.setOrderRetryWait(orderRetryWaitMs);
-		
-		// TODO Need to verify connection.
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
-	}
+	/** Configuration for the ACME client. */
+	private static AcmeConfig acmeConfig;
 
 	@Override
 	public void refreshCertificate() throws AcmeCaException {
@@ -265,18 +112,14 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 * @throws AcmeCaException
 	 *             If there was an issue checking or updating the certificate.
 	 */
-	private void checkAndInstallCertificate(boolean forceRefresh, KeyStore keyStore, File keyStoreFile, String password)
-			throws AcmeCaException {
-		final String methodName = "checkAndInstallCertificate(boolean,KeyStore,File,String)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, forceRefresh, keyStore, keyStoreFile, "******");
-		}
-
+	@FFDCIgnore({ AcmeCaException.class })
+	private void checkAndInstallCertificate(boolean forceRefresh, KeyStore keyStore, File keyStoreFile,
+			@Sensitive String password) throws AcmeCaException {
 		/*
 		 * Wait until the ACME authorization web application is available. At
 		 * this point, it always should be, but check just in case.
 		 */
-		waitUntilWebAppAvailable();
+		applicationStateListenerRef.get().waitUntilWebAppAvailable();
 
 		/*
 		 * Keep a reference to the existing certificate that we will replace so
@@ -311,7 +154,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 			 */
 			try {
 				if (keyStore == null) {
-					getKeystoreService().setKeyEntryToKeyStore(DEFAULT_KEY_STORE, DEFAULT_ALIAS,
+					keyStoreServiceRef.get().setKeyEntryToKeyStore(DEFAULT_KEY_STORE, DEFAULT_ALIAS,
 							acmeCertificate.getKeyPair().getPrivate(), chainArr);
 				} else {
 					keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(),
@@ -331,7 +174,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 				try {
 					revoke(existingCertificate);
 				} catch (AcmeCaException e) {
-					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
 						Tr.debug(tc, "Failed to revoke the certificate.", existingCertificate);
 					}
 				}
@@ -343,31 +186,17 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 			 * 
 			 * TODO Use CWPKI0803A?
 			 */
-			Tr.audit(tc, "CWPKI2007I", directoryURI, acmeCertificate.getCertificate().getNotAfter());
+			Tr.audit(tc, "CWPKI2007I", acmeConfig.getDirectoryURI(), acmeCertificate.getCertificate().getNotAfter());
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "Previous certificate requested from ACME CA server is still valid.");
 			}
 		}
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
 	}
 
 	@Override
 	public String getHttp01Authorization(String token) throws AcmeCaException {
-		String methodName = "getHttp01Authorization(String)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, token);
-		}
-
-		String authorization = getAcmeClient().getHttp01Authorization(token);
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName, authorization);
-		}
-		return authorization;
+		return getAcmeClient().getHttp01Authorization(token);
 	}
 
 	/**
@@ -379,16 +208,15 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 * @throws AcmeCaException
 	 *             If there was an error revoking the certificate.
 	 */
+	@FFDCIgnore({ AcmeCaException.class })
 	public void revoke(X509Certificate certificate) throws AcmeCaException {
-		String methodName = "revoke(X509Certificate)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, certificate);
-		}
-
-		getAcmeClient().revoke(certificate);
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
+		try {
+			getAcmeClient().revoke(certificate);
+		} catch (AcmeCaException e) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+				Tr.warning(tc, "CWPKI2038W", certificate.getSerialNumber().toString(16), e.getMessage());
+			}
+			throw e;
 		}
 	}
 
@@ -409,178 +237,18 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	}
 
 	/**
-	 * Convenience method that will retrieve the {@link KeyStoreService}
-	 * instance or throw an {@link AcmeCaException} if the
-	 * {@link KeyStoreService} is null.
+	 * Set the {@link KeyStoreService} instance.
 	 * 
-	 * @return The {@link KeyStoreService} instance to use.
-	 * @throws AcmeCaException
-	 *             If the {@link KeyStoreService} instance is null.
+	 * @param keyStoreService
+	 *            {@link KeyStoreService} instance.
 	 */
-	@Trivial
-	public static KeyStoreService getKeystoreService() throws AcmeCaException {
-		if (keyStoreServiceRef.get() == null) {
-			throw new AcmeCaException("Internal error. KeyStoreService was not registered.");
-		}
-		return keyStoreServiceRef.get();
-	}
-
-	/**
-	 * Get a {@link Boolean} value from the config properties.
-	 * 
-	 * @param configProps
-	 *            The configuration properties passed in by declarative
-	 *            services.
-	 * @param property
-	 *            The property to lookup.
-	 * @return The {@link Boolean} value, or null if it doesn't exist.
-	 */
-	private static Boolean getBooleanValue(Map<String, Object> configProps, String property) {
-		Object value = configProps.get(property);
-		if (value == null) {
-			return null;
-		}
-		return (Boolean) value;
-	}
-
-	/**
-	 * Get a {@link Integer} value from the config properties.
-	 * 
-	 * @param configProps
-	 *            The configuration properties passed in by declarative
-	 *            services.
-	 * @param property
-	 *            The property to lookup.
-	 * @return The {@link Integer} value, or null if it doesn't exist.
-	 */
-	private static Integer getIntegerValue(Map<String, Object> configProps, String property) {
-		Object value = configProps.get(property);
-		if (value == null) {
-			return null;
-		}
-		return (Integer) value;
-	}
-
-	/**
-	 * Get a {@link Long} value from the config properties.
-	 * 
-	 * @param configProps
-	 *            The configuration properties passed in by declarative
-	 *            services.
-	 * @param property
-	 *            The property to lookup.
-	 * @return The {@link Long} value, or null if it doesn't exist.
-	 */
-	private static Long getLongValue(Map<String, Object> configProps, String property) {
-		Object value = configProps.get(property);
-		if (value == null) {
-			return null;
-		}
-		return (Long) value;
-	}
-
-	/**
-	 * Get a {@link List} of values from an array stored in the config
-	 * properties.
-	 * 
-	 * @param configProps
-	 *            The configuration properties passed in by declarative
-	 *            services.
-	 * @param property
-	 *            The property to lookup.
-	 * @return The {@link List} value, or null if it doesn't exist.
-	 */
-	private static List<String> getStringList(Map<String, Object> configProps, String property) {
-
-		Object value = configProps.get(property);
-		if (value == null) {
-			return null;
-		}
-
-		if (!(value instanceof String[])) {
-			return null;
-		}
-
-		String[] array = (String[]) value;
-		if (array.length == 0) {
-			return null;
-		}
-
-		List<String> values = null;
-		for (String item : array) {
-			if (item != null && !item.trim().isEmpty()) {
-				if (values == null) {
-					values = new ArrayList<String>();
-				}
-				values.add(item);
-			}
-		}
-
-		return values;
-	}
-
-	/**
-	 * Get a {@link String} value from the config properties.
-	 * 
-	 * @param configProps
-	 *            The configuration properties passed in by declarative
-	 *            services.
-	 * @param property
-	 *            The property to lookup.
-	 * @return The {@link String} value, or null if it doesn't exist.
-	 */
-	private static SerializableProtectedString getSerializableProtectedStringValue(Map<String, Object> configProps,
-			String property) {
-		Object value = configProps.get(property);
-		if (value == null) {
-			return null;
-		}
-		return (SerializableProtectedString) value;
-	}
-
-	/**
-	 * Get a {@link String} value from the config properties.
-	 * 
-	 * @param configProps
-	 *            The configuration properties passed in by declarative
-	 *            services.
-	 * @param property
-	 *            The property to lookup.
-	 * @return The {@link String} value, or null if it doesn't exist.
-	 */
-	private static String getStringValue(Map<String, Object> configProps, String property) {
-		Object value = configProps.get(property);
-		if (value == null) {
-			return null;
-		}
-		return (String) value;
-	}
-
 	@Reference(name = KEY_KEYSTORE_SERVICE, service = KeyStoreService.class, cardinality = ReferenceCardinality.MANDATORY)
 	protected void setKeyStoreService(KeyStoreService keyStoreService) {
-		final String methodName = "setKeyStoreService(KeyStoreService)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, keyStoreService);
-		}
-
 		keyStoreServiceRef.set(keyStoreService);
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
 	}
 
 	protected void unsetKeyStoreService(KeyStoreService keyStoreService) {
-		final String methodName = "unsetKeyStoreService(KeyStoreService)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, keyStoreService);
-		}
-
 		keyStoreServiceRef.compareAndSet(keyStoreService, null);
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
 	}
 
 	/**
@@ -595,11 +263,6 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 *             If there was an issue checking the existing certificate.
 	 */
 	private boolean isCertificateRequired(X509Certificate existingCertificate) throws AcmeCaException {
-		final String methodName = "isCertificateRequired()";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName);
-		}
-
 		/**
 		 * Check to see if we need to fetch a new certificate. Reasons may
 		 * include:
@@ -621,9 +284,6 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 			certificateRequired = true;
 		}
 
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName, certificateRequired);
-		}
 		return certificateRequired;
 	}
 
@@ -640,24 +300,14 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 */
 	private AcmeCertificate checkAndRetrieveCertificate(X509Certificate existingCertificate, boolean forceRefresh)
 			throws AcmeCaException {
-		final String methodName = "checkAndRetrieveCertificate()";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName);
-		}
-
-		AcmeCertificate certificate = null;
-
 		/*
 		 * Check if we need to get a new certificate.
 		 */
 		if (forceRefresh || isCertificateRequired(existingCertificate)) {
-			certificate = fetchCertificate();
+			return fetchCertificate();
 		}
 
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName, certificate);
-		}
-		return certificate;
+		return null;
 	}
 
 	/**
@@ -675,10 +325,6 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 */
 	private boolean hasWrongDomains(X509Certificate certificate) throws AcmeCaException {
 		String methodName = "hasWrongDomains(Certificate)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, certificate);
-		}
-
 		boolean hasWrongDomains = false;
 
 		/*
@@ -690,7 +336,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 			boolean cnMatches = false;
 			for (Rdn rdn : dn.getRdns()) {
 				if ("cn".equalsIgnoreCase(rdn.getType())) {
-					for (String domain : domains) {
+					for (String domain : acmeConfig.getDomains()) {
 						if (domain.equalsIgnoreCase((String) rdn.getValue())) {
 							cnMatches = true;
 							break;
@@ -710,7 +356,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		} catch (InvalidNameException e) {
 			throw new AcmeCaException(
 					Tr.formatMessage(tc, "CWPKI2031E", certificate.getSubjectX500Principal().getName(),
-							certificate.getSerialNumber(), e.getMessage()),
+							certificate.getSerialNumber().toString(16), e.getMessage()),
 					e);
 		}
 
@@ -744,7 +390,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 				 * Check the configured domains against those retrieved from the
 				 * certificate.
 				 */
-				if (!dnsNames.containsAll(domains)) {
+				if (!dnsNames.containsAll(acmeConfig.getDomains())) {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 						Tr.debug(tc, methodName,
 								"The certificate subject alternative names do not contain all of the configured domains.");
@@ -754,12 +400,9 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 
 			} catch (CertificateParsingException e) {
 				throw new AcmeCaException(
-						Tr.formatMessage(tc, "CWPKI2032E", certificate.getSerialNumber(), e.getMessage()), e);
+						Tr.formatMessage(tc, "CWPKI2032E", certificate.getSerialNumber().toString(16), e.getMessage()),
+						e);
 			}
-		}
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName, hasWrongDomains);
 		}
 		return hasWrongDomains;
 	}
@@ -772,13 +415,6 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 * @return true if the certificate is expired or nearly expiring.
 	 */
 	private boolean isCertificateExpired(X509Certificate certificate) {
-		String methodName = "isExpired(Certificate)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, certificate);
-		}
-
-		boolean isExpired = false;
-
 		/*
 		 * Certificates not after date.
 		 */
@@ -800,12 +436,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		/*
 		 * Consider the certificate expired if the refresh date has elapsed.
 		 */
-		isExpired = now.compareTo(refreshDate) >= 0;
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName, isExpired);
-		}
-		return isExpired;
+		return now.compareTo(refreshDate) >= 0;
 	}
 
 	/**
@@ -816,19 +447,8 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 * @return True if the certificate has been revoked, false otherwise.
 	 */
 	private boolean isCertificateRevoked(X509Certificate certificate) {
-		String methodName = "isRevoked(Certificate)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, certificate);
-		}
-
-		boolean isRevoked = false;
-
 		// TODO Check CRLs and OSCPs
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName, isRevoked);
-		}
-		return isRevoked;
+		return false;
 	}
 
 	/**
@@ -841,32 +461,10 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 * @throws AcmeCaException
 	 */
 	private AcmeCertificate fetchCertificate() throws AcmeCaException {
-
-		String methodName = "fetchCertificate()";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName);
-		}
-
 		/*
-		 * If we need to request a new certificate, generate a new certificate
-		 * signing request options instance.
+		 * Request a new certificate.
 		 */
-		CSROptions csrOptions = new CSROptions(domains);
-		csrOptions.setCountry(country);
-		csrOptions.setLocality(locality);
-		csrOptions.setOrganization(organization);
-		csrOptions.setOrganizationalUnit(organizationalUnit);
-		csrOptions.setState(state);
-		csrOptions.setValidForMs(validFor);
-
-		/*
-		 * Return the ACME certificate.
-		 */
-		AcmeCertificate certificate = getAcmeClient().fetchCertificate(csrOptions);
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName, certificate);
-		}
-		return certificate;
+		return getAcmeClient().fetchCertificate(false);
 	}
 
 	/**
@@ -877,6 +475,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 *            The {@link List} of certificates.
 	 * @return An array of the same certificates.
 	 */
+	@Trivial
 	private static Certificate[] convertChainToArray(List<X509Certificate> chainList) {
 		/*
 		 * Convert the certificate chain to an array from a list.
@@ -902,7 +501,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		 * Get our existing certificate.
 		 */
 		try {
-			return getKeystoreService().getX509CertificateFromKeyStore(DEFAULT_KEY_STORE, DEFAULT_ALIAS);
+			return keyStoreServiceRef.get().getX509CertificateFromKeyStore(DEFAULT_KEY_STORE, DEFAULT_ALIAS);
 		} catch (KeyStoreException | CertificateException e) {
 			throw new AcmeCaException(
 					Tr.formatMessage(tc, "CWPKI2033E", DEFAULT_ALIAS, DEFAULT_KEY_STORE, e.getMessage()), e);
@@ -920,12 +519,6 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 */
 	@Override
 	public File createDefaultSSLCertificate(String filePath, @Sensitive String password) throws CertificateException {
-
-		String methodName = "createDefaultSSLCertificate(String,String)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, filePath, "******");
-		}
-
 		/*
 		 * If we make it in here, Liberty is asking us to generate the default
 		 * certificate. We need to not only generate the certificate but also
@@ -934,7 +527,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 		 * First wait until the ACME authorization web application is available.
 		 */
 		try {
-			waitUntilWebAppAvailable();
+			applicationStateListenerRef.get().waitUntilWebAppAvailable();
 		} catch (AcmeCaException e) {
 			throw new CertificateException(e.getMessage(), e);
 		}
@@ -970,8 +563,7 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 				keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(), password.toCharArray(),
 						convertChainToArray(acmeCertificate.getCertificateChain()));
 			} catch (KeyStoreException | NoSuchAlgorithmException | IOException ee) {
-				throw new CertificateException(
-						Tr.formatMessage(tc, "CWPKI2034E", directoryURI, filePath, ee.getMessage()), ee);
+				throw new CertificateException(Tr.formatMessage(tc, "CWPKI2034E", ee.getMessage()), ee);
 			}
 
 			File file = new File(filePath);
@@ -987,149 +579,13 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 				FileOutputStream fos = new FileOutputStream(file);
 				keyStore.store(fos, password.toCharArray());
 
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-					Tr.exit(tc, methodName, file);
-				}
-
 			} catch (KeyStoreException | NoSuchAlgorithmException | IOException e) {
-				throw new CertificateException(
-						Tr.formatMessage(tc, "CWPKI2035E", directoryURI, file.getName(), e.getMessage()), e);
+				throw new CertificateException(Tr.formatMessage(tc, "CWPKI2035E", file.getName(), e.getMessage()), e);
 			}
 			return file;
 		} catch (AcmeCaException ace) {
 			throw new CertificateException(ace.getMessage(), ace);
 		}
-	}
-
-	/**
-	 * Wait until the ACME authorization web application is available for
-	 * service at /.well-known/acme-authorization.
-	 * 
-	 * @throws AcmeCaException
-	 *             If the application is not available within the expected time.
-	 */
-	private void waitUntilWebAppAvailable() throws AcmeCaException {
-		final String methodName = "waitUntilWebAppAvailable()";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName);
-		}
-
-		try {
-			lock.lock();
-			if (!isAppStarted) {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-					Tr.debug(tc, methodName + ": ACME authorization web application has not started - waiting.");
-				}
-
-				boolean signalled = false, keepWaiting = true;
-				Calendar cal = Calendar.getInstance();
-				int timeToWait = 2;
-				cal.add(Calendar.MINUTE, timeToWait); // Wait 2 minutes, maximum
-				while (keepWaiting) {
-					try {
-						keepWaiting = false;
-						signalled = appStartedCondition.awaitUntil(cal.getTime());
-					} catch (InterruptedException e) {
-						keepWaiting = true;
-					}
-				}
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-					Tr.debug(tc, methodName + ": Finished waiting.");
-				}
-
-				/*
-				 * If the wait above expired and we weren't signaled by the
-				 * applicationStarted(...) method, the ACME authorization web
-				 * application did not start, we can't proceed.
-				 */
-				if (!signalled) {
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2036E", timeToWait));
-				} else if (!isAppStarted) {
-					/*
-					 * This should never happen, but throw an exception if it
-					 * does.
-					 */
-					throw new AcmeCaException("ACME authorization web application did not start.");
-				}
-
-			} else {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-					Tr.debug(tc, methodName + ": ACME authorization web application already started - not waiting.");
-				}
-			}
-		} finally {
-			lock.unlock();
-		}
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
-	}
-
-	@Override
-	public void applicationStarting(ApplicationInfo appInfo) {
-		final String methodName = "applicationStarting(ApplicationInfo)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, appInfo);
-			Tr.exit(tc, methodName);
-		}
-		/*
-		 * Ignore. The service and web application cannot be up without one
-		 * another, so no need to do anything here.
-		 */
-	}
-
-	@Override
-	public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-		final String methodName = "applicationStarted(ApplicationInfo)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, appInfo);
-		}
-
-		if (AcmeAuthorizationServlet.APP_NAME.equals(appInfo.getName())) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-				Tr.event(tc,
-						methodName + ": ACME authorization web application has started and is available for requests.");
-			}
-
-			lock.lock();
-			try {
-				isAppStarted = true;
-				appStartedCondition.signalAll();
-			} finally {
-				lock.unlock();
-			}
-		}
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
-		}
-	}
-
-	@Override
-	public void applicationStopping(ApplicationInfo appInfo) {
-		final String methodName = "applicationStopping(ApplicationInfo)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, appInfo);
-			Tr.exit(tc, methodName);
-		}
-		/*
-		 * Ignore. The service and web application cannot be up without one
-		 * another, so no need to do anything here.
-		 */
-	}
-
-	@Override
-	public void applicationStopped(ApplicationInfo appInfo) {
-		final String methodName = "applicationStopped(ApplicationInfo)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, appInfo);
-			Tr.exit(tc, methodName);
-		}
-		/*
-		 * Ignore. The service and servlet cannot be up without one another, so
-		 * no need to do anything here.
-		 */
 	}
 
 	/*
@@ -1139,19 +595,10 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	@Override
 	public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, @Sensitive String password)
 			throws CertificateException {
-		String methodName = "updateDefaultSSLCertificate(KeyStore,File,String)";
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.entry(tc, methodName, keyStore, keyStoreFile, "******");
-		}
-
 		try {
 			checkAndInstallCertificate(false, keyStore, keyStoreFile, password);
 		} catch (AcmeCaException e) {
 			throw new CertificateException(e.getMessage(), e);
-		}
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-			Tr.exit(tc, methodName);
 		}
 	}
 
@@ -1162,30 +609,78 @@ public class AcmeProviderImpl implements AcmeProvider, ApplicationStateListener 
 	 * @return The {@link SSLConfig}.
 	 */
 	public static SSLConfig getSSLConfig() {
-		SSLConfig sslConfig = new SSLConfig();
+		return acmeConfig.getSSLConfig();
+	}
 
-		/*
-		 * Set any configured SSL properties into the SSLConfig instance.
-		 */
-		if (protocol != null) {
-			sslConfig.setProperty(Constants.SSLPROP_PROTOCOL, protocol);
+	/**
+	 * This method will receive the initial configuration from the
+	 * {@link AcmeConfigService} and will behave much like the activate method
+	 * would on a regular OSGi component.
+	 * 
+	 * @param acmeConfigService
+	 *            The {@link AcmeConfigService} instance.
+	 * @param properties
+	 *            The initial properties.
+	 */
+	@Reference(cardinality = ReferenceCardinality.MANDATORY, updated = "updateAcmeConfigService")
+	public void setAcmeConfigService(AcmeConfigService acmeConfigService, Map<String, Object> properties) {
+		try {
+			acmeConfig = new AcmeConfig(properties);
+			acmeClient = new AcmeClient(acmeConfig);
+		} catch (AcmeCaException e) {
+			Tr.error(tc, e.getMessage()); // AcmeCaExceptions are localized.
 		}
-		if (trustStore != null) {
-			sslConfig.setProperty(Constants.SSLPROP_TRUST_STORE, trustStore);
-		}
-		if (trustStorePassword != null) {
-			sslConfig.setProperty(Constants.SSLPROP_TRUST_STORE_PASSWORD,
-					String.valueOf(trustStorePassword.getChars()));
-		}
-		if (trustStoreType != null) {
-			sslConfig.setProperty(Constants.SSLPROP_TRUST_STORE_TYPE, trustStoreType);
-		}
+	}
 
-		/*
-		 * Always allow default certificates (CACERTS).
-		 */
-		sslConfig.setProperty(Constants.SSLPROP_USE_DEFAULTCERTS, "true");
+	/**
+	 * Unset the {@link AcmeConfigService} instance.
+	 * 
+	 * @param acmeConfigService
+	 *            the {@link AcmeConfigService} instance to unet.
+	 */
+	protected void unsetAcmeConfigService(AcmeConfigService acmeConfigService) {
+		acmeConfig = null;
+		acmeClient = null;
+	}
 
-		return sslConfig;
+	/**
+	 * This method will receive updated configuration from the
+	 * {@link AcmeConfigService} and will behave much like the modified method
+	 * would on a regular OSGi component.
+	 * 
+	 * @param acmeConfigService
+	 *            The {@link AcmeConfigService} instance.
+	 * @param properties
+	 *            The updated properties.
+	 */
+	protected void updateAcmeConfigService(AcmeConfigService acmeConfigService, Map<String, Object> properties) {
+		try {
+			acmeConfig = new AcmeConfig(properties);
+			acmeClient = new AcmeClient(acmeConfig);
+
+			/*
+			 * TODO We need to determine which configuration changes will result
+			 * in requiring a certificate to be refreshed. Some that might
+			 * trigger a refresh: validFor, directoryURI, country, locality,
+			 * state, organization, organizationUnit
+			 *
+			 * We can't necessarily just check the certificate, b/c they don't
+			 * always honor them.
+			 */
+			checkAndInstallCertificate(false, null, null, null);
+		} catch (AcmeCaException e) {
+			Tr.error(tc, e.getMessage()); // AcmeCaExceptions are localized.
+		}
+	}
+
+	/**
+	 * Set the {@link AcmeApplicationStateListener} reference.
+	 * 
+	 * @param acmeApplicationStateListener
+	 *            the {@link AcmeApplicationStateListener} instance.
+	 */
+	@Reference(cardinality = ReferenceCardinality.MANDATORY)
+	public void setAcmeApplicationStateListener(AcmeApplicationStateListener acmeApplicationStateListener) {
+		applicationStateListenerRef.set(acmeApplicationStateListener);
 	}
 }

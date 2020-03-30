@@ -50,6 +50,7 @@ import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.ssl.SSLContextBuilder;
 
 import com.ibm.websphere.simplicity.config.AcmeCA;
+import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -275,10 +276,46 @@ public class AcmeFatUtils {
 		acmeCA.setAcceptTermsOfService(true);
 
 		if (!useAcmeURIs) {
-			acmeCA.getAcmeTransportConfig()
-					.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
-			acmeCA.getAcmeTransportConfig().setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
+			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
+			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
+			acmeTransportConfig.setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
+			acmeCA.setAcmeTransportConfig(acmeTransportConfig);
 		}
+
+		/*
+		 * The defaultHttpEndpoint needs to point to the port the CA has been
+		 * configured to send HTTP-01 challenges to.
+		 */
+		HttpEndpoint endpoint = new HttpEndpoint();
+		endpoint.setId("defaultHttpEndpoint");
+		endpoint.setHttpPort(String.valueOf(PebbleContainer.HTTP_PORT));
+		endpoint.setHttpsPort("${bvt.prop.HTTP_default.secure}");
+		endpoint.setHost("*");
+		clone.getHttpEndpoints().add(endpoint);
+
+		/*
+		 * Apply the configuration.
+		 */
+		AcmeFatUtils.updateConfigDynamically(server, clone);
+	}
+
+	/**
+	 * Convenience method for dynamically configuring the acmeCA-2.0
+	 * configuration. This method will NOT modify any ACME CA config.
+	 * 
+	 * @param server
+	 *            Liberty server to update.
+	 * @param originalConfig
+	 *            The original configuration to update from.
+	 * @throws Exception
+	 *             IF there was an error updating the configuration.
+	 */
+	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig) throws Exception {
+		/*
+		 * Choose which configuration to update.
+		 */
+		ServerConfiguration clone = ((originalConfig != null) ? originalConfig : server.getServerConfiguration())
+				.clone();
 
 		/*
 		 * The defaultHttpEndpoint needs to point to the port the CA has been
@@ -364,8 +401,7 @@ public class AcmeFatUtils {
 	 * @param server
 	 */
 	public static final void waitForAcmeToReplaceCertificate(LibertyServer server) {
-		assertNotNull("ACME did not update replace the certificate.",
-				server.waitForStringInLog("CWPKI2007I"));
+		assertNotNull("ACME did not update replace the certificate.", server.waitForStringInLog("CWPKI2007I"));
 	}
 
 	/**
