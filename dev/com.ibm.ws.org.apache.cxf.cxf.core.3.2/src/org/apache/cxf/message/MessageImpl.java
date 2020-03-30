@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.sse.SseEventSink;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
@@ -118,8 +116,8 @@ public class MessageImpl extends StringMapImpl implements Message {
     private static final String CERT_CONSTRAINTS = CertConstraints.class.getName();
     private static final String HTTP_SERVLET_RESPONSE = HttpServletResponse.class.getName();
     private static final String RESOURCE_METHOD = "org.apache.cxf.resource.method";
-    private static final String ASYNC_RESPONSE = AsyncResponse.class.getName();
-    private static final String SSE_EVENT_SINK = SseEventSink.class.getName();
+    private static final String ASYNC_RESPONSE = "javax.ws.rs.container.AsyncResponse";
+    private static final String SSE_EVENT_SINK = "javax.ws.rs.sse.SseEventSink";
     private static final Set<String> KEYS;
 
     static {
