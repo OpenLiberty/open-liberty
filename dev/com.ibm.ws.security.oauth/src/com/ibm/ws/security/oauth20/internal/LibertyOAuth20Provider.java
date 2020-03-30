@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -189,6 +189,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     protected static final String KEY_logoutRedirectURL = "logoutRedirectURL";
     protected static final String KEY_CACHE_ACCESSTOKEN = "accessTokenCacheEnabled";
     protected static final String KEY_REVOKE_ACCESSTOK_W_REFRESHTOK = "revokeAccessTokensWithRefreshTokens";
+    public static final String KEY_TRACK_RELYING_PARTIES = "trackRelyingParties";
 
     // TODO: Rational Jazz props. Determine if these can be move to OIDC config.
     protected static final String KEY_COVERAGE_MAP_SESSION_MAX_AGE = "coverageMapSessionMaxAge";
@@ -346,6 +347,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     private String tokenFormat;
     private boolean revokeAccessTokensWithRefreshTokens = true;
     private boolean ropcPreferUserSecurityName = false;
+    private boolean trackRelyingParties = false;
 
     // DS related methods
 
@@ -468,6 +470,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         appTokenOrPasswordLimit = (Long) properties.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT);
         clientSecretEncoding = getClientSecretEncodingFromConfig();
         ropcPreferUserSecurityName = (Boolean) properties.get(KEY_ROPC_PREFER_USERSECURITYNAME);
+        trackRelyingParties = (Boolean) properties.get(KEY_TRACK_RELYING_PARTIES);
 
         setUpInternalClient();
         // tolerate old jwtAccessToken attrib but if tokenFormat attrib is specified,
@@ -2421,4 +2424,10 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public boolean isROPCPreferUserSecurityName() {
         return this.ropcPreferUserSecurityName;
     }
+
+    @Override
+    public boolean isTrackRelyingParties() {
+        return trackRelyingParties;
+    }
+
 }
