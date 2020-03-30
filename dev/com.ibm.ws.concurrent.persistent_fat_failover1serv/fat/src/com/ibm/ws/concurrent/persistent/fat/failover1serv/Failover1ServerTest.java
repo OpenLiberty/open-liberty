@@ -230,6 +230,12 @@ public class Failover1ServerTest extends FATServletClient {
                 server.startServer();
             }
         }
+
+        // If this test runs last, then stopServer will happen immediately afterward,
+        // and when test infrastructure also runs slowly, then the 30 seconds allotted by server
+        // quiesce are not enough and warnings will go into the logs and be reported as a test failure.
+        // To reduce the chance of that, wait for some progress to be made,
+        server.waitForStringInLog("DSRA8206I"); // connected to Derby
     }
 
     /**
