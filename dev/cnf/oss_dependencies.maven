@@ -523,8 +523,6 @@ org.springframework:spring-web:5.0.8.RELEASE
 org.springframework:spring-web:5.1.4.RELEASE
 org.springframework:spring-web:5.2.4.RELEASE
 org.springframework:spring-webflux:5.0.8.RELEASE
-org.springframework:spring-webflux:5.1.4.RELEASE
-org.springframework:spring-webmvc:4.3.13.RELEASE
 org.springframework:spring-webmvc:5.0.8.RELEASE
 org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework:spring-webmvc:5.2.4.RELEASE
