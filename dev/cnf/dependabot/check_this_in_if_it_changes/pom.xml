@@ -2294,7 +2294,7 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>7.3.1</version>
+      <version>8.0</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
