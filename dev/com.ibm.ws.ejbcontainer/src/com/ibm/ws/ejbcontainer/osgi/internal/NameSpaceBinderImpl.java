@@ -247,15 +247,13 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      */
     @Override
     public void bindSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, boolean local) {
-        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-
         BeanMetaData bmd = hr.getBeanMetaData();
 
         if (local) {
             bindLocalSimpleBindingName(bindingObject, hr, bmd.simpleJndiBindingName);
+        } else {
+            bindLegacyRemoteBinding(bindingObject, hr, bmd.simpleJndiBindingName);
         }
-        // TODO: bind simpleBindingName remote issue #8786
-
     }
 
     /**
