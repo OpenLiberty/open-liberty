@@ -46,14 +46,50 @@ public interface HeartbeatLog {
     /**
      * Set time interval that specifies how long
      * before a log goes stale under the HA DB Peer locking scheme.
+     *
+     * @param timeBeforeStale
      */
     public void setTimeBeforeLogStale(int timeBeforeStale);
 
     /**
      * Set the heartbeat time interval for the HA DB Peer locking
      * scheme.
+     *
+     * @param timeBetweenHeartbeats
      */
     public void setTimeBetweenHeartbeats(int timeBetweenHeartbeats);
+
+    /**
+     * Set the time interval for an HA DB retry where the operation has a standard retry scheme such
+     * as opening or forcing recovery logs.
+     *
+     * @param lightweightTransientErrorRetryTime
+     */
+    public void setStandardTransientErrorRetryTime(int standardTransientErrorRetryTime);
+
+    /**
+     * Set the number of retries for an HA DB retry where the operation has a standard retry scheme such
+     * as opening or forcing recovery logs.
+     *
+     * @param lightweightTransientErrorRetryAttempts
+     */
+    public void setStandardTransientErrorRetryAttempts(int standardTransientErrorRetryAttempts);
+
+    /**
+     * Set the time interval for an HA DB retry where the operation has a lightweight retry scheme such
+     * as claiming peer logs or heartbeating.
+     *
+     * @param lightweightTransientErrorRetryTime
+     */
+    public void setLightweightTransientErrorRetryTime(int lightweightTransientErrorRetryTime);
+
+    /**
+     * Set the number of retries for an HA DB retry where the operation has a lightweight retry scheme such
+     * as claiming peer logs or heartbeating.
+     *
+     * @param lightweightTransientErrorRetryAttempts
+     */
+    public void setLightweightTransientErrorRetryAttempts(int lightweightTransientErrorRetryAttempts);
 
     /**
      * Signals to the Recovery Log that the server is stopping.

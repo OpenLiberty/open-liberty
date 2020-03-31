@@ -918,6 +918,25 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             if (tc.isEntryEnabled())
                                 Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
                             heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
+
+                            // SQL HADB Retry parameters (optional)
+                            int standardTransientErrorRetryTime = cp.getStandardTransientErrorRetryTime();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "standardTransientErrorRetryTime - ", standardTransientErrorRetryTime);
+                            heartbeatLog.setStandardTransientErrorRetryTime(standardTransientErrorRetryTime);
+                            int standardTransientErrorRetryAttempts = cp.getStandardTransientErrorRetryAttempts();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "standardTransientErrorRetryAttempts - ", standardTransientErrorRetryAttempts);
+                            heartbeatLog.setStandardTransientErrorRetryAttempts(standardTransientErrorRetryAttempts);
+
+                            int lightweightTransientErrorRetryTime = cp.getLightweightTransientErrorRetryTime();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "lightweightTransientErrorRetryTime - ", lightweightTransientErrorRetryTime);
+                            heartbeatLog.setLightweightTransientErrorRetryTime(lightweightTransientErrorRetryTime);
+                            int lightweightTransientErrorRetryAttempts = cp.getLightweightTransientErrorRetryAttempts();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "lightweightTransientErrorRetryAttempts - ", lightweightTransientErrorRetryAttempts);
+                            heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
                         }
                     }
                 }

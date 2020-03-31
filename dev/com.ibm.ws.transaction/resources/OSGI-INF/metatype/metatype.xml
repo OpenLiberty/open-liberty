@@ -74,7 +74,19 @@
 
         <AD name="internal" description="internal use only"
             id="peerTimeBeforeStale" required="false" type="Integer" default="10" />
-                                    
+
+        <AD name="internal" description="internal use only"
+            id="standardTransientErrorRetryTime" required="false" type="Integer" default="10" />
+
+        <AD name="internal" description="internal use only"
+            id="standardTransientErrorRetryAttempts" required="false" type="Integer" default="180" /> 
+                        
+        <AD name="internal" description="internal use only"
+            id="lightweightTransientErrorRetryTime" required="false" type="Integer" default="1" />
+
+        <AD name="internal" description="internal use only"
+            id="lightweightTransientErrorRetryAttempts" required="false" type="Integer" default="2" /> 
+                                               
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
         

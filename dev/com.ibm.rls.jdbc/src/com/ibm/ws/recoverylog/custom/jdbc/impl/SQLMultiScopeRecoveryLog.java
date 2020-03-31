@@ -291,10 +291,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     private int _sqlTransientErrorCodes[];
     private final int DEFAULT_TRANSIENT_RETRY_SLEEP_TIME = 10000; // In milliseconds, ie 10 seconds
     private final int LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME = 1000; // In milliseconds, ie 1 second
-    private final int _transientRetrySleepTime;
+    private int _transientRetrySleepTime;
+    private int _lightweightTransientRetrySleepTime;
     private final int DEFAULT_TRANSIENT_RETRY_ATTEMPTS = 180; // We'll keep retrying for 30 minutes. Excessive?
     private final int LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS = 2; // We'll keep retrying for 2 seconds in the lightweight case
-    private final int _transientRetryAttempts;
+    private int _transientRetryAttempts;
+    private int _lightweightTransientRetryAttempts;
     private boolean sqlTransientErrorHandlingEnabled = false;
 
     /**
@@ -362,9 +364,27 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         _dbURL = null;
         _currentProcessServerName = Configuration.fqServerName();
 
-        // Set the parameters that define SQL Error retry behaviour
-        _transientRetryAttempts = getTransientSQLErrorRetryAttempts().intValue();
-        _transientRetrySleepTime = getTransientSQLErrorRetrySleepTime().intValue();
+        /**
+         * Set the parameters that define SQL Error retry behaviour
+         *
+         * In tWAS this is achieved through system properties, in Liberty through internal
+         * server.xml attributes.
+         *
+         * tWAS
+         * ====
+         *
+         * _transientRetryAttempts = getTransientSQLErrorRetryAttempts().intValue();
+         * _transientRetrySleepTime = getTransientSQLErrorRetrySleepTime().intValue();
+         *
+         * Liberty
+         * =======
+         *
+         * Set the default values for the HADB SQL retry parameters
+         */
+        _transientRetrySleepTime = DEFAULT_TRANSIENT_RETRY_SLEEP_TIME;
+        _lightweightTransientRetrySleepTime = LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME;
+        _transientRetryAttempts = DEFAULT_TRANSIENT_RETRY_ATTEMPTS;
+        _lightweightTransientRetryAttempts = LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS;
 
         // Set the counters to 0
         _inserts = 0;
@@ -3829,8 +3849,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (nonTransientException == null) {
                         // In this case we will retry if we are operating in an HA DB environment
                         HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
-                        sqlSuccess = heartbeatRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS,
-                                                                   LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME);
+                        sqlSuccess = heartbeatRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
+                                                                   _lightweightTransientRetrySleepTime);
                     } else {
                         // Exception not able to be retried
                         Tr.debug(tc, "Cannot recover from Exception when heartbeating for server " + _serverName + " Exception: "
@@ -3851,9 +3871,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             throw new LogClosedException();
         }
 
-        if (!sqlSuccess)
-            // Mark the Recovery Log as failed, this will lead to server termination on tWAS
-            markFailed(nonTransientException);
+        if (!sqlSuccess) {
+            // Audit the failure but allow processing to continue
+            Tr.audit(tc, "WTRN0107W: " +
+                         "Caught Exception when heartbeating SQL RecoveryLog " + _logName + " for server " + _serverName +
+                         " Exception: " + nonTransientException);
+        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "heartBeat");
@@ -4257,8 +4280,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (nonTransientException == null) {
                     // In this case we will retry if we are operating in an HA DB environment
                     ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
-                    sqlSuccess = claimPeerRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS,
-                                                               LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME);
+                    sqlSuccess = claimPeerRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
+                                                               _lightweightTransientRetrySleepTime);
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
                         isClaimed = claimPeerRetry.isClaimed();
@@ -4305,6 +4328,58 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.debug(tc, "setTimeBetweenHeartbeats", timeBetweenHeartbeats);
 
         _peerLockTimeBetweenHeartbeats = timeBetweenHeartbeats;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setStandardTransientErrorRetryTime(int)
+     */
+    @Override
+    public void setStandardTransientErrorRetryTime(int standardTransientErrorRetryTime) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setStandardTransientErrorRetryTime", standardTransientErrorRetryTime);
+
+        _transientRetrySleepTime = standardTransientErrorRetryTime * 1000;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setStandardTransientErrorRetryAttempts(int)
+     */
+    @Override
+    public void setStandardTransientErrorRetryAttempts(int standardTransientErrorRetryAttempts) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setStandardTransientErrorRetryAttempts", standardTransientErrorRetryAttempts);
+
+        _lightweightTransientRetryAttempts = standardTransientErrorRetryAttempts;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightTransientErrorRetryTime(int)
+     */
+    @Override
+    public void setLightweightTransientErrorRetryTime(int lightweightTransientErrorRetryTime) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setLightweightTransientErrorRetryTime", lightweightTransientErrorRetryTime);
+
+        _lightweightTransientRetrySleepTime = lightweightTransientErrorRetryTime * 1000;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightTransientErrorRetryAttempts(int)
+     */
+    @Override
+    public void setLightweightTransientErrorRetryAttempts(int lightweightTransientErrorRetryAttempts) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setLightweightTransientErrorRetryAttempts", lightweightTransientErrorRetryAttempts);
+
+        _transientRetryAttempts = lightweightTransientErrorRetryAttempts;
     }
 
     /**
