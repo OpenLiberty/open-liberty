@@ -39,7 +39,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	private static final String CLASS_NAME = GrpcServletContainerInitializer.class.getName();
 	private static final Logger logger = Logger.getLogger(GrpcServletContainerInitializer.class.getName());
 
-	private static ConcurrentHashMap<String, Set<String>> grpcServiceClassNames;
+	private static ConcurrentHashMap<String, GrpcServletApplication>  grpcApplications;
 	GrpcServlet grpcServlet;
 
 	/**
@@ -49,13 +49,14 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	@Override
 	public void onStartup(Set<Class<?>> ctx, ServletContext sc) throws ServletException {
 
-		if (grpcServiceClassNames != null) {
+		if (grpcApplications != null) {
 			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
 					"Attempting to load gRPC services for app " + sc.getServletContextName());
 
 			// TODO: optionally load classes with CDI to allow injection in service classes
 			// init all other BindableService classes via reflection
-			Set<String> services = grpcServiceClassNames.get(((WebApp) sc).getApplicationName());
+			GrpcServletApplication currentApp = grpcApplications.get(((WebApp) sc).getApplicationName());
+			Set<String> services = currentApp.getServiceClassNames();
 			if (services != null) {
 				Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
 				for (String serviceClassName : services) {
@@ -76,6 +77,8 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 						String serviceName = service.bindService().getServiceDescriptor().getName();
 						String urlPattern = "/" + serviceName + "/*";
 						servletRegistration.addMapping(urlPattern);
+						// keep track of this service name -> application path mapping
+						currentApp.addServiceName(serviceName, sc.getContextPath());
 						Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup",
 								"Registered gRPC service at URL: " + urlPattern);
 					}
@@ -130,10 +133,12 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 			if (services != null && !services.isEmpty()) {
 				if (!services.isEmpty()) {
-					if (grpcServiceClassNames == null) {
-						grpcServiceClassNames = new ConcurrentHashMap<String, Set<String>>();
+					if (grpcApplications == null) {
+						grpcApplications = new ConcurrentHashMap<String, GrpcServletApplication>();
 					}
-					grpcServiceClassNames.put(appInfo.getName(), services);
+					GrpcServletApplication currentApplication = new GrpcServletApplication();
+					currentApplication.addServiceClassNames(services);
+					grpcApplications.put(appInfo.getName(), currentApplication);
 				}
 			}
 		} catch (UnableToAdaptException e) {
@@ -152,8 +157,17 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 	@Override
 	public void applicationStopping(ApplicationInfo appInfo) {
-		grpcServiceClassNames = null;
 		grpcServlet = null;
+		// clean up any grpc URL mappings
+		if (grpcApplications != null) {
+			GrpcServletApplication currentApp = grpcApplications.remove(appInfo.getName());
+			if (currentApp != null) {
+				currentApp.destroy();
+				if (grpcApplications.isEmpty()) {
+					grpcApplications = null;
+				}
+			}
+		}
 	}
 
 	@Override
