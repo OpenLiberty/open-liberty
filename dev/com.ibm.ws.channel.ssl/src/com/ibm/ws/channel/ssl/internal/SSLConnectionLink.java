@@ -100,6 +100,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
     private boolean http2Enabled = false;
     /** The third party ALPN negotiator used for this link */
     private ThirdPartyAlpnNegotiator alpnNegotiator = null;
+    /** inner class inbound callback for this link. needed for outside access */
+    private MyHandshakeCompletedCallback inboundCallback = null;
 
     private final Lock cleanupLock = new ReentrantLock();
 
@@ -401,6 +403,10 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             this.flowType = _flowType;
         }
 
+        public void updateNetBuffer(WsByteBuffer newBuffer) {
+            netBuffer = newBuffer;
+        }
+
         /*
          * @see com.ibm.ws.channel.ssl.internal.SSLHandshakeCompletedCallback#complete(javax.net.ssl.SSLEngineResult)
          */
@@ -472,6 +478,17 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "error (handshake), vc=" + getVCHash());
             }
+        }
+    }
+
+    /**
+     * Provide a way for the connection link to be updated with a new netBuffer.
+     *
+     * @param newBuffer
+     */
+    public void updateInboundCallbackNetBuffer(WsByteBuffer newBuffer) {
+        if (inboundCallback != null) {
+            inboundCallback.updateNetBuffer(newBuffer);
         }
     }
 
@@ -571,10 +588,10 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             }
 
             // Build a callback for the asynchronous SSL handshake
-            MyHandshakeCompletedCallback callback = new MyHandshakeCompletedCallback(this, netBuffer, decryptedNetBuffer, encryptedAppBuffer, FlowType.INBOUND);
+            inboundCallback = new MyHandshakeCompletedCallback(this, netBuffer, decryptedNetBuffer, encryptedAppBuffer, FlowType.INBOUND);
             // Continue the SSL handshake. Do this with asynchronous handShake
             result = SSLUtils.handleHandshake(this, netBuffer, decryptedNetBuffer,
-                                              encryptedAppBuffer, result, callback, false);
+                                              encryptedAppBuffer, result, inboundCallback, false);
             // Check to see if the work was able to be done synchronously.
             if (result != null) {
                 // Handshake is done.

@@ -780,10 +780,11 @@ public class SSLUtils {
                     WsByteBuffer tempBuffer = allocateByteBuffer(size, false);
                     copyBuffer(netBuffer, tempBuffer, netBuffer.remaining());
                     tempBuffer.flip();
-                    netBuffer.release(); //TODO: maybe port tWAS APAR PI07526
+                    netBuffer.release();
                     netBuffer = tempBuffer;
-                    // TODO: this path is broken since we cannot tell the caller
-                    // that we are changing netBuffer
+
+                    connLink.updateInboundCallbackNetBuffer(netBuffer);
+
                     if (bTrace && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Had to grow the netBuf: " + getBufferTraceInfo(netBuffer));
                     }
