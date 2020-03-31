@@ -34,7 +34,6 @@ import com.ibm.ws.security.authentication.cache.DeleteAuthCache;
  */
 @Component(service = { DeleteAuthCache.class, DynamicMBean.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
            property = { "service.vendor=IBM", "jmx.objectname=" + DeleteAuthCache.INSTANCE_NAME })
 public class DeleteAuthCacheImpl extends StandardMBean implements DeleteAuthCache {
 
