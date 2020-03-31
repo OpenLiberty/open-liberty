@@ -270,6 +270,12 @@ public class FeatureUtility {
         return openLibertyVersion;
     }
 
+    public List<String> findFeatures(){
+        // algorithm to find features
+
+        return null;
+    }
+
     /**
      * Resolves and installs the features
      *
@@ -369,6 +375,7 @@ public class FeatureUtility {
         return result;
     }
 
+
     public List<String> resolveFeatures(boolean isShortNames) throws InstallException {
         map.put("download.location", fromDir.toString());
 
@@ -417,7 +424,7 @@ public class FeatureUtility {
 
     }
 
-    private List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException {
+    public List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException {
         if(jsonsRequired.isEmpty()) {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FEATURES_LIST_INVALID")); //
         }
