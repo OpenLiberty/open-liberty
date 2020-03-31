@@ -11,14 +11,16 @@
  */
 package com.ibm.ws.lra;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
 import io.narayana.lra.filter.ServerLRAFilter;
 
@@ -28,8 +30,8 @@ import io.narayana.lra.filter.ServerLRAFilter;
  *
  * OSGi methods (activate/deactivate) should be protected.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
-public class SampleComponent2 {
+@Component(service = { JaxRsProviderRegister.class })
+public class SampleComponent2 implements JaxRsProviderRegister {
 
     private static final TraceComponent tc = Tr.register(SampleComponent2.class);
 
@@ -43,10 +45,10 @@ public class SampleComponent2 {
     @Activate
     protected void activate(Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "SampleComponent activated", properties);
+            Tr.event(tc, "SampleComponent activated with a service", properties);
         }
 
-        Tr.warning(tc, "Alert, Another activation!. Has the world not ended yet?");
+        Tr.warning(tc, "Alert, Another activation!. Has the world not ended yet? with a service");
         String name = ServerLRAFilter.class.getName();
         Tr.warning(tc, "The name is " + name);
     }
@@ -64,4 +66,52 @@ public class SampleComponent2 {
 
         Tr.warning(tc, "Phew, we are secondly being deactivated");
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
+        Tr.warning(tc, "I don't want to do anything just yet");
+        String methodName = "installProvider";
+
+        if (clientSide) {
+            OpentracingClientFilter useClientFilter = getClientFilter();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName, "Client Filter", useClientFilter);
+            }
+            if (useClientFilter != null) {
+                providers.add(useClientFilter);
+            } else {
+                // Ignore: The component is not active.
+            }
+
+        } else {
+            OpentracingContainerFilter useContainerFilter = getContainerFilter();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName, "Container Filter", useContainerFilter);
+            }
+            if (useContainerFilter != null) {
+                providers.add(useContainerFilter);
+            } else {
+                // Ignore: The component is not active.
+            }
+        }
+
+    }
+
+    public static class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
+
+    }
+
+    public static class OpentracingContainerFilter implements ClientRequestFilter, ClientResponseFilter {
+
+    }
+
+    public OpentracingClientFilter getClientFilter() {
+        return new OpentracingClientFilter();
+    }
+
+    public OpentracingContainerFilter getContainerFilter() {
+        return new OpentracingContainerFilter();
+    }
+
 }
