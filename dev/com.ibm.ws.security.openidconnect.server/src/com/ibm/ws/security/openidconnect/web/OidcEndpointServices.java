@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,6 +69,7 @@ import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.EndpointUtils;
 import com.ibm.ws.security.oauth20.web.OAuth20EndpointServices;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
+import com.ibm.ws.security.oauth20.web.RelyingPartyTracker;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HttpUtils;
@@ -518,10 +519,18 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                 }
             }
         }
+        if (oauth20provider.isTrackRelyingParties()) {
+            redirectUri = updateRedirectUriWithTrackedRelyingParties(request, response, oauth20provider, redirectUri);
+        }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri +"]");
         }
         response.sendRedirect(redirectUri);
+    }
+
+    String updateRedirectUriWithTrackedRelyingParties(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, String redirectUri) {
+        RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response, provider);
+        return rpTracker.updateLogoutUrlAndDeleteCookie(redirectUri);
     }
 
     /**
