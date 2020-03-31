@@ -10,13 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.bval;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,13 +27,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class BeanValidationTest extends FATServletClient {
     private static final String BVAL_APP = "jca-bval";
-    private static final String BVAL_RAR = "BvalRA";
+    private static final String BVAL_RAR = "BValRA";
 
     @Server("com.ibm.ws.jca.fat.bval")
     public static LibertyServer server;
@@ -43,16 +44,12 @@ public class BeanValidationTest extends FATServletClient {
         // Create applications
         ShrinkHelper.defaultApp(server, BVAL_APP, "web", "web.mdb");
         ShrinkHelper.defaultRar(server, BVAL_RAR, "com.ibm.bval.jca.adapter");
+
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server.isStarted())
-            server.stopServer();
-    }
-
-    @After
-    public void afterEach() throws Exception {
         if (server.isStarted())
             server.stopServer();
     }
@@ -68,12 +65,16 @@ public class BeanValidationTest extends FATServletClient {
         return runTestWithResponse(server, BVAL_APP, "testBeanValidation&" + queryString);
     }
 
+    private void restartWithNewConfig(String fileName) throws Exception {
+        if (server.isStarted())
+            server.stopServer();
+
+        server.setServerConfigurationFile(fileName);
+        server.startServer(testName.getMethodName() + ".log");
+    }
+
     @Test
     public void testAddAndFind() throws Exception {
-
-        server.setServerConfigurationFile("server-base.xml");
-        server.startServer(testName.getMethodName() + ".log");
-
         // attempt find for an entry that isn't in the table
         StringBuilder output = runInServlet("functionName=FIND&capital=Saint%20Paul");
         if (output.indexOf("Did not FIND any entries") < 0)
@@ -91,10 +92,6 @@ public class BeanValidationTest extends FATServletClient {
 
     @Test
     public void testAddAndRemove() throws Exception {
-
-        server.setServerConfigurationFile("server-base.xml");
-        server.startServer(testName.getMethodName() + ".log");
-
         // add
         StringBuilder output = runInServlet("functionName=ADD&city=Rochester&state=Minnesota&population=106769");
         output = runInServlet("functionName=ADD&city=Stewartville&state=Minnesota&population=5916");
@@ -112,10 +109,10 @@ public class BeanValidationTest extends FATServletClient {
     }
 
     @Test
+    @Mode(FULL)
     public void testMessageDrivenBean() throws Exception {
 
-        server.setServerConfigurationFile("server-with-mdb.xml");
-        server.startServer(testName.getMethodName() + ".log");
+        restartWithNewConfig("server-with-mdb.xml");
 
         StringBuilder output = runInServlet("functionName=ADD&county=Olmsted&state=Minnesota&population=147066&area=654.5");
         if (output.indexOf("Successfully performed ADD with output: {area=654.5, county=Olmsted, population=147066, state=Minnesota}") < 0)
@@ -132,10 +129,10 @@ public class BeanValidationTest extends FATServletClient {
                     "com.ibm.wsspi.injectionengine.InjectionException",
                     "javax.servlet.UnavailableException"
     })
+    @Mode(FULL)
     public void testInvalidActivationSpec() throws Exception {
 
-        server.setServerConfigurationFile("server-invalid-interaction-spec.xml");
-        server.startServer(testName.getMethodName() + ".log");
+        restartWithNewConfig("server-invalid-interaction-spec.xml");
 
         try {
             runInServlet("functionName=ADD&county=Olmsted&state=Minnesota&population=147066&area=654.5");
@@ -157,10 +154,10 @@ public class BeanValidationTest extends FATServletClient {
     @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException",
                     "javax.servlet.UnavailableException"
     })
+    @Mode(FULL)
     public void testInvalidConnectionFactory() throws Exception {
 
-        server.setServerConfigurationFile("server-invalid-cf.xml");
-        server.startServer(testName.getMethodName() + ".log");
+        restartWithNewConfig("server-invalid-cf.xml");
 
         try {
             runInServlet("functionName=ADD&city=Rochester&state=Minnesota&population=106769");
@@ -179,10 +176,10 @@ public class BeanValidationTest extends FATServletClient {
     @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException",
                     "javax.servlet.UnavailableException"
     })
+    @Mode(FULL)
     public void testInvalidResourceAdapter() throws Exception {
 
-        server.setServerConfigurationFile("server-invalid-ra.xml");
-        server.startServer(testName.getMethodName() + ".log");
+        restartWithNewConfig("server-invalid-ra.xml");
 
         try {
             runInServlet("functionName=FIND&capital=Saint%20Paul");
