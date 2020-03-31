@@ -32,6 +32,7 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 public enum FeatureAction implements ActionDefinition {
     installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "name..."),
     installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose", "name..."),
+    find(new FindAction(), "", -1),
     help(new FeatureHelpAction(),"", 0);
 
     private List<String> commandOptions;

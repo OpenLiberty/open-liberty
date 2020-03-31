@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,6 +43,7 @@ import java.util.zip.ZipFile;
 
 import com.ibm.ws.repository.common.enums.ResourceType;
 import com.ibm.ws.repository.resources.EsaResource;
+import com.ibm.ws.repository.resources.SampleResource;
 import org.apache.aries.util.manifest.ManifestProcessor;
 
 import com.ibm.ws.install.CancelException;
@@ -75,6 +79,11 @@ import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.writeable.RepositoryResourceWritable;
 import com.ibm.ws.repository.strategies.writeable.AddThenDeleteStrategy;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
 
 /**
  *
@@ -101,6 +110,7 @@ public class InstallKernelMap implements Map {
     private static final String UNINSTALL_USER_FEATURES = "uninstall.user.features";
     private static final String FORCE_UNINSTALL = "force.uninstall";
     private static final String ACTION_INSTALL = "action.install";
+    private static final String ACTION_FIND = "action.find";
     private static final String ACTION_INSTALL_RESULT = "action.install.result";
     private static final String ACTION_UNINSTALL = "action.uninstall";
     private static final String ACTION_RESULT = "action.result";
@@ -156,7 +166,8 @@ public class InstallKernelMap implements Map {
     private enum ActionType {
         install,
         uninstall,
-        resolve
+        resolve,
+        find
     }
 
     private final Map data = new HashMap();
@@ -271,6 +282,8 @@ public class InstallKernelMap implements Map {
                 } else {
                     return singleFileResolve();
                 }
+            } else if (actionType.equals(ActionType.find)) {
+                return findFeatures();
             }
         } else if (IS_FEATURE_UTILITY.equals(key)){
             if(data.get(IS_FEATURE_UTILITY) == null){
@@ -293,6 +306,61 @@ public class InstallKernelMap implements Map {
             return envMap;
         }
         return data.get(key);
+    }
+
+    private Set<String> findFeatures() {
+        Set<String> returnedFeatures = new LinkedHashSet<>();
+        List<File> jsons = (List<File>) get("single.json.file");
+        String query = ((String) data.get(ACTION_FIND)).toLowerCase();
+
+        double individualSize = progressBar.getMethodIncrement("findFeatures") / (jsons.size());
+
+
+        for(File jsonFile : jsons){
+            try(InputStream is = new FileInputStream(jsonFile)){
+
+                JsonReader jsonReader = Json.createReader(is);
+                JsonArray jsonArray = jsonReader.readArray();
+                jsonReader.close();
+
+                for(int i = 0; i < jsonArray.size(); i++){
+                    JsonObject json = jsonArray.getJsonObject(i);
+                    // todo use a constants class to get the json attributes
+                    JsonObject wlpInfo = json.getJsonObject("wlpInformation");
+
+                    String visibility = null;
+                    try {
+                        visibility = wlpInfo.getJsonString("visibility").getString();
+                    } catch(NullPointerException e){
+                        
+                    }
+                    if(visibility == null || !visibility.equals("PUBLIC")){
+                        continue;
+                    }
+                    // todo null checking?
+                    String shortname = wlpInfo.getJsonString("shortName").getString();
+                    String description = json.getJsonString("shortDescription").getString();
+
+                    if(shortname.toLowerCase().contains(query) || description.toLowerCase().contains(query)) {
+                        returnedFeatures.add("Feature: " + shortname + "\nDescription: " + description);
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            updateProgress(individualSize);
+            progressBar.manuallyUpdate();
+            fine("Finished processing " + jsonFile.getName());
+        }
+        info("We found the following features:");
+        for(String result : returnedFeatures){
+            info(result);
+        }
+
+        return returnedFeatures;
     }
 
     @SuppressWarnings("unchecked")
@@ -478,6 +546,13 @@ public class InstallKernelMap implements Map {
                 } else {
                     data.put(ACTION_INSTALL, value);
                 }
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if(ACTION_FIND.equals(key)){
+            if(value instanceof String){
+                data.put(ACTION_FIND, value);
+                actionType = ActionType.find;
             } else {
                 throw new IllegalArgumentException();
             }
