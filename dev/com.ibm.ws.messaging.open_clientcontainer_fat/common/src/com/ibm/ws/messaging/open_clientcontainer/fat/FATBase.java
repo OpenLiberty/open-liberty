@@ -68,7 +68,7 @@ public class FATBase {
   protected void runTest(String ... fn) throws Exception {
     String testName;
     if (null==fn||0==fn.length) {
-     testName = Thread.currentThread().getStackTrace()[2].getMethodName();
+     testName = Util.getCaller().getMethodName();
     } else {
       testName = fn[0];
     }

@@ -10,8 +10,6 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-databinding-jaxb;3.3.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 1.8
-javac.target: 1.8
 
 cxfVersion=3.3.3
 

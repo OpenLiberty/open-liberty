@@ -14,8 +14,6 @@
 bSymbolicName=com.ibm.ws.microprofile.opentracing.jaeger
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.opentracing.jaeger
 Bundle-SymbolicName: com.ibm.ws.microprofile.opentracing.jaeger
@@ -32,7 +30,6 @@ Import-Package: \
 
 Private-Package: com.ibm.ws.microprofile.opentracing.jaeger.resources
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src, resources
 

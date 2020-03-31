@@ -119,10 +119,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
   
   private WebAppConfiguration webAppConfig;
   private boolean extensionProcessingDisabled=false;
-  private ManagedObjectService managedObjectService;
-  
-  private GeneratePluginConfigMBean GenPluginCfgMB=null;
-  
+  private ManagedObjectService managedObjectService;  
 
   /**
    * Constructor.

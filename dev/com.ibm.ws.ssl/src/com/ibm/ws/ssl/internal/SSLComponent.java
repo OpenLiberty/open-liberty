@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.security.AccessController;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -191,17 +190,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         }
         keystoreIdMap.remove(config.getId());
         keystorePidMap.remove(config.getPid());
-        KeyStoreManager.getInstance().clearKeyStoreFromMap(config.getId());
-        KeyStoreManager.getInstance().clearKeyStoreFromMap(config.getPid());
-        for (Iterator<Map.Entry<String, RepertoireConfigService>> it = repertoireMap.entrySet().iterator(); it.hasNext();) {
-
-            RepertoireConfigService rep = it.next().getValue();
-            if (rep.getKeyStore() == config || rep.getTrustStore() == config) {
-                it.remove();
-                repertoirePropertiesMap.remove(rep.getAlias());
-                repertoirePIDMap.remove(rep.getPID());
-            }
-        }
     }
 
     private void addKeyStores(boolean updateSSLConfigManager, KeystoreConfig... keystores) {

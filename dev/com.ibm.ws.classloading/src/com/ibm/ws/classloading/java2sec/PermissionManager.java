@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.java2sec;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
@@ -32,6 +33,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry;
+import java.util.Enumeration;
 
 import javax.security.auth.AuthPermission;
 
@@ -133,27 +138,14 @@ public class PermissionManager implements PermissionsCombiner {
 
     private Map<String, ArrayList<Permission>> permissionXMLPermissionMap = new HashMap<String, ArrayList<Permission>>();
 
-    private final boolean java2SecurityEnabled;
-
-    public PermissionManager() {
-        this (System.getSecurityManager() != null);
-    }
-
-    // Used for test to force java2SecurityEnabled path
-    PermissionManager(boolean java2SecurityEnabled) {
-        this.java2SecurityEnabled = java2SecurityEnabled;
-    }
-
     @Activate
     protected void activate(ComponentContext cc) {
         bundleContext = cc.getBundleContext();
         isServer = "server".equals(bundleContext.getProperty("wlp.process.type"));
 
-        if (java2SecurityEnabled) {
-            permissions.activate(cc);
-            initializePermissions();
-            setAsDynamicPolicyPermissionCombiner(this);
-        }
+        permissions.activate(cc);
+        initializePermissions();
+        setAsDynamicPolicyPermissionCombiner(this);
     }
 
     private void setAsDynamicPolicyPermissionCombiner(PermissionsCombiner effectivePolicy) {
@@ -171,11 +163,9 @@ public class PermissionManager implements PermissionsCombiner {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        if (java2SecurityEnabled) {
-            permissions.deactivate(cc);
-            clearPermissions();
-            setAsDynamicPolicyPermissionCombiner(null);
-        }
+        permissions.deactivate(cc);
+        clearPermissions();
+        setAsDynamicPolicyPermissionCombiner(null);
     }
 
     protected void setPermission(ServiceReference<JavaPermissionsConfiguration> permission) {
@@ -187,11 +177,9 @@ public class PermissionManager implements PermissionsCombiner {
      */
     protected synchronized void unsetPermission(ServiceReference<JavaPermissionsConfiguration> permission) {
         permissions.removeReference(permission);
-        if (java2SecurityEnabled) {
-            if (wsjarUrlStreamHandlerAvailable) {
-                clearPermissions();
-                initializePermissions();
-            }
+        if (wsjarUrlStreamHandlerAvailable) {
+            clearPermissions();
+            initializePermissions();
         }
     }
 
@@ -206,11 +194,9 @@ public class PermissionManager implements PermissionsCombiner {
     protected synchronized void updatedConfiguration(ServiceReference<JavaPermissionsConfiguration> permission) {
         permissions.removeReference(permission);
         permissions.addReference(permission);
-        if (java2SecurityEnabled) {
-            if (wsjarUrlStreamHandlerAvailable) {
-                clearPermissions();
-                initializePermissions();
-            }
+        if (wsjarUrlStreamHandlerAvailable) {
+            clearPermissions();
+            initializePermissions();
         }
     }
 
@@ -381,7 +367,7 @@ public class PermissionManager implements PermissionsCombiner {
     private ProtectionDomain createProtectionDomain(CodeSource codeSource, ArrayList<Permission> permissions) {
         PermissionCollection perms = new Permissions();
 
-        if (!java2SecurityEnabled) {
+        if (!java2SecurityEnabled()) {
             perms.add(new AllPermission());
         } else {
             for (Permission permission : permissions) {
@@ -398,7 +384,9 @@ public class PermissionManager implements PermissionsCombiner {
      * @param permissionClass
      * @param target
      * @param action
-     * @param principalNamegg
+     * @param principalName
+     * @param principalType
+     * @param credential
      * @return
      */
     public Permission createPermissionObject(String permissionClass, String target, String action, String credential, String principalType, String principalName, String fileName) {
@@ -559,6 +547,7 @@ public class PermissionManager implements PermissionsCombiner {
      */
     public ArrayList<Permission> getEffectivePermissions(List<Permission> permissions, String codeBase) {
         ArrayList<Permission> effectivePermissions = new ArrayList<Permission>();
+        String original_codeBase = codeBase;
 
         // Add the granted permissions to an arraylist
         effectivePermissions.addAll(grantedPermissions);
@@ -566,6 +555,10 @@ public class PermissionManager implements PermissionsCombiner {
         // Add the codebase specific permissions
         codeBase = normalize(codeBase);
         
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "os_name: "+ os_name + " os_version: " + os_version);
+        }
         // Windows 10 adds another / to the front of the codesource that needs to removed, else
         // the codebases will not match between the permissions being specified and the effective perms
         if (os_name.contains("Windows") && (os_version.equals("10.0"))) {
@@ -581,19 +574,28 @@ public class PermissionManager implements PermissionsCombiner {
             while(it.hasNext())  
             {  
                 String key=(String)it.next();
+                Tr.debug(tc, "codebase key: "  + key);
             }
+        }
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "codeBase: " + codeBase + " original_codeBase: " + original_codeBase);
         }
         
         if (codeBasePermissionMap.containsKey(codeBase)) {
             effectivePermissions.addAll(codeBasePermissionMap.get(codeBase));
+        } else if (codeBasePermissionMap.containsKey(original_codeBase)) {
+            effectivePermissions.addAll(codeBasePermissionMap.get(original_codeBase));
+           
         }
 
         // Add permissions.xml permissions
         if (permissionXMLPermissionMap.containsKey(codeBase)) {
             effectivePermissions.addAll(permissionXMLPermissionMap.get(codeBase));
+        } else if (permissionXMLPermissionMap.containsKey(original_codeBase)) {
+            effectivePermissions.addAll(permissionXMLPermissionMap.get(original_codeBase));
         }
 
-        
         // Iterate over the permissions and only add those that are not restricted
         for (Permission permission : permissions) {
             if (!isRestricted(permission)) {
@@ -644,6 +646,15 @@ public class PermissionManager implements PermissionsCombiner {
         return false;
     }
 
+    private boolean java2SecurityEnabled() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Adds a permission from the permissions.xml file for the given CodeSource.
      * 
@@ -654,7 +665,16 @@ public class PermissionManager implements PermissionsCombiner {
     public void addPermissionsXMLPermission(CodeSource codeSource, Permission permission) {
         ArrayList<Permission> permissions = null;
         String codeBase = codeSource.getLocation().getPath();
-
+        String fileName = codeSource.getLocation().getFile();
+        int last = fileName.lastIndexOf("/");
+        fileName = fileName.substring(last + 1);
+        
+        File installRoot = new File(getInstallRoot());
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " getInstallRoot: " + getInstallRoot() + " fileName: " + fileName + " codeBase: " + codeBase);
+        }
+        
         if (!isRestricted(permission)) {
             if (permissionXMLPermissionMap.containsKey(codeBase)) {
                 permissions = permissionXMLPermissionMap.get(codeBase);
@@ -663,8 +683,114 @@ public class PermissionManager implements PermissionsCombiner {
                 permissions = new ArrayList<Permission>();
                 permissions.add(permission);
                 permissionXMLPermissionMap.put(codeBase, permissions);
+                // Calling recursive method 
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, " added new perm to codebase: " + codeBase + ", calling recursive find on filename: " + fileName + " codeBase: " + codeBase);
+                }
+                RecursiveFind(installRoot, fileName, codeBase, permissions);
+
             }
         }
     }
+
+    /**
+     * Returns the installation root. If it wasn't detected, use current directory.
+     */
+    public static String getInstallRoot() {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                String output = System.getProperty("server.config.dir");
+                if (output == null) {
+                    output = System.getenv("SERVER_CONFIG_DIR");
+                }
+                if (output == null) {
+                        output = ".";
+                }
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The install root is " + output);
+                }
+                return output;
+            }
+        });
+    }
+    
+    private void RecursiveArchiveFind(File dir, String individualArchive, String codeBase, ArrayList<Permission> permissions) {
+        File [] files = dir.listFiles();
+
+        // for every file in the current directory, see if it matches any of the individual archive files
+        for (File file : files) {
+            if (file.isFile()) {
+                String newcodebase = file.getPath().replace("\\", "/");
+                newcodebase = "/".concat(newcodebase);
+
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, ".....RecursiveFind: found file: " + file.getName() + " individualArchive: " + individualArchive + "   file.getPath(): " + 
+                                    file.getPath() + " codeBase: " + codeBase + " newcodebase: " + newcodebase);              
+                };
+                
+
+                if (file.getName().equals(individualArchive)) {
+                    if (newcodebase.equals(codeBase)) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "       the filenames and codebases matched, keep searching");
+                        // this is the same file, keep searching 
+                    } else {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "          the file names matched, but the codebase didnt, so let's see if it's in cache");
+                        }
+                        // diff codebase, check for cache, add perm
+                        if (newcodebase.contains("workarea") && newcodebase.contains("data") && newcodebase.contains("cache")) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "                        newcodebase contains workarea, adding perm to cached entry");
+                            }
+                            permissionXMLPermissionMap.put(newcodebase, permissions);
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, " ... cached file, adding permissions");
+                            }
+                        }                    
+                    }
+                }
+            }  
+            // for sub-directories 
+            else if (file.isDirectory()) 
+            {          
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, ".....RecursiveFind: found directory: " + file.getName());
+                }
+                RecursiveArchiveFind(file, individualArchive, codeBase, permissions);                
+            } 
+        }
+    }
+    
+    
+    private void RecursiveFind(File dir, String fileName, String codeBase, ArrayList<Permission> permissions)  
+    { 
+        
+        // take the archive referenced by fileName apart to its individual archives
+        ZipFile z = null;
+        if (!codeBase.contains("expanded")) {
+            try {
+                z = new ZipFile(codeBase);
+               
+            } catch (java.io.IOException ioe) {
+                // should never get here
+            }
+            ZipEntry ze = null;
+            if (z != null) {
+                Enumeration <? extends ZipEntry> zenum = z.entries();
+                while (zenum.hasMoreElements()) {
+                    ze = (ZipEntry)zenum.nextElement();
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "for every  enumerated archive name: " + ze.getName());
+                    }
+                    String individualArchive = ze.getName();
+                    RecursiveArchiveFind(dir, individualArchive, codeBase, permissions);
+                    
+                }         
+            }    
+        }
+
+    } 
 
 }

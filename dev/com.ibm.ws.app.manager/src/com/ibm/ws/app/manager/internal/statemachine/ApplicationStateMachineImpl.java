@@ -1354,4 +1354,5 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         return false;
     }
+
 }

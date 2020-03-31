@@ -24,6 +24,7 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
@@ -52,7 +53,7 @@ public class JwtBuilderAPIConfigAltKeyStoreTests extends CommonSecurityFat {
     public static LibertyServer builderServer;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() ;
+    public static RepeatTests r = RepeatTests.withoutModification();
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
@@ -61,7 +62,8 @@ public class JwtBuilderAPIConfigAltKeyStoreTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(builderServer);
-        builderServer.startServerUsingExpandedConfiguration("server_configTests2.xml");
+        builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
+        builderServer.startServerUsingExpandedConfiguration("server_configTests2.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!

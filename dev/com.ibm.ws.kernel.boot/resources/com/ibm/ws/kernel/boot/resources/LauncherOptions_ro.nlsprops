@@ -119,7 +119,7 @@ action-desc.resume=\tRepune\u0163i \u00een func\u0163iune toate componentele pus
 \top\u0163iunea --target pentru a repune \u00een func\u0163iune componentele puse \u00een pauz\u0103.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tCur\u0103\u0163a\u0163i toate informa\u0163iile din cache legate de aceast\u0103 instan\u0163\u0103 de server.
+option-desc.start.clean=\tCur\u0103\u0163a\u0163i toate informa\u0163iile din cache legate de aceast\u0103 instan\u0163\u0103 de server.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="cale spre fi\u015fierul arhiv\u0103 \u0163int\u0103"
 option-desc.dump.archive=\tSpecifica\u0163i \u0163inta arhivei de generat de ac\u0163iunea de creare dump.       \n\
@@ -180,3 +180,15 @@ option-desc.no-password=\tDezactiva\u0163i generarea parolei de depozit de chei 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="folderul r\u0103d\u0103cin\u0103 al serverului din arhiv\u0103"
 option-desc.package.server-root=\tSpecific\u0103 folderul r\u0103d\u0103cin\u0103 al serverului din fi\u015fierul arhiv\u0103.    \n
+#------------------------------\n\
+\ la 72 car. -- tab direc\u0163ionare-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tSare peste etapa de lini\u015ftire \u00eenainte de oprirea serverului. Oprirea normal\u0103\n\
+\ta serverului include o etap\u0103 de lini\u015ftire (quiesce) \u00eenainte de oprire. Etapa de \n\
+\tlini\u015ftire, o perioad\u0103 de 30 secunde, permite serviciilor s\u0103 realizeze lucrul    \n\
+\tanterior opririi; de exemplu sunt opri\u0163i ascult\u0103torii de intrare, dar   \n\
+\tli se permite cererilor existente s\u0103 se finalizeze. Op\u0163iunea -- force nu are niciun\n\
+\tefect dac\u0103 oprirea serverului a fost deja invocat\u0103. Dac\u0103 utiliza\u0163i op\u0163iunea --force\n\
+\tpute\u0163i vedea excep\u0163ii nea\u015fteptate \u00een fi\u015fierul messages.log\n\
+\tcare apar dup\u0103 ce comanda de oprire a serverului a fost primit\u0103 de c\u0103tre server.

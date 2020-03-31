@@ -1,0 +1,70 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+
+SAMPLE_CONFIG=\
+######################################################################\n\
+## ## Define the Maven Central mirror repository##\n\
+## By default featureUtility will download from Maven Central. Users\n\
+## can setup a mirror of the Maven Central and override the featureUtility\n\
+## default Maven Central connection with the mirror repository.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.url=http://w3.mycompany.com/pub/maven2\n\
+\n\
+## Specify the credentials of Maven Central mirror repository, if required.\n\
+## For enhanced security, encode the value of the .password\n\
+## property by using the securityUtility encode action.\n\
+## If you do not set the user and password, you receive a prompt\n\
+## to provide them.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.user=username\n\
+#mavenCentralMirror.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Using custom remote repositories ##\n\
+## featureUtility can install remote Maven on-prem repositories. Provide\n\
+## a repository name and the URL to each remote Maven on-prem repository\n\
+## containing Liberty feature artifacts.\n\
+## The repositories are accessed in the order that they are specified.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#remoteRepositoryName2.url=http://w3.mycompany.com/secure/repository\n\
+\n\
+## Specify the credentials of each repository, if required.\n\
+## For enhanced security, encode the value of the .password\n\
+## property by using the securityUtility encode action.\n\
+## If you do not set the user and password, you receive a prompt\n\
+## to provide them.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName2.user=username\n\
+#remoteRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Using a proxy server (optional) ##\n\
+## If you use a proxy server to access the internet,\n\
+## specify values for the proxy settings properties.\n\
+## For enhanced security, encode the value of the proxyPassword\n\
+## property by using the securityUtility encode action.\n\
+## If you do not set the proxyUser and proxyPassword, you receive\n\
+## a prompt to provide them.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword\n\
+\n\
+######################################################################\n\
+## ## Define the Maven local repository ##\n\
+## The location of the default Maven local repository can be changed.\n\
+## The default location is ${user.home}/.m2/repository/.\n\
+## -------------------------------------------------------------------\n\
+#featureLocalRepo=/home/my_local/repository

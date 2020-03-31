@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verify that all the Krb5LoginM
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: A {0} jaasLoginContext entry cannot be specified as a JAAS configuration entry in the server.xml file, the jaas.conf file, or both files.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=The run time uses a default Krb5LoginModule configuration and the SPNEGO configuration in the server.xml file.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Remove the jaasLoginContext entry from the server.xml file or let the run time use the default entry.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: The {0} JAAS custom login module is not loaded because the {1} configuration element specifies both libraryRef and classProviderRef attributes.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=You must specify only one attribute, libraryRef or classProviderRef, to indicate the artifact from which to load the JAAS custom login module.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Remove either the libraryRef attribute or the classProviderRef attribute, whichever does not contain the JAAS custom login module class.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: The {0} JAAS custom login module is not found because the {1} configuration element does not specify the libraryRef or classProviderRef attribute.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=You must specify exactly one attribute, libraryRef or classProviderRef, to indicate the artifact from which to load the JAAS custom login module.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Specify either the libraryRef or classProviderRef attribute to indicate the location from which to load the JAAS custom login module class.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: The {0} JAAS custom login module class is not found within the {1} {2} artifact.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=The specified application or resource adapter does not contain the requested JAAS custom login module class or the JAAS custom login module class is present within the application, but in a location from which it cannot be loaded.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Make sure the configured JAAS custom login module class and its package name are correct. If an application is specified, the login module class must be contained within the application, within either a top level JAR or a resource adapter module.

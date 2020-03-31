@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1603,3 +1603,14 @@ exception.occurred.while.running.ServletContainerInitializers.onStartup.useracti
 no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: No servlet definition is found for the {0} servlet name in the {1} filter mapping.
 no.servlet.defined.for.servlet.filter.name.mapping.explanation=The servlet name is used in filter mapping, but its definition has not been defined.
 no.servlet.defined.for.servlet.filter.name.mapping.useraction=Define the servlet which is used in the servlet name filter mapping.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: A {0} cookie name with the existing SameSite attribute value {1} is configured with the {2} new value. No SameSite attribute is added for this cookie.
+duplicate.samesite.attribute.for.cookie.name.explanation=A cookie name cannot be configured for multiple SameSite attribute values. The attribute is not added for the cookie.
+duplicate.samesite.attribute.for.cookie.name.useraction=Check the deployment descriptor configuration to make sure the cookie name is configured for only one of the following SameSite attribute values: 'SameSiteCookies_Lax', 'SameSiteCookies_None', or 'SameSiteCookies_Strict'. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: A {0} cookie name that is configured for the {1} SameSite attribute value was previously identified as a duplicate. No SameSite attribute is added for this cookie.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=A cookie name cannot be configured for multiple SameSite attribute values. This cookie name has already been identified as a duplicate.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=Check the deployment descriptor configuration to make sure the cookie name is configured for only one of the following SameSite attribute values: 'SameSiteCookies_Lax', 'SameSiteCookies_None', or 'SameSiteCookies_Strict'. 

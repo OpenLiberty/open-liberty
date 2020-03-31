@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -299,6 +299,10 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
     @Override
     @Sensitive
     protected Object lookup(WSName subname) throws NamingException {
+        // 9099: detect empty lookup on a root context and return a new InitialContext with the same environment instead
+        if (subname.isEmpty()&&getNameInNamespace().isEmpty()) {
+          return new javax.naming.InitialContext(env);
+        }
         Object localObject = myNode.lookup(subname);
         return resolveObject(localObject, subname);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private SystemLogHolder sysOutHolder;
     private boolean isTraceStdout = false;
 
-    private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
+    private String format = LoggingConstants.DEFAULT_CONSOLE_FORMAT;
     private BaseTraceFormatter basicFormatter = null;
     private Integer consoleLogLevel = null;
 
@@ -79,18 +79,18 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         String eventSourceName = getSourceNameFromDataObject(genData);
 
         /*
-         * To write out to the console must determine if we are JSON or BASIC
-         * 1. (JSON OR not a message/log-source event) AND NOT ( tracefile=stdout + basic format config)
+         * To write out to the console must determine if we are JSON or DEV / SIMPLE (default message format) or the deprecated format name BASIC
+         * 1. (JSON OR not a message/log-source event) AND NOT ( tracefile=stdout + dev/simple format config)
          * Note: The "not a message/log-source event condition" is to ensure any non-message sources that were on-route to the consoleLogHandler
-         * before a switch to 'basic' will be properly formatted as JSON instead of directly going to basic formatter.
+         * before a switch to 'dev' will be properly formatted as JSON instead of directly going to basic formatter.
          * a) Message
          * - Check if it is above consoleLogLevel OR if it is from SysOut/SysErr AND copySystemStreams is true
          * then format as JSON
          * b) Not Message (i.e. AccessLog, Trace, FFDC)
          * - format as JSON
-         * 2. BASIC - There can be three message origins for basic messages
+         * 2. DEV - There can be three message origins for dev messages
          * a) tracefileName == stdout
-         * - Checks if levelVal was ERROR or FATAl > indicates stderr
+         * - Checks if levelVal was ERROR or FATAL > indicates stderr
          * - format as Trace
          * b) Second check if this message originated from echo() and copySystemStreams is true
          * - Also check if Level is CONFIG and loggerName is SYSOUT or SYSERR
@@ -99,7 +99,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * - We must check if it is above consoleLogLevel to format it
          */
         if ((format.equals(LoggingConstants.JSON_FORMAT) || !eventSourceName.equals(CollectorConstants.MESSAGES_SOURCE))
-            && (!(format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && eventSourceName.equals(CollectorConstants.TRACE_SOURCE) && isTraceStdout))) {
+            && (!((format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)
+                   || format.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT))
+                  && eventSourceName.equals(CollectorConstants.TRACE_SOURCE) && isTraceStdout))) {
 
             //First retrieve a cached JSON  message if possible, if not, format it and store it.
             if (genData.getJsonMessage() == null) {
@@ -127,7 +129,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 }
             }
 
-        } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && basicFormatter != null) {
+        } else if ((format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)
+                    || format.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT))
+                   && basicFormatter != null) {
             //if traceFilename=stdout write everything to console.log in trace format
             String logLevel = ((LogTraceData) event).getLoglevel();
             if (isTraceStdout) {
@@ -143,7 +147,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                         isStderr = true;
                     }
                 }
-                messageOutput = basicFormatter.formatStreamOutput(genData);
+                messageOutput = format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) ? basicFormatter.messageLogFormat(genData) : basicFormatter.formatStreamOutput(genData);
 
                 //Null return values means we are suppressing a stack trace.. and we don't want to write a 'null' so we return.
                 if (messageOutput == null)
@@ -155,7 +159,8 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
                     isStderr = true;
                 }
-                messageOutput = basicFormatter.consoleLogFormat(genData);
+
+                messageOutput = format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) ? basicFormatter.messageLogFormat(genData) : basicFormatter.consoleLogFormat(genData);
             }
         }
 
@@ -202,7 +207,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     /**
      * Set BaseTraceFormatter passed from BaseTraceService
-     * This Formatter is used to format the BASIC log events
+     * This Formatter is used to format the dev, simple, or basic (deprecated) log events
      * that pass through
      *
      * @param formatter the BaseTraceFormatter to use
@@ -221,9 +226,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     /**
-     * The format to set (i.e. BASIC or JSON)
+     * The format to set (i.e. DEV, SIMPLE, or JSON)
      *
-     * @param format the format to set (i.e. BASIC or JSON)
+     * @param format the format to set (i.e. DEV, SIMPLE, or JSON)
      */
     public void setFormat(String format) {
         this.format = format;

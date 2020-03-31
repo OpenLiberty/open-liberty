@@ -15,7 +15,6 @@ Bundle-Name: com.ibm.ws.cdi.1.2.weld
 Bundle-SymbolicName: com.ibm.ws.cdi.1.2.weld
 Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService
 

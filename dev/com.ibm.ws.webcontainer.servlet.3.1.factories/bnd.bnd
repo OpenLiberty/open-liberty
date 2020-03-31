@@ -17,15 +17,43 @@ Bundle-Description: WAS WebContainer 8.1 with Servlet 3.1 support. Factories onl
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
--dsannotations: com.ibm.ws.webcontainer31.async.factory.AsyncContextFactory31Impl, \
- com.ibm.ws.webcontainer31.osgi.container.config.factory.WebAppConfiguratorFactory31Impl, \
- com.ibm.ws.webcontainer31.osgi.response.factory.IRequestResponseFactory, \
- com.ibm.ws.webcontainer31.osgi.srt.factory.SRTConnectionContextPool31Impl, \
- com.ibm.ws.webcontainer31.osgi.webapp.factory.WebAppFactoryImpl31, \
- com.ibm.ws.webcontainer31.servlet.factory.CacheServletWrapperFactory31Impl, \
- com.ibm.ws.webcontainer31.session.impl.factory.SessionContextRegistryImplFactoryImpl31, \
- com.ibm.wsspi.webcontainer31.util.factory.URIMatcherFactory31Impl
- 
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc.
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: !*.internal.*, \
+    com.ibm.ws.webcontainer31.*factory*;provide:=true
+
+Import-Package: \
+    !com.ibm.ws.webcontainer31.async.factory, \
+    !com.ibm.ws.webcontainer31.osgi.container.config.factory, \
+    !com.ibm.ws.webcontainer31.osgi.response.factory, \
+    !com.ibm.ws.webcontainer31.osgi.srt.factory, \
+    !com.ibm.ws.webcontainer31.osgi.webapp.factory, \
+    !com.ibm.ws.webcontainer31.servlet.factory, \
+    !com.ibm.ws.webcontainer31.session.impl.factory, \
+    ${defaultPackageImport}
+
+Private-Package: \
+    com.ibm.ws.webcontainer31.async.factory, \
+    com.ibm.ws.webcontainer31.osgi.container.config.factory, \
+    com.ibm.ws.webcontainer31.osgi.response.factory, \
+    com.ibm.ws.webcontainer31.osgi.srt.factory, \
+    com.ibm.ws.webcontainer31.osgi.webapp.factory, \
+    com.ibm.ws.webcontainer31.servlet.factory, \
+    com.ibm.ws.webcontainer31.session.impl.factory, \
+    com.ibm.wsspi.webcontainer31.util.factory
+
+-dsannotations: \
+    com.ibm.ws.webcontainer31.async.factory.AsyncContextFactory31Impl, \
+    com.ibm.ws.webcontainer31.osgi.container.config.factory.WebAppConfiguratorFactory31Impl, \
+    com.ibm.ws.webcontainer31.osgi.response.factory.IRequestResponseFactory, \
+    com.ibm.ws.webcontainer31.osgi.srt.factory.SRTConnectionContextPool31Impl, \
+    com.ibm.ws.webcontainer31.osgi.webapp.factory.WebAppFactoryImpl31, \
+    com.ibm.ws.webcontainer31.servlet.factory.CacheServletWrapperFactory31Impl, \
+    com.ibm.ws.webcontainer31.session.impl.factory.SessionContextRegistryImplFactoryImpl31, \
+    com.ibm.wsspi.webcontainer31.util.factory.URIMatcherFactory31Impl
+
 Service-Component: \
   com.ibm.ws.webcontainer.v31.dd; \
     implementation:=com.ibm.ws.javaee.version.ServletVersion; \
@@ -39,23 +67,6 @@ Service-Component: \
   	implementation:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
   	provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
   	properties:="httpVersionSetting:String=2.0_Optional_Off"
- 
-Private-Package: \
- com.ibm.ws.webcontainer31.async.factory, \
- com.ibm.ws.webcontainer31.osgi.container.config.factory, \
- com.ibm.ws.webcontainer31.osgi.response.factory, \
- com.ibm.ws.webcontainer31.osgi.srt.factory, \
- com.ibm.ws.webcontainer31.osgi.webapp.factory, \
- com.ibm.ws.webcontainer31.servlet.factory, \
- com.ibm.ws.webcontainer31.session.impl.factory, \
- com.ibm.wsspi.webcontainer31.util.factory
-
-# For each exported package, create (in that package) a package-info.java
-# file, and place an @version javadoc tag in package-level javadoc. 
-# Append ";provide:=true" if this bundle also provides an implementation
-# for the exported API.
-Export-Package: !*.internal.*, \
-    com.ibm.ws.webcontainer31.*factory*;provide:=true
 
 instrument.disabled: true
 

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 20120 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,8 @@ session.activeSessions.description=Liczba jednocze\u015bnie aktywnych sesji. (Se
 session.invalidated.total.description=Liczba sesji wylogowanych od momentu w\u0142\u0105czenia tego pomiaru.
 session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru.
 
+
+REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

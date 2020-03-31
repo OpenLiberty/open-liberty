@@ -22,10 +22,10 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
-import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderClaimRepeatActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.annotation.Server;
@@ -53,7 +53,7 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() ;
+    public static RepeatTests r = RepeatTests.withoutModification();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -61,7 +61,8 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
         setupLdapServer(builderServer);
 
         serverTracker.addServer(builderServer);
-        builderServer.startServerUsingExpandedConfiguration("server_LDAPRegistry.xml");
+        builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
+        builderServer.startServerUsingExpandedConfiguration("server_LDAPRegistry.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
     }

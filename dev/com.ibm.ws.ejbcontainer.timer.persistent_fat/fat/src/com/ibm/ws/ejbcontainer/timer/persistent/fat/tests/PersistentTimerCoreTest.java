@@ -11,6 +11,8 @@
 
 package com.ibm.ws.ejbcontainer.timer.persistent.fat.tests;
 
+import static com.ibm.ws.ejbcontainer.timer.persistent.fat.tests.PersistentTimerTestHelper.expectedFailures;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -27,6 +29,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.EJBContainerElement;
 import com.ibm.websphere.simplicity.config.EJBTimerServiceElement;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerAccessOperationsServlet;
 import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerSFOperationsServlet;
@@ -47,12 +50,13 @@ import componenttest.topology.utils.FATServletClient;
 @MinimumJavaLevel(javaLevel = 8)
 public class PersistentTimerCoreTest extends FATServletClient {
 
-    public static final String WAR_NAME = "PersistentTimerCoreWeb";
+    public static final String CORE_WAR_NAME = "PersistentTimerCoreWeb";
+    public static final String MISSED_ACTION_WAR_NAME = "MissedTimerActionWeb";
 
     @Server("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")
-    @TestServlets({ @TestServlet(servlet = TimerAccessOperationsServlet.class, contextRoot = WAR_NAME),
-                    @TestServlet(servlet = TimerSFOperationsServlet.class, contextRoot = WAR_NAME),
-                    @TestServlet(servlet = TimerSLOperationsServlet.class, contextRoot = WAR_NAME) })
+    @TestServlets({ @TestServlet(servlet = TimerAccessOperationsServlet.class, contextRoot = CORE_WAR_NAME),
+                    @TestServlet(servlet = TimerSFOperationsServlet.class, contextRoot = CORE_WAR_NAME),
+                    @TestServlet(servlet = TimerSLOperationsServlet.class, contextRoot = CORE_WAR_NAME) })
     public static LibertyServer server;
 
     @ClassRule
@@ -69,6 +73,15 @@ public class PersistentTimerCoreTest extends FATServletClient {
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
         ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+
+        //#################### MissedTimerActionApp.ear
+        JavaArchive MissedTimerActionEJB = ShrinkHelper.buildJavaArchive("MissedTimerActionEJB.jar", "com.ibm.ws.ejbcontainer.timer.persistent.missed.ejb.");
+        WebArchive MissedTimerActionWeb = ShrinkHelper.buildDefaultApp("MissedTimerActionWeb.war", "com.ibm.ws.ejbcontainer.timer.persistent.missed.web.");
+
+        EnterpriseArchive MissedTimerActionApp = ShrinkWrap.create(EnterpriseArchive.class, "MissedTimerActionApp.ear");
+        MissedTimerActionApp.addAsModule(MissedTimerActionEJB).addAsModule(MissedTimerActionWeb);
+
+        ShrinkHelper.exportDropinAppToServer(server, MissedTimerActionApp);
 
         //#################### PersistentTimerCoreApp.ear
         JavaArchive PersistentTimerCoreEJB = ShrinkHelper.buildJavaArchive("PersistentTimerCoreEJB.jar", "com.ibm.ws.ejbcontainer.timer.persistent.core.ejb.");
@@ -87,8 +100,12 @@ public class PersistentTimerCoreTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        // CNTR0333W  : test*LateTimer - Late Timer Warning
+        // CWWKC1501W : testSLTimerServiceEJBTimeoutSessionContextCMT - PersistentExecutor rolled back a task
+        // CWWKC1506E : testSLTimerServiceEJBTimeoutSessionContextCMT - Transaction is marked for rollback
+        // CWWKG0032W : testMissedTimerActionBadValueNoFailover - Unexpected value [Blah]
         if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E");
+            server.stopServer(expectedFailures("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E", "CWWKG0032W.*Blah"));
         }
     }
 
@@ -185,4 +202,185 @@ public class PersistentTimerCoreTest extends FATServletClient {
         }
     }
 
+    //-----------------------------------------------------
+    // --------------MissedTimerActionServlet--------------
+    //-----------------------------------------------------
+
+    /**
+     * Test Persistent Timer missed action default behavior when failover has not been enabled.
+     * The default behavior without failover should be ALL. <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will run all expirations despite a delay that causes several to be missed.
+     * <li> Timer.getNextTimeout() will return values in the past for missed expirations.
+     * </ol>
+     */
+    @Test
+    public void testMissedTimerActionDefaultNoFailover() throws Exception {
+        // Default when no failover is ALL
+        testMissedTimerAction(null, false);
+    }
+
+    /**
+     * Test Persistent Timer missed action default behavior when failover has been enabled.
+     * The default behavior with failover should be ONCE. <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will skip expirations missed because of a delay.
+     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
+     * </ol>
+     */
+    @Test
+    public void testMissedTimerActionDefaultWithFailover() throws Exception {
+        // Default when failover is enabled is ONCE
+        testMissedTimerAction(null, true);
+    }
+
+    /**
+     * Test Persistent Timer missed action "ALL" behavior when failover has not been enabled. <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will run all expirations despite a delay that causes several to be missed.
+     * <li> Timer.getNextTimeout() will return values in the past for missed expirations.
+     * </ol>
+     */
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testMissedTimerActionAllNoFailover() throws Exception {
+        testMissedTimerAction("ALL", false);
+    }
+
+    /**
+     * Test Persistent Timer missed action "ALL" behavior when failover has been enabled. <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will run all expirations despite a delay that causes several to be missed.
+     * <li> Timer.getNextTimeout() will return values in the past for missed expirations.
+     * </ol>
+     */
+    @Test
+    public void testMissedTimerActionAllWithFailover() throws Exception {
+        testMissedTimerAction("ALL", true);
+    }
+
+    /**
+     * Test Persistent Timer missed action "ONCE" behavior when failover has not been enabled. <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will skip expirations missed because of a delay.
+     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
+     * </ol>
+     */
+    @Test
+    public void testMissedTimerActionOnceNoFailover() throws Exception {
+        testMissedTimerAction("ONCE", false);
+    }
+
+    /**
+     * Test Persistent Timer missed action "ONCE" behavior when failover has been enabled. <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will skip expirations missed because of a delay.
+     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
+     * </ol>
+     */
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testMissedTimerActionOnceWithFailover() throws Exception {
+        testMissedTimerAction("ONCE", true);
+    }
+
+    /**
+     * Test Persistent Timer missed action "Once" (mixed case) behavior when failover has not been enabled.
+     * The value is case insensitive and will be treated as "ONCE". <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will skip expirations missed because of a delay.
+     * <li> Timer.getNextTimeout() will return values in the future; skipping missed expirations.
+     * </ol>
+     */
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testMissedTimerActionMixedCaseNoFailover() throws Exception {
+        testMissedTimerAction("Once", false);
+    }
+
+    /**
+     * Test Persistent Timer missed action "Blah" (bad value) behavior when failover has not been enabled.
+     * A warning will be logged, and the value will be treated as unspecified, so default to "ALL". <p>
+     *
+     * This test will confirm the following :
+     * <ol>
+     * <li> Interval timer will run all expirations despite a delay that causes several to be missed.
+     * <li> Timer.getNextTimeout() will return values in the past for missed expirations.
+     * </ol>
+     */
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testMissedTimerActionBadValueNoFailover() throws Exception {
+        // Change to non-default configuration before setting bad configuration value.
+        setMissedPersistentTimerActionConfiguration("ONCE", false);
+        server.setMarkToEndOfLog();
+
+        // Change to bad value "Blah" configuration.
+        setMissedPersistentTimerActionConfiguration("Blah", false);
+        assertFalse("Expected CWWKG0032W message for Blah did not occur", server.findStringsInLogs("CWWKG0032W.*missedPersistentTimerAction.*Blah").isEmpty());
+        server.setMarkToEndOfLog();
+
+        // Run test and verify default, ALL, is used rather than prior value, "ONCE"
+        try {
+            String servlet = MISSED_ACTION_WAR_NAME + "/MissedTimerActionServlet";
+            FATServletClient.runTest(server, servlet, getTestMethodSimpleName());
+        } finally {
+            setMissedPersistentTimerActionConfiguration(null, false);
+        }
+    }
+
+    private void testMissedTimerAction(String missedTimerAction, boolean failover) throws Exception {
+        setMissedPersistentTimerActionConfiguration(missedTimerAction, failover);
+        server.setMarkToEndOfLog();
+
+        try {
+            String servlet = MISSED_ACTION_WAR_NAME + "/MissedTimerActionServlet";
+            FATServletClient.runTest(server, servlet, getTestMethodSimpleName());
+        } finally {
+            setMissedPersistentTimerActionConfiguration(null, false);
+        }
+    }
+
+    /**
+     * Change the setting of the timerService missedPersistentTimerAction to the specified value;
+     * and set persistentExecutor missedTaskThreshold to the minimum value if failover should
+     * be enabled.
+     *
+     * @param missedPersistentTimerAction missed persistent timer action or null
+     * @param failover true if failover should be enabled; otherwise false
+     */
+    private static void setMissedPersistentTimerActionConfiguration(String missedPersistentTimerAction, boolean failover) throws Exception {
+
+        ServerConfiguration config = server.getServerConfiguration();
+        EJBContainerElement ejbContainer = config.getEJBContainer();
+        EJBTimerServiceElement timerService = ejbContainer.getTimerService();
+        timerService.setMissedPersistentTimerAction(missedPersistentTimerAction);
+
+        PersistentExecutor persistentExecutor = config.getPersistentExecutors().getById("Howdy");
+        if (failover) {
+            persistentExecutor.setMissedTaskThreshold("100s");
+            persistentExecutor.setRetryInterval(null); // mutually exclusive with missedTaskThreshold
+        } else {
+            persistentExecutor.setMissedTaskThreshold(null);
+            persistentExecutor.setRetryInterval("300s");
+        }
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        assertNotNull(server.waitForConfigUpdateInLogUsingMark(null));
+    }
 }

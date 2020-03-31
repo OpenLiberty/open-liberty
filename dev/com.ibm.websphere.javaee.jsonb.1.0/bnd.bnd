@@ -11,12 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsonb.1.0
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
    javax.json.bind;version="1.0", \
@@ -25,6 +22,10 @@ Export-Package: \
    javax.json.bind.config;version="1.0", \
    javax.json.bind.serializer;version="1.0", \
    javax.json.bind.spi;version="1.0"
+
+Import-Package: \
+   !org.eclipse.yasson,\
+   *
 
 Include-Resource: \
   @${repo; javax.json.bind:javax.json.bind-api;1.0}!/META-INF/NOTICE

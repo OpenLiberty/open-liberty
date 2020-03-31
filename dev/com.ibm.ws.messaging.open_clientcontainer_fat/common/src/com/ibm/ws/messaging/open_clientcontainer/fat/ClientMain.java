@@ -28,17 +28,18 @@ public class ClientMain {
 
   // Writes marker noting test's success. This is used by the JUnit driver to determine the outcome.
   protected void reportSuccess() {
-    Util.ALWAYS("Test '" + Thread.currentThread().getStackTrace()[2].getMethodName() + "' passed.");
+    StackTraceElement e = Util.getCaller();
+    Util.ALWAYS("Test '" + e.getMethodName() + "' passed.");
 	}
 
   // Writes an informative message that a test failed.
   protected void reportFailure() {
-    StackTraceElement e = Thread.currentThread().getStackTrace()[2];
+    StackTraceElement e = Util.getCaller();
     Util.ALWAYS("Test '" + e.getMethodName() + "' failed. (" + e.getFileName() + ":" + e.getLineNumber() + ")");
 	}
 
   protected void reportFailure(String msg) {
-    StackTraceElement e = Thread.currentThread().getStackTrace()[2];
+    StackTraceElement e = Util.getCaller();
     Util.ALWAYS("Test '" + e.getMethodName() + "' failed. (" + e.getFileName() + ":" + e.getLineNumber() + ") " + msg);
 	}
 

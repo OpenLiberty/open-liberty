@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,16 +29,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.internal.ExceptionUtils;
+import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
-import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 //import com.sun.org.apache.xpath.internal.operations.Bool;
 
@@ -88,6 +85,7 @@ public class FeatureUtility {
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }
+
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
         for (String key: envMapKeys) {

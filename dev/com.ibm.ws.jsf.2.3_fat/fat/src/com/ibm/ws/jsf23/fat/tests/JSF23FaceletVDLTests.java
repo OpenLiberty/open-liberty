@@ -186,8 +186,8 @@ public class JSF23FaceletVDLTests {
         String result2 = jsf23Server.waitForStringInLogUsingMark(".*No context init parameter 'javax\\.faces\\.STATE_SAVING_METHOD' found, using default value 'server'*");
 
         // Verify that the correct values of the context parameters were found.
-        assertNotNull("The correct value of the javax.faces.FACELETS_REFRESH_PERIOD context parameter was not found", result != null);
-        assertNotNull("The correct value of the javax.faces.STATE_SAVING_METHOD context parameter was not found", result2 != null);
+        assertNotNull("The correct value of the javax.faces.FACELETS_REFRESH_PERIOD context parameter was not found", result);
+        assertNotNull("The correct value of the javax.faces.STATE_SAVING_METHOD context parameter was not found", result2);
 
         // Drive a request to the context root and ensure it contains the correct text
         try (WebClient webClient = new WebClient()) {

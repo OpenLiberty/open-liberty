@@ -17,17 +17,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
-import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
-import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
-import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -49,19 +42,19 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
 
+    public final String AppStartMsg = ".*CWWKZ0001I.*" + JWTBuilderConstants.JWT_BUILDER_SERVLET + ".*";
+
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() ;
+    public static RepeatTests r = RepeatTests.withoutModification();
 
-    private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
 
     @BeforeClass
@@ -77,66 +70,11 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     }
 
     /**
-     * <p>
-     * Test Purpose:
-     * </p>
-     * <OL>
-     * <LI>Invoke the JWT Builder using the default builder config.
-     * <LI>What this means is that we're not specifying any JWT Builder config, therefore, we'll use attributes from base config
-     * as well as embedded defaults
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>Should get a token built using the default values for the JWT Token
-     * </OL>
+     * This class just tests that the server starts and stops properly with just the basic config
+     *
      */
     @Test
-    public void JwtBuilderAPIMinimumConfigTests_minimumRunnableConfig() throws Exception {
-
-        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumRunnableConfig.xml");
-
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
-        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null, testSettings);
-        validationUtils.validateResult(response, expectations);
+    public void JwtBuilderAPIMinimumConfigTests_minimumConfig() throws Exception {
 
     }
-
-    @Test
-    public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_global() throws Exception {
-
-        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig1.xml");
-
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    @Test
-    public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_builder() throws Exception {
-
-        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig2.xml");
-
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
-        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
 }

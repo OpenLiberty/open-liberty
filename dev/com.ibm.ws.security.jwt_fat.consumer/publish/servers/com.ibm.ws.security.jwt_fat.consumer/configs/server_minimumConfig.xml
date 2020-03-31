@@ -9,4 +9,6 @@
 
 	<include location="${shared.config.dir}/fatTestPorts.xml" />
 
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+
 </server>

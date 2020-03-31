@@ -64,6 +64,8 @@ public class ThreadedClientServlet extends HttpServlet {
 				UserTransaction userTransaction = UserTransactionFactory
 						.getUserTransaction();
 				try {
+					// Try to eliminate tx timeout as a source of failure on slow test machines
+					userTransaction.setTransactionTimeout(300);
 					userTransaction.begin();
 				} catch (Exception e) {
 					failedCount.incrementAndGet();
@@ -94,8 +96,6 @@ public class ThreadedClientServlet extends HttpServlet {
 							BASE_URL + "/threadedServer/MultiThreadedService");
 					bind.getRequestContext().put("thread.local.request.context",
 							"true");
-					bind.getRequestContext().put("com.sun.xml.internal.ws.connect.timeout", 3000);
-					bind.getRequestContext().put("com.sun.xml.internal.ws.request.timeout", 3000);
 
 					System.out.println("Thread " + count + ": " + "Get service from: " + location);
 					response = proxy.invoke();
@@ -156,61 +156,64 @@ public class ThreadedClientServlet extends HttpServlet {
         response.getWriter().println(result);
     }
 
-	protected String get(HttpServletRequest request) throws ServletException, IOException {
-		BASE_URL = request.getParameter("baseurl");
-		count = Integer.parseInt(request.getParameter("count"));
+    protected String get(HttpServletRequest request) throws ServletException, IOException {
+    	BASE_URL = request.getParameter("baseurl");
+    	count = Integer.parseInt(request.getParameter("count"));
 
-		StringBuilder sb = new StringBuilder();
+    	StringBuilder sb = new StringBuilder();
 
-		System.out.println("begin dispatch");
-		URL wsdlLocation = new URL(BASE_URL
-				+ "/threadedServer/MultiThreadedService?wsdl");
-		MultiThreadedService service = new MultiThreadedService(
-				wsdlLocation);
-		MultiThreaded proxy = service.getMultiThreadedPort();
-		BindingProvider bind = (BindingProvider) proxy;
-		bind.getRequestContext().put(
-				"javax.xml.ws.service.endpoint.address",
-				BASE_URL + "/threadedServer/MultiThreadedService");
-		try {
-			boolean clearResult = proxy.clearXAResource();
-			System.out.println("proxy.clearXAResource(): " + clearResult);
-			if (clearResult == false) {
-				return "<html><header></header><body>Fail to clear XAResources.</body></html>";
-			}
-			ExecutorService es = Executors.newFixedThreadPool(count);
-			for (int i = 1; i <= count; i++) {
-				System.out.println("Start Thread " + i);
+    	if (count > 0 ) {
+    		System.out.println("begin dispatch");
+    		URL wsdlLocation = new URL(BASE_URL
+    				+ "/threadedServer/MultiThreadedService?wsdl");
+    		MultiThreadedService service = new MultiThreadedService(
+    				wsdlLocation);
+    		MultiThreaded proxy = service.getMultiThreadedPort();
+    		BindingProvider bind = (BindingProvider) proxy;
+    		bind.getRequestContext().put(
+    				"javax.xml.ws.service.endpoint.address",
+    				BASE_URL + "/threadedServer/MultiThreadedService");
+    		boolean clearResult = proxy.clearXAResource();
+    		System.out.println("proxy.clearXAResource(): " + clearResult);
+    		if (clearResult == false) {
+    			return "<html><header></header><body>Fail to clear XAResources.</body></html>";
+    		}
+    		ExecutorService es = Executors.newFixedThreadPool(count);
+    		for (int i = 1; i <= count; i++) {
+    			System.out.println("Start Thread " + i);
 
-				es.submit(new TestClass(proxy, wsdlLocation, i));
-			}
+    			es.submit(new TestClass(proxy, wsdlLocation, i));
+    		}
 
-			while (completedCount.get() < count) {
-				System.out
-				.println("Current completedCount = " + completedCount.get());
-				Thread.sleep(1000);
-			}
-			es.shutdown();
+    		while (completedCount.get() < count) {
+    			System.out
+    			.println("Current completedCount = " + completedCount.get());
+    			try {
+    				Thread.sleep(1000);
+    			} catch (InterruptedException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    		es.shutdown();
 
-			sb.append("<html><header></header><body>completedCount = ")
-			  .append(completedCount)
-			  .append(". transactionCount = ")
-			  .append(XAResourceImpl.transactionCount())
-			  .append(". failedCount = ")
-			  .append(failedCount.get())
-			  .append("</body></html>");
+    		proxy.clearXAResource();
+    	}
 
-			System.out.println("Result = " + sb.toString());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} finally {
-			proxy.clearXAResource();
-			XAResourceImpl.printState();
-			System.out.println("end dispatch");
-		}
-		
-		return sb.toString();
-	}
+    	sb.append("<html><header></header><body>completedCount = ")
+    	.append(completedCount)
+    	.append(". transactionCount = ")
+    	.append(XAResourceImpl.transactionCount())
+    	.append(". failedCount = ")
+    	.append(failedCount.get())
+    	.append("</body></html>");
+
+    	System.out.println("Result = " + sb.toString());
+
+    	XAResourceImpl.printState();
+    	System.out.println("end dispatch");
+
+    	return sb.toString();
+    }
 
 	private boolean enlistXAResouce(int count) {
 		try {

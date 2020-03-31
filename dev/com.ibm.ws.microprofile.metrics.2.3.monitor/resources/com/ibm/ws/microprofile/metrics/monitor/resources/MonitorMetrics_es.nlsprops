@@ -19,9 +19,9 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2003I: No se pueden recuperar m\u00e9tricas de supervisi\u00f3n mediante mpMetrics.
-FEATURE_REGISTERED.explanation=Las caracter\u00edsticas monitor-1.0 y mpMetrics-2.3 est\u00e1n habilitadas y se pueden recuperar las m\u00e9tricas de supervisi\u00f3n mediante mpMetrics.
+FEATURE_REGISTERED.explanation=Las caracter\u00edsticas monitor-1.0 y mpMetrics-2.3 est\u00e1n habilitadas y las m\u00e9tricas de supervisi\u00f3n se pueden recuperar mediante mpMetrics.
 FEATURE_REGISTERED.useraction=No se requiere ninguna acci\u00f3n del usuario.
 
 FEATURE_UNREGISTERED=CWPMI2004I: Se ha anulado el registro de todas las m\u00e9tricas de supervisi\u00f3n de mpMetrics.
-FEATURE_UNREGISTERED.explanation=La caracter\u00edstica monitor-1.0, la caracter\u00edstica mpMetrics-2.3 o ambas caracter\u00edsticas se han eliminado del servidor y todas las m\u00e9tricas de supervisi\u00f3n se han eliminado de mpMetrics.
+FEATURE_UNREGISTERED.explanation=La caracter\u00edstica monitor-1.0, la caracter\u00edstica mpMetrics-2.3 o ambas caracter\u00edsticas se han eliminado del servidor y todas las m\u00e9tricas de supervisi\u00f3n se han eliminado del registro de mpMetrics.
 FEATURE_UNREGISTERED.useraction=No se requiere ninguna acci\u00f3n del usuario.

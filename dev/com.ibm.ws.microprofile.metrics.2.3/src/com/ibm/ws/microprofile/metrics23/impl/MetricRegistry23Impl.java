@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,12 +45,12 @@ public class MetricRegistry23Impl extends MetricRegistryImpl {
 
     @Override
     public SimpleTimer simpleTimer(String name, Tag... tags) {
-        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.TIMER).build();
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.SIMPLE_TIMER).build();
 
         if (metadataMID.keySet().contains(name)) {
             metadata = metadataMID.get(name);
 
-            if (!metadata.getTypeRaw().equals(MetricType.TIMER)) {
+            if (!metadata.getTypeRaw().equals(MetricType.SIMPLE_TIMER)) {
                 throw new IllegalArgumentException(name + " is already used for a different type of metric");
             }
         }

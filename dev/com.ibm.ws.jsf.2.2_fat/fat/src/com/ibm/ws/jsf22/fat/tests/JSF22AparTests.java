@@ -121,8 +121,6 @@ public class JSF22AparTests {
 
         ShrinkHelper.defaultDropinApp(jsfAparServer, "PI89168.war", "");
 
-        ShrinkHelper.defaultDropinApp(jsfAparServer, "PI79562.war", "");
-
         ShrinkHelper.defaultDropinApp(jsfAparServer, "PI90507.war", "com.ibm.ws.jsf22.fat.PI90507");
 
         ShrinkHelper.defaultDropinApp(jsfAparServer, "PI90391.war", "");
@@ -336,8 +334,9 @@ public class JSF22AparTests {
     public void testPI57255() throws Exception {
         URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI57255Default", "");
 
-        // Need to restart server to make sure the non-CDI application is loaded first
-        jsfAparServer.restartDropinsApplication("PI57255.war");
+        // Need to restart the applications to make sure the non-CDI application is loaded first
+        jsfAparServer.restartDropinsApplication("PI57255Default.war");
+        jsfAparServer.restartDropinsApplication("PI57255CDI.war");
 
         try (WebClient webClient = new WebClient()) {
             HtmlPage page;

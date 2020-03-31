@@ -117,5 +117,11 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
     public void bindSimpleBindingName(String bindingObject, HomeRecord hr, boolean local) {}
 
     @Override
+    public void bindLocalHomeBindingName(String bindingObject, HomeRecord hr) {}
+
+    @Override
+    public void bindLocalBusinessInterface(String bindingObject, HomeRecord hr) {}
+
+    @Override
     public void unbindLocalColonEJB(List<String> names) throws NamingException {}
 }

@@ -79,12 +79,6 @@ public class EnterpriseAppTest extends FATServletClient {
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/enterpriseApp");
         ShrinkHelper.exportToServer(server, "apps", ear);
 
-        // TODO remove this
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "tempLoginModule.jar");
-        jar.addPackage("com.ibm.test.jca.enterprisera");
-        jar.addPackage("com.ibm.test.jca.loginmodra");
-        ShrinkHelper.exportToServer(server, "/", jar);
-
         server.addInstalledAppForValidation(appName);
         server.startServer();
     }
@@ -107,6 +101,12 @@ public class EnterpriseAppTest extends FATServletClient {
     }
 
     protected StringBuilder runInServlet(String test) throws Exception {
+        // RepeatTests causes the test name to be appended with _EE8_FEATURES.  Strip it off so that the right
+        // test name is sent to the servlet
+        int index = test == null ? -1 : test.indexOf("_EE8_FEATURES");
+        if (index != -1) {
+            test = test.substring(0, index);
+        }
         String host = server.getMachine().getHostname();
         StringBuilder lines = new StringBuilder();
         URL url = new URL("http://" + host + ":" + server.getHttpDefaultPort() + "/" + warFile + "/" + servletName + "?test=" + test);
@@ -197,28 +197,28 @@ public class EnterpriseAppTest extends FATServletClient {
 
     @Test
     public void testPrizeWinner() throws Exception {
-        runInServlet(testName.getMethodName() + "&username=user1");
+        runInServlet("testPrizeWinner&username=user1");
 
-        runInServlet(testName.getMethodName() + "&username=user2");
+        runInServlet("testPrizeWinner&username=user2");
 
-        if (runInServlet(testName.getMethodName() + "&username=user1").indexOf("PRIZE!") > 0)
+        if (runInServlet("testPrizeWinner&username=user1").indexOf("PRIZE!") > 0)
             throw new Exception("The 1st visitor should not have won a prize, but they did.");
 
-        if (runInServlet(testName.getMethodName() + "&username=user3").indexOf("PRIZE!") < 0)
+        if (runInServlet("testPrizeWinner&username=user3").indexOf("PRIZE!") < 0)
             throw new Exception("The 3rd visitor should have won a prize, but they did not.");
     }
 
     @Test
     public void testCheckoutLine() throws Exception {
-        runInServlet(testName.getMethodName() + "&customer=cust0&function=ADD");
-        runInServlet(testName.getMethodName() + "&customer=cust1&function=ADD");
-        if (runInServlet(testName.getMethodName() + "&customer=cust2&function=ADD").indexOf("size=3") < 0)
+        runInServlet("testCheckoutLine&customer=cust0&function=ADD");
+        runInServlet("testCheckoutLine&customer=cust1&function=ADD");
+        if (runInServlet("testCheckoutLine&customer=cust2&function=ADD").indexOf("size=3") < 0)
             throw new Exception("Expected queue size to be 3 but it was not.");
 
-        if (runInServlet(testName.getMethodName() + "&function=REMOVE").indexOf("size=2") < 0)
+        if (runInServlet("testCheckoutLine&function=REMOVE").indexOf("size=2") < 0)
             throw new Exception("Expected queue size to be 2 but it was not.");
 
-        if (runInServlet(testName.getMethodName() + "&customer=cust2&function=CONTAINS").indexOf("cust2 is in line") < 0)
+        if (runInServlet("testCheckoutLine&customer=cust2&function=CONTAINS").indexOf("cust2 is in line") < 0)
             throw new Exception("Customer cust2 should be in line, but they were not.");
     }
 }

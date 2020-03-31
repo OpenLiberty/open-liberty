@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=Aumente la disponibilidad en la barrer
 application.shutdown.CWMFT0002W=CWMFT0002W: El m\u00e9todo as\u00edncrono {0} no puede completarse porque la aplicaci\u00f3n o el componente invocante se ha detenido.
 application.shutdown.CWMFT0002W.explanation=Los m\u00e9todos as\u00edncronos se ejecutan en el contexto del componente que los ha iniciado. La aplicaci\u00f3n o el componente que ha invocado el m\u00e9todo as\u00edncrono se ha detenido, lo cual impide que se complete el m\u00e9todo as\u00edncrono.
 application.shutdown.CWMFT0002W.useraction= Este aviso se presenta normalmente cuando una aplicaci\u00f3n, componente o servidor est\u00e1 concluyendo. Si todos los m\u00e9todos as\u00edncronos deben completarse, la aplicaci\u00f3n debe esperar los resultados antes de detenerse.
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: El m\u00e9todo as\u00edncrono {0} ha devuelto nulo.
+asynchronous.returned.null.CWMFT0003W.explanation=Los m\u00e9todos anotados con @Asynchronous no deben devolver un valor nulo.
+asynchronous.returned.null.CWMFT0003W.useraction=Impida que el m\u00e9todo devuelva un valor nulo.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Se ha producido un error interno. La excepci\u00f3n es {0}.

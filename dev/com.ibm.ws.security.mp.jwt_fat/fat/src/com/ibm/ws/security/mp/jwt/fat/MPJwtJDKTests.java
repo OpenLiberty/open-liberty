@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -33,6 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
@@ -59,6 +61,9 @@ public class MPJwtJDKTests extends CommonMpJwtFat {
 
     @Server("com.ibm.ws.security.mp.jwt.fat")
     public static LibertyServer resourceServer;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
 
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();

@@ -14,7 +14,6 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2
 Bundle-Activator: com.ibm.ws.cxf.rt.ws.policy.NoOpActivator
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
   !schemas, \

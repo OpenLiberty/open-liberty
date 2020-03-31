@@ -21,9 +21,15 @@ WS-TraceGroup: PluginRuntime
  com.ibm.ws.webserver.plugin.runtime.collaborators.GenPluginConfigCollaborator, \
  com.ibm.ws.webserver.plugin.runtime.requester.PluginConfigRequesterImpl
 
-Export-Package: com.ibm.ws.webserver.plugin.runtime.collaborators, \
- com.ibm.ws.webserver.plugin.runtime.listeners, \
- com.ibm.ws.webserver.plugin.runtime.requester
+Export-Package: \
+  com.ibm.ws.webserver.plugin.runtime.collaborators, \
+  com.ibm.ws.webserver.plugin.runtime.listeners, \
+  com.ibm.ws.webserver.plugin.runtime.requester
+
+Import-Package: \
+  !com.ibm.ws.webserver.plugin.runtime.collaborators, \
+  !com.ibm.ws.webserver.plugin.runtime.requester, \
+  ${defaultPackageImport}
 
 Private-Package: com.ibm.ws.plugin.runtime.resources
 

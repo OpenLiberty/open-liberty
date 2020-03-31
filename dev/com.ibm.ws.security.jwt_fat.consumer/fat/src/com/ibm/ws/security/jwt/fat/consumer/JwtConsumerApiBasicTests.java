@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.sharedTests.ConsumeMangledJWTTests;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
 import com.ibm.ws.security.jwt.fat.consumer.utils.ConsumerHelpers;
@@ -61,7 +62,8 @@ public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(consumerServer);
-        consumerServer.startServerUsingExpandedConfiguration("server_jwtConsumer.xml");
+        consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
+        consumerServer.startServerUsingExpandedConfiguration("server_jwtConsumer.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
     }

@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.config.1.2.cdi.services
 Bundle-SymbolicName: com.ibm.ws.microprofile.config.1.2.cdi.services
@@ -33,10 +31,11 @@ WS-TraceGroup: APPCONFIG
 Include-Resource: \
     META-INF=resources/META-INF
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.config12.cdi.services.Config12CDIExtensionComponent
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
         com.ibm.ws.logging;version=latest,\

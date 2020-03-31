@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 
                 CDITest.class,
                 ClassSubResTest.class,
+                JsonbCharsetTest.class,
                 JsonbContextResolverTest.class,
                 FormBehaviorTest.class,
                 MutableHeadersTest.class,

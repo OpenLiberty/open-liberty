@@ -104,7 +104,9 @@ public class ConfigEvaluatorTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
     }
 
     private class TestConfigEvaluator extends ConfigEvaluator {
@@ -279,6 +281,22 @@ public class ConfigEvaluatorTest {
 
         assertFalse("The registry should be updated", registry.addMetaType(metatype).isEmpty());
 
+    }
+
+    private void addObscuredBooleanTypeToRegistry(MetaTypeRegistry registry,
+                                                  String loggingPid) {
+        // Add a new boolean logging element
+        MockObjectClassDefinition loggingOCD = new MockObjectClassDefinition("logging");
+        MockAttributeDefinition ad = new MockAttributeDefinition("boolean", AttributeDefinition.BOOLEAN, 0, null);
+        ad.setObscured("true");
+        loggingOCD.addAttributeDefinition(ad);
+        loggingOCD.setAlias("logging");
+
+        MockBundle bundle = new MockBundle();
+        MockMetaTypeInformation metatype = new MockMetaTypeInformation(bundle);
+        metatype.add(loggingPid, true, loggingOCD);
+
+        assertFalse("The registry should be updated", registry.addMetaType(metatype).isEmpty());
     }
 
     @Test
@@ -2148,6 +2166,34 @@ public class ConfigEvaluatorTest {
         RegistryEntry registryEntry = registry.getRegistryEntry(loggingPid);
         entry = serverConfig.getFactoryInstance(loggingPid, registryEntry.getAlias(), "one");
         evaluator.evaluate(entry, registryEntry);
+    }
+
+    @Test
+    public void testObscuredBoolean() throws ConfigParserException, ConfigValidationException, ConfigEvaluatorException, ConfigMergeException {
+        changeLocationSettings("default");
+
+        String portPid = "com.ibm.ws.port";
+        String hostPid = "com.ibm.ws.host";
+        String hostPortPid = "com.ibm.ws.host.port";
+        String portAttribute = "portRef";
+        String loggingPid = "com.ibm.ws.logging";
+        MetaTypeRegistry registry = createRegistry(portPid, hostPid, hostPortPid, portAttribute, 2, portPid, true);
+        addObscuredBooleanTypeToRegistry(registry, loggingPid);
+
+        String xml = "<server>" +
+                     "    <logging id=\"one\" boolean=\"true\"/>" +
+                     "</server>";
+
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        ConfigEvaluator evaluator = createConfigEvaluator(registry, null);
+
+        ConfigElement entry = null;
+
+        RegistryEntry registryEntry = registry.getRegistryEntry(loggingPid);
+        entry = serverConfig.getFactoryInstance(loggingPid, registryEntry.getAlias(), "one");
+        evaluator.evaluate(entry, registryEntry);
+        assertEquals("true", entry.getAttribute("boolean").toString());
     }
 
     // Throws an exception because there is no default value

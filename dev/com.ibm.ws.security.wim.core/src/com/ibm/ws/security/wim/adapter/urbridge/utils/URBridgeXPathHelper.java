@@ -135,7 +135,8 @@ public class URBridgeXPathHelper {
 
     private String getExpression(PropertyNode propNode) throws Exception {
         String pattern = (String) propNode.getValue();
-
+        pattern = pattern.replace("\"\"", "\""); // Unescape escaped XPath quotations
+        pattern = pattern.replace("''", "'"); // Unescape escaped XPath apostrophes
         return pattern;
     }
 

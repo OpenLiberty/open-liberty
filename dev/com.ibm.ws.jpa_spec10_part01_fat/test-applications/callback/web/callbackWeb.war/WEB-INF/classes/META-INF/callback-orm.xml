@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings
+    xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+    
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPackageMSC">
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </mapped-superclass>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPrivateMSC">
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </mapped-superclass>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackProtectedMSC">
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </mapped-superclass>
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPublicMSC">
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </mapped-superclass>
+    
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerMappedSuperclass">
+        <entity-listeners>
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerPackage">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>           
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerPrivate">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>    
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerProtected">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>  
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerPublic">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>          
+        </entity-listeners>
+    </mapped-superclass>
+    
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackPackageEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLPackage</discriminator-value>
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackPrivateEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLPrivate</discriminator-value>
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackProtectedEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLProtected</discriminator-value>
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </entity>   
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.xml.XMLCallbackPublicEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLPublic</discriminator-value>
+        <pre-persist    method-name="prePersistCallback"/>
+        <post-persist   method-name="postPersistCallback"/>
+        <pre-remove     method-name="preRemoveCallback"/>
+        <post-remove    method-name="postRemoveCallback"/>
+        <pre-update     method-name="preUpdateCallback"/>
+        <post-update    method-name="postUpdateCallback"/>
+        <post-load      method-name="postLoadCallback"/>
+    </entity>
+    
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPackageMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCPackage</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPrivateMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCPrivate</discriminator-value>
+    </entity>
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackProtectedMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCProtected</discriminator-value>
+    </entity>   
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.entitydeclared.mappedsuperclass.xml.XMLCallbackPublicMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLMSCPublic</discriminator-value>
+    </entity>
+    
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLListener</discriminator-value>
+        <entity-listeners>
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerPackage">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>           
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerPrivate">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>    
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerProtected">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>  
+          <entity-listener class="com.ibm.ws.jpa.fvt.callback.listeners.xml.XMLCallbackListenerPublic">
+            <pre-persist  method-name="prePersistCallback"/>
+            <post-persist method-name="postPersistCallback"/>
+            <pre-remove   method-name="preRemoveCallback"/>
+            <post-remove  method-name="postRemoveCallback"/>
+            <pre-update   method-name="preUpdateCallback"/>
+            <post-update  method-name="postUpdateCallback"/>
+            <post-load    method-name="postLoadCallback"/>
+          </entity-listener>          
+        </entity-listeners>
+    </entity>  
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLListenerMSC</discriminator-value>
+    </entity>  
+    <entity 
+        class="com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerExcludeMSCEntity"
+        metadata-complete="false">
+        <discriminator-value>XMLListenerExcludeMSC</discriminator-value>
+        <exclude-superclass-listeners/>
+    </entity>
+</entity-mappings>

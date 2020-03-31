@@ -65,8 +65,7 @@ public class JNDINameBean implements javax.ejb.SessionBean {
         svLogger.info("       " + beanName + " : " + msg);
     }
 
-    @Override
-    public String toString() {
+    public String foo() {
         return "JNDINameBean.toString()";
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,6 +120,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     /** Current compression configuration */
     private volatile ChannelConfiguration compressionConfig = null;
+
+    /** Current samesite configuration */
+    private volatile ChannelConfiguration samesiteConfig = null;
 
     private volatile boolean endpointStarted = false;
     private volatile String resolvedHostName = null;
@@ -697,6 +700,46 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     public Map<String, Object> getRemoteIpConfig() {
         ChannelConfiguration c = remoteIpConfig;
+        return c == null ? null : c.getConfiguration();
+    }
+
+    /**
+     * The specific samesite configuration is selected by a filter through metatype that matches a specific user-configured
+     * option set or falls back to a default.
+     *
+     * @param service
+     */
+    @Trivial
+    @Reference(name = "samesite",
+               service = ChannelConfiguration.class,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
+               cardinality = ReferenceCardinality.MANDATORY)
+    protected void setSamesite(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "set samesite " + config.getProperty("id"), this);
+        }
+        this.samesiteConfig = config;
+        if (samesiteConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    @Trivial
+    protected void updatedSamesite(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "update samesite configuration " + config.getProperty("id"), this);
+        }
+
+        if (samesiteConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    protected void unsetSamesite(ChannelConfiguration config) {}
+
+    public Map<String, Object> getSamesiteConfig() {
+        ChannelConfiguration c = samesiteConfig;
         return c == null ? null : c.getConfiguration();
     }
 

@@ -88,7 +88,7 @@ public class TestOLGH10310_Web extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println("TestOLGH10310_Web Setting up database tables...");
+        System.out.println(TestOLGH10310_Web.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {

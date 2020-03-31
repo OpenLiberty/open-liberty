@@ -4,7 +4,8 @@
 		<feature>jsp-2.3</feature>
 		<feature>wsAtomicTransaction-1.2</feature>
 		<feature>jndi-1.0</feature>
-		<feature>cdi-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
 		<feature>txtest-1.0</feature>
 	</featureManager>
 
@@ -15,6 +16,7 @@
         waitForRecovery="false"
         heuristicRetryInterval="5"
         heuristicRetryWait="0"
+        totalTranLifetimeTimeout="40s"
     />
 	
     <logging
@@ -24,6 +26,4 @@
       maxFiles="20"
       traceFormat="BASIC"
     />
-	
-	<transaction totalTranLifetimeTimeout="40s"></transaction>
 </server>

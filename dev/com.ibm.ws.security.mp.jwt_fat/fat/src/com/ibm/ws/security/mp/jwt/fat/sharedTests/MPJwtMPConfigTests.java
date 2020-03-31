@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -37,6 +38,7 @@ import com.ibm.ws.security.mp.jwt.fat.MpJwtMessageConstants;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -59,6 +61,9 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     @Server("com.ibm.ws.security.mp.jwt.fat.builder")
     public static LibertyServer jwtBuilderServer;
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
+
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     public static class MPConfigSettings {
@@ -68,7 +73,8 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
         String issuer = null;
         String certType = MpJwtFatConstants.X509_CERT;
 
-        public MPConfigSettings() {}
+        public MPConfigSettings() {
+        }
 
         public MPConfigSettings(String inPublicKeyLocation, String inPublicKey, String inIssuer, String inCertType) {
 
@@ -147,7 +153,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      * When testing with microprofile-config.properties in the app, we will create multiple apps with a variety of settings within the
      * microprofile-config.properties file within the app. We'll also create apps with the microprofile-config.properties in the META-INF directory
      * and the WEB-INF/classes/META-INF directory.
-     * 
+     *
      * @param theServer - the server to install the apps on and set the system properties or env variables for
      * @param mpConfigSettings - The microprofile settings to put into the various locations
      * @param mpConfigLocation - where this test instance would like the MPConfig settings (system properties, environment variables, or microprofile-config.properties in apps)
@@ -245,7 +251,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
     /**
      * Sets the MPConfig content for the microprofile-config.properties file
-     * 
+     *
      * @param publicKey - public Key value to add to properties file
      * @param publicKeyLocation - public key location value to add to the properties file
      * @param issuer - issuer value to add to the properties file
@@ -377,7 +383,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      * variables
      * in the microprofile.properties file, in system properties or in env variables. We need to use the fully resolved string
      * there. This method generates the resolved string.
-     * 
+     *
      * @param rawJwksUri - the raw value if we need to set a value, "" if we don't want to put a value into the mp-config
      *
      * @return - return the fully expanded jwksuri (no $variables in it)
@@ -428,7 +434,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
     /**
      * Set expectations for tests that have bad keyName/publicKey or jwksuri/keyLocations
-     * 
+     *
      * @param server - the server whose log we'll need to check for failure messages
      * @param failureCause - the cause of the failure (failures that occur validating each type of cert x509/jwk)
      * @return - an expectation object with a variety of errors to check for

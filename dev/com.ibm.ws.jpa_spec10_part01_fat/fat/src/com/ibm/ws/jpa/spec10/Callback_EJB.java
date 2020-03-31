@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.ws.jpa.spec10;
 
 import java.util.HashSet;
@@ -61,7 +60,11 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class Callback_EJB extends JPAFATServletClient {
-    private final static String RESOURCE_ROOT = "test-applications/jpa10/callback/";
+    private final static String CONTEXT_ROOT = "callbackEjb";
+    private final static String RESOURCE_ROOT = "test-applications/callback/";
+    private final static String appFolder = "ejb";
+    private final static String appName = "callbackEjb";
+    private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -75,97 +78,98 @@ public class Callback_EJB extends JPAFATServletClient {
 
     @Server("JPA10Server")
     @TestServlets({
-                    @TestServlet(servlet = TestCallback_EJB_SL_Servlet.class, path = "Callback10EJB" + "/" + "TestCallback_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestCallback_EJB_SF_Servlet.class, path = "Callback10EJB" + "/" + "TestCallback_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestCallback_EJB_SFEX_Servlet.class, path = "Callback10EJB" + "/" + "TestCallback_EJB_SFEX_Servlet"),
+                    @TestServlet(servlet = TestCallback_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallback_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestCallback_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallback_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestCallback_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallback_EJB_SFEX_Servlet"),
 
-                    @TestServlet(servlet = TestCallbackDefaultListener_EJB_SL_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackDefaultListener_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestCallbackDefaultListener_EJB_SF_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackDefaultListener_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestCallbackDefaultListener_EJB_SFEX_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackDefaultListener_EJB_SFEX_Servlet"),
+                    @TestServlet(servlet = TestCallbackDefaultListener_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackDefaultListener_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestCallbackDefaultListener_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackDefaultListener_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestCallbackDefaultListener_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackDefaultListener_EJB_SFEX_Servlet"),
 
                     @TestServlet(servlet = TestCallbackDefaultListenerException_EJB_SL_Servlet.class,
-                                 path = "Callback10EJB" + "/" + "TestCallbackDefaultListenerException_EJB_SL_Servlet"),
+                                 path = CONTEXT_ROOT + "/" + "TestCallbackDefaultListenerException_EJB_SL_Servlet"),
                     @TestServlet(servlet = TestCallbackDefaultListenerException_EJB_SF_Servlet.class,
-                                 path = "Callback10EJB" + "/" + "TestCallbackDefaultListenerException_EJB_SF_Servlet"),
+                                 path = CONTEXT_ROOT + "/" + "TestCallbackDefaultListenerException_EJB_SF_Servlet"),
                     @TestServlet(servlet = TestCallbackDefaultListenerException_EJB_SFEX_Servlet.class,
-                                 path = "Callback10EJB" + "/" + "TestCallbackDefaultListenerException_EJB_SFEX_Servlet"),
+                                 path = CONTEXT_ROOT + "/" + "TestCallbackDefaultListenerException_EJB_SFEX_Servlet"),
 
-                    @TestServlet(servlet = TestCallbackException_EJB_SL_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackException_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestCallbackException_EJB_SF_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackException_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestCallbackException_EJB_SFEX_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackException_EJB_SFEX_Servlet"),
+                    @TestServlet(servlet = TestCallbackException_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackException_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestCallbackException_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackException_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestCallbackException_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackException_EJB_SFEX_Servlet"),
 
-                    @TestServlet(servlet = TestCallbackListener_EJB_SL_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackListener_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestCallbackListener_EJB_SF_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackListener_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestCallbackListener_EJB_SFEX_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackListener_EJB_SFEX_Servlet"),
+                    @TestServlet(servlet = TestCallbackListener_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackListener_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestCallbackListener_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackListener_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestCallbackListener_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackListener_EJB_SFEX_Servlet"),
 
-                    @TestServlet(servlet = TestCallbackListenerException_EJB_SL_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackListenerException_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestCallbackListenerException_EJB_SF_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackListenerException_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SFEX_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackOrderOfInvocation_EJB_SFEX_Servlet"),
+                    @TestServlet(servlet = TestCallbackListenerException_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackListenerException_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestCallbackListenerException_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackListenerException_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackOrderOfInvocation_EJB_SFEX_Servlet"),
 
-                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SL_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackOrderOfInvocation_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SF_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackOrderOfInvocation_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SFEX_Servlet.class, path = "Callback10EJB" + "/" + "TestCallbackOrderOfInvocation_EJB_SFEX_Servlet"),
-
+                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackOrderOfInvocation_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackOrderOfInvocation_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestCallbackOrderOfInvocation_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestCallbackOrderOfInvocation_EJB_SFEX_Servlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(Callback_EJB.class);
         timestart = System.currentTimeMillis();
 
-        int appStartTimeout = server1.getAppStartTimeout();
+        int appStartTimeout = server.getAppStartTimeout();
         if (appStartTimeout < (120 * 1000)) {
-            server1.setAppStartTimeout(120 * 1000);
+            server.setAppStartTimeout(120 * 1000);
         }
 
-        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
         if (configUpdateTimeout < (120 * 1000)) {
-            server1.setConfigUpdateTimeout(120 * 1000);
+            server.setConfigUpdateTimeout(120 * 1000);
         }
 
-        server1.startServer();
+        server.startServer();
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
+
+        System.out.println(Callback_EJB.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
-        WebArchive webApp = ShrinkWrap.create(WebArchive.class, "callbackejb.war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.callback.tests.ejb");
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "ejb/callbackejb.war");
-
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "callback.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.callback");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/callback.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
+
+        WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.callback.tests.ejb");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
-        final JavaArchive jpaJar = ShrinkWrap.create(JavaArchive.class, "JPACallbackLib.jar");
-        ShrinkHelper.addDirectory(jpaJar, RESOURCE_ROOT + "/lib/JPACallbackLib.jar");
+        final JavaArchive jpaJar = ShrinkWrap.create(JavaArchive.class, appName + "Lib.jar");
+        ShrinkHelper.addDirectory(jpaJar, RESOURCE_ROOT + "/lib");
 
-        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, "Callback_EJB.ear");
+        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         app.addAsLibrary(jpaJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "ejb", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {
@@ -177,40 +181,53 @@ public class Callback_EJB extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
-        appRecord.setLocation("Callback_EJB.ear");
-        appRecord.setName("Callback_EJB");
+        appRecord.setLocation(appNameEar);
+        appRecord.setName(appName);
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
-        appNamesSet.add("Callback_EJB");
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        appNamesSet.add(appName);
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-//            server1.dumpServer("callback_ejb");
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(Callback_EJB.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/Callback_EJB.ear");
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
 }

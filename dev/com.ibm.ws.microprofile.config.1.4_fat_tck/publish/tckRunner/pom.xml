@@ -14,7 +14,7 @@
 
     <groupId>com.ibm.ws.microprofile.config14</groupId>
     <artifactId>tck.runner</artifactId>
-    <version>1.4-RC2</version>
+    <version>1.4</version>
     <packaging>pom</packaging>
     <name>MicroProfile Config 1.4 TCK Runner</name>
 

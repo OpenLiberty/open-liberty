@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.lang.LocalesModifier;
 
 /**
  *Convenience class for supplying localized default logout page and logout error page.
@@ -35,15 +36,15 @@ public class LogoutPages {
      * @return
      */
     String getDefaultLogoutPage(Enumeration<Locale> locales) {
-        String logoutTitle = Tr.formatMessage(tc, locales, "LOGOUT_PAGE_TITLE");
-        String logoutMessage = Tr.formatMessage(tc, locales, "LOGOUT_PAGE_BODY"); // logout successful
+        String logoutTitle = Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(locales), "LOGOUT_PAGE_TITLE");
+        String logoutMessage = Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(locales), "LOGOUT_PAGE_BODY"); // logout successful
         String logoutString = logoutHtml.replace("#TITLE#", logoutTitle).replace("#BODY#", logoutMessage);
         return logoutString;
     }
 
     String getDefaultLogoutErrorPage(Enumeration<Locale> locales) {
-        String logoutTitle = Tr.formatMessage(tc, locales, "LOGOUT_ERROR_PAGE_TITLE");
-        String logoutMessage = Tr.formatMessage(tc, locales, "LOGOUT_ERROR_PAGE_BODY"); // An exception occurred during logout
+        String logoutTitle = Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(locales), "LOGOUT_ERROR_PAGE_TITLE");
+        String logoutMessage = Tr.formatMessage(tc, LocalesModifier.getPrimaryLocale(locales), "LOGOUT_ERROR_PAGE_BODY"); // An exception occurred during logout
         String logoutString = logoutHtml.replace("#TITLE#", logoutTitle).replace("#BODY#", logoutMessage);
         return logoutString;
     }
@@ -64,5 +65,4 @@ public class LogoutPages {
             // ffdc
         }
     }
-
 }

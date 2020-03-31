@@ -16,11 +16,6 @@ Bundle-Name: GraphQL SPQR
 Bundle-SymbolicName: com.ibm.ws.io.leangen.graphql.spqr.0.9.9
 Bundle-Description: GraphQL SPQR aims to make it dead simple to add a GraphQL API to any Java project. It works by dynamically generating a GraphQL schema from Java code.
 
-javac.source: 1.8
-javac.target: 1.8
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 instrument.disabled: true
 
 Export-Package: io.leangen.graphql.*;version="0.9.9"

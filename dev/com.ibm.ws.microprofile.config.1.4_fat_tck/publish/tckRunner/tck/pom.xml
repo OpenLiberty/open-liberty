@@ -14,7 +14,7 @@
 
     <groupId>com.ibm.ws.microprofile.config14</groupId>
     <artifactId>tck.runner.tck</artifactId>
-    <version>1.4-RC2</version>
+    <version>1.4</version>
     <name>MicroProfile Config 1.4 TCK Runner TCK Module</name>
 
     <properties>
@@ -58,13 +58,13 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>${microprofile.config.version}-RC2</version>
+            <version>${microprofile.config.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>${microprofile.config.version}-RC2</version>
+            <version>${microprofile.config.version}</version>
             <scope>system</scope>
             <systemPath>${com.ibm.websphere.org.eclipse.microprofile.config.1.4_}</systemPath>
         </dependency>

@@ -28,6 +28,7 @@ import org.junit.Test;
 import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.ws.config.xml.internal.ConfigValidator.ConfigElementList;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
+import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 import test.common.SharedLocationManager;
@@ -61,7 +62,8 @@ public class ConfigValidatorTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -73,8 +75,9 @@ public class ConfigValidatorTest {
     private void changeLocationSettings(String profileName) {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         libertyLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
 
-        configParser = new XMLConfigParser(libertyLocation);
+        configParser = new XMLConfigParser(libertyLocation, variableRegistry);
     }
 
     private ConfigElement parseConfiguration(String xml) throws ConfigParserException {

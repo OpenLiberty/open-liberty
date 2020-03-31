@@ -38,6 +38,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.ibm.ws.repository.common.enums.ResourceType;
+import com.ibm.ws.repository.resources.EsaResource;
 import org.apache.aries.util.manifest.ManifestProcessor;
 
 import com.ibm.ws.install.CancelException;
@@ -736,41 +738,45 @@ public class InstallKernelMap implements Map {
 
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+            ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
 
-            for (List<RepositoryResource> item : resolveResult) {
-                for (RepositoryResource repoResrc : item) {
-                    String license = repoResrc.getLicenseId();
-                    if (license != null) {
-                        // determine whether the runtime is ND
-                        boolean isNDRuntime = false;
-                        for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
-                            if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
-                                isNDRuntime = true;
-                                break;
+            if(!resolveResult.isEmpty()){
+                for (List<RepositoryResource> item : resolveResult) {
+                    for (RepositoryResource repoResrc : item) {
+                        String license = repoResrc.getLicenseId();
+                        if (license != null) {
+                            // determine whether the runtime is ND
+                            boolean isNDRuntime = false;
+                            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                                if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
+                                    isNDRuntime = true;
+                                    break;
+                                }
+                            }
+
+                            // determine whether the license should be auto accepted
+                            boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
+                                    || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
+
+                            if (!autoAcceptLicense) {
+                                // check whether the license has been accepted
+                                Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
+                                if (accepted == null || !accepted) {
+                                    featuresResolved.clear(); // clear the result since the licenses were not accepted
+                                    throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                                }
                             }
                         }
 
-                        // determine whether the license should be auto accepted
-                        boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
-                                                    || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
-
-                        if (!autoAcceptLicense) {
-                            // check whether the license has been accepted
-                            Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
-                            if (accepted == null || !accepted) {
-                                featuresResolved.clear(); // clear the result since the licenses were not accepted
-                                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
-                            }
+                        if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
+                            featuresResolved.add(repoResrc.getId());
+                        } else {
+                            featuresResolved.add(repoResrc.getMavenCoordinates());
                         }
-                    }
-
-                    if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
-                        featuresResolved.add(repoResrc.getId());
-                    } else {
-                        featuresResolved.add(repoResrc.getMavenCoordinates());
                     }
                 }
             }
+
             actionType = ActionType.install;
             featuresResolved = keepFirstInstance(featuresResolved);
             return featuresResolved;

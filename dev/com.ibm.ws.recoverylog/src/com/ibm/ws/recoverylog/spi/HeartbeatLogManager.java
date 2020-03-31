@@ -52,6 +52,8 @@ public class HeartbeatLogManager {
 
         private Alarm _alarm;
 
+        private boolean _isHeartbeating = true;
+
         private final AlarmManager _alarmManager = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager();
 
         protected TimeoutInfo(HeartbeatLog heartbeatLog, int duration) {
@@ -63,7 +65,8 @@ public class HeartbeatLogManager {
 
             _heartbeatLog = heartbeatLog;
 
-            _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
+            if (_heartbeatLog != null)
+                _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "TimeoutInfo");
@@ -79,24 +82,36 @@ public class HeartbeatLogManager {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "alarm");
 
+            _isHeartbeating = true;
             if (_heartbeatLog != null) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Update the HADB timestamp");
-                _heartbeatLog.heartBeat();
+                try {
+                    _heartbeatLog.heartBeat();
+                } catch (LogClosedException e) {
+                    _isHeartbeating = false;
+                }
             } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "NULL heartbeatLog");
+                _isHeartbeating = false;
             }
 
             // Respawn the alarm
-            _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
+            synchronized (this) {
+                if (_heartbeatLog != null && _isHeartbeating)
+                    _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
+            }
+
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "alarm");
         }
 
-        public void cancelAlarm() {
+        public synchronized void cancelAlarm() {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "cancelAlarm", _alarm);
+
+            _isHeartbeating = false;
 
             if (_alarm != null) {
                 _alarm.cancel();

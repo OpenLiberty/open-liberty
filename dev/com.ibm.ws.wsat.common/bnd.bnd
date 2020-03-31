@@ -6,9 +6,6 @@ Bundle-Name: WebService AtomicTransaction Common
 Bundle-SymbolicName: com.ibm.ws.wsat.common
 Bundle-Description: WebService AtomicTransaction Common bundle; version=${bVersion}
 
-# Temporary code: require Java7 for this feature
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"  
-
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 WS-TraceGroup: wsat

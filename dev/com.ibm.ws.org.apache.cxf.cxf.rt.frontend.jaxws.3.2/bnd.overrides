@@ -14,7 +14,6 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
 com.ibm.wsspi.classloading, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
@@ -88,27 +89,29 @@ public class TestActions {
     }
 
     public Page invokeUrlWithBearerTokenUsingGet(String currentTest, WebClient wc, String url, String token) throws Exception {
-        return invokeUrlWithBearerToken(currentTest, wc, url, token, HttpMethod.GET, null);
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, wc, url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.GET, null);
     }
 
     public Page invokeUrlWithBearerTokenUsingGet(String currentTest, String url, String token) throws Exception {
-        return invokeUrlWithBearerToken(currentTest, new WebClient(), url, token, HttpMethod.GET, null);
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, new WebClient(), url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.GET, null);
     }
 
     public Page invokeUrlWithBearerTokenUsingPost(String currentTest, WebClient wc, String url, String token) throws Exception {
-        return invokeUrlWithBearerToken(currentTest, wc, url, token, HttpMethod.POST, null);
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, wc, url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.POST, null);
     }
 
     public Page invokeUrlWithBearerTokenUsingPost(String currentTest, String url, String token) throws Exception {
-        return invokeUrlWithBearerToken(currentTest, new WebClient(), url, token, HttpMethod.POST, null);
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, new WebClient(), url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.POST, null);
     }
 
-    public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token, HttpMethod method, List<NameValuePair> requestParms) throws Exception {
+    public Page invokeUrlWithAuthorizationHeaderToken(String currentTest, WebClient wc, String url, String tokenPrefix, String token, HttpMethod method, List<NameValuePair> requestParms) throws Exception {
         String thisMethod = "invokeUrlWithBearerToken";
         loggingUtils.printMethodName(thisMethod);
         try {
             WebRequest request = createHttpRequest(url, method);
-            request.setAdditionalHeader("Authorization", "Bearer " + token);
+            if (tokenPrefix != null) {
+                request.setAdditionalHeader("Authorization", tokenPrefix + " " + token);
+            }
             if (requestParms != null) {
                 request.setRequestParameters(requestParms);
             }

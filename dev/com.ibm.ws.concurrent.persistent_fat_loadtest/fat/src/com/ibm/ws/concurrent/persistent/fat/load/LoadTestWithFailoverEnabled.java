@@ -63,7 +63,7 @@ public class LoadTestWithFailoverEnabled extends FATServletClient {
         server.updateServerConfiguration(config);
 
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "web.task");
-        server.configureForAnyDatabase();
+
         server.startServer();
     }
 
@@ -71,7 +71,7 @@ public class LoadTestWithFailoverEnabled extends FATServletClient {
     public static void tearDown() throws Exception {
         try {
             if (server.isStarted())
-                server.stopServer("CWWKC1503W"); // Ignore failing task warning message
+                server.stopServer("CWWKC1502W", "CWWKC1503W"); // Ignore failing task warning messages. These are fine as long as tasks retry and are eventually successful.
         } finally {
             if (originalConfig != null)
                 server.updateServerConfiguration(originalConfig);

@@ -124,16 +124,4 @@ public class JwtApiExpectation extends ResponseFullExpectation {
         return builtString;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.security.fat.common.expectations.Expectation#validate(java.lang.Object)
-     */
-    @Override
-    protected void validate(Object contentToValidate) throws Exception {
-//        Log.info(thisClass, "validate (in JwtClaimExpectations", checkType);
-        super.validate(contentToValidate);
-
-    }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,7 +155,7 @@ public class PackageProcessor implements BundleTrackerCustomizer<Object> {
 
     private BundlePackages populatePackageLists() {
         // Concurrency: we could go through this process twice, but that's non-fatal, only slightly annoying.
-        // I judge the performance risk of going through it twice to be lower than the performance risk of synchronisation.
+        // I judge the performance risk of going through it twice to be lower than the performance risk of synchronization
 
         BundlePackages p = packages.get();
         if (p == null) {
@@ -203,7 +203,16 @@ public class PackageProcessor implements BundleTrackerCustomizer<Object> {
         Set<Pattern> patterns = new HashSet<Pattern>();
         // OSGi and Java require that java.* packages are always boot delegated
         patterns.add(Pattern.compile("java..*"));
-        String boots = bundleContext.getProperty("org.osgi.framework.bootdelegation");
+        
+        String boots = AccessController.doPrivileged(
+        		new PrivilegedAction<String>() {
+        			@Override
+        			public String run() {
+        				return bundleContext.getProperty("org.osgi.framework.bootdelegation");
+        			}
+                }
+        );
+        
         String[] packages = boots.split(",");
         for (String packageRegex : packages) {
             // Do a little manipulation to turn a little-p pattern into a regex so we can turn it into a big-p pattern

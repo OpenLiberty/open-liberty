@@ -16,16 +16,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.ibm.websphere.ras.Traceable;
+
 /**
  * A RoleSet is an immutable Set of role names (Strings) for use by the
  * AuthorizationTableService.
  * <p>
  * The Set is immutable in order to enforce read-only access to the
  * AuthorizationTableService by other services.
- * 
+ *
  * @see AuthorizationTableService
  */
-public class RoleSet implements Set<String> {
+public class RoleSet implements Set<String>, Traceable {
     /**
      * A RoleSet containing no roles.
      */
@@ -36,7 +38,7 @@ public class RoleSet implements Set<String> {
 
     /**
      * Construct the immutable RoleSet based on the provided Set.
-     * 
+     *
      * @param set
      */
     public RoleSet(Set<String> set) {
@@ -46,7 +48,7 @@ public class RoleSet implements Set<String> {
     /**
      * Construct the immutable RoleSet by combining another Set of roles
      * with an existing RoleSet.
-     * 
+     *
      * @param roleSet existing roleSet, must not be null
      * @param another (optional) Set of roles
      */
@@ -82,7 +84,8 @@ public class RoleSet implements Set<String> {
      * This method intentionally does not alter the map contents.
      */
     @Override
-    public void clear() {}
+    public void clear() {
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -168,4 +171,9 @@ public class RoleSet implements Set<String> {
         return set.toString();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String toTraceString() {
+        return set.toString();
+    }
 }

@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.config.1.1.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.config.1.1.cdi
@@ -31,7 +29,6 @@ Export-Package: \
 
 WS-TraceGroup: APPCONFIG
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
         com.ibm.ws.logging;version=latest,\

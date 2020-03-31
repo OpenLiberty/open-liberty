@@ -23,6 +23,7 @@
         <user name="user1" password="password123" />
         <user name="user2" password="{xor}Lz4sLCgwLTtubWw=" />
         <user name="bob (contractor)" password="bobspassword" />
+        <user name="henry {contractor}" password="henryspassword" />
         <group name="memberlessGroup" />
         <group name="adminGroup">
             <member name="admin"/>
@@ -33,6 +34,9 @@
         </group>
         <group name="group1 (contractors)">
             <member name="bob (contractor)" />
+        </group>
+        <group name="group2 {contractors}">
+            <member name="henry {contractor}" />
         </group>
     </basicRegistry>
 

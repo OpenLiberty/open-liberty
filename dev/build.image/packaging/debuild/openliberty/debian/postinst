@@ -31,7 +31,7 @@ case "$1" in
 
         echo "Setting up defaultServer for user"
         if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
-            unzip /usr/share/openliberty/defaultServer.zip -d /var/lib/openliberty/usr/servers
+            tar -xf /usr/share/openliberty/defaultServer.tar -C /var/lib/openliberty/usr/servers
             printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
         fi
 

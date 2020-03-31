@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=Cre\u015fte\u0163i disponibilitatea di
 application.shutdown.CWMFT0002W=CWMFT0002W: Metoda asincron\u0103 {0} nu s-a putut finaliza deoarece aplica\u0163ia sau componenta care a apelat-o s-a oprit.
 application.shutdown.CWMFT0002W.explanation=Metodele asincrone ruleaz\u0103 \u00een contextul componentei care le-au pornit. Aplica\u0163ia sau componenta care a apelat metoda asincron s-a oprit, ceea ce a \u00eempiedicat metoda asincron\u0103 s\u0103 se finalizeze.
 application.shutdown.CWMFT0002W.useraction= Acest avertisment apare de obicei c\u00e2nd o aplica\u0163ie, o component\u0103 sau serverul se opre\u015fte. Dac\u0103 toate metodele asincrone trebuie s\u0103 se finalizeze, atunci aplica\u0163ia sau componenta trebuie s\u0103 a\u015ftepte rezultatele \u00eenainte de a se opri.
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: Metoda asincron\u0103 {0} a returnat null. 
+asynchronous.returned.null.CWMFT0003W.explanation=Metodele adnotate cu @Asynchronous nu trebuie s\u0103 returneze o valoare null.
+asynchronous.returned.null.CWMFT0003W.useraction=\u00cempiedica\u0163i returnarea unei valori null de c\u0103tre metod\u0103.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia este {0}.

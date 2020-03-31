@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -127,6 +128,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             return false;
         }
         if (newContext.containsKey(clazz)) {
+            return true;
+        }
+        if (cdiService.isWeldProxy(clazz)) {
             return true;
         }
         return false;
@@ -556,7 +560,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         if (!hasValidConstructor(clazz, singleton)) {
             return false;
         }
-        return hasInjectAnnotation(clazz);
+        return hasInjectOrResourceAnnotation(clazz);
 
     }
 
@@ -610,39 +614,39 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
      * @param clazz
      * @return
      */
-    private boolean hasInjectAnnotation(final Class<?> clazz) {
+    private boolean hasInjectOrResourceAnnotation(final Class<?> clazz) {
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
             @Override
             public Boolean run() {
-                if (clazz.isAnnotationPresent(Inject.class)) {
+                if (clazz.isAnnotationPresent(Inject.class) || clazz.isAnnotationPresent(Resource.class)) {
                     return true;
                 }
 
                 Field[] fields = clazz.getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
-                    if (fields[i].isAnnotationPresent(Inject.class)) {
+                    if (fields[i].isAnnotationPresent(Inject.class) || fields[i].isAnnotationPresent(Resource.class)) {
                         return true;
                     }
                 }
 
                 Method[] methods = clazz.getDeclaredMethods();
                 for (int i = 0; i < methods.length; i++) {
-                    if (methods[i].isAnnotationPresent(Inject.class)) {
+                    if (methods[i].isAnnotationPresent(Inject.class) || methods[i].isAnnotationPresent(Resource.class)) {
                         return true;
                     }
                 }
 
                 Constructor<?>[] c = clazz.getConstructors();
                 for (int i = 0; i < c.length; i++) {
-                    if (c[i].isAnnotationPresent(Inject.class)) {
+                    if (c[i].isAnnotationPresent(Inject.class) || c[i].isAnnotationPresent(Resource.class)) {
                         return true;
                     }
                 }
 
                 Class<?> cls = clazz.getSuperclass();
                 if (cls != null) {
-                    return hasInjectAnnotation(cls);
+                    return hasInjectOrResourceAnnotation(cls);
                 }
                 return false;
 

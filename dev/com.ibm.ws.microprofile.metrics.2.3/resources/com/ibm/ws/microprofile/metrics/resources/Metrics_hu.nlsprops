@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 20120 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ cpu.systemLoadAverage.description=A rendszer \u00e1tlagos terhel\u00e9s\u00e9t j
 cpu.processCpuLoad.description=A Java virtu\u00e1lis g\u00e9p folyamat 'recent cpu usage' \u00e9rt\u00e9k\u00e9t jelen\u00edti meg.
 
 #Cpu processCpuTime message
-cpu.processCpuTime.description=A Java virtu\u00e1lis g\u00e9pet futtat\u00f3 folyamat \u00e1ltal haszn\u00e1lt CPU id\u0151t jelen\u00edti meg.
+cpu.processCpuTime.description=Megjelen\u00edti a Java virtu\u00e1lis g\u00e9pet futtat\u00f3 folyamat \u00e1ltal haszn\u00e1lt CPU id\u0151t.
 
 #Garbage collection count message
 garbageCollectionCount.description=A v\u00e9grehajtott adatgy\u0171jt\u00e9sek teljes sz\u00e1m\u00e1t jelen\u00edti meg. Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha az adatgy\u0171jt\u00e9sek sz\u00e1ma ehhez az adatgy\u0171jt\u0151h\u00f6z nincs meghat\u00e1rozva.
@@ -128,6 +128,8 @@ session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma
 session.invalidated.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta kijelentkezett munkamenetek sz\u00e1ma.
 session.invalidatedbyTimeout.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta id\u0151t\u00fall\u00e9p\u00e9s miatt kijelentkeztetett munkamenetek sz\u00e1ma.
 
+
+REST.request.description=Az adott RESTful er\u0151forr\u00e1s met\u00f3dus felh\u00edv\u00e1sainak sz\u00e1ma \u00e9s teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

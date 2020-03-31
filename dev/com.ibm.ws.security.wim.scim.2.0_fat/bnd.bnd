@@ -17,8 +17,6 @@ src: \
 
 fat.project: true
 
-javac.source: 1.8
-javac.target: 1.8
 
 -buildpath: \
     com.ibm.ws.com.fasterxml.jackson.2.9.1;version=latest,\

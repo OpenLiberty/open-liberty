@@ -16,3 +16,4 @@ IBM-App-ForceRestart: install, \
  com.ibm.ws.beanvalidation
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

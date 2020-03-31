@@ -122,7 +122,7 @@ action-desc.resume=\tReprend tous les composants mis en pause dans le serveur. V
 \tsp\u00e9cifiques, pr\u00e9c\u00e9demment mis en pause.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tEfface du cache toutes les donn\u00e9es relatives \u00e0 cette instance de serveur
+option-desc.start.clean=\tEfface du cache toutes les donn\u00e9es relatives \u00e0 cette instance de serveur             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="chemin fichier archive cible"
 option-desc.dump.archive=\tSp\u00e9cifiez la cible d'archive que l'action de vidage doit g\u00e9n\u00e9rer.       \n\
@@ -185,3 +185,15 @@ option-desc.no-password=\tD\u00e9sactivez la g\u00e9n\u00e9ration d'un mot de pa
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="dossier de serveur racine dans l'archive"
 option-desc.package.server-root=\tSp\u00e9cifie le nom du dossier de serveur racine dans le fichier archive. \n
+#------------------------------\n\
+\ at 72 chars -- leading tab-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tIgnore l'\u00e9tape de mise au repos avant l'arr\u00eat du serveur. L'arr\u00eat normal d'un\n\
+\tserveur comporte une \u00e9tape de mise au repos avant l'arr\u00eat du serveur.     \n\
+\tL'\u00e9tape de mise au repos, qui dure 30 secondes, permet aux services de terminer des   \n\
+\ttravaux avant l'arr\u00eat ; par exemple, les programmes d'\u00e9coute entrants sont arr\u00eat\u00e9s\n\
+\tmais les demandes existantes peuvent \u00eatre trait\u00e9es. L'option --force n'a pas d'effet\n\
+\tsi l'arr\u00eat du serveur a d\u00e9j\u00e0 \u00e9t\u00e9 demand\u00e9. Si vous l'utilisez, il se peut   \n\
+\tque des exceptions inattendues soient enregistr\u00e9es dans le fichier messages.log \n\
+\tapr\u00e8s la r\u00e9ception de la commande d'arr\u00eat du serveur par le serveur.

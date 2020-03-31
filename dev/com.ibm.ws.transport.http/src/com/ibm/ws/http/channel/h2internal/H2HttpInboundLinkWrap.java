@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.ibm.websphere.ras.Tr;
@@ -34,10 +35,14 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http2.Http2ConnectionHandler;
+import com.ibm.ws.http2.Http2Consumers;
+import com.ibm.ws.http2.Http2StreamHandler;
 import com.ibm.ws.http2.upgrade.H2Exception;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.http.channel.HttpRequestMessage;
 
 /**
  *
@@ -71,6 +76,51 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
         httpInboundServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
+    }
+
+    /**
+     * If a HTTP/2 handler has been registered Http2Consumers which can handle the current content type,
+     * pass the current HTTP through that handler.
+     */
+    @Override
+    public void ready(VirtualConnection inVC) {
+
+        if (getHTTPContext().isH2Connection()) {
+            Set<Http2ConnectionHandler> handlers = Http2Consumers.getHandlers();
+
+            if (handlers != null) {
+                String requestContentType = getContentType().toLowerCase();
+
+                // find the first Handler that can process the requested content type
+                for (Http2ConnectionHandler handler : handlers) {
+                    if (containsIgnoreCase(handler.getSupportedContentTypes(), requestContentType)) {
+
+                        // TODO: don't use the state map
+                        inVC.getStateMap().put(HTTP2_HANDLER_SELECTED, "true");
+                        super.ready(inVC);
+
+                        // init the handler's stream and send down any request headers and data
+                        Http2StreamHandler stream = handler.onStreamCreated(this.getRequest(),
+                                                                            this.muxLink.getStream(streamID), muxLink);
+                        if (stream != null) {
+                            stream.headersReady();
+                            try {
+                                WsByteBuffer buf = httpInboundServiceContextImpl.getRequestBodyBuffers()[0];
+                                // pass the stream body data and end of stream state
+                                stream.dataReady(buf, this.muxLink.getStream(streamID).isHalfClosed());
+                                return;
+                            } catch (IOException e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "ready caught exception : " + e.getMessage());
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        super.ready(inVC);
     }
 
     /**
@@ -121,7 +171,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     /**
      * Create Header frames corresponding to a byte array of http headers
      *
-     * @param byte[] marshalledHeaders
+     * @param byte[]  marshalledHeaders
      * @param boolean complete
      * @return ArrayList<Frame> of FrameHeader objects containing the headers
      */
@@ -199,8 +249,8 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      * The buffers passed in must not exceed the http2 max frame size
      *
      * @param WsByteBuffer[]
-     * @param int length
-     * @param boolean isFinalWrite
+     * @param int            length
+     * @param boolean        isFinalWrite
      * @return ArrayList<Frame> of FrameData objects containing the buffered payload data
      */
     public ArrayList<Frame> prepareBody(WsByteBuffer[] wsbb, int length, boolean isFinalWrite) {
@@ -467,5 +517,29 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
     public ArrayList<H2HeaderField> getReadHeaders() {
         return this.headers;
+    }
+
+    public HttpRequestMessage getRequest() {
+        return this.httpInboundServiceContextImpl.getRequest();
+    }
+
+    private String getContentType() {
+        for (H2HeaderField header : this.headers) {
+            if (header.getName().equalsIgnoreCase("Content-Type")) {
+                return header.getValue();
+            }
+        }
+        return null;
+    }
+
+    private boolean containsIgnoreCase(Set<String> set, String match) {
+        if (set == null)
+            return false;
+        for (String current : set) {
+            if (current.equalsIgnoreCase(match)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

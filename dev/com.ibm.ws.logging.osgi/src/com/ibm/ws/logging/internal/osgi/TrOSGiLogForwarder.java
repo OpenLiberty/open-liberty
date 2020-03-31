@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -273,36 +273,35 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
             return false;
         }
         boolean isAnyTraceEnabled = TraceComponent.isAnyTracingEnabled();
-        OSGiTraceComponent tc = getTraceComponent(b);
 
         // Do error first because we don't do the check below for errors
         if (level == LogLevel.ERROR.ordinal()) {
-            return tc.isErrorEnabled();
+            return getTraceComponent(b).isErrorEnabled();
         }
 
         // check for events specifically to log them with Tr.event
         if (loggerName != null && loggerName.startsWith(LOGGER_EVENTS_PREFIX))  {
-            return isAnyTraceEnabled && tc.isEventEnabled();
+            return isAnyTraceEnabled && getTraceComponent(b).isEventEnabled();
         }
 
         if (level == LogLevel.AUDIT.ordinal()) {
-            return tc.isAuditEnabled();
+            return getTraceComponent(b).isAuditEnabled();
         }
 
         if (level == LogLevel.INFO.ordinal()) {
-            return tc.isInfoEnabled();
+            return getTraceComponent(b).isInfoEnabled();
         }
 
         if (level == LogLevel.WARN.ordinal()) {
-            return tc.isWarningEnabled();
+            return getTraceComponent(b).isWarningEnabled();
         }
 
         if (level == LogLevel.DEBUG.ordinal()) {
-            return isAnyTraceEnabled && tc.isDebugEnabled();
+            return isAnyTraceEnabled && getTraceComponent(b).isDebugEnabled();
         }
 
         if (level == LogLevel.TRACE.ordinal()) {
-            return isAnyTraceEnabled && tc.isDumpEnabled();
+            return isAnyTraceEnabled && getTraceComponent(b).isDumpEnabled();
         }
 
         return false;

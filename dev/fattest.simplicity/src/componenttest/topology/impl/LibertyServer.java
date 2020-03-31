@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -292,6 +292,8 @@ public class LibertyServer implements LogMonitorClient {
 
     private boolean needsPostTestRecover = true;
 
+    private boolean logOnUpdate = true;
+
     protected boolean debuggingAllowed = true;
 
     /**
@@ -314,6 +316,14 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void setDebuggingAllowed(boolean debuggingAllowed) {
         this.debuggingAllowed = debuggingAllowed;
+    }
+
+    public boolean isLogOnUpdate() {
+        return logOnUpdate;
+    }
+
+    public void setLogOnUpdate(boolean logOnUpdate) {
+        this.logOnUpdate = logOnUpdate;
     }
 
     /**
@@ -4185,7 +4195,7 @@ public class LibertyServer implements LogMonitorClient {
         // above. Even if the timestamp would not be changed, the size out be.
         LibertyFileManager.moveLibertyFile(newServerFile, file);
 
-        if (LOG.isLoggable(Level.INFO)) {
+        if (LOG.isLoggable(Level.INFO) && logOnUpdate) {
             LOG.info("Server configuration updated:");
             logServerConfiguration(Level.INFO, false);
         }
@@ -5506,6 +5516,11 @@ public class LibertyServer implements LogMonitorClient {
     public void startServer(boolean cleanStart, boolean validateApps) throws Exception {
         startServerAndValidate(true, cleanStart, validateApps);
     }
+    
+    public void deleteAllDropinApplications() throws Exception {
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
+        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
+    }
 
     /**
      * Restart a drop-ins application.
@@ -6081,6 +6096,11 @@ public class LibertyServer implements LogMonitorClient {
         return !isJava2SecExempt;
     }
 
+    /**
+     * No longer using bootstrap properties to update server config for database rotation.
+     * Instead look at using the fattest.databases module
+     */
+    @Deprecated
     public void configureForAnyDatabase() throws Exception {
         ServerConfiguration config = this.getServerConfiguration();
         config.updateDatabaseArtifacts();

@@ -275,7 +275,7 @@ public class GeneratePluginConfigMBean extends StandardMBean implements Generate
      * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
      */
     @Override
-    public synchronized void serverStopping() {
+    public void serverStopping() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "serverStopping", "generate in progress = " + generateInProgress);
         }

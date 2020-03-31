@@ -19,7 +19,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;

@@ -13,15 +13,12 @@ bVersion=1.0
 
 # For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: Security Kerberos constrained delegation (S4U2self and S4U2proxy) for IBM Java version 1.8
 Bundle-SymbolicName: com.ibm.ws.security.kerberos.java8; singleton:=true
 Bundle-Description: Security KerberosExtService, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: \
   Kerberos

@@ -17,8 +17,6 @@ Bundle-SymbolicName: com.ibm.ws.jaxrs.2.0.tools
 
 WS-TraceGroup: JAXRS
 
-# jaxrs-2.0 is part of EE7 and therefore requires java 1.7
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: com.ibm.ws.jaxrs20.tools;version="1.0"
 

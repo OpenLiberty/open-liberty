@@ -30,8 +30,6 @@ dependencies {
     binaries "org.jsoup:jsoup:1.7.2"
     binaries "com.ibm.ws.javax.j2ee:servlet:3.1"
     binaries "org.jmockit:jmockit:1.25"
-    binaries "biz.aQute.bnd:biz.aQute.bnd:4.1.0"
-    binaries "biz.aQute.bnd:biz.aQute.bnd.annotation:4.1.0"
     binaries "org.apache.maven:maven-model:3.5.0"
     binaries "javax.json:javax.json-api:1.1.2"
     binaries "org.glassfish:javax.json:1.1.2"
@@ -48,10 +46,6 @@ task dependabotGenerate() {
   inputs.file('oss_dependencies.maven')
   outputs.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
   doLast {
-    def xmlParser = new XmlSlurper()
-    int totalArtifacts = 0
-    int possibleUpdates = 0
-    
     // Generate pom.xml
     File pom = rootProject.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
     pom.delete()
@@ -69,9 +63,8 @@ task dependabotGenerate() {
       
     file('oss_dependencies.maven').eachLine { line ->
       line = line.trim()
-      if (line.startsWith('#'))
+      if (line.startsWith('#') || line.isEmpty())
         return;
-      totalArtifacts++
       def (g,a,v) = line.split(':').collect { it.trim() }
       pom << "    <dependency>\n"
       pom << "      <groupId>"    + g + "</groupId>\n"

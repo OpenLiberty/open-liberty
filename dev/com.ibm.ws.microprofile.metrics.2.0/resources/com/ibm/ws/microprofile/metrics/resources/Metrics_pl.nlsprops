@@ -100,6 +100,7 @@ cpu.processCpuLoad.description=Wy\u015bwietla u\u017cycie procesora przez proces
 
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Wy\u015bwietla czas pracy procesora u\u017cywany przez proces, w kt\u00f3rym dzia\u0142a wirtualna maszyna j\u0119zyka Java.
+
 #Garbage collection count message
 garbageCollectionCount.description=Wy\u015bwietla \u0142\u0105czn\u0105 liczb\u0119 operacji gromadzenia, kt\u00f3re wyst\u0105pi\u0142y. Ten atrybut ma warto\u015b\u0107 -1, je\u015bli liczba operacji gromadzenia dla tego kolektora jest niezdefiniowana.
 

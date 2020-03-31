@@ -13,12 +13,9 @@
 
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.streams-operators; singleton:=true
                      
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # We will whittle this down once it is working
 Export-Package: \

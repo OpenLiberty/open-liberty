@@ -318,7 +318,7 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=O valor indicado do par\u00
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Certifique-se de que os valores no par\u00e2metro de solicita\u00e7\u00e3o sejam v\u00e1lidos.
 
 # this message is also emitted by the oidc client via the PublicErrorFacingServlet
-security.oauth20.front.end.error=CWOAU0073E: Um erro foi encontrado ao autenticar um usu\u00e1rio. Tente fechar o navegador da web e se autenticar novamente ou entre em contato com o administrador do site, se o problema persistir.
+security.oauth20.front.end.error=CWOAU0073E: Ocorreu um erro de autentica\u00e7\u00e3o. Tente fechar o navegador da web e se autenticar novamente ou entre em contato com o administrador do site, se o problema persistir.
 security.oauth20.front.end.error.explanation=\u00c9 poss\u00edvel que faltem informa\u00e7\u00f5es na solicita\u00e7\u00e3o, o servidor pode ter encontrado um erro interno, ou algum outro erro pode ter impedido o servidor de autenticar o usu\u00e1rio com \u00eaxito.
 security.oauth20.front.end.error.useraction=Entre em contato com o administrador do sistema para resolver o problema.
 

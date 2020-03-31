@@ -51,7 +51,6 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_db2_jcc;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_client;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
-import com.ibm.websphere.simplicity.config.dsprops.Properties_informix_jcc;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -125,13 +124,14 @@ public class ConfigTest extends FATServletClient {
         originalServerConfig = server.getServerConfiguration().clone();
 
         //Get driver type
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-        server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("ANON_DRIVER", type.getAnonymousDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
-        //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        //Setup server DataSource properties (use database specific properties in order to run testTrace() )
+        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
 
         // Get JDBC server config
         originalServerConfigUpdatedForJDBC = server.getServerConfiguration().clone();
@@ -173,7 +173,9 @@ public class ConfigTest extends FATServletClient {
 
     @After
     public void cleanUpPerTest() throws Exception {
+        server.setLogOnUpdate(false); //Reduce output that is not specific to the actual tests being run
         updateServerConfig(originalServerConfigUpdatedForJDBC, cleanUpExprs);
+        server.setLogOnUpdate(true);
         cleanUpExprs = EMPTY_EXPR_LIST;
     }
 
@@ -1369,6 +1371,14 @@ public class ConfigTest extends FATServletClient {
         String dsPropsAlias = dsfat1.getDataSourcePropertiesUsedAlias();
         String traceString = null, traceSpec = null, platform = null;
 
+        if (dsPropsAlias.equals(DataSourceProperties.GENERIC)) {
+            //When using generic properties and likely a generic jdbc driver we will enable com.ibm.ws.database.logwriter
+            //However, we cannot guarantee that this will enable tracing for every jdbc driver  (ex Oracle)
+            //in general this should work, but since it is not guaranteed we will skip testing this case
+
+            return;
+        }
+
         // 1) Disable all tracing
         switch (dsPropsAlias) {
             case DataSourceProperties.DB2_JCC:
@@ -1395,29 +1405,6 @@ public class ConfigTest extends FATServletClient {
                 ConfigElementList<Properties_derby_client> derbyProps = dsfat1.getProperties_derby_client();
                 if (!derbyProps.isEmpty())
                     derbyProps.get(0).setTraceLevel(null);
-                break;
-            case DataSourceProperties.GENERIC:
-                platform = "Generic";
-                traceString = "getDriverMajorVersion()";
-                traceSpec = "com.ibm.ws.database.logwriter=all=enabled";
-
-                dsfat1.setSupplementalJDBCTrace(null);
-                break; // this is iffy since we really don't know how to enable/disable trace for every driver
-            case DataSourceProperties.INFORMIX_JCC:
-                platform = "Informix (JCC)";
-                traceSpec = "com.ibm.ws.db2.logwriter=all=enabled";
-                traceString = "\\[jcc\\]\\[";
-
-                ConfigElementList<Properties_informix_jcc> informixJccProps = dsfat1.getProperties_informix_jcc();
-                if (!informixJccProps.isEmpty())
-                    informixJccProps.get(0).setTraceLevel(null);
-                break;
-            case DataSourceProperties.INFORMIX_JDBC:
-                platform = "Informix JDBC";
-                traceString = "new com.informix.jdbcx.IfxConnectionPoolDataSource()";
-                traceSpec = "com.ibm.ws.informix.logwriter=all=enabled";
-
-                dsfat1.setSupplementalJDBCTrace(null);
                 break;
             case DataSourceProperties.ORACLE_JDBC:
                 // Oracle tracing will only work if we are using *_g.jar
@@ -1525,17 +1512,6 @@ public class ConfigTest extends FATServletClient {
                 if (!derbyProps.isEmpty())
                     derbyProps.get(0).setTraceLevel("-1");
                 break;
-            case DataSourceProperties.GENERIC:
-                dsfat1.setSupplementalJDBCTrace("true");
-                break; // this is iffy since we really don't know how to enable/disable trace for every driver
-            case DataSourceProperties.INFORMIX_JCC:
-                ConfigElementList<Properties_informix_jcc> informixJccProps = dsfat1.getProperties_informix_jcc();
-                if (!informixJccProps.isEmpty())
-                    informixJccProps.get(0).setTraceLevel("-1");
-                break;
-            case DataSourceProperties.INFORMIX_JDBC:
-                dsfat1.setSupplementalJDBCTrace("true");
-                break;
             case DataSourceProperties.ORACLE_JDBC:
                 break; // No additional setting needed to setup Oracle trace
             case DataSourceProperties.DATADIRECT_SQLSERVER:
@@ -1549,7 +1525,7 @@ public class ConfigTest extends FATServletClient {
                 break;
         }
 
-        String baseTraceSpec = "*=info=enabled";//:com.ibm.ws.jdbc.*=all=enabled:com.ibm.ejs.j2c.*=all=enabled:com.ibm.ws.rsadapter.*=all=enabled";
+        String baseTraceSpec = "*=info=enabled"; //:com.ibm.ws.jdbc.*=all=enabled:com.ibm.ejs.j2c.*=all=enabled:com.ibm.ws.rsadapter.*=all=enabled";
         config.getLogging().setTraceSpecification(baseTraceSpec + ':' + traceSpec);
 
         try {

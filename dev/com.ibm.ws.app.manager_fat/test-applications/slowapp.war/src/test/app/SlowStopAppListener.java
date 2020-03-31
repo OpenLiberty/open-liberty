@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,29 @@ public class SlowStopAppListener implements ServletContextListener {
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
     @Override
-    public void contextInitialized(ServletContextEvent arg0) {
-        //do nothing
+    public void contextInitialized(ServletContextEvent event) {
+        Object timeout = event.getServletContext().getAttribute("timeout");
+        int count = 40; //default number of seconds to timeout the startup
+        if (timeout != null) {
+            try {
+                count = Integer.parseInt(timeout.toString());
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid timeout specified, using default value of " + count);
+            }
+        }
+        System.err.println("Sleeping for approx " + count + " seconds.");
+        for (int i = 0; i < count; i++) {
+            try {
+                System.err.println("SlowApp is sleeping, zzzzzzzz");
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                //test failed, so re-throw as a runtime error
+                System.err.println("SlowApp was interrupted.");
+                throw new RuntimeException(e);
+            }
+        }
+
+        System.err.println("TEST : SlowStopApp finished initialization");
 
     }
 
@@ -43,10 +64,12 @@ public class SlowStopAppListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent event) {
         Object timeout = event.getServletContext().getAttribute("timeout");
         int count = 40; //default number of seconds to timeout the shutdown
-        try {
-            count = Integer.parseInt(timeout.toString());
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid timeout specified, using default value of " + count);
+        if (timeout != null) {
+            try {
+                count = Integer.parseInt(timeout.toString());
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid timeout specified, using default value of " + count);
+            }
         }
         System.err.println("Sleeping for approx " + count + " seconds.");
         for (int i = 0; i < count; i++) {

@@ -49,5 +49,9 @@
       <class-name>javax.management.MBeanServerPermission</class-name>
       <name>createMBeanServer</name>
    </permission>
+   <permission>
+   	  <class-name>java.security.SecurityPermission</class-name>
+   	  <name>getPolicy</name>
+   </permission>	  
 
 </permissions>

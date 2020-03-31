@@ -37,8 +37,6 @@ test.project: true
 publish.wlp.jar.disabled: true
 generate.replacement: true
 
-javac.source: 1.8
-javac.target: 1.8
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

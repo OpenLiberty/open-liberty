@@ -16,10 +16,7 @@ Bundle-Name: JAX-WS WebContainer
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.webcontainer
 Bundle-Description: IBM JAX-WS 2.3 Web Container; version=${bVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Service-Component: com.ibm.ws.jaxws23.webcontainer.jaxWsWebContainerManager; \
      implementation:=com.ibm.ws.jaxws23.webcontainer.JaxWsWebContainerManagerImpl; \

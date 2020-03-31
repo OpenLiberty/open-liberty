@@ -19,9 +19,9 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2003I: Pomiary monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika mpMetrics.
-FEATURE_REGISTERED.explanation=Sk\u0142adniki monitor-1.0 i mpMetrics-2.3 s\u0105 w\u0142\u0105czone, a pomiary monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika mpMetrics.
+FEATURE_REGISTERED.explanation=Sk\u0142adniki monitor-1.0 i mpMetrics-2.3 s\u0105 w\u0142\u0105czone, a metryki monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika mpMetrics.
 FEATURE_REGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
 
 FEATURE_UNREGISTERED=CWPMI2004I: Wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika mpMetrics.
-FEATURE_UNREGISTERED.explanation=Sk\u0142adnik monitor-1.0 i/lub sk\u0142adnik mpMetrics-2.3 zosta\u0142y usuni\u0119te z serwera, a wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika mpMetrics.
+FEATURE_UNREGISTERED.explanation=Sk\u0142adnik monitor-1.0 i/lub sk\u0142adnik mpMetrics-2.3 zosta\u0142 usuni\u0119ty z serwera, a wszystkie metryki monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika mpMetrics.
 FEATURE_UNREGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,10 +111,11 @@ public interface ConnectionManagerMBean {
     public String showPoolContents();
 
     /**
-     * Displays the JndiName of the connection pool associated with
-     * this Connection Manager as a human readable string.
+     * Returns the JNDI name of the first data source or connection factory that used the connection manager.
+     * If the first data source or connection factory that used the connection manager does not have a JNDI name,
+     * then the String value <code>none</code> is returned.
      *
-     * @return A non-localized string displaying the JndiName of the connection pool
+     * @return A non-localized string displaying a JNDI name or the text <code>none</code>.
      *
      */
     public String getJndiName();

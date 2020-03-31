@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,12 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public class WebModuleInfoImpl extends ExtendedModuleInfoImpl implements ExtendedWebModuleInfo {
 
     /** The context root for this web module */
-    private final String contextRoot;
+    private String contextRoot;
 
     /** Field to check whether Default Context Root is being used */
     private boolean isDefaultContextRootUsed;
+
+    private String defaultContextRoot;
 
     /**
      * Creates a new instance of a web module with the class loader set to <code>null</code>
@@ -42,27 +44,41 @@ public class WebModuleInfoImpl extends ExtendedModuleInfoImpl implements Extende
                              Container moduleContainer, Entry altDDEntry, List<ContainerInfo> moduleClassesContainers,
                              ModuleClassLoaderFactory classLoaderFactory) throws UnableToAdaptException {
         super(appInfo, moduleName, path, moduleContainer, altDDEntry, moduleClassesContainers, classLoaderFactory, ContainerInfo.Type.WEB_MODULE, WebModuleInfo.class);
-        this.isDefaultContextRootUsed = false;
+
         this.contextRoot = contextRoot;
+        this.isDefaultContextRootUsed = false;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getContextRoot() {
+
+        if (this.contextRoot == null) {
+
+            this.contextRoot = ContextRootUtil.getContextRoot(getContainer());
+
+            if (this.contextRoot == null) {
+                if (defaultContextRoot != null && getName().equals(defaultContextRoot)) {
+                    isDefaultContextRootUsed = true;
+                }
+                this.contextRoot = ContextRootUtil.getContextRoot(defaultContextRoot);
+            }
+        }
+
         return this.contextRoot;
     }
 
     /**
-     * Sets to true if the default context root is being used, otherwise sets false
+     * Sets the value of the default context root
      */
-    public void setDefaultContextRootUsed(boolean isDefaultContextRootUsed) {
-        this.isDefaultContextRootUsed = isDefaultContextRootUsed;
+    public void setDefaultContextRoot(String root) {
+        this.defaultContextRoot = root;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isDefaultContextRootUsed() {
-        return this.isDefaultContextRootUsed;
+        return isDefaultContextRootUsed;
     }
 
 }

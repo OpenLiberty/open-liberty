@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,19 +14,28 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.addDirectory;
 import static com.ibm.websphere.simplicity.ShrinkHelper.buildDefaultApp;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.management.remote.JMXServiceURL;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.BeforeClass;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.fat.util.jmx.JmxException;
+import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
+import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 
 import componenttest.topology.impl.LibertyFileManager;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  *
@@ -34,7 +43,7 @@ import componenttest.topology.impl.LibertyFileManager;
 public abstract class AbstractAppManagerTest {
 
     protected static final String DERBY_DIR = "derby";
-    protected static final String DROPINS_DIR = "dropins(fish)";
+    protected static final String DROPINS_FISH_DIR = "dropins(fish)";
     //the time in seconds to wait for apps at a URL before giving up
     protected static final int CONN_TIMEOUT = 30;
 
@@ -50,8 +59,19 @@ public abstract class AbstractAppManagerTest {
 
     // Bundles
     protected static final String BUNDLE_NAME = "test.app.notifications.jar";
+    protected static final String APPS_DIR = "apps";
+    protected static final String EXPANDED_DIR = APPS_DIR + "/expanded";
+    protected static final String DROPINS_DIR = "dropins";
+
+    // MBean
+    protected static final String APP_MBEAN = "WebSphere:service=com.ibm.websphere.application.ApplicationMBean";
 
     protected abstract Class<?> getLogClass();
+
+    /** Holds paths of files that need to be cleaned up after the test run. */
+    List<String> pathsToCleanup = new ArrayList<String>();
+
+    String allowedErrors = "";
 
     /**
      * Returns true if the file is successfully deleted or it doesn't exist
@@ -135,6 +155,46 @@ public abstract class AbstractAppManagerTest {
         addDirectory(slow, "test-applications/slowapp.war/resources");
         ShrinkHelper.exportArtifact(slow, PUBLISH_FILES, true, true);
 
+        // Slow App Two
+        WebArchive slowAppTwo = buildDefaultApp("slowapptwo.war", "test.app.*");
+        addDirectory(slowAppTwo, "test-applications/slowapp.war/resources");
+        ShrinkHelper.exportArtifact(slowAppTwo, PUBLISH_FILES, true, true);
+
+    }
+
+    protected abstract LibertyServer getServer();
+
+    public JMXServiceURL getJmxServiceUrl() throws JmxException {
+        return JmxServiceUrlFactory.getInstance().getUrl(getServer());
+    }
+
+    /**
+     * Retrieves an {@link ApplicationMBean} for a particular application on this server
+     *
+     * @param applicationName the name of the application to operate on
+     * @return an {@link ApplicationMBean}
+     * @throws JmxException if the object name for the input application cannot be constructed
+     */
+    public ApplicationMBean getApplicationMBean(String applicationName) throws JmxException {
+        return new ApplicationMBean(getJmxServiceUrl(), applicationName);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        // stop the server first so that the server gives up any locks on
+        // files we need to clean up
+        if (getServer().isStarted()) {
+            getServer().stopServer(allowedErrors);
+        }
+
+        Machine machine = getServer().getMachine();
+        for (String path : pathsToCleanup) {
+            LibertyFileManager.deleteLibertyFile(machine, path);
+        }
+
+        // clear so next test populates fresh list
+        pathsToCleanup.clear();
+        allowedErrors = "";
     }
 
 }

@@ -11,3 +11,4 @@ IBM-API-Package: javax.ejb; type="spec", \
  com.ibm.ws.app.manager.ejb
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

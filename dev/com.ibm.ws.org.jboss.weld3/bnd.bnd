@@ -10,8 +10,6 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[3.1.1.Final,3.2)}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 1.8
-javac.target: 1.8
 
 -buildpath: \
 	org.jboss.weld:weld-osgi-bundle;version=3.1.1.Final, \

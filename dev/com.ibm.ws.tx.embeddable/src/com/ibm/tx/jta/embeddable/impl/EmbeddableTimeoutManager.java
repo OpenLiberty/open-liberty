@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.embeddable.impl;
 
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2007, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -143,10 +143,12 @@ public class EmbeddableTimeoutManager extends TimeoutManager {
                 case TimeoutManager.ACTIVE_TIMEOUT:
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                         Tr.event(tc, "Transaction timeout", _tran);
+
+                    _tran.timeoutTransaction(true);
+
                     Tr.info(tc, "WTRN0006_TRANSACTION_HAS_TIMED_OUT", new Object[] { _tran.getTranName(), _duration });
 
                     final Thread thread = _tran.getMostRecentThread();
-
                     if (thread != null) {
                         final StackTraceElement[] stack = thread.getStackTrace();
 
@@ -161,8 +163,6 @@ public class EmbeddableTimeoutManager extends TimeoutManager {
 
                         Tr.info(tc, "WTRN0124_TIMED_OUT_TRANSACTION_STACK", new Object[] { thread, writer.getBuffer() });
                     }
-
-                    _tran.timeoutTransaction(true);
                     break;
 
                 case TimeoutManager.REPEAT_TIMEOUT:

@@ -23,6 +23,8 @@ Export-Package: \
  
 # these should be optional only when resolving jars from wlp/dev
 Import-Package: \
+ !com.ibm.security.jgss, \
+ !org.bouncycastle.asn1.x509, \
  org.opensaml*;resolution:=optional, \
  org.apache.commons.logging;resolution:=optional, \
  org.joda.time;version="[1.6,2)";resolution:=optional, \

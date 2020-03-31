@@ -147,6 +147,16 @@ public class JCATest extends FATServletClient {
         runInServlet("testDestinations", fvtweb);
     }
 
+    @Test
+    public void testLoginModuleInJarInJarInRar() throws Exception {
+        runInServlet("testLoginModuleInJarInJarInRar", fvtweb);
+    }
+
+    @Test
+    public void testLoginModuleInJarInRar() throws Exception {
+        runInServlet("testLoginModuleInJarInRar", fvtweb);
+    }
+
     /**
      * Test calls runInServlet method twice because this test is related
      * to a defect where forgetting to close a connection caused an error

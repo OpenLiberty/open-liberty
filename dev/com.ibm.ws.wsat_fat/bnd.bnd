@@ -21,8 +21,10 @@ src: \
 
 fat.project: true
 
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, Java EE 8 features are added programatically at runtime by the RepeatTests rule.
 tested.features: \
-	servlet-4.0
+	servlet-4.0, cdi-2.0, jdbc-4.2, appsecurity-3.0, jaxrs-2.1, jpa-2.2
 
 -buildpath: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \

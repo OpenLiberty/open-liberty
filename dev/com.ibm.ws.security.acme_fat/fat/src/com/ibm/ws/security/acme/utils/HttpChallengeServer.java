@@ -13,7 +13,11 @@ package com.ibm.ws.security.acme.utils;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ServerSocketFactory;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -107,7 +111,7 @@ public class HttpChallengeServer {
 
 						Log.info(HttpChallengeServer.class, "handle", "Sending response: " + response.toString());
 					}
-				}).setListenerPort(listenerPort).create();
+				}).setListenerPort(listenerPort).setServerSocketFactory(new ReuseAddressServerSocketFactory()).create();
 				server.start();
 			} catch (BindException e) {
 				retry = true;
@@ -147,5 +151,34 @@ public class HttpChallengeServer {
 	 */
 	public void setAcmeClient(AcmeClient acmeClient) {
 		this.acmeClient = acmeClient;
+	}
+
+	/**
+	 * {@link ServerSocketFactory} that enables SO_REUSEADDR socket option on
+	 * the socket.
+	 */
+	private class ReuseAddressServerSocketFactory extends ServerSocketFactory {
+
+		@Override
+		public ServerSocket createServerSocket(int port) throws IOException {
+			ServerSocket socket = ServerSocketFactory.getDefault().createServerSocket(port);
+			socket.setReuseAddress(true);
+			return socket;
+		}
+
+		@Override
+		public ServerSocket createServerSocket(int port, int backlog) throws IOException {
+			ServerSocket socket = ServerSocketFactory.getDefault().createServerSocket(port, backlog);
+			socket.setReuseAddress(true);
+			return socket;
+		}
+
+		@Override
+		public ServerSocket createServerSocket(int port, int backlog, InetAddress ifAddress) throws IOException {
+			ServerSocket socket = ServerSocketFactory.getDefault().createServerSocket(port, backlog, ifAddress);
+			socket.setReuseAddress(true);
+			return socket;
+		}
+
 	}
 }

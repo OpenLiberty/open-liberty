@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.${libertyBundleMicroVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: MicroProfile Metrics 2.3
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.2.3
@@ -46,7 +44,6 @@ Export-Package: \
 	com.ibm.ws.microprofile.metrics23.impl.SharedMetricRegistries23,\
 	com.ibm.ws.microprofile.metrics.ApplicationListener
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: METRICS
 

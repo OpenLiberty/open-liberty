@@ -2817,7 +2817,11 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     private String getPrincipalNameFilter(String principalName) {
         List<String> loginAttrs = iLdapConfigMgr.getLoginAttributes();
-        principalName = Rdn.escapeValue(principalName).replace("(", "\\(").replace(")", "\\)");
+        principalName = principalName.replace("\"\"", "\""); // Unescape escaped XPath quotation marks
+        principalName = principalName.replace("''", "'"); // Unescape escaped XPath apostrophes
+        principalName = Rdn.escapeValue(principalName);
+        principalName = principalName.replace("(", "\\("); // Escape paren for LDAP filter.
+        principalName = principalName.replace(")", "\\)"); // Escape paren for LDAP filter.
         StringBuffer filter = new StringBuffer();
         if (loginAttrs != null) {
             if (loginAttrs.size() > 1) {

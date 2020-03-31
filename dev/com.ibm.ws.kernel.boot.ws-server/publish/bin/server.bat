@@ -500,7 +500,6 @@ goto:eof
           set WLP_DEFAULT_JAVA_HOME=!WLP_INSTALL_DIR!!WLP_DEFAULT_JAVA_HOME:~17!
         )
         set JAVA_CMD_QUOTED="!WLP_DEFAULT_JAVA_HOME!\bin\java"
-        set WLP_SKIP_MAXPERMSIZE=!WLP_DEFAULT_SKIP_MAXPERMSIZE!
       )
     ) else (
       set JAVA_CMD_QUOTED="%JRE_HOME%\bin\java"
@@ -529,11 +528,10 @@ goto:eof
     set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
   )
 
-  @REM Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if
-  @REM JVMs have conflicting options, and it's more important that server JVMs
-  @REM be able to use AOT.
-  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !IBM_JAVA_OPTIONS!
-  set OPENJ9_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
+  @REM Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
+  @REM shared classes cache created for client operations.
+  set IBM_JAVA_OPTIONS=-Xquickstart !IBM_JAVA_OPTIONS! -Xshareclasses:none
+  set OPENJ9_JAVA_OPTIONS=-Xquickstart !OPENJ9_JAVA_OPTIONS! -Xshareclasses:none
 goto:eof
 
 @REM
@@ -554,13 +552,7 @@ goto:eof
 :serverEnvAndJVMOptions
   call:serverEnv
 
-  @REM By default, set -XX:MaxPermSize.  This option should be ignored by JVMs
-  @REM that don't support the option.
-  if not defined WLP_SKIP_MAXPERMSIZE (
-    set JVM_OPTIONS=-XX:MaxPermSize=256m
-  ) else (
-    set JVM_OPTIONS=
-  )
+  set JVM_OPTIONS=
   @REM Avoid HeadlessException.
   set JVM_OPTIONS=-Djava.awt.headless=true !JVM_OPTIONS!
   @REM allow late self attach for when the localConnector-1.0 feature is enabled

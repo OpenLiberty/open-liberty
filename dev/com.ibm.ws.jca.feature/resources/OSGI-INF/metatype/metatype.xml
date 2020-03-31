@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2014 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -127,12 +127,28 @@
   <Object ocdref="com.ibm.ws.jca.resourceAdapter" />
  </Designate>
 
- <OCD id="com.ibm.ws.jca.resourceAdapter" ibm:alias="resourceAdapter" ibm:any="1" ibm:extends="com.ibm.ws.jca.resourceAdapter.supertype" ibm:supportHiddenExtensions="true" name="%resourceAdapter" description="%resourceAdapter.desc" ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, com.ibm.ws.javaee.dd.appbnd" ibm:action="generateSchema">
+ <OCD id="com.ibm.ws.jca.resourceAdapter" ibm:alias="resourceAdapter" ibm:any="1" ibm:extends="com.ibm.ws.app.manager"
+    ibm:supportHiddenExtensions="true" ibm:action="generateSchema" name="%resourceAdapter" description="%resourceAdapter.desc"
+    ibm:excludeChildren="startAfter,
+       com.ibm.ws.jca.embeddedResourceAdapter,
+       com.ibm.ws.javaee.dd.appbnd,
+       com.ibm.ws.javaee.dd.appbnd.ApplicationBnd,
+       com.ibm.ws.javaee.dd.appext.ApplicationExt,
+       com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd,
+       com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd,
+       com.ibm.ws.javaee.dd.ejbext.EJBJarExt,
+       com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd,
+       com.ibm.ws.javaee.dd.webbnd.WebBnd,
+       com.ibm.ws.javaee.dd.webext.WebExt
+       com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd">
   <AD id="location" name="%location" description="%location.desc" type="String" required="true" ibm:type="location"/>
   <AD id="autoStart"                          type="Boolean" required="false" name="%autoStart" description="%autoStart.desc"/>
+  <AD id="context-root"                       type="String"  default="/" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="contextServiceRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.context.service" cardinality="1" name="internal" description="internal use only"/>
   <AD id="customize"                          type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.jca.customize" ibm:flat="true" cardinality="2147483647" name="internal" description="internal use only"/>
   <AD id="maxWaitForResources"                type="String"  default="20s" ibm:type="duration(ms)" name="internal" description="internal use only"/>
+  <AD id="name"                               type="String"  required="false" ibm:copyOf="id" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="type"                               type="String"  default="rar" ibm:final="true" name="internal" description="internal use only"/>
  </OCD>
 
 </metatype:MetaData>

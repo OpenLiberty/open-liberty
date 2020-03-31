@@ -17,8 +17,6 @@ src: \
 	test-applications/TxFaultTolerance.war/src,\
 	test-applications/faulttolerance.jar/src
 
-javac.source: 1.8
-javac.target: 1.8
 
 tested.features: mpFaultTolerance-1.0,\
                  mpFaultTolerance-1.1,\
@@ -48,5 +46,6 @@ fat.project: true
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.2;version=latest
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.ws.microprofile.faulttolerance_repeat_tests;version=latest
 	

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1609,3 +1609,14 @@ exception.occurred.while.running.ServletContainerInitializers.onStartup.useracti
 no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: \u5728 {1} \u904e\u6ffe\u5668\u5c0d\u6620\u4e2d\uff0c\u627e\u4e0d\u5230 {0} Servlet \u540d\u7a31\u7684 Servlet\u5b9a\u7fa9\u3002
 no.servlet.defined.for.servlet.filter.name.mapping.explanation=\u5728\u904e\u6ffe\u5668\u5c0d\u6620\u4e2d\u4f7f\u7528\u4e86 Servlet \u540d\u7a31\uff0c\u4f46\u537b\u672a\u6307\u5b9a\u5176\u5b9a\u7fa9\u3002
 no.servlet.defined.for.servlet.filter.name.mapping.useraction=\u8acb\u5b9a\u7fa9 Servlet \u540d\u7a31\u904e\u6ffe\u5668\u5c0d\u6620\u4e2d\u4f7f\u7528\u7684 Servlet\u3002
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: \u4f7f\u7528 {2} \u65b0\u503c\u914d\u7f6e\u4e86\u5e36\u73fe\u6709 SameSite \u5c6c\u6027\u503c {1} \u7684 {0} Cookie \u540d\u7a31\u3002\u91dd\u5c0d\u6b64 Cookie\uff0c\u672a\u65b0\u589e SameSite \u5c6c\u6027\u3002
+duplicate.samesite.attribute.for.cookie.name.explanation=\u91dd\u5c0d\u591a\u500b SameSite \u5c6c\u6027\u503c\uff0c\u7121\u6cd5\u914d\u7f6e Cookie \u540d\u7a31\u3002\u91dd\u5c0d Cookie\uff0c\u672a\u65b0\u589e\u5c6c\u6027\u3002
+duplicate.samesite.attribute.for.cookie.name.useraction=\u8acb\u6aa2\u67e5\u90e8\u7f72\u63cf\u8ff0\u5b50\u914d\u7f6e\uff0c\u4ee5\u78ba\u4fdd\u50c5\u91dd\u5c0d\u4e0b\u5217\u5176\u4e2d\u4e00\u500b SameSite \u5c6c\u6027\u503c\u914d\u7f6e\u4e86 Cookie \u540d\u7a31\uff1a'SameSiteCookies_Lax'\u3001'SameSiteCookies_None' \u6216 'SameSiteCookies_Strict'\u3002
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: \u5148\u524d\u5df2\u5c07\u91dd\u5c0d {1} SameSite \u5c6c\u6027\u503c\u914d\u7f6e\u7684 {0} Cookie \u540d\u7a31\u8b58\u5225\u70ba\u91cd\u8907\u9805\u3002\u91dd\u5c0d\u6b64 Cookie\uff0c\u672a\u65b0\u589e SameSite \u5c6c\u6027\u3002
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=\u91dd\u5c0d\u591a\u500b SameSite \u5c6c\u6027\u503c\uff0c\u7121\u6cd5\u914d\u7f6e Cookie \u540d\u7a31\u3002\u5df2\u5c07\u6b64 Cookie \u540d\u7a31\u8b58\u5225\u70ba\u91cd\u8907\u9805\u3002
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=\u8acb\u6aa2\u67e5\u90e8\u7f72\u63cf\u8ff0\u5b50\u914d\u7f6e\uff0c\u4ee5\u78ba\u4fdd\u50c5\u91dd\u5c0d\u4e0b\u5217\u5176\u4e2d\u4e00\u500b SameSite \u5c6c\u6027\u503c\u914d\u7f6e\u4e86 Cookie \u540d\u7a31\uff1a'SameSiteCookies_Lax'\u3001'SameSiteCookies_None' \u6216 'SameSiteCookies_Strict'\u3002

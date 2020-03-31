@@ -1,6 +1,11 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
-IBM OPEN LIBERTY 20.0.0.1
+NOTICES AND INFORMATION FOR OPEN LIBERTY 20.0.0.3
+Copyright 1999-2020 IBM Corporation and others
+
+This product includes software developed at
+The Open Liberty Project (https://openliberty.io/).
+
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -11,17 +16,21 @@ SECTIONS:
 APACHE V1.1
 APACHE V2
 BSD  
+BSD + FB PATENTS FILE 
+BSD-EQUIVALENT  
 CDDL V1  
 CPL  
 ECL V2
 EPL  
+EPL V2  
 ISC  
 JDOM
-JTIDY  
+JTidy
+LGPL V2.1   
 MIT  
 MPL V1.1  
 MPL V2.0  
-W3C
+Unique
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -95,34 +104,147 @@ APACHE LICENSE 2.0
 The Program includes some or all of the following that IBM obtained
 under the Apache License Version 2.0:
 
-JBOSS-CLASSFILEWRITER, MSF4J, BCEL, APACHE CXF, GRAPHQL-SPQR,
-SMALLRYE-REACTIVE-STREAMS-OPERATORS, COMMONS-IO, JAKARTA COMMONS CLI 1.0
-[javax.xml], COMMONS-LANG, JSONTOKEN, J4FRY [Apache MyFaces], APACHE
-BVAL, ARRAYELRESOLVER.JAVA [javax.el], COMMONS-LOGGING, FELIX GOGO
-SHELL, TAGLIBS, EHCACHE-CORE, ARIES JPA, XMLSEC, HMTLCOMPONENTS
-HTTPCORE, SMALLRYE-REACTIVE-MESSAGING, JODA-TIME, ECLIPSE MICROPROFILE,
-ARIES-JMX, COMMONS-COLLECTIONS, OSGI CORE, APACHE ARIES, XML-RESOLVER,
-GRAILS [Apache MyFaces], COMMON-LOGGING [SLF4J], GEANTYREF,
-COMMONS-WEAVER, QUNIT.JS [jQuery], FACELETS [Apache MyFaces], FELIX GOGO
-COMMAND, COMMONS-DIGESTER, DETECT-LIBC, SPRING-BOOT, COMMONS-FILEUPLOAD,
-OPENID4JAVA, THREADCONTEXT.JAVA [weld], RXJAVA, GUICE,
-SMALLRYE-REACTIVE-MESSAGING-AMQP [smallrye-reactive-messaging], YOKO,
-XMLTOOLING, BOOTSTRAP.MIN.CSS [Spring-boot],
-JCL-OVER-SLF4J/SRC/MAIN/JAVA/ORG/APACHE/COMMONS/LOGGING/IMPL/*.JAVA
-[SLF4J], BOOTSTRAP [msf4j], JBOSS-LOGGING, JANDEX, OMNIFACES [Apache
-MyFaces], MICROPROFILE-CONFIG-API, OPENSAML, WSS4J, COMMONS-DISCOVERY,
-LIBERTY-ARQUILLIAN, WELD-PROBE [weld], COMMONS-CODEC, JACKSON, NEETHI,
-HIBERNATE-VALIDATOR, ARIES-JNDI, DATERANGEPICKER [msf4j], SIZEOF-AGENT,
-FELIX GOGO RUNTIME, APACHE MYFACES, GERONIMO-OSGI-REGISTRY,
-GRAPHQL-JAVA-SERVLET, LOG4J [SLF4J], FAILSAFE, OPENWS,
-COMMONS-HTTPCLIENT, ANT [jaxws-tools], COMMONS-BEANUTILS, CDI11 [weld],
-GOOGLE-DIFF-MATCH-PATCH [jQuery], WELD, OSGI [Felix Gogo Runtime],
-OPENTRACING-JAVA, JAVA-CLASSMATE, JSON-SIMPLE, XMLSCHEMA-CORE, GSON,
-NEKOHTML, GUAVA, CDI-API, JOSE4J, msf4j,  Bootstrap, Daterangepicker, 
-CACHE-API, LOCALSTRINGS_JA.PROPERTIES, APACHE XML INTERNAL,
-VALIDATION-API, JAXRPC, FILTER.JAVA [javax.servlet-api],
-NAMESPACECONTEXTIMPL.JAVA, URLPATTERN.JAVA, FAST
-INFOSET, JAVAX.INJECT
+ ACME4J 
+ ANSI-HTML  
+ ANT  
+ APACHE ARIES 
+ APACHE BVAL  
+ APACHE MYFACES 
+ APACHE XML INTERNAL  
+ ARIES JPA  
+ ARIES-JMX  
+ ARIES-JNDI 
+ ASCII DOCTORJ  
+ ASCIIDOC 
+ BCEL 
+ BENCHMARK  
+ BOOTSTRAP [msf4j]  
+ BTOA 
+ CACHE-API  
+ CDI-API  
+ CDI11 [weld] 
+ COMMONS-CODEC  
+ COMMONS-DAEMON 
+ COMMONS-DIGESTER 
+ COMMONS-DISCOVERY  
+ COMMONS-FILEUPLOAD 
+ COMMONS-HTTPCLIENT 
+ COMMONS-LANG 
+ COMMONS-WEAVER 
+ DATERANGEPICKER [msf4j]  
+ DETECT-LIBC  
+ DOMPURIFY  
+ ECLIPSE MICROPROFILE [microprofile-graphql]  
+ ECLIPSE OSGI 
+ EHCACHE-CORE 
+ ENVOY [grpc-java]  
+ FACELETS [Apache MyFaces]  
+ FAILSAFE 
+ FAST INFOSET 
+ FAYE-WEBSOCKET 
+ FELIX  
+ FELIX GOGO RUNTIME 
+ FELIX GOGO SHELL 
+ FELIX SCR  
+ FILTER.JAVA [javax.servlet-api]  
+ GEANTYREF  
+ GOOGLE-DIFF-MATCH-PATCH [jQuery] 
+ GRADLE STARTUP 
+ GRAPHQL-SPQR 
+ GSON 
+ GUAVA  
+ GUICE  
+ HMTLCOMPONENTS HTTPCORE  
+ J4FRY [Apache MyFaces] 
+ JACKSON  
+ JAKARTA COMMONS CLI 1.0 [javax.xml]  
+ JANDEX 
+ JAVA-CLASSMATE 
+ JAVAX.EL [jasper.glassfish]  
+ JAVAX.INJECT 
+ JAXRPC 
+ JBATCH 
+ JBOSS-LOGGING  
+ JODA-TIME  
+ JOSE4J 
+ JQUERY.D.TS  
+ JSONSTREAM 
+ JSONTOKEN  
+ LIBERTY-ARQUILLIAN 
+ LOG4J [SLF4J]  
+ METRICS-CDI  
+ MICROPROFILE CONTEXT PROP  
+ MICROPROFILE METRICS 
+ MICROPROFILE-CONFIG-API  
+ MICROPROFILE-GRAPHQL 
+ MICROPROFILEREACTIVEMESSAGING  
+ MOX.PY [Protobuf]  
+ NAMESPACECONTEXTIMPL.JAVA  
+ NEETHI 
+ NEKOHTML 
+ NETTY [grpc-java]  
+ OKHTTP [grpc-java] 
+ OPENID4JAVA  
+ OPENSAML 
+ OPENWS 
+ OSGI [Felix Gogo Runtime]  
+ OSGI CORE  
+ POM.XML  
+ PROTO-GOOGLE-COMMONS-PROTOS  
+ PROTOC-GEN-VALIDATE  
+ QUNIT.JS 
+ RXJAVA 
+ SIZEOF-AGENT 
+ SMALLRYE-REACTIVE-MESSAGING  
+ SMALLRYE-REACTIVE-STREAMS-OPERATORS  
+ SPDX-CORRECT 
+ SWAGGER-CLIENT 
+ SWAGGER-UI [OpenLiberty] 
+ TAGLIBS  
+ URLPATTERN.JAVA  
+ VALIDATE-NPM-PACKAGE-LICENSE 
+ VALIDATION-API 
+ WEBSOCKET-DRIVER 
+ WELD 
+ WELD-API 
+ WELD-PROBE [weld]  
+ WSS4J  
+ XML-RESOLVER 
+ XMLSCHEMA-CORE 
+ XMLTOOLING 
+ YOKO 
+APACHE CXF  [grpc-java]
+ARIES JNDI URL  [javax.servlet-api]
+ARRAYELRESOLVER.JAVA [javax.el] [jaxws-tools]
+BOOTSTRAP.MIN.CSS [Spring-boot] [jQuery]
+COMMON-LOGGING [SLF4J]  [microprofile.faulttolerance]
+COMMONS-BEANUTILS [microprofilereactivemessaging]
+COMMONS-COLLECTIONS [msf4j]
+COMMONS-IO  [OpenLiberty]
+COMMONS-LOGGING [SLF4J]
+FELIX GOGO COMMAND  
+GERONIMO-OSGI-REGISTRY  
+GOGO  
+GRAILS [Apache MyFaces] 
+GRAPHQL-JAVA-SERVLET  
+GRPC-JAVA 
+HIBERNATE-VALIDATOR 
+JBOSS-CLASSFILEWRITER 
+JCL-OVER-SLF4J/SRC/MAIN/JAVA/ORG/APACHE/COMMONS/LOGGING/IMPL/*.JAVA 
+JSON-SIMPLE 
+LOCALSTRINGS_JA.PROPERTIES  
+MICROPROFILE.FAULTTOLERANCE 
+MSF4J 
+OMNIFACES [Apache MyFaces]  
+OPENTRACING-JAVA  
+ORG.OSGI.SERVICE.JPA; [javax.persistence] 
+PROMISE-WORKER  
+SCRIPT [OpenLiberty]  
+SMALLRYE-REACTIVE-MESSAGING-AMQP [smallrye-reactive-messaging]  
+SPRING-BOOT 
+THREADCONTEXT.JAVA [weld] 
+UUID-JS 
+XMLSEC  
 
 Apache License
 Version 2.0, January 2004
@@ -309,30 +431,70 @@ BSD LICENSE
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD License:
 
-NODE-PRE-GYP (Copyright (c) Mapbox), QS (Copyright (c) 2014 Nathan
-LaFreniere and other
-[contributors](https://github.com/ljharb/qs/graphs/contributors)),
-SOURCE-MAP (Copyright (c) 2009-2011 Mozilla Foundation and
-contributors), RIPEMD160-MIN.JS [CryptoJS] ((c) 2012 by Cedric Mesnil.
-All rights reserved.), JAXEN [Apache CXF] (Copyright 2003-2006 The
-Werken Company.), NW-PRE-GYP-MODULE-TEST (Copyright (c); Mapbox All
-rights reserved.), STYLE.CSS [weld] (Copyright (c) 2007, Yahoo! Inc. All
-rights reserved.), ORG.ECLIPSE.JDT.APT.CORE [Eclipse JDT Core]
-(Copyright (c) 2004, Sun Microsystems, Inc.All rights reserved.), RC
-(Copyright (c) 2011 Dominic TarrCopyright (c) 2011 Dominic TarrCopyright
-(c) 2013 Dominic Tarr), TABLETOOLS [msf4j] (Copyright 2009-2012 Allan
-Jardine), SINON.JS [jQuery] (Copyright (c) 2010-2013 Christian Johansen
-Copyright (c) 2010-2014, Christian Johansen, christian@cjohansen.no All
-rights reserved. Copyright (c) 2012 Maximilian Antoni), ASM (Copyright
-(c) 2000-2011 INRIA, France Telecom), PKCS1 (Copyright (C) Ellis
-Pritchard), NODE-FORGE (Copyright (c) 2010 Digital Bazaar Inc..),
-CRYPTOJS (Copyright (c) 2009-2013 Jeff Mott), DOJO [Apache MyFaces]
-(Copyright (c) 2005, The Dojo Foundation),  
-TableTools ( Copyright 2009-2012 Allan Jardine ), JING (Copyright (c) 
-2001-2003 Thai Open Source Software Center Ltd All rights reserved), 
-JAVAX-PERSISTENCE (Copyright (c) 2007; Eclipse Foundation; Inc. and
-its licensors;All rights reserved. Copyright (c) 1997-2017 Oracle 
-and/or its affiliates. All rights reserved.)
+SPRINTF-JS (Copyright (c) 2007-2014 Alexandru Marasteanu <hello [at)
+alexei (dot] ro>)
+SOURCE-MAP (Copyright (c) 2009-2011 Mozilla Foundation and contributors)
+REDUX-IMMUTABLE (Copyright (c) 2016 Gajus Kuizinas (http://gajus.com/))
+JAXEN [Apache CXF] (Copyright 2003-2006 The Werken Company.)
+NORMALIZE-PACKAGE-DATA (Copyright (c) Meryn Stol("Author"))
+HYPHENATE-STYLE-NAME (Copyright (c) 2015 Espen Hovlandsdal)
+STYLE.CSS [weld] (Copyright (c) 2007, Yahoo! Inc. All rights reserved.)
+INDEX.JS (Copyright (c) 2010, Ajax.org B.V.),
+ORG.ECLIPSE.JDT.APT.CORE [Eclipse JDT Core] (Copyright (c) 2004, Sun
+Microsystems, Inc.All rights reserved.)
+PROP-TYPES (Copyright (c) 2013-present; Facebook; Inc.)
+XSS-FILTERS (Copyright (c) 2015 Yahoo! Inc. All rights reserved.)
+EXT-CORE [Esprima (node)] (Copyright (c) 2007, Yahoo! Inc.)
+UGLIFY-JS (<pre class="example">Copyright 2010 (c)
+Mihai Bazon &lt;mihai.bazon@gmail.com&gt;Copyright 2010 (c) Mihai Bazon
+<mihai.bazon@gmail.com>)
+CREATE-REACT-CLASS (Copyright (c) 2013-present Facebook Inc.)
+AMDEFINE (Copyright (c) 2011-2016 The Dojo FoundationCopyright (c) 2011-2016 The Dojo Foundation)
+COMMONMARK (Copyright (c) 2014 John MacFarlaneCopyright Mathias Bynens <https://mathiasbynens.be/>Copyright Mathias Bynens <http://mathiasbynens.be/>Copyright (c) 2014 Vitaly Puzrin Alex Kocharin.Copyright (C) 2014-15 John MacFarlane)
+ESCODEGEN (Copyright (c) 2009-2011 Mozilla Foundation and contributors)
+IEEE754 (Copyright 2008 Fair Oaks Labs Inc.)
+HOIST-NON-REACT-STATICS (Copyright (c) 2015 Yahoo! Inc. All rights reserved.)
+QS (Copyright (c) 2014 Nathan LaFreniere and other contributors.)
+CREATE-REACT-CLASS.JS (Copyright (c) 2013-present, Facebook, Inc.)
+ANTLR [EclipseLink] (Copyright (c) 2005-2006 Terence Parr. All rights reserved.)
+PARSE-JS [Esprima (node)] (Copyright 2010 (c) Mihai Bazon)
+REACT-ADDONS-SHALLOW-COMPARE (Copyright (c) 2013-2015 Facebook Inc.)
+REACT-ADDONS-PERF (Copyright (c) 2013-present Facebook Inc.)
+ENTITIES (Copyright (c) Felix Böhm)
+ASM (Copyright (c) 2000-2011 INRIA, France Telecom)
+BUNDLE.JS (Copyright Paul Johnston 2000 - 2002.)
+NODE-FORGE (Copyright (c) 2010 Digital Bazaar Inc)
+ESPRIMA (NODE) (Copyright (C) 2012, 2011 [Ariya Hidayat])
+FIREBUG LITE (Copyright (c) 2007, Parakey Inc.)
+REPS.JS (Copyright (c) 2006, Yahoo! Inc.)
+DOJO [Apache MyFaces] (Copyright (c) 2005, The Dojo Foundation)
+SPRINTF-JS (Copyright (c) 2007-2014 Alexandru Marasteanu <hello [at)
+alexei (dot] ro>)
+SOURCE-MAP (Copyright (c) 2009-2011 Mozilla Foundation and contributors)
+RIPEMD160-MIN.JS [CryptoJS] ((c) 2012 by Cedric Mesnil. All rights reserved.)
+REDUX-IMMUTABLE (Copyright (c) 2016 Gajus Kuizinas (http://gajus.com/))
+NORMALIZE-PACKAGE-DATA (Copyright (c) Meryn Stol ("Author"))
+HYPHENATE-STYLE-NAME (Copyright (c) 2015 Espen Hovlandsdal)
+INDEX.JS (Copyright (c) 2010, Ajax.org B.V.)
+PROP-TYPES (Copyright (c) 2013-present; Facebook; Inc.),
+XSS-FILTERS (Copyright (c) 2015 Yahoo! Inc. All rights reserved.)
+UGLIFY-JS (<pre class="example">Copyright 2010 (c) Mihai Bazon
+&lt;mihai.bazon@gmail.com&gt;Copyright 2010 (c) Mihai Bazon
+<mihai.bazon@gmail.com>)
+CREATE-REACT-CLASS (Copyright (c) 2013-present Facebook Inc.)
+AMDEFINE (Copyright (c) 2011-2016 The Dojo FoundationCopyright (c) 2011-2016 The Dojo Foundation)
+REACT-ADDONS-SHALLOW-COMPARE(Copyright (c) 2013-2015 Facebook Inc.)
+REACT-ADDONS-PERF (Copyright (c) 2013-present Facebook Inc.)
+ENTITIES (Copyright (c) Felix Böhm)
+SINON.JS [jQuery] (Copyright (c) 2010-2013 Christian Johansen Copyright
+(c) 2010-2014, Copyright (c) 2012 Maximilian Antoni)
+BUNDLE.JS (Copyright Paul Johnston 2000 - 2002.)
+NODE-FORGE (Copyright (c) 2010 Digital Bazaar Inc)
+FIREBUG LITE (Copyright (c) 2007, Parakey Inc.)
+REPS.JS (Copyright (c) 2006, Yahoo! Inc.)
+CRYPTOJS (Copyright (c) 2009-2013 Jeff Mott)
+SINON.JS [jQuery] (Copyright (c) 2010-2013 Christian Johansen 
+Copyright (c) 2012 Maximilian Antoni)
 
 
 BSD 2-CLAUSE
@@ -425,78 +587,158 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF BSD 4-CLAUSE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+BSD + FB PATENTS FILE
+
+The Program includes some or all of the following works licensed under
+the BSD + FB PATENTS FILE
+
+REACT-HEIGHT.JS
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+END OF BSD + FB PATENTS FILE LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+BSD-EQUIVALENT
+
+The Program includes ASM taken under the following license
+
+ASM: a very small and fast Java bytecode manipulation framework
+Copyright (c) 2000-2011 INRIA, France Telecom
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holders nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+
+END OF BSD-EQUIVALENT LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE
 
 The Program includes some or all of the following that IBM obtained
 under the Common Development and Distribution License.
 
-GLASSFISH [Apache MyFaces] (https://opensource.org/licenses/CDDL-1.0),
-ARRAYELRESOLVER.JAVA [weld]
-(/Source-0/artifacts/weld/weld-se-sources.jar/javax/el/ArrayELResolver.java),
-JAVAMAIL (https://github.com/javaee/javamail/),
-JAXWS-TOOLS
-(http://grepcode.com/snapshot/repo1.maven.org/maven2/com.sun.xml.ws/jaxws-tools/2.2.10/),
+JASPER.GLASSFISH
+(https://github.com/javaee/uel-ri/tree/javax.el-api-2.2.3), JAXWS-API
+(https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api/2.3.0),
+JAVAMAIL 
+(https://github.com/javaee/javamail/tree/JAVAMAIL-1_6_0), JAVAX.SECURITY
+
+(https://repo1.maven.org/maven2/javax/security/jacc/javax.security.jacc-api/1.5/),
 SERIALIZER [Eclipse yasson]
 (https://github.com/eclipse-ee4j/yasson/tree/1.0.4-RELEASE),
 ANNOTATEDIMPL.JAVA [weld]
 (src/test/java/org/jboss/weld/tests/extensions/supertypes/beans/CDIExtension.java;),
-MIMEPULL
-(http://central.maven.org/maven2/org/jvnet/mimepull/mimepull/1.9.6/),
-JAVAEE_5.XSD [Apache MyFaces] (https://facelets.dev.java.net/),
-JBOSS-JDEPARSER
-(http://mvnrepository.com/artifact/org.jboss.jdeparser/jdeparser/1.0.0.Final),
-JAVAX.EL
-(https://mvnrepository.com/artifact/org.glassfish/javax.el/3.0.0),
-JAVAX.JSON (https://jsonp.java.net/), 
-JAXWS-API (https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api/2.3.0),
-JAVAX.SECURITY 
-(https://repo1.maven.org/maven2/javax/security/auth/message/javax.security.auth.message-api/1.1/),
-JAVAX.WS.RS-API (https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.0-m09/),
+JAVAX.WS.RS-API
+(https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.0-m09/),
 JAXB-JXC
 (https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-jxc/2.2.10/),
-JAVAX.TRANSACTION-API
-(https://github.com/javaee/javax.transaction/tree/1.2), JAXWS-RT
+JAVAX.TRANSACTION-API 
+(https://github.com/javaee/javax.transaction/tree/1.2), GLASSFISH
+[Apache MyFaces] (https://opensource.org/licenses/CDDL-1.0), JAXWS-RT
 (https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-rt/2.2.10/),
 JAVAX.WEBSOCKET-API
 (https://repo1.maven.org/maven2/javax/websocket/javax.websocket-api/1.1/),
-JAXB-API
+ARRAYELRESOLVER.JAVA [weld]
+(/Source-0/artifacts/weld/weld-se-sources.jar/javax/el/ArrayELResolver.java),
+JSSTYLE (https://registry.npmjs.org/ctype/-/ctype-0.5.3.tgz), JAXB-API
 (https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.0/),
 STREAMBUFFER
 (http://central.maven.org/maven2/com/sun/xml/stream/buffer/streambuffer/1.5.3/),
-JAVAX.EJB-API
-(https://github.com/javaee/javax.ejb/tree/3.2), 
-JAVAX.ANNOTATION-API (https://github.com/javaee/javax.annotation/),
+JAXWS-TOOLS
+(https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-tools/2.2.10/),
+JAVAX.EJB-API 
+(https://github.com/javaee/javax.ejb/tree/3.2), JAVAEE_5.XSD [Apache
+MyFaces] (https://facelets.dev.java.net/), JBOSS-JDEPARSER
+(http://mvnrepository.com/artifact/org.jboss.jdeparser/jdeparser/1.0.0.Final),
+JAXWS TOOLS [OpenLiberty]
+(https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-tools),
+JAVAX.ANNOTATION-API 
+(https://github.com/javaee/javax.annotation/tree/1.3), JAVAX.EL
+(https://mvnrepository.com/artifact/org.glassfish/javax.el/3.0.0),
+JAVAX.JSON
+(https://repo1.maven.org/maven2/org/glassfish/javax.json/1.1.3/),
 WS-POLICY (https://repo1.maven.org/maven2/com/sun/xml/ws/policy/2.4/),
 JMS-SPEC
 (https://github.com/javaee/jms-spec/tree/9383d33ff79a156d09fb5c9c0ccdfd6b844b1d54),
 CONCURRENT-API 
-(https://repo1.maven.org/maven2/javax/enterprise/concurrent/javax.enterprise.concurrent-api/1.0/),
+(https://repo1.maven.org/maven2/javax/enterprise/concurrent/javax.enterprise.concurrent-api/1.0/)
+MIMEPULL
+(http://central.maven.org/maven2/org/jvnet/mimepull/mimepull/1.9.6/),
 GLASSFISH-JCDI
-(https://mvnrepository.com/artifact/org.glassfish.main.packager/glassfish-jcdi),
+(https://mvnrepository.com/artifact/org.glassfish.main.packager/glassfish-jcdi)
 JAVAX-EL-API
-(http://central.maven.org/maven2/javax/el/javax.el-api/2.2.1/),
+(http://central.maven.org/maven2/javax/el/javax.el-api/2.2.1/)
 SAAJ-IMPL
-(https://repo1.maven.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0/),
+(http://central.maven.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0-b01/)
 JSON.BIND-API
-(https://repo1.maven.org/maven2/javax/json/bind/javax.json.bind-api/1.0/),
+(https://repo1.maven.org/maven2/javax/json/bind/javax.json.bind-api/1.0/)
 JSTL (https://repo1.maven.org/maven2/javax/servlet/jstl/1.2/),
 JAVAX.SERVLET-API
-(https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.0/),
+(https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.0/)
 JAVAX.INTERCEPTOR-API 
-(https://github.com/javaee/javax.interceptor/tree/1.2),
+(https://github.com/javaee/javax.interceptor/tree/1.2)
 JAVAX.XML.SOAP-API
 (https://github.com/javaee/javax.xml.soap/tree/1.4.0), CONNECTOR
-(https://repo1.maven.org/maven2/javax/resource/connector-api/1.6-alpha-1/),
+(https://repo1.maven.org/maven2/javax/resource/connector-api/1.6-alpha-1/)
 JAXB-IMPL
-(https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.3.0.1/),
+(https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.3.0.1/)
 JAVAX.JSON-API
-(https://repo1.maven.org/maven2/javax/json/javax.json-api/1.1.3/),
-JAXB-CORE
-(https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.3.0.1/),
+(https://repo1.maven.org/maven2/javax/json/javax.json-api/1.1.3/)
+PERSISTENCE [EclipseLink]
+(https://glassfish.dev.java.net/public/CDDL+GPL.htm), JAXB-CORE
+(https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.3.0.1/)
 JAXB-XJC
-(https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-xjc/2.3.0.1/),
+(https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-xjc/2.3.0.1/)
 ACTIVATION
 (https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/)
+
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -507,7 +749,7 @@ The Program includes some or all of the following that IBM obtained
 under the Common Public License (source code available via the indicated
 URL):
 
-WSDL4J [Apache CXF] (https://github.com/apache/cxf/tree/cxf-3.2.0)
+WSDL4J [Apache CXF] (https://github.com/apache/cxf/tree/cxf-2.6.2)
 
 END OF COMMON PUBLIC LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -723,13 +965,12 @@ The Program includes some or all of the following that IBM obtained
 under the Eclipse Public License (source code available via the
 indicated URL):
 
-JAVAX.XML
-(http://central.maven.org/maven2/org/eclipse/birt/runtime/javax.xml/1.3.4.v201005080400/),
-ECLIPSELINK (http://www.eclipse.org/eclipselink), ECLIPSE EQUNOX
-(eclipse.org), ECLIPSE MICROPROFILE
-(https://projects.eclipse.org/proposals/eclipse), ECLIPSE EQUINOX
+JAVAX.PERSISTENCE
+(http://repo1.maven.org/maven2/org/eclipse/persistence/javax.persistence/2.1.1/),
+ECLIPSELINK
+(https://www.eclipse.org/eclipselink/downloads/previous_releases.php),
+ECLIPSE EQUINOX
 (https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.equinox.util/1.1.0/),
-ECLIPSE OSGI (https://github.com/eclipse/rt.equinox.bundles),
 PERSISTENCE_2_1.XSD [OSGi Core]
 (https://github.com/osgi/bundles/tree/98b13a515d350989f218f92c41d1b66f940c1633),
 ECLIPSE JDT CORE
@@ -740,37 +981,83 @@ ECLIPSE YASSON
 END OF ECLIPSE PUBLIC LICENSE, VERSION 1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+ECLIPSE PUBLIC LICENSE, VERSION 2
+
+The Program includes some or all of the following that IBM obtained
+under the Eclipse Public License (source code available via the
+indicated URL):
+
+ECLIPSE EQUINOX OSGI (https://www.eclipse.org/equinox/)
+
+END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 ISC LICENSE
 
 The Program includes some or all of the following that IBM obtained
 under the ISC License.
 
-RIMRAF (Copyright (c) Isaac Z. Schlueter and Contributors), GLOB
-(Copyright (c) Isaac Z. Schlueter and Contributors), CHOWNR (Copyright
-(c) Isaac Z. Schlueter and Contributors), FS-MINIPASS (Copyright (c)
-Isaac Z. Schlueter and Contributors), TYPE (Copyright (c) 2019 Mariusz
-Nowak @medikoo medikoo.com), APROBA (Copyright (c) 2015 Rebecca Turner
-<me@re-becca.org>), IGNORE-WALK (Copyright (c) Isaac Z. Schlueter and
-Contributors), MINIPASS (Copyright (c) npm Inc. and Contributors),
-WIDE-ALIGN (Copyright (c) 2015 Rebecca Turner <me@re-becca.org>),
-HAS-UNICODE (Copyright (c) 2014 Rebecca Turner <me@re-becca.org>), OSENV
-(Copyright (c) Isaac Z. Schlueter and Contributors), EXT (Copyright (c)
-2011-2019 Mariusz Nowak @medikoo medikoo.com), GAUGE (Copyright (c) 2014
-Rebecca Turner <me@re-becca.org>), MYLIB (No Copyright Found),
-ARE-WE-THERE-YET (Copyright (c) 2015 Rebecca Turner), TAR (Copyright (c)
-Isaac Z. Schlueter and Contributors), INI (Copyright (c) Isaac Z.
-Schlueter and Contributors), NPM-BUNDLED (Copyright (c) npm Inc. and
-Contributors), CONSOLE-CONTROL-STRINGS (Copyright (c) 2014 Rebecca
-Turner <me@re-becca.org>), NPMLOG (Copyright (c) Isaac Z. Schlueter and
-Contributors), SAX (Copyright (c) Isaac Z. Schlueter and Contributors
-Copyright Mathias Bynens <https://mathiasbynens.be/>), NPM-PACKLIST
-(Copyright (c) Isaac Z. Schlueter and Contributors), HOSTED-GIT-INFO
-(Copyright (c) 2015 Rebecca Turner), NOPT (Copyright (c) Isaac Z.
-Schlueter and Contributors), CONCAT-WITH-SOURCEMAPS (Copyright (c) 2014
-Florian Reiterer <me@florianreiterer.com>), ABBREV (Copyright (c) Isaac
-Z. Schlueter and ContributorsCopyright Isaac Z. Schlueter and
-Contributors), YALLIST (Copyright (c) Isaac Z. Schlueter and
-Contributors)
+RIMRAF (Copyright (c) Isaac Z. Schlueter and Contributors)
+REQUIRE-MAIN-FILENAME (Copyright (c) 2016 Contributors)
+ES5-EXT(Copyright (c) 2011-2019 Mariusz Nowak @medikoo medikoo.com)
+GLOB(Copyright (c) Isaac Z. Schlueter and Contributors)
+MINIMATCH(Copyright (c) Isaac Z. Schlueter and Contributors)
+GET-CALLER-FILE(Copyright 2018 Stefan Penner)
+TYPE (Required)
+WHICH-MODULE (Copyright(c) 2016 Contributors)
+MINIMALISTIC-ASSERT (Copyright 2015 Calvin Metcalf)
+YARGS-PARSER (Copyright (c) 2016 Contributors)
+CLIUI(Copyright (c) 2015 Contributors)
+GRACEFUL-FS (Copyright (c) Isaac Z. Schlueter Ben Noordhuis and Contributors)
+SEMVER (Copyright (c) Isaac Z. Schlueter and Contributors)
+WRAPPY (Copyright (c) Isaac Z. Schlueter and Contributors)
+GLOB-PARENT (Copyright (c) 2015 Elan Shanker)
+INHERITS (Copyright (c) Isaac Z. Schlueter)
+TIMERS-EXT (Copyright (c) 2013-2018 Mariusz Nowak @medikoo medikoo.com)
+D (Copyright (c) 2013-2019 Mariusz Nowak @medikoo medikoo.com)
+INFLIGHT (Copyright (c) Isaac Z. Schlueter)
+HOSTED-GIT-INFO (Copyright (c) 2015 Rebecca Turner)
+TMATCH (Copyright (c) Isaac Z. Schlueter and Contributors)
+FS.REALPATH (Copyright (c) Isaac Z. Schlueter and Contributors Copyright Joyent Inc. and other Node contributors.)
+SIGNAL-EXIT (Copyright (c) 2015 Contributors)
+ES6-WEAK-MAP (Copyright (c) 2013-2018 Mariusz Nowak @medikoo medikoo.com)
+ONCE (Copyright (c) Isaac Z. Schlueter and Contributors)
+REMOVE-TRAILING-SEPARATOR (No copyright) Y18N (Copyright (c) 2015 Contributors)
+SET-BLOCKING (Copyright (c) 2016 Contributors)
+SETPROTOTYPEOF (Copyright (c) 2015 Wes Todd)
+DETECT-NODE (Copyright (c) 2017 Ilya Kantor)
+ANYMATCH (Copyright (c) 2014 Elan Shanker)
+RIMRAF (Copyright (c) Isaac Z. Schlueter and Contributors)
+REQUIRE-MAIN-FILENAME (Copyright (c) 2016 Contributors)
+ES5-EXT(Copyright (c) 2011-2019 Mariusz Nowak @medikoo medikoo.com)
+GLOB(Copyright (c) Isaac Z. Schlueter and Contributors) 
+MINIMATCH(Copyright (c) Isaac Z. Schlueter and Contributors)
+GET-CALLER-FILE(Copyright 2018 Stefan Penner)
+TYPE (Required)
+WHICH-MODULE (Copyright (c) 2016 Contributors)
+MINIMALISTIC-ASSERT (Copyright 2015 Calvin Metcalf)
+YARGS-PARSER (Copyright (c) 2016 Contributors)
+CLIUI(Copyright (c) 2015 Contributors)
+GRACEFUL-FS (Copyright (c) Isaac Z. Schlueter Ben Noordhuis and Contributors)
+SEMVER (Copyright (c) Isaac Z. Schlueter and Contributors)
+WRAPPY (Copyright (c) Isaac Z. Schlueter and Contributors)
+GLOB-PARENT (Copyright (c) 2015 Elan Shanker)
+INHERITS (Copyright (c) Isaac Z. Schlueter) TIMERS-EXT (Copyright (c)2013-2018 Mariusz Nowak @medikoo medikoo.com)
+D (Copyright (c)2013-2019 Mariusz Nowak @medikoo medikoo.com)
+INFLIGHT (Copyright (c)Isaac Z. Schlueter)
+HOSTED-GIT-INFO (Copyright (c) 2015 Rebecca Turner)
+TMATCH (Copyright (c) Isaac Z. Schlueter and Contributors)
+FS.REALPATH (Copyright (c) Isaac Z. Schlueter and Contributors Copyright Joyent Inc. and other Node contributors.)
+SIGNAL-EXIT (Copyright (c)2015 Contributors)
+ES6-WEAK-MAP (Copyright (c) 2013-2018 Mariusz Nowak@medikoo medikoo.com)
+ONCE (Copyright (c) Isaac Z. Schlueter and Contributors)
+REMOVE-TRAILING-SEPARATOR (No copyright)
+Y18N (Copyright(c) 2015 Contributors)
+SET-BLOCKING (Copyright (c) 2016 Contributors)
+SETPROTOTYPEOF (Copyright (c) 2015 Wes Todd)
+DETECT-NODE (Copyright (c) 2017 Ilya Kantor)
+ANYMATCH (Copyright (c) 2014 Elan Shanker)
+
 
 ISC License
 
@@ -797,7 +1084,8 @@ JDOM LICENSE
 The Program includes some or all of the following that IBM obtained
 under the JDOM License:
 
-STAXBUILDER.JAVA [Apache CXF], AEGIS [Apache CXF]
+STAXBUILDER.JAVA [Apache CXF], 
+AEGIS [Apache CXF]
 
 JDOM license
 
@@ -919,118 +1207,958 @@ acknowledgment is not required but would be appreciated.
 END OF JTIDY LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+MODIFIABLE THIRD PARTY CODE
+
+This Program includes some or all of the following Modifiable Third 
+Party Code that IBM obtained under the GNU Lesser General Public 
+License. For copies of the source code for this software, send an email 
+to gpicher@us.ibm.com identifying the IBM Program and the Modifiable Third 
+Party Code for which you are requesting the source code. 
+
+XMLHTTPREQUEST [Esprima (node)]
+UNBOUNDID-LDAPSDK
+
+                  GNU LESSER GENERAL PUBLIC LICENSE
+                       Version 2.1, February 1999
+
+Copyright (C) 1991, 1999 Free Software Foundation, Inc.
+51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.
+
+[This is the first released version of the Lesser GPL.  It also counts
+ as the successor of the GNU Library Public License, version 2, hence
+ the version number 2.1.]
+
+Preamble
+
+The licenses for most software are designed to take away your freedom to 
+share and change it. By contrast, the GNU General Public Licenses are 
+intended to guarantee your freedom to share and change free software--to 
+make sure the software is free for all its users. 
+
+This license, the Lesser General Public License, applies to some 
+specially designated software packages--typically libraries--of the Free 
+Software Foundation and other authors who decide to use it. You can use 
+it too, but we suggest you first think carefully about whether this 
+license or the ordinary General Public License is the better strategy to 
+use in any particular case, based on the explanations below. 
+
+When we speak of free software, we are referring to freedom of use, not 
+price. Our General Public Licenses are designed to make sure that you 
+have the freedom to distribute copies of free software (and charge for 
+this service if you wish); that you receive source code or can get it if 
+you want it; that you can change the software and use pieces of it in 
+new free programs; and that you are informed that you can do these 
+things. 
+
+To protect your rights, we need to make restrictions that forbid 
+distributors to deny you these rights or to ask you to surrender these 
+rights. These restrictions translate to certain responsibilities for you 
+if you distribute copies of the library or if you modify it. 
+
+For example, if you distribute copies of the library, whether gratis or 
+for a fee, you must give the recipients all the rights that we gave you. 
+You must make sure that they, too, receive or can get the source code. 
+If you link other code with the library, you must provide complete 
+object files to the recipients, so that they can relink them with the 
+library after making changes to the library and recompiling it. And you 
+must show them these terms so they know their rights. 
+
+We protect your rights with a two-step method: (1) we copyright the 
+library, and (2) we offer you this license, which gives you legal 
+permission to copy, distribute and/or modify the library. 
+
+To protect each distributor, we want to make it very clear that there is 
+no warranty for the free library. Also, if the library is modified by 
+someone else and passed on, the recipients should know that what they 
+have is not the original version, so that the original author's 
+reputation will not be affected by problems that might be introduced by 
+others. 
+
+Finally, software patents pose a constant threat to the existence of any 
+free program. We wish to make sure that a company cannot effectively 
+restrict the users of a free program by obtaining a restrictive license 
+from a patent holder. Therefore, we insist that any patent license 
+obtained for a version of the library must be consistent with the full 
+freedom of use specified in this license. 
+
+Most GNU software, including some libraries, is covered by the ordinary 
+GNU General Public License. This license, the GNU Lesser General Public 
+License, applies to certain designated libraries, and is quite different 
+from the ordinary General Public License. We use this license for 
+certain libraries in order to permit linking those libraries into 
+non-free programs. 
+
+When a program is linked with a library, whether statically or using a 
+shared library, the combination of the two is legally speaking a 
+combined work, a derivative of the original library. The ordinary 
+General Public License therefore permits such linking only if the entire 
+combination fits its criteria of freedom. The Lesser General Public 
+License permits more lax criteria for linking other code with the 
+library. 
+
+We call this license the "Lesser" General Public License because it does 
+Less to protect the user's freedom than the ordinary General Public 
+License. It also provides other free software developers Less of an 
+advantage over competing non-free programs. These disadvantages are the 
+reason we use the ordinary General Public License for many libraries. 
+However, the Lesser license provides advantages in certain special 
+circumstances. 
+
+For example, on rare occasions, there may be a special need to 
+encourage the widest possible use of a certain library, so that it 
+becomes a de-facto standard. To achieve this, non-free programs must be 
+allowed to use the library. A more frequent case is that a free library 
+does the same job as widely used non-free libraries. In this case, there 
+is little to gain by limiting the free library to free software only, so 
+we use the Lesser General Public License. 
+
+In other cases, permission to use a particular library in non-free 
+programs enables a greater number of people to use a large body of free 
+software. For example, permission to use the GNU C Library in non-free 
+programs enables many more people to use the whole GNU operating system, 
+as well as its variant, the GNU/Linux operating system. 
+
+Although the Lesser General Public License is Less protective of the 
+users' freedom, it does ensure that the user of a program that is linked 
+with the Library has the freedom and the wherewithal to run that program 
+using a modified version of the Library. 
+
+The precise terms and conditions for copying, distribution and 
+modification follow. Pay close attention to the difference between a 
+"work based on the library" and a "work that uses the library". The 
+former contains code derived from the library, whereas the latter must 
+be combined with the library in order to run. TERMS AND CONDITIONS FOR 
+COPYING, DISTRIBUTION AND MODIFICATION 
+
+0. This License Agreement applies to any software library or other 
+program which contains a notice placed by the copyright holder or other 
+authorized party saying it may be distributed under the terms of this 
+Lesser General Public License (also called "this License"). Each 
+licensee is addressed as "you". 
+
+A "library" means a collection of software functions and/or data 
+prepared so as to be conveniently linked with application programs 
+(which use some of those functions and data) to form executables. 
+
+The "Library", below, refers to any such software library or work which 
+has been distributed under these terms. A "work based on the Library" 
+means either the Library or any derivative work under copyright law: 
+that is to say, a work containing the Library or a portion of it, either 
+verbatim or with modifications and/or translated straightforwardly into 
+another language. (Hereinafter, translation is included without 
+limitation in the term "modification".) 
+
+"Source code" for a work means the preferred form of the work for making 
+modifications to it. For a library, complete source code means all the 
+source code for all modules it contains, plus any associated interface 
+definition files, plus the scripts used to control compilation and 
+installation of the library. 
+
+Activities other than copying, distribution and modification are not 
+covered by this License; they are outside its scope. The act of running 
+a program using the Library is not restricted, and output from such a 
+program is covered only if its contents constitute a work based on the 
+Library (independent of the use of the Library in a tool for writing 
+it). Whether that is true depends on what the Library does and what the 
+program that uses the Library does. 
+
+1. You may copy and distribute verbatim copies of the Library's complete 
+source code as you receive it, in any medium, provided that you 
+conspicuously and appropriately publish on each copy an appropriate 
+copyright notice and disclaimer of warranty; keep intact all the notices 
+that refer to this License and to the absence of any warranty; and 
+distribute a copy of this License along with the Library. 
+
+You may charge a fee for the physical act of transferring a copy, and 
+you may at your option offer warranty protection in exchange for a fee. 
+
+
+2. You may modify your copy or copies of the Library or any portion of 
+it, thus forming a work based on the Library, and copy and distribute 
+such modifications or work under the terms of Section 1 above, provided 
+that you also meet all of these conditions: 
+
+    a) The modified work must itself be a software library.
+    b) You must cause the files modified to carry prominent notices 
+       stating that you changed the files and the date of any change.
+    c) You must cause the whole of the work to be licensed at no charge 
+       to all third parties under the terms of this License.
+    d) If a facility in the modified Library refers to a function or a 
+       table of data to be supplied by an application program that uses 
+       the facility, other than as an argument passed when the facility 
+       is invoked, then you must make a good faith effort to ensure 
+       that, in the event an application does not supply such function 
+       or table, the facility still operates, and performs whatever part 
+       of its purpose remains meaningful.
+
+      (For example, a function in a library to compute square roots has 
+      a purpose that is entirely well-defined independent of the 
+      application. Therefore, Subsection 2d requires that any 
+      application-supplied function or table used by this function must 
+      be optional: if the application does not supply it, the square 
+      root function must still compute square roots.)
+
+These requirements apply to the modified work as a whole. If 
+identifiable sections of that work are not derived from the Library, and 
+can be reasonably considered independent and separate works in 
+themselves, then this License, and its terms, do not apply to those 
+sections when you distribute them as separate works. But when you 
+distribute the same sections as part of a whole which is a work based on 
+the Library, the distribution of the whole must be on the terms of this 
+License, whose permissions for other licensees extend to the entire 
+whole, and thus to each and every part regardless of who wrote it. 
+
+Thus, it is not the intent of this section to claim rights or contest 
+your rights to work written entirely by you; rather, the intent is to 
+exercise the right to control the distribution of derivative or 
+collective works based on the Library. 
+
+In addition, mere aggregation of another work not based on the Library 
+with the Library (or with a work based on the Library) on a volume of a 
+storage or distribution medium does not bring the other work under the 
+scope of this License. 
+
+3. You may opt to apply the terms of the ordinary GNU General Public 
+License instead of this License to a given copy of the Library. To do 
+this, you must alter all the notices that refer to this License, so that 
+they refer to the ordinary GNU General Public License, version 2, 
+instead of to this License. (If a newer version than version 2 of the 
+ordinary GNU General Public License has appeared, then you can specify 
+that version instead if you wish.) Do not make any other change in these 
+notices. 
+
+Once this change is made in a given copy, it is irreversible for that 
+copy, so the ordinary GNU General Public License applies to all 
+subsequent copies and derivative works made from that copy. 
+
+This option is useful when you wish to copy part of the code of the 
+Library into a program that is not a library. 
+
+4. You may copy and distribute the Library (or a portion or derivative 
+of it, under Section 2) in object code or executable form under the 
+terms of Sections 1 and 2 above provided that you accompany it with the 
+complete corresponding machine-readable source code, which must be 
+distributed under the terms of Sections 1 and 2 above on a medium 
+customarily used for software interchange. 
+
+If distribution of object code is made by offering access to copy from a 
+designated place, then offering equivalent access to copy the source 
+code from the same place satisfies the requirement to distribute the 
+source code, even though third parties are not compelled to copy the 
+source along with the object code. 
+
+5. A program that contains no derivative of any portion of the Library, 
+but is designed to work with the Library by being compiled or linked 
+with it, is called a "work that uses the Library". Such a work, in 
+isolation, is not a derivative work of the Library, and therefore falls 
+outside the scope of this License. 
+
+However, linking a "work that uses the Library" with the Library creates 
+an executable that is a derivative of the Library (because it contains 
+portions of the Library), rather than a "work that uses the library". 
+The executable is therefore covered by this License. Section 6 states 
+terms for distribution of such executables. 
+
+When a "work that uses the Library" uses material from a header file 
+that is part of the Library, the object code for the work may be a 
+derivative work of the Library even though the source code is not. 
+Whether this is true is especially significant if the work can be linked 
+without the Library, or if the work is itself a library. The threshold 
+for this to be true is not precisely defined by law. 
+
+If such an object file uses only numerical parameters, data structure 
+layouts and accessors, and small macros and small inline functions (ten 
+lines or less in length), then the use of the object file is 
+unrestricted, regardless of whether it is legally a derivative work. 
+(Executables containing this object code plus portions of the Library 
+will still fall under Section 6.) 
+
+Otherwise, if the work is a derivative of the Library, you may 
+distribute the object code for the work under the terms of Section 6. 
+Any executables containing that work also fall under Section 6, whether 
+or not they are linked directly with the Library itself. 
+
+6. As an exception to the Sections above, you may also combine or link a 
+"work that uses the Library" with the Library to produce a work 
+containing portions of the Library, and distribute that work under terms 
+of your choice, provided that the terms permit modification of the work 
+for the customer's own use and reverse engineering for debugging such 
+modifications. 
+
+You must give prominent notice with each copy of the work that the 
+Library is used in it and that the Library and its use are covered by 
+this License. You must supply a copy of this License. If the work during 
+execution displays copyright notices, you must include the copyright 
+notice for the Library among them, as well as a reference directing the 
+user to the copy of this License. Also, you must do one of these things: 
+
+
+    a) Accompany the work with the complete corresponding 
+       machine-readable source code for the Library including whatever 
+       changes were used in the work (which must be distributed under 
+       Sections 1 and 2 above); and, if the work is an executable linked 
+       with the Library, with the complete machine-readable "work that 
+       uses the Library", as object code and/or source code, so that the 
+       user can modify the Library and then relink to produce a modified 
+       executable containing the modified Library. (It is understood 
+       that the user who changes the contents of definitions files in 
+       the Library will not necessarily be able to recompile the 
+       application to use the modified definitions.)
+    b) Use a suitable shared library mechanism for linking with the 
+       Library. A suitable mechanism is one that (1) uses at run time a 
+       copy of the library already present on the user's computer 
+       system, rather than copying library functions into the 
+       executable, and (2) will operate properly with a modified version 
+       of the library, if the user installs one, as long as the modified 
+       version is interface-compatible with the version that the work 
+       was made with.
+    c) Accompany the work with a written offer, valid for at least three 
+       years, to give the same user the materials specified in 
+       Subsection 6a, above, for a charge no more than the cost of 
+       performing this distribution.
+    d) If distribution of the work is made by offering access to copy 
+       from a designated place, offer equivalent access to copy the 
+       above specified materials from the same place.
+    e) Verify that the user has already received a copy of these 
+       materials or that you have already sent this user a copy.
+
+For an executable, the required form of the "work that uses the Library" 
+must include any data and utility programs needed for reproducing the 
+executable from it. However, as a special exception, the materials to be 
+distributed need not include anything that is normally distributed (in 
+either source or binary form) with the major components (compiler, 
+kernel, and so on) of the operating system on which the executable runs, 
+unless that component itself accompanies the executable. 
+
+It may happen that this requirement contradicts the license restrictions 
+of other proprietary libraries that do not normally accompany the 
+operating system. Such a contradiction means you cannot use both them 
+and the Library together in an executable that you distribute. 
+
+7. You may place library facilities that are a work based on the Library 
+side-by-side in a single library together with other library facilities 
+not covered by this License, and distribute such a combined library, 
+provided that the separate distribution of the work based on the Library 
+and of the other library facilities is otherwise permitted, and provided 
+that you do these two things: 
+
+    a) Accompany the combined library with a copy of the same work based 
+       on the Library, uncombined with any other library facilities. 
+       This must be distributed under the terms of the Sections above.
+    b) Give prominent notice with the combined library of the fact that 
+       part of it is a work based on the Library, and explaining where 
+       to find the accompanying uncombined form of the same work.
+
+8. You may not copy, modify, sublicense, link with, or distribute the 
+Library except as expressly provided under this License. Any attempt 
+otherwise to copy, modify, sublicense, link with, or distribute the 
+Library is void, and will automatically terminate your rights under this 
+License. However, parties who have received copies, or rights, from you 
+under this License will not have their licenses terminated so long as 
+such parties remain in full compliance. 
+
+9. You are not required to accept this License, since you have not 
+signed it. However, nothing else grants you permission to modify or 
+distribute the Library or its derivative works. These actions are 
+prohibited by law if you do not accept this License. Therefore, by 
+modifying or distributing the Library (or any work based on the 
+Library), you indicate your acceptance of this License to do so, and all 
+its terms and conditions for copying, distributing or modifying the 
+Library or works based on it. 
+
+10. Each time you redistribute the Library (or any work based on the 
+Library), the recipient automatically receives a license from the 
+original licensor to copy, distribute, link with or modify the Library 
+subject to these terms and conditions. You may not impose any further 
+restrictions on the recipients' exercise of the rights granted herein. 
+You are not responsible for enforcing compliance by third parties with 
+this License. 
+
+11. If, as a consequence of a court judgment or allegation of patent 
+infringement or for any other reason (not limited to patent issues), 
+conditions are imposed on you (whether by court order, agreement or 
+otherwise) that contradict the conditions of this License, they do not 
+excuse you from the conditions of this License. If you cannot distribute 
+so as to satisfy simultaneously your obligations under this License and 
+any other pertinent obligations, then as a consequence you may not 
+distribute the Library at all. For example, if a patent license would 
+not permit royalty-free redistribution of the Library by all those who 
+receive copies directly or indirectly through you, then the only way you 
+could satisfy both it and this License would be to refrain entirely from 
+distribution of the Library. 
+
+If any portion of this section is held invalid or unenforceable under 
+any particular circumstance, the balance of the section is intended to 
+apply, and the section as a whole is intended to apply in other 
+circumstances. 
+
+It is not the purpose of this section to induce you to infringe any 
+patents or other property right claims or to contest validity of any 
+such claims; this section has the sole purpose of protecting the 
+integrity of the free software distribution system which is implemented 
+by public license practices. Many people have made generous 
+contributions to the wide range of software distributed through that 
+system in reliance on consistent application of that system; it is up to 
+the author/donor to decide if he or she is willing to distribute 
+software through any other system and a licensee cannot impose that 
+choice. 
+
+This section is intended to make thoroughly clear what is believed to be 
+a consequence of the rest of this License. 
+
+12. If the distribution and/or use of the Library is restricted in 
+certain countries either by patents or by copyrighted interfaces, the 
+original copyright holder who places the Library under this License may 
+add an explicit geographical distribution limitation excluding those 
+countries, so that distribution is permitted only in or among countries 
+not thus excluded. In such case, this License incorporates the 
+limitation as if written in the body of this License. 
+
+13. The Free Software Foundation may publish revised and/or new versions 
+of the Lesser General Public License from time to time. Such new 
+versions will be similar in spirit to the present version, but may 
+differ in detail to address new problems or concerns. 
+
+Each version is given a distinguishing version number. If the Library 
+specifies a version number of this License which applies to it and "any 
+later version", you have the option of following the terms and 
+conditions either of that version or of any later version published by 
+the Free Software Foundation. If the Library does not specify a license 
+version number, you may choose any version ever published by the Free 
+Software Foundation. 
+
+14. If you wish to incorporate parts of the Library into other free 
+programs whose distribution conditions are incompatible with these, 
+write to the author to ask for permission. For software which is 
+copyrighted by the Free Software Foundation, write to the Free Software 
+Foundation; we sometimes make exceptions for this. Our decision will be 
+guided by the two goals of preserving the free status of all derivatives 
+of our free software and of promoting the sharing and reuse of software 
+generally. 
+
+NO WARRANTY
+
+15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO 
+WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
+EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR 
+OTHER PARTIES PROVIDE THE LIBRARY "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE 
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE LIBRARY IS WITH 
+YOU. SHOULD THE LIBRARY PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
+NECESSARY SERVICING, REPAIR OR CORRECTION. 
+
+16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN 
+WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY 
+AND/OR REDISTRIBUTE THE LIBRARY AS PERMITTED ABOVE, BE LIABLE TO YOU FOR 
+DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL 
+DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE LIBRARY 
+(INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED 
+INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF 
+THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF SUCH HOLDER OR 
+OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
+
+END OF TERMS AND CONDITIONS 
+
+END OF GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 MIT LICENSE
 
 The Program includes some or all of the following that IBM obtained
 under the MIT License:
 
-WEBAPP [Apache CXF] (Copyright 2010, John Resig),
-JQUERY.COOKIES.2.2.0.JS � [SLF4J] (Copyright (c) 2005 - 2010, James
-Auldridge, All rights reserved.), NORMALIZE.CSS
-[smallrye-reactive-messaging] (Copyright 2011-2014 Twitter, Inc.),
-JQUERY.EVENT.DRAG [msf4j] (Copyright (c) 2008, Three Dub Media
-(http://threedubmedia.com)), CSS-IN-JS-UTILS (Copyright (c) 2017 Robin
-Frischmann), LODASH._REINTERPOLATE (Copyright 2012-2015 The Dojo
-Foundation <http://dojofoundation.org/>), RESOLVE (Copyright (c) 2012
-James Halliday), JQUERY-JVECTORMAP [msf4j] (Copyright 2011-2013, Kirill
-Lebedev), JQUERY RESIZE EVENT [msf4j] (Copyright (c) 2010 "Cowboy" Ben
-Alman), REQUIRE.JS [jQuery] (Copyright (c) 2010-2015, The Dojo
-Foundation All Rights Reserved.), JQUERY.FLOT [msf4j] (Copyright (c)
-2007-2013 IOLA and Ole Laursen), UUID.JS [Apache CXF] (Copyright (c)
-2010 Robert Kieffer), FSEVENTS (Copyright (C) 2010-2014 Philipp
-DunkelCopyright), XTEND (Copyright (c) 2012-2014 Raynos.), DES (by Paul
-Tero), HANDLEBARS [weld] (Copyright (C) 2011-2014 by Yehuda Katz), NAN
-(Copyright (c) 2018 NAN contributors), BUFFER (Copyright (c) Feross
-Aboukhadijeh and other contributors.), EVENTEMITTER3 (Copyright (c) 2014
-Arnout Kazemier), MOMENT.JS [msf4j] (Copyright Tim Wood, Iskren Chernev,
-Moment.js contributors), GRAPHQL-JAVA (Copyright (c) 2015 Andreas Marek
-and Contributors), JQUERY-1.9.0.JS [Spring-boot] (Copyright 2005, 2012
-jQuery Foundation, Inc. and other contributors), SHCORE.JS [weld] ((c)
-2007-2008 Steven Levithan), SLF4J ((c) 2004-2013 QOS.ch  All rights
-reserved. ), MINIZLIB (Copyright Isaac Z. Schlueter and Contributors
-Copyright Node.js -contributors.), JQUERY.BASE64 [msf4j] (Copyright (c)
-2012 Yannick Albert (http://yckart.com)), SIZZLE.JS [Apache CXF]
-(Copyright 2010, The Dojo Foundation), OS-HOMEDIR (Copyright (c) Sindre
-Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), AUTOLINKER
-(Copyright (c) 2014 Gregory Jacobs (http://greg-jacobs.com)), JSBN.JS
-(Copyright (c) 2005-2009 Tom Wu All Rights Reserved.), HTTP-PROXY
-(Copyright (c) 2010-2016 Charlie Robbins Jarrett Cruger & the
-Contributors.), REMARKABLE (Copyright (c) 2014-2016; Jon Schlinkert
-Copyright (c) 2014 Jon Schlinkert; Vitaly Puzrin.), XREGEXP [weld]
-(Copyright (c) 2007-2008 Steven Levithan), REGENERATOR-RUNTIME
-(Copyright (c) 2014-present Facebook Inc.), STRIP-JSON-COMMENTS
-(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
-(sindresorhus.com)), BASE-X (Copyright base-x contributors (c) 2016),
-PROBE.JS [weld] (Copyright 2011-2014 Twitter, Inc.), FOLLOW-REDIRECTS
-(Copyright 2014 present Olivier Lalonde <olalonde@gmail.com> James
-Talmage <james@talmage.io> Ruben Verborgh), QUNIT V1.23.1 [jQuery]
-(Copyright 2018 The jQuery Foundation), STRING.PROTOTYPE.TRIMLEFT
-(Copyright (c) 2015 Jordan Harband), REQUIREJS V2.1.22 [jQuery]
-(Copyright (c) 2010-2015, The Dojo Foundation All Rights Reserved),
-JQUERY-FLOT-ORDERBARS [msf4j] (Benjamin BUFFET, 20-Sep-2010),
-@BABEL/RUNTIME-COREJS2 (Copyright (c) 2014-present Sebastian McKenzie
-and other contributors), BOOTSTRAP.MIN.CSS [Spring-boot] (Copyright
-2011-2018 The Bootstrap Authors Copyright 2011-2018 Twitter, Inc.),
-LODASH.TEMPLATESETTINGS (Copyright OpenJS Foundation and other
-contributors), BOOTSTRAP [weld] (Copyright 2011-2014 Twitter, Inc.),
-SIZZLE CSS SELECTOR ENGINE [jQuery] (Copyright 2005, 2012 jQuery
-Foundation, Inc. and other contributors Copyright 2012 jQuery Foundation
-and other contributors), NATIVE PROMISE ONLY V0.8.1 [jQuery] (Copyright
-(c) Kyle Simpson), OBJECT-IS (Copyright (c) 2014 Jordan Harband), JQUERY
-[msf4j] (Copyright JS Foundation and other contributors,
-https://js.foundation/), JQUERY-1.9.1.JS [jQuery] (Copyright 2005, 2012
-jQuery Foundation, Inc. and other contributors Copyright 2012 jQuery
-Foundation and other contributors), CORE-JS (Copyright (c) 2014-2019
-Denis Pushkarev), JQUERY.JS [jQuery] (Copyright 2018 The jQuery
-Foundation), DATATABLES [msf4j] (Copyright (c) 2008-2013 SpryMedia
-Limited), JSJWS (Copyright (c) 2012 Kenji Urushima),
-STRING.PROTOTYPE.TRIMRIGHT (Copyright (c) 2015 Jordan Harband), THUNKY
-(Copyright (c) 2018 Mathias Buus), BASE64-JS (Copyright (c) 2014 Jameson
-Little), DEEP-EQUAL (Copyright (c) 2012 2013 2014 James Halliday
-<mail@substack.net> 2009 Thomas Robinson <280north.com>), IS-ARGUMENTS
-(Copyright (c) 2014 Jordan Harband), JQUERY JAVASCRIPT LIBRARY V1.9.1
-[jQuery] (Copyright 2005, 2012 jQuery Foundation, Inc. and other
-contributors Copyright 2012 jQuery Foundation and other contributors),
-JQUERY.MOUSEWHEEL [msf4j] (Copyright (c) 2011 Brandon Aaron
-(http://brandonaaron.net)), LODASH.TEMPLATE (Copyright OpenJS Foundation
-and other contributors), DEBUG (Copyright (c) 2014 TJ Holowaychuk
-<tj@vision-media.ca>), THROUGH2 (Copyright (c) Rod Vagg (the "Original
-Author") and additional contributors**), ES-ABSTRACT (Copyright (C) 2015
-Jordan Harband), JQUERY-UI [msf4j] (Copyright 2013 jQuery Foundation and
-other contributors), DELEGATES (Copyright (c) 2015 TJ Holowaychuk
-<tj@vision-media.ca>), JQUERY.VALIDATE.JS [Spring-boot] (Copyright (c)
-2012 J��rn Zaefferer), GULP-HEADER (Copyright (c) 2013-2015 Michael J.
-Ryan <tracker1> and GoDaddy.com), DEEP-EXTEND (Copyright (c) 2013-2018
-Viacheslav Lotsmanov), OS-TMPDIR (Copyright (c) Sindre Sorhus
-<sindresorhus@gmail.com> (sindresorhus.com)), RUBY [Apache CXF]
-(Copyright (c) 2005-2006 David Heinemeier Hansson),
-REGEXP.PROTOTYPE.FLAGS (Copyright (C) 2014 Jordan Harband), ASYNC
-(Copyright (c) 2010-2018 Caolan McMahon), REACT-IS (Copyright (c)
-Facebook Inc. and its affiliates.), CLASSGRAPH (Copyright (c) 2019 Luke
-Hutchison), SHBRUSHJAVA.JS [Jandex] (Copyright (C) 2004-2010 Alex
-Gorbatchev), JQUERY V1.7.2 [SLF4J] (No copyright statement found),
-JQUERY V1.9.0 [Apache CXF] ((c) 2005, 2012 jQuery Foundation, Inc),
-MONOREPO-SYMLINK-TES (No Copyright Found), NPO.JS [jQuery] (Copyright
-(c) Kyle Simpson), AXIS LABEL PLUGINS [msf4j] (Copyright (c) 2010 Xuan
-Luo), HANDLEBARS-V2.0.0.JS [weld] (Copyright (C) 2011-2014 by Yehuda
-Katz), SL4J [Apache CXF] (Copyright (c) 2004-2007 QOS.ch),
-(@MY-SCOPE/PACKAGE-A (No Copyright Found), NEEDLE (Copyright (c) Fork
-Ltd.),  Datatables ( Copyright (c) 2008-2013 SpryMedia Limited ), 
-jQuery.flot ( Copyright (c) 2007-2013 IOLA and Ole Laursen ), 
-jQuery ( (c) 2005, 2014 jQuery Foundation, Inc. ), 
-jQuery resize event ( Copyright (c) 2010 "Cowboy" Ben Alman ), 
-moment.js ( Copyright Tim Wood, Iskren Chernev, Moment.js contributors ), 
-jQuery.event.drag ( Copyright (c) 2008, Three Dub Media (http://threedubmedia.com) ), 
-jQuery.mousewheel ( Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net) ), 
-jQuery.base64 ( Copyright (c) 2012 Yannick Albert (http://yckart.com) ), 
-jQuery-UI ( Copyright 2013 jQuery Foundation and other contributors ), 
-Axis Label Plugins ( Copyright (c) 2010 Xuan Luo ), 
-jQuery-jvectormap ( Copyright 2011-2013, Kirill Lebedev ), 
-jQuery-Flot-orderBars ( Benjamin BUFFET, 20-Sep-2010 ), 
-WSSecurity (� OASIS Open 2002-2004.), KOHSUKE/RNGOM 
-(Copyright (C) 2004-2011), ISORELAX (Copyright (c)
-2001-2002, SourceForge ISO-RELAX Project (ASAMI Tomoharu, Daisuke
-Okajima, Kohsuke Kawaguchi, and MURATA Makoto))
+IS-DATA-DESCRIPTOR (Copyright (c) 2015-2017 Jon Schlinkert.)
+MULTICAST-DNS (Copyright (c) 2015 Mathias Buus)
+IS-STREAM (Copyright(c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+HTTP-PROXY-MIDDLEWARE (Copyright (c) 2015 Steven Chim)
+MIME (Copyright(c) 2010 Benjamin Thomas Robert Kieffer)
+IS-FINITE (Copyright (c)Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+MICROMATCH(Copyright (c) 2014-2018 Jon Schlinkert.)
+PINKIE (Copyright (c)Vsevolod Strukchinsky <floatdrop@gmail.com> (github.com/floatdrop))
+DEL(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+READ-PKG-UP (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+LOADER-UTILS (Copyright(c) 2012 - 2015 Tobias Koppers)
+CROSS-FETCH (Copyright (c) 2017 Leonardo Quixadá)
+CONTENT-DISPOSITION (Copyright (c) 2014-2017 Douglas Christopher Wilson)
+HTTP-BROWSERIFY (Copyright (c) 2011 Dominic TarrCopyright (c) 2011 Dominic TarrCopyright (c) 2012 Tim Caswell)
+BABEL-RUNTIME (No copyright)
+RAF (Copyright 2013 Chris Dickinson<chris@neversaw.us>)
+XML (Copyright (c) 2011-2016 Dylan Greene<dylang@gmail.com>)
+ERRNO (## Copyright & Licence*Copyright (c)2012-2015 [Rod Vagg](https://github.com/rvagg)
+([@rvagg](https://twitter.com/rvagg))*)
+COMPONENT-EMITTER (Copyright(c) 2014 Component contributors <dev@component.io>)
+BROWSER-PACK(No copyright)
+DEFINE-PROPERTIES (Copyright (C) 2015 Jordan Harband)
+ANSI-REGEX (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+PROCESS-NEXTICK-ARGS (# Copyright (c) 2015 Calvin Metcalf)
+BONJOUR (Copyright (c) 2015-2016 Thomas Watson Steen)
+MKDIRP(Copyright 2010 James Halliday (mail@substack.net))
+MAP-VISIT(Copyright (c) 2015-2017 Jon Schlinkert)
+ASYNC-EACH (Copyright (c) 2016 Paul Miller [(paulmillr.com)](http://paulmillr.com))
+REACT-ADDONS-TEST-UTILS (Copyright (c) 2013-present Facebook Inc.)
+ARRAY-UNION (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+COMPRESSION (Copyright (c) 2014 Jonathan Ong<me@jongleberry.com>Copyright (c) 2014-2015 Douglas Christopher Wilson<doug@somethingdoug.com>)
+P-MAP (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+OBJECT-INSPECT (No copyright)
+PROBE.JS [weld] (Copyright 2011-2014 Twitter Inc.)
+REACT-MARKDOWN(Copyright (c) 2015 Espen Hovlandsdal)
+IS-NUMBER (Copyright (c)2014-2017 Jon Schlinkert.)
+READDIRP (Copyright (c) 2012-2015 Thorsten Lorenz)
+LEXICAL-SCOPE (No Copyright found)
+OBJECT-COPY(Copyright (c) 2016 Jon Schlinkert.)
+UNOBTRUSIVE SLIDER CONTROL(Copyright 2010 2011 Brian McAllister) MOOTOOLS [Esprima (node)]
+(Copyright (c) 2006-2010 [Valerio Proietti](http://mad4milk.net/).)
+OBJECT.PICK (Copyright (c) 2014-2016 Jon Schlinkert.)
+@KYLESHOCKEY/JS-YAML (Copyright (C) 2011-2015 by Vitaly Puzrin)
+ESCAPE-STRING-REGEXP (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+CSSTYPE (Copyright (c)2017-2018 Fredrik Nicol)
+IS-BINARY-PATH (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+DEEP-EXTEND (Copyright (c)2013-2018 Viacheslav Lotsmanov)
+DECODE-URI-COMPONENT (Copyright (c) Sam Verschueren <sam.verschueren@gmail.com> (github.com/SamVerschueren))
+REACT-IS (Copyright (c) Facebook Inc. and its affiliates.)
+ SERIALIZE-ERROR (Copyright (c)Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+ UNDERSCORE[Esprima (node)] (Copyright (c) 2009-2014 Jeremy Ashkenas DocumentCloud
+and Investigative)
+WHATWG-FETCH (Copyright (c) 2014-2016 GitHub Inc.)
+REPEAT-ELEMENT (Copyright (c) 2015-present Jon Schlinkert.)
+ARRAY-FLATTEN (Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com))
+REDUX (Copyright (c) 2015-present Dan Abramov)
+OS-LOCALE (Copyright (c)Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+RESOLVE (No copyright found)
+HPACK.JS (Copyright Fedor Indutny 2015.)
+SERVE-STATIC(Copyright (c) 2010 Sencha Inc.Copyright (c) 2011 LearnBoostCopyright
+(c) 2011 TJ HolowaychukCopyright (c) 2014-2016 Douglas Christopher Wilson)
+STRING.PROTOTYPE.REPEAT (Copyright Mathias Bynens <http://mathiasbynens.be/>)
+WORKER-LOADER (No copyright)
+PROMISE(Copyright (c) 2014 Forbes Lindesay)
+ARRAY-UNIQ (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+IS-DATE-OBJECT (Copyright (c) 2015 Jordan Harband)
+BROWSERIFY (Copyright Joyent Inc. and other Node contributors.Copyright (c) 2008 Fair Oaks Labs Inc.)
+PINKIE-PROMISE (Copyright (c) Vsevolod Strukchinsky<floatdrop@gmail.com> (github.com/floatdrop))
+REPEATING (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+IS-BOOLEAN-OBJECT (Copyright (c) 2015 Jordan Harband)
+STRIP-INDENT(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+LODASH-ES (Copyright JS Foundation and other contributors <https://js.foundation/>Copyright and related rights for sample code are waived via CC0. Sample)
+RET (Copyright (C) 2011 by Roly
+Fentanes)
+DELAYED-STREAM (Copyright (c) 2011 Debuggable Limited <felix@debuggable.com>)
+ENCODING (Copyright (c) 2012-2014 Andris Reinman)
+GETBASE (No Copyright found)
+PATH-IS-ABSOLUTE (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+IMMEDIATE(Copyright (c) 2012 Barnesandnoble.com llc Donavon West Domenic Denicola Brian Cavalier)
+PIFY (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+URIX (Copyright (c) 2013 Simon Lydell)
+ES-TO-PRIMITIVE (Copyright (c) 2015 Jordan Harband)
+FILENAME-REGEX (Copyright (c) 2014-2015 2017 Jon Schlinkert)
+FILL-RANGE(Copyright (c) 2014-2018 Jon Schlinkert.)
+ESCAPE-HTML (Copyright (c) 2012-2013 TJ HolowaychukCopyright (c) 2015 Andreas LubbeCopyright (c) 2015 Tiancheng "Timothy" Gu)
+COMMONMARK-REACT-RENDERER (Copyright (c)2015 Espen Hovlandsdal)
+MAP-OBJ (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+UMD (No copyright)
+CACHE-BASE(Copyright (c) 2014-2017 Jon Schlinkert.)
+IS-EXTGLOB (Copyright (c)2014-2015 Jon Schlinkert.)
+SAFER-BUFFER (Copyright (c) 2018 Nikita Skovoroda <chalkerx@gmail.com>)
+RECURSIVE OBJECT EXTENDING (Copyright(c) 2013-2018 Viacheslav Lotsmanov)
+LCID (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+ASSIGN-SYMBOLS (Copyright(c) 2015 Jon Schlinkert.)
+REACT-COLLAPSE (Copyright (c) 2015 Nik Butenko)
+ES-ABSTRACT (Copyright (C) 2015 Jordan Harband)
+FAST-JSON-PATCH (Copyright (c) 2013 2014 Joachim Wester)
+FAYE-WEBSOCKET(Copyright (c) 2010-2015 James Coglan)
+CONNECT-HISTORY-API-FALLBACK(Copyright (c) 2012 Ben Ripkens http://bripkens.de)
+FOR-IN (Copyright(c) 2014-2017 Jon Schlinkert)
+DNS-PACKET (Copyright (c) 2016 Mathias Buus)
+PACKAGE.JSON (Copyright (c) 2011 Dominic Tarr)
+COOKIE-SIGNATURE(Copyright (c) 2012 LearnBoost &lt;tj@learnboost.com&gt;)
+EVENT-EMITTER(Copyright (C) 2012-2015 Mariusz Nowak (www.medikoo.com))
+FRESH(Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>Copyright (c)
+2016-2017 Douglas Christopher Wilson <doug@somethingdoug.com>)
+INSERT-MODULE-GLOBALS (No copyright)
+REQUIRE-DIRECTORY (Copyright (c) 2011Troy Goode <troygoode@gmail.com>)
+SERVE-INDEX (Copyright (c) 2010 Sencha Inc.Copyright (c) 2011 LearnBoostCopyright (c) 2011 TJ HolowaychukCopyright (c) 2014-2015 Douglas Christopher Wilson)
+LODASH(Copyright JS Foundation and other contributors
+<https://js.foundation/>Copyright and related rights for sample code are
+waived via CC0. Sample)
+LODASH.ISARGUMENTS (Copyright jQuery Foundation and other contributors <https://jquery.org/>Copyright and related rights for sample code are waived via CC0. Sample)
+PARSE-BASE64VLQ-MAPPINGS (Copyright 2013 Thorsten Lorenz. Copyright (c) 2009-2011 Mozilla
+Foundation and contributors)
+INVERT-KV (� [Sindre Sorhus](http://sindresorhus.com))
+PARSE-JSON (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+TO-REGEX-RANGE (Copyright (c) 2015-2017 Jon Schlinkert)
+IS-ARRAYISH (Copyright (c) 2015 JD Ballard)
+BRACES (Copyright (c) 2014-2018 Jon Schlinkert.)
+QUERYSTRING-BROWSER (Copyright (c) 2015 Mathias Rasmussen)
+STRING-WIDTH(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+REQUIREJS 2.1.9 (Copyright (c) 2010-2012 The Dojo Foundation)
+URL-PARSE (Copyright (c) 2015 Unshift.io Arnout Kazemier the Contributors.)
+EVENTEMITTER3 (Copyright (c) 2014 Arnout Kazemier)
+ISOBJECT (Copyright (c) 2014-2017 Jon Schlinkert.)
+SHCORE.JS [weld]((c) 2007-2008 Steven Levithan)
+COOKIE (Copyright (c) 2012-2014 Roman Shtylman <shtylman@gmail.com>Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+COMBINED-STREAM (Copyright (c) 2011 Debuggable Limited <felix@debuggable.com>)
+IP (Copyright Fedor Indutny 2012.)
+WEBSOCKET-EXTENSIONS (Copyright (c) 2014-2017 James Coglan)
+READ-PKG (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+STRIP-BOM (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+EXTGLOB (Copyright (c)2015-2017 Jon Schlinkert.)
+LOUD-REJECTION (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+ETAG (Copyright (c)2014-2016 Douglas Christopher Wilson)
+RANDOMATIC (Copyright (c)2013-2017 Jon Schlinkert.)
+UA-PARSER-JS (Copyright (c) 2012-2019 Faisal Salman <<f@faisalman.com>>)
+REACT-REDUX (Copyright (c) 2015 Dan Abramov)
+GLOB (Copyright (c) Isaac Z. Schlueter and Contributors)
+FINALHANDLER (Copyright (c) 2014-2017 Douglas Christopher Wilson<doug@somethingdoug.com>)
+REQUIRES-PORT (Copyright (c) 2015 Unshift.io Arnout Kazemier the Contributors.)
+DEMO.JS (Copyright (c) 2015 Jon Schlinkert)
+INDEX.JS (@author Feross Aboukhadijeh <feross@feross.org> <http://feross.org>)
+DocumentCloud and Investigative Reporters & Editors)
+OPTIMIST(Copyright 2010 James Halliday (mail@substack.net))
+CRYPTO-BROWSERIFY(No copyright)
+PATH-TYPE (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+SYMBOL-OBSERVABLE(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)Copyright (c) Ben Lesh <ben@benlesh.com>)
+REDUX-LOGGER (Copyright (c) 2016 Eugene Rodionov)
+ATOB (Copyright (c)2015 AJ Oneal)
+JQUERY.VALIDATE.JS [Spring-boot] (Copyright (c) 2012 JÃ¶rn Zaefferer)
+IS-GLOB (Copyright (c) 2014-2016 Jon Schlinkert.)
+PROTOTYPE [Esprima (node)] (Copyright 2009 The Dojo Foundation)
+URL(Copyright Joyent Inc. and other Node contributors.)
+ES6-SYMBOL (Copyright (C) 2013-2015 Mariusz Nowak (www.medikoo.com))
+IS-CALLABLE (Copyright (c) 2015 Jordan Harband)
+PATH-IS-INSIDE (Copyright © 2013–2016 Domenic Denicola<d@domenic.me> Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>)
+RANGE-PARSER (Copyright (c) 2012-2014 TJ Holowaychuk<tj@vision-media.ca>Copyright (c) 2015-2016 Douglas Christopher Wilson<doug@somethingdoug.com)
+SAFE-BUFFER (Copyright (c) Feross Aboukhadijeh)
+JQUERY.COOKIES.2.2.0.JS [SLF4J] (Copyright (c) 2005 -2010 James Auldridge)
+NORMALIZE-PATH (Copyright(c) 2014-2017 Jon Schlinkert)
+SELFSIGNED (Copyright (c) 2013 José F. Romaniello)
+USE (Copyright (c) 2015-present Jon Schlinkert.)
+IS-EQUAL (Copyright (c) 2014 Jordan Harband)
+MOCHA (Copyright(c) 2011 TJ Holowaychuk<tj@vision-media.ca>)
+BASE64-VLQ.JS (Copyright 2011 Mozilla Foundation and contributors)
+PATH-TO-REGEXP (Copyright (c) 2014 Blake Embrey(hello@blakeembrey.com))
+EXTEND-SHALLOW (Copyright (c) 2014-2015 2017 Jon Schlinkert.)
+BUFFER (Copyright (c) Feross Aboukhadijeh and other contributors.)
+CODE-POINT-AT (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+GRAPHQL-JAVA (Copyright(c) 2015 Andreas Marek and Contributors)
+ACCEPTS (Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+MS(Copyright (c) 2016 Zeit Inc.)
+JS-TOKENS (Copyright (c) 2014 2015 2016 2017 2018 Simon Lydell)
+SIZZLE.JS [Apache CXF] (Copyright 2005 2012 jQuery Foundation Inc. and other contributors)
+QUERYSTRING (Copyright 2012 Irakli Gozalishvili. All rights reserved.)
+PRESERVE (Copyright (c)2014-2015 Jon Schlinkert.)
+SOURCE-MAP-RESOLVE (Copyright (c) 2014 2015 2016 2017 Simon Lydell)
+NUMBER-IS-NAN (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+ERROR-EX (Copyright (c)2015 JD Ballard)
+REGEX-NOT (Copyright (c) 2016 2018 Jon Schlinkert.)
+TRAVERSE (Copyright 2010 James Halliday (mail@substack.net)Copyright2010 James Halliday (mail@substack.net))
+COMMONDIR (Copyright (c) 2013James Halliday (mail@substack.net))
+MEOW (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+NODE-FETCH (Copyright (c)2016 David Frank)
+BINARY-EXTENSIONS (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+REGENERATOR-RUNTIME(Copyright (c) 2014-present; Facebook; Inc.)
+DEEP-EQL (Copyright(c)2013 Jake Luer jake@alogicalparadox.com)
+PROXY-ADDR (Copyright (c)2014-2016 Douglas Christopher Wilson)
+TYPE-IS (Copyright (c) 2014Jonathan Ong <me@jongleberry.com>Copyright (c) 2014-2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+POSIX-CHARACTER-CLASSES(Copyright (c) 2016-2017 Jon Schlinkert)
+ENCODE.JS (Copyright Joyent Inc. and other Node contributors.)
+BIG.JS (Copyright (c) 2012 Michael Mclaughlin)
+PERFORMANCE-NOW (Copyright (c) 2013 Meryn Stol)
+JQUERY[Esprima (node)] (Copyright (c) 2005 2014 jQuery Foundation Inc.)
+INTERNAL-IP (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+MIME-TYPES (Copyright (c) 2014 Jonathan Ong<me@jongleberry.com>Copyright (c) 2015 Douglas Christopher Wilson<doug@somethingdoug.com>)
+IS-PATH-INSIDE (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+THUNKY (Copyright (c) 2018 Mathias Buus)
+SELECT-HOSE (Copyright Fedor Indutny 2015.)
+DEEP-EQUAL(No copyright)
+SYNTAX-ERROR (No copyright)
+UNION-VALUE (Copyright (c)2015-2017 Jon Schlinkert)
+@BRAINTREE/SANITIZE-URL (Copyright (c) 2017 Braintree)
+BRACE-EXPANSION (Copyright (c) 2013 Julian Gruber<julian@juliangruber.com>)
+RUBY [Apache CXF] (Copyright (c) 2005-2006 David Heinemeier Hansson)
+LODASH.ISARRAY (Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>)
+OBJECT.OMIT (Copyright (c) 2014-2016 Jon Schlinkert)
+CLASSGRAPH (Copyright (c) 2019 Luke Hutchison)
+SHBRUSHJAVA.JS [Jandex] (Copyright (C) 2004-2010 Alex Gorbatchev)
+BYTES (Copyright (c) 2012-2014 TJ Holowaychuk<tj@vision-media.ca>Copyright (c) 2015 Jed Watson <jed.watson@me.com>)
+IS-ARROW-FUNCTION (Copyright (c) 2013 Jordan Harband)
+PASCALCASE (Copyright (c) 2015 Jon Schlinkert.)
+NEXT-TICK (Copyright (C) 2012-2016 Mariusz Nowak)
+WRAP-ANSI (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+IS-DOTFILE (Copyright (c)2015-2017 Jon Schlinkert)
+UTF8-BYTES (No copyright)
+YARGS (Copyright2010 James Halliday (mail@substack.net)Modified work Copyright 2014
+Contributors (ben@npmjs.com))
+DUPLEXER (Copyright (c) 2012 Raynos.)
+EXPAND-RANGE (Copyright (c) 2014-2016 Jon Schlinkert.)
+FORM-DATA(Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors)
+VARY (Copyright (c) 2014-2017 Douglas Christopher Wilson)
+EE-FIRST (Copyright (c) 2014 Jonathan Ong me@jongleberry.com)
+FIND-UP (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+CHOKIDAR (Copyright (c) 2016 Paul Miller(http://paulmillr.com) & Elan Shanker)
+ASTW (No copyright)
+CONVERT-SOURCE-MAP (Copyright 2013 Thorsten Lorenz.)
+SET-VALUE(Copyright (c) 2014-2017 Jon Schlinkert)
+BODY-PARSER (Copyright (c)2014 Jonathan Ong <me@jongleberry.com>Copyright (c) 2014-2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+DEPD (Copyright (c) 2014-2017 Douglas Christopher Wilson)
+COPY-DESCRIPTOR (Copyright (c)2015-2016 Jon Schlinkert)
+IS-PRIMITIVE (Copyright (c) 2014-2015 Jon Schlinkert.)
+GLOBBY (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+BALANCED-MATCH (Copyright (c) 2013 Julian Gruber&lt;julian@juliangruber.com&gt;)
+HTTP-PROXY (Copyright (c) 2010-2016 Charlie Robbins Jarrett Cruger & the Contributors.)
+UNPIPE (Copyright(c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+PUNYCODE(Copyright Mathias Bynens <https://mathiasbynens.be/>)
+GLOB-BASE (Copyright (c) 2015 Jon Schlinkert.)
+ON-FINISHED (Copyright (c) 2013 Jonathan Ong <me@jongleberry.com>Copyright (c) 2014 Douglas Christopher Wilson <doug@somethingdoug.com>)
+ISOMORPHIC-FORM-DATA (Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors)
+JSON3(Copyright (c) 2012-2015 Kit Cambridge.Copyright (c) 2013-2015 Benjamin Tan.)
+ZLIB-BROWSERIFY (No copyright found)
+CLASS-UTILS (Copyright (c)2015 2017-2018 Jon Schlinkert.)
+JSON5 (Copyright (c) 2012-2016 Aseem Kishore and [others](https://github.com/aseemk/json5/contributors).)
+REACT-DEBOUNCE-INPUT (Copyright (c) 2016 Nik Butenko)
+REACT-OBJECT-INSPECTOR (Copyright (c) 2015 Xiaoyi Chen)
+UTIL-DEPRECATE(Copyright (c) 2014 Nathan Rajlich <nathan@tootallnate.net>)
+ARR-UNION (Copyright (c) 2014-2016 Jon Schlinkert.)
+STATIC-EXTEND (Copyright (c) 2016 Jon Schlinkert.)
+IS-SYMBOL (Copyright (c) 2015 Jordan Harband)
+LODASH.KEYS(Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>)
+TOIDENTIFIER (Copyright (c) 2016 Douglas Christopher Wilson<doug@somethingdoug.com>)
+GET-STDIN (� [Sindre Sorhus](http://sindresorhus.com))
+MDURL (Copyright (c) 2015 Vitaly Puzrin Alex Kocharin.Copyright Joyent Inc. and other Node contributors.)
+BACKBONE [Esprima (node)] (Copyright (c) 2010 Jeremy Ashkenas DocumentCloud Inc.)
+SUPPORTS-COLOR (Copyright (c)Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+MEDIA-TYPER(Copyright (c) 2014 Douglas Christopher Wilson)
+RESOLVE-URL (Copyright(c) 2013 Simon Lydell)
+IS-PATH-CWD (� [Sindre Sorhus](http://sindresorhus.com))
+DEBUG.JS (Copyright (c) 2010-2011 Marcus Westin)
+XML-BUT-PRETTIER (Copyright (c) 2015 Jonathan Persson)
+REACT-IMMUTABLE-PURE-COMPONENT (Copyright (c) 2017 Piotr Tomasz Monarski)
+CONCAT-STREAM 0.1.1 (No Copyright found)
+REACT-HEIGHT(Copyright (c) 2017 Nik Butenko)
+SHELL-QUOTE (No copyright)
+COMMONMARK.JS (Copyright Mathias Bynens <https://mathiasbynens.be/>)
+INLINE-SOURCE-MAP (Copyright 2013 Thorsten Lorenz.)
+IS-PROMISE(Copyright (c) 2014 Forbes Lindesay)
+ENCODEURL (Copyright (c) 2016 Douglas Christopher Wilson)
+ES6-ITERATOR (Copyright (C) 2013-2017 Mariusz Nowak (www.medikoo.com))
+THROUGH (Copyright (c) 2011 Dominic Tarr)
+WEBAPP [Apache CXF] (Copyright 2010 John Resig)
+LOAD-JSON-FILE (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+SOCKJS (Copyright (C) 2011 VMware Inc.)
+LIE (#Copyright (c) 2014-2018 Calvin Metcalf Jordan Harband)
+EXPRESS (Copyright (c) 2009-2014 TJ Holowaychuk
+<tj@vision-media.ca>Copyright (c) 2013-2014 Roman Shtylman
+<shtylman+expressjs@gmail.com>Copyright (c) 2014-2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+IS-POSIX-BRACKET(Copyright (c) 2015-2016 Jon Schlinkert.)
+FUNCTION-BIND (Copyright (c)2013 Raynos.)
+SOURCE-MAP-URL (Copyright (c) 2014 Simon Lydell)
+PARSE-GLOB (Copyright (c) 2015 Jon Schlinkert.)
+EXPAND-BRACKETS(Copyright (c) 2015-2016 Jon Schlinkert.)
+HANDLEBARS [weld] (Copyright (C) 2011-2014 by Yehuda Katz)
+JSONPARSE (Copyright (c) 2012 Tim Caswell)
+STRING_DECODER (Copyright Node.js contributors. All rights
+reserved.Copyright Joyent Inc. and other Node contributors. All rights reserved.)
+RFILE (No copyright)
+CREATE-REACT-CLASS (Copyright (c) 2013-present Facebook Inc.)
+HAS (Copyright (c) 2013 Thiago de Arruda)
+DECAMELIZE (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+IS-PLAIN-OBJECT (Copyright (c) 2014-2017 Jon Schlinkert.)
+IS-EQUAL-SHALLOW (Copyright (c) 2015 Jon Schlinkert.)
+REACT-SPLIT-PANE (Copyright (c) 2015 tomkp)
+TIME-STAMP (Copyright (c)2015-present Jon Schlinkert.)
+STRIP-ANSI (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+ON-HEADERS (Copyright (c)2014 Douglas Christopher Wilson)
+QUERYSTRINGIFY (Copyright (c) 2015 Unshift.io Arnout Kazemier the Contributors.)
+BATCH (Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>)
+WBUF (Copyright Fedor Indutny 2014.)
+OPN (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>)
+JS-FILE-DOWNLOAD (Copyright 2017 Kenneth Jiang)
+PRR (Copyright (c) 2014 Rod Vagg)
+IMMUTABLE (Copyright (c) 2014-present Facebook Inc.)
+CONCAT-STREAM 0.0.8 (No Copyright found)
+@TYPES/REACT (Copyright (c) Microsoft Corporation. All rights reserved.)
+OBJECT-ASSIGN (Copyright(c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+STATUSES(Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>Copyright (c) 2016 Douglas Christopher Wilson <doug@somethingdoug.com>)
+EMOJIS-LIST(Copyright © 2015 Kiko Beats)
+SAFE-REGEX (No copyright)
+FOLLOW-REDIRECTS (Copyright 2014–present Olivier Lalonde
+<olalonde@gmail.com> James Talmage <james@talmage.io> Ruben Verborgh)
+ISOMORPHIC-FETCH (Copyright (c) 2015 Matt Andrews)
+IS-BUFFER (Copyright(c) Feross Aboukhadijeh)
+CORE-JS (Copyright (c) 2014-2019 Denis Pushkarev)
+VM-BROWSERIFY (No copyright found)
+SNAPDRAGON (Copyright(c) 2015-2016 Jon Schlinkert.)
+OBJECT-KEYS (Copyright (C) 2013 Jordan Harband)
+CONTENT-TYPE (Copyright (c) 2015 Douglas Christopher Wilson)
+SETIMMEDIATE (Copyright (c) 2012 Barnesandnoble.com llc Donavon West and
+Domenic Denicola)
+LRU-QUEUE (Copyright (C) 2014 Mariusz Nowak(www.medikoo.com))
+DNS-EQUAL (Copyright (c) 2016 Thomas Watson Steen)
+CORE-UTIL-IS (Copyright Node.js contributors. All rights reserved.)
+ARGPARSE (Copyright (C) 2012 by Vitaly Puzrin)
+JS-YAML (Copyright (C)2011-2015 by Vitaly Puzrin)
+LODASH.DEBOUNCE (Copyright jQuery Foundation and other contributors <https://jquery.org/>Copyright and related rights for sample code are waived via CC0. Sample)
+TRIM-NEWLINES (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+CONCAT-MAP (No copyright)
+PATH-EXISTS (Copyright(c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+SL4J[Apache CXF] (Copyright (c) 2004-2007 QOS.ch)
+REGEX-CACHE (Copyright(c) 2015-2017 Jon Schlinkert.)
+HAS-VALUES (Copyright (c) 2014-2017 Jon Schlinkert)
+OBJECT.ENTRIES (Copyright (c) 2015 Jordan Harband)
+REDENT(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+BASE (Copyright (c) 2015-2017 Jon Schlinkert.)
+FOR-OWN (Copyright (c) 2014-2015 2017 Jon Schlinkert)
+REACT-DOM(Copyright (c) 2013-present Facebook Inc.)
+IS-WINDOWS (Copyright (c)2015-2018 Jon Schlinkert.)
+NORMALIZE.CSS [smallrye-reactive-messaging](Copyright 2011-2014 Twitter Inc.)
+CAMELCASE-KEYS (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+CSS-IN-JS-UTILS (Copyright (c) 2017 Robin Frischmann)
+MODULE-DEPS(No copyright)
+TO-OBJECT-PATH (Copyright (c) 2015-2016 Jon Schlinkert.)
+MIXIN-DEEP (Copyright (c) 2014-2015 2017 Jon Schlinkert.)
+NEGOTIATOR(Copyright (c) 2012-2014 Federico RomeroCopyright (c) 2012-2014 Isaac Z.
+SchlueterCopyright (c) 2014-2015 Douglas Christopher Wilson)
+HTTP-PARSER-JS (Copyright (c) 2015 Tim Caswell
+(https://github.com/creationix) and other Copyright io.js contributors
+Copyright Node.js contributors. Copyright Joyent Inc. and other Node
+contributors.)
+REACT (Copyright (c) 2013-present Facebook Inc.)
+FRAGMENT-CACHE (Copyright (c) 2016-2017 Jon Schlinkert)
+BUFFER-INDEXOF(Copyright (c) 2013 Ryan Day)
+PARSEURL (Copyright (c) 2014 Jonathan Ong
+<me@jongleberry.com>Copyright (c) 2014-2017 Douglas Christopher Wilson <doug@somethingdoug.com>)
+COLLECTION-VISIT (Copyright (c) 2015 2017 Jon Schlinkert)
+GET-VALUE (Copyright (c) 2014-2016 Jon Schlinkert.)
+KIND-OF (Copyright (c) 2014-2017 Jon Schlinkert.)
+MATH-RANDOM (No copyright found)
+BROWSER-RESOLVE (Copyright (c) 2013-2015 Roman Shtylman <shtylman@gmail.com>)
+SPLIT-STRING (Copyright (c) 2015-2017 Jon Schlinkert.)
+RAW-BODY (Copyright (c) 2013-2014 Jonathan Ong
+<me@jongleberry.com>Copyright (c) 2014-2015 Douglas Christopher Wilson
+<doug@somethingdoug.com>)
+HAS-FLAG (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+REACT-HOT-LOADER (No copyright found)
+DESTROY (Copyright (c) 2014 Jonathan Ongme@jongleberry.com)
+FBJS (Copyright (c) 2013-present Facebook Inc.)
+MINIMIST (No copyright)
+MATCHER (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+BENCHMARK [Esprima (node)](Copyright (C) 2010-2011 Mathias Bynens)
+FORWARDED (Copyright (c)2014-2017 Douglas Christopher Wilson)
+INVARIANT (Copyright (c)2013-present Facebook Inc.)
+REACT-HOT-API (No copyright)
+FOLDCASE(Copyright Mathias Bynens)
+REPEAT-STRING (Copyright (c) 2014-2016 Jon Schlinkert.)
+BUFFER-BROWSERIFY (No copyright)
+MERGE-DESCRIPTORS (Copyright(c) 2013 Jonathan Ong <me@jongleberry.com>Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+MULTICAST-DNS-SERVICE-TYPES (Copyright (c) 2015 Mathias Buus)
+CONSOLE-BROWSERIFY (Copyright (c) 2012 Raynos.)
+W3C-BLOB (No copyright)
+COMMON.JS (Copyright Joyent Inc. and other Node contributors.)
+COMPRESSIBLE (Copyright (c) 2013 Jonathan Ong
+<me@jongleberry.com>Copyright (c) 2014 Jeremiah Senkpiel
+<fishrock123@rocketmail.com>Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+METHODS (Copyright (c) 2013-2014 TJ Holowaychuk <tj@vision-media.ca>Copyright (c) 2015-2016 Douglas Christopher Wilson <doug@somethingdoug.com>)
+HANDLE-THING (CopyrightFedor Indutny 2015.)
+MAP-CACHE (Copyright (c) 2015-2016 Jon Schlinkert.)
+CSS.ESCAPE (Copyright Mathias Bynens <https://mathiasbynens.be/>)
+BOOTSTRAP [weld] (Copyright 2011-2014 Twitter Inc.)
+ARRAY-UNIQUE (Copyright (c) 2014-2016 Jon Schlinkert)
+HTTP-ERRORS (Copyright (c) 2014 Jonathan Ong me@jongleberry.comCopyright
+(c) 2016 Douglas Christopher Wilson doug@somethingdoug.com)
+WEBSOCKET-MULTIPLEX (Copyright (c) 2017; Marek Majkowski)
+LODASH.ISPLAINOBJECT (Copyright jQuery Foundation and other contributors
+<https://jquery.org/>Copyright and related rights for sample code are
+waived via CC0. Sample)
+ISARRAY (Copyright (c) 2013 Julian Gruber&lt;julian@juliangruber.com&gt;)
+CROSS-FETCH-POLYFILL (Copyright (c)2017 Leonardo Quixad�)
+UTILS-MERGE (Copyright (c) 2013-2017 Jared Hanson)
+IS-GENERATOR-FUNCTION (Copyright (c) 2014 Jordan Harband)
+LOOSE-ENVIFY (Copyright (c) 2015 Andres Suarez <zertosh@gmail.com>)
+JQUERY-MOBILE [Esprima (node)] (Copyright 2011 The Dojo Foundation)
+ARR-FLATTEN (Copyright (c) 2014-2017 Jon Schlinkert.)
+CALLSITE (No copyright)
+IS-UTF8 (Copyright (C) 2014 Wei Fanzhe)
+DEEP-DIFF(Copyright (c) 2011-2013 Phillip Clark)
+TO-REGEX (Copyright (c)2016-2018 Jon Schlinkert.)
+NODE-STATIC (Copyright (c) 2010 Alexis Sellier)
+ICONV-LITE (Copyright (c) 2011 Alexander Shtuchkin)
+EXPECT(Copyright (c) 2015 Michael Jackson)
+SPDX-EXPRESSION-PARSE (Copyright(c) 2015 Kyle E. Mitchell & other authors listed in AUTHORS)
+HTML-ENTITIES (Copyright (c) 2013 Dulin Marat)
+INDENT-STRING (Copyright(c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+IPADDR.JS (Copyright (C) 2011-2017 whitequark<whitequark@whitequark.org>)
+LODASH.ASSIGN (Copyright jQuery Foundation and other contributors <https://jquery.org/Copyright and related rights for sample code are waived via CC0. Sample)
+IS-PATH-IN-CWD (Copyright (c)Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+IS-FULLWIDTH-CODE-POINT (Copyright (c) Sindre Sorhus<sindresorhus@gmail.com> (sindresorhus.com))
+HAS-VALUE (Copyright (c)2014-2017 Jon Schlinkert)
+IS-ACCESSOR-DESCRIPTOR (Copyright (c)2015-2017 Jon Schlinkert.)
+SPDY (Copyright Fedor Indutny 2015.)
+PORTFINDER (Copyright (c) 2012 Charlie Robbins)
+HAS-SYMBOLS (Copyright(c) 2016 Jordan Harband)
+EVENTSOURCE (Copyright (c) 2012 2013 2014 Aslak Hellesøy)
+UUID (Copyright (c) 2010-2016 Robert Kieffer and other contributors)
+COMBINE-SOURCE-MAP (Copyright 2013 Thorsten Lorenz.)
+CURRENTLY-UNHANDLED (Copyright (c) James Talmage <james@talmage.io>
+(github.com/jamestalmage))
+IS-STRING (Copyright (c) 2015 Jordan Harband)
+WEBPACK-DEV-MIDDLEWARE (Copyright JS Foundation and other contributors)
+WORDWRAP (No copyright found)
+OBUF (Copyright Fedor Indutny 2015.)
+UTFSTRING (Copyright (c) 2016 Cameron Dutro)
+LODASH._GETNATIVE (Copyright 2012-2015 The Dojo Foundation<http://dojofoundation.org/>)
+WEBPACK-DEV-SERVER (Copyright JS Foundation and other contributors)
+HTTP-DECEIVER (Copyright Fedor Indutny 2015.)
+MOMENT.JS [weld] (No Copyright Found)
+RUGLIFY (No Copyright found)
+BRACE (Copyright 2013 Thorsten Lorenz.)
+AUTOLINKER(Copyright (c) 2014 Gregory Jacobs (http://greg-jacobs.com))
+CAMELCASE(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+CLASSNAMES (Copyright (c) 2017 Jed Watson)
+NANOMATCH (Copyright (c) 2016-2018 Jon Schlinkert.)
+@TYPES/INLINE-STYLE-PREFIXER (Copyright (c) Microsoft Corporation.)
+REACT-MOTION (Copyright (c) 2015 React Motion authors)
+SHALLOWEQUAL (Copyright (c) 2015 Alberto Leal<mailforalberto@gmail.com> (github.com/dashed))
+XREGEXP [weld](Copyright (c) 2007-2008 Steven Levithan)
+DETECTIVE (No copyright)
+UNDERSCORE.STRING (Copyright (c) 2011 Esa-Matti Suuronen esa-matti@suuronen.org)
+SEND (Copyright (c) 2012 TJ HolowaychukCopyright (c) 2014-2016 Douglas Christopher Wilson)
+UNSET-VALUE (Copyright (c) 2015 2017 Jon Schlinkert)
+DNS-TXT (Copyright(c) 2015 Thomas Watson Steen)
+SCROLL-TO-ELEMENT (Copyright (c){{{year}}} {{{fullname}}})
+REACT-IMMUTABLE-PROPTYPES (Copyright (c)2015 James Burnett)
+MEMOIZEE (Copyright (C) 2012-2016 Mariusz Nowak(www.medikoo.com))
+PATH-PARSE (Copyright (c) 2015 Javier Blanco)
+ASAP(Copyright 2009–2014 Contributors. All rights reserved.)
+PLATFORM[Esprima (node)] (Copyright (c) 2010-2012 John-David Dalton)
+INLINE-STYLE-PREFIXER (Copyright (c) 2015 Robin Frischmann)
+IS-DESCRIPTOR (Copyright (c) 2015-2017 Jon Schlinkert.)
+SPDY-TRANSPORT (Copyright Fedor Indutny 2015.)
+MIME-DB (Copyright (c) 2014 Jonathan Ong me@jongleberry.com)
+BOWSER (Copyright 2015 Dustin Diaz (the "Original Author"))
+BASE64-JS (Copyright (c) 2014)
+OBJECT-VISIT (Copyright (c) 2015 2017 Jon Schlinkert)
+PROCESS (Copyright (c) 2013 Roman Shtylman <shtylman@gmail.com>)
+DEBUG (Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>)
+ORIGINAL (Copyright (c) 2015 Unshift.io Arnout Kazemier the Contributors.)
+ARRAY-FIND-INDEX(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>(sindresorhus.com))
+IS-REGEX (Copyright (c) 2014 Jordan Harband)
+MEMORY-FS (Copyright (c) 2012-2014 Tobias Koppers)
+ASYNC (Copyright (c)2010-2018 Caolan McMahon)
+REACT-STYLE-PROPTYPE (Copyright 2016 Frankie Bagnardi <f.bagnardi@gmail.com>)
+READABLE-STREAM (Copyright Node.js
+contributors. All rights reserved.Copyright Joyent Inc. and other Node
+contributors. All rights reserved.)
+RESELECT (Copyright (c) 2015-2016 Reselect Contributors)
+HANDLEBARS-V2.0.0.JS [weld] (Copyright (C) 2011-2014 by YehudaKatz)
+@KYLESHOCKEY/OBJECT-ASSIGN-DEEP (No copyright)
+IS-EXTENDABLE(Copyright (c) 2015-2017 Jon Schlinkert.)
+IS-NUMBER-OBJECT (Copyright(c) 2015 Jordan Harband)
+ARR-DIFF (Copyright (c) 2014-2015 Jon Schlinkert.)
+DEFINE-PROPERTY (Copyright (c) 2015-2018 Jon Schlinkert.)
+NPO.JS [jQuery] (Copyright (c) Kyle Simpson)
+
+
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -1060,10 +2188,8 @@ The Program includes some or all of the following that IBM obtained
 under the Mozilla Public License, Version 1.1 (source code available via 
 the indicated URL): 
 
-JQUERY.FLOT.TICKROTOR [msf4j]
-(https://github.com/wso2/msf4j/tree/v2.8.1), RHINO 1.6R1 [javax.xml]
-(http://central.maven.org/maven2/org/eclipse/birt/runtime/javax.xml/1.3.4.v201005080400/)
- jQuery.flot.tickrotor ( https://github.com/wso2/msf4j/tree/v2.8.1)
+JS_IMPLEMENTED [Esprima (node)] (Copyright (C) 2004 the Initial
+Developer.)
 
 END OF MOZILLA PUBLIC LICENSE, VERSION 1.1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1079,81 +2205,204 @@ TRANSPORT [Apache CXF] (https://github.com/apache/cxf/tree/cxf-3.2.0)
 END OF MOZILLA PUBLIC LICENSE, VERSION 2.0 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-W3C SOFTWARE LICENSE
+UNIQUE
 
-The Program includes some or all of the following that IBM obtained
-under the W3C Software Notice and License:
+doc-files
+jms/TextMessage.java
 
-WS-ADDR-WSDL.XSD [Apache CXF], W3C XML SCHEMA [OpenWS], SOAP-ENVELOPE
-[OpenWS], XML SCHEMA [xmlsec], SOAP ENVELOPE [OpenWS], XENC-SCHEMA
-[Apache CXF]
+Copyright © 2013 Oracle America, Inc.All rights reserved.
 
-W3C� SOFTWARE NOTICE AND LICENSE
+LIMITED LICENSE GRANTS
 
-Copyright � 1994-2001 World Wide Web Consortium, (Massachusetts 
-Institute of Technology, Institut National de Recherche en Informatique 
-et en Automatique, Keio University). All Rights Reserved. 
-http://www.w3.org/Consortium/Legal/ 
+1. License for Evaluation Purposes. Specification Lead hereby grants
+you a fully-paid, non-exclusive, non-transferable, worldwide, limited
+license (without the right to sublicense), under Specification Lead's
+applicable intellectual property rights to view, download, use and
+reproduce the Specification only for the purpose of internal
+evaluation. This includes (i) developing applications intended to run
+on an implementation of the Specification, provided that such
+applications do not themselves implement any portion(s) of the
+Specification, and (ii) discussing the Specification with any third
+party; and (iii) excerpting brief portions of the Specification in oral
+or written communications which discuss the Specification provided that
+such excerpts do not in the aggregate constitute a significant portion
+of the Specification.
 
-This W3C work (including software, documents, or other related items) is 
-being provided by the copyright holders under the following license. By 
-obtaining, using and/or copying this work, you (the licensee) agree that 
-you have read, understood, and will comply with the following terms and 
-conditions: 
+2. License for the Distribution of Compliant Implementations.
+Specification Lead also grants you a perpetual, non-exclusive,
+non-transferable, worldwide, fully paid-up, royalty free, limited
+license (without the right to sublicense) under any applicable
+copyrights or, subject to the provisions of subsection 4 below, patent
+rights it may have covering the Specification to create and/or
+distribute an Independent Implementation of the Specification that: (a)
+fully implements the Specification including all its required
+interfaces and functionality; (b) does not modify, subset, superset or
+otherwise extend the Licensor Name Space, or include any public or
+protected packages, classes, Java interfaces, fields or methods within
+the Licensor Name Space other than those required/authorized by the
+Specification or Specifications being implemented; and (c) passes the
+Technology Compatibility Kit (including satisfying the requirements of
+the applicable TCK Users Guide) for such Specification ("Compliant
+Implementation"). In addition, the foregoing license is expressly
+conditioned on your not acting outside its scope. No license is
+granted hereunder for any other purpose (including, for example,
+modifying the Specification, other than to the extent of your fair use
+rights, or distributing the Specification to third parties). Also, no
+right, title, or interest in or to any trademarks, service marks, or
+trade names of Specification Lead or Specification Lead's licensors is
+granted hereunder. Java, and Java-related logos, marks and names are
+trademarks or registered trademarks of Oracle America, Inc. in the U.S.
+and other countries.
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation, with or without modification, for any purpose and without 
-fee or royalty is hereby granted, provided that you include the 
-following on ALL copies of the software and documentation or portions 
-thereof, including modifications, that you make: 
+3. Pass-through Conditions. You need not include limitations (a)-(c)
+from the previous paragraph or any other particular "pass through"
+requirements in any license You grant concerning the use of your
+Independent Implementation or products derived from it. However,
+except with respect to Independent Implementations (and products
+derived from them) that satisfy limitations (a)-(c) from the previous
+paragraph, You may neither: (a) grant or otherwise pass through to
+your licensees any licenses under Specification Lead's applicable
+intellectual property rights; nor (b) authorize your licensees to make
+any claims concerning their implementation's compliance with the
+Specification in question.
+
+4. Reciprocity Concerning Patent Licenses.
+
+a. With respect to any patent claims covered by the license granted
+under subparagraph 2 above that would be infringed by all technically
+feasible implementations of the Specification, such license is
+conditioned upon your offering on fair, reasonable and
+non-discriminatory terms, to any party seeking it from You, a
+perpetual, non-exclusive, non-transferable, worldwide license under
+Your patent rights which are or would be infringed by all technically
+feasible implementations of the Specification to develop, distribute
+and use a Compliant Implementation.
+
+b. With respect to any patent claims owned by Specification Lead and
+covered by the license granted under subparagraph 2, whether or not
+their infringement can be avoided in a technically feasible manner when
+implementing the Specification, such license shall terminate with
+respect to such claims if You initiate a claim against Specification
+Lead that it has, in the course of performing its responsibilities as
+the Specification Lead, induced any other entity to infringe Your
+patent rights.
+
+c. Also with respect to any patent claims owned by Specification Lead
+and covered by the license granted under subparagraph 2 above, where
+the infringement of such claims can be avoided in a technically
+feasible manner when implementing the Specification such license, with
+respect to such claims, shall terminate if You initiate a claim against
+Specification Lead that its making, having made, using, offering to
+sell, selling or importing a Compliant Implementation infringes Your
+patent rights.
+
+5. Definitions. For the purposes of this Agreement: "Independent
+Implementation" shall mean an implementation of the Specification that
+neither derives from any of Specification Lead's source code or binary
+code materials nor, except with an appropriate and separate license
+from Specification Lead, includes any of Specification Lead's source
+code or binary code materials; "Licensor Name Space" shall mean the
+public class or interface declarations whose names begin with "java",
+"javax", "com.sun" and "com.oracle" or their equivalents in any
+subsequent naming convention adopted by Oracle America, Inc. through
+the Java Community Process, or any recognized successors or
+replacements thereof; and "Technology Compatibility Kit" or "TCK" shall
+mean the test suite and accompanying TCK User's Guide provided by
+Specification Lead which corresponds to the Specification and that was
+available either (i) from Specification Lead's 120 days before the
+first release of Your Independent Implementation that allows its use
+for commercial purposes, or (ii) more recently than 120 days from such
+release but against which You elect to test Your implementation of the
+Specification.
+
+This Agreement will terminate immediately without notice from
+Specification Lead if you breach the Agreement or act outside the scope
+of the licenses granted above.
+
+DISCLAIMER OF WARRANTIES
+
+THE SPECIFICATION IS PROVIDED "AS IS". SPECIFICATION LEAD MAKES NO
+REPRESENTATIONS OR WARRANTIES, EITHER EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, NON-INFRINGEMENT (INCLUDING AS A CONSEQUENCE OF ANY PRACTICE
+OR IMPLEMENTATION OF THE SPECIFICATION), OR THAT THE CONTENTS OF THE
+SPECIFICATION ARE SUITABLE FOR ANY PURPOSE. This document does not
+represent any commitment to release or implement any portion of the
+Specification in any product. In addition, the Specification could
+include technical inaccuracies or typographical errors.
+
+LIMITATION OF LIABILITY
+
+TO THE EXTENT NOT PROHIBITED BY LAW, IN NO EVENT WILL SPECIFICATION
+LEAD OR ITS LICENSORS BE LIABLE FOR ANY DAMAGES, INCLUDING WITHOUT
+LIMITATION, LOST REVENUE, PROFITS OR DATA, OR FOR SPECIAL, INDIRECT,
+CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND
+REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF OR RELATED IN ANY
+WAY TO YOUR HAVING, IMPELEMENTING OR OTHERWISE USING USING THE
+SPECIFICATION, EVEN IF SPECIFICATION LEAD AND/OR ITS LICENSORS HAVE
+BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. You will indemnify,
+hold harmless, and defend Specification Lead and its licensors from any
+claims arising or resulting from: (i) your use of the Specification;
+(ii) the use or distribution of your Java application, applet and/or
+implementation; and/or (iii) any claims that later versions or releases
+of any Specification furnished to you are incompatible with the
+Specification provided to you under this license.
+
+RESTRICTED RIGHTS LEGEND
+
+U.S. Government: If this Specification is being acquired by or on
+behalf of the U.S. Government or by a U.S. Government prime contractor
+or subcontractor (at any tier), then the Government's rights in the
+Software and accompanying documentation shall be only as set forth in
+this license; this is in accordance with 48 C.F.R. 227.7201 through
+227.7202-4 (for Department of Defense (DoD) acquisitions) and with 48
+C.F.R. 2.101 and 12.212 (for non-DoD acquisitions).
 
 
-    1. The full text of this NOTICE in a location viewable to users of
-       the redistributed or derivative work.
+REPORT
 
-    2. Any pre-existing intellectual property disclaimers, notices, or
-       terms and conditions. If none exist, a short notice of the
-       following form (hypertext is preferred, text is permitted) should
-       be used within the body of any redistributed or derivative code:
-       "Copyright � [$date-of-software] World Wide Web Consortium,
-       (Massachusetts Institute of Technology, Institut National de
-       Recherche en Informatique et en Automatique, Keio University).
-       All Rights Reserved. http://www.w3.org/Consortium/Legal/"
 
-    3. Notice of any changes or modifications to the W3C files,
-       including the date changes were made. (We recommend you provide
-       URIs to the location from which the code is derived.)
+If you provide Specification Lead with any comments or suggestions
+concerning the Specification ("Feedback"), you hereby: (i) agree that
+such Feedback is provided on a non-proprietary and non-confidential
+basis, and (ii) grant Specification Lead a perpetual, non-exclusive,
+worldwide, fully paid-up, irrevocable license, with the right to
+sublicense through multiple levels of sublicensees, to incorporate,
+disclose, and use without limitation the Feedback for any purpose.
 
-THIS SOFTWARE AND DOCUMENTATION IS PROVIDED "AS IS," AND COPYRIGHT 
-HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY OR FITNESS 
-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE OR 
-DOCUMENTATION WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, 
-TRADEMARKS OR OTHER RIGHTS. 
+GENERAL TERMS
 
-COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL 
-OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR 
-DOCUMENTATION. 
+Any action related to this Agreement will be governed by California law
+and controlling U.S. federal law. The U.N. Convention for the
+International Sale of Goods and the choice of law rules of any
+jurisdiction will not apply.
 
-The name and trademarks of copyright holders may NOT be used in 
-advertising or publicity pertaining to the software without specific, 
-written prior permission. Title to copyright in this software and any 
-associated documentation will at all times remain with copyright 
-holders. 
+The Specification is subject to U.S. export control laws and may be
+subject to export or import regulations in other countries. Licensee
+agrees to comply strictly with all such laws and regulations and
+acknowledges that it has the responsibility to obtain such licenses to
+export, re-export or import as may be required after delivery to
+Licensee.
 
-END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
+This Agreement is the parties' entire agreement relating to its subject
+matter. It supersedes all prior or contemporaneous oral or written
+communications, proposals, conditions, representations and warranties
+and prevails over any conflicting or additional terms of any quote,
+order, acknowledgment, or other communication between the parties
+relating to its subject matter during the term of this Agreement. No
+modification to this Agreement will be binding, unless in writing and
+signed by an authorized representative of each party.
+
+END OF UNIQUE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF IBM OPEN LIBERTY NOTICES AND INFORMATION 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF NOTICE FILE
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
 
-IBM OPEN LIBERTY 19.0.0.12
+OPEN LIBERTY 20.0.0.3
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -1161,12 +2410,25 @@ TABLE OF CONTENTS
 THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
 SECTIONS:
 
+CC-BY-3.0  
 CC-BY-4.0  
 CC-BY-SA-4.0  
-GPL V3   
-REDHAT UNIVERSAL BASE IMAGE 
 SIL OPEN FONT LICENSE 1.1  
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
+
+SPDX-EXCEPTIONS
+(https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz)
+GODOCS [btoa] (https://github.com/node-browser-compat/btoa/tree/v1.1.2),
+SPDX STANDARD [spdx-expression-parse] (http://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-1.0.4.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC
@@ -1175,7 +2437,8 @@ The Program includes some or all of the following works licensed under
 the Creative Commons.
 The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
 
-CSS-IN-JS-UTILS DOCUMENTATION [css-in-js-utils] (http://registry.npmjs.org/css-in-js-utils/-/css-in-js-utils-2.0.1.tgz)
+INLINE-STYLE-PREFIXER DOCUMENTATION [inline-style-prefixer] 
+(http://registry.npmjs.org/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz)
 
 END OF CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1186,83 +2449,9 @@ The Program includes some or all of the following works licensed under
 the Creative Commons.
 The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-GLOB LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
+GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
 
 END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-GNU GENERAL PUBLIC LICENSE, VERSION 3
-
-The Program includes some or all of the following licensed to you as
-Separately Licensed Code under the GNU General Public License. For copies
-of the source code for this software, send an email to gpicher@us.ibm.com
-identifying the IBM product and the GPL-licensed program for which you
-are requesting the source code
-
-FATFATFREE, Ubuntu 18.04
-
-END OF GNU GENERAL PUBLIC LICENSE, VERSION 3 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-REDHAT UNIVERSAL BASE IMAGE 
-
-RedHAT UBI v7, v8 has been taken under END USER LICENSE AGREEMENT (EULA)
-
-The Program maybe provided with third party software programs subject to their own
-license terms.  The license terms either accompany the third party software programs or,
-in some instances, maybe viewed at : https://access.redhat.com/containers/
-
-END USER LICENSE AGREEMENT 
-RED HAT STANDARD
-
-PLEASE READ THIS END USER LICENSEAGREEMENT CAREFULLY BEFORE USING SOFTWARE FROM 
-RED HAT. BY USING RED HAT SOFTWARE, YOU SIGNIFY YOUR ASSENT TO AND ACCEPTANCE OF 
-THIS END USER LICENSEAGREEMENT AND ACKNOWLEDGE YOU HAVE READ AND UNDERSTAND THE 
-TERMS. AN INDIVIDUAL ACTING ON BEHALF OF AN ENTITY REPRESENTS THAT HE OR SHE HAS 
-THE AUTHORITY TO ENTER INTO THIS END USER LICENSEAGREEMENT ON BEHALF OF THAT 
-ENTITY. IF YOU DO NOT ACCEPT THE TERMS OF THIS AGREEMENT, THEN YOU MUST NOT USE 
-THE RED HAT SOFTWARE. THIS END USER LICENSE AGREEMENT DOES NOT PROVIDE ANY RIGHTS 
-TO RED HAT SERVICES SUCH AS SOFTWARE MAINTENANCE, UPGRADES OR SUPPORT. PLEASE 
-REVIEW YOUR SERVICE OR SUBSCRIPTION AGREEMENT(S) THAT YOU MAY HAVE WITH RED HAT 
-OR OTHER AUTHORIZED RED HAT SERVICE PROVIDERS REGARDING SERVICES AND ASSOCIATED 
-PAYMENTS. This end user license agreement ( EULA ) governs the use of the certain 
-Red Hat software applications that include or refer to this license, and any related updates, source code, appearance, structure and organization (the  Programs ), 
-regardless of the delivery mechanism. 1. License Grant. Subject to the following terms, Red Hat, Inc. ( Red Hat ) grants to you a perpetual, worldwide license to the Programs (each of which may include multiple software components). With the exception of certain image files identified in Section 2 below, each software component is governed by a license that permits you to run, copy, modify, and redistribute (subject to certain obligations in some cases) the software component. This EULA pertains solely to the Programs and does not limit your rights under, or grant you rights that supersede, the license terms applicable to any particular component. The license terms applicable 
-to each software component are provided in the source code of that component. 
-2. Intellectual Property Rights. The Programs and each of their components are owned 
-by Red Hat and other licensors and are protected under copyright law and under other 
-laws as applicable. Title to the Programs and any component, or to any copy, 
-modification, or merged portion shall remain with Red Hat and other licensors, 
-subject to the applicable license. The  JBoss  trademark,  Red Hat  trademark, the individual Program trademarks, and the  Shadowman  logo are trademarks or registered trademarks of Red Hat and its affiliates in the U.S. and other countries. 
-This EULA does not permit you to distribute the Programs using Red Hat's trademarks, regardless of whether they have been modified. You may make a commercial redistribution
- of the Programs only if (a) permitted under a separate written agreement with Red Hat authorizing such commercial redistribution or (b) you remove and replace all occurrences of Red Hat trademarks and logos. Modifications to the software may corrupt the Programs. You should read the information found at http://www.redhat.com/about/corporate/trademark/ before distributing a copy of the Programs. 3. Limited Warranty. Except as specifically stated in this Section
- 3, a separate agreement with Red Hat, or a license for a particular component, to the maximum extent permitted under applicable law, the Programs and the components are provided and licensed  as is  without warranty of any kind, expressed or implied, including the implied warranties of merchantability, non-infringement or fitness for 
-a particular purpose. Red Hat warrants that the media on which the Programs and the components are provided will be free from defects in materials and manufacture under normal use for a period of 30 days from the date of delivery to you. Neither Red Hat nor its affiliates warrant that the functions contained in the Programs will meet your requirements or that the operation of the Programs will be entirely error free, appear 
-or perform precisely as described in the accompanying documentation, or comply with regulatory requirements. This warranty extends only to the party that purchases subscription services for the Programs from Red Hat and/or its affiliates or a Red Hat authorized distributor. 
-4. Limitation of Remedies and Liability. To the maximum extent permitted by applicable law, your exclusive remedy under this EULA is to return any defective media within 
-30 days of delivery along with a copy of your payment receipt and Red Hat, at its 
-option, will replace it or refund the money you paid for the media. To the maximum 
-extent permitted under applicable law, under no circumstances will Red Hat, its affiliates, any Red Hat authorized distributor, or the licensor of any component 
-provided to you under this EULA be liable to you for any incidental or consequential damages, including lost profits or lost savings arising out of the use or inability 
-to use the Programs or any component, even if Red Hat, its affiliates, an authoriz
-ed distributor, and/or licensor has been advised of the possibility of such damages. 
-In no event shall Red Hat's or its affiliates  liability, an authorized distributor s liability or the liability of the licensor of a component provided to you under this 
-EULA exceed the amount that you paid to Red Hat for the media under this EULA. 
-5. Export Control. As required by the laws of the United States and other countries, 
-you represent and warrant that you: (a) understand that the Programs and their 
-components may be subject to export controls under the U.S. Commerce Department s 
-Export Administration Regulations ( EAR ); (b) are not located in a prohibited 
-destination country under the EAR or U.S. sanctions regulations (currently Cuba, 
-Iran, North Korea, Sudan, Syria, and the Crimea Region of Ukraine, subject to change 
-as posted by the United States government); (c) will not export, re-export, or transfer the Programs to any prohibited destination, persons or entities on the U.S. Bureau of Industry and Security Denied Parties List or Entity List, or the U.S. Office of Foreign Assets Control list of Specially Designated Nationals and Blocked Persons, or any 
-similar lists maintained by other countries, without the necessary export license(s) or authorizations(s); (d) will not use or transfer the Programs for use in connection with any nuclear, chemical or biological weapons, missile technology, or military end-uses where prohibited by an applicable arms embargo, unless authorized by the relevant government agency by regulation or specific license; (e) understand and agree that if 
-you are in the United States and export or transfer the Programs to eligible end users, you will, to the extent required by EAR Section 740.17(e), submit semi-annual reports to the Commerce Department s Bureau of Industry and Security, which include the name and address (including country) of each transferee; and (f) understand that countries including the United States may restrict the import, use, or export of encryption 
-products (which may include the Programs and the components) and agree that you shall be solely responsible for compliance with any such import, use, or export restrictions. 
-Red Hat Standard End User License Agreement Page 2 of 2 July 22, 20196. Third Party Programs. Red Hat may distribute third party software programs with the Programs that are not part of the Programs. These third party software programs are not required to run the Programs, are provided as a convenience to you, and are subject to their own license terms. The license terms either accompany the third party software programs or can be viewed at http://www.redhat.com/licenses/thirdparty/eula.html. If you do not agree to abide by the applicable license terms for the third party software programs, then you may not install them. If you wish to install the third party software programs on more than one system or transfer the third party software programs to another party, then you must contact the licensor of the applicable third party software programs. 7. General. If any provision of this EULA is held to be unenforceable, the enforceability of the remaining provisions shall not be affected. Any claim, controversy or dispute arising under or relating to this EULA shall be governed by the laws of the State of New York and of the United States, without regard to any conflict of laws provisions. The rights and obligations of the parties to this EULA shall not be governed by the United Nations Convention on the International Sale of Goods. 
-
-Copyright � 2019 Red Hat, Inc. All rights reserved. The  Red Hat  mark, the JBoss" mark and the JBoss logo and Shadowman logo are trademarks or registered trademarks of Red Hat, Inc. All other trademarks are the property of their respective owners. 
-
-END OF REDHAT UBI LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 SIL OPEN FONT LICENSE 1.1
@@ -1270,7 +2459,8 @@ SIL OPEN FONT LICENSE 1.1
 The Program includes some or all of the following works licensed under
 the SIL OPEN FONT LICENSE 1.1
 
-FONT AWESOME [msf4j], FONT-AWESOME [weld], IBM PLEX
+FONT-AWESOME [weld]
+IBM PLEX
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of the font software, to use, study, copy, merge, embed, 
 modify, redistribute, and sell modified and unmodified copies of the font software, subject to the following conditions:
@@ -1300,12 +2490,11 @@ PARATYPE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENE
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS 
 IN THE FONT SOFTWARE.
 
+
 END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-END OF IBM OPEN LIBERTY NOTICES AND INFORMATION 
+END OF OPEN LIBERTY NOTICE FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF NOTICE FILE
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

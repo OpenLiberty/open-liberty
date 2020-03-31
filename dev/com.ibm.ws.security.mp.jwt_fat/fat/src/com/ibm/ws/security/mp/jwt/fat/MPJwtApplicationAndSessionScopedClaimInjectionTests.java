@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -77,6 +79,9 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
     @Server("com.ibm.ws.security.mp.jwt.fat")
     public static LibertyServer resourceServer;
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
+
     private final TestValidationUtils validationUtils = new TestValidationUtils();
     String testAction = TestActions.ACTION_INSTALL_APP;
 
@@ -86,7 +91,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
      * Startup the resource server
      * Set flag to tell the code that runs between tests NOT to restore the server config between tests
      * (none of the tests use the config that the server starts with - this setting will save run time)
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -114,7 +119,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
      * Starts the server using the provided configuration file
      * Saves the port info for this server (allows tests with multiple servers to know what ports each server uses)
      * Allow some failure messages that occur during startup (they're ok and doing this prevents the test framework from failing)
-     * 
+     *
      * @param server
      *            - the server to process
      * @param configFile
@@ -138,7 +143,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
 
     /**
      * create the wars that the tests will use
-     * 
+     *
      * @param server
      *            - resource server
      * @throws Exception
@@ -157,7 +162,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
 
     /**
      * deploy/generate an individual app based on the the war and app name passed in
-     * 
+     *
      * @param server
      *            - he resource server
      * @param warName
@@ -176,7 +181,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
     /**
      * The generic test flow - all of the tests are simply reconfiguring the server (to add an app), then waiting for specific
      * error messages in the server side log.
-     * 
+     *
      * @param configFile
      *            - the configuration to use in the reconfig
      * @param appName

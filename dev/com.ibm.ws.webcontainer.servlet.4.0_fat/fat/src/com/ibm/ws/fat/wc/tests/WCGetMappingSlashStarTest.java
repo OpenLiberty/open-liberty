@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,13 +48,11 @@ public class WCGetMappingSlashStarTest extends LoggingTest {
      */
     @Override
     protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         LOG.info("Setup : add TestGetMappingSlashStar to the server if not already present.");
 
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestGetMappingSlashStar.war", false,
@@ -67,8 +65,7 @@ public class WCGetMappingSlashStarTest extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-
-        SHARED_SERVER.getLibertyServer().stopServer(null);
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,11 @@ public class ChalltestsrvContainer extends GenericContainer<ChalltestsrvContaine
 	public static final int MANAGEMENT_PORT = 8055;
 
 	/**
+	 * Set a network, using Network.shared resulted in intermittent exceptions
+	 */
+	private final Network network;
+
+	/**
 	 * Log the output from this testcontainer.
 	 * 
 	 * @param frame
@@ -67,9 +72,11 @@ public class ChalltestsrvContainer extends GenericContainer<ChalltestsrvContaine
 	public ChalltestsrvContainer() {
 		super("letsencrypt/pebble-challtestsrv");
 
+		network = Network.newNetwork();
+
 		this.withCommand("pebble-challtestsrv");
 		this.withExposedPorts(DNS_PORT, MANAGEMENT_PORT);
-		this.withNetwork(Network.SHARED);
+		this.withNetwork(network);
 		this.withLogConsumer(ChalltestsrvContainer::log);
 	}
 
@@ -264,5 +271,15 @@ public class ChalltestsrvContainer extends GenericContainer<ChalltestsrvContaine
 	 */
 	public String getManagementAddress() {
 		return "http://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT);
+	}
+
+	@Override
+	public void stop() {
+		super.stop();
+		network.close();
+	}
+
+	public Network getNetwork() {
+		return network;
 	}
 }

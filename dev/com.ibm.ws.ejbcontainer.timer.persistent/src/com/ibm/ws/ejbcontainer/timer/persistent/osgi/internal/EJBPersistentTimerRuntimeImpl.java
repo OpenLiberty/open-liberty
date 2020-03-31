@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,19 +61,31 @@ import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(service = { EJBPersistentTimerRuntime.class, EJBPersistentTimerRuntimeImpl.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE)
+           configurationPid = "com.ibm.ws.ejbcontainer.timer.runtime",
+           configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class EJBPersistentTimerRuntimeImpl implements EJBPersistentTimerRuntime {
 
     private static final TraceComponent tcContainer = Tr.register(EJBPersistentTimerRuntimeImpl.class, "EJBContainer", "com.ibm.ejs.container.container");
 
     private static final String REFERENCE_EJB_TIMER_RUNTIME = "ejbTimerRuntime";
     private static final String REFERENCE_DEFAULT_PERSISTENT_EXECUTOR = "defaultEJBPersistentTimerExecutor";
+    private static final String MISSED_TIMER_ACTION = "missedPersistentTimerAction";
+
+    /**
+     * Enumeration of the timerService.missedPersistentTimerAction configuration allowed options.
+     */
+    enum MissedTimerAction {
+        ALL, ONCE
+    }
 
     private final AtomicServiceReference<EJBTimerRuntime> ejbTimerRuntimeServiceRef = new AtomicServiceReference<EJBTimerRuntime>(REFERENCE_EJB_TIMER_RUNTIME);
     private final AtomicServiceReference<PersistentExecutor> defaultPersistentExecutorRef = new AtomicServiceReference<PersistentExecutor>(REFERENCE_DEFAULT_PERSISTENT_EXECUTOR);
 
     private boolean enabledDatabasePolling, hasSetupTimers;
     private volatile boolean serverStopping;
+
+    // Configured missedPersistentTimerAction; null if not explicitly declared
+    private MissedTimerAction missedTimerAction;
 
     /**
      * Map of Java EE Name -> allowCachedTimerData integer value; where J2EEName is either the
@@ -109,6 +121,7 @@ public class EJBPersistentTimerRuntimeImpl implements EJBPersistentTimerRuntime 
         ejbTimerRuntimeServiceRef.activate(cc);
         defaultPersistentExecutorRef.activate(cc);
         updateConfiguration(properties);
+        PersistentTimerTaskHandlerImpl.persistentTimerRuntime = this;
     }
 
     @Modified
@@ -117,6 +130,14 @@ public class EJBPersistentTimerRuntimeImpl implements EJBPersistentTimerRuntime 
     }
 
     private void updateConfiguration(Map<String, Object> properties) {
+
+        // Read the missedPersistentTimerAction configuration; do not set a default as
+        // that will vary based on whether the PersistentExecutor has failover enabled
+        String missedTimerActionProperty = (String) properties.get(MISSED_TIMER_ACTION);
+        missedTimerAction = (missedTimerActionProperty != null) ? MissedTimerAction.valueOf(missedTimerActionProperty) : null;
+
+        if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+            Tr.debug(tcContainer, "MissedTimerAction = " + missedTimerAction);
 
         // For quick access, regardless of whether an application is even installed,
         // build a map of Java EE name string to timer data cache setting; where the
@@ -525,5 +546,43 @@ public class EJBPersistentTimerRuntimeImpl implements EJBPersistentTimerRuntime 
         if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
             Tr.debug(tcContainer, "isServiceConfigured : false : no persistent executor");
         return false;
+    }
+
+    /**
+     * Returns the configured missed timer action for persistent timers. When not
+     * explicitly configured, the missed timer action will default to ONCE when
+     * failover is enabled for the PersistentExecutor, otherwise ALL.
+     *
+     * @return missed timer action for persistent timers
+     */
+    @Trivial
+    MissedTimerAction getMissedTimerAction() {
+        // Explicitly configured for timerService
+        if (missedTimerAction != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+                Tr.debug(tcContainer, "MissedTimerAction = " + missedTimerAction);
+            return missedTimerAction;
+        }
+
+        try {
+            // Default to ONCE if failover is enabled
+            if (getPersistentExecutor().isFailOverEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+                    Tr.debug(tcContainer, "MissedTimerAction = " + MissedTimerAction.ONCE);
+                return MissedTimerAction.ONCE;
+            }
+        } catch (Throwable ex) {
+            // Although unusual; obtaining the PersistentExecutor may fail if it has not
+            // been configured properly. Allow FFDC to be collected, but otherwise just
+            // fall through and return the default of ALL. The error will be reported
+            // later when another attempt is made to use the PersistentExecutor.
+            if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+                Tr.debug(tcContainer, "getMissedTimerAction : " + ex);
+        }
+
+        // Legacy default has been to run all expirations
+        if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+            Tr.debug(tcContainer, "MissedTimerAction = " + MissedTimerAction.ALL);
+        return MissedTimerAction.ALL;
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
@@ -27,6 +28,7 @@ import com.ibm.ws.security.authentication.cache.AuthCacheConfig;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /**
  * Provides a basic authentication cache keys containing the realm, userid, and hashed password.
@@ -55,7 +57,15 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
 
     private boolean isPossibleToCreateAnyKey(CacheContext cacheContext) {
         SubjectHelper subjectHelper = new SubjectHelper();
-        return cacheContext.getUserid() != null || subjectHelper.getWSCredential(cacheContext.getSubject()) != null;
+        String customCacheKey = null;
+        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject((cacheContext.getSubject()), new String[] { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY });
+        if (hashtable != null) {
+            customCacheKey = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
+        }
+        if (customCacheKey != null)
+            return false;
+        else
+            return cacheContext.getUserid() != null || subjectHelper.getWSCredential(cacheContext.getSubject()) != null;
     }
 
     @FFDCIgnore(NoSuchAlgorithmException.class)
@@ -124,7 +134,7 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
     /**
      * Creates a key to be used with the AuthCacheService.
      * The parameters must not be null, otherwise a null key is returned.
-     * 
+     *
      * @param realm
      * @param userid
      * @return
@@ -140,7 +150,7 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
     /**
      * Creates a lookup key to be used with the AuthCacheService.
      * The parameters must not be null, otherwise a null key is returned.
-     * 
+     *
      * @param realm
      * @param userid
      * @param password
@@ -166,7 +176,7 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
      * Use clone() to get a new instance as its approximately 50% faster (as
      * seen in empirical testing), if we can. Worst case scenario is we will
      * create a new one each time.
-     * 
+     *
      * @return
      * @throws NoSuchAlgorithmException
      */
@@ -190,7 +200,8 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
         } catch (CloneNotSupportedException cnse) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "CloneNotSupportedException caught while trying to clone MessageDigest with algorithm " + MESSAGE_DIGEST_ALGORITHM
-                             + ". This is pretty unlikely, and we need to get details about the JDK which is in use.", cnse);
+                             + ". This is pretty unlikely, and we need to get details about the JDK which is in use.",
+                         cnse);
             }
             return MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
         }

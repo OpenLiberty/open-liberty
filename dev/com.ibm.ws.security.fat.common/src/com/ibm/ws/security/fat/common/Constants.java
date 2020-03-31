@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,8 @@ public class Constants {
 
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
     public static final String TOKEN_TYPE_BEARER = "Bearer";
+    public static final String TOKEN_TYPE_TOKEN = "Token";
+    public static final String TOKEN_TYPE_MISC = "misc";
 
     public static final String J_SECURITY_CHECK = "j_security_check";
     public static final String J_USERNAME = "j_username";
@@ -73,6 +75,8 @@ public class Constants {
     public static final String APP_TESTMARKER = "testmarker";
 
     public static final String COMMON_CONFIG_DIR = "configs";
+
+    public static final String HELLOWORLD_APP = "helloworld";
 
     /* ***************** Http methods ******************* */
     public static final String GETMETHOD = "GET";

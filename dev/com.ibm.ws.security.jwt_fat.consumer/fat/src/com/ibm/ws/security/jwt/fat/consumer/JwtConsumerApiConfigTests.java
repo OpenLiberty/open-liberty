@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,9 +63,10 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(consumerServer);
+        consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
         consumerServer.startServerUsingExpandedConfiguration("server_configTests.xml");
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-        // one of the JWT Consumer configs had an empty SignatureAlg value which results in a CWWKG0032W warning - mark this as "OK"
+        // one of the JWT Consumer configs has an empty SignatureAlg value which results in a CWWKG0032W warning - mark this as "OK"
         consumerServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "signatureAlgorithm"));
 
         // set the default signing key for this test class (individual test cases can override if needed)

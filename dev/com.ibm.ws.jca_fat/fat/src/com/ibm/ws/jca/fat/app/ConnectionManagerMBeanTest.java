@@ -68,6 +68,13 @@ public class ConnectionManagerMBeanTest {
      * Utility method to run a test on JCAFVTServlet.
      */
     private StringBuilder runInServlet(String test, String webmodule) throws IOException {
+        // RepeatTests causes the test name to be appended with _EE8_FEATURES.  Strip it off so that the right
+        // test name is sent to the servlet
+        int index = test == null ? -1 : test.indexOf("_EE8_FEATURES");
+        if (index != -1) {
+            test = test.substring(0, index);
+        }
+
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + webmodule + "?test=" + test);
         for (int numRetries = 2;; numRetries--) {
             Log.info(getClass(), "runInServlet", "URL is " + url);

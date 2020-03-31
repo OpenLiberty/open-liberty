@@ -16,12 +16,15 @@ Bundle-SymbolicName: com.ibm.ws.security.authorization.jacc.web
 Bundle-Description: WAS Security Web support for JACC Service, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 WS-TraceGroup: Authorization
 
 Export-Package: \
- com.ibm.ws.security.authorization.jacc.web.impl;provide:=true
+  com.ibm.ws.security.authorization.jacc.web.impl;provide:=true
+
+Import-Package: \
+  !com.ibm.ws.security.authorization.jacc.web.impl, \
+  ${defaultPackageImport}
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.web.impl.ServletServiceImpl

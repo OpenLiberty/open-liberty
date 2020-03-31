@@ -92,7 +92,7 @@ public class TestOLGH10310_EJB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println("TestOLGH10310_EJB Setting up database tables...");
+        System.out.println(TestOLGH10310_EJB.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {

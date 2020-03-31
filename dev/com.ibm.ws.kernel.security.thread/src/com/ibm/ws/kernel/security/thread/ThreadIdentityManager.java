@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.security.auth.Subject;
 
@@ -40,12 +41,12 @@ public class ThreadIdentityManager {
      * The ThreadIdentityService references. The references are set by the
      * ThreadIdentityManagerConfigurator.
      */
-    private static List<ThreadIdentityService> threadIdentityServices = Collections.synchronizedList(new ArrayList<ThreadIdentityService>());
+    private static List<ThreadIdentityService> threadIdentityServices = new CopyOnWriteArrayList<>();
 
     /**
      * The J2CIdentityService references. The references are set by the ThreadIdentityManagerConfigurator.
      */
-    private static List<J2CIdentityService> j2cIdentityServices = Collections.synchronizedList(new ArrayList<J2CIdentityService>());
+    private static List<J2CIdentityService> j2cIdentityServices = new CopyOnWriteArrayList<>();
 
     /**
      * Add a ThreadIdentityService reference. This method is called by
@@ -306,8 +307,7 @@ public class ThreadIdentityManager {
 
         if (!checkForRecursionAndSet()) {
             try {
-                for (int i = 0, size = threadIdentityServices.size(); i < size; ++i) {
-                    ThreadIdentityService tis = threadIdentityServices.get(i);
+                for (ThreadIdentityService tis : threadIdentityServices) {
                     if (tis.isAppThreadIdentityEnabled()) {
                         if (token == null) {
                             token = new LinkedHashMap<ThreadIdentityService, Object>();

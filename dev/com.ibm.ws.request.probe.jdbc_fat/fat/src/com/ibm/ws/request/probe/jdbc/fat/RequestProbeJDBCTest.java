@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -33,7 +34,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -61,7 +61,8 @@ public class RequestProbeJDBCTest {
 
     @Test
     public void testReqProbeJDBCTDTypes() throws Exception {
-        server.setMarkToEndOfLog();
+        String configUpdate = setConfig("server_RT.xml");
+        Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", configUpdate);
         CommonTasks.writeLogMsg(Level.INFO, "Started server with Request Timing feature");
         createRequests(11000);
         server.waitForStringInLogUsingMark("TRAS0112W", 5000);
@@ -121,6 +122,8 @@ public class RequestProbeJDBCTest {
 
     @Test
     public void testAllJdbcTDsRegistered() throws Exception {
+        String configUpdate = setConfig("server_original.xml");
+        Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", configUpdate);
         CommonTasks.writeLogMsg(Level.INFO, "Started server with Request Timing feature");
         createRequests(10);
 
@@ -227,9 +230,13 @@ public class RequestProbeJDBCTest {
     @Before
     public void setupTestStart() throws Exception {
         if (server != null && !server.isStarted()) {
-            server.setServerConfigurationFile("server_original.xml");
             server.startServer();
         }
     }
 
+    private String setConfig(String fileName) throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile(fileName);
+        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+    }
 }

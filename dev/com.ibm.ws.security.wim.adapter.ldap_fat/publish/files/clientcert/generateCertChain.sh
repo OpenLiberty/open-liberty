@@ -23,7 +23,7 @@ USER_ALIAS=ldapuser3
 rm -f ${ROOT_JKS} ${ROOT_PEM} ${CA_JKS} ${CA_PEM} ${USER_JKS} ${USER_PEM}
 
 # Generate private keys
-keytool -genkeypair -keyalg RSA -keystore ${ROOT_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${ROOT_ALIAS} -validity ${VALIDITY} -dname "cn=${ROOT_ALIAS}"
+keytool -genkeypair -keyalg RSA -keystore ${ROOT_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${ROOT_ALIAS} -validity ${VALIDITY} -dname "cn=${ROOT_ALIAS}" -ext BC=ca:true -ext KU=keyCertSign
 keytool -genkeypair -keyalg RSA -keystore ${CA_JKS}   -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${CA_ALIAS}   -validity ${VALIDITY} -dname "cn=${CA_ALIAS}"
 keytool -genkeypair -keyalg RSA -keystore ${USER_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${USER_ALIAS} -validity ${VALIDITY} -dname "cn=LDAPUser3,o=IBM,c=US"
 
@@ -32,7 +32,7 @@ keytool -exportcert -keystore ${ROOT_JKS} -storepass ${PASSWORD} -alias ${ROOT_A
 
 # Generate the CA certificate (signed by root)
 keytool -certreq    -keystore ${CA_JKS}   -storepass ${PASSWORD} -alias ${CA_ALIAS} \
-  | keytool -gencert -keystore ${ROOT_JKS} -storepass ${PASSWORD} -alias ${ROOT_ALIAS} -rfc -validity ${VALIDITY} > ${CA_PEM}
+  | keytool -gencert -keystore ${ROOT_JKS} -storepass ${PASSWORD} -alias ${ROOT_ALIAS} -rfc -validity ${VALIDITY} -ext BC=ca:true -ext KU=keyCertSign > ${CA_PEM}
 
 # Import CA chain into the CA keystore
 keytool -importcert -keystore ${CA_JKS}   -storepass ${PASSWORD} -alias ${ROOT_ALIAS} -trustcacerts -noprompt -file ${ROOT_PEM}
@@ -40,12 +40,12 @@ keytool -importcert -keystore ${CA_JKS}   -storepass ${PASSWORD} -alias ${CA_ALI
 
 # Generate the user certificate (signed by ca, signed by root)
 keytool -certreq    -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${USER_ALIAS} \
-  | keytool -gencert -keystore ${CA_JKS} -storepass ${PASSWORD} -alias ${CA_ALIAS} -rfc -validity ${VALIDITY} > ${USER_PEM}
+  | keytool -gencert -keystore ${CA_JKS} -storepass ${PASSWORD} -alias ${CA_ALIAS} -rfc -validity ${VALIDITY} -ext EKU=serverAuth,clientAuth > ${USER_PEM}
 
 # Import cert chain into user keystore.
-keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${ROOT_ALIAS} -trustcacerts -noprompt -file ${ROOT_PEM}
-keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${CA_ALIAS}   -file ${CA_PEM}
-keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${USER_ALIAS} -file ${USER_PEM}
+#keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${ROOT_ALIAS} -trustcacerts -noprompt -file ${ROOT_PEM}
+keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${CA_ALIAS}   -noprompt -file ${CA_PEM}
+keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${USER_ALIAS} -noprompt -file ${USER_PEM}
 
 #rm -f ${ROOT_PEM}
 rm -f ${ROOT_JKS}

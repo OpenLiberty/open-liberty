@@ -11,8 +11,6 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-policy;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.ffdc: false
-javac.source: 1.7
-javac.target: 1.7
 
 cxfVersion=2.6.2
 

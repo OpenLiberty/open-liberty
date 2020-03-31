@@ -13,5 +13,6 @@
   
   <servlet-mapping>
     <servlet-name>DelayedServlet</servlet-name>
+    <url-pattern>/DelayedServlet</url-pattern>
   </servlet-mapping>
 </web-app>
