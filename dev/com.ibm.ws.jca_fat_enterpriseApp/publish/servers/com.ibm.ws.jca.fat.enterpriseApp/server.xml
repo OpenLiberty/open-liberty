@@ -32,14 +32,9 @@
     <connectionFactory jndiName="eis/cf1">
       <properties.enterpriseApp.loginModRA />
       <jaasLoginContextEntry name="cf1login">
-        <loginModule className="com.ibm.test.jca.loginmodra.LMLoginModule" classProviderRef="enterpriseApp" libraryRef="ignore"/> <!-- TODO replace with classProviderRef once implemented -->
+        <loginModule className="com.ibm.test.jca.loginmodra.LMLoginModule" classProviderRef="enterpriseApp"/>
       </jaasLoginContextEntry>
     </connectionFactory>
-
-    <!-- TODO remove this library once libraryRef is made optional for login modules -->
-    <library id="ignore">
-      <file name="${server.config.dir}/ignoreThisUselessLibrary.jar"/>
-    </library>
 
     <connectionFactory jndiName="eis/ds1">
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
@@ -47,7 +42,7 @@
     </connectionFactory>
 
     <jaasLoginContextEntry id="ds1LoginContextEntry" name="ds1login">
-      <loginModule className="com.ibm.test.jca.enterprisera.EALoginModule" classProviderRef="enterpriseApp" libraryRef="ignore"/> <!-- TODO replace with classProviderRef once implemented -->
+      <loginModule className="com.ibm.test.jca.enterprisera.EALoginModule" classProviderRef="enterpriseApp"/>
     </jaasLoginContextEntry>
 
     <activationSpec id="enterpriseApp/fvtweb/JCAEnterpriseAppMDB">

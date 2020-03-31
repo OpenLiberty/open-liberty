@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemoryADLDAPServer;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
@@ -46,26 +49,73 @@ public class URAPIs_ADLDAP_SSLTest {
     private static final Class<?> c = URAPIs_ADLDAP_SSLTest.class;
     private static UserRegistryServletConnection servlet;
 
-    //private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
-
     /** Test rule for testing for expected exceptions. */
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+    private static InMemoryADLDAPServer ds;
 
     /**
-     * Updates the sample, which is expected to be at the hard-coded path.
-     * If this test is failing, check this path is correct.
+     * Setup the test case.
+     *
+     * @throws Exception If the setup failed for some reason.
      */
     @BeforeClass
-    public static void setUp() throws Exception {
-        // Add LDAP variables to bootstrap properties file
+    public static void setupClass() throws Exception {
+        setupLdapServer();
+        setupLibertyServer();
+    }
+
+    /**
+     * Tear down the test.
+     */
+    @AfterClass
+    public static void teardownClass() throws Exception {
+        try {
+            if (server != null) {
+                server.stopServer("CWIML4529E", "CWIML4537E", "CWPKI0041W");
+            }
+        } finally {
+            try {
+                if (ds != null) {
+                    ds.shutDown(true);
+                }
+            } catch (Exception e) {
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
+            }
+            server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
+        }
+    }
+
+    /**
+     * Setup the Liberty server. This server will start with very basic configuration. The tests
+     * will configure the server dynamically.
+     *
+     * @throws Exception If there was an issue setting up the Liberty server.
+     */
+    private static void setupLibertyServer() throws Exception {
+        /*
+         * Add LDAP variables to bootstrap properties file
+         */
         LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
+
+        /*
+         * Update LDAP configuration with In-Memory Server
+         */
+        ServerConfiguration serverConfig = server.getServerConfiguration();
+        LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ds.getListenPort("LDAPS")));
+        ldap.setBindDN(InMemoryADLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryADLDAPServer.getBindPassword());
+        server.updateServerConfiguration(serverConfig);
+        /*
+         * Make sure the application has come up before proceeding
+         */
         server.startServer(c.getName() + ".log");
 
-        //Make sure the application has come up before proceeding
         assertNotNull("Application userRegistry does not appear to have started.",
                       server.waitForStringInLog("CWWKZ0001I:.*userRegistry"));
         assertNotNull("Security service did not report it was ready",
@@ -82,14 +132,13 @@ public class URAPIs_ADLDAP_SSLTest {
         }
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        Log.info(c, "tearDown", "Stopping the server...");
-        try {
-            server.stopServer("CWIML4529E", "CWIML4537E", "CWPKI0041W");
-        } finally {
-            server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
-        }
+    /**
+     * Configure the embedded LDAP server.
+     *
+     * @throws Exception If the server failed to start for some reason.
+     */
+    private static void setupLdapServer() throws Exception {
+        ds = new InMemoryADLDAPServer();
     }
 
     /**

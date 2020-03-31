@@ -14,8 +14,6 @@ bVersion=1.0
 src: \
 	fat/src
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 

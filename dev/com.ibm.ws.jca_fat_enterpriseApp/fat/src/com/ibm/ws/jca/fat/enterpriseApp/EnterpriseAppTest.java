@@ -79,11 +79,6 @@ public class EnterpriseAppTest extends FATServletClient {
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/enterpriseApp");
         ShrinkHelper.exportToServer(server, "apps", ear);
 
-        // TODO remove this once libraryRef is made optional
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ignoreThisUselessLibrary.jar");
-        jar.addPackage("web.mdb"); // no login modules here
-        ShrinkHelper.exportToServer(server, "/", jar);
-
         server.addInstalledAppForValidation(appName);
         server.startServer();
     }

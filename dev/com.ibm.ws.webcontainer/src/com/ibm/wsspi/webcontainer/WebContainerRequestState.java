@@ -38,7 +38,7 @@ public class WebContainerRequestState {
     private boolean startAsync;
     private IExtendedRequest currentThreadsIExtendedRequest;
     private IExtendedResponse currentThreadsIExtendedResponse;
-    private Map<String,String> cookieAttributes = null;
+    private Map<String,String> cookieAttributesMap = null;
 
     public IExtendedResponse getCurrentThreadsIExtendedResponse() {
         return currentThreadsIExtendedResponse;
@@ -89,8 +89,8 @@ public class WebContainerRequestState {
         if (_attributes!=null) {
             _attributes.clear();
         }
-        if (cookieAttributes!=null) {
-            cookieAttributes.clear();
+        if (cookieAttributesMap!=null) {
+            cookieAttributesMap.clear();
         }
         _invokedFilters=false;
         completed=false;
@@ -193,44 +193,55 @@ public class WebContainerRequestState {
     }
     
     /**
-     * Allows a Cookie attribute to be set on a particular Cookie specified by the
+     * Allows Cookie attributes to be set on a particular Cookie specified by the
      * cookieName parameter.
      *
      * Once the Cookie has been added to the Response the removeCookieAttribute
      * method is called for the same cookieName.
      *
      * Currently the only Cookie attribute that is supported by the runtime here
-     * is the SameSite Cookie attribute.
+     * is the SameSite Cookie attribute.  All other existing Cookie attributes must 
+     * be added via the Cookie API.  Using this API to add anything but the SameSite attribute
+     * will be ignored.
      *
      * The cookieAttribute should be in the form: attributeName=attributeValue.
      *
      * @param cookieName - The Cookie name to add the attribute to.
-     * @param cookieAttribute - The Cookie attribute to be added in  the form: attributeName = attributeValue
+     * @param cookieAttributes - The Cookie attributes to be added in  the form: attributeName = attributeValue.  Currently, only SameSite=Lax|None|Strict is supported.
      */
-    public void setCookieAttribute(String cookieName, String cookieAttribute) {
-        String methodName = "setCookieAttribute";
+    public void setCookieAttributes(String cookieName, String cookieAttributes) {
+        String methodName = "setCookieAttributes";
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName + " cookieAttribute --> " + cookieAttribute);
+            logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName + " cookieAttribute --> " + cookieAttributes);
         }
 
-        if (cookieAttributes == null) {
-            cookieAttributes = new HashMap<String,String>();
+        //future cookieAttributes can be further separated with semicolon delimiter:  attributeName=attributeValue;attributeName2=attributeValue2;singleAttributeNameNoValue
+        //Currently ignore all but SameSite 
+        String[] attribute = cookieAttributes.split("=");
+        if (!attribute[0].equals("SameSite")) {
+                logger.logp(Level.FINE, CLASS_NAME, methodName, " Only SameSite attribute is supported at this time.");
+                return;
+        }
+        
+        if (cookieAttributesMap == null) {
+            cookieAttributesMap = new HashMap<String,String>();
         }
 
-        cookieAttributes.put(cookieName, cookieAttribute);
+        cookieAttributesMap.put(cookieName, cookieAttributes);
     }
     
     /**
-     * Return the Cookie attribute associated with the provided cookieName.
+     * Return the Cookie attributes associated with the provided cookieName that were
+     * added via the setCookieAttributes()
      *
-     * @param cookieName - The name of the Cookie the attribute was set for.
-     * @return - The Cookie attribute associated with the specified Cookie name.
+     * @param cookieName - The name of the Cookie the attributes were set for.
+     * @return - The Cookie attributes associated with the specified Cookie name.
      */
-    public String getCookieAttribute(String cookieName) {
-        String methodName = "getCookieAttribute";
+    public String getCookieAttributes(String cookieName) {
+        String methodName = "getCookieAttributes";
 
-        if (cookieAttributes == null) {
+        if (cookieAttributesMap == null) {
                 return null;
         }
 
@@ -238,24 +249,26 @@ public class WebContainerRequestState {
             logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName);
         }
 
-        String cookieAttribute = cookieAttributes.get(cookieName);
+        String cookieAttributes = cookieAttributesMap.get(cookieName);
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieAttribute --> " + cookieAttribute);
+            logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieAttribute --> " + cookieAttributes);
         }
 
-        return cookieAttribute;
+        return cookieAttributes;
     } 
     
     /**
-     * Removes the Cookie attribute associated with the cookieName.
+     * Removes the Cookie attributes associated with the cookieName that were added via 
+     * setCookieAttributes().  It does not remove any other attributes which were added via 
+     * the Cookie API.
      *
-     * @param cookieName - The name of the Cookie the attribute was set for.
+     * @param cookieName - The name of the Cookie the attributes were set for.
      */
-    public void removeCookieAttribute(String cookieName) {
-        String methodName = "removeCookieAttribute";
+    public void removeCookieAttributes(String cookieName) {
+        String methodName = "removeCookieAttributes";
 
-        if (cookieAttributes == null) {
+        if (cookieAttributesMap == null) {
                 return;
         }
 
@@ -263,10 +276,10 @@ public class WebContainerRequestState {
             logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName);
         }
 
-        String removedAttribute = cookieAttributes.remove(cookieName);
+        String removedAttributes = cookieAttributesMap.remove(cookieName);
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, methodName, "removedAttribute --> " + removedAttribute);
+            logger.logp(Level.FINE, CLASS_NAME, methodName, "removedAttribute --> " + removedAttributes);
         }
     }
 }

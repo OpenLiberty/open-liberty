@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -43,8 +44,16 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 public class ServerConfigTest {
 
+    /**  */
+    private static final String RESTART_SERVLET_URL = "/restart/restart?testName=";
+    /**  */
+    private static final String VARIABLE_IMPORT_SERVER = "com.ibm.ws.config.import.variables";
+    public static final String CHECK_VARIABLE_IMPORT = "checkVariableImport";
+
     // Since we have tracing enabled give server longer timeout to start up.
     private static final long SERVER_START_TIMEOUT = 30 * 1000;
+    public static final String CHECK_VARIABLE_IMPORT_UPDATE = "checkVariableImport2";
+    private static final String VARIABLE_IMPORT_UPDATE_FILE = "import.variable/server.xml";
 
     private static WebArchive restartApp;
 
@@ -200,6 +209,39 @@ public class ServerConfigTest {
         } finally {
             server.stopServer();
         }
+    }
+
+    @Test
+    public void testImportWithVariables() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer(VARIABLE_IMPORT_SERVER);
+        ShrinkHelper.exportAppToServer(server, restartApp);
+        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
+        server.setServerStartTimeout(SERVER_START_TIMEOUT);
+
+        server.setConsoleLogName("varimports.log");
+        ArrayList<String> args = new ArrayList<String>();
+        args.add("--");
+        args.add("--import1=./common/common.xml");
+
+        server.startServerWithArgs(true, true, true, false, "start", args, true);
+
+        // Wait for the application to be installed before proceeding
+        assertNotNull("The restart application never came up", server.waitForStringInLog("CWWKZ0001I.* restart"));
+
+        try {
+            // run the test one
+            test(server, RESTART_SERVLET_URL + CHECK_VARIABLE_IMPORT);
+
+            // switch to updated config
+            server.setMarkToEndOfLog();
+            server.setServerConfigurationFile(VARIABLE_IMPORT_UPDATE_FILE);
+            server.waitForConfigUpdateInLogUsingMark(null);
+
+            test(server, RESTART_SERVLET_URL + CHECK_VARIABLE_IMPORT_UPDATE);
+        } finally {
+            server.stopServer();
+        }
+
     }
 
     @Test

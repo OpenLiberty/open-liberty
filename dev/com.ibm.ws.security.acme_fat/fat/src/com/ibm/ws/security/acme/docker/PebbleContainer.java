@@ -47,9 +47,6 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 	/** The REST management API port. */
 	public static final int MANAGEMENT_PORT = 15000;
 
-	/** Use the "acme://pebble/<host>:<port>" URI scheme? */
-	private boolean usePebbleURI = true;
-
 	/**
 	 * Log the output from this testcontainer.
 	 * 
@@ -70,7 +67,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 	 *            Address of the DNS server to use to make DNS lookups for
 	 *            domains.
 	 */
-	public PebbleContainer(String dnsServer) {
+	public PebbleContainer(String dnsServer, Network network) {
 		super(new ImageFromDockerfile()
 				.withDockerfileFromBuilder(builder -> builder.from("letsencrypt/pebble")
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
@@ -79,15 +76,13 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		this.withCommand("pebble", "-dnsserver", dnsServer, "-config", "/test/config/pebble-config.json", "-strict",
 				"false");
 		this.withExposedPorts(MANAGEMENT_PORT, LISTEN_PORT);
-		this.withNetwork(Network.SHARED);
+		this.withNetwork(network);
 		this.withLogConsumer(PebbleContainer::log);
 	}
 
 	/**
 	 * Get Pebble's intermediate certificate.
 	 * 
-	 * @param fileName
-	 *            The name of the file to save the certificate to.
 	 * @return Pebble's root CA certificate in the form of a PEM file.
 	 * @throws Exception
 	 *             If we failed to receive the certificate.
@@ -97,7 +92,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT)
 				+ "/intermediates/0";
 
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpClient()) {
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
 			/*
 			 * Create a GET request to the ACME CA server.
 			 */
@@ -127,8 +122,6 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 	/**
 	 * Get Pebble's root certificate.
 	 * 
-	 * @param fileName
-	 *            The name of the file to save the certificate to.
 	 * @return Pebble's root CA certificate in the form of a PEM file.
 	 * @throws Exception
 	 *             If we failed to receive the certificate.
@@ -137,7 +130,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		final String METHOD_NAME = "getAcmeCaRootCertificate()";
 		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT) + "/roots/0";
 
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpClient()) {
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
 			/*
 			 * Create a GET request to the ACME CA server.
 			 */
@@ -177,7 +170,7 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 		String url = "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(MANAGEMENT_PORT)
 				+ "/cert-status-by-serial/" + certificate.getSerialNumber().toString(16);
 
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpClient()) {
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
 			/*
 			 * Create a GET request to the ACME CA server.
 			 */
@@ -219,9 +212,12 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 	/**
 	 * Get the URI to the ACME CA's directory.
 	 * 
+	 * @param usePebbleURI
+	 *            Use the "acme://pebble" style URI instead of the generic
+	 *            "https:" URI.
 	 * @return The URI to the ACME CA's directory.
 	 */
-	public String getAcmeDirectoryURI() {
+	public String getAcmeDirectoryURI(boolean usePebbleURI) {
 
 		if (usePebbleURI) {
 			/*
@@ -256,23 +252,5 @@ public class PebbleContainer extends GenericContainer<PebbleContainer> {
 
 		throw new IllegalStateException(
 				"Unable to resolve local host from docker container. Could not find 'host.testcontainers.internal' property.");
-	}
-
-	/**
-	 * Set whether the ACME directory URI returned from
-	 * {@link #getAcmeDirectoryURI()} uses the "acme://pebble/*" scheme.
-	 * Otherwise; it will use the "https://<host>:<port>/dir" URI.
-	 * 
-	 * <p/>
-	 * The use of this method with 'false' is mostly intended to test Liberty
-	 * SSL integration with the acme4j GenericProvider. For most testing, this
-	 * setting should be left set to 'true' as SSL support is built into the
-	 * acme4j Pebble provider.
-	 * 
-	 * @param usePebbleURI
-	 *            Use the "acme://pebble/<host>:<port>" scheme.
-	 */
-	public void usePebbleURI(boolean usePebbleURI) {
-		this.usePebbleURI = usePebbleURI;
 	}
 }

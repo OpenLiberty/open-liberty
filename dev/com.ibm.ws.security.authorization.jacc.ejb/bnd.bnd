@@ -16,12 +16,15 @@ Bundle-SymbolicName: com.ibm.ws.security.authorization.jacc.ejb
 Bundle-Description: WAS Security EJB support for JACC Service, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 WS-TraceGroup: Authorization
 
 Export-Package: \
- com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true, \
+  com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true, \
+
+Import-Package: \
+  !com.ibm.ws.security.authorization.jacc.ejb.impl, \
+  ${defaultPackageImport}
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.ejb.impl.EJBServiceImpl

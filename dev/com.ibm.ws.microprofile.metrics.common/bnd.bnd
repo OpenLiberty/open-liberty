@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: MicroProfile Metrics Common
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.common
@@ -29,7 +27,6 @@ Import-Package: \
 Include-Resource: \
 	OSGI-INF=resources/OSGI-INF
     
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations-inherit: true
 

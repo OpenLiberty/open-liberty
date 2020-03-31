@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,10 +43,20 @@ public class SMTPJNDIServlet extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
+        Object jndiConstant = null;
+        try {
+            // this is the mail session JNDI name in the server.xml
+            jndiConstant = new InitialContext().lookup("TestingApp/SMTPInlineServlet/smtp_port");
+        } catch (NamingException e) {
+            e.printStackTrace();
+            return;
+        }
+        String smtpPort = Integer.toString((Integer) jndiConstant);
+
         Properties props = new Properties();
         props.setProperty("mail.transport.protocol", "smtp");
         props.setProperty("mail.smtp.host", "localhost");
-        props.setProperty("mail.smtp.port", "3025");
+        props.setProperty("mail.smtp.port", smtpPort);
         props.setProperty("user", "smtp@testserver.com");
         props.setProperty("password", "smtpPa$$word4U2C");
         props.setProperty("from", "smtp@testserver.com");

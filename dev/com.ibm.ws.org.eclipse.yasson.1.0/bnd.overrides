@@ -17,10 +17,10 @@ Export-Package: \
   org.eclipse.yasson;version=1.0.6;thread-context=true
 
 Import-Package: \
+  !javax.naming, \
   com.ibm.wsspi.classloading,\
   *
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # Use config-policy=require on the ResourceProvider so the META-INF/service is only
 # exposed to applications if one of the public jsonb-1.0 features are enabled

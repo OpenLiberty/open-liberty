@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 20120 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ cpu.systemLoadAverage.description=\u986f\u793a\u524d\u4e00\u5206\u9418\u7684\u7c
 cpu.processCpuLoad.description=\u986f\u793a Java \u865b\u64ec\u6a5f\u5668\u8655\u7406\u7a0b\u5e8f\u7684\u300c\u6700\u8fd1\u7684 CPU \u4f7f\u7528\u7387\u300d\u3002
 
 #Cpu processCpuTime message
-cpu.processCpuTime.description=\u986f\u793a\u300cJava \u865b\u64ec\u6a5f\u5668\u300d\u57f7\u884c\u6240\u5728\u4e4b\u7a0b\u5e8f\u6240\u4f7f\u7528\u7684 CPU \u6642\u9593\u3002
+cpu.processCpuTime.description=\u986f\u793a Java \u865b\u64ec\u6a5f\u5668\u57f7\u884c\u6240\u5728\u4e4b\u7a0b\u5e8f\u6240\u4f7f\u7528\u7684 CPU \u6642\u9593\u3002
 
 #Garbage collection count message
 garbageCollectionCount.description=\u986f\u793a\u5df2\u9032\u884c\u7684\u6536\u96c6\u6578\u76ee\u7e3d\u8a08\u3002\u5982\u679c\u672a\u5b9a\u7fa9\u9019\u500b\u6536\u96c6\u5668\u7684\u6536\u96c6\u8a08\u6578\uff0c\u5247\u9019\u500b\u5c6c\u6027\u6703\u5217\u51fa -1\u3002
@@ -128,6 +128,8 @@ session.activeSessions.description=\u540c\u6642\u4f5c\u7528\u4e2d\u7684\u968e\u6
 session.invalidated.total.description=\u555f\u7528\u6b64\u5ea6\u91cf\u4e4b\u5f8c\uff0c\u5df2\u767b\u51fa\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
 session.invalidatedbyTimeout.total.description=\u555f\u7528\u6b64\u5ea6\u91cf\u4e4b\u5f8c\uff0c\u56e0\u70ba\u903e\u6642\u800c\u767b\u51fa\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
 
+
+REST.request.description=\u81ea\u555f\u52d5\u4f3a\u670d\u5668\u4e4b\u5f8c\uff0c\u9019\u500b RESTful \u8cc7\u6e90\u65b9\u6cd5\u7684\u547c\u53eb\u6578\u76ee\u4ee5\u53ca\u7e3d\u8a08\u56de\u61c9\u6642\u9593\u3002
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

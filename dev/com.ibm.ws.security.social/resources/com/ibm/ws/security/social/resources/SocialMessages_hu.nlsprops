@@ -95,7 +95,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=A felhaszn\
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott konfigur\u00e1ci\u00f3s attrib\u00fatum helyesen van be\u00e1ll\u00edtva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9ke megfelel a felhaszn\u00e1l\u00f3 API v\u00e1laszban l\u00e9v\u0151, felhaszn\u00e1l\u00f3n\u00e9vk\u00e9nt haszn\u00e1land\u00f3 bejegyz\u00e9snek.
 
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: A szolg\u00e1ltat\u00e1si fi\u00f3k felhaszn\u00e1l\u00f3 API-t\u00f3l \u00e9rkezett v\u00e1lasz nem dolgozhat\u00f3 fel: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: A felhaszn\u00e1l\u00f3i API k\u00f6vetkez\u0151 v\u00e1lasza nem dolgozhat\u00f3 fel: {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=A szolg\u00e1ltat\u00e1sfi\u00f3kra vonatkoz\u00f3 inform\u00e1ci\u00f3k nem k\u00e9rhet\u0151k le, mert egy m\u00e1sik hiba t\u00f6rt\u00e9nt.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Ha az \u00fczenet m\u00e1sik hiba\u00fczenetet is tartalmaz, akkor n\u00e9zze meg annak az \u00fczenetnek a felhaszn\u00e1l\u00f3i teend\u0151j\u00e9t. Egy\u00e9bk\u00e9nt pedig keressen olyan tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek jelezik, hogy hol t\u00f6rt\u00e9nhetett a m\u00e1sik hiba.
 
@@ -103,9 +103,10 @@ ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Ha az \u00fczenet m\u00e1sik hiba
 USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: A felhaszn\u00e1l\u00f3i API egy v\u00e1ratlan [{0}] v\u00e1laszk\u00f3dot adott vissza. Ellen\u0151rizze, hogy az API-nak k\u00fcld\u00f6tt k\u00e9r\u00e9s tartalmazza-e az \u00f6sszes k\u00f6telez\u0151 inform\u00e1ci\u00f3t. Az API-t\u00f3l \u00e9rkezett v\u00e1lasz: [{1}].
 USER_API_RESPONSE_BAD_STATUS.explanation=A felhaszn\u00e1l\u00f3i API nem a v\u00e1rt \u00e1llapotk\u00f3dot adta vissza. A k\u00e9r\u00e9sb\u0151l hi\u00e1nyozhatnak inform\u00e1ci\u00f3k, vagy a k\u00e9r\u00e9s nem enged\u00e9lyezhet\u0151.
 USER_API_RESPONSE_BAD_STATUS.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze az API v\u00e1laszt a hiba\u00fczenetben. Ellen\u0151rizze, hogy az API-nak k\u00fcld\u00f6tt k\u00e9r\u00e9s tartalmazza-e az \u00f6sszes k\u00f6telez\u0151 inform\u00e1ci\u00f3t. Ellen\u0151rizze, hogy a k\u00e9r\u00e9sben szerepl\u0151 \u00f6sszes token \u00e9rv\u00e9nyes-e.
+
 # 0=Response string, 1=Exception message
 RESPONSE_NOT_JSON=CWWKS5384E: A v\u00e1lasz tartalma nem \u00e9rv\u00e9nyes JSON objektum. A teljes v\u00e1lasz: {0}. {1}
-RESPONSE_NOT_JSON.explanation=A v\u00e1lasznak \u00e9rv\u00e9nyes JSON objektumnak kell lennie. 
+RESPONSE_NOT_JSON.explanation=A v\u00e1lasznak \u00e9rv\u00e9nyes JSON objektumnak kell lennie.
 RESPONSE_NOT_JSON.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s a k\u00edv\u00e1nt v\u00e9gpontra lett-e elk\u00fcldve. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s sz\u00e1nd\u00e9kolt c\u00e9lja k\u00e9pes-e JSON adatok visszaad\u00e1s\u00e1ra. Ellen\u0151rizze a v\u00e1laszt, hogy tartalmaz-e tov\u00e1bbi inform\u00e1ci\u00f3kat.
 
 # 0=JSON key string, 1=Response string
@@ -118,6 +119,15 @@ JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: A JSON adatok [{0}] kulcs\u00e1nak \u00e9
 JSON_ENTRY_WRONG_JSON_TYPE.explanation=A megadott kulcs \u00e9rt\u00e9ke nem a helyes t\u00edpus\u00fa. Lehet, hogy a JSON adatok rosszul form\u00e1zott vagy nem az elv\u00e1rt szerkezettel rendelkeznek.
 JSON_ENTRY_WRONG_JSON_TYPE.useraction=Ellen\u0151rizze a JSON adatok szerkezet\u00e9t. Ellen\u0151rizze a JSON adatokat, hogy nem t\u00f6rt\u00e9nt-e hiba.
 
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: A token bels\u0151 ellen\u0151rz\u00e9si API v\u00e1lasza nem dolgozhat\u00f3 fel: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=A hiteles\u00edtett felhaszn\u00e1l\u00f3 inform\u00e1ci\u00f3i nem szerezhet\u0151k be, mert egy m\u00e1sik hiba t\u00f6rt\u00e9nt.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Ha az \u00fczenet m\u00e1sik hiba\u00fczenetet is tartalmaz, akkor n\u00e9zze meg annak az \u00fczenetnek a felhaszn\u00e1l\u00f3i teend\u0151j\u00e9t. Egy\u00e9bk\u00e9nt pedig keressen olyan tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek jelezik, hogy hol t\u00f6rt\u00e9nhetett a m\u00e1sik hiba.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: A token bels\u0151 ellen\u0151rz\u00e9si k\u00e9r\u00e9s meghi\u00fasult, mert a k\u00e9r\u00e9sben szerepl\u0151 token \u00e9rv\u00e9nytelen. A teljes v\u00e1lasz: {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=A jogosults\u00e1gkiszolg\u00e1l\u00f3 nem adta ki a tokent, az er\u0151forr\u00e1s tulajdonosa visszavonta a tokent, a token lej\u00e1rt vagy m\u00e1s hiba t\u00f6rt\u00e9nt.
+INTROSPECT_USER_API_INACTIVE.useraction=Ellen\u0151rizze az \u00fczenetben szerepl\u0151 v\u00e1laszt. Ellen\u0151rizze, hogy a megfelel\u0151 token bels\u0151 elemz\u00e9si v\u00e9gpont ker\u00fcl-e alkalmaz\u00e1sra. Ellen\u0151rizze, hogy a token \u00e9rv\u00e9nyes-e, \u00e9s hogy a tokenre vonatkoz\u00f3an v\u00e9gezhet\u0151-e bels\u0151 ellen\u0151rz\u00e9s. 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A jelzett k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nincs teend\u0151.

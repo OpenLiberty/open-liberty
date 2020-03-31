@@ -17,8 +17,6 @@ Bundle-Description: Parsers for creating repository metadata from artifacts
 
 WS-TraceGroup: repo.resource
 
-javac.source: 1.7
-javac.target: 1.7
 
 Export-Package: \
     com.ibm.ws.repository.parsers;version=1.0.16, \

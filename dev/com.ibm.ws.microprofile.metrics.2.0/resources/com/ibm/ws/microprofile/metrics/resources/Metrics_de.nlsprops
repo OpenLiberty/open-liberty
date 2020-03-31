@@ -115,8 +115,6 @@ threadpool.size.description=Die Gr\u00f6\u00dfe des Thread-Pools.
 servlet.request.total.description=Die Anzahl der Aufrufe dieses Servlets seit dem Start des Servers.
 servlet.responseTime.total.description=Die Gesamtantwortzeit dieses Servlets seit dem Start des Servers.
 
-RESTful.request.total.description=Die Anzahl der Aufrufe dieser REST-konformen Ressourcenmethode seit dem Start des Servers.
-RESTful.responseTime.total.description=Die Gesamtantwortzeit f\u00fcr diese REST-konforme Ressourcenmethode seit dem Start des Servers.
 connectionpool.create.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung erstellt wurden.
 connectionpool.destroy.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung gel\u00f6scht wurden.
 connectionpool.managedConnections.description=Die Anzahl verwalteter Verbindungen in den freien, gemeinsam genutzten und nicht gemeinsam genutzten Pools.

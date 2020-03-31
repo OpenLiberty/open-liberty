@@ -41,12 +41,12 @@ fi
 #build rpm
 #cd rpmbuild && rpmbuild -ba SPECS/openliberty.spec
 echo "Building openliberty.rpm"
-./buildRPM.sh 
+./buildRPM.sh ${driverVer}
 
 echo "Building openliberty.deb"
 #build deb
 #cd ../debuild/openliberty/debian && debuild -d -b -us -uc
-./buildDEB.sh
+./buildDEB.sh ${driverVer}
 
 echo "removing passphrase file"
 rm -rf $HOME/.gnupg/pp.txt

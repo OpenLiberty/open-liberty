@@ -28,10 +28,7 @@ Private-Package: \
 
 WS-TraceGroup: JCDI
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-javac.source: 1.8
-javac.target: 1.8
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\

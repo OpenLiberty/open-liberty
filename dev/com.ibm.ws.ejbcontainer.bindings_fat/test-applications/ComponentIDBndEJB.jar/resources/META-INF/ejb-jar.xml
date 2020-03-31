@@ -79,5 +79,15 @@
             <session-type>Stateless</session-type>
             <transaction-type>Container</transaction-type>
          </session>
+         <session id="Session_9">
+            <ejb-name>ComponentIDBnd9</ejb-name>
+            <home>com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBndHome</home>
+            <remote>com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBnd</remote>
+            <local-home>com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBndHome</local-home>
+            <local>com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBnd</local>
+            <ejb-class>com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBndBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
       </enterprise-beans>
    </ejb-jar>

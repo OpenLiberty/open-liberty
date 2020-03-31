@@ -280,6 +280,7 @@ public class SolicitedTest {
 
                 allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
             }
         });
 

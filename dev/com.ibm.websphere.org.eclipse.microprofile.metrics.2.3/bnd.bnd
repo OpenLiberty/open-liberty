@@ -11,8 +11,6 @@
 -include ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.metrics.2.3; singleton:=true
 
@@ -27,7 +25,6 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.eclipse.microprofile.metrics:microprofile-metrics-api;2.3;EXACT}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"
 
 WS-TraceGroup: METRICS
 

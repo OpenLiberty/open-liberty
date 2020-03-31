@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -179,7 +179,6 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
     @Test
     public void testActivate() throws Exception {
-        final String methodName = "testActivate";
         try {
             assertEquals("ID should be " + ID, ID, oidcClientConfig.getId());
             assertEquals("Grant type should be " + AUTHORIZATION_CODE, AUTHORIZATION_CODE, oidcClientConfig.getGrantType());
@@ -214,13 +213,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
                     outputMgr.checkForMessages("CWWKS1700I: OpenID Connect client " + ID + " configuration successfully processed."));
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testModify() throws Exception {
-        final String methodName = "testModify";
         try {
             final Map<String, Object> props = createProps(false);
             mock.checking(new Expectations() {
@@ -239,13 +237,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertTrue("Expected message was not logged",
                     outputMgr.checkForMessages("CWWKS1701I: OpenID Connect client " + oidcClientConfig.getId() + " configuration change successfully processed."));
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetAuthzRequestParams() throws Exception {
-        final String methodName = "testGetAuthzRequestParams";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -280,14 +277,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Authz param, name2 value should be  " + "value2", "value2", authzParamMap.get("name2"));
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has HS256 (default), supports HS256, RS256 and NONE and op supports RS256 and ES256, adjust should set algorithm to RS256 which is supported by both in this case
     @Test
     public void testAdjustSignatureAlgorithm() throws Exception {
-        final String methodName = "testAdjustSignatureAlgorithm";
         try {
 
             oidcClientConfig.parseJsonResponse(discoveryjsonString);
@@ -295,14 +291,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Signature Algorithm should be  " + "RS256", "RS256", oidcClientConfig.getSignatureAlgorithm());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has NONE (not default), supports HS256, RS256 and NONE and op supports RS256 and ES256, adjust should not change algorithm in this case
     @Test
     public void testNoAdjustSignatureAlgorithm() throws Exception {
-        final String methodName = "testNoAdjustSignatureAlgorithm";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -315,14 +310,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Signature Algorithm should be  " + "NONE", "NONE", oidcClientConfig2.getSignatureAlgorithm());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has HS256 (default), supports HS256, RS256 and NONE and op supports ES256 only, adjust should not set algorithm to ES256 since rp cannot support this
     @Test
     public void testNoAdjustSignatureAlgorithm_es() throws Exception {
-        final String methodName = "testNoAdjustSignatureAlgorithm_es";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -335,14 +329,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Signature Algorithm should be  " + "HS256", "HS256", oidcClientConfig2.getSignatureAlgorithm());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has openid profile (default), supports any scope and op supports "openid","general","profile","email","address","phone", adjust should not alter scope since op supports rp default
     @Test
     public void testNoAdjustScopes() throws Exception {
-        final String methodName = "testAdjustScopes";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -356,14 +349,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "openid profile", "openid profile", oidcClientConfig2.getScope());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has openid profile (default), supports any scope and op supports "openid", "general","email","address","phone", adjust should alter scope to just have openid
     @Test
     public void testAdjustScopesOpenid() throws Exception {
-        final String methodName = "testAdjustScopesOpenid";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -377,14 +369,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "openid", "openid", oidcClientConfig2.getScope());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has openid profile (default), supports any scope and op supports "profile", "general","email","address","phone", adjust should alter scope to just have profile
     @Test
     public void testAdjustScopesProfile() throws Exception {
-        final String methodName = "testAdjustScopesProfile";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -398,14 +389,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "profile", "profile", oidcClientConfig2.getScope());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has openid profile (default), supports any scope and op supports "general","email","address","phone", adjust should not alter scope since op does not support rp
     @Test
     public void testNoAdjustScopesOpRpMismatch() throws Exception {
-        final String methodName = "testNoAdjustScopesOpRpMismatch";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -419,14 +409,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "openid profile", "openid profile", oidcClientConfig2.getScope());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has something_else (not default), supports any scope and op supports "openid","general","profile","email","address","phone", adjust should not alter scope in this case since rp is not using the default
     @Test
     public void testNoAdjustScopesRpNotusingDefault() throws Exception {
-        final String methodName = "testNoAdjustScopesOpRpMismatch";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -440,14 +429,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "something_else", "something_else", oidcClientConfig2.getScope());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has openid (not default), supports any scope and op supports "general","profile","email","address","phone", adjust should not alter scope in this case since rp is not using the default
     @Test
     public void testNoAdjustScopesRpNotusingProfile() throws Exception {
-        final String methodName = "testNoAdjustScopesOpRpMismatch";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -461,14 +449,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "openid", "openid", oidcClientConfig2.getScope());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has profile (not default), supports any scope and op supports "openid", "general","email","address","phone", adjust should not alter scope since rp is not using the default
     @Test
     public void testNoAdjustScopesRpNotusingOpenid() throws Exception {
-        final String methodName = "testAdjustScopesOpenid";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -482,14 +469,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "profile", "profile", oidcClientConfig2.getScope());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has post (default), supports post and basic and op supports "basic", adjust should alter and change it to basic
     @Test
     public void testAdjustTokenepAuthMethod() throws Exception {
-        final String methodName = "testAdjustTokenepAuthMethod";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -503,14 +489,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "basic", "basic", oidcClientConfig2.getTokenEndpointAuthMethod());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has basic (not default), supports post and basic and op supports "post", adjust should not alter
     @Test
     public void testNoAdjustTokenepAuthMethod() throws Exception {
-        final String methodName = "testAdjustTokenepAuthMethod";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -524,14 +509,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "basic", "basic", oidcClientConfig2.getTokenEndpointAuthMethod());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     // rp has post (default), supports post and basic and op supports "somethingelse", adjust should not alter
     @Test
     public void testNoAdjustTokenepAuthMethodMismatch() throws Exception {
-        final String methodName = "testAdjustTokenepAuthMethod";
         try {
 
             final Map<String, Object> props = createProps(true);
@@ -545,7 +529,27 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Scope should be  " + "post", "post", oidcClientConfig2.getTokenEndpointAuthMethod());
 
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testAdjustTokenepAuthMethod_discoveryInfoMissingAuthMethod() throws Exception {
+        try {
+            String defaultAuthMethod = "post";
+            final Map<String, Object> props = createProps(true);
+            props.put(OidcClientConfigImpl.CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD, defaultAuthMethod);
+            OidcClientConfigImpl oidcClientConfig2 = new OidcClientConfigImpl();
+            oidcClientConfig2.modify(props);
+
+            String discoveryInfo = "{}";
+            oidcClientConfig2.parseJsonResponse(discoveryInfo);
+            oidcClientConfig2.adjustTokenEndpointAuthMethod();
+
+            assertEquals("Auth method should have defaulted to " + defaultAuthMethod + " but did not.", defaultAuthMethod, oidcClientConfig2.getTokenEndpointAuthMethod());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
@@ -563,7 +567,6 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
     @Test
     public void testSharedKey_null() throws Exception {
-        final String methodName = "testSharedKey_null";
         try {
             final Map<String, Object> props = createProps(false);
             props.remove(OidcClientConfigImpl.CFG_KEY_SHARED_KEY);
@@ -580,13 +583,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             assertEquals("Client secret should be " + CLIENT_SECRET, CLIENT_SECRET, oidcClientConfig.getClientSecret());
             assertEquals("Shared key should be " + CLIENT_SECRET, CLIENT_SECRET, oidcClientConfig.getSharedKey());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testClientSecret_encode() throws Exception {
-        final String methodName = "testClientSecret_encode";
         try {
             final Map<String, Object> props = createProps(false);
             props.remove(OidcClientConfigImpl.CFG_KEY_CLIENT_SECRET);
@@ -604,23 +606,21 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Client secret should be " + CLIENT_SECRET, CLIENT_SECRET, oidcClientConfig.getClientSecret());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testNoProps() throws Exception {
-        final String methodName = "testNoProps";
         try {
             oidcClientConfig.modify(null);
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetIssuerIdentifier_valid() throws Exception {
-        final String methodName = "testGetIssuerIdentifier_valid";
         try {
             final Map<String, Object> props = createProps(true);
             props.put(OidcClientConfigImpl.CFG_KEY_ISSUER_IDENTIFIER, ISSUER_IDENTIFIER);
@@ -636,13 +636,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("ISSUER URL should be " + ISSUER_IDENTIFIER, ISSUER_IDENTIFIER, oidcClientConfig.getIssuerIdentifier());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetRedirectUrlFromServerToClient_valid() throws Exception {
-        final String methodName = "testGetRedirectUrlFromServerToClient_valid";
         try {
             final Map<String, Object> props = createProps(false);
             props.put(OidcClientConfigImpl.CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT, REDIRECT_HOSTPORT_VALID);
@@ -658,13 +657,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Redirect URL should be " + REDIRECT_URL_VALID, REDIRECT_URL_VALID, oidcClientConfig.getRedirectUrlFromServerToClient());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetRedirectUrlFromServerToClient_validNoPort() throws Exception {
-        final String methodName = "testGetRedirectUrlFromServerToClient_validNoPort";
         try {
             final Map<String, Object> props = createProps(false);
             props.put(OidcClientConfigImpl.CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT, REDIRECT_HOSTPORT_VALID_NOPORT);
@@ -680,13 +678,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Redirect URL should be " + REDIRECT_URL_VALID_NOPORT, REDIRECT_URL_VALID_NOPORT, oidcClientConfig.getRedirectUrlFromServerToClient());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetRedirectUrlFromServerToClient_emptyHostPort() throws Exception {
-        final String methodName = "testGetRedirectUrlFromServerToClient_emptyHostPort";
         try {
             final Map<String, Object> props = createProps(false);
             props.put(OidcClientConfigImpl.CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT, "");
@@ -700,13 +697,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Redirect URL should be null", null, oidcClientConfig.getRedirectUrlFromServerToClient());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetRedirectUrlFromServerToClient_invalidHostPort() throws Exception {
-        final String methodName = "testGetRedirectUrlFromServerToClient_invalidHostPort";
         try {
             final Map<String, Object> props = createProps(false);
             props.put(OidcClientConfigImpl.CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT, REDIRECT_HOSTPORT_INVALID);
@@ -722,13 +718,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("Redirect URL should be null", null, oidcClientConfig.getRedirectUrlFromServerToClient());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetAuthContextClassReference() {
-        final String methodName = "testGetAuthContextClassReference";
         try {
             final Map<String, Object> props = createProps(false);
             //props.put(OidcClientConfigImpl.CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT, REDIRECT_HOSTPORT_INVALID);
@@ -737,13 +732,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("ACR values should not be null", s, oidcClientConfig.getAuthContextClassReference());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetAuthContextClassReference_EmptyACR() {
-        final String methodName = "testGetAuthContextClassReference_EmptyACR";
         try {
             final Map<String, Object> props = createProps(false);
             mock.checking(new Expectations() {
@@ -760,13 +754,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("ACR values should not be null", s, oidcClientConfig.getAuthContextClassReference());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetUseSystemProps() {
-        final String methodName = "testGetUseSystemProps";
         try {
             final Map<String, Object> props = createProps(false);
             mock.checking(new Expectations() {
@@ -785,13 +778,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             // test non-default
             assertTrue("getUseSystemPropertiesForHttpClientConnections should be true", oidcClientConfig.getUseSystemPropertiesForHttpClientConnections());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
     public void testGetAuthContextClassReference_NullACR() {
-        final String methodName = "testGetAuthContextClassReference_NullACR";
         try {
             final Map<String, Object> props = createProps(false);
             props.remove(OidcClientConfigImpl.CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE);
@@ -807,7 +799,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("ACR values should be empty", "", oidcClientConfig.getAuthContextClassReference());
         } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 

@@ -530,7 +530,6 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
             config.setSTSHeaderValue(); //PI67099
             config.setEncodeDispatchedRequestURI(); //PI67942
             config.setMultiReadOfPostDataValue(); //MultiRead
-            config.setSameSiteCookies(); 
         }
         
         public void setVirtualHostName(VirtualHost virtualHost) {

@@ -137,6 +137,10 @@ public class JAASLoginModuleConfigImplTestWithMock {
                 return null;
             }
 
+            public String SharedLib_cardinality_minimum() {
+                return "1";
+            }
+
             @Override
             public String SharedLib_target() {
                 return null;
@@ -201,6 +205,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
         ModuleConfig moduleConfig = moduleConfig();
 
         JAASLoginModuleConfigImpl jaasLoginModuleConfig = new JAASLoginModuleConfigImpl();
+        jaasLoginModuleConfig.setSharedLib(sharedLibrary);
         jaasLoginModuleConfig.activate(moduleConfig, orops);
 
         assertEquals("Should have two options", 2, jaasLoginModuleConfig.getOptions().size());

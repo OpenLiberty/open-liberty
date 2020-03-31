@@ -72,6 +72,10 @@ Service-Component: \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.SSOTokenBytesCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
     properties:="service.vendor=IBM", \
+  com.ibm.ws.security.authentication.internal.cache.keyproviders.X509CertCacheKeyProvider; \
+    implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.X509CertCacheKeyProvider; \
+    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
+    properties:="service.vendor=IBM", \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.CustomCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.CustomCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
@@ -98,7 +102,8 @@ Service-Component: \
 -dsannotations: \
   com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl, \
   com.ibm.ws.security.authentication.internal.collective.NullCollectiveAuthenticationPlugin, \
-  com.ibm.ws.security.authentication.internal.jaas.JAASConfigurationImpl
+  com.ibm.ws.security.authentication.internal.jaas.JAASConfigurationImpl, \
+  com.ibm.ws.security.authentication.internal.cache.DeleteAuthCacheImpl
 
 instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resources/*.class
 
@@ -118,11 +123,13 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.websphere.appserver.spi.kernel.service, \
+	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot,\
-	com.ibm.ws.security.mp.jwt.proxy;version=latest
+	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
+	org.eclipse.osgi,\
+	osgi.core
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

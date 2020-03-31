@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.opentracing.1.1
 Bundle-SymbolicName: com.ibm.ws.opentracing.1.1
@@ -25,6 +23,7 @@ WS-TraceGroup: OPENTRACING
                 com.ibm.ws.opentracing.OpentracingService
                 
 Import-Package: \
+    !com.ibm.ws.opentracing, \
     io.opentracing;version=0.31.0,\
     io.opentracing.log;version=0.31.0,\
     io.opentracing.propagation;version=0.31.0,\
@@ -41,7 +40,6 @@ Export-Package: \
                 
 Private-Package: com.ibm.ws.opentracing.resources
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
         com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \

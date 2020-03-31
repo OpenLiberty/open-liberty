@@ -13,6 +13,7 @@ package com.ibm.ws.app.manager.internal.monitor;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,14 +96,16 @@ public class DropinMonitor {
         this.locationService = locationService;
     }
 
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     @Reference(name = "configAdmin")
     protected void setConfigAdmin(ConfigurationAdmin configAdmin) {
         this.configAdmin = configAdmin;
     }
 
-    protected void unsetConfigAdmin(ConfigurationAdmin configAdmin) {}
+    protected void unsetConfigAdmin(ConfigurationAdmin configAdmin) {
+    }
 
     private class FileMonitorImpl implements FileMonitor {
         private final String _type;
@@ -386,7 +389,6 @@ public class DropinMonitor {
      * Takes a file and an optional file type, and updates the file. If no type is given it will use the
      * extension of the file given.
      *
-     * @param ca          the configuration admin service.
      * @param currentFile the file of the application to install. Can be a directory
      * @param type        the type of the application.
      *
@@ -395,6 +397,27 @@ public class DropinMonitor {
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, "Starting dropin application '" + currentFile.getName() + "'");
         }
+
+        // Check to make sure that the app isn't configured in server.xml.
+        try {
+            Configuration[] configuredApps = configAdmin.listConfigurations(AppManagerConstants.APPLICATION_FACTORY_FILTER);
+            if (configuredApps != null) {
+                for (Configuration c : configuredApps) {
+                    Dictionary<String, Object> properties = c.getProperties();
+                    String location = (String) properties.get(AppManagerConstants.LOCATION);
+                    if (location != null && monitoredDirectory.get() != null) {
+                        File configuredFile = new File(locationService.resolveString(location));
+                        if (configuredFile != null && currentFile.compareTo(configuredFile) == 0) {
+                            Tr.warning(_tc, "dropins.app.also.configured", location);
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (IOException | InvalidSyntaxException e1) {
+            // Just FFDC
+        }
+
         String filePath = getAppLocation(currentFile);
 
         try {

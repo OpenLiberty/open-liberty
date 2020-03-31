@@ -42,15 +42,8 @@
     </connectionFactory>    
 
     <jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntryName">
-      <!-- TODO remove libraryRef once enforcement is added to config. For now, while still being experimented with, classProviderRef takes precedence -->
-      <loginModule className="com.ibm.ws.jca.fat.security.login.TestLoginModule" libraryRef="temp" classProviderRef="DerbyLMRA"/>
+      <loginModule className="com.ibm.ws.jca.fat.security.login.TestLoginModule" classProviderRef="DerbyLMRA"/>
     </jaasLoginContextEntry>
-
-    <!-- TODO remove this -->
-    <library id="temp">
-      <!-- no login modules found here - this library is only temporarily present to satisfy the mandatory libraryRef requirement that we will later take away -->
-      <file name="${server.config.dir}/apps/derbyRAApp.ear"/>
-    </library>
 
     <!-- "APP" is the default schema for Derby -->
     <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>

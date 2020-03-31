@@ -27,13 +27,15 @@ A lightweight open framework for building fast and efficient cloud-native Java m
 mkdir -p %{buildroot}/opt/ol
 tar -zxf %{_topdir}/SOURCES/%{name}-%{version}.tar.gz -C %{buildroot}/opt/ol
 
-#Creating the share folder and moving defaultServer zip to /usr/share/openliberty
+#Creating the share folder and moving defaultServer tar to /usr/share/openliberty
 mkdir -p %{buildroot}/usr/share/%{name}
-cp %{_topdir}/SOURCES/defaultServer.zip %{buildroot}/usr/share/%{name}
+cp %{_topdir}/SOURCES/defaultServer.tar %{buildroot}/usr/share/%{name}
 
 #Creating the scripts
 mkdir -p %{buildroot}/usr/libexec
 cp %{_topdir}/SOURCES/scripts/openliberty %{buildroot}/usr/libexec
+mkdir -p %{buildroot}/etc/init.d
+cp %{_topdir}/SOURCES/scripts/openliberty %{buildroot}/etc/init.d
 
 #Creating the service
 mkdir -p %{buildroot}/usr/lib/systemd/system
@@ -42,6 +44,8 @@ exit 0
  
 %files
 #%defattr(-,root,root)
+/etc
+%exclude %dir /etc/init.d
 /opt/ol
 /usr/libexec
 /usr/share/%{name}
@@ -62,20 +66,23 @@ fi
 exit 0
 
 %post
-echo "Adding group - openliberty"
+#echo "Adding group - openliberty"
 if (! getent group openliberty > /dev/null 2>&1); then
     groupadd --system openliberty
 fi
 
-echo "Adding user - openliberty"
+#echo "Adding user - openliberty"
 if (! id openliberty > /dev/null 2>&1); then
     adduser --system --home-dir /usr/share/openliberty --no-create-home -g openliberty --shell /bin/bash openliberty  
 fi
 
-echo "Setting up the systemd openliberty service"
-if [ -x "/usr/libexec/openliberty" ] && [ -r "/usr/lib/systemd/system/openliberty@.service" ]; then
+#echo "Setting up the systemd openliberty service"
+if [ -x "/usr/bin/systemctl" ] && [ -x "/usr/libexec/openliberty" ] && [ -r "/usr/lib/systemd/system/openliberty@.service" ]; then
     systemctl daemon-reload
     systemctl enable openliberty@defaultServer.service
+else
+#    echo "Setting up the other openliberty service"
+    chkconfig --add openliberty
 fi
 
 echo "Creating the license directory"
@@ -83,20 +90,20 @@ mkdir -p /usr/share/doc/openliberty
 cp /opt/ol/LICENSE /usr/share/doc/openliberty
 cp /opt/ol/NOTICES /usr/share/doc/openliberty
 
-echo "Creating server,log and run directory"
+#echo "Creating server,log and run directory"
 mkdir -p /var/lib/openliberty/usr/servers
 mkdir -p /var/run/openliberty
 mkdir -p /var/log/openliberty
 
-echo "Setting up defaultServer for user"
+#echo "Setting up defaultServer for user"
 if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
-    unzip /usr/share/openliberty/defaultServer.zip -d /var/lib/openliberty/usr/servers
+    tar -xf /usr/share/openliberty/defaultServer.tar -C /var/lib/openliberty/usr/servers
     printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
 fi
 
-echo "Setting permissions to files/folders"
-chown -R openliberty:openliberty /opt/ol/lib
+#echo "Setting permissions to files/folders"
 chmod -R a+r /opt/ol/
+chmod -R o+X /opt/ol/lib/versions
 chmod 755 /usr/libexec/openliberty
 chmod 755 /opt/ol/etc/
 chmod -R 755 /opt/ol/templates/
@@ -109,14 +116,20 @@ chmod -R u+w /var/log/openliberty
 exit 0
 
 %postun
-echo "Removing leftover license and run directories"
+#echo "Removing leftover license and run directories"
 if [ -d "/usr/share/doc/openliberty" ]; then
     rm -rf /usr/share/doc/openliberty
 fi
 if [ -d "/var/run/openliberty" ]; then
     rm -rf /var/run/openliberty
 fi
-echo "Reloading systemctl services after uninstall of openliberty"
-systemctl daemon-reload
+if [ -x "/usr/bin/systemctl" ]; then
+#    echo "Reloading systemctl services after uninstall of openliberty"
+    systemctl daemon-reload
+#else 
+#    echo "removing openliberty service"
+#    chkconfig --del openliberty
+fi
+
 exit 0
 

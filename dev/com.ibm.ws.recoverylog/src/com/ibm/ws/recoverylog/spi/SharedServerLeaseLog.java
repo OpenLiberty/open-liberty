@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,9 @@ package com.ibm.ws.recoverylog.spi;
  * The SharedServerLeaseLog interface provides methods for accessing shared
  * information on server leases.
  * </p>
- * 
+ *
  */
-public interface SharedServerLeaseLog
-{
+public interface SharedServerLeaseLog {
     public void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception;
 
     public void deleteServerLease(String recoveryIdentity) throws Exception;

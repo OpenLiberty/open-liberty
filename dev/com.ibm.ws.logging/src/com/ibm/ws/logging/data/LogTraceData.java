@@ -11,14 +11,12 @@
 package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.NameAliases.ExtensionAliases;
 import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
@@ -143,10 +141,6 @@ public class LogTraceData extends GenericData {
 
     private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
     private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
-    private static boolean[] omitFieldsArrayMessage = new boolean[25];
-    private static boolean[] omitFieldsArrayTrace = new boolean[25];
-    private static ArrayList<String> omitExtFieldsMessage = new ArrayList<>();
-    private static ArrayList<String> omitExtFieldsTrace = new ArrayList<>();
 
     public static void newJsonLoggingNameAliasesMessage(Map<String, String> newAliases) {
         jsonLoggingNameAliasesMessages.newAliases(newAliases);
@@ -162,48 +156,6 @@ public class LogTraceData extends GenericData {
 
     public static void resetJsonLoggingNameAliasesTrace() {
         jsonLoggingNameAliasesTrace.resetAliases();
-    }
-
-    public static void setOmitFieldsMessage(Set<String> fieldNames) {
-        if (fieldNames == null)
-            return;
-
-        Set<String> extFields = new HashSet<>();
-        for (int i = 0; i < MESSAGE_NAMES1_1.length; i++) {
-            for (String omitField : fieldNames) {
-                if (MESSAGE_NAMES1_1[i].equals(omitField)) {
-                    omitFieldsArrayMessage[i] = true;
-                    break;
-                } else {
-                    omitFieldsArrayMessage[i] = false;
-                    if (omitField.startsWith("ext_")) {
-                        extFields.add(omitField);
-                    }
-                }
-            }
-        }
-        omitExtFieldsMessage = new ArrayList<>(extFields);
-    }
-
-    public static void setOmitFieldsTrace(Set<String> fieldNames) {
-        if (fieldNames == null)
-            return;
-
-        Set<String> extFields = new HashSet<>();
-        for (int i = 0; i < TRACE_NAMES1_1.length; i++) {
-            for (String omitField : fieldNames) {
-                if (TRACE_NAMES1_1[i].equals(omitField)) {
-                    omitFieldsArrayTrace[i] = true;
-                    break;
-                } else {
-                    omitFieldsArrayTrace[i] = false;
-                    if (omitField.startsWith("ext_")) {
-                        extFields.add(omitField);
-                    }
-                }
-            }
-        }
-        omitExtFieldsTrace = new ArrayList<>(extFields);
     }
 
     public LogTraceData() {
@@ -478,124 +430,6 @@ public class LogTraceData extends GenericData {
         return NAMES1_1[20];
     }
 
-    //omit fields
-    public static boolean getDatetimeOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[0] : omitFieldsArrayTrace[0];
-    }
-
-    public static boolean getMessageIdOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[1] : omitFieldsArrayTrace[1];
-    }
-
-    public static boolean getThreadIdOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[2] : omitFieldsArrayTrace[2];
-    }
-
-    public static boolean getModuleOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[3] : omitFieldsArrayTrace[3];
-    }
-
-    public static boolean getSeverityOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[4] : omitFieldsArrayTrace[4];
-    }
-
-    public static boolean getLoglevelOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[5] : omitFieldsArrayTrace[5];
-    }
-
-    public static boolean getMethodNameOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[6] : omitFieldsArrayTrace[6];
-    }
-
-    public static boolean getClassNameOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[7] : omitFieldsArrayTrace[7];
-    }
-
-    public static boolean getLevelValueOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[8] : omitFieldsArrayTrace[8];
-    }
-
-    public static boolean getThreadNameOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[9] : omitFieldsArrayTrace[9];
-    }
-
-    public static boolean getCorrelationIdOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[10] : omitFieldsArrayTrace[10];
-    }
-
-    public static boolean getOrgOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[11] : omitFieldsArrayTrace[11];
-    }
-
-    public static boolean getProductOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[12] : omitFieldsArrayTrace[12];
-    }
-
-    public static boolean getComponentOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[13] : omitFieldsArrayTrace[13];
-    }
-
-    public static boolean getSequenceOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[14] : omitFieldsArrayTrace[14];
-    }
-
-    public static boolean getThrowableOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[15] : omitFieldsArrayTrace[15];
-    }
-
-    public static boolean getThrowableLocalizedOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[16] : omitFieldsArrayTrace[16];
-    }
-
-    public static boolean getMessageOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[17] : omitFieldsArrayTrace[17];
-    }
-
-    public static boolean getFormattedMsgOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[18] : omitFieldsArrayTrace[18];
-    }
-
-    public static boolean getExtensionsOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[19] : omitFieldsArrayTrace[19];
-    }
-
-    public static boolean getObjectIdOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[20] : omitFieldsArrayTrace[20];
-    }
-
-    public static boolean getHostOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[21] : omitFieldsArrayTrace[21];
-    }
-
-    public static boolean getUserDirOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[22] : omitFieldsArrayTrace[22];
-    }
-
-    public static boolean getServerNameOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[23] : omitFieldsArrayTrace[23];
-    }
-
-    public static boolean getTypeOmitBoolJSON(boolean isMessageEvent) {
-        return isMessageEvent ? omitFieldsArrayMessage[24] : omitFieldsArrayTrace[24];
-    }
-
-    public static boolean getExtensionNameOmitBool(boolean isMessageEvent, String extKey) {
-        return isMessageEvent ? omitExtFieldsMessage.contains(getExtensionNameKeyJSON(true, extKey)) : omitExtFieldsTrace.contains(getExtensionNameKeyJSON(false, extKey));
-    }
-
-    public static void resetOmitFieldsMessage() {
-        Arrays.fill(omitFieldsArrayMessage, false);
-    }
-
-    public static void resetOmitFieldsTrace() {
-        Arrays.fill(omitFieldsArrayTrace, false);
-    }
-
-    public static void resetExtFields() {
-        omitExtFieldsMessage.clear();
-        omitExtFieldsTrace.clear();
-    }
-
     //name aliases
     public static String getDatetimeKeyJSON(boolean isMessageEvent) {
         return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[0] : jsonLoggingNameAliasesTrace.aliases[0];
@@ -698,23 +532,13 @@ public class LogTraceData extends GenericData {
     }
 
     public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
-        ArrayList<String> tempExt = null;
-        ArrayList<String> aliasesExt = null;
+        ExtensionAliases tempExt = null;
         if (isMessageEvent) {
-            tempExt = jsonLoggingNameAliasesMessages.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesMessages.aliasesExtensions;
-
+            tempExt = jsonLoggingNameAliasesMessages.extensionAliases;
         } else {
-            tempExt = jsonLoggingNameAliasesTrace.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesTrace.aliasesExtensions;
-
+            tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
         }
-        for (int i = 0; i < tempExt.size(); i++) {
-            if (tempExt.get(i).equals(extKey)) {
-                return aliasesExt.get(i);
-            }
-        }
-        return extKey;
+        return tempExt.getAlias(extKey);
 
     }
 

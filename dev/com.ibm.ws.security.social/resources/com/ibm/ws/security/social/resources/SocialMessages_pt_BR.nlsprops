@@ -95,7 +95,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=A resposta 
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verifique se o atributo de configura\u00e7\u00e3o especificado na mensagem est\u00e1 configurado corretamente. Assegure-se de que o valor do atributo de configura\u00e7\u00e3o corresponda \u00e0 entrada na resposta da API do usu\u00e1rio que deve ser usada como o nome do usu\u00e1rio.
 
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: A resposta da API do usu\u00e1rio da conta do servi\u00e7o n\u00e3o pode ser processada: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: A seguinte resposta da API do usu\u00e1rio n\u00e3o pode ser processada: {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=As informa\u00e7\u00f5es sobre a conta do servi\u00e7o n\u00e3o podem ser obtidas porque ocorreu outro erro.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para obter mais mensagens de erro que possam indicar onde ocorreu o outro erro.
 
@@ -118,6 +118,16 @@ JSON_MISSING_KEY.useraction=Verifique os dados de JSON para determinar se a chav
 JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: O valor para a chave [{0}] nos dados de JSON deve ser do tipo {1}, mas o valor \u00e9 do tipo {2}. Os dados de JSON s\u00e3o [{3}].
 JSON_ENTRY_WRONG_JSON_TYPE.explanation=O valor da chave especificada n\u00e3o tinha o tipo correto. Os dados de JSON podem ser malformados ou podem ter uma estrutura inesperada.
 JSON_ENTRY_WRONG_JSON_TYPE.useraction=Verifique a estrutura dos dados de JSON. Verifique os dados de JSON para ver se ocorreu um erro.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: A resposta da API de introspec\u00e7\u00e3o do token n\u00e3o pode ser processada: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=As informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado n\u00e3o podem ser obtidas porque ocorreu outro erro.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para obter mais mensagens de erro que possam indicar onde ocorreu o outro erro.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: A solicita\u00e7\u00e3o de introspec\u00e7\u00e3o do token falhou porque o token inclu\u00eddo na solicita\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido. A resposta completa \u00e9  {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=O servidor de autoriza\u00e7\u00e3o n\u00e3o emitiu o token, o propriet\u00e1rio do recurso revogou o token, o token expirou ou ocorreu outro erro.
+INTROSPECT_USER_API_INACTIVE.useraction=Verifique a resposta inclu\u00edda na mensagem. Verifique se o terminal de introspec\u00e7\u00e3o de token correto foi utilizado. Verifique se o token \u00e9 v\u00e1lido e se pode passar por introspec\u00e7\u00e3o.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.

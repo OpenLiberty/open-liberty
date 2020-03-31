@@ -258,7 +258,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             getRequiredConfigAttribute(props, KEY_clientId);
             getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
             getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            getRequiredConfigAttribute(props, KEY_scope);
+            //getRequiredConfigAttribute(props, KEY_scope);  // removing as not all providers require it. 
         }
     }
 
@@ -456,6 +456,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             Tr.debug(tc, "userApiConfigs = " + (userApiConfigs == null ? "null" : userApiConfigs.length));
             Tr.debug(tc, KEY_realmName + " = " + realmName);
             Tr.debug(tc, KEY_realmNameAttribute + " = " + realmNameAttribute);
+            Tr.debug(tc, KEY_accessTokenHeaderName + " = " + accessTokenHeaderName);
             Tr.debug(tc, KEY_groupNameAttribute + " = " + groupNameAttribute);
             Tr.debug(tc, KEY_userUniqueIdAttribute + " = " + userUniqueIdAttribute);
             Tr.debug(tc, KEY_mapToUserRegistry + " = " + mapToUserRegistry);

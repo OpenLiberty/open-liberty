@@ -5,13 +5,7 @@ src: \
   fat/src,\
   test-applications/assertion/src,\
   test-applications/endtoend/src,\
-  test-applications/LPSClient/src,\
-  test-applications/LPSServer/src,\
   test-applications/oneway/src,\
-  test-applications/simpleClient/src,\
-  test-applications/simpleServer/src,\
-  test-applications/threadedClient/src,\
-  test-applications/threadedServer/src,\
   test-applications/wsatApp/src,\
   test-applications/wsatAppOptional/src,\
   test-applications/wsatAppService/src,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
         ClassLoader.registerAsParallelCapable();
     }
 
+    private final ClassLoader parent;
+
     /**
      * Delegates to constructor of superclass (URLClassLoader)
      *
@@ -42,6 +44,7 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
      */
     public BootstrapChildFirstURLClassloader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
+        this.parent = parent;
     }
 
     // NOTE that the rest of the methods in this class are duplicated in
@@ -49,23 +52,29 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
     // Any changes must be made to both sources
     @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        if (name == null || name.length() == 0)
+            return null;
+
+        if (name.regionMatches(0, BootstrapChildFirstJarClassloader.KERNEL_BOOT_CLASS_PREFIX, 0,
+                               BootstrapChildFirstJarClassloader.KERNEL_BOOT_PREFIX_LENGTH)) {
+            return super.loadClass(name, resolve);
+        }
+
         synchronized (getClassLoadingLock(name)) {
             Class<?> result = null;
 
-            if (name == null || name.length() == 0)
-                return null;
-
             result = findLoadedClass(name);
             if (result == null) {
-                if (name.regionMatches(0, BootstrapChildFirstJarClassloader.KERNEL_BOOT_CLASS_PREFIX, 0,
-                                       BootstrapChildFirstJarClassloader.KERNEL_BOOT_PREFIX_LENGTH)) {
-                    result = super.loadClass(name, resolve);
-                } else {
-                    try {
-                        // Try to load the class from this classpath
-                        result = findClass(name);
-                    } catch (ClassNotFoundException cnfe) {
+                try {
+                    // Try to load the class from this classpath
+                    result = findClass(name);
+                } catch (ClassNotFoundException cnfe) {
+                    if (parent == null || resolve) {
                         result = super.loadClass(name, resolve);
+                    } else {
+                        // calling using this way to avoid calling findLoadedClass
+                        // and findClass again
+                        result = parent.loadClass(name);
                     }
                 }
             }

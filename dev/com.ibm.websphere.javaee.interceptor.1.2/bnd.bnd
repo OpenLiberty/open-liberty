@@ -13,7 +13,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.interceptor.1.2; singleton:=true
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: javax.interceptor
 

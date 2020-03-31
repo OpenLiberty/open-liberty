@@ -14,8 +14,6 @@
 bSymbolicName=com.ibm.ws.microprofile.reactive.messaging.kafka
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.messaging.kafka
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.messaging.kafka
@@ -23,6 +21,8 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.messaging.kafka
 Bundle-Description:MicroProfile Reactive Messaging Kafka Connector, version ${bVersion}
 
 WS-TraceGroup: REACTIVEMESSAGE
+
+-cdiannotations:
 
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorCDIExtension
@@ -38,7 +38,6 @@ Import-Package: *
 Include-Resource: \
     META-INF=resources/META-INF
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
   com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;version=latest, \

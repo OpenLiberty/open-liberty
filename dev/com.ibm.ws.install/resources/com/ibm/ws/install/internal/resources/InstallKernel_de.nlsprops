@@ -833,6 +833,14 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=F\u00fchren Sie den Befehl fe
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Die folgenden Benutzerfeatures sind in der Datei server.xml angegeben und werden nicht installiert: {0}
 
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Die Features {0} und {1} sind nicht miteinander kompatibel und sie k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Diese Features k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Entfernen Sie eines der Features und wiederholen Sie die Operation.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Die Singleton-Features {0} und {1} sind nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Diese Features k\u00f6nnen nicht gleichzeitig installiert werden.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Entfernen Sie eines der Features und wiederholen Sie die Operation.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Das Feature wurde erfolgreich heruntergeladen.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Das Feature wurde heruntergeladen.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Es ist keine Aktion erforderlich.

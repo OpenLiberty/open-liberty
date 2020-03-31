@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -179,6 +179,14 @@ public interface NameSpaceBinder<T> {
     void bindDefaultEJBLocal(T bindingObject, HomeRecord hr);
 
     /**
+     * Adds the default remote legacy bindings to root
+     *
+     * @param bindingObject the EJB Binding information
+     * @param hr the HomeRecord of the EJB
+     */
+    void bindDefaultEJBRemote(T bindingObject, HomeRecord hr);
+
+    /**
      * Undoes the bindings from ejblocal namespace.
      */
     void unbindEJBLocal(List<String> names) throws NamingException;
@@ -193,7 +201,29 @@ public interface NameSpaceBinder<T> {
     void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local);
 
     /**
+     * Binds the localHomeBindingName custom binding
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    void bindLocalHomeBindingName(T bindingObject, HomeRecord hr);
+
+    /**
+     * Binds the interface binding-name custom binding for local
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    void bindLocalBusinessInterface(T bindingObject, HomeRecord hr);
+
+    /**
      * Undoes the bindings from local namespace.
      */
     void unbindLocalColonEJB(List<String> names) throws NamingException;
+
+    /**
+     * Undoes the root remote bindings.
+     */
+    void unbindRemote(List<String> names);
+
 }

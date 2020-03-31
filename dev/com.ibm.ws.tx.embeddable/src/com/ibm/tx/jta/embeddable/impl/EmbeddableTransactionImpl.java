@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -603,14 +603,14 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     public void enlistAsyncResource(String xaResFactoryFilter, Serializable xaResInfo, Xid xid) throws SystemException // @LIDB1922-5C
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "enlistAsyncResource (SPI): args: ", new Object[] { xaResFactoryFilter, xaResInfo, xid });
+            Tr.entry(tc, "enlistAsyncResource", new Object[] { "(SPI): args: ", xaResFactoryFilter, xaResInfo, xid });
         try {
             final WSATAsyncResource res = new WSATAsyncResource(xaResFactoryFilter, xaResInfo, xid);
             final WSATParticipantWrapper wrapper = new WSATParticipantWrapper(res);
             getResources().addAsyncResource(wrapper);
         } finally {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistAsyncResource (SPI)");
+                Tr.exit(tc, "enlistAsyncResource", "(SPI)");
         }
     }
 
@@ -1164,7 +1164,10 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
     @Override
     public String toString() {
+        // Use a local copy of _thread so that it can't change under this code after the not-null test and thus avoid a possible
+        // NullPointerException when getId() is called
+        Thread local_thread = _thread;
         return super.toString() + ",active=" + _activeAssociations + ",suspended=" + _suspendedAssociations + ","
-               + (_thread != null ? "thread=" + String.format("%08X", _thread.getId()) : "Not on a thread, globalId=" + _globalId);
+               + (local_thread != null ? "thread=" + String.format("%08X", local_thread.getId()) : "Not on a thread, globalId=" + _globalId);
     }
 }

@@ -2362,7 +2362,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE).setIsDirty(true);
             }
 
-            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE2) && (this.setCookieCache == null)) {
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE2) && (this.setCookie2Cache == null)) {
                 getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE2).setIsDirty(true);
             }
 
@@ -2892,9 +2892,10 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                     cookie.setAttribute("samesite", sameSiteAttributeValue);
                     //If SameSite has been defined, and it's value is set to 'none', ensure the cookie is set to secure
                     if (!cookie.isSecure() && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
-                        Tr.debug(tc, "Setting the Secure attribute for SameSite=None");
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Setting the Secure attribute for SameSite=None");
+                        }
                         cookie.setSecure(true);
-
                     }
 
                 } else {

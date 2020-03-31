@@ -436,7 +436,8 @@ public class JwKRetriever {
         for (JWK aJwk : jwks) {
             if (isPEM(keyText)) {
                 jwkSet.addPemKey(location, keyText, jwk);
-            } else if (location != null) {
+            }
+            if (location != null) {
                 jwkSet.add(location, aJwk);
             } else {
                 jwkSet.add(keyText, aJwk);

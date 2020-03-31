@@ -105,6 +105,11 @@ public class MissedTimerActionBean implements MissedTimerAction {
                 if (index == 0) {
                     assertTrue("getNextTimeout() not >= DELAY : " + interval + " >= " + DELAY, interval >= DELAY);
                 } else {
+                    // Interval needs to be > 0 and a multiple of INTERVAL.
+                    // Normally would be INTERVAL, but on slow systems ONCE may skip to next future time.
+                    if (interval > INTERVAL && interval % INTERVAL == 0) {
+                        interval = INTERVAL;
+                    }
                     assertEquals("getNextTimeout() interval not expected on result #" + index, INTERVAL, interval);
                 }
                 nextExpected = nextTimeout.getTime();

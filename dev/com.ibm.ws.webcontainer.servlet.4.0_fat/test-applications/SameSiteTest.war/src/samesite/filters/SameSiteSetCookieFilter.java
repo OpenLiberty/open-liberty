@@ -49,8 +49,13 @@ public class SameSiteSetCookieFilter implements Filter {
         servletContext.log("***********< SameSiteSetCookieFilter doFilter testSameSiteIncorrectValue: " + testSameSiteIncorrectValue + " >****************");
 
         if (httpResponse.containsHeader("Set-Cookie")) {
-
+            servletContext.log("***********< SameSiteSetCookieFilter doFilter Set-Cookie exists >****************");
+            ArrayList<String> headers = new ArrayList<String>(httpResponse.getHeaders("Set-Cookie"));
+            for (String header : headers) {
+                servletContext.log("***********< SameSiteSetCookieFilter doFilter Set-Cookie header: " + header);
+            }
         }
+
         servletContext.log("***********< SameSiteSetCookieFilter doFilter Set-Cookie exists >****************");
         ArrayList<String> headers = new ArrayList<String>(httpResponse.getHeaders("Set-Cookie"));
         for (String header : headers) {

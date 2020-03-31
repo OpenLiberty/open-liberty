@@ -40,7 +40,6 @@ Include-Resource: \
   @${repo;javax.enterprise:cdi-api;1.2}!/beans_1_0.xsd, \
   @${repo;javax.enterprise:cdi-api;1.2}!/beans_1_1.xsd
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 instrument.disabled: true
 

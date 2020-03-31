@@ -48,10 +48,15 @@ property.not.found.CWMCG5004E=CWMCG5004E: La propri\u00e9t\u00e9 de configuratio
 property.not.found.CWMCG5004E.explanation=La propri\u00e9t\u00e9 nomm\u00e9e est introuvable dans toutes les sources configur\u00e9es. 
 property.not.found.CWMCG5004E.useraction=V\u00e9rifiez que la propri\u00e9t\u00e9 existe dans l'une des sources Config.
 
-#The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: La d\u00e9pendance InjectionPoint n'a pas pu \u00eatre r\u00e9solue pour la m\u00e9thode Observer : {0}. Erreur : {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=Une propri\u00e9t\u00e9 ConfigProperty inject\u00e9e n'a pas pu \u00eatre r\u00e9solue. La propri\u00e9t\u00e9 nomm\u00e9e est introuvable ou un convertisseur pour le type requis n'a pas pu \u00eatre r\u00e9solu. 
 unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=Examinez le message du serveur et les journaux FFDC pour d\u00e9terminer la cause du probl\u00e8me. V\u00e9rifiez que la propri\u00e9t\u00e9 existe dans l'une des sources et que les convertisseurs requis ont \u00e9t\u00e9 configur\u00e9s.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: La d\u00e9pendance InjectionPoint n'a pas \u00e9t\u00e9 trait\u00e9e pour le bean Observer : {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=Une erreur inconnue est survenue. Il n'a pas \u00e9t\u00e9 possible de traiter correctement une m\u00e9thode Observer.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=Examinez le message du serveur et les journaux FFDC pour d\u00e9terminer la cause du probl\u00e8me.
 
 
 #-----------------------------------------------------------------------------------------------------------------------------

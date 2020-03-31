@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2013 IBM Corporation and others.
+ * Copyright (c) 2005, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,13 @@ public class J2CTimer extends Timer {
             try {
                 BlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
                 Map<String, String> execProps = new TreeMap<String, String>();
-                execProps.put("javax.enterprise.concurrent.IDENTITY_NAME", getClass().getName());
-                execProps.put("javax.enterprise.concurrent.LONGRUNNING_HINT", Boolean.TRUE.toString());
+                if (bootstrapContext.eeVersion < 9) {
+                    execProps.put("javax.enterprise.concurrent.IDENTITY_NAME", getClass().getName());
+                    execProps.put("javax.enterprise.concurrent.LONGRUNNING_HINT", Boolean.TRUE.toString());
+                } else {
+                    execProps.put("jakarta.enterprise.concurrent.IDENTITY_NAME", getClass().getName());
+                    execProps.put("jakarta.enterprise.concurrent.LONGRUNNING_HINT", Boolean.TRUE.toString());
+                }
                 execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
                 execProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, "com.ibm.ws.transaction.context.provider"); // Avoid creating an LTC that lasts for the duration of the timer thread
                 execProps.put(WSContextService.TASK_OWNER, bootstrapContext.resourceAdapterID);

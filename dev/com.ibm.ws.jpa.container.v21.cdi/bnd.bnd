@@ -19,6 +19,8 @@ Bundle-Description: Container-managed JPA CDI support, version ${bVersion}
 
 Include-Resource: META-INF=resources/META-INF
 
+-cdiannotations:
+
 -dsannotations: \
 	com.ibm.ws.jpa.container.v21.cdi.internal.CDIJPAEMFPropertyProviderImpl,\
 	com.ibm.ws.jpa.container.v21.cdi.internal.JPAContainerCDIExtension

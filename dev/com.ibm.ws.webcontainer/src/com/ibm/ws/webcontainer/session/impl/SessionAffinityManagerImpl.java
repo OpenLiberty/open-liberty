@@ -494,9 +494,18 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                     // Get the appropriate SameSite value from the configuration and pass to the WebContainer using the RequestState 
                     SameSiteCookie sessionSameSiteCookie = _smc.getSessionCookieSameSite();
                     if (sessionSameSiteCookie != SameSiteCookie.DISABLED) {
+                        // If SameSite=None set Secure if not already set.
+                        if(sessionSameSiteCookie == SameSiteCookie.NONE && !cookie.getSecure()) {
+                            if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SET_COOKIE],
+                                                                     "Setting the Secure attribute for SameSite=None");
+                            }
+                            cookie.setSecure(true);
+                        }
+
                         WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
                         String sameSiteCookieValue = sessionSameSiteCookie.getSameSiteCookieValue();
-                        requestState.setCookieAttribute(cookie.getName(), "SameSite=" + sameSiteCookieValue);
+                        requestState.setCookieAttributes(cookie.getName(), "SameSite=" + sameSiteCookieValue);
                     }
                     ((IExtendedResponse) response).addSessionCookie(cookie);
                 } else {

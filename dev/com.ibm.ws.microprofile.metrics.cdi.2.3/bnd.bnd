@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.metrics.cdi.2.3
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.cdi.2.3
@@ -39,11 +37,12 @@ Include-Resource: \
 
 WS-TraceGroup: METRICS
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: \
 	io.astefanutti.metrics.cdi23.MetricsExtension
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\

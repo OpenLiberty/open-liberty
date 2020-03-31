@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.EJBException;
+import javax.ejb.NoSuchObjectLocalException;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
@@ -129,6 +130,11 @@ public class RestartMissedTimerActionBean implements RestartMissedTimerAction {
                 Date nextTimeout = nextTimeouts.get(index);
                 assertNotNull("Unexpected null for getNextTimeout() on result #" + index, nextTimeout);
                 long interval = nextTimeout.getTime() - nextExpected;
+                // Interval needs to be > 0 and a multiple of INTERVAL.
+                // Normally would be INTERVAL, but on slow systems ONCE may skip to next future time.
+                if (interval > INTERVAL && interval % INTERVAL == 0) {
+                    interval = INTERVAL;
+                }
                 assertEquals("getNextTimeout() interval not expected on result #" + index, INTERVAL, interval);
                 nextExpected = nextTimeout.getTime();
             }
@@ -139,15 +145,27 @@ public class RestartMissedTimerActionBean implements RestartMissedTimerAction {
 
     @Timeout
     public void timeout(Timer timer) {
+        Date nextTimeout = null;
+        long timeRemaining = 0;
+        try {
+            nextTimeout = timer.getNextTimeout();
+            timeRemaining = timer.getTimeRemaining();
+        } catch (NoSuchObjectLocalException ex) {
+            // NoSuchObjectLocalException can occur if timer is running when cancelled
+            // by a concurrent thread. Possible when using bean managed transactions as
+            // persistent executor will not hold lock on timer in DB.
+            logger.info("RestartMissedTimerActionBean.timeout allowed ex : " + ex);
+        }
+
         CountDownLatch latch = timerLatch;
         if (latch != null && latch.getCount() > 0) {
-            nextTimeouts.add(timer.getNextTimeout());
-            timeRemains.add(timer.getTimeRemaining());
-            logger.info("RestartMissedTimerActionBean.timeout : " + timer.getNextTimeout() + ", " + timer.getTimeRemaining());
+            nextTimeouts.add(nextTimeout);
+            timeRemains.add(timeRemaining);
+            logger.info("RestartMissedTimerActionBean.timeout : " + nextTimeout + ", " + timeRemaining);
             timerLatch.countDown();
             firstTimeoutLatch.countDown();
         } else {
-            logger.info("RestartMissedTimerActionBean.timeout : " + timer.getNextTimeout() + ", " + timer.getTimeRemaining());
+            logger.info("RestartMissedTimerActionBean.timeout : " + nextTimeout + ", " + timeRemaining);
         }
     }
 

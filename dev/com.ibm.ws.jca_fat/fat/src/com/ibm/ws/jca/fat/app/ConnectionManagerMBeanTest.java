@@ -144,11 +144,6 @@ public class ConnectionManagerMBeanTest {
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
 
-        // TODO remove this temporary jar once libraryRef is made optional
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ignoreThisUselessLibrary.jar");
-        jar.addPackage("web.mdb.bindings"); // no login modules here
-        ShrinkHelper.exportToServer(server, "/", jar);
-
         originalServerConfig = server.getServerConfiguration().clone();
         server.addInstalledAppForValidation(fvtapp);
         server.startServer();

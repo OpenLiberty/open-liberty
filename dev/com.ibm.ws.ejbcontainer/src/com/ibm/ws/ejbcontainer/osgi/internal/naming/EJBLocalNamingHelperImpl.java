@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
     @Override
     public synchronized void bind(EJBBinding binding, String name) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (name.toLowerCase().startsWith("ejblocal:")) {
+            name = name.substring(9);
+        }
+
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "bind: " + name);
         }

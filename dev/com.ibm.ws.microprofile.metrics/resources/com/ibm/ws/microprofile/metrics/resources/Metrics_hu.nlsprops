@@ -113,9 +113,6 @@ threadpool.size.description=A sz\u00e1lt\u00e1rol\u00f3 m\u00e9rete.
 servlet.request.total.description=A szervlet l\u00e1togat\u00e1sainak sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 servlet.responseTime.total.description=A szervlet teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 
-RESTful.request.total.description=Az adott RESTful er\u0151forr\u00e1s met\u00f3dus felh\u00edv\u00e1sainak sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
-RESTful.responseTime.total.description=A RESTful er\u0151forr\u00e1s met\u00f3dus teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
-
 connectionpool.create.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta l\u00e9trehozott fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
 connectionpool.destroy.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta megsemmis\u00edtett fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
 connectionpool.managedConnections.description=A szabad, megosztott \u00e9s nem megosztott k\u00e9szletekben l\u00e9v\u0151 fel\u00fcgyelt kapcsolatok sz\u00e1ma.

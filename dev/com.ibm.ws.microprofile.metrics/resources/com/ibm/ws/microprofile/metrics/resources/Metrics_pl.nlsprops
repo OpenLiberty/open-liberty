@@ -113,9 +113,6 @@ threadpool.size.description=Wielko\u015b\u0107 puli w\u0105tk\u00f3w.
 servlet.request.total.description=Liczba odwiedzin w tym serwlecie od momentu uruchomienia serwera.
 servlet.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tego serwletu od momentu uruchomienia serwera. 
 
-RESTful.request.total.description=Liczba wywo\u0142a\u0144 tej metody zasobu RESTful od momentu uruchomienia serwera.
-RESTful.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera.
-
 connectionpool.create.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y utworzone od momentu utworzenia puli.
 connectionpool.destroy.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y zniszczone od momentu utworzenia puli.
 connectionpool.managedConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w pulach wolnych, wsp\u00f3\u0142u\u017cytkowanych i niewsp\u00f3\u0142u\u017cytkowanych.

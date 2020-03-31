@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,6 +170,11 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     @Test
     public void testTransactionSynchronizationRegistry() throws Exception {
         runTest(DerbyRAAnnoServlet);
+    }
+
+    @Test
+    public void testUnsharableConnectionAcrossEJBGlobalTran() throws Exception {
+        runTest(DerbyRAServlet);
     }
 
     @ExpectedFFDC("javax.transaction.xa.XAException") // intentionally caused failure to make the transaction in-doubt

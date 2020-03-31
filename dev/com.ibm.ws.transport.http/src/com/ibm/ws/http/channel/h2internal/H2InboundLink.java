@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+import com.ibm.ws.http2.Http2Connection;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -49,7 +50,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 /**
  *
  */
-public class H2InboundLink extends HttpInboundLink {
+public class H2InboundLink extends HttpInboundLink implements Http2Connection {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2InboundLink.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -66,15 +67,18 @@ public class H2InboundLink extends HttpInboundLink {
     LINK_STATUS linkStatus = LINK_STATUS.INIT;
     private ScheduledFuture<?> closeFuture = null;
     private H2ConnectionTimeout connTimeout = null;
-    Object linkStatusSync = new Object() {};
+    Object linkStatusSync = new Object() {
+    };
 
     READ_LINK_STATUS readLinkStatus = READ_LINK_STATUS.NOT_READING;
-    Object readLinkStatusSync = new Object() {};
+    Object readLinkStatusSync = new Object() {
+    };
 
     private int configuredInactivityTimeout = 0; // in milleseconds;
     private long lastWriteTime = 0;
     private int OutstandingWriteCount = 0;
-    private final Object OutstandingWriteCountSync = new Object() {};
+    private final Object OutstandingWriteCountSync = new Object() {
+    };
     private final int closeWaitForWritesWatchDogTimer = 5000;
     private final int closeWaitForReadWatchDogTimer = 5000;
     private final int STREAM_CLOSE_DELAY = 2000;
@@ -82,14 +86,18 @@ public class H2InboundLink extends HttpInboundLink {
     // keep track of the highest IDs processed
     private int highestClientStreamId = 0;
     private int highestLocalStreamId = -1; // this moves to 0 when the connection stream is established
+    private int goawayPromisedStreamId = 0; // keeps track of the ID used for a GOAWAY promised-stream-id
     private int openPushStreams = 0;
-    private final Object streamOpenCloseSync = new Object() {};
+    private final Object streamOpenCloseSync = new Object() {
+    };
     private int activeClientStreams = 0;
-    private final Object streamCounterSync = new Object() {};
+    private final Object streamCounterSync = new Object() {
+    };
 
     boolean connection_preface_sent = false; // empty SETTINGS frame has been sent
     boolean connection_preface_string_rcvd = false; // MAGIC string has been received
-    public volatile CountDownLatch initLock = new CountDownLatch(1) {};
+    public volatile CountDownLatch initLock = new CountDownLatch(1) {
+    };
 
     volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us
@@ -136,7 +144,8 @@ public class H2InboundLink extends HttpInboundLink {
     private boolean continuationFrameExpected = false;
     private boolean writeContinuationFrameExpected = false;
 
-    private final Object oneTimeEntrySync = new Object() {};
+    private final Object oneTimeEntrySync = new Object() {
+    };
     private boolean oneTimeEntry = false;
 
     private final H2RateState rateState = new H2RateState();
@@ -368,6 +377,7 @@ public class H2InboundLink extends HttpInboundLink {
 
         streamTable.put(streamID, streamProcessor);
         highestClientStreamId = streamID;
+        goawayPromisedStreamId = streamID;
 
         // add stream 0 to the table, in case we need to write out any control frames prior to initialization completion
         streamID = 0;
@@ -432,6 +442,20 @@ public class H2InboundLink extends HttpInboundLink {
                                             + highestClientStreamId);
             }
         }
+    }
+
+    /**
+     * Update the highest processed stream ID, used for the GOAWAY promised ID
+     */
+    protected void updateGoawayPromisedStreamId(int id) {
+        goawayPromisedStreamId = id;
+    }
+
+    /**
+     * Get the highest processed stream ID, to be used for the GOAWAY promised ID
+     */
+    protected int getGoawayPromisedStreamId() {
+        return goawayPromisedStreamId;
     }
 
     public void startAsyncRead(boolean newFrame) {
@@ -541,7 +565,8 @@ public class H2InboundLink extends HttpInboundLink {
 
         // A seperate thread for doing the callback without going to the TCP Channel for more data
 
-        protected AsyncCallback() {}
+        protected AsyncCallback() {
+        }
 
         @Override
         public void run() {
@@ -1324,6 +1349,7 @@ public class H2InboundLink extends HttpInboundLink {
      *
      * @return authority String
      */
+    @Override
     public String getAuthority() {
         return this.authority;
     }
@@ -1336,5 +1362,10 @@ public class H2InboundLink extends HttpInboundLink {
 
     protected int getconfiguredInactivityTimeout() {
         return configuredInactivityTimeout;
+    }
+
+    @Override
+    public int getPort() {
+        return this.myTSC.getLocalPort();
     }
 }

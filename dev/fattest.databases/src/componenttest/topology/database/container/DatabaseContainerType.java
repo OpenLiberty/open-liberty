@@ -68,6 +68,16 @@ public enum DatabaseContainerType {
     public String getDriverName() {
         return driverName;
     }
+    
+    /**
+     * Returns an anonymized JDBC Driver name for this testcontainer type.
+     * Example: 'driver2.jar'
+     *
+     * @return String - JDBC Driver Name
+     */
+    public String getAnonymousDriverName() {
+        return "driver" + this.ordinal() + ".jar";
+    }
 
     /**
      * Returns the testcontainer class associated with this testcontainer type.

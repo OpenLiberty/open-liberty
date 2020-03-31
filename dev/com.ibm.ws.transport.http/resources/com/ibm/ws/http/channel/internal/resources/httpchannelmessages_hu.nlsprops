@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2019 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -140,7 +140,7 @@ context.root.changed=CWWKT0028I: Webalkalmaz\u00e1s \u00e1thelyezve ({0}): {1}
 context.root.changed.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 context.root.changed.useraction=Semmit sem kell tennie.
 
-compression.duplicateType=CWWKT0029W: \u00dajb\u00f3li k\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {0} t\u00edpus hozz\u00e1ad\u00e1s\u00e1ra. Az alap\u00e9rtelmezett {1} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra helyette.
+compression.duplicateType=CWWKT0029W: \u00dajb\u00f3li k\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {0} t\u00edpus hozz\u00e1ad\u00e1s\u00e1ra. Az alap\u00e9rtelmezett {1} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra helyette. 
 compression.duplicateType.explanation=A megadott \u00e9rt\u00e9k m\u00e1r regisztr\u00e1lva van elfogadhat\u00f3 tartalomt\u00edpusak\u00e9nt a t\u00f6m\u00f6r\u00edt\u00e9shez.
 compression.duplicateType.useraction=Az elfogadhat\u00f3 k\u00f3dol\u00e1sok \u00e9rt\u00e9k\u00e9nek meghat\u00e1roz\u00e1sakor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden \u00e9rt\u00e9k egyedi. 
 
@@ -159,3 +159,17 @@ compression.duplicateOverwriteAndAdd.useraction=Ha az alap\u00e9rtelmezett konfi
 compression.unsupportedAlgorithm=CWWKT0033W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {0} be\u00e1ll\u00edt\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3 el\u0151nyben r\u00e9szes\u00edtett algoritmusak\u00e9nt. A t\u00e1mogatott \u00e9rt\u00e9kek: gzip, x-gzip, zlib, deflate, identity \u00e9s none. Helyette az alap\u00e9rtelmezett {1} konfigur\u00e1ci\u00f3 ker\u00fcl alkalmaz\u00e1sra.
 compression.unsupportedAlgorithm.explanation=A konfigur\u00e1ci\u00f3 nem t\u00e1mogatott algoritmust pr\u00f3b\u00e1l be\u00e1ll\u00edtani a t\u00f6m\u00f6r\u00edt\u00e9shez a kiszolg\u00e1l\u00f3 \u00e1ltal el\u0151nyben r\u00e9szes\u00edtett algoritmusk\u00e9nt. 
 compression.unsupportedAlgorithm.useraction= Az \u00e9rt\u00e9k meghat\u00e1roz\u00e1sakor biztos\u00edtsa, hogy az gzip, x-gzip, deflate, zlib, identity vagy none \u00e9rt\u00e9kre legyen be\u00e1ll\u00edtva.
+
+decompression.tolerance.reached=CWWKT0034E: A HTTP csatorna a toler\u00e1lt ar\u00e1nyn\u00e1l nagyobb m\u00e9ret\u0171 t\u00f6rzs kibont\u00e1s\u00e1ra tett k\u00eds\u00e9rletet.
+decompression.tolerance.reached.explanation=A rendszer el\u00e9rte a kibont\u00e1si ciklusok maxim\u00e1lis sz\u00e1m\u00e1t, ami a be\u00e1ll\u00edtott korl\u00e1tn\u00e1l nagyobb kibont\u00e1si ar\u00e1nyt eredm\u00e9nyezett. A kibont\u00e1si korl\u00e1tot a decompressionRatioLimit httpOption attrib\u00fatum hat\u00e1rozza meg.
+decompression.tolerance.reached.useraction=Ha ez a kiv\u00e9tel \u00e9rv\u00e9nyes k\u00e9r\u00e9st\u00f6rzs\u00f6n t\u00f6rt\u00e9nik, akkor konfigur\u00e1lja \u00fajra a decompressionTolerance \u00e9s a decompressionRatioLimit httpOption attrib\u00fatumokat, hogy a megfelel\u0151 kibont\u00e1si eredm\u00e9nyeket \u00e9rje el. 
+cookies.samesite.duplicateName=CWWKT0035W: T\u00f6bbsz\u00f6r szerepl\u0151 cookie n\u00e9v vagy minta [{0}] tal\u00e1lhat\u00f3 a(z) [{1}] SameSite konfigur\u00e1ci\u00f3ban. A(z) [{0}] cookie nevet vagy mint\u00e1t minden konfigur\u00e1ci\u00f3s lista figyelmen k\u00edv\u00fcl hagyja. A ''lax'', ''none'' \u00e9s ''strict'' konfigur\u00e1ci\u00f3k \u00e1ltal meghat\u00e1rozott cookie nevek csak a h\u00e1rom konfigur\u00e1ci\u00f3 egyik\u00e9ben hat\u00e1rozhat\u00f3k meg. 
+cookies.samesite.duplicateName.explanation=A megadott \u00e9rt\u00e9ket m\u00e1r megtal\u00e1lta a konfigur\u00e1ci\u00f3 \u00e9s lek\u00e9pezte egy SameSite \u00e9rt\u00e9kre.
+cookies.samesite.duplicateName.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a cookie nevek \u00e9s mint\u00e1k egyediek a 'lax', 'none' \u00e9s 'strict' konfigur\u00e1ci\u00f3s list\u00e1kra vonatkoz\u00f3an.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: A(z) [{0}] \u00e9rt\u00e9k nem t\u00e1mogatott helyettes\u00edt\u0151 karakter haszn\u00e1lat\u00e1t k\u00eds\u00e9relte meg. Ehhez az \u00e9rt\u00e9khez nincs be\u00e1ll\u00edtva a SameSite konfigur\u00e1ci\u00f3.
+cookies.samesite.unsupportedWildcard.explanation=A helyettes\u00edt\u0151 karakter (*) nem t\u00e1mogatott m\u00f3don ker\u00fclt felhaszn\u00e1l\u00e1sra. \u00d6n\u00e1ll\u00f3 \u00e9rt\u00e9kk\u00e9nt vagy tetsz\u0151leges sz\u00e1m\u00fa cookie n\u00e9v el\u0151tag ut\u00e1n egyetlen helyettes\u00edt\u0151 karakter (*) t\u00e1mogatott.
+cookies.samesite.unsupportedWildcard.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a 'lax', 'none' \u00e9s 'strict' list\u00e1k mint\u00e1nk\u00e9nt csak egyetlen helyettes\u00edt\u0151 karaktert (*) haszn\u00e1lnak. Tov\u00e1bb\u00e1 ennek a karakternek a haszn\u00e1lata csak a k\u00f6vetkez\u0151 k\u00e9t felt\u00e9tellel t\u00e1mogatott: \u00f6n\u00e1ll\u00f3 \u00e9rt\u00e9k vagy cookie n\u00e9v el\u0151tagok ut\u00e1n.
+cookies.samesite.knownDuplicateName=CWWKT0037W: A(z) [{0}] cookie n\u00e9v vagy minta, amely t\u00f6bbsz\u00f6r szerepl\u0151k\u00e9nt van megjel\u00f6lve, a(z) [{1}] SameSite konfigur\u00e1ci\u00f3ban tal\u00e1lhat\u00f3. A(z) [{0}] cookie n\u00e9v vagy minta figyelmen k\u00edv\u00fcl marad. A ''lax'', ''none'' \u00e9s ''strict'' konfigur\u00e1ci\u00f3k \u00e1ltal meghat\u00e1rozott cookie nevek csak a h\u00e1rom konfigur\u00e1ci\u00f3 egyik\u00e9ben hat\u00e1rozhat\u00f3k meg. 
+cookies.samesite.knownDuplicateName.explanation=A megadott \u00e9rt\u00e9ket m\u00e1r megtal\u00e1lta a konfigur\u00e1ci\u00f3 \u00e9s lek\u00e9pezte egy SameSite \u00e9rt\u00e9kre.
+cookies.samesite.knownDuplicateName.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a cookie nevek \u00e9s mint\u00e1k egyediek a 'lax', 'none' \u00e9s 'strict' konfigur\u00e1ci\u00f3s list\u00e1kra vonatkoz\u00f3an.

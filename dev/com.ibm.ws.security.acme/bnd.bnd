@@ -15,8 +15,6 @@
 
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 bSymbolicName=com.ibm.ws.security.acme
 
@@ -26,22 +24,24 @@ Bundle-Description: This feature adds support for ACME and LetsEncrypt (and othe
 
 WS-TraceGroup: ACME
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"   
 
 Web-ContextPath: /.well-known/acme-challenge
 
 IBM-Web-Extension-Processing-Disabled: false
 
+Import-Package: !*.internal.*, *
+
 Export-Package: \
     com.ibm.ws.security.acme;version="1.0.0"
  
 Private-Package: \
+    com.ibm.ws.config.xml.internal.nester, \
     com.ibm.ws.security.acme.internal.*,\
     org.bouncycastle.*,\
     org.shredzone.*,\
-    org.jose4j.*
+    org.jose4j.*,\
+    com.ibm.ws.security.acme.resources
 
-# TODO We should determine impact of multiple versions of SLF4J.
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\
     @${repo;org.shredzone.acme4j:acme4j-client;2.7;EXACT},\
@@ -49,12 +49,14 @@ Include-Resource: \
     @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT},\
     @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
     @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
-    @${repo;org.slf4j:slf4j-api;1.7.26;EXACT}
+    org=${bin}/org
 
 -dsannotations: \
     com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet, \
+    com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler, \
     com.ibm.ws.security.acme.internal.AcmeProviderImpl
 
+# TODO Determine effect of using SLF4J 1.7.7 vs 1.7.26, which is used by Acme4J 2.7.
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
@@ -82,12 +84,19 @@ Include-Resource: \
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.org.slf4j.api.1.7.7,\
 	org.shredzone.acme4j:acme4j-client;version=2.7,\
 	org.shredzone.acme4j:acme4j-utils;version=2.7,\
 	org.bouncycastle:bcprov-jdk15on;version=1.61,\
 	org.bouncycastle:bcpkix-jdk15on;version=1.61,\
-	org.slf4j:slf4j-api;version=1.7.26,\
-	org.bitbucket.b_c:jose4j;version=0.6.5
+	org.bitbucket.b_c:jose4j;version=0.6.5,\
+	com.ibm.ws.app.manager;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.crypto.certificateutil;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.ws.rest.handler;version=latest,\
+	com.ibm.ws.management.security;version=latest
+	
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

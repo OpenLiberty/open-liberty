@@ -76,9 +76,6 @@
         <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
         <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
       </ldapCache>
-      <failoverServers name="failoverLdapServers">
-		   <server host="${ldap.server.6.name}" port="${ldap.server.6.ssl.port}"/>
-        </failoverServers>
 	</ldapRegistry>
 	
     <federatedRepository maxSearchResults="2000" searchTimeout="400000">
@@ -99,8 +96,8 @@
 	<keyStore id="LDAPTrustStore" location="${server.config.dir}/trust.p12" type="PKCS12" password="{xor}CDo9Hgw=" /-->
 	
 	<!-- PKCS12 keystore does not work with SUN JDK, so using JKS -->
-	<keyStore id="LDAPKeyStore" location="${server.config.dir}/key.jks" type="JKS" password="{xor}CDo9Hgw=" />
-	<keyStore id="LDAPTrustStore" location="${server.config.dir}/trust.jks" type="JKS" password="{xor}CDo9Hgw=" />
+	<keyStore id="LDAPKeyStore" location="${server.config.dir}/keystore.p12" type="PKCS12" password="LDAPpassword" />
+	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
 	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
 	<keyStore id="defaultKeyStore" location="defaultkey.jks" type="JKS" password="default" />

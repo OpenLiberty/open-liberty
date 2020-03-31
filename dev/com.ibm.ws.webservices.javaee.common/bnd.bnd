@@ -16,6 +16,7 @@ Bundle-Name: common support (JSR109) for WebServices
 Bundle-Description: common support (JSR109) for WebServices, version ${bVersion}
 
 -dsannotations: com.ibm.ws.webservices.javaee.common.internal.WebservicesXMLEndpointInfoConfigurator
+-nouses: true
 
 Private-Package: \
  com.ibm.ws.webservices.javaee.common.internal, \

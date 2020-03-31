@@ -19,7 +19,7 @@
     <sslDefault sslRef="supportedClientAuthenticationSSLConfig"/>
     <ssl id="supportedClientAuthenticationSSLConfig" keyStoreRef="defaultKeyStore" clientAuthenticationSupported="true"/>
     
-    <orb id="defaultOrb">-
+    <orb id="defaultOrb"  nameService="corbaloc::localhost:${bvt.prop.IIOP}/NameService">
         <clientPolicy.clientContainerCsiv2>
             <layers>
                 <authenticationLayer password="mypwd" realm="BasicRealm" user="bob" establishTrustInClient="Supported" mechanisms="GSSUP"/>

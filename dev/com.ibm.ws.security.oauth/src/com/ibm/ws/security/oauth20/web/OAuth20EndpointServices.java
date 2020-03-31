@@ -395,6 +395,7 @@ public class OAuth20EndpointServices {
             throw new OidcServerException("403", OIDCConstants.ERROR_ACCESS_DENIED, HttpServletResponse.SC_FORBIDDEN);
         }
         return true;
+
     }
 
     void serveClientMetatypeRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -764,6 +765,11 @@ public class OAuth20EndpointServices {
 
         if (options != null) {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
+        }
+
+        if (provider.isTrackRelyingParties()) {
+            RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response);
+            rpTracker.trackRelyingParty(clientId);
         }
 
         consent.handleConsent(provider, request, prompt, clientId);

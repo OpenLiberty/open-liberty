@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 
-import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.BetaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecord;
 
 /**
@@ -53,11 +52,10 @@ public class IncomingKafkaMessage<T> implements Message<T> {
         if (unwrapType == null) {
             throw new IllegalArgumentException("The target class must not be `null`");
         }
-        if (BetaUtils.USE_KAFKA_PRODUCER_RECORD) { //TODO remove guard before GA
-            if (org.apache.kafka.clients.consumer.ConsumerRecord.class.equals(unwrapType)) {
-                return unwrapType.cast(this.consumerRecord.getDelegate());
-            }
+        if (org.apache.kafka.clients.consumer.ConsumerRecord.class.equals(unwrapType)) {
+            return unwrapType.cast(this.consumerRecord.getDelegate());
         }
+
         try {
             return unwrapType.cast(this);
         } catch (ClassCastException e) {

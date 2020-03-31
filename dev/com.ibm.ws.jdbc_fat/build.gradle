@@ -16,7 +16,6 @@ configurations {
 dependencies {
   db2 'com.ibm.db2:jcc:11.1.4.4'
   derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
-  requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
 }
  
 //Anonymous drivers
@@ -30,14 +29,6 @@ task copyAnonymousDrivers(type: Copy) {
   rename 'ojdbc8_g.*.jar', 'driver3.jar'
   rename 'postgresql.*.jar', 'driver4.jar'
   rename 'mssql-jdbc.*.jar', 'driver5.jar'
-}
- 
-//Derby client jar
-task addDerbyClient(type: Copy) {
-  shouldRunAfter jar
-  from configurations.derbyClient
-  into new File(autoFvtDir, 'publish/shared/resources/derby')
-  rename 'derbyclient.*.jar', 'derbyclient.jar'
 }
 
 //Automatically discovered derby jar
@@ -57,8 +48,8 @@ task copyDB2(type: Copy) {
  }
 
  addRequiredLibraries {
+  //Database drivers
   dependsOn addDerby
-  dependsOn addDerbyClient
   dependsOn copyAnonymousDrivers
   dependsOn copyAutomaticDerby
   dependsOn copyDB2

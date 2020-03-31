@@ -16,8 +16,6 @@ src: \
 	test-applications/converterApp/src,\
 	test-applications/converterApp/resources
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 

@@ -116,9 +116,6 @@ threadpool.size.description=Dimensiunea pool-ului de fire.
 servlet.request.total.description=Num\u0103rul de vizite la acest servlet de la pornirea serverului.
 servlet.responseTime.total.description=Timpul total de r\u0103spuns al acestui servlet de la pornirea serverului.
 
-RESTful.request.total.description=Num\u0103rul de invoc\u0103ri ale acestei metode de resurs\u0103 RESTful de la pornirea serverului.
-RESTful.responseTime.total.description=Timpul total de r\u0103spuns pentru aceast\u0103 metod\u0103 de resurs\u0103 RESTful de la pornirea serverului.
-
 connectionpool.create.total.description=Num\u0103rul total de conexiuni gestionate care au fost create de la crearea pool-ului.
 connectionpool.destroy.total.description=Num\u0103rul total de conexiuni gestionate care au fost distruse de la crearea pool-ului.
 connectionpool.managedConnections.description=Num\u0103rul total de conexiuni gestionate \u00een pool-urile libere, partajate \u015fi nepartajate.

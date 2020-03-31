@@ -13,7 +13,7 @@ dependencies {
   requiredLibs project(':fattest.simplicity'),
     project(':com.ibm.ws.security.registry'),
     project(':com.ibm.ws.security.registry_test.servlet'),
-    'com.unboundid:unboundid-ldapsdk:4.0.9',
+    'com.unboundid:unboundid-ldapsdk:4.0.14',
     project(':com.ibm.ws.com.unboundid')
 }
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'

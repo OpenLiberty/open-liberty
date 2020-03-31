@@ -31,6 +31,11 @@ rootProject.ext.rasInstrumentationTaskdef = { ant ->
                 classpath: bnd('repo.rasInstrumentation.path'))
 }
 
+rootProject.ext.generateChecksums = { ant ->
+    ant.taskdef(name: 'calcChecksums', classname: 'com.ibm.ws.wlp.cs.GenerateChecksums',
+                classpath: bnd('repo.generateChecksums.path'))
+}
+
 rootProject.ext.nlsTaskdef = { ant ->
     ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml',
                 classpath: bnd('repo.nlsTasks.path'))

@@ -40,7 +40,7 @@ public class PersistentExecutorTest extends FATServletClient {
     @Server("com.ibm.ws.concurrent.persistent.fat")
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
-    
+
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
@@ -59,10 +59,12 @@ public class PersistentExecutorTest extends FATServletClient {
     	//Get driver type
     	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
+    	//testContainer.stop();
+    	//testContainer.start();
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
-		//Add application to server
+	//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         server.startServer();

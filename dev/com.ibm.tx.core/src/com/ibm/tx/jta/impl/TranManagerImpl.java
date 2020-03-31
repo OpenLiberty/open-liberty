@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2013 IBM Corporation and others.
+ * Copyright (c) 2002, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,7 @@ public class TranManagerImpl
     public void begin(int timeout) throws NotSupportedException, SystemException /* @512190C */
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "begin (SPI)");
+            Tr.entry(tc, "begin", "(SPI)");
 
         if (tx == null) {
             tx = createNewTransaction(timeout);
@@ -82,14 +82,14 @@ public class TranManagerImpl
             final NotSupportedException nse = new NotSupportedException("Nested transactions are not supported.");
             FFDCFilter.processException(nse, "com.ibm.tx.jta.impl.TranManagerImpl.begin", "135", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "begin (SPI)", nse);
+                Tr.exit(tc, "begin", new Object[] {"(SPI)", nse});
             throw nse;
         }
 
         invokeEventListener(tx, UOWEventListener.POST_BEGIN, null);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "begin (SPI)");
+            Tr.exit(tc, "begin", "(SPI)");
     }
 
     //-------------------------------------------------------------------------
@@ -145,7 +145,7 @@ public class TranManagerImpl
                     SecurityException, IllegalStateException, SystemException
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "commit (SPI)");
+            Tr.entry(tc, "commit", "(SPI)");
 
         if (tx == null)
         {
@@ -153,7 +153,7 @@ public class TranManagerImpl
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.commit", "167", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "commit (SPI)", ise);
+                Tr.exit(tc, "commit", new Object[] {"(SPI)", ise});
             throw ise;
         }
 
@@ -168,14 +168,14 @@ public class TranManagerImpl
             invokeEventListener(completingTx, UOWEventListener.POST_END, null);
 
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "commit (SPI)");
+                Tr.exit(tc, "commit", "(SPI)");
         }
     }
 
     public void rollback() throws IllegalStateException, SecurityException, SystemException
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "rollback (SPI)");
+            Tr.entry(tc, "rollback", "(SPI)");
 
         if (tx == null)
         {
@@ -183,7 +183,7 @@ public class TranManagerImpl
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.rollback", "193", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "rollback (SPI)", ise);
+                Tr.exit(tc, "rollback", new Object[] {"(SPI)", ise});
             throw ise;
         }
 
@@ -198,14 +198,14 @@ public class TranManagerImpl
             invokeEventListener(completingTx, UOWEventListener.POST_END, null);
 
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "rollback (SPI)");
+                Tr.exit(tc, "rollback", "(SPI)");
         }
     }
 
     public Transaction suspend()
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "suspend (SPI)", this);
+            Tr.entry(tc, "suspend", new Object[] {"(SPI)", this});
 
         TransactionImpl suspended = null;
 
@@ -226,14 +226,14 @@ public class TranManagerImpl
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "suspend (SPI)", suspended);
+            Tr.exit(tc, "suspend", new Object[] {"(SPI)", suspended});
         return suspended;
     }
 
     public void resume(Transaction t) throws InvalidTransactionException, IllegalStateException
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "resume (SPI)", t);
+            Tr.entry(tc, "resume", new Object[] {"(SPI)", t});
 
         if (tx != null)
         {
@@ -241,7 +241,7 @@ public class TranManagerImpl
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.resume", "249", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "resume (SPI)", ise);
+                Tr.exit(tc, "resume", new Object[] {"(SPI)", ise});
             throw ise;
         }
 
@@ -279,7 +279,7 @@ public class TranManagerImpl
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception caught checking transaction state", e);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "resume (SPI)");
+                Tr.exit(tc, "resume", "(SPI)");
 
             throw new InvalidTransactionException();
         }
@@ -292,13 +292,13 @@ public class TranManagerImpl
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "resume (SPI)");
+            Tr.exit(tc, "resume", "(SPI)");
     }
 
     public void setRollbackOnly() throws IllegalStateException
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setRollbackOnly (SPI)");
+            Tr.entry(tc, "setRollbackOnly", "(SPI)");
 
         if (tx == null)
         {
@@ -306,7 +306,7 @@ public class TranManagerImpl
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.setRollbackOnly", "303", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "setRollbackOnly (SPI)", ise);
+                Tr.exit(tc, "setRollbackOnly", new Object[] {"(SPI)", ise});
             throw ise;
         }
 
@@ -316,14 +316,14 @@ public class TranManagerImpl
         } finally
         {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "setRollbackOnly (SPI)");
+                Tr.exit(tc, "setRollbackOnly", "(SPI)");
         }
     }
 
     public void setTransactionTimeout(int timeout) throws SystemException
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTransactionTimeout (SPI)", timeout);
+            Tr.entry(tc, "setTransactionTimeout", new Object[] {"(SPI)", timeout});
 
         if (timeout > 0)
         {
@@ -350,13 +350,13 @@ public class TranManagerImpl
             final SystemException se = new SystemException("Transaction timeout value must be >= 0");
             FFDCFilter.processException(se, "com.ibm.tx.jta.impl.TranManagerImpl.setTransactionTimeout", "206", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "setTransactionTimeout (SPI)", se);
+                Tr.exit(tc, "setTransactionTimeout", new Object[] {"(SPI)", se});
             throw se;
         }
         // Note: TransactionImpl will later check against maximumTransactionTimeout - its is done there as it is common for CMT/BMT
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setTransactionTimeout (SPI)", txTimeout);
+            Tr.exit(tc, "setTransactionTimeout", new Object[] {"(SPI)", txTimeout});
     }
 
     public int getStatus()

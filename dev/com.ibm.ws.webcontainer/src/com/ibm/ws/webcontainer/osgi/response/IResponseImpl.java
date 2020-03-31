@@ -83,23 +83,23 @@ public class IResponseImpl implements IResponse
      */
     WebContainerRequestState requestState = WebContainerRequestState.getInstance(false);
     if (requestState != null) {
-        String cookieAttribute = requestState.getCookieAttribute(cookieName);
-        if (cookieAttribute != null) {
+        String cookieAttributes = requestState.getCookieAttributes(cookieName);
+        if (cookieAttributes != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
-                Tr.debug(tc, methodName, "cookieName: " + cookieName + " cookieAttribute: " + cookieAttribute);
+                Tr.debug(tc, methodName, "cookieName: " + cookieName + " cookieAttribute: " + cookieAttributes);
             }
 
-            if(cookieAttribute.contains("=")) {
+            if(cookieAttributes.contains("=")) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
                     Tr.debug(tc, methodName, "Setting the cookieAttribute on the HttpCookie");
                 }
 
-                String[] attribute = cookieAttribute.split("=");
+                String[] attribute = cookieAttributes.split("=");
                 hc.setAttribute(attribute[0], attribute[1]);
             }
 
             // Remove the Cookie attribute that was used as it is no longer needed.
-            requestState.removeCookieAttribute(cookieName);
+            requestState.removeCookieAttributes(cookieName);
         }
     }
 

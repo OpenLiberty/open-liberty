@@ -1,7 +1,7 @@
 <server>
     <featureManager>
     	<feature>mpMetrics-2.3</feature>
-	    <feature>jaxrsMonitor-1.0</feature>
+	    <feature>monitor-1.0</feature>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
         <feature>webProfile-8.0</feature>

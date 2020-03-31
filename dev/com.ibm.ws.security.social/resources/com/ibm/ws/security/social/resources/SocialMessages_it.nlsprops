@@ -82,7 +82,7 @@ KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=Verificare che il valore API ut
 # 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=User API response string
 KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: Il valore per la chiave [{0}] nella risposta API utente Kubernetes \u00e8 previsto che sia di tipo {1}, ma il valore \u00e8 di tipo {2}. La risposta API utente completa \u00e8 [{3}].
 KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=Il valore per la chiave specificata non aveva il tipo corretto. La risposta dell'API utente potrebbe essere malformata o l'API utente ha restituito una risposta con una struttura imprevista.
-KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Controllare la struttura della risposta dall'API utente. Controllare la risposta dall'API utente per determinare se si \u00e8 verificato un errore.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Controllare la struttura della risposta dall'API utente. Controllare la risposta dall'API utente per verificare se si \u00e8 verificato un errore.
 
 # 0=Error string from user API response
 KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: L''API utente Kubernetes ha riscontrato un errore mentre stava elaborando il token di accesso. L''errore \u00e8 [{0}]
@@ -95,7 +95,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=La risposta
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verificare che l'attributo di configurazione specificato nel messaggio sia configurato correttamente. Assicurarsi che il valore dell'attributo di configurazione corrisponda alla voce nella risposta API utente che deve essere utilizzata come nome utente.
 
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La risposta dall''API utente account di servizio non pu\u00f2 essere elaborata: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La seguente risposta dall''API utente non pu\u00f2 essere elaborata: {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Impossibile ottenere le informazioni sull'account di servizio perch\u00e9 si \u00e8 verificato un altro errore.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Se il messaggio contiene un altro messaggio di errore, consultare l'azione utente per tale messaggio. In alternativa, consultare i log del server per altri messaggi di errore che possono indicare dove si \u00e8 verificato l'altro errore.
 
@@ -118,6 +118,16 @@ JSON_MISSING_KEY.useraction=Controllare i dati JSON per determinare se la chiave
 JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Il valore per la chiave [{0}] nei dati JSON deve essere di tipo {1}, ma il valore \u00e8 di tipo {2}. I dati JSON sono [{3}].
 JSON_ENTRY_WRONG_JSON_TYPE.explanation=Il valore per la chiave specificata non aveva il tipo corretto. I dati JSON potrebbero avere un formato non corretto o una struttura imprevista.
 JSON_ENTRY_WRONG_JSON_TYPE.useraction=Controllare la struttura dei dati JSON. Controllare i dati JSON per determinare se si \u00e8 verificato un errore.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: La risposta dall''API di introspeztione token non pu\u00f2 essere elaborata: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Impossibile ottenere le informazioni sull'utente autenticato perch\u00e9 si \u00e8 verificato un altro errore.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Se il messaggio contiene un altro messaggio di errore, consultare l'azione utente per tale messaggio. In alternativa, consultare i log del server per altri messaggi di errore che possono indicare dove si \u00e8 verificato l'altro errore.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La richiesta di introspezione token non \u00e8 riuscita perch\u00e9 il token incluso nella richiesta non \u00e8 valido. La risposta completa \u00e8 {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Il server di autorizzazione non ha emesso il token, il proprietario della risorsa ha revocato il token, il token \u00e8 scaduto o si \u00e8 verificato un altro errore.
+INTROSPECT_USER_API_INACTIVE.useraction=Controllare la risposta inclusa nel messaggio. Verificare che venga utilizzato l'endpoint di introspezione token corretto. Verificare che il token sia valido e che se ne possa fare l'introspezione.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configurazione del login social [{0}] \u00e8 stata elaborata correttamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configurazione del login social indicata \u00e8 stata elaborata correttamente.

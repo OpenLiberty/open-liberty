@@ -113,9 +113,6 @@ threadpool.size.description=O tamanho do conjunto de encadeamentos.
 servlet.request.total.description=O n\u00famero de visitas a esse servlet desde o in\u00edcio do servidor.
 servlet.responseTime.total.description=O tempo total de resposta desse servlet desde o in\u00edcio do servidor.
 
-RESTful.request.total.description=O n\u00famero de chamadas desse m\u00e9todo de recurso do RESTful desde o in\u00edcio do servidor.
-RESTful.responseTime.total.description=O tempo de resposta total para este m\u00e9todo de recurso do RESTful desde o in\u00edcio do servidor.
-
 connectionpool.create.total.description=O n\u00famero total de conex\u00f5es gerenciadas criadas desde a cria\u00e7\u00e3o do conjunto.
 connectionpool.destroy.total.description=O n\u00famero total de conex\u00f5es gerenciadas eliminadas desde a cria\u00e7\u00e3o do conjunto.
 connectionpool.managedConnections.description=O n\u00famero de conex\u00f5es gerenciadas em conjuntos livres, compartilhados e n\u00e3o compartilhados.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verificare che tutte le opzion
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Non \u00e8 possibile specificare una voce jaasLoginContext {0} come voce di configurazione JAAS nel file server.xml, nel file jaas.conf o in entrambi.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Il runtime utilizza una configurazione Krb5LoginModule predefinita e la configurazione SPNEGO nel file server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Rimuovere la voce jaasLoginContext dal file server.xml oppure consentire al runtime di utilizzare la voce predefinita.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Il modulo di login personalizzato JAAS {0} non \u00e8 stato caricato perch\u00e9 l''elemento di configurazione {1} specifica entrambi gli attributi libraryRef e classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=\u00c8 necessario specificare un solo attributo, libraryRef o classProviderRef, per indicare la risorsa utente da cui caricare il modulo di login personalizzato JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Rimuovere l'attributo libraryRef o l'attributo classProviderRef, quello dei due che non contiene la classe modulo di login personalizzato JAAS.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Il modulo di login personalizzato JAAS {0} non \u00e8 stato trovato perch\u00e9 l''elemento di configurazione {1} non specifica l''attributo libraryRef o classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=\u00c8 necessario specificare esattamente un attributo, libraryRef o classProviderRef, per indicare la risorsa utente da cui caricare il modulo di login personalizzato JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Specificare o l'attributo libraryRef o l'attributo classProviderRef per indicare l'ubicazione da cui caricare la classe modulo di login personalizzato JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: La classe modulo di login personalizzato JAAS {0} non \u00e8 stata trovata nella risorsa utente {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=L'applicazione o l'adattatore di risorse specificati non contengono la classe modulo di login personalizzato JAAS richiesta o essa \u00e8 presente nell'applicazione ma si trova in un'ubicazione da cui non pu\u00f2 essere caricata.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Assicurarsi che la classe modulo di login personalizzato JAAS configurata e il relativo nome package siano corretti. Se \u00e8 specificata un'applicazione, la classe modulo di login deve essere contenuta nell'applicazione, in un JAR di primo livello o in un modulo adattatore di risorse.

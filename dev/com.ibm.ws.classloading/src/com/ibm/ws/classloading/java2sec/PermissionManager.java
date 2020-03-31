@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.java2sec;
 
-import java.io.IOException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,8 +51,6 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.url.URLStreamHandlerService;
-import org.osgi.service.component.annotations.Reference;
-
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -61,9 +58,6 @@ import com.ibm.ws.kernel.boot.security.PermissionsCombiner;
 import com.ibm.ws.kernel.boot.security.WLPDynamicPolicy;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
-
 
 public class PermissionManager implements PermissionsCombiner {
 
@@ -73,9 +67,6 @@ public class PermissionManager implements PermissionsCombiner {
     private static final TraceComponent tc = Tr.register(PermissionManager.class);
     
     private BundleContext bundleContext;
-    
-    private static final Class<?> CLASS_NAME = PermissionManager.class;
-
 
     /**
      * Class Loader
@@ -147,28 +138,14 @@ public class PermissionManager implements PermissionsCombiner {
 
     private Map<String, ArrayList<Permission>> permissionXMLPermissionMap = new HashMap<String, ArrayList<Permission>>();
 
-    private final boolean java2SecurityEnabled;
-
-    public PermissionManager() {
-        this (System.getSecurityManager() != null);
-    }
-
-    // Used for test to force java2SecurityEnabled path
-    PermissionManager(boolean java2SecurityEnabled) {
-        this.java2SecurityEnabled = java2SecurityEnabled;
-    }
-    
-
     @Activate
     protected void activate(ComponentContext cc) {
         bundleContext = cc.getBundleContext();
         isServer = "server".equals(bundleContext.getProperty("wlp.process.type"));
 
-        if (java2SecurityEnabled) {
-            permissions.activate(cc);
-            initializePermissions();
-            setAsDynamicPolicyPermissionCombiner(this);
-        }
+        permissions.activate(cc);
+        initializePermissions();
+        setAsDynamicPolicyPermissionCombiner(this);
     }
 
     private void setAsDynamicPolicyPermissionCombiner(PermissionsCombiner effectivePolicy) {
@@ -186,11 +163,9 @@ public class PermissionManager implements PermissionsCombiner {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        if (java2SecurityEnabled) {        
-            permissions.deactivate(cc);
-            clearPermissions();
-            setAsDynamicPolicyPermissionCombiner(null);
-        }
+        permissions.deactivate(cc);
+        clearPermissions();
+        setAsDynamicPolicyPermissionCombiner(null);
     }
 
     protected void setPermission(ServiceReference<JavaPermissionsConfiguration> permission) {
@@ -202,11 +177,9 @@ public class PermissionManager implements PermissionsCombiner {
      */
     protected synchronized void unsetPermission(ServiceReference<JavaPermissionsConfiguration> permission) {
         permissions.removeReference(permission);
-        if (java2SecurityEnabled) {
-            if (wsjarUrlStreamHandlerAvailable) {
-                clearPermissions();
-                initializePermissions();
-            }
+        if (wsjarUrlStreamHandlerAvailable) {
+            clearPermissions();
+            initializePermissions();
         }
     }
 
@@ -221,11 +194,9 @@ public class PermissionManager implements PermissionsCombiner {
     protected synchronized void updatedConfiguration(ServiceReference<JavaPermissionsConfiguration> permission) {
         permissions.removeReference(permission);
         permissions.addReference(permission);
-        if (java2SecurityEnabled) {
-            if (wsjarUrlStreamHandlerAvailable) {
-                clearPermissions();
-                initializePermissions();
-            }
+        if (wsjarUrlStreamHandlerAvailable) {
+            clearPermissions();
+            initializePermissions();
         }
     }
 
@@ -396,7 +367,7 @@ public class PermissionManager implements PermissionsCombiner {
     private ProtectionDomain createProtectionDomain(CodeSource codeSource, ArrayList<Permission> permissions) {
         PermissionCollection perms = new Permissions();
 
-        if (!java2SecurityEnabled) {
+        if (!java2SecurityEnabled()) {
             perms.add(new AllPermission());
         } else {
             for (Permission permission : permissions) {
@@ -413,7 +384,9 @@ public class PermissionManager implements PermissionsCombiner {
      * @param permissionClass
      * @param target
      * @param action
-     * @param principalNamegg
+     * @param principalName
+     * @param principalType
+     * @param credential
      * @return
      */
     public Permission createPermissionObject(String permissionClass, String target, String action, String credential, String principalType, String principalName, String fileName) {
@@ -623,7 +596,6 @@ public class PermissionManager implements PermissionsCombiner {
             effectivePermissions.addAll(permissionXMLPermissionMap.get(original_codeBase));
         }
 
-        
         // Iterate over the permissions and only add those that are not restricted
         for (Permission permission : permissions) {
             if (!isRestricted(permission)) {
@@ -674,6 +646,15 @@ public class PermissionManager implements PermissionsCombiner {
         return false;
     }
 
+    private boolean java2SecurityEnabled() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Adds a permission from the permissions.xml file for the given CodeSource.
      * 
@@ -698,7 +679,6 @@ public class PermissionManager implements PermissionsCombiner {
             if (permissionXMLPermissionMap.containsKey(codeBase)) {
                 permissions = permissionXMLPermissionMap.get(codeBase);
                 permissions.add(permission);
-                
             } else {
                 permissions = new ArrayList<Permission>();
                 permissions.add(permission);

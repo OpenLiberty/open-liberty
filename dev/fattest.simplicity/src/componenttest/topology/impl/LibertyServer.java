@@ -5516,6 +5516,11 @@ public class LibertyServer implements LogMonitorClient {
     public void startServer(boolean cleanStart, boolean validateApps) throws Exception {
         startServerAndValidate(true, cleanStart, validateApps);
     }
+    
+    public void deleteAllDropinApplications() throws Exception {
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
+        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
+    }
 
     /**
      * Restart a drop-ins application.

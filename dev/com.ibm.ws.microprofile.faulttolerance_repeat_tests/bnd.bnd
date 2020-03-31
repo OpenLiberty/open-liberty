@@ -18,8 +18,6 @@ Bundle-Description: MP Fault Tolerance Repeat FAT test infrastructure; version=$
 
 Export-Package: com.ibm.ws.microprofile.faulttolerance.fat.repeat
 
-javac.source: 1.8
-javac.target: 1.8
 
 test.project: true
 

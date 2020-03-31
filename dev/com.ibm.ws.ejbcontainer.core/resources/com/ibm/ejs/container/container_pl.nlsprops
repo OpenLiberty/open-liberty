@@ -2421,12 +2421,21 @@ komponentu bean w aplikacji w wersji 6 lub starszej.
 #-------------------------------------------------------------------------------
 NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Interfejs {0} \
 komponentu bean {1} w module {2} aplikacji {3} nie mo\u017ce by\u0107 powi\u0105zany z \
-po\u0142o\u017ceniem nazwy {4}. Interfejs {5} komponentu bean {6} w module {7} aplikacji {8} jest ju\u017c powi\u0105zany z po\u0142o\u017ceniem nazwy {4}. \
-Po\u0142o\u017cenie nazwy {4} jest niedost\u0119pne.
+po\u0142o\u017ceniem nazwy {4}. Interfejs {5} komponentu bean {6} w module {7} aplikacji {8} jest ju\u017c powi\u0105zany z po\u0142o\u017ceniem nazwy {4}. Po\u0142o\u017cenie nazwy {4} jest niedost\u0119pne.
 NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Ka\u017cdy interfejs komponentu EJB musi okre\u015bla\u0107 unikalne po\u0142o\u017cenie powi\u0105zania.
 NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Popraw plik powi\u0105za\u0144 jednego z tych interfejs\u00f3w komponent\u00f3w w taki spos\u00f3b, aby ka\u017cdy z nich mia\u0142 unikalne po\u0142o\u017cenie powi\u0105zania.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: Nazwa powi\u0105zania JNDI (Java Naming and Directory Interface) {2} dla komponentu bean {0} lub interfejsu obiektu podstawowego w module {1} zawiera przestrze\u0144 nazw.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=Nazwy powi\u0105za\u0144 JNDI nie mog\u0105 zawiera\u0107 dwukropka (:), kt\u00f3ry oznacza przestrze\u0144 nazw. Ca\u0142y \u0142a\u0144cuch przed dwukropkiem (:), wraz z nim samym, jest uwa\u017cany za przestrze\u0144 nazw.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Popraw plik powi\u0105za\u0144 ibm-ejb-jar-bnd.xml w taki spos\u00f3b, aby nadawa\u0142 temu komponentowi bean poprawn\u0105 nazw\u0119 powi\u0105zania JNDI poprzez usuni\u0119cie przestrzeni nazw.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: Nazwa powi\u0105zania JNDI (Java Naming and Directory Interface) {2} dla komponentu bean {0} lub lokalnego interfejsu obiektu podstawowego w module {1} zawiera przestrze\u0144 nazw, kt\u00f3ra jest niepoprawna.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Lokalna nazwa powi\u0105zania mo\u017ce zawiera\u0107 tylko jedn\u0105 przestrze\u0144 nazw i musi rozpoczyna\u0107 si\u0119 od \u0142a\u0144cucha ejblocal:. Przestrzenie nazw s\u0105 oznaczane za pomoc\u0105 dwukropka (:). Ca\u0142y \u0142a\u0144cuch przed dwukropkiem (:), wraz z nim samym, jest uwa\u017cany za przestrze\u0144 nazw.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Popraw plik powi\u0105za\u0144 ibm-ejb-jar-bnd.xml w taki spos\u00f3b, aby nadawa\u0142 temu komponentowi bean poprawn\u0105 nazw\u0119 powi\u0105zania JNDI poprzez usuni\u0119cie niepoprawnej przestrzeni nazw.
 
 #-------------------------------------------------------------------------------
 #

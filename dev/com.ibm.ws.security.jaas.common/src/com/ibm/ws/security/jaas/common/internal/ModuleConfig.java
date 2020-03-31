@@ -26,8 +26,8 @@ public @interface ModuleConfig {
     @AttributeDefinition(name = "%className", description = "%className.desc")
     String className();
 
-    // TODO translatable name, description, and make into ibm:beta="true" before GA?
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, required = false)
+    @AttributeDefinition(name = "%classProviderRef", description = "%classProviderRef.desc", required = false)
+    @Ext.Beta // TODO remove once it is time to GA this attribute
     @Ext.ReferencePid("com.ibm.ws.app.manager")
     String classProviderRef();
 
@@ -46,9 +46,13 @@ public @interface ModuleConfig {
                                @Option(value = "OPTIONAL", label = "%controlFlag.OPTIONAL") })
     String controlFlag();
 
-    @AttributeDefinition(name = "%libraryRef", description = "%libraryRef.desc")
+    @AttributeDefinition(name = "%libraryRef", description = "%libraryRef.desc", required = false)
     @Ext.ReferencePid("com.ibm.ws.classloading.sharedlibrary")
     String libraryRef();
+
+    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "${count(libraryRef)}")
+    @Ext.Final
+    String SharedLib_cardinality_minimum();
 
     @AttributeDefinition(name = "internal", description = "internal use only", defaultValue = "(service.pid=${libraryRef})")
     String SharedLib_target();

@@ -16,17 +16,22 @@ Bundle-Name: WebSphere Connector Support
 Bundle-SymbolicName: com.ibm.ws.app.manager.rar
 Bundle-Description: WebSphere Connector Support, version ${bVersion}
 
-Private-Package: com.ibm.ws.app.manager.rar.*, com.ibm.ws.app.manager.connector.*
-
 Import-Package: \
-    com.ibm.ws.app.manager.module.internal, \
-    *
+  !com.ibm.ws.container.service.metadata, \
+  !com.ibm.ws.container.service.state, \
+  com.ibm.ws.app.manager.module.internal, \
+  ${defaultPackageImport}
+
+Private-Package: \
+  com.ibm.ws.app.manager.rar.*, \
+  com.ibm.ws.app.manager.connector.*
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.app.manager.rar.internal.RARApplicationTypeSupported,\
- com.ibm.ws.app.manager.rar.internal.RARDeployedAppInfoFactoryImpl,\
- com.ibm.ws.app.manager.rar.internal.RARApplicationHandlerImpl,\
- com.ibm.ws.app.manager.connector.internal.ConnectorModuleHandlerImpl
+-dsannotations: \
+  com.ibm.ws.app.manager.rar.internal.RARApplicationTypeSupported, \
+  com.ibm.ws.app.manager.rar.internal.RARDeployedAppInfoFactoryImpl, \
+  com.ibm.ws.app.manager.rar.internal.RARApplicationHandlerImpl, \
+  com.ibm.ws.app.manager.connector.internal.ConnectorModuleHandlerImpl
 
 instrument.classesExcludes: com/ibm/ws/app/manager/rar/internal/resources/*.class
 

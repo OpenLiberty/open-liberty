@@ -11,19 +11,32 @@
 
 package com.ibm.ws.concurrent.persistent.fat.demo.timers;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses(DemoTimerTest.class)
 public class FATSuite {
+
+    static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+
+        testContainer.start();
+    }
+
+    @AfterClass
+    public static void afterSuite() {
+        testContainer.stop();
     }
 }

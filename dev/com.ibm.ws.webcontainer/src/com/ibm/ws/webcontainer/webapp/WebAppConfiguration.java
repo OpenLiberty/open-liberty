@@ -185,9 +185,6 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     private Map<JNDIEnvironmentRefType, Map<String, String>> allRefBindings = JNDIEnvironmentRefBindingHelper.createAllBindingsMap();
     private Map<String, String> envEntryValues;
     private ResourceRefConfigList resourceRefConfigList;
-    private Map<String, String> sameSiteCookiesMap = null;
-    private List<String> conflictSameSiteCookiesList;  
-    private boolean isStarSSCookiesAppLevel = false;
     
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
@@ -216,8 +213,6 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
         this.filterInfo = new HashMap<String, IFilterConfig>();
         this.filterMappings = new ArrayList();
         this.classesToScan = new ArrayList<Class<?>>();
-        this.sameSiteCookiesMap = new ConcurrentHashMap<String, String>();
-        this.conflictSameSiteCookiesList = new ArrayList<String>();
     }
 
     /**
@@ -2166,80 +2161,5 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
             logger.logp(Level.FINE, CLASS_NAME, "setModuleResponseEncoding", " response encoding [" + encoding +"]");
         }
         this.responseEncoding = encoding;
-    }
-    
-    public Map<String, String> getSameSiteCookiesMap() {
-        return sameSiteCookiesMap;
-    }
-
-    public void setSameSiteCookies() {
-        String value;
-        if (this.contextParams != null){
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                logger.logp(Level.FINE, CLASS_NAME, "setSameSiteCookies", "Processing SameSite for application ["+ applicationName+"]");
-            }
-
-            value = (String) this.contextParams.get("SameSiteCookies_Lax");
-            if (value != null ){
-                parseAndAddSameSiteCookies(value, "Lax");
-            }
-
-            value = (String) this.contextParams.get("SameSiteCookies_None");
-            if (value != null ){
-                parseAndAddSameSiteCookies(value, "None");
-            }
-
-            value = (String) this.contextParams.get("SameSiteCookies_Strict");
-            if (value != null ){
-                parseAndAddSameSiteCookies(value, "Strict");
-            }
-
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                if (sameSiteCookiesMap != null) {
-                    logger.logp(Level.FINE, CLASS_NAME,"setSameSiteCookies", "=====Cookies configured with SameSite attributes <Cookiename,SameSite_attribute>=====");
-                    for (Map.Entry<String, String> entry : sameSiteCookiesMap.entrySet()) 
-                        logger.logp(Level.FINE, CLASS_NAME,"setSameSiteCookies", "<" + entry.getKey() + ", "+ entry.getValue() + ">");
-                }
-
-                if(conflictSameSiteCookiesList != null && !conflictSameSiteCookiesList.isEmpty()) {
-                    logger.logp(Level.FINE, CLASS_NAME,"setSameSiteCookies", "=====SameSite attribute is not added for duplicate cookies=====");
-                    for (String cookieName : conflictSameSiteCookiesList) {
-                        logger.logp(Level.FINE, CLASS_NAME,"setSameSiteCookies", " " + cookieName);
-                    }
-                }
-            }
-        }
-    }
-
-    private void parseAndAddSameSiteCookies(String cookieNames, String ssAttValue) {
-        String[] cookiesList = cookieNames.split(",");  //Cookie name is case-sensitive
-        for (String cookieName:cookiesList)
-            addSameSiteCookie(cookieName.trim(), ssAttValue);
-
-    }
-    
-    public void addSameSiteCookie(String name, String ssAttValue) {
-        if (this.conflictSameSiteCookiesList.contains(name)) {
-            logger.logp(Level.WARNING, CLASS_NAME, "addSameSiteCookie", "duplicate.reported.for.samesite.attribute.cookie.name", new Object [] {name, ssAttValue});
-            return;
-        }
-
-        if (this.sameSiteCookiesMap.containsKey(name)) {
-            String currentSSAttValue = (String) sameSiteCookiesMap.get(name);
-            if (currentSSAttValue.compareTo(ssAttValue) == 0) {// same ss Value; ignore it
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                    logger.logp(Level.FINE, CLASS_NAME, "addSameSiteCookie", "same cookie name and SS attribute <"+ name+","+currentSSAttValue +"> already added, skip");
-                }
-                return;
-            }
-            else {
-                logger.logp(Level.WARNING, CLASS_NAME, "addSameSiteCookie", "duplicate.samesite.attribute.for.cookie.name", new Object [] {name, currentSSAttValue, ssAttValue});
-                conflictSameSiteCookiesList.add(name);
-                sameSiteCookiesMap.remove(name);
-                return;
-            }
-        }
-
-        this.sameSiteCookiesMap.put(name, ssAttValue);
     }
 }

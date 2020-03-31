@@ -33,8 +33,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.security.LoginModuleProxy;
@@ -42,6 +46,9 @@ import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
 import com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy;
+import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
@@ -110,6 +117,15 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             Class<?> cl = getTargetClassForName(target);
             options.put(LoginModuleProxy.KERNEL_DELEGATE, cl);
         } else {
+            if (sharedLibrary == null && classProviderAppInfo == null) // nowhere to load the login module class from
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING",
+                                                                    originalLoginModuleClassName,
+                                                                    props.get("config.displayId")));
+            else if (sharedLibrary != null && classProviderAppInfo != null) // conflicting locations to load from
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT",
+                                                                    originalLoginModuleClassName,
+                                                                    props.get("config.displayId")));
+
             options = processDelegateOptions(options, originalLoginModuleClassName, classProviderAppInfo, classLoadingService, sharedLibrary, false);
         }
         this.options = options;
@@ -135,7 +151,7 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
                 loader = ((EARApplicationInfo) classProviderAppInfo).getApplicationClassLoader();
             else {
                 NestedConfigHelper config = classProviderAppInfo.getConfigHelper();
-                if ("rar".equals(config.get("type"))) {
+                if ("rar".equals(config.get("type"))) { // the resourceAdapter metatype hard codes the type to "rar"
                     // load from a standalone resource adapter (RAR)
                     String classProviderId = (String) classProviderAppInfo.getConfigHelper().get("id");
                     String classProviderFilter = "(&"
@@ -152,8 +168,27 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
                     }
                     ClassProvider classProvider = bundleContext.getService(classProviderRefs.iterator().next()); // TODO error checking
                     loader = classProvider.getDelegateLoader();
-                } else
-                    throw new IllegalArgumentException(); // TODO error message for unsupported application type, cannot load class
+                } else {
+                    // load from single-module applications such as web applications,
+                    Container container = classProviderAppInfo.getContainer();
+                    NonPersistentCache cache;
+                    if (container == null)
+                        cache = null;
+                    else
+                        try {
+                            cache = container.adapt(NonPersistentCache.class);
+                        } catch (UnableToAdaptException x) {
+                            throw new IllegalStateException(classProviderAppInfo.getName(), x); // should be unreachable
+                        }
+                    ModuleInfo moduleInfo = cache == null ? null : (ModuleInfo) cache.getFromCache(ModuleInfo.class);
+                    if (moduleInfo != null) {
+                        loader = moduleInfo.getClassLoader();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "loading from standalone module " + moduleInfo.getName(), loader);
+                    } else {
+                        throw new IllegalArgumentException(); // TODO error message for unsupported application type, cannot load class
+                    }
+                }
             }
 
             Class<?> cl = null;
@@ -163,12 +198,24 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
                     cl = Class.forName(target, false, loader);
                 }
             } catch (ClassNotFoundException e) {
-                //TODO consider different warning/error
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Exception performing class for name.", e);
-                }
-                if (jaasConfigFile) {
-                    Tr.error(tc, "JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND", originalLoginModuleClassName, e);
+                if (classProviderAppInfo instanceof EARApplicationInfo)
+                    cl = loadFromWebModules(target, (EARApplicationInfo) classProviderAppInfo);
+                if (cl == null) {
+                    if (classProviderAppInfo == null) {
+                        //TODO consider different warning/error
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Exception performing class for name.", e);
+                        }
+                        if (jaasConfigFile) {
+                            Tr.error(tc, "JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND", originalLoginModuleClassName, e);
+                        }
+                    } else {
+                        String displayId = (String) classProviderAppInfo.getConfigHelper().get("config.displayId");
+                        throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP",
+                                                                            originalLoginModuleClassName,
+                                                                            classProviderAppInfo.getName(),
+                                                                            displayId == null ? "application" : displayId));
+                    }
                 }
             }
             options.put(DELEGATE, cl);
@@ -206,6 +253,68 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             classLoadingService.destroyThreadContextClassLoader(contextClassLoader);
         }
         return cl;
+    }
+
+    /**
+     * Attempt to load a login module class from each of the application's web modules until it can be loaded,
+     * or is found to not be loadable from any.
+     *
+     * @param className class name, including package, of the JAAS custom login module to load.
+     * @param appInfo   information about the enterprise application.
+     * @return the loaded class. Null if unable to load from any web module.
+     */
+    @FFDCIgnore(ClassNotFoundException.class)
+    private static Class<?> loadFromWebModules(String className, EARApplicationInfo appInfo) {
+        Container appContainer = appInfo.getContainer();
+        NonPersistentCache cache;
+        if (appContainer == null)
+            cache = null;
+        else
+            try {
+                cache = appContainer.adapt(NonPersistentCache.class);
+            } catch (UnableToAdaptException x) {
+                throw new IllegalStateException(appInfo.getName(), x); // should be unreachable
+            }
+        ApplicationClassesContainerInfo appClassesInfo = cache == null ? null : (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
+        List<ModuleClassesContainerInfo> moduleClassesInfoList = appClassesInfo == null ? null : appClassesInfo.getModuleClassesContainerInfo();
+        if (moduleClassesInfoList != null)
+            for (ModuleClassesContainerInfo moduleClassesInfo : moduleClassesInfoList) {
+                List<ContainerInfo> moduleContainerInfoList = moduleClassesInfo.getClassesContainerInfo();
+                if (moduleContainerInfoList != null)
+                    for (ContainerInfo moduleContainerInfo : moduleContainerInfoList) {
+                        ContainerInfo.Type containerType = moduleContainerInfo.getType();
+                        Container webContainer;
+                        if (ContainerInfo.Type.WEB_MODULE == containerType) {
+                            webContainer = moduleContainerInfo.getContainer();
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(tc, "skipping " + containerType);
+                            webContainer = null;
+                        }
+                        if (webContainer == null)
+                            cache = null;
+                        else
+                            try {
+                                cache = webContainer.adapt(NonPersistentCache.class);
+                            } catch (UnableToAdaptException x) {
+                                throw new IllegalStateException(webContainer.getName(), x); // should be unreachable
+                            }
+                        ModuleInfo moduleInfo = cache == null ? null : (ModuleInfo) cache.getFromCache(ModuleInfo.class);
+                        if (moduleInfo != null) {
+                            ClassLoader loader = moduleInfo.getClassLoader();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(tc, "loading from web module " + moduleInfo.getName(), loader);
+                            try {
+                                return Class.forName(className, false, loader);
+                            } catch (ClassNotFoundException x) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                    Tr.debug(tc, "not found in web module " + moduleInfo.getName());
+                            }
+                        }
+                    }
+            }
+
+        return null;
     }
 
     /**
@@ -271,13 +380,14 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
         return options;
     }
 
+    /** Required if classProviderRef is configured, in which case it will be called before activate */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL)
     protected void setClassProvider(ApplicationInfo classProviderAppInfo) {
         this.classProviderAppInfo = classProviderAppInfo;
     }
 
-    /** Set required service, will be called before activate */
-    @Reference
+    /** Required if libraryRef is configured, in which case it will be called before activate */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
     protected void setSharedLib(Library svc) {
         sharedLibrary = svc;
     }

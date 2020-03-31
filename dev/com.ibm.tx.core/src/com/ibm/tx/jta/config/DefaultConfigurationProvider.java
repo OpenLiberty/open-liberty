@@ -279,6 +279,39 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     /*
      * (non-Javadoc)
      *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLeaseCheckStrategy()
+     */
+    @Override
+    public String getLeaseCheckStrategy() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLeaseCheckInterval()
+     */
+    @Override
+    public int getLeaseCheckInterval() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLeaseLength()
+     */
+    @Override
+    public int getLeaseLength() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#isSQLRecoveryLog()
      */
     @Override

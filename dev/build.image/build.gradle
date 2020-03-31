@@ -137,7 +137,6 @@ class PackageLibertyWithFeatures extends DefaultTask {
                 include 'NOTICES'
                 into "$outputTo/wlp"
             }
-
         } catch (all) {
             println "-- EXCEPTION PACKAGING SERVER --"
             println all
@@ -356,10 +355,21 @@ if (isAutomatedBuild) {
     }
 }
 
+// Generate checksums
+task genChecksums() {
+  dependsOn parent.subprojects.assemble
+  doLast {
+ 	generateChecksums(ant)
+  	ant.calcChecksums(installRoot:'wlp') {
+  	}
+  }
+}
+
 // Includes all features. For use in development.
 task zipOpenLibertyDev(type: Zip) {
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    dependsOn genChecksums
     baseName 'openliberty-dev'
     from projectDir
     include 'wlp/**'
@@ -373,6 +383,7 @@ if (isAutomatedBuild) {
     // Includes all features except excluded features.
     task zipOpenLibertyAll(type: Zip) {
         dependsOn packageOpenLibertyAll
+        dependsOn genChecksums
         baseName 'openliberty-all'
         from packageDir
         destinationDir distsDir
@@ -387,6 +398,7 @@ if (isAutomatedBuild) {
     // Includes only kind=ga features.
     task zipOpenLiberty(type: Zip) {
         dependsOn packageOpenLiberty
+        dependsOn genChecksums
         baseName 'openliberty'
         from packageDir
         destinationDir distsDir
@@ -401,6 +413,7 @@ if (isAutomatedBuild) {
     // Includes only kind=ga features.
     task zipOpenLibertyKernel(type: Zip) {
         dependsOn packageOpenLibertyKernel
+        dependsOn genChecksums
         baseName 'openliberty-kernel'
         from packageDir
         destinationDir distsDir
@@ -415,6 +428,7 @@ if (isAutomatedBuild) {
     // Includes only kind=ga features.
     task zipOpenLibertyWebProfile8(type: Zip) {
         dependsOn packageOpenLibertyWebProfile8
+        dependsOn genChecksums
         baseName 'openliberty-webProfile8'
         from packageDir
         destinationDir distsDir
@@ -429,6 +443,7 @@ if (isAutomatedBuild) {
     // Includes only kind=ga features.
     task zipOpenLibertyJavaee8(type: Zip) {
         dependsOn packageOpenLibertyJavaee8
+        dependsOn genChecksums
         baseName 'openliberty-javaee8'
         from packageDir
         destinationDir distsDir
@@ -442,6 +457,7 @@ if (isAutomatedBuild) {
 
     task zipOpenLibertyMicroProfile3(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile3
+        dependsOn genChecksums
         baseName 'openliberty-microProfile3'
         from packageDir
         destinationDir distsDir

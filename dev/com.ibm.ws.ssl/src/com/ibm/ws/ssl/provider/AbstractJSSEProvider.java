@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package com.ibm.ws.ssl.provider;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLStreamHandler;
 import java.security.AccessController;
@@ -276,7 +277,26 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             direction = (String) connectionInfo.get(Constants.CONNECTION_INFO_DIRECTION);
         }
 
+        /*
+         * Try to first get truststore from KeyStoreManager.
+         */
         KeyStore trustStore = getKeyStoreForManager(sslConfig, Constants.SSLPROP_TRUST_STORE_NAME);
+
+        /*
+         * Try and load from the trust store location.
+         */
+        if (trustStore == null && trustStoreLocation != null) {
+            String type = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE_TYPE, sslConfig);
+            String password = WSKeyStore.decodePassword(getSSLContextProperty(Constants.SSLPROP_TRUST_STORE_PASSWORD, sslConfig));
+            String provider = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE_PROVIDER, sslConfig);
+
+            if (provider != null) {
+                trustStore = KeyStore.getInstance(type, provider);
+            } else {
+                trustStore = KeyStore.getInstance(type);
+            }
+            trustStore.load(new FileInputStream(new File(trustStoreLocation)), password.toCharArray());
+        }
 
         // ---------------------
         // Handle Trust Store
@@ -327,10 +347,10 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         KeyStore ks = null;
 
         // Access a potentially set contextProvider.
-        String trustFileName = getSSLContextProperty(ksProp, sslConfig);
+        String keystoreFileName = getSSLContextProperty(ksProp, sslConfig);
         WSKeyStore wsts = null;
-        if (trustFileName != null)
-            wsts = KeyStoreManager.getInstance().getKeyStore(trustFileName);
+        if (keystoreFileName != null)
+            wsts = KeyStoreManager.getInstance().getKeyStore(keystoreFileName);
 
         if (wsts != null) {
             try {
@@ -343,7 +363,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getKeyStoreForManager", new Object[] { ks });
+            Tr.exit(tc, "getKeyStoreForManager", new Object[] { ks });
         return ks;
     }
 
@@ -411,9 +431,10 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         String keyMgr = getSSLContextProperty(Constants.SSLPROP_KEY_MANAGER, sslConfig);
 
         KeyStore keyStore = getKeyStoreForManager(sslConfig, Constants.SSLPROP_KEY_STORE_NAME);
-        WSKeyStore wsks = KeyStoreManager.getInstance().getWSKeyStore(keyStoreName);
 
         if (keyStore != null) {
+            WSKeyStore wsks = KeyStoreManager.getInstance().getWSKeyStore(keyStoreName);
+
             // Key store specified.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Using software keystore: " + keyStoreLocation);

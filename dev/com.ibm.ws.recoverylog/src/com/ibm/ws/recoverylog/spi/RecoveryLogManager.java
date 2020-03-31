@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2018 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,14 +47,14 @@ public interface RecoveryLogManager {
      * object provided by the client service.
      * </p>
      *
-     * @param FailureScope The required FailureScope
+     * @param FailureScope  The required FailureScope
      * @param LogProperties Contains the identity and physical properties of the
-     *            recovery log.
+     *                          recovery log.
      *
      * @return The RecoveryLog instance.
      *
      * @exception InvalidLogPropertiesException The RLS does not recognize or cannot
-     *                support the supplied LogProperties
+     *                                              support the supplied LogProperties
      */
     public RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException;
 
@@ -65,5 +65,6 @@ public interface RecoveryLogManager {
      * @return
      * @throws InvalidLogPropertiesException
      */
-    SharedServerLeaseLog getLeaseLog(String localRecoveryIdentity, String recoveryGroup, LogProperties logProperties) throws InvalidLogPropertiesException;
+    SharedServerLeaseLog getLeaseLog(String localRecoveryIdentity, String recoveryGroup, int leaseCheckInterval, String leaseCheckStrategy, int leaseLength,
+                                     LogProperties logProperties) throws InvalidLogPropertiesException;
 }

@@ -95,7 +95,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=Odezva u\u0
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee je atribut konfigurace uveden\u00fd ve zpr\u00e1v\u011b spr\u00e1vn\u011b nakonfigurov\u00e1n. Ujist\u011bte se, \u017ee hodnota atributu konfigurace odpov\u00edd\u00e1 polo\u017ece v odezv\u011b u\u017eivatelsk\u00e9ho rozhran\u00ed API, kter\u00e1 by se m\u011bla pou\u017e\u00edt jako jm\u00e9no u\u017eivatele.
 
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: Odezvu od rozhran\u00ed API u\u017eivatele servisn\u00edho \u00fa\u010dtu nelze zpracovat: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: N\u00e1sleduj\u00edc\u00ed odezvu od u\u017eivatelsk\u00e9ho rozhran\u00ed API nelze zpracovat: {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Informace o servisn\u00edm \u00fa\u010dtu nelze z\u00edskat, proto\u017ee do\u0161lo k jin\u00e9 chyb\u011b.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Pokud zpr\u00e1va obsahuje jinou chybovou zpr\u00e1vu, pod\u00edvejte se na akci u\u017eivatele pro tuto zpr\u00e1vu. Jinak zkontrolujte, zda protokoly serveru neobsahuj\u00ed v\u00edce chybov\u00fdch zpr\u00e1v, kter\u00e9 by mohly ozna\u010dovat, kde do\u0161lo k dal\u0161\u00ed chyb\u011b.
 
@@ -118,6 +118,16 @@ JSON_MISSING_KEY.useraction=Zkontrolujte data JSON a ur\u010dete, zda kl\u00ed\u
 JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Hodnota pro kl\u00ed\u010d [{0}] v datech JSON mus\u00ed b\u00fdt typu {1}, ale hodnota je typu {2}. Data JSON jsou [{3}].
 JSON_ENTRY_WRONG_JSON_TYPE.explanation=Hodnota pro uveden\u00fd kl\u00ed\u010d nem\u00e1 spr\u00e1vn\u00fd typ. Je mo\u017en\u00e9, \u017ee data JSON jsou chybn\u00e1 nebo mohou m\u00edt neo\u010dek\u00e1vanou strukturu.
 JSON_ENTRY_WRONG_JSON_TYPE.useraction=Zkontrolujte strukturu dat JSON. Zkontrolujte data JSON a ov\u011b\u0159te, zda do\u0161lo k chyb\u011b.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: Odezvu od rozhran\u00ed API introspekce tokenu nelze zpracovat: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Informace o ov\u011b\u0159en\u00e9m u\u017eivatele nelze z\u00edskat, proto\u017ee do\u0161lo k jin\u00e9 chyb\u011b.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Pokud zpr\u00e1va obsahuje jinou chybovou zpr\u00e1vu, pod\u00edvejte se na akci u\u017eivatele pro tuto zpr\u00e1vu. Jinak zkontrolujte, zda protokoly serveru neobsahuj\u00ed v\u00edce chybov\u00fdch zpr\u00e1v, kter\u00e9 by mohly ozna\u010dovat, kde do\u0161lo k dal\u0161\u00ed chyb\u011b.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: Po\u017eadavek na introspekci tokenu se nezda\u0159il, proto\u017ee token, kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku, nen\u00ed platn\u00fd. \u00dapln\u00e1 odezva je {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Autoriza\u010dn\u00ed server nevyvolal token, vlastn\u00edk prost\u0159edku odvolal token, vypr\u0161ela platnost tokenu nebo do\u0161lo k jin\u00e9 chyb\u011b.
+INTROSPECT_USER_API_INACTIVE.useraction=Zkontrolujte odezvu, kter\u00e1 je sou\u010d\u00e1st\u00ed zpr\u00e1vy. Ov\u011b\u0159te, \u017ee je pou\u017eit spr\u00e1vn\u00fd koncov\u00fd bod introspekce tokenu. Ov\u011b\u0159te, \u017ee token je platn\u00fd a \u017ee tokenu m\u016f\u017ee b\u00fdt provedena introspekce.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.

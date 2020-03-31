@@ -117,7 +117,10 @@ public class PersistentExecutorConfigUpdateTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-        	server.stopServer("CWNEN1000E");
+            server.stopServer(
+                    "CWNEN1000E",
+                    "CWWKC1556W" // Execution of tasks deferred during config update
+                    );
         }
     }
 
@@ -257,6 +260,47 @@ public class PersistentExecutorConfigUpdateTest {
 
             runInServlet("test=testRemoveTask&jndiName=concurrent/MyExecutor&taskId=" + taskIdA + "&invokedBy=EnablePolling");
             runInServlet("test=testRemoveTask&jndiName=concurrent/MyExecutor&taskId=" + taskIdB + "&invokedBy=EnablePolling");
+        } finally {
+            // restore original configuration
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(originalConfig);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
+        }
+    }
+
+    /**
+     * Schedule a task. Disable the MicroProfile Context Propagation feature. Verify that the task keeps running.
+     */
+    @Test
+    public void testMPContextPropagationDisabled() throws Exception {
+        try {
+            // Enable MicroProfile Context Propagation
+            ServerConfiguration config = originalConfig.clone();
+            config.getFeatureManager().getFeatures().add("mpContextPropagation-1.0");
+            config.getFeatureManager().getFeatures().add("servlet-4.0"); // EE 8 or higher is required for the above
+            config.getFeatureManager().getFeatures().remove("servlet-3.1");
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
+
+            // Schedule a task
+            StringBuilder output = runInServlet(
+                    "test=testScheduleRepeatingTask&jndiName=concurrent/MyExecutor&initialDelay=0&interval=1300&invokedBy=testMPContextPropagationDisabled");
+            int start = output.indexOf(TASK_ID_SEARCH_TEXT);
+            if (start < 0)
+                throw new Exception("Task id of scheduled task not found in servlet output: " + output);
+            String taskId = output.substring(start += TASK_ID_SEARCH_TEXT.length(), output.indexOf(".", start));
+
+            // Disable MicroProfile Context Propagation
+            config.getFeatureManager().getFeatures().remove("mpContextPropagation-1.0");
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
+
+            // Verify that the task still executes
+            runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
+
+            runInServlet("test=testRemoveTask&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();

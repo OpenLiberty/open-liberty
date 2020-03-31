@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,6 +133,8 @@ public class AuditEvent {
     public static final String TARGET_AUTHORIZATION_DECISION = "target.authorization.decision";
     public static final String TARGET_ACCESS_LEVEL = "target.access.level";
     public static final String TARGET_SAF_ERROR_MESSAGE = "target.saf.error.message";
+    public static final String TARGET_VOLSER = "target.volser";
+    public static final String TARGET_VSAM = "target.vsam";
 
     public final static String INITIATOR = "initiator";
     public final static String INITIATOR_ID = "initiator.id";
@@ -588,7 +590,7 @@ public class AuditEvent {
      * Check to see if auditing is required for an event type and outcome.
      *
      * @param eventType SECURITY_AUTHN, SECURITY_AUTHZ, etc
-     * @param outcome OUTCOME_SUCCESS, OUTCOME_DENIED, etc.
+     * @param outcome   OUTCOME_SUCCESS, OUTCOME_DENIED, etc.
      * @return true - events with the type/outcome should be audited
      *         false - events with the type/outcome should not be audited
      *

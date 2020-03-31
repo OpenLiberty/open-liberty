@@ -161,7 +161,25 @@ Include-Resource: OSGI-INF/metatype=resources.gen/OSGI-INF/metatype,OSGI-INF=res
 
 Export-Package: \
     com.ibm.ws.javaee.ddmodel*
-    
+
+Import-Package: \
+    !com.ibm.ws.javaee.ddmodel.app,\
+    !com.ibm.ws.javaee.ddmodel.appbnd,\
+    !com.ibm.ws.javaee.ddmodel.appext,\
+    !com.ibm.ws.javaee.ddmodel.bval,\
+    !com.ibm.ws.javaee.ddmodel.client,\
+    !com.ibm.ws.javaee.ddmodel.clientbnd,\
+    !com.ibm.ws.javaee.ddmodel.ejb,\
+    !com.ibm.ws.javaee.ddmodel.ejbbnd,\
+    !com.ibm.ws.javaee.ddmodel.ejbext,\
+    !com.ibm.ws.javaee.ddmodel.jsf,\
+    !com.ibm.ws.javaee.ddmodel.managedbean,\
+    !com.ibm.ws.javaee.ddmodel.permissions,\
+    !com.ibm.ws.javaee.ddmodel.web,\
+    !com.ibm.ws.javaee.ddmodel.webbnd,\
+    !com.ibm.ws.javaee.ddmodel.webext,\
+    *
+
 Private-Package: \
     com.ibm.ws.javaee.internal.ddmodel.resources
 

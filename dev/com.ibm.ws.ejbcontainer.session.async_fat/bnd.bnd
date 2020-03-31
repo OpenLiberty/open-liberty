@@ -36,8 +36,6 @@ src: \
      test-applications/AsyncXMLErr2Bean.jar/src,\
      test-applications/AsyncXMLErr3Bean.jar/src
 
-javac.source: 1.8
-javac.target: 1.8
 
 fat.project: true
 

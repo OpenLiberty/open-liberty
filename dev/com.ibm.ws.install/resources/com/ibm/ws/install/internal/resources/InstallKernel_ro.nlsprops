@@ -839,6 +839,14 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Rula\u0163i featureUtility cu
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Urm\u0103toarele caracteristici de utilizator sunt specificate \u00een server.xml \u015fi ele nu vor fi instalate: {0}
 
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Caracteristicile {0} \u015fi {1} sunt incompatibile \u00eentre ele \u015fi ele nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Caracteristicile nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES.useraction=\u00cenl\u0103tura\u0163i una dintre caracteristici \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Caracteristicile singleton {0} \u015fi {1} sunt incompatibile \u00eentre ele \u015fi ele nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Caracteristicile nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=\u00cenl\u0103tura\u0163i una dintre caracteristici \u015fi \u00eencerca\u0163i din nou.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Caracteristica a fost desc\u0103rcat\u0103 cu succes.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Caracteristica a fost desc\u0103rcat\u0103.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

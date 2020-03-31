@@ -47,7 +47,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -83,8 +84,7 @@ public class FailoverTimersTest extends FATServletClient {
     @Rule
     public TestName testName = new TestName();
 
-    @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DatabaseContainerType.DerbyClient);
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     private static final ExecutorService testThreads = Executors.newFixedThreadPool(3);
 
@@ -213,7 +213,8 @@ public class FailoverTimersTest extends FATServletClient {
         serverA.stopServer(
                            "CNTR0020E.*Timer_400_1700", // EJB threw an unexpected (non-declared) exception during invocation of ...
                            "CWWKC1501W.*Timer_400_1700", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
-                           "CWWKC1503W.*Timer_400_1700" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... due to failure ...
+                           "CWWKC1503W.*Timer_400_1700", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... due to failure ...
+                           "DSRA0230E", "DSRA0302E", "DSRA0304E", "J2CA0027E" // task running during server shutdown
         );
     }
 
@@ -254,7 +255,8 @@ public class FailoverTimersTest extends FATServletClient {
         // to the intentionally failed task.
         serverA.stopServer(
                            "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
-                           "CWWKC1503W.*StatelessProgrammaticTimersBean" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
+                           "CWWKC1503W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
+                           "DSRA0230E", "DSRA0302E", "DSRA0304E", "J2CA0027E" // task running during server shutdown
         );
     }
 
@@ -294,7 +296,9 @@ public class FailoverTimersTest extends FATServletClient {
 
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
-            serverB.stopServer("CWWKC1556W"); // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+            serverB.stopServer("CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+                               "DSRA0230E", "DSRA0302E", "DSRA0304E", "J2CA0027E" // task running during server shutdown
+                               );
         }
     }
 

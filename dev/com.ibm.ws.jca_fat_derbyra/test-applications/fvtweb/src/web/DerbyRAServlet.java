@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.ejb.EJBContext;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
@@ -400,6 +401,54 @@ public class DerbyRAServlet extends FATServlet {
             }
         } finally {
             con.close();
+        }
+    }
+
+    /**
+     * Use an unshared connection within two EJB methods that run under different transactions, one of which rolls back
+     * and the other of which commits.
+     */
+    public void testUnsharableConnectionAcrossEJBGlobalTran() throws Exception {
+        DerbyRABean bean = InitialContext.doLookup("java:global/derbyRAApp/fvtweb/DerbyRABean!web.DerbyRABean");
+        final DataSource ds = (DataSource) InitialContext.doLookup("java:module/env/eis/ds5ref-unshareable");
+        final Connection[] c = new Connection[1];
+        c[0] = ds.getConnection();
+        try {
+            c[0].createStatement().execute("create table testUnsharableConEJBTable (name varchar(40) not null primary key, val int not null)");
+            c[0].close();
+
+            bean.runInNewGlobalTran(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    c[0] = ds.getConnection();
+                    c[0].createStatement().executeUpdate("insert into testUnsharableConEJBTable values ('first', 1)");
+
+                    DerbyRABean bean = InitialContext.doLookup("java:global/derbyRAApp/fvtweb/DerbyRABean!web.DerbyRABean");
+                    bean.runInNewGlobalTran(new Callable<Integer>() {
+                        @Override
+                        public Integer call() throws Exception {
+                            return c[0].createStatement().executeUpdate("insert into testUnsharableConEJBTable values ('second', 2)");
+                        }
+                    });
+
+                    EJBContext ejbContext = InitialContext.doLookup("java:comp/EJBContext");
+                    ejbContext.setRollbackOnly();
+                    return null;
+                }
+            });
+
+            int updateCount;
+            updateCount = c[0].createStatement().executeUpdate("delete from testUnsharableConEJBTable where name='second'");
+            // TODO connection is not enlisting in the transaction of the second EJB method.
+            //if (updateCount != 1)
+            //    throw new Exception("Did not find the entry that should have been committed under the EJB transaction.");
+
+            updateCount = c[0].createStatement().executeUpdate("delete from testUnsharableConEJBTable where name='first'");
+            if (updateCount != 0)
+                throw new Exception("Found an entry that should have been rolled back under the Servlet's global transaction.");
+
+        } finally {
+            c[0].close();
         }
     }
 

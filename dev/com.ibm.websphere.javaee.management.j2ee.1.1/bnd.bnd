@@ -13,7 +13,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.management.j2ee.1.1
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: javax.management.j2ee;version="1.0.16", \
   javax.management.j2ee.statistics;version="1.0.16", \

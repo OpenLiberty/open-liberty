@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -274,5 +274,21 @@ public class LoggingConfigUtils {
             }
 
         });
+    }
+
+    public static boolean isMessageFormatValueValid(String formatValue) {
+        if (formatValue.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) || formatValue.toLowerCase().equals(LoggingConstants.JSON_FORMAT)
+            || formatValue.toLowerCase().equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isConsoleFormatValueValid(String formatValue) {
+        if (formatValue.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || formatValue.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)
+            || formatValue.toLowerCase().equals(LoggingConstants.JSON_FORMAT) || formatValue.toLowerCase().equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT)) {
+            return true;
+        }
+        return false;
     }
 }

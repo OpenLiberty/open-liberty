@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+       <feature>servlet-4.0</feature>
+    </featureManager>
+
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+     
+    <application id="snoop" name="snoop" location="snoop.war" startAfter="slow"/>
+    <application id="slow" name="slow" location="slowapp.war"/>
+    <application id="j2ee" name="j2ee" location="app-j2ee.ear" startAfter="snoop, testWar"/>
+    <application id="testWar" name="testWar" location="testWarApplication.war" startAfter="slow"/>
+
+    <webContainer deferServletLoad="false"/>
+    
+     <include location="../fatTestPorts.xml"/>
+</server>

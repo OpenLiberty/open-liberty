@@ -113,9 +113,6 @@ threadpool.size.description=Velikost fondu podproces\u016f.
 servlet.request.total.description=Po\u010det nav\u0161t\u00edven\u00ed na tomto servletu od spu\u0161t\u011bn\u00ed serveru.
 servlet.responseTime.total.description=Celkov\u00e1 doba odezvy tohoto servletu od spu\u0161t\u011bn\u00ed serveru.
 
-RESTful.request.total.description=Po\u010det vyvol\u00e1n\u00ed t\u00e9to metody prost\u0159edku RESTful od spu\u0161t\u011bn\u00ed serveru.
-RESTful.responseTime.total.description=Celkov\u00e1 doba odezvy pro tuto metodu prost\u0159edku RESTful od spu\u0161t\u011bn\u00ed serveru.
-
 connectionpool.create.total.description=Celkov\u00fd po\u010det spravovan\u00fdch p\u0159ipojen\u00ed vytvo\u0159en\u00fdch od vytvo\u0159en\u00ed fondu.
 connectionpool.destroy.total.description=Celkov\u00fd po\u010det spravovan\u00fdch p\u0159ipojen\u00ed zlikvidovan\u00fdch od vytvo\u0159en\u00ed fondu.
 connectionpool.managedConnections.description=Po\u010det spravovan\u00fdch p\u0159ipojen\u00ed ve fondech voln\u00fdch prost\u0159edk\u016f, sd\u00edlen\u00fdch a nesd\u00edlen\u00fdch fondech.

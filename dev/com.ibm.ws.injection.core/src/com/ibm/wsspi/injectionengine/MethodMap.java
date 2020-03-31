@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,7 +110,7 @@ public class MethodMap extends HashMap<String, List<Method>>
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "getAllDeclaredMethods : " + clazz);
+            Tr.entry(tc, "getAllDeclaredMethods", clazz);
 
         // Not expecting null or an interface, but have ignored them in
         // the past, so continue to ignore them now.                       d658626

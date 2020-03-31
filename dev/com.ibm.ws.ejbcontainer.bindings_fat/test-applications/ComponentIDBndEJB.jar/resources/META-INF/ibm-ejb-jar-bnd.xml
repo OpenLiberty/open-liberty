@@ -22,5 +22,7 @@
   	component-id="ejb/MyEJB7"/>
   <session name="ComponentIDBnd8" 
   	component-id="MyEJB8"/>
+  <session name="ComponentIDBnd9" simple-binding-name="SimpleBindingNameForComponentIDBean"
+  	component-id="MyEJB9"/>
  
 </ejb-jar-bnd>

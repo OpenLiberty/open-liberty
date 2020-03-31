@@ -839,6 +839,14 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Eseguire featureUtility con u
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Le seguenti funzioni utente sono specificate nel file server.xml e non verranno installate: {0}
 
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Le funzioni {0} e {1} sono incompatibili tra loro e non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Le funzioni non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Rimuovere una delle funzioni e riprovare.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Le funzioni singleton {0} e {1} sono incompatibili tra loro e non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Le funzioni non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Rimuovere una delle funzioni e riprovare.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La funzione \u00e8 stata scaricata correttamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La funzione \u00e8 stata scaricata.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Non \u00e8 richiesta alcuna azione.

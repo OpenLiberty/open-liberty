@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2019 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -159,3 +159,19 @@ compression.duplicateOverwriteAndAdd.useraction=Se a configura\u00e7\u00e3o padr
 compression.unsupportedAlgorithm=CWWKT0033W: Foi feita uma tentativa de configurar {0} como o algoritmo preferencial do servidor. Os valores suportados s\u00e3o gzip, x-gzip, zlib, deflate, identity e none. A configura\u00e7\u00e3o padr\u00e3o {1} \u00e9 usada como alternativa.
 compression.unsupportedAlgorithm.explanation=A configura\u00e7\u00e3o est\u00e1 tentando configurar um algoritmo n\u00e3o suportado como o algoritmo preferencial do servidor a ser usado para compacta\u00e7\u00e3o. 
 compression.unsupportedAlgorithm.useraction= Ao definir o valor, assegure-se de que ele esteja configurado como gzip, x-gzip, deflate, zlib, identity ou nenhum.
+
+decompression.tolerance.reached=CWWKT0034E: O canal HTTP tentou descompactar um corpo com propor\u00e7\u00e3o maior do que a tolerada.
+decompression.tolerance.reached.explanation=O n\u00famero m\u00e1ximo de ciclos de descompacta\u00e7\u00e3o foi atingido, resultando em uma propor\u00e7\u00e3o de descompacta\u00e7\u00e3o maior do que o limite configurado. O limite de descompacta\u00e7\u00e3o \u00e9 definido pelo atributo de httpOption decompressionRatioLimit.
+decompression.tolerance.reached.useraction=Quando essa exce\u00e7\u00e3o ocorrer em um corpo de solicita\u00e7\u00e3o v\u00e1lido, reconfigure os atributos de httpOption decompressionTolerance e decompressionRatioLimit para obter os resultados de descompacta\u00e7\u00e3o corretos.
+
+cookies.samesite.duplicateName=CWWKT0035W: Um nome ou padr\u00e3o de cookie duplicado [{0}] foi localizado na configura\u00e7\u00e3o [{1}] do SameSite. O nome ou padr\u00e3o do cookie [{0}] \u00e9 ignorado para todas as listas de configura\u00e7\u00e3o. Qualquer nome ou padr\u00e3o de cookie que seja definido pelas configura\u00e7\u00f5es ''lax'', ''none'' e ''strict'' pode ser definido em apenas uma das tr\u00eas configura\u00e7\u00f5es. 
+cookies.samesite.duplicateName.explanation=O valor especificado j\u00e1 foi encontrado pela configura\u00e7\u00e3o e mapeado para um valor do SameSite.
+cookies.samesite.duplicateName.useraction=Assegure-se de que os nomes e padr\u00f5es de cookies sejam exclusivos entre as listas de configura\u00e7\u00e3o 'lax', 'none' e 'strict'.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: Um uso n\u00e3o suportado do caractere curinga foi tentado pelo valor [{0}]. A configura\u00e7\u00e3o do SameSite n\u00e3o est\u00e1 definida para este valor.
+cookies.samesite.unsupportedWildcard.explanation=O caractere curinga (*) foi usado de maneira n\u00e3o suportada. H\u00e1 suporte para um \u00fanico caractere curinga (*), usado como um valor independente ou ap\u00f3s qualquer n\u00famero de prefixos de nomes de cookie.
+cookies.samesite.unsupportedWildcard.useraction=Assegure-se que somente um \u00fanico caractere curinga (*) seja usado por padr\u00e3o nas listas 'lax', 'none' e 'strict'. Al\u00e9m disso, o uso desse caractere \u00e9 suportado apenas nas duas condi\u00e7\u00f5es a seguir: como um valor independente ou ap\u00f3s os prefixos de nomes de cookie.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: Um nome ou padr\u00e3o de cookie [{0}], que est\u00e1 marcado como duplicado, foi localizado na configura\u00e7\u00e3o [{1}] do SameSite. O nome ou padr\u00e3o de cookie [{0}] \u00e9 ignorado. Qualquer nome ou padr\u00e3o de cookie que seja definido pelas configura\u00e7\u00f5es ''lax'', ''none'' e ''strict'' pode ser definido em apenas uma das tr\u00eas configura\u00e7\u00f5es. 
+cookies.samesite.knownDuplicateName.explanation=O valor especificado j\u00e1 foi encontrado pela configura\u00e7\u00e3o e mapeado para um valor do SameSite.
+cookies.samesite.knownDuplicateName.useraction=Assegure-se de que os nomes e padr\u00f5es de cookies sejam exclusivos entre as listas de configura\u00e7\u00e3o 'lax', 'none' e 'strict'.

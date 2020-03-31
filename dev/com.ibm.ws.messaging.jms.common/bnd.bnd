@@ -31,6 +31,10 @@ Export-Package: \
   com.ibm.wsspi.util,\
   com.ibm.ws.sib.api.jms.service
 
+Import-Package: \
+  !com.ibm.ws.sib.api.jms.service, \
+  ${defaultPackageImport}
+
 Service-Component: \
   com.ibm.ws.messaging.jms;\
     implementation:='com.ibm.ws.sib.api.jms.service.JmsServiceFacade';\

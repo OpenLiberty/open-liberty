@@ -16,4 +16,5 @@ Export-Package: \
 
 Import-Package: \
     !org.jose4j.*.internal.*,\
+    !org.bouncycastle.jce.provider, \
     *

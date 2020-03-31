@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1603,3 +1603,14 @@ exception.occurred.while.running.ServletContainerInitializers.onStartup.useracti
 no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: A(z) {0} szervletn\u00e9vre vonatkoz\u00f3an nem tal\u00e1lhat\u00f3 szervletmeghat\u00e1roz\u00e1s a(z) {1} sz\u0171r\u0151lek\u00e9pez\u00e9sben.
 no.servlet.defined.for.servlet.filter.name.mapping.explanation=A szervletnevet haszn\u00e1lja egy sz\u0171r\u0151lek\u00e9pez\u00e9s, de a meghat\u00e1roz\u00e1sa nincs megadva.
 no.servlet.defined.for.servlet.filter.name.mapping.useraction=Hat\u00e1rozza meg a szervletn\u00e9v sz\u0171r\u0151lek\u00e9pez\u00e9s\u00e9ben haszn\u00e1lt szervletet.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: A megl\u00e9v\u0151 {1} SameSite attrib\u00fatum\u00e9rt\u00e9kkel rendelkez\u0151 {0} cookie n\u00e9v a(z) {2} \u00faj \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. Ehhez a cookie-hoz nem ker\u00fcl hozz\u00e1ad\u00e1sra SameSite attrib\u00fatum.
+duplicate.samesite.attribute.for.cookie.name.explanation=Egy cookie n\u00e9v nem konfigur\u00e1lhat\u00f3 t\u00f6bb SameSite attrib\u00fatum\u00e9rt\u00e9khez. Az attrib\u00fatum nem ker\u00fclt hozz\u00e1ad\u00e1sra a cookie-hoz.
+duplicate.samesite.attribute.for.cookie.name.useraction=Ellen\u0151rizze a telep\u00edt\u00e9sle\u00edr\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a cookie neve csak az egyik SameSite attrib\u00fatum\u00e9rt\u00e9khez van be\u00e1ll\u00edtva a k\u00f6vetkez\u0151k k\u00f6z\u00fcl: 'SameSiteCookies_Lax', 'SameSiteCookies_None' vagy 'SameSiteCookies_Strict'. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: A(z) {1} SameSite attrib\u00fatum\u00e9rt\u00e9khez be\u00e1ll\u00edtott {0} cookie n\u00e9v kor\u00e1bban t\u00f6bbsz\u00f6r szerepl\u0151k\u00e9nt lett azonos\u00edtva. Ehhez a cookie-hoz nem ker\u00fcl hozz\u00e1ad\u00e1sra SameSite attrib\u00fatum.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=Egy cookie n\u00e9v nem konfigur\u00e1lhat\u00f3 t\u00f6bb SameSite attrib\u00fatum\u00e9rt\u00e9khez. Ez a cookie n\u00e9v m\u00e1r azonos\u00edt\u00e1sra ker\u00fclt t\u00f6bbsz\u00f6r szerepl\u0151k\u00e9nt.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=Ellen\u0151rizze a telep\u00edt\u00e9sle\u00edr\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a cookie neve csak az egyik SameSite attrib\u00fatum\u00e9rt\u00e9khez van be\u00e1ll\u00edtva a k\u00f6vetkez\u0151k k\u00f6z\u00fcl: 'SameSiteCookies_Lax', 'SameSiteCookies_None' vagy 'SameSiteCookies_Strict'. 

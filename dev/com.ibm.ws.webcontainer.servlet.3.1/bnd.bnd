@@ -88,7 +88,6 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.jmx;version="1.0.0", \
  com.ibm.ws.jsp.webcontainerext
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 instrument.disabled: true
 

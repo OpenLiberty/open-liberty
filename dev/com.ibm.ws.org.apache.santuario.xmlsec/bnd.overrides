@@ -23,6 +23,7 @@ Export-Package: \
  org.apache.jcp.xml.dsig.internal.*
 
 Import-Package: \
+ !sun.security.ec, \
  org.apache.commons.logging;resolution:=optional, \
  org.apache.xml.dtm*;resolution:=optional, \
  org.apache.xml.utils*;resolution:=optional,\

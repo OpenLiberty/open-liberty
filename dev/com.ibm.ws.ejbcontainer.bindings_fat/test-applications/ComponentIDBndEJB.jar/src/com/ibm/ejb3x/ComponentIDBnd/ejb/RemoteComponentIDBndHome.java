@@ -18,5 +18,5 @@ public interface RemoteComponentIDBndHome extends javax.ejb.EJBHome {
     /**
      * Creates a default instance of Session Bean: ComponentIDBnd
      */
-    public ComponentIDBnd create() throws javax.ejb.CreateException, java.rmi.RemoteException;
+    public RemoteComponentIDBnd create() throws javax.ejb.CreateException, java.rmi.RemoteException;
 }

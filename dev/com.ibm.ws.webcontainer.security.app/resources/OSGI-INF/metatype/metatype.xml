@@ -129,7 +129,7 @@
             required="false" type="String" default="defaultRealm" />
         
         <AD id="sameSiteCookie" name="%sameSiteCookie" description="%sameSiteCookie.desc"
-     		required="false" type="String" default="Disabled" ibm:beta="true">
+     		required="false" type="String" default="Disabled">
      			<Option label="%sameSiteCookieDisabled" value="Disabled"/>
      			<Option label="%sameSiteCookieLax" value="Lax"/>
      			<Option label="%sameSiteCookieNone" value="None"/>

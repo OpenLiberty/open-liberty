@@ -38,6 +38,8 @@ Export-Package: \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+   !com.ibm.ws.jaxws.globalhandler, \
+   !com.ibm.ws.jaxws.threading, \
    javax.xml.bind.*;version="[2.2,3)", \
    javax.xml.ws.*;version="[2.2,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
@@ -128,8 +130,8 @@ Service-Component: \
   com.ibm.ws.jaxws.threading.libertyThreadPoolAdapter; \
      activate:=activate; \
      deactivate:=deactivate; \
-     scheduledExecutorService=java.util.concurrent.ScheduledExecutorService('service.vendor=IBM'); \
-     executorService=com.ibm.wsspi.threading.WSExecutorService('service.vendor=IBM'); \
+     scheduledExecutorService="java.util.concurrent.ScheduledExecutorService(service.vendor=IBM)"; \
+     executorService="com.ibm.wsspi.threading.WSExecutorService(service.vendor=IBM)"; \
      implementation:=com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter; \
      provide:='com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter'; \
      immediate:=true; \

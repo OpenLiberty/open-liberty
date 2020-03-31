@@ -38,4 +38,5 @@ publish.wlp.jar.disabled: true
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.logging;version=latest
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest

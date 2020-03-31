@@ -23,8 +23,12 @@ WS-TraceGroup: Naming
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 
-Export-Package: com.ibm.ws.jndi.ejb;
+Export-Package: \
+ com.ibm.ws.jndi.ejb;
 
+Import-Package: \
+ !com.ibm.ws.jndi.ejb, \
+ *
 
 -dsannotations-inherit: true
 -dsannotations: \

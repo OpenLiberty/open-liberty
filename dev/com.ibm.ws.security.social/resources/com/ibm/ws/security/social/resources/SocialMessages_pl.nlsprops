@@ -95,7 +95,7 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=Odpowied\u0
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce atrybut konfiguracyjny podany w komunikacie jest prawid\u0142owo skonfigurowany. Upewnij si\u0119, \u017ce warto\u015b\u0107 atrybutu konfiguracyjnego odpowiada wpisowi w odpowiedzi interfejsu API u\u017cytkownika, kt\u00f3ry powinien by\u0107 u\u017cywany jako nazwa u\u017cytkownika.
 
 # 0=Exception message
-ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: Nie mo\u017cna przetworzy\u0107 odpowiedzi z interfejsu API u\u017cytkownika konta us\u0142ugi: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: Nie mo\u017cna przetworzy\u0107 nast\u0119puj\u0105cej odpowiedzi z interfejsu API u\u017cytkownik\u00f3w: {0}
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Nie mo\u017cna uzyska\u0107 informacji na temat konta us\u0142ugi, poniewa\u017c wyst\u0105pi\u0142 inny b\u0142\u0105d.
 ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Je\u015bli komunikat zawiera inny komunikat o b\u0142\u0119dzie, zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla tego komunikatu. W przeciwnym razie sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach, kt\u00f3re mog\u0105 wskazywa\u0107 miejsce wyst\u0105pienia innego b\u0142\u0119du.
 
@@ -119,6 +119,15 @@ JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Warto\u015b\u0107 klucza [{0}] w danych J
 JSON_ENTRY_WRONG_JSON_TYPE.explanation=Typ warto\u015bci podanego klucza jest nieprawid\u0142owy. By\u0107 mo\u017ce dane JSON s\u0105 zniekszta\u0142cone lub maj\u0105 nieoczekiwan\u0105 struktur\u0119.
 JSON_ENTRY_WRONG_JSON_TYPE.useraction=Sprawd\u017a struktur\u0119 danych JSON. Sprawd\u017a, czy w danych JSON nie ma b\u0142\u0119du.
 
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: Nie mo\u017cna przetworzy\u0107 odpowiedzi z interfejsu API introspekcji znacznik\u00f3w: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Nie mo\u017cna uzyska\u0107 informacji na temat uwierzytelnionego u\u017cytkownika z powodu wyst\u0105pienia innego b\u0142\u0119du.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Je\u015bli komunikat zawiera inny komunikat o b\u0142\u0119dzie, zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla tego komunikatu. W przeciwnym razie sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach, kt\u00f3re mog\u0105 wskazywa\u0107 miejsce wyst\u0105pienia innego b\u0142\u0119du.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: \u017b\u0105danie introspekcji znacznika nie powiod\u0142o si\u0119, poniewa\u017c znacznik, kt\u00f3ry jest zawarty w \u017c\u0105daniu, jest niepoprawny. Pe\u0142na odpowied\u017a to {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Serwer autoryzacji nie wystawi\u0142 znacznika, w\u0142a\u015bciciel zasobu uniewa\u017cni\u0142 znacznik, znacznik utraci\u0142 wa\u017cno\u015b\u0107 lub wyst\u0105pi\u0142 inny b\u0142\u0105d.
+INTROSPECT_USER_API_INACTIVE.useraction=Sprawd\u017a odpowied\u017a zawart\u0105 w komunikacie. Sprawd\u017a, czy u\u017cywany jest poprawny punkt ko\u0144cowy introspekcji znacznika. Sprawd\u017a, czy znacznik jest poprawny oraz czy mo\u017ce zosta\u0107 poddany introspekcji.
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych [{0}] zosta\u0142a pomy\u015blnie przetworzona.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Wskazana konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych zosta\u0142a pomy\u015blnie przetworzona.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

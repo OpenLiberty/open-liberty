@@ -18,8 +18,6 @@ src: \
 	test-applications/ReactiveWithJaxRS/src
 	
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 

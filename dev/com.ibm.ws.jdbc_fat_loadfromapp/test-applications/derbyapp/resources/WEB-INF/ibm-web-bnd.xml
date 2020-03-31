@@ -12,6 +12,14 @@
 <web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
     xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
 
+  <resource-ref name="java:module/env/jdbc/sldsLoginModuleFromEnterpriseAppNotFoundInWebApp">
+    <custom-login-configuration name="notFoundInWebAppLogin">
+      <property name="shape" value="trapezoid"/>
+      <property name="sides" value="4"/>
+      <property name="sumOfAngles" value="360"/>
+    </custom-login-configuration>
+  </resource-ref>
+
   <resource-ref name="java:module/env/jdbc/sldsLoginModuleFromOtherApp">
     <custom-login-configuration name="app1login">
       <property name="shape" value="hexagon"/>

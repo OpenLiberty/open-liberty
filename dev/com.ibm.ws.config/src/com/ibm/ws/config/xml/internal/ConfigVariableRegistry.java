@@ -37,7 +37,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 
-class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
+public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
 
     private static final TraceComponent tc = Tr.register(ConfigVariableRegistry.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
@@ -223,9 +223,9 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
         return false;
     }
 
-    Object lookupVariableFromAdditionalSources(String variableName) {
+    String lookupVariableFromAdditionalSources(String variableName) {
 
-        Object value = null;
+        String value = null;
 
         // Try to resolve as an env variable ( resolve env.var-Name )
 

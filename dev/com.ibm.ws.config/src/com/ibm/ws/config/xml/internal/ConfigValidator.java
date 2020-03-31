@@ -132,7 +132,7 @@ class ConfigValidator {
 
         // @formatter:off
         int attributeType = attributeDefinition.getType();
-        return ((attributeType == MetaTypeFactory.PASSWORD_TYPE) ||
+        return (attributeDefinition.isObscured()  || (attributeType == MetaTypeFactory.PASSWORD_TYPE) ||
                 (attributeType == MetaTypeFactory.HASHED_PASSWORD_TYPE));
         // @formatter:on
     }
@@ -180,8 +180,8 @@ class ConfigValidator {
      * usually be a multi-line message, with a half-dozen lines or more per problem which
      * is detected.
      *
-     * @param pid TBD
-     * @param id TBD
+     * @param pid      TBD
+     * @param id       TBD
      * @param elements The configuration elements which are to be validated.
      *
      * @return True or false telling if the configuration elements are valid.
@@ -198,9 +198,9 @@ class ConfigValidator {
      * is detected.
      *
      * @param registryEntry The registry entry associated with the PID of the configuration elements.
-     * @param pid TBD
-     * @param id TBD
-     * @param elements The configuration elements which are to be validated.
+     * @param pid           TBD
+     * @param id            TBD
+     * @param elements      The configuration elements which are to be validated.
      *
      * @return True or false telling if the configuration elements are valid.
      */
@@ -238,7 +238,7 @@ class ConfigValidator {
      * Conflicts are keyed by attribute name.
      *
      * @param registryEntry The registry entry for the configuration elements.
-     * @param list The configuration elements to test.
+     * @param list          The configuration elements to test.
      *
      * @return A mapping of conflicts detected across the configuration elements.
      */
@@ -289,9 +289,9 @@ class ConfigValidator {
      *
      * Do not emit values for protected (password flagged) attributes. See {@link #isSecureAttribute(RegistryEntry, String)}.
      *
-     * @param pid TBD
-     * @param id TBD
-     * @param registryEntry The registry entry of the conflicted elements.
+     * @param pid                    TBD
+     * @param id                     TBD
+     * @param registryEntry          The registry entry of the conflicted elements.
      * @param conflictedElementLists All detected conflicted elements.
      */
     private String generateCollisionMessage(String pid, ConfigID id, RegistryEntry registryEntry,

@@ -2,7 +2,7 @@
 WD1=$(pwd)
 PASSPHRASE_FILE=$HOME/.gnupg/pp.txt
 EMAIL=admin@openliberty.io
-BUILD_UNSIGNED=1
+BUILD_SIGNED=1
 KEY_FOUND=false
 
 #Verify gpg key was installed correctly
@@ -22,12 +22,12 @@ then
 	debuild -d -b -p"gpg --passphrase-file $PASSPHRASE_FILE --batch"  -e"$EMAIL"
 	RC=$?
 	echo "Built signed .deb RC:$RC"
-	BUILD_UNSIGNED=$RC
+	BUILD_SIGNED=$RC
 	cd $WD1
 fi
 
 #Build .deb without passphrase (building with passphrase failed, or GPG key or passphrase were not found)
-if [ "$BUILD_UNSIGNED" -ne "0" ]
+if [ "$BUILD_SIGNED" -ne "0" ]
 then
 	echo "Building unsigned .deb"
 	cd debuild/openliberty

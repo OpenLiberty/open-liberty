@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -31,8 +39,31 @@ public class ApplicationManager {
     private long startTimeout;
     private long stopTimeout;
 
+    private File extractedLog;
+    private ConcurrentMap<String, ExtractedLogData> extractsDataLog = new ConcurrentHashMap<>();
+
     protected void activate(ComponentContext compcontext, Map<String, Object> properties) {
         modified(compcontext, properties);
+
+        extractedLog = compcontext.getBundleContext().getBundle().getDataFile("expandApps");
+        if (expandApps && extractedLog.exists()) {
+            try (DataInputStream din = new DataInputStream(new FileInputStream(extractedLog))) {
+                long format = din.readLong();
+                if (format == 0) {
+                    int len = din.readInt();
+                    for (int i = 0; i < len; i++) {
+                        String id = din.readUTF();
+                        long updated = din.readLong();
+                        long size = din.readLong();
+                        extractsDataLog.put(id, new ExtractedLogData(id, updated, size));
+                    }
+                }
+            } catch (IOException ioe) {
+                // If we get a failure assume the file is corrupted and delete
+                // worst case is we will reextract.
+                extractedLog.delete();
+            }
+        }
     }
 
     /**
@@ -41,7 +72,24 @@ public class ApplicationManager {
      * @param compcontext the context of this component
      */
     protected void deactivate(ComponentContext compcontext) {
-
+        if (expandApps) {
+            try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(extractedLog))) {
+                dout.writeLong(0); // file format version
+                dout.writeInt(extractsDataLog.size()); // number of entries
+                for (ExtractedLogData data : extractsDataLog.values()) {
+                    dout.writeUTF(data.id); // the id
+                    dout.writeLong(data.lastUpdated); // the last time it was updated
+                    dout.writeLong(data.size); // the file size
+                }
+            } catch (IOException ioe) {
+                // If we hit this just delete the file on the assumption that
+                // we will just reextract which is less efficient, but not
+                // a total failure.
+                extractedLog.delete();
+            }
+        } else if (extractedLog.exists()) {
+            extractedLog.delete(); // attempt to delete since we aren't running expanded apps.
+        }
     }
 
     /**
@@ -81,6 +129,35 @@ public class ApplicationManager {
         }
         return value;
     }
+
+    /**
+     * @return true if the app should expand, false otherwise
+     */
+     public boolean shouldExpand(String id, File warFile, File expandedDir) {
+
+         boolean result = true;
+
+         long lastModified = -1;
+         long size = -1;
+
+         ExtractedLogData data = extractsDataLog.get(id);
+         lastModified = warFile.lastModified();
+         size = warFile.length();
+
+         if (expandedDir.exists()) {
+             if (data != null) {
+                 result = data.lastUpdated != lastModified || data.size != size;
+             }
+         }
+
+         if (result) {
+             extractsDataLog.put(id, new ExtractedLogData(id, lastModified, size));
+         }
+
+
+
+         return result;
+     }
 
     /**
      * @return
@@ -136,5 +213,17 @@ public class ApplicationManager {
      */
     private void setStopTimeout(long b) {
         this.stopTimeout = b;
+    }
+
+    private static class ExtractedLogData {
+        private String id;
+        private long lastUpdated;
+        private long size;
+
+        public ExtractedLogData(String id, long updated, long size) {
+            this.id = id;
+            this.lastUpdated = updated;
+            this.size = size;
+        }
     }
 }

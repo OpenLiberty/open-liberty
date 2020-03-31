@@ -30,14 +30,15 @@
   <!-- database for scheduled tasks -->
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="JDBCLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/failover1db"/>
+    <properties.derby.client createDatabase="create" databaseName="memory:failover1db"
+                             serverName="localhost" portNumber="1527" user="dbuser" password="dbpwd"/>
   </dataSource>
 
   <library id="JDBCLib">
-    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    <fileset dir="${shared.resource.dir}/derbyclient" includes="derbyclient.jar"/>
   </library>
   
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derbyclient.jar" className="java.security.AllPermission"/>
   <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 
   <variable name="onError" value="FAIL"/>

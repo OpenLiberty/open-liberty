@@ -43,6 +43,18 @@ CWWKC1503.task.failure=CWWKC1503W: El ejecutor persistente {0} ha retrotra\u00ed
 CWWKC1503.task.failure.explanation=La ejecuci\u00f3n de la tarea ha fallado y se ha retrotra\u00eddo.
 CWWKC1503.task.failure.useraction=Corrija la causa de la anomal\u00eda, si la anomal\u00eda es inesperada, y vuelva a planificar la tarea.
 
+CWWKC1504.tx.timeout.rollback=CWWKC1504E: La transacci\u00f3n se marca como retrotracci\u00f3n porque el tiempo de ejecuci\u00f3n de tarea, {0} segundos, ha superado el tiempo de espera de transacci\u00f3n, {1} segundos.
+CWWKC1504.tx.timeout.rollback.explanation=La tarea ha tardado demasiado en ejecutarse, por lo tanto se retrotrae la transacci\u00f3n.
+CWWKC1504.tx.timeout.rollback.useraction=Es posible que se necesite un tiempo de espera de transacci\u00f3n m\u00e1s largo o puede que sea necesario acortar la tarea.
+
+CWWKC1505.mtt.timeout.rollback=CWWKC1505E: La transacci\u00f3n se marca para retrotraerse porque el tiempo de ejecuci\u00f3n de tarea, {0} segundos, ha superado el umbral de tarea perdida (missedTaskThreshold), {1} segundos.
+CWWKC1505.mtt.timeout.rollback.explanation=La tarea ha tardado demasiado en ejecutarse, por lo tanto se retrotrae la transacci\u00f3n.
+CWWKC1505.mtt.timeout.rollback.useraction=Es posible que se necesite un umbral de tarea perdida m\u00e1s grande o puede que sea necesario acortar la tarea.
+
+CWWKC1506.marked.rollback.only=CWWKC1506E: La transacci\u00f3n se ha marcado para retrotraerse.
+CWWKC1506.marked.rollback.only.explanation=La aplicaci\u00f3n ha marcado la transacci\u00f3n para que se retrotraiga con setRollbackOnly o un error o tiempo de espera ha producido la retrotracci\u00f3n.
+CWWKC1506.marked.rollback.only.useraction=Si la retrotracci\u00f3n es inesperada, consulte los registros y la aplicaci\u00f3n.
+
 CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: El ejecutor persistente {0} ha cancelado la tarea {1} porque se ha retrotra\u00eddo o ha fallado {2} veces consecutivas.
 CWWKC1510.retry.limit.reached.rollback.explanation=La tarea ha alcanzado el l\u00edmite de reintentos consecutivos y no se volver\u00e1 a intentar ejecutar.
 CWWKC1510.retry.limit.reached.rollback.useraction=Si los errores o retrotracciones son inesperadas, determine la causa y vuelva a planificar la tarea. Si las retrotracciones y anomal\u00edas son intermitentes, considere la posibilidad de aumentar el l\u00edmite de reintentos. 
@@ -55,9 +67,9 @@ CWWKC1520.out.of.range=CWWKC1520E: El valor configurado {0} para {1} no est\u00e
 CWWKC1520.out.of.range.explanation=Se ha configurado un valor que est\u00e1 fuera del rango permitido para la propiedad especificada.
 CWWKC1520.out.of.range.useraction=Configure un valor en el rango permitido.
 
-CWWKC1521.less.than.min=CWWKC1521E: El valor configurado {0} para {1} no puede ser menor que el valor configurado para {2}, que es {3}.
-CWWKC1521.less.than.min.explanation=La configuraci\u00f3n de un retryInterval mayor fomenta que otros servidores vuelvan a intentar la tarea an\u00f3mala en lugar del servidor en el que ha fallado.
-CWWKC1521.less.than.min.useraction=Configure la propiedad retryInterval de forma que sea mayor que missedTaskThreshold.
+CWWKC1521.not.compatible=CWWKC1521E: El atributo de configuraci\u00f3n {0} no es v\u00e1lido cuando se habilita el atributo de configuraci\u00f3n {1}.
+CWWKC1521.not.compatible.explanation=Los atributos de configuraci\u00f3n especificados no son compatibles.
+CWWKC1521.not.compatible.useraction=Actualice la configuraci\u00f3n para eliminar uno de los atributos de configuraci\u00f3n.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: No puede planificar tareas persistentes desde el contexto de hebras actual.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Planifique tareas persistentes s\u00f3lo desde una hebra asociada con una aplicaci\u00f3n o caracter\u00edstica con una identidad de cargador de clases serializable.

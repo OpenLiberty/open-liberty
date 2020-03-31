@@ -12,6 +12,7 @@ package com.ibm.ws.jaxrs20.fat.exceptionmappingWithOT;
 
 import static com.ibm.ws.jaxrs20.fat.TestUtils.getPort;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -58,6 +59,14 @@ public class ExceptionMappingWithOTTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Pause for the smarter planet message
+        assertNotNull("The smarter planet message did not get printed on server",
+                      server.waitForStringInLog("CWWKF0011I"));
+
+        // wait for LTPA key to be available to avoid CWWKS4000E
+        assertNotNull("CWWKS4105I.* not recieved on server",
+                      server.waitForStringInLog("CWWKS4105I.*"));
     }
 
     @AfterClass

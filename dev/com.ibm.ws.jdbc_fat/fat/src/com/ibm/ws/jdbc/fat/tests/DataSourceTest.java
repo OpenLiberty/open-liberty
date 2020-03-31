@@ -73,8 +73,9 @@ public class DataSourceTest extends FATServletClient {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/derbyfat");
 
         //Get driver type
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-        server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("ANON_DRIVER", type.getAnonymousDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
@@ -116,18 +117,18 @@ public class DataSourceTest extends FATServletClient {
      * Runs the test in the "basicfat" app
      */
     private void runTest() throws Exception {
-        runTest(server, basicfat + '/', testName);
+        runTest(server, basicfat, testName);
     }
 
     @Test
     public void testServletWorking() throws Exception {
-        runTest(server, setupfat + '/', testName);
+        runTest(server, setupfat, testName);
     }
 
     @Test
     @SkipIfDataSourceProperties(DERBY_EMBEDDED)
     public void testBootstrapDatabaseConnection() throws Throwable {
-        runTest(server, setupfat + '/', testName);
+        runTest(server, setupfat, testName);
     }
 
     @Test
@@ -160,7 +161,7 @@ public class DataSourceTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException" })
     public void testDuplicateJNDINames() throws Exception {
-        runTest(server, dsdfat + '/', testName);
+        runTest(server, dsdfat, testName);
     }
 
     @Test

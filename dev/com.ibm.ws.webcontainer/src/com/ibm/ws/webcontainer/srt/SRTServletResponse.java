@@ -927,7 +927,6 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 }
             }
             else {
-                prepSameSiteAttribute(cookie);
                 _response.addCookie(cookie);
             }
         }
@@ -2613,27 +2612,5 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  
             logger.logp(Level.FINE, CLASS_NAME,"alertOSFirstFlush", "exit");
         
-    }
-    
-    public void prepSameSiteAttribute(Cookie cookie) {
-        String ssAttValue;
-        String cookieName = cookie.getName();
-        Map<String, String> sameSiteCookiesMap = getRequest().getWebAppDispatcherContext().getWebApp().getConfiguration().getSameSiteCookiesMap();
-        if (sameSiteCookiesMap != null && !sameSiteCookiesMap.isEmpty()) {
-            ssAttValue = sameSiteCookiesMap.get(cookieName);
-            if (ssAttValue == null)
-                ssAttValue = sameSiteCookiesMap.get("*");
-
-            if (ssAttValue != null) {
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
-                    logger.logp(Level.FINE, CLASS_NAME, "prepSameSiteAttribute", "adding SameSite attribute [" + ssAttValue + "]");
-                }
-
-                WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
-                reqState.setCookieAttribute(cookieName, "SameSite="+ssAttValue);
-                if (ssAttValue.equals("None"))
-                    cookie.setSecure(true);
-            }
-        }  
     }
 }

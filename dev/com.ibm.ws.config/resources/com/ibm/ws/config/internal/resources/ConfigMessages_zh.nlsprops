@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -468,8 +468,12 @@ warning.supplied.config.not.valid.explanation= \u914d\u7f6e\u5c5e\u6027\u88ab\u6
 warning.supplied.config.not.valid.useraction=\u8bf7\u66f4\u65b0\u670d\u52a1\u5668\u914d\u7f6e\u4ee5\u79fb\u9664\u4e0d\u6b63\u786e\u7684\u5c5e\u6027\u503c\u3002
 
 variables.in.id.not.supported=CWWKG0104W: \u914d\u7f6e\u5143\u7d20 {0} \u7684\u503c\u4e3a {1} \u7684\u6807\u8bc6\u5c5e\u6027\u5fc5\u987b\u5177\u6709\u56fa\u5b9a\u503c\u3002\u5c06\u4e0d\u4f1a\u66ff\u6362\u6807\u8bc6\u5c5e\u6027\u4e2d\u7684\u53d8\u91cf\u3002
-variables.in.id.not.supported.explanation= \u6807\u8bc6\u5c5e\u6027\u4e2d\u4e0d\u5141\u8bb8\u53d8\u91cf\u503c\u3002\u6807\u8bc6\u5c5e\u6027\u4e2d\u7684\u6240\u6709\u53d8\u91cf\u90fd\u5c06\u89c6\u4e3a\u6587\u5b57\u4e32\u3002
-variables.in.id.not.supported.useraction= \u8bf7\u4ece\u6807\u8bc6\u5c5e\u6027\u7684\u503c\u4e2d\u79fb\u9664\u8be5\u53d8\u91cf\u3002
+variables.in.id.not.supported.explanation=\u6807\u8bc6\u5c5e\u6027\u4e2d\u4e0d\u5141\u8bb8\u53d8\u91cf\u503c\u3002\u6807\u8bc6\u5c5e\u6027\u4e2d\u7684\u6240\u6709\u53d8\u91cf\u90fd\u5c06\u89c6\u4e3a\u6587\u5b57\u4e32\u3002
+variables.in.id.not.supported.useraction=\u8bf7\u4ece\u6807\u8bc6\u5c5e\u6027\u7684\u503c\u4e2d\u79fb\u9664\u8be5\u53d8\u91cf\u3002
+
+error.root.must.be.server=CWWKG0105E: {0} \u914d\u7f6e\u6587\u6863\u5fc5\u987b\u4ee5 [{1}] \u5143\u7d20\u5f00\u5934\u3002
+error.root.must.be.server.explanation=\u914d\u7f6e\u5fc5\u987b\u5305\u542b\u5728\u670d\u52a1\u5668\u5143\u7d20\u6216\u8005\u5ba2\u6237\u673a\u5143\u7d20\u4e2d\u3002
+error.root.must.be.server.useraction=\u6dfb\u52a0\u670d\u52a1\u5668\u5143\u7d20\u6216\u5ba2\u6237\u673a\u5143\u7d20\u4f5c\u4e3a\u914d\u7f6e\u6587\u4ef6\u7684\u6839\u3002
 
 # Non-TR message
 error.invalidOCDRef=\u9519\u8bef: \u5143\u7c7b\u578b PID [{0}] \u6307\u5b9a\u4e86\u4e0d\u5b58\u5728\u7684\u5bf9\u8c61\u7c7b\u5b9a\u4e49\u6807\u8bc6 [{1}]

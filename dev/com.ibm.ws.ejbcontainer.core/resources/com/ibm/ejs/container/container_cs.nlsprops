@@ -1563,7 +1563,17 @@ NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Rozhran\u00ed {0} objektu typu bean
 NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Pro ka\u017ed\u00e9 rozhran\u00ed objektu enterprise bean mus\u00ed b\u00fdt ur\u010deno jedine\u010dn\u00e9 um\u00edst\u011bn\u00ed vazby.
 NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Opravte v\u00e1zac\u00ed soubor pro jedno z uveden\u00fdch rozhran\u00ed objektu typu bean nebo pro ob\u011b rozhran\u00ed tak, aby bylo pro ka\u017ed\u00e9 rozhran\u00ed definov\u00e1no jedine\u010dn\u00e9 um\u00edst\u011bn\u00ed vazby.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: N\u00e1zev vazby rozhran\u00ed JNDI (Java Naming and Directory Interface) {2} pro objekt typu bean {0} nebo domovsk\u00e9 rozhran\u00ed v modulu {1} obsahuje obor n\u00e1zv\u016f.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=N\u00e1zvy vazeb rozhran\u00ed JNDI nesm\u00ed obsahovat znak dvojte\u010dky (:), kter\u00fd ozna\u010duje obor n\u00e1zv\u016f. Cel\u00fd \u0159et\u011bzec p\u0159ed a v\u010detn\u011b znaku dvojte\u010dka (:) je pova\u017eov\u00e1n za obor n\u00e1zv\u016f.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Opravte v\u00e1zac\u00ed soubor ibm-ejb-jar-bnd.xml tak, aby tento objekt typu bean m\u011bl platn\u00fd n\u00e1zev vazby rozhran\u00ed JNDI, a to tak, \u017ee odeberete obor n\u00e1zv\u016f.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: N\u00e1zev vazby rozhran\u00ed JNDI (Java Naming and Directory Interface) {2} pro objekt typu bean {0} nebo lok\u00e1ln\u00ed domovsk\u00e9 rozhran\u00ed v modulu {1} obsahuje obor n\u00e1zv\u016f, kter\u00fd nen\u00ed platn\u00fd.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=N\u00e1zev lok\u00e1ln\u00ed vazby m\u016f\u017ee obsahovat pouze jeden obor n\u00e1zv\u016f a mus\u00ed za\u010d\u00ednat ejblocal:. Obory n\u00e1zv\u016f jsou ozna\u010deny znakem dvojte\u010dka (:). Cel\u00fd \u0159et\u011bzec p\u0159ed a v\u010detn\u011b znaku dvojte\u010dka (:) je pova\u017eov\u00e1n za obor n\u00e1zv\u016f.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Opravte v\u00e1zac\u00ed soubor ibm-ejb-jar-bnd.xml tak, aby tento objekt typu bean m\u011bl platn\u00fd n\u00e1zev vazby rozhran\u00ed JNDI, a to tak, \u017ee odeberete neplatn\u00fd obor n\u00e1zv\u016f.
 
 #-------------------------------------------------------------------------------
 #

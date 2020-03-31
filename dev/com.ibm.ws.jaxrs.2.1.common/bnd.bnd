@@ -11,15 +11,12 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: JAX-RS 2.1 Engine
 Bundle-SymbolicName: com.ibm.ws.jaxrs.2.1.common
 Bundle-Description: IBM JAX-RS 2.1 engine; version=${bVersion}
 
 # jaxrs-2.1 is part of EE8 and therefore requires java 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: JAXRS
 
@@ -37,9 +34,10 @@ Export-Package: \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
-  com.ibm.json.java;resolution:=optional,\
-  javax.xml.bind;version=!,\
-  javax.xml.bind.annotation;version=!,\
+  !com.ibm.ws.jaxrs20.clientconfig, \
+  com.ibm.json.java;resolution:=optional, \
+  javax.xml.bind;version=!, \
+  javax.xml.bind.annotation;version=!, \
   *
 # !com.wordnik.swagger.jaxrs.config, \
 # !com.wordnik.swagger.jaxrs.listing, \

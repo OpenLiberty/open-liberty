@@ -27,8 +27,6 @@ src: \
 fat.project: true
 tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\

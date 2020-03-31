@@ -43,7 +43,6 @@ import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.FileFailureScope;
 import com.ibm.ws.recoverylog.spi.FileLogProperties;
 import com.ibm.ws.recoverylog.spi.HeartbeatLog;
-import com.ibm.ws.recoverylog.spi.HeartbeatLogManager;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.InvalidLogPropertiesException;
@@ -72,6 +71,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     protected RecoveryDirector _recoveryDirector;
 
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
+
+    private RecoveryLog _transactionLog = null;
+    private RecoveryLog _partnerLog = null;
     // In the special case where we are operating in the cloud, we'll also work with a "lease" log
     SharedServerLeaseLog _leaseLog;
 
@@ -235,9 +237,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             byte[] applId = ConfigurationProviderManager.getConfigurationProvider().getApplId();
             int epoch = Configuration.getCurrentEpoch();
 
-            RecoveryLog transactionLog = null;
-            RecoveryLog partnerLog = null;
-
             // As long as a physical location for the recovery logs is found, and logging is enabled (ie user
             // has not specified ";0" as the log location string for a file based log) then create the
             if ((tlc != null) && (tlc.enabled())) {
@@ -275,28 +274,30 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 // Create the Transaction log
                 //
-                transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
+                _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
                 //
                 // Create the Partner (XAResources) log
                 //
-                partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+                _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
 
                 // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Test to see if peer recovery is supported -  ", _isPeerRecoverySupported);
                 if (_isPeerRecoverySupported) {
-                    _leaseLog = rlm.getLeaseLog(localRecoveryIdentity, _recoveryGroup, transactionLogProps);
-
-                    // Set the Lease Timeout into the lease log
-                    _leaseLog.setPeerRecoveryLeaseTimeout(getPeerRecoveryLeaseTimeout());
+                    _leaseLog = rlm.getLeaseLog(localRecoveryIdentity,
+                                                _recoveryGroup,
+                                                cp.getLeaseCheckInterval(),
+                                                cp.getLeaseCheckStrategy(),
+                                                cp.getLeaseLength(),
+                                                transactionLogProps);
                 }
             }
 
             //
             // Create the RecoveryManager and associate it with the logs
             //
-            fsc.createRecoveryManager(this, transactionLog, partnerLog, null, applId, epoch);
+            fsc.createRecoveryManager(this, _transactionLog, _partnerLog, null, applId, epoch);
 
             // Initiate recovery on a separate thread.
             // Cannot use default threadpool threads as these are subject to hang detection and if we
@@ -430,12 +431,13 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Local server recovery identity so spawn lease timeout manager");
 
-                    LeaseTimeoutManager.setTimeout(_leaseLog,
-                                                   recoveredServerIdentity,
-                                                   _recoveryGroup,
-                                                   this,
-                                                   _recoveryDirector,
-                                                   getPeerLeaseCheckInterval());
+                    LeaseTimeoutManager.setTimeouts(_leaseLog,
+                                                    recoveredServerIdentity,
+                                                    _recoveryGroup,
+                                                    this,
+                                                    _recoveryDirector,
+                                                    cp.getLeaseLength(),
+                                                    cp.getLeaseCheckInterval());
                 }
             }
 
@@ -588,9 +590,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // Stop lease timeout alarm popping when server is on its way down
         LeaseTimeoutManager.stopTimeout();
 
-        // Stop HADB Log Availability alarm popping when server is on its way down
-        HeartbeatLogManager.stopTimeout();
-
+        // Drive the serverStopping() method on the SQLMultiScopeRecoveryLog if appropriate. This will manage
+        // the cancelling of the HADB Log Availability alarm
+        if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The log is a Heartbeatlog");
+            HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
+            heartbeatLog.serverStopping();
+        }
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
         // processing recovery for it) and tell them to shutdown.
@@ -659,9 +666,15 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 // Discard the local server from the list
                 peersToRecover.remove(recoveryIdentity);
 
-                int numPeers = peersToRecover.size();
-                Tr.audit(tc, "WTRN0108I: Have checked leases for peers in recovery group " + recoveryGroup + " - need to Recover " + numPeers + " peer servers");
-
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Have checked leases for " + peerLeaseTable.size() + " peer" + (peerLeaseTable.size() != 1 ? "s" : "") + " in recovery group "
+                                 + recoveryGroup);
+                    if (peersToRecover.size() > 0) {
+                        for (String peer : peersToRecover) {
+                            Tr.debug(tc, "Need to recover: " + peer);
+                        }
+                    }
+                }
             } catch (Exception e) {
                 System.out.println("Caught exception when trying to get leases for peers: " + e);
                 e.printStackTrace();
@@ -736,116 +749,42 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      * @param isPeerRecoverySupported
      * @return
      * @throws URISyntaxException
+     * @throws RecoveryFailedException
      */
     private TranLogConfiguration createFileTranLogConfiguration(String recoveredServerIdentity,
                                                                 FailureScope fs,
                                                                 String logDir,
                                                                 int logSize,
-                                                                boolean isPeerRecoverySupported) throws URISyntaxException {
+                                                                boolean isPeerRecoverySupported) throws URISyntaxException, RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createFileTranLogConfiguration", new java.lang.Object[] { recoveredServerIdentity, fs, logDir, logSize, this });
 
         TranLogConfiguration tlc = null;
 
-        if (_isPeerRecoverySupported) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Work with server recovery identity -  ", recoveredServerIdentity);
+        // Do we need to reset the logdir?
+        if (recoveredServerIdentity.equals(localRecoveryIdentity)) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Work with server recovery identity -  ", recoveredServerIdentity);
-            // Do we need to reset the logdir?
-            if (recoveredServerIdentity.equals(localRecoveryIdentity)) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Local server recovery identity so no need to reset the logDir");
-
-            } else {
-                // Reset the logdir
-                if (fs != null && fs instanceof FileFailureScope) {
-                    FileFailureScope ffs = (FileFailureScope) fs;
-                    if (ffs != null) {
-                        LeaseInfo li = ffs.getLeaseInfo();
-                        if (li != null) {
-                            logDir = li.getLeaseDetail();
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Have reset the logDir to ", logDir);
-                        }
-                    }
+                Tr.debug(tc, "Local server recovery identity so no need to reset the logDir");
+            tlc = new TranLogConfiguration(logDir, logDir, logSize);
+        } else {
+            // Reset the logdir
+            if (fs instanceof FileFailureScope) {
+                FileFailureScope ffs = (FileFailureScope) fs;
+                LeaseInfo li = ffs.getLeaseInfo();
+                if (li != null) {
+                    String s = li.getLeaseDetail().getPath();
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Using log directory", s);
+                    tlc = new TranLogConfiguration(s, s, logSize);
                 }
             }
         }
 
-        tlc = new TranLogConfiguration(logDir, logDir, logSize);
-
         if (tc.isEntryEnabled())
             Tr.exit(tc, "createFileTranLogConfiguration", tlc);
         return tlc;
-    }
-
-    /**
-     * This method retrieves a system property named com.ibm.tx.jta.impl.PeerLeaseCheckInterval
-     * which allows a value to be specified for the time we should wait between peer server status checks.
-     *
-     * @return
-     */
-    private int getPeerLeaseCheckInterval() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getPeerLeaseCheckInterval");
-
-        int intToReturn;
-        Integer peerLeaseCheckInterval = null;
-
-        try {
-            peerLeaseCheckInterval = AccessController.doPrivileged(
-                                                                   new PrivilegedExceptionAction<Integer>() {
-                                                                       @Override
-                                                                       public Integer run() {
-                                                                           return Integer.getInteger("com.ibm.tx.jta.impl.PeerLeaseCheckInterval", 20); // Default is 20 seconds
-                                                                       }
-                                                                   });
-        } catch (PrivilegedActionException e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception setting Peer Lease-Check Interval", e);
-            peerLeaseCheckInterval = null;
-        }
-
-        if (peerLeaseCheckInterval == null)
-            peerLeaseCheckInterval = 20;
-        intToReturn = peerLeaseCheckInterval.intValue();
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getPeerLeaseCheckInterval", intToReturn);
-        return intToReturn;
-    }
-
-    /**
-     * This method retrieves a system property named com.ibm.tx.jta.impl.PeerRecoveryLeaseTimeout
-     * which allows a value to be specified for the expiry time of a lease.
-     *
-     * @return
-     */
-    private int getPeerRecoveryLeaseTimeout() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getPeerRecoveryLeaseTimeout");
-
-        int intToReturn;
-        Integer PeerRecoveryLeaseTimeout = null;
-
-        try {
-            PeerRecoveryLeaseTimeout = AccessController.doPrivileged(
-                                                                     new PrivilegedExceptionAction<Integer>() {
-                                                                         @Override
-                                                                         public Integer run() {
-                                                                             return Integer.getInteger("com.ibm.tx.jta.impl.PeerRecoveryLeaseTimeout", 30); // Default is 30 seconds
-                                                                         }
-                                                                     });
-        } catch (PrivilegedActionException e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception setting Peer Recovery Lease-Timeout", e);
-            PeerRecoveryLeaseTimeout = null;
-        }
-
-        if (PeerRecoveryLeaseTimeout == null)
-            PeerRecoveryLeaseTimeout = 20;
-        intToReturn = PeerRecoveryLeaseTimeout.intValue();
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getPeerRecoveryLeaseTimeout", intToReturn);
-        return intToReturn;
     }
 
     /**

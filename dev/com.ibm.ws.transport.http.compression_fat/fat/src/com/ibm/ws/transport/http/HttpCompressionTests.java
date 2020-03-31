@@ -223,6 +223,88 @@ public class HttpCompressionTests {
     }
 
     /**
+     * Test that the server honors q-value set to 0 when no explicit encodings
+     * are set and a wildcard is provided. The server should first check to see
+     * if able to set gzip. If unable, it will try to set deflate. If unable to
+     * do neither, no compression should be set.
+     *
+     * This test will send three requests:
+     * 1. Accept-Encoding: gzip;q=0, *
+     * Expected outcome: Response is compressed as deflate.
+     * 2. Accept-Encoding: *
+     * Expected outcome: Response is compressed as gzip (favored over deflate and identity)
+     * 3. Accept-Encoding: gzip;q=0,deflate;q=0, *
+     * Expected outcome: Response is not compressed.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAcceptEncodingStarAndQV0Interactions() throws Exception {
+
+        configurationFileName = ConfigurationFiles.DEFAULT.name;
+        testName = name.getMethodName();
+
+        startServer(configurationFileName, testName);
+
+        //First Request
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=0, *"));
+
+        HttpResponse httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.DEFLATE);
+
+        //Second Request
+        headerList.clear();
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "*"));
+        httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.GZIP);
+
+        //Third Request
+        headerList.clear();
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=0,deflate;q=0,*"));
+
+        httpResponse = execute(headerList, testName);
+        assertNotCompressed(httpResponse);
+
+    }
+
+    /**
+     * Test that the server honors q-value set to 0 when no explicit encodings
+     * are set and a wildcard is provided. This will also set the server preferred
+     * algorithm to 'deflate'.
+     *
+     * This test will send two requests:
+     * 1. Accept-Encoding: deflate;q=0, *
+     * Expected outcome: Response is compressed as gzip.
+     * 2. Accept-Encoding: gzip;q=0,deflate;q=0, *
+     * Expected outcome: Response is not compressed.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAcceptEncodingStarAndQV0InteractionsWithPreferredAlgo() throws Exception {
+
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_PREF_ALGO.name;
+        testName = name.getMethodName();
+
+        startServer(configurationFileName, testName);
+
+        //First Request
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0, *"));
+
+        HttpResponse httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.GZIP);
+
+        //Second Request
+        headerList.clear();
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=0,deflate;q=0,*"));
+
+        httpResponse = execute(headerList, testName);
+        assertNotCompressed(httpResponse);
+
+    }
+
+
+    /**
      * Test that the server will favor compression of gzip over other
      * supported compression types when they share the same q-value. This
      * is achieved by sending two supported compression types - gzip &

@@ -96,11 +96,11 @@
             ibm:reference="com.ibm.ws.http.remoteip" ibm:type="pid"
             type="String" required="false" default="defaultRemoteIp" /> 
             
-        <AD id="compressionRef" name="%endpoint.compression" description="%endpoint.compression.desc" ibm:beta="true" 
+        <AD id="compressionRef" name="%endpoint.compression" description="%endpoint.compression.desc"
         	ibm:reference="com.ibm.ws.http.compression" ibm:type="pid"
         	type="String" required="false" default="defaultCompression" />
         	
-        <AD id="samesiteRef" name="%endpoint.samesite" description="%endpoint.samesite.desc" ibm:beta="true" 
+        <AD id="samesiteRef" name="%endpoint.samesite" description="%endpoint.samesite.desc"
         	ibm:reference="com.ibm.ws.http.samesite" ibm:type="pid"
         	type="String" required="false" default="defaultSameSite" />    
 
@@ -246,20 +246,20 @@
         <Object ocdref="com.ibm.ws.http.remoteip"/>
     </Designate>
     
-    <OCD name="%http.compression" description="%http.compression.desc" ibm:beta="true"
-    	id="com.ibm.ws.http.compression"
-    	ibm:alias="compression">
-    	
-    	<AD name="%http.compression.types" description="%http.compression.types.desc" ibm:beta="true"
-		id="types" required="false" type="String" cardinality="5000" 
-    	default="text/*, application/javascript"/>
-    	
-    	<AD name="%http.compression.serverPreferredAlgorithm" description="%http.compression.serverPreferredAlgorithm.desc" ibm:beta="true"
-		id="serverPreferredAlgorithm" required="false" type="String" 
-    	default="none"/> 
+    <OCD name="%http.compression" description="%http.compression.desc"
+        id="com.ibm.ws.http.compression"
+        ibm:alias="compression">
 
-    	<AD name="internal" description="internal use only"
-    		id="service.ranking" required="false" type="Integer" default="0"/>
+        <AD name="%http.compression.types" description="%http.compression.types.desc"
+            id="types" required="false" type="String" cardinality="5000"
+            default="text/*, application/javascript"/>
+
+        <AD name="%http.compression.serverPreferredAlgorithm" description="%http.compression.serverPreferredAlgorithm.desc"
+            id="serverPreferredAlgorithm" required="false" type="String"
+            default="none"/>
+
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
 
     </OCD>
 
@@ -267,17 +267,17 @@
     	<Object ocdref="com.ibm.ws.http.compression"/>
     </Designate>
     
-    <OCD name="%http.samesite" description="%http.samesite.desc" ibm:beta="true"
+    <OCD name="%http.samesite" description="%http.samesite.desc"
     	id="com.ibm.ws.http.samesite"
     	ibm:alias="samesite">
     	
-    	<AD name="%http.samesite.lax" description="%http.samesite.lax.desc" ibm:beta="true"
+    	<AD name="%http.samesite.lax" description="%http.samesite.lax.desc"
 		id="lax" required="false" type="String" cardinality="5000"/>
     	
-    	<AD name="%http.samesite.none" description="%http.samesite.none.desc" ibm:beta="true"
+    	<AD name="%http.samesite.none" description="%http.samesite.none.desc"
 		id="none" required="false" type="String" cardinality="5000"/> 
 		
-		<AD name="%http.samesite.strict" description="%http.samesite.strict.desc" ibm:beta="true"
+		<AD name="%http.samesite.strict" description="%http.samesite.strict.desc"
 		id="strict" required="false" type="String" cardinality="5000"/>
 
     	<AD name="internal" description="internal use only"

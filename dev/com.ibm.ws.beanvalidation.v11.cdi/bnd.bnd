@@ -39,6 +39,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   com.ibm.ws.beanvalidation.v11.cdi.internal.ValidationExtension, \
   com.ibm.ws.beanvalidation.v11.cdi.internal.ValidationExtensionService
 
+-cdiannotations:
+
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\
