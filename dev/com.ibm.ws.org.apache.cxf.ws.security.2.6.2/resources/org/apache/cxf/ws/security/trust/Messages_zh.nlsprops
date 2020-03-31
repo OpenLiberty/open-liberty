@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# The contents of this file contains messages from the apache cxf project
+# The makers of the file claim this is not a message file - this is correct as it is NOT a file
+# that conforms to the IBM standard error message conventions.
+#
+#CMVCPATHNAME org.apache.cxf.ws.security/resources/extractedpropertyfile
+#ISMESSAGEFILE FALSE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#
+#    Licensed to the Apache Software Foundation (ASF) under one
+#    or more contributor license agreements. See the NOTICE file
+#    distributed with this work for additional information
+#    regarding copyright ownership. The ASF licenses this file
+#    to you under the Apache License, Version 2.0 (the
+#    "License"); you may not use this file except in compliance
+#    with the License. You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing,
+#    software distributed under the License is distributed on an
+#    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#    KIND, either express or implied. See the License for the
+#    specific language governing permissions and limitations
+#    under the License.
+#
+#
+
+NO_ID=\u672a\u80fd\u901a\u8fc7 RequestSecurityTokenResponse \u786e\u5b9a\u4ee4\u724c\u6807\u8bc6
+NO_ENTROPY=\u5728 RequestSecurityTokenResponse \u4e2d\u627e\u4e0d\u5230\u71b5
+DERIVED_KEY_ERROR=\u5c1d\u8bd5\u901a\u8fc7 RequestSecurityTokenResponse \u521b\u5efa\u5bc6\u94a5\u65f6\u53d1\u751f\u5f02\u5e38
+ENCRYPTED_KEY_ERROR=\u5c1d\u8bd5\u901a\u8fc7 RequestSecurityTokenResponse \u5bf9\u5bc6\u94a5\u89e3\u5bc6\u65f6\u53d1\u751f\u5f02\u5e38
+VALIDATION_FAILED=\u9a8c\u8bc1\u5b89\u5168\u6027\u4ee4\u724c\u5931\u8d25\uff1a{0}
+NO_USER_PASSWORD=\u6ca1\u6709\u53ef\u7528\u7528\u6237\u540d\u548c/\u6216\u5bc6\u7801\uff0c\u540d\u79f0\uff1a{0}\uff0c\u5bc6\u7801\uff1a{1} 

@@ -235,6 +235,7 @@ org.apache.cxf:cxf-rt-ws-addr:3.3.3
 org.apache.cxf:cxf-rt-ws-policy:2.6.2
 org.apache.cxf:cxf-rt-ws-policy:3.3.0
 org.apache.cxf:cxf-rt-ws-policy:3.3.3
+org.apache.cxf:cxf-rt-ws-security:2.6.2
 org.apache.cxf:cxf-rt-wsdl:3.3.0
 org.apache.cxf:cxf-rt-wsdl:3.3.3
 org.apache.cxf:cxf-tools-common:3.1.18
@@ -534,4 +535,3 @@ xalan:xalan:2.7.2
 xerces:xercesImpl:2.11.0
 xml-apis:xml-apis:1.4.01
 xml-resolver:xml-resolver:1.2
-
