@@ -270,6 +270,9 @@ public class FeatureUtility {
 
     public List<String> findFeatures(){
         // algorithm to find features
+        String query = String.join(" ", featuresToInstall);
+        map.put("action.find", query);
+        map.get("action.result");
 
         return null;
     }
