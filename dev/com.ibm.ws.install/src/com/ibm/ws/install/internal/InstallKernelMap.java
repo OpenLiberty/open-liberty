@@ -337,12 +337,21 @@ public class InstallKernelMap implements Map {
                     if(visibility == null || !visibility.equals("PUBLIC")){
                         continue;
                     }
+
+                    String name = null;
+                    try {
+                        name = json.getJsonString("name").getString();
+                    } catch(NullPointerException e){
+
+                    }
+                    String type = wlpInfo.getJsonString("typeLabel").getString();
+
                     // todo null checking?
                     String shortname = wlpInfo.getJsonString("shortName").getString();
                     String description = json.getJsonString("shortDescription").getString();
 
-                    if(shortname.toLowerCase().contains(query) || description.toLowerCase().contains(query)) {
-                        returnedFeatures.add("Feature: " + shortname + "\nDescription: " + description);
+                    if(query.isEmpty() || shortname.toLowerCase().contains(query) || description.toLowerCase().contains(query)) {
+                        returnedFeatures.add(String.format("%s : %s : %s", type, shortname, name));
                     }
                 }
 

@@ -33,7 +33,7 @@ public enum FeatureAction implements ActionDefinition {
     installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "name..."),
     installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose", "name..."),
     find(new FindAction(), "", -1),
-    help(new FeatureHelpAction(),"", 0);
+    help(new FeatureHelpAction(),"", 0, "name...");
 
     private List<String> commandOptions;
     private ActionHandler action;
