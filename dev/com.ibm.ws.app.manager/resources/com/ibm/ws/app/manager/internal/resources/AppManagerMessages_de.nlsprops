@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -210,3 +210,9 @@ APPLICATION_JANDEX_ENABLED.useraction=Es ist keine Aktion erforderlich.
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Die Verwendung von Jandex ist f\u00fcr die Anwendung {0} inaktiviert.
 APPLICATION_JANDEX_DISABLED.explanation=Der Jandex-Index ist f\u00fcr die angegebene Anwendung inaktiviert.
 APPLICATION_JANDEX_DISABLED.useraction=Es ist keine Aktion erforderlich. 
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: Die folgenden Anwendungen k\u00f6nnen nicht starten, weil der Wert der zugeh\u00f6rigen startAfter-Attribute einen Zyklus ergeben: {0} 
+error.startAfter.cycle.explanation=Keine der Anwendungen kann starten, da jede von einer der anderen Anwendungen abh\u00e4ngt, die zuerst gestartet werden m\u00fcssen.
+error.startAfter.cycle.useraction=\u00c4ndern Sie den Wert des startAfter-Attributs f\u00fcr Anwendungen, die an dem Zyklus beteiligt sind, so dass sie keine Schleifenabh\u00e4ngigkeiten haben.
+

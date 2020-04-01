@@ -130,6 +130,11 @@ public class RestartMissedTimerActionBean implements RestartMissedTimerAction {
                 Date nextTimeout = nextTimeouts.get(index);
                 assertNotNull("Unexpected null for getNextTimeout() on result #" + index, nextTimeout);
                 long interval = nextTimeout.getTime() - nextExpected;
+                // Interval needs to be > 0 and a multiple of INTERVAL.
+                // Normally would be INTERVAL, but on slow systems ONCE may skip to next future time.
+                if (interval > INTERVAL && interval % INTERVAL == 0) {
+                    interval = INTERVAL;
+                }
                 assertEquals("getNextTimeout() interval not expected on result #" + index, INTERVAL, interval);
                 nextExpected = nextTimeout.getTime();
             }

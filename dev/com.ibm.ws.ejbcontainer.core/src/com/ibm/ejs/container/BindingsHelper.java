@@ -62,6 +62,11 @@ public class BindingsHelper {
     public final List<String> ivLocalColonBindings = new ArrayList<String>();
 
     /**
+     * Per home record list of remote bindings
+     */
+    public final List<String> ivRemoteBindings = new ArrayList<String>();
+
+    /**
      * HomeRecord this BindingsHelper is associated with.
      **/
     private final HomeRecord ivHomeRecord;
@@ -108,9 +113,9 @@ public class BindingsHelper {
     /**
      * Constructs a BindingsHelper for either the local or remote naming context.
      *
-     * @param homeRecord the EJB to generate bindings for.
-     * @param the local or remote naming context map.
-     * @param the context specific default binding prefix
+     * @param homeRecord              the EJB to generate bindings for.
+     * @param serverContextBindingMap the local or remote naming context map.
+     * @param contextPrefix           the context specific default binding prefix
      **/
     private BindingsHelper(HomeRecord homeRecord,
                            HashMap<String, BindingData> serverContextBindingMap,
@@ -127,12 +132,12 @@ public class BindingsHelper {
      * Add a binding entry to the map of interface to binding names for all
      * bindings for the context (Local/Remote) for this specific EJB.
      *
-     * @param interfaceName is the name of the EJB local/remote interface.
+     * @param interfaceName       is the name of the EJB local/remote interface.
      * @param specificBindingName is the JNDI name used when local/remote interface
-     *            is bound into the naming context.
+     *                                is bound into the naming context.
      *
      * @throws NameAlreadyBoundException if the binding name being added
-     *             has previously been added.
+     *                                       has previously been added.
      **/
     public void addBinding(String interfaceName,
                            String specificBindingName) throws NameAlreadyBoundException // d457053.1
@@ -186,7 +191,7 @@ public class BindingsHelper {
      * specified interface.
      *
      * @param interfaceName name of the EJB interface to check for a
-     *            short form binding.
+     *                          short form binding.
      **/
     public boolean hasShortDefaultBinding(String interfaceName) {
         return ivEjbContextShortDefaultJndiNames.contains(interfaceName);
@@ -199,7 +204,7 @@ public class BindingsHelper {
      * no explicit bindings.
      *
      * @param interfaceName name of the EJB interface to check for a
-     *            unique short form binding.
+     *                          unique short form binding.
      **/
     public boolean isUniqueShortDefaultBinding(String interfaceName) {
         // If there were no explicit bindings, and only one implicit
@@ -268,19 +273,19 @@ public class BindingsHelper {
      * simpleBindingName. This condition is detected in the EJBMDOrchestrator
      * and this method assumes to never be called with this case.
      *
-     * @param interfaceName A String representing the interface class name.
-     * @param specificBindingName A String representing a specific-binding-name,
-     *            null means no specific binding name specified.
+     * @param interfaceName                           A String representing the interface class name.
+     * @param specificBindingName                     A String representing a specific-binding-name,
+     *                                                    null means no specific binding name specified.
      * @param generateDisambiguatedSimpleBindingNames A boolean, which when true
-     *            will cause any generated simple binding names to be
-     *            constructed to include "#<interfaceName>" at the end
-     *            of the binding name.
+     *                                                    will cause any generated simple binding names to be
+     *                                                    constructed to include "#<interfaceName>" at the end
+     *                                                    of the binding name.
      *
      * @return an ArrayList of Strings representing the names to be used by the
      *         EJBContainer for binding into the jndiNameSpace.
      *
      * @throws NameAlreadyBoundException if the binding name being added
-     *             has previously been added.
+     *                                       has previously been added.
      **/
     public ArrayList<String> generateBindings(String interfaceName,
                                               String specificBindingName,
@@ -402,7 +407,7 @@ public class BindingsHelper {
      * @return defaultJNDINames in the returned ArrayList
      *
      * @throws NameAlreadyBoundException if the binding name being added
-     *             has previously been added.
+     *                                       has previously been added.
      **/
     private ArrayList<String> generateDefaultEjbBindings(String interfaceName) throws NameAlreadyBoundException // d457053.1
     {
@@ -522,11 +527,11 @@ public class BindingsHelper {
      * helper (i.e. Local or Remote context).
      *
      * @param interfaceName is the name of the EJB local/remote interface.
-     * @param bindingName is the JNDI name used when local/remote interface
-     *            is bound into the naming context.
+     * @param bindingName   is the JNDI name used when local/remote interface
+     *                          is bound into the naming context.
      *
      * @throws NameAlreadyBoundException if the binding name being added
-     *             has previously been added.
+     *                                       has previously been added.
      **/
     // d457053.1
     private void addToServerContextBindingMap(String interfaceName,
@@ -601,7 +606,7 @@ public class BindingsHelper {
      * with this helper (i.e. Local or Remote context).
      *
      * @param interfaceName name of the bean interface, which is also the
-     *            short-form binding name
+     *                          short-form binding name
      **/
     private void addToServerContextBindingMap(String interfaceName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -689,7 +694,7 @@ public class BindingsHelper {
      * default jndi bindings are to be disabled.
      *
      * @param appName A string representing the applicationName we are to be
-     *            checking to see if ShortDefaultindings are disabled for.
+     *                    checking to see if ShortDefaultBindings are disabled for.
      * @return true if short default interface bindings are enabled, and false
      *         if the property indicated they were to be disabled for
      *         the specified application name.
@@ -721,7 +726,7 @@ public class BindingsHelper {
      * A method for obtaining a Binding Name Helper for use with the local jndi namespace.
      *
      * @param homeRecord The HomeRecord associated with the bean whose interfaces or home are to
-     *            have jndi binding name(s) constructed.
+     *                       have jndi binding name(s) constructed.
      * @return An instance of a BindingsHelper for generating jndi names intended to be bound into
      *         the local jndi namespace.
      */
@@ -736,7 +741,7 @@ public class BindingsHelper {
      * A method for obtaining a Binding Name Helper for use with the remote jndi namespace.
      *
      * @param homeRecord The HomeRecord associated with the bean whose interfaces or home are to
-     *            have jndi binding name(s) constructed.
+     *                       have jndi binding name(s) constructed.
      * @return an instance of a BindingsHelper for generating jndi names intended to be bound into
      *         the remote jndi namespace.
      **/

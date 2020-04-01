@@ -1555,15 +1555,15 @@ NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Korrigieren Sie die Bindungsdatei e
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: Der {2}JNDI-Bindungsname (Java Naming and Directory Interface) f\u00fcr die {0}-Bean oder die Home-Schnittstelle im {1}-Modul enth\u00e4lt einen Namespace.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=JNDI-Bindungsnamen d\u00fcrfen keinen Doppelpunkt (:) enthalten, der einen Namespace angibt. Die gesamte Zeichenfolge vor dem Doppelpunkt, einschlie\u00dflich dem Doppelpunkt (:) wird als Namespace betrachtet.
-NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=Korrigieren Sie die Bindungsdatei ibm-ejb-jar-bnd.xml, um dieser Bean einen g\u00fcltigen JNDI-Bindungsnamen zu geben, indem Sie die Namespaces entfernen.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: Der {2}JNDI-Bindungsname (Java Naming and Directory Interface) f\u00fcr die {0}-Bean oder die Home-Schnittstelle im {1}-Modul enth\u00e4lt einen Namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=JNDI-Bindungsnamen d\u00fcrfen keinen Doppelpunkt (:) enthalten, der einen Namespace angibt. Die gesamte Zeichenfolge vor dem Doppelpunkt, einschlie\u00dflich dem Doppelpunkt (:) wird als Namespace betrachtet.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Korrigieren Sie die Bindungsdatei ibm-ejb-jar-bnd.xml, um dieser Bean einen g\u00fcltigen JNDI-Bindungsnamen zu geben, indem Sie die Namespaces entfernen.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: Der {2}-JNDI-Bindungsname (Java Naming and Directory Interface) f\u00fcr die {0}-Bean oder die lokale Home-Schnittstelle im {1}-Modul enth\u00e4lt einen ung\u00fcltigen Namespace.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=Der lokale Bindungsname darf nur einen einzigen Namespace enthalten und er muss mit ejblocal: beginnen. Namespaces werden \u00fcber den Doppelpunkt (:) gekennzeichnet. Die gesamte Zeichenfolge vor dem Doppelpunkt, einschlie\u00dflich dem Doppelpunkt (:) wird als Namespace betrachtet.
-NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Korrigieren Sie die Bindungsdatei ibm-ejb-jar-bnd.xml, um dieser Bean einen g\u00fcltigen JNDI-Bindungsnamen zu geben, indem Sie den ung\u00fcltigen Namespace entfernen.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: Der {2}-JNDI-Bindungsname (Java Naming and Directory Interface) f\u00fcr die {0}-Bean oder die lokale Home-Schnittstelle im {1}-Modul enth\u00e4lt einen ung\u00fcltigen Namespace.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Der lokale Bindungsname darf nur einen einzigen Namespace enthalten und er muss mit ejblocal: beginnen. Namespaces werden \u00fcber den Doppelpunkt (:) gekennzeichnet. Die gesamte Zeichenfolge vor dem Doppelpunkt, einschlie\u00dflich dem Doppelpunkt (:) wird als Namespace betrachtet.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Korrigieren Sie die Bindungsdatei ibm-ejb-jar-bnd.xml, um dieser Bean einen g\u00fcltigen JNDI-Bindungsnamen zu geben, indem Sie den ung\u00fcltigen Namespace entfernen.
 
 #-------------------------------------------------------------------------------
 #

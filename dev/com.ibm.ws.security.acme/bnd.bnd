@@ -39,7 +39,8 @@ Private-Package: \
     com.ibm.ws.security.acme.internal.*,\
     org.bouncycastle.*,\
     org.shredzone.*,\
-    org.jose4j.*
+    org.jose4j.*,\
+    com.ibm.ws.security.acme.resources
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\

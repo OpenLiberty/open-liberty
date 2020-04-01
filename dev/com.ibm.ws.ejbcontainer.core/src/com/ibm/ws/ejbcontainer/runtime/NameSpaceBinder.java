@@ -179,6 +179,14 @@ public interface NameSpaceBinder<T> {
     void bindDefaultEJBLocal(T bindingObject, HomeRecord hr);
 
     /**
+     * Adds the default remote legacy bindings to root
+     *
+     * @param bindingObject the EJB Binding information
+     * @param hr the HomeRecord of the EJB
+     */
+    void bindDefaultEJBRemote(T bindingObject, HomeRecord hr);
+
+    /**
      * Undoes the bindings from ejblocal namespace.
      */
     void unbindEJBLocal(List<String> names) throws NamingException;
@@ -212,4 +220,10 @@ public interface NameSpaceBinder<T> {
      * Undoes the bindings from local namespace.
      */
     void unbindLocalColonEJB(List<String> names) throws NamingException;
+
+    /**
+     * Undoes the root remote bindings.
+     */
+    void unbindRemote(List<String> names);
+
 }

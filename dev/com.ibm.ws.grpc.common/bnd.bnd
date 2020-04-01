@@ -49,6 +49,7 @@ instrument.disabled: true
   com.google.j2objc:j2objc-annotations;version=1.1, \
   com.google.protobuf:protobuf-java;version=3.11.1, \
   io.grpc:grpc-api;version=1.27.0, \
+  io.grpc:grpc-census;version=1.27.0, \
   io.grpc:grpc-context;version=1.27.0, \
   io.grpc:grpc-core;version=1.27.0, \
   io.grpc:grpc-protobuf;version=1.27.0, \

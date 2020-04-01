@@ -465,10 +465,11 @@ public abstract class AbstractHTTPDestination
             //allow gets/deletes/options to not specify an encoding
             String normalizedEncoding = HttpHeaderHelper.mapCharset(enc);
             if (normalizedEncoding == null) {
-                String m = new org.apache.cxf.common.i18n.Message("INVALID_ENCODING_MSG", tc.getLogger(), enc).toString();
-                //LOG.log(Level.WARNING, m);
+                // Liberty Change Start
+                String m = "Invalid encoding: " + enc;
                 Tr.warning(tc, m);
-                throw new IOException(m);
+                throw new InvalidCharsetException(m);
+                // Liberty Change End
             }
             inMessage.put(Message.ENCODING, normalizedEncoding);
         }

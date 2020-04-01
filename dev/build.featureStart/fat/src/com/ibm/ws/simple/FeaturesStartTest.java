@@ -14,22 +14,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -49,7 +47,7 @@ public class FeaturesStartTest {
 
     private static final Class<?> c = FeaturesStartTest.class;
 
-	static final List<String> features = new ArrayList<>();
+    static final List<String> features = new ArrayList<>();
     static final Map<String, Set<String>> acceptableErrors = new HashMap<>();
 
     static JavaInfo javaInfo = null;
@@ -67,11 +65,15 @@ public class FeaturesStartTest {
         JAVA_LEVEL = javaInfo.majorVersion();
         Log.info(c, "setup", "The java level being used by the server is: " + JAVA_LEVEL);
 
-		initAcceptableErrors();
+        initAcceptableErrors();
 
-		File featureDir = new File(server.getInstallRoot() + "/lib/features/");
-		for (File feature : featureDir.listFiles())
-            parseShortName(feature);
+        File featureDir = new File(server.getInstallRoot() + "/lib/features/");
+        // If there was a problem building projects before this test runs, "lib/features" won't exist
+        if (featureDir != null && featureDir.exists()) {
+            for (File feature : featureDir.listFiles()) {
+                parseShortName(feature);
+            }
+        }
     }
 
     @After
@@ -94,35 +96,35 @@ public class FeaturesStartTest {
             if (skipFeature(feature))
                 continue;
 
-                Log.info(c, m, ">>>>> BEGIN " + feature);
-                boolean saveLogs = true;
-                try {
-                    setFeature(feature);
-                    server.startServer(feature + ".log");
+            Log.info(c, m, ">>>>> BEGIN " + feature);
+            boolean saveLogs = true;
+            try {
+                setFeature(feature);
+                server.startServer(feature + ".log");
 
-                    // Verify we DON'T get CWWKF0032E
-                    boolean featureStarted = server.findStringsInLogs("CWWKF0032E").size() == 0;
-                    if (!featureStarted)
-                        failingFeatures.add(feature);
+                // Verify we DON'T get CWWKF0032E
+                boolean featureStarted = server.findStringsInLogs("CWWKF0032E").size() == 0;
+                if (!featureStarted)
+                    failingFeatures.add(feature);
 
-                    // Stop server and only save logs if a feature failed to start
-                    Set<String> allowedErrors = acceptableErrors.get(feature);
-                    server.stopServer(false, allowedErrors == null ? new String[] {} : allowedErrors.toArray(new String[allowedErrors.size()]));
-                    saveLogs = !featureStarted;
-                } catch (Exception e) {
-                    saveLogs = true;
-                    Log.error(c, m, e);
-                    otherFailures.put(feature, e);
-                } finally {
-                    if (saveLogs)
-                        server.postStopServerArchive();
-                    Log.info(c, m, "<<<<< END   " + feature);
-                }
+                // Stop server and only save logs if a feature failed to start
+                Set<String> allowedErrors = acceptableErrors.get(feature);
+                server.stopServer(false, allowedErrors == null ? new String[] {} : allowedErrors.toArray(new String[allowedErrors.size()]));
+                saveLogs = !featureStarted;
+            } catch (Exception e) {
+                saveLogs = true;
+                Log.error(c, m, e);
+                otherFailures.put(feature, e);
+            } finally {
+                if (saveLogs)
+                    server.postStopServerArchive();
+                Log.info(c, m, "<<<<< END   " + feature);
+            }
         }
 
-		// TODO: Do these assertions for each feature start and stop attempt
-		// to easily correlate error encountered with each feature.
-		// So transfer to within for loop.
+        // TODO: Do these assertions for each feature start and stop attempt
+        // to easily correlate error encountered with each feature.
+        // So transfer to within for loop.
         assertTrue("Feature(s) " + failingFeatures + " should have started but did not.", failingFeatures.isEmpty());
         assertTrue("Features(s) " + otherFailures.keySet() + " did not start/stop cleanly on their own " +
                    "due to the following exceptions: " + otherFailures.entrySet(),
@@ -171,7 +173,7 @@ public class FeaturesStartTest {
             scanner.close();
         }
     }
-	
+
     private static void initAcceptableErrors() throws Exception {
         String[] QUISCE_FAILRUES = new String[] { "CWWKE1102W", "CWWKE1107W" };
 

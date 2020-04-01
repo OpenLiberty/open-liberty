@@ -96,7 +96,7 @@
             ibm:reference="com.ibm.ws.http.remoteip" ibm:type="pid"
             type="String" required="false" default="defaultRemoteIp" /> 
             
-        <AD id="compressionRef" name="%endpoint.compression" description="%endpoint.compression.desc" ibm:beta="true" 
+        <AD id="compressionRef" name="%endpoint.compression" description="%endpoint.compression.desc"
         	ibm:reference="com.ibm.ws.http.compression" ibm:type="pid"
         	type="String" required="false" default="defaultCompression" />
         	
@@ -246,20 +246,20 @@
         <Object ocdref="com.ibm.ws.http.remoteip"/>
     </Designate>
     
-    <OCD name="%http.compression" description="%http.compression.desc" ibm:beta="true"
-    	id="com.ibm.ws.http.compression"
-    	ibm:alias="compression">
-    	
-    	<AD name="%http.compression.types" description="%http.compression.types.desc" ibm:beta="true"
-		id="types" required="false" type="String" cardinality="5000" 
-    	default="text/*, application/javascript"/>
-    	
-    	<AD name="%http.compression.serverPreferredAlgorithm" description="%http.compression.serverPreferredAlgorithm.desc" ibm:beta="true"
-		id="serverPreferredAlgorithm" required="false" type="String" 
-    	default="none"/> 
+    <OCD name="%http.compression" description="%http.compression.desc"
+        id="com.ibm.ws.http.compression"
+        ibm:alias="compression">
 
-    	<AD name="internal" description="internal use only"
-    		id="service.ranking" required="false" type="Integer" default="0"/>
+        <AD name="%http.compression.types" description="%http.compression.types.desc"
+            id="types" required="false" type="String" cardinality="5000"
+            default="text/*, application/javascript"/>
+
+        <AD name="%http.compression.serverPreferredAlgorithm" description="%http.compression.serverPreferredAlgorithm.desc"
+            id="serverPreferredAlgorithm" required="false" type="String"
+            default="none"/>
+
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
 
     </OCD>
 

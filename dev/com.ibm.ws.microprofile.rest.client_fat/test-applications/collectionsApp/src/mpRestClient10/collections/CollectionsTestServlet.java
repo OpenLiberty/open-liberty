@@ -132,4 +132,83 @@ public class CollectionsTestServlet extends FATServlet {
             }
         }
     }
+
+    @Test
+    public void testGetSetAsync(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        if (!isMPRestClient12OrAbove()) {
+            //assumeX doesn't work in FAT servlets, so just return here
+            return;
+        }
+        CollectionsClient client = builder.build(CollectionsClient.class);
+        try {
+            // PRE: create some widgets
+            int created = client.createNewWidgets(Arrays.asList(new Widget("Eraser", 300, 0.5),
+                                                                new Widget("Blue Pen", 200, 0.3),
+                                                                new Widget("Red Pen", 100, 0.3)));
+            assertEquals(3, created);
+
+            Set<Widget> set = client.getWidgetsAsync().toCompletableFuture().get();
+            assertEquals(3, set.size());
+            for (Widget w : set) {
+                String name = w.getName();
+                assertTrue("Eraser".equals(name) || "Blue Pen".equals(name) || "Red Pen".equals(name)); 
+            }
+        } finally {
+            //ensure we delete so as to not throw off other tests
+            Set<String> widgetsToRemove = new HashSet<>();
+            widgetsToRemove.add("Eraser");
+            widgetsToRemove.add("Blue Pen");
+            widgetsToRemove.add("Red Pen");
+            try {
+                client.removeWidgets(widgetsToRemove);
+            } catch (Throwable t) {
+                LOG.log(Level.SEVERE, "Caught exception cleaning after test", t);
+            }
+        }
+    }
+
+    @Test
+    public void testGetMapAsync(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        if (!isMPRestClient12OrAbove()) {
+            //assumeX doesn't work in FAT servlets, so just return here
+            return;
+        }
+        CollectionsClient client = builder.build(CollectionsClient.class);
+        try {
+            // PRE: create some widgets
+            int created = client.createNewWidgets(Arrays.asList(new Widget("Eraser", 300, 0.5),
+                                                                new Widget("Blue Pen", 200, 0.3),
+                                                                new Widget("Red Pen", 100, 0.3)));
+            assertEquals(3, created);
+
+            Map<String, Widget> map = client.getWidgetsByNameAsync("Pen").toCompletableFuture().get();
+            assertEquals(2, map.size());
+            for (Map.Entry<String, Widget> entry : map.entrySet()) {
+                String name = entry.getKey();
+                Widget widget = entry.getValue();
+                assertTrue("Blue Pen".equals(name) || "Red Pen".equals(name)); 
+                assertNotNull(widget);
+                assertEquals(name, widget.getName());
+            }
+        } finally {
+            //ensure we delete so as to not throw off other tests
+            Set<String> widgetsToRemove = new HashSet<>();
+            widgetsToRemove.add("Eraser");
+            widgetsToRemove.add("Blue Pen");
+            widgetsToRemove.add("Red Pen");
+            try {
+                client.removeWidgets(widgetsToRemove);
+            } catch (Throwable t) {
+                LOG.log(Level.SEVERE, "Caught exception cleaning after test", t);
+            }
+        }
+    }
+    private static boolean isMPRestClient12OrAbove() {
+        try {
+            Class.forName("org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory"); //new interface in 1.2
+            return true;
+        } catch (ClassNotFoundException ex) {
+            return false; // MP Rest Client 1.0 or 1.1
+        }
+    }
 }

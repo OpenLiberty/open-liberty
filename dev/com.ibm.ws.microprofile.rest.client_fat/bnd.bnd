@@ -23,6 +23,7 @@ src: \
   test-applications/handleresponsesApp/src,\
   test-applications/headerPropagationApp/src,\
   test-applications/headerPropagation12App/src,\
+  test-applications/hostnameVerifierApp/src,\
   test-applications/jsonbContextApp/src,\
   test-applications/multiClientCdiApp/src,\
   test-applications/produceConsumeApp/src,\
@@ -40,7 +41,7 @@ tested.features=mpRestClient-1.2,jdbc-4.2,appSecurity-3.0,mpRestClient-1.3,mpRes
   com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
-  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.2;version=latest,\
+  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.3;version=latest,\
   com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
   com.ibm.websphere.javaee.jsonb.1.0;version=latest

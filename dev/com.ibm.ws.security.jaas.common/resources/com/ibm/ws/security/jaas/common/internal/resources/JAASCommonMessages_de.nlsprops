@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=\u00dcberpr\u00fcfen Sie, ob a
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Ein {0}-jaasLoginContext-Eintrag kann nicht als JAAS-Konfigurationseintrag in der Datei server.xml und/oder in der Datei jaas.conf angegeben werden.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Die Laufzeit verwendet eine Krb5LoginModule-Konfiguration und die SPNEGO-Konfiguration in der Datei server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Entfernen Sie den jaasLoginContext-Eintrag aus der Datei server.xml oder lassen Sie die Laufzeit den Standardeintrag verwenden.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Das angepasste JAAS-Anmeldemodul {0} wurde nicht geladen, weil das Konfigurationselement {1} die Attribute libraryRef und classProviderRef angibt.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Sie d\u00fcrfen nur ein einziges Attribut angeben, entweder libraryRef oder classProviderRef, um das Artefakt anzugeben, aus dem das angepasste JAAS-Anmeldemodul geladen werden soll.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Entfernen Sie entweder das Attribut libraryRef oder das Attribut classProviderRef, je nachdem, welches die angepasste JAAS-Anmeldemodulklasse nicht enth\u00e4lt.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Das angepasste JAAS-Anmeldemodul {0} wurde nicht gefunden, weil das Konfigurationselement {1} nicht das Attribut libraryRef oder das Attribut classProviderRef angibt.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Sie d\u00fcrfen nur ein einziges Attribut angeben, entweder libraryRef oder classProviderRef, um das Artefakt anzugeben, aus dem das angepasste JAAS-Anmeldemodul geladen werden soll.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Geben Sie entweder das Attribut libraryRef oder das Attribut classProviderRef an, um die Position anzugeben, in der die angepasste JAAS-Anmeldemodulklasse geladen werden soll.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: Die angepasste JAAS-AAnmeldemodulklasse {0} wurde im Artefakt {1} {2} nicht gefunden.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=Die angegebene Anwendung oder der Ressourcenadapter enth\u00e4lt nicht die angeforderte Klasse des angepassten JAAS-Anmeldemoduls oder die Klasse des angepassten JAAS-Anmeldemoduls ist innerhalb der Anwendung vorhanden, aber an einer Position, von der sie nicht geladen werden kann.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Vergewissern Sie sich, dass die konfigurierte angepasste Anmeldemodulklasse und der zugeh\u00f6rige Paketname korrekt sind. Wenn eine Anwendung angegeben wird, muss die Anmeldemodulklasse innerhalb der Anwendung enthalten sein, entweder in einer \u00fcbergeordneten JAR-Datei oder in einem Ressourcenadaptermodul.

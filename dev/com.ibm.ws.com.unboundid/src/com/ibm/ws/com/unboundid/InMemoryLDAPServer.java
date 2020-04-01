@@ -19,6 +19,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
@@ -71,19 +76,26 @@ public class InMemoryLDAPServer {
      * @throws Exception If something went wrong
      */
     public InMemoryLDAPServer(boolean useWimSchema, String... bases) throws Exception {
+        SSLContext sslc = SSLContext.getDefault();
+        SSLSocketFactory sslf = sslc.getSocketFactory();
+        SSLSocket ssls = (SSLSocket) sslf.createSocket();
+        SSLUtil.setEnabledSSLProtocols(Arrays.asList(ssls.getSupportedProtocols()));
+        SSLUtil.setEnabledSSLCipherSuites(Arrays.asList(ssls.getSupportedCipherSuites()));
 
         config = new InMemoryDirectoryServerConfig(bases);
         config.addAdditionalBindCredentials(getBindDN(), getBindPassword());
 
-        keystore = extractResourceToFile("/resources/keystore.jks", "keystore", ".jks").getAbsolutePath();
+        keystore = extractResourceToFile("/resources/keystore.p12", "keystore", ".p12").getAbsolutePath();
         final SSLUtil serverSSLUtil = new SSLUtil(new KeyStoreKeyManager(keystore, keystorePassword
-                        .toCharArray(), "JKS", "cert-alias"), new TrustAllTrustManager());
+                        .toCharArray(), "PKCS12", "cert-alias"), new TrustAllTrustManager());
+
         ArrayList<InMemoryListenerConfig> configs = new ArrayList<InMemoryListenerConfig>();
         InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig("LDAPS", 0, serverSSLUtil.createSSLServerSocketFactory());
         configs.add(secure);
         InMemoryListenerConfig insecure = InMemoryListenerConfig.createLDAPConfig("LDAP", null, 0, null);
         configs.add(insecure);
         config.setListenerConfigs(configs);
+
         Schema schema = null;
         if (useWimSchema) {
             InputStream in = getClass().getResourceAsStream("/resources/wimschema.ldif");
