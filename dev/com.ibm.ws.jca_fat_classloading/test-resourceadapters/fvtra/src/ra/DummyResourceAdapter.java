@@ -96,28 +96,15 @@ public class DummyResourceAdapter implements ResourceAdapter {
         this.ctx = ctx;
         workManager = ctx.getWorkManager();
         workManagersForAllInstances.add(workManager);
-        // Load a class from a jar in the rar file
-        /*
-         * try {
-         * this.getClass().getClassLoader().loadClass("fat.jca.embeddedresourceadapter.jar1.FVTTestJar1Access");
-         * this.getClass().getClassLoader().loadClass("fat.jca.embeddedresourceadapter.jar2.FVTTestJar2Access");
-         * System.out.print("WAS able to load class FVTTestJar1Access");
-         * } catch (ClassNotFoundException e) {
-         * e.printStackTrace();
-         * System.out.print("Was NOT able to load class FVTTestJar1Access");
-         * System.out.println("FAT Bundle NOT Started.");
-         * throw new ResourceAdapterInternalException(e);
-         * }
-         */
 
         // Check if we can load third party classes (for testClassSpaceRestriction)
         try {
-            this.getClass().getClassLoader().loadClass("org.apache.openjpa.ee.ManagedRuntime");
+            this.getClass().getClassLoader().loadClass("org.apache.commons.math.random.RandomGenerator");
             System.out.println("CAN get third-party class");
-            canGetThirdPartyClass = new Boolean(true);
+            canGetThirdPartyClass = true;
         } catch (ClassNotFoundException cnfe) {
             System.out.println("CAN NOT get third-party class.");
-            canGetThirdPartyClass = new Boolean(false);
+            canGetThirdPartyClass = false;
         }
 
         System.out.println("In DummyRA.start() username is: " + userName);

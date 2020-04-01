@@ -15,28 +15,30 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@WebServlet("/*")
 public class ClassLoadingTestServlet extends HttpServlet {
     private static final long serialVersionUID = 7709282314904580334L;
 
     /**
      * Message written to servlet to indicate that is has been successfully invoked.
      */
-    public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
+    public static final String SUCCESS_MESSAGE = "SUCCESS";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
+        String test = request.getParameter("testMethod");
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
         System.out.println("-----> " + test + " starting");
         try {
             getClass().getMethod(test, HttpServletRequest.class, PrintWriter.class).invoke(this, request, out);
             System.out.println("<----- " + test + " successful");
-            out.println(test + " COMPLETED SUCCESSFULLY");
+            out.println(test + " " + SUCCESS_MESSAGE);
         } catch (Throwable x) {
             if (x instanceof InvocationTargetException)
                 x = x.getCause();

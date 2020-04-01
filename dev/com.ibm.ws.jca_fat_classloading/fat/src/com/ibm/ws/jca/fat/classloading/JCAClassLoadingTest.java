@@ -10,83 +10,62 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.classloading;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FATServletClient;
 
-/**
- * General tests that don't involve updating configuration while the server is running.
- */
-public class JCAClassLoadingTest {
+@RunWith(FATRunner.class)
+public class JCAClassLoadingTest extends FATServletClient {
 
-    @Rule
-    public TestName testName = new TestName();
+    @Server("com.ibm.ws.jca.fat.classloading")
+    public static LibertyServer server;
 
-    private static LibertyServer server;
+    private static final String WAR_NAME = "fvtweb";
+    private static final String APP_NAME = "ClassLoadingApp";
+    private static final String RAR_NAME = "fvtra";
 
-    private static final String ClassLoadingTestApp = "ClassLoadingApp";
-    private static final String ClassLoadingTestServlet = "fvtweb";
+    private void runTest() throws Exception {
+        runTest(server, WAR_NAME, testName);
+    }
 
-    /**
-     * Utility method to run a test in a servlet.
-     *
-     * @param test Test name to supply as an argument to the servlet
-     * @return output of the servlet
-     */
-    private StringBuilder runInServlet(String test, String webmodule) throws IOException {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + webmodule + "?test=" + test);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
+    private void restartWithNewConfig(boolean removeApp) throws Exception {
+        if (server.isStarted())
+            server.stopServer();
 
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
+        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
+        if (removeApp)
+            server.removeInstalledAppForValidation(APP_NAME);
+        server.startServer(testName.getMethodName() + ".log");
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.classloading");
-        server.addInstalledAppForValidation(ClassLoadingTestApp);
-    }
+        WebArchive war = ShrinkHelper.buildDefaultApp(WAR_NAME, "web");
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
+                        .addAsModule(war);
+        ShrinkHelper.addDirectory(ear, "test-applications/ClassLoadingApp/resources/");
+        ShrinkHelper.exportAppToServer(server, ear);
 
-    @Before
-    public void setUpPerTest() throws Exception {
-        System.out.println("*********** enter: " + testName.getMethodName());
+        ShrinkHelper.defaultRar(server, RAR_NAME, "ra");
+
+        server.startServer();
     }
 
     @After
@@ -103,46 +82,32 @@ public class JCAClassLoadingTest {
 
     @Test
     public void testLoadResourceAdapterClassFromSingleApp() throws Exception {
-
-        server.setServerConfigurationFile("default_server.xml");
-        server.startServer(testName.getMethodName());
-
-        runInServlet("testLoadResourceAdapterClassFromSingleApp", ClassLoadingTestServlet);
+        runTest();
     }
 
     @Test
+    @Mode(FULL)
     public void testApiTypeVisibilityNone() throws Exception {
-        String consoleLogFileName = testName.getMethodName() + ".log";
-
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        server.startServer(consoleLogFileName);
-
-        runInServlet("testApiTypeVisibilityNone", ClassLoadingTestServlet);
+        restartWithNewConfig(false);
+        runTest();
     }
 
     @Test
+    @Mode(FULL)
     public void testApiTypeVisibilityAll() throws Exception {
-        String consoleLogFileName = testName.getMethodName() + ".log";
-
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        server.startServer(consoleLogFileName);
-
-        runInServlet("testApiTypeVisibilityAll", ClassLoadingTestServlet);
+        restartWithNewConfig(false);
+        runTest();
     }
 
     // This test passes because the resource adapter's class loader gateway is set to an invalid
     // apiTypeVisibility value, which the class loading service accepts and causes the loader to
     // lacks access to "spec" classes.  There is no error message for an invalid apiTypeVisbility
     // value.
-
     @ExpectedFFDC({ "java.lang.NoClassDefFoundError" })
     @Test
+    @Mode(FULL)
     public void testApiTypeVisibilityInvalid() throws Exception {
-        String consoleLogFileName = testName.getMethodName() + ".log";
-
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        server.removeInstalledAppForValidation(ClassLoadingTestApp);
-        server.startServer(consoleLogFileName);
+        restartWithNewConfig(true);
 
         String msg = server
                         .waitForStringInLogUsingMark("J2CA7002E: An exception occurred while installing the resource adapter ATVInvalid_RA. The exception message is: java.lang.NoClassDefFoundError: javax.resource.spi.ResourceAdapter");
@@ -150,25 +115,20 @@ public class JCAClassLoadingTest {
 
         // put the app back on the server when we are done
         server.stopServer("J2CA7002E");
-        server.addInstalledAppForValidation(ClassLoadingTestApp);
+        ShrinkHelper.defaultApp(server, APP_NAME, "web");
     }
 
     @Test
+    @Mode(FULL)
     public void testApiTypeVisibilityMatch() throws Exception {
-        String consoleLogFileName = testName.getMethodName() + ".log";
-
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        server.startServer(consoleLogFileName);
-
-        runInServlet("testApiTypeVisibilityMatch", ClassLoadingTestServlet);
+        restartWithNewConfig(false);
+        runTest();
     }
 
     @Test
+    @Mode(FULL)
     public void testInvalidClassProviderRef() throws Exception {
-        String consoleLogFileName = testName.getMethodName() + ".log";
-
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        server.startServer(consoleLogFileName);
+        restartWithNewConfig(false);
 
         String msg = server
                         .waitForStringInLogUsingMark("CWWKG0033W: The value \\[invalidRef\\] specified for the reference attribute \\[classProviderRef\\] was not found in the configuration");
@@ -179,28 +139,22 @@ public class JCAClassLoadingTest {
     }
 
     @Test
+    @Mode(FULL)
     public void testApiTypeVisibilityMismatch() throws Exception {
-        String consoleLogFileName = testName.getMethodName() + ".log";
-
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        server.removeInstalledAppForValidation(ClassLoadingTestApp);
-        server.startServer(consoleLogFileName);
+        restartWithNewConfig(true);
 
         String msg = server.waitForStringInLogUsingMark("CWWKL0033W");
         assertNotNull("Expected to see error message 'CWWKL0033W' when applicaiton and resource adapter apiTypeVisibility do not match.", msg);
 
         // put the app back on the server when we are done
         server.stopServer("CWWKL0033W");
-        server.addInstalledAppForValidation(ClassLoadingTestApp);
+        ShrinkHelper.defaultApp(server, APP_NAME, "web");
     }
 
     @Test
+    @Mode(FULL)
     public void testClassSpaceRestriction() throws Exception {
-        String consoleLogFileName = testName.getMethodName() + ".log";
-
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        server.startServer(consoleLogFileName);
-
-        runInServlet(testName.getMethodName(), ClassLoadingTestServlet);
+        restartWithNewConfig(false);
+        runTest();
     }
 }
