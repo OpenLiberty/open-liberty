@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2015 IBM Corporation and others.
+ * Copyright (c) 2001, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,9 +141,9 @@ public class AdapterUtil {
      */
     public static XAException createXAException(String key, Object args, int xaErrorCode) {
         XAException xaX = new XAException(
-                        args == null ?
-                                        getNLSMessage(key) :
-                                        getNLSMessage(key, args));
+                        args == null ? getNLSMessage(key) :
+                        args instanceof Object[] ? getNLSMessage(key, (Object[]) args) :
+                        getNLSMessage(key, args));
 
         xaX.errorCode = xaErrorCode;
 
