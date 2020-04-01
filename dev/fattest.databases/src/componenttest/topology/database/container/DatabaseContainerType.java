@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,41 +12,55 @@ package componenttest.topology.database.container;
 
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Constructor;
+
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.output.OutputFrame;
 
+import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
- * This is a current list of database test-containers that are in the database rotation.
+ * This is a current list of database testcontainers that are in the database rotation.
  */
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
-    DB2("jcc.jar", "org.testcontainers.containers.", "Db2Container"),
-    Derby("derby.jar", "componenttest.topology.database.container.", "DerbyNoopContainer"),
-    Oracle("ojdbc8_g.jar", "org.testcontainers.containers.", "OracleContainer"),
-    Postgres("postgresql.jar", "org.testcontainers.containers.", "PostgreSQLContainer"),
-    SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.", "SQLServerContainer");
+    DB2("jcc.jar", "org.testcontainers.containers.", "Db2Container", "Properties_db2_jcc"),
+    Derby("derby.jar", "componenttest.topology.database.container.", "DerbyNoopContainer", "Properties_derby_embedded"),
+    DerbyClient("derbyclient.jar", "componenttest.topology.database.container.", "DerbyClientNoopContainer", "Properties_derby_client"),
+    Oracle("ojdbc8_g.jar", "org.testcontainers.containers.", "OracleContainer", "Properties_oracle"),
+    Postgres("postgresql.jar", "org.testcontainers.containers.", "PostgreSQLContainer", "Properties_postgresql"),
+    SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.", "SQLServerContainer", "Properties_microsoft_sqlserver");
 
     private String driverName;
-    private Class<? extends JdbcDatabaseContainer> clazz;
+    private Class<DataSourceProperties> dsPropsClass;
+    private Class<? extends JdbcDatabaseContainer> containerClass;
+    
 
     @SuppressWarnings("unchecked")
-	DatabaseContainerType(final String driverName, final String packageName, final String className) {
+	DatabaseContainerType(final String driverName, final String packageName, final String containerClassName, final String dataSourcePropertiesClassName) {
         this.driverName = driverName;
         
-        //Use reflection to get class at runtime.
-        Class clazz = null;
+        //Use reflection to get classes at runtime.
+        Class containerClass = null, dsPropsClass  = null;
 		try {
-			clazz = (Class<? extends JdbcDatabaseContainer>) Class.forName(packageName + className);
+			containerClass = (Class<? extends JdbcDatabaseContainer>) Class.forName(packageName + containerClassName);
 		} catch (ClassNotFoundException e) {
-			fail("Could not find class: " + className);
+			fail("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name());
 		}
-        this.clazz = clazz;
+		
+		try {
+			dsPropsClass = (Class<DataSourceProperties>) Class.forName("com.ibm.websphere.simplicity.config.dsprops." + dataSourcePropertiesClassName);
+		} catch (ClassNotFoundException e) {
+			fail("Could not find the datasource properties class: " + dataSourcePropertiesClassName + " for testconatiner type: " + this.name());
+		}
+		
+        this.containerClass = containerClass;
+        this.dsPropsClass = dsPropsClass;
     }
 
     /**
-     * Returns the common JDBC Driver name for this test-container type.
+     * Returns the common JDBC Driver name for this testcontainer type.
      * Example: 'ojdbc8_g.jar'
      *
      * @return String - JDBC Driver Name
@@ -54,18 +68,43 @@ public enum DatabaseContainerType {
     public String getDriverName() {
         return driverName;
     }
+    
+    /**
+     * Returns an anonymized JDBC Driver name for this testcontainer type.
+     * Example: 'driver2.jar'
+     *
+     * @return String - JDBC Driver Name
+     */
+    public String getAnonymousDriverName() {
+        return "driver" + this.ordinal() + ".jar";
+    }
 
     /**
-     * Returns TestContainer class associated with this TestContainer type.
+     * Returns the testcontainer class associated with this testcontainer type.
      *
      * @return Java Class
      */
     public Class getContainerClass() {
-        return clazz;
+        return containerClass;
+    }
+    
+    /**
+     * Returns an instance of this testcontainer's datasource properties. 
+     */
+    public DataSourceProperties getDataSourceProps() throws ReflectiveOperationException{
+    	DataSourceProperties props = null;
+    	try {
+    		Constructor ctor = this.dsPropsClass.getConstructor();
+    		props = (DataSourceProperties) ctor.newInstance();
+    	} catch (Exception e) {
+    		throw new ReflectiveOperationException("Failed to create instance of DataSourceProperites using reflection.", e);
+    	}
+    	
+    	return props;
     }
 
     /**
-     * Given a JDBC TestContainer return the corresponding Database Container Type.
+     * Given a JDBC testcontainer return the corresponding Database Container Type.
      *
      * @param cont - A database container.
      * @return DatabaseContainerType - type enum
@@ -82,6 +121,6 @@ public enum DatabaseContainerType {
         String msg = frame.getUtf8String();
         if (msg.endsWith("\n"))
             msg = msg.substring(0, msg.length() - 1);
-        Log.info(this.clazz, "output", msg);
+        Log.info(this.containerClass, "output", msg);
     }
 }

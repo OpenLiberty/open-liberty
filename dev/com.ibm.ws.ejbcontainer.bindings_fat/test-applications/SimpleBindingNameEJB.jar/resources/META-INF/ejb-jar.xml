@@ -25,22 +25,24 @@
          </session>
          <session id="Session_3">
             <ejb-name>SimpleBindingName3</ejb-name>
-            <local-home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameHome</local-home>
-            <local>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingName</local>
+            <home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome</home>
+            <remote>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingRemoteName</remote>
             <ejb-class>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameBean</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Container</transaction-type>
          </session>
          <session id="Session_4">
             <ejb-name>SimpleBindingName4</ejb-name>
-            <local-home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameHome</local-home>
-            <local>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingName</local>
+            <home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome</home>
+            <remote>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingRemoteName</remote>
             <ejb-class>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameBean</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Container</transaction-type>
          </session>
          <session id="Session_5">
             <ejb-name>SimpleBindingName5</ejb-name>
+            <home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome</home>
+            <remote>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingRemoteName</remote>
             <local-home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameHome</local-home>
             <local>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingName</local>
             <ejb-class>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameBean</ejb-class>
@@ -49,6 +51,8 @@
          </session>
          <session id="Session_6">
             <ejb-name>SimpleBindingName6</ejb-name>
+            <home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome</home>
+            <remote>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingRemoteName</remote>
             <local-home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameHome</local-home>
             <local>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingName</local>
             <ejb-class>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameBean</ejb-class>
@@ -57,6 +61,18 @@
          </session>
          <session id="Session_7">
             <ejb-name>SimpleBindingName7</ejb-name>
+            <home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome</home>
+            <remote>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingRemoteName</remote>
+            <local-home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameHome</local-home>
+            <local>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingName</local>
+            <ejb-class>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_8">
+            <ejb-name>SimpleBindingName8</ejb-name>
+            <home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome</home>
+            <remote>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingRemoteName</remote>
             <local-home>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameHome</local-home>
             <local>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingName</local>
             <ejb-class>com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameBean</ejb-class>

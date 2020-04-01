@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,8 +44,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class WCEncodingTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCEncodingTest.class.getName());
-    final static String appNameEncoding = "TestEncoding";
-    final static String appNameServlet40 = "TestServlet40";
+    private static final String APP_NAME_ENCODING = "TestEncoding";
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
@@ -57,16 +56,14 @@ public class WCEncodingTest extends LoggingTest {
      */
     @Override
     protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 
     @BeforeClass
     public static void before() throws Exception {
-
         LOG.info("Setup : add TestEncoding to the server if not already present.");
 
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), appNameEncoding + ".war", true,
+        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), APP_NAME_ENCODING + ".war", true,
                                                   "testencoding.war.servlets");
 
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
@@ -86,8 +83,7 @@ public class WCEncodingTest extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-
-        SHARED_SERVER.getLibertyServer().stopServer(null);
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     /*
@@ -100,7 +96,7 @@ public class WCEncodingTest extends LoggingTest {
 
         headers.put("Content-Type", "text/html; charset=Shift-JIS");
 
-        WebResponse response = getResponse("/" + appNameEncoding + "/ServletEncoding?type=request&expected=Shift-JIS",
+        WebResponse response = getResponse("/" + APP_NAME_ENCODING + "/ServletEncoding?type=request&expected=Shift-JIS",
                                            headers);
         String text = response.getText();
 
@@ -125,7 +121,7 @@ public class WCEncodingTest extends LoggingTest {
         headers.put("Content-Type", "text/html; charset=BAD-ENCODING");
 
         WebResponse response = getResponse(
-                                           "/" + appNameEncoding + "/ServletEncoding?type=request&expected=BAD-ENCODING", headers);
+                                           "/" + APP_NAME_ENCODING + "/ServletEncoding?type=request&expected=BAD-ENCODING", headers);
         String text = response.getText();
 
         LOG.info("Response text: " + text);
@@ -139,7 +135,7 @@ public class WCEncodingTest extends LoggingTest {
     @Test
     public void testRequestEncodingPerModule() throws Exception {
         // HashMap<String, String> headers = new HashMap<String, String>();
-        WebResponse response = getResponse("/" + appNameEncoding + "/ServletEncoding?type=request&expected=UTF-8",
+        WebResponse response = getResponse("/" + APP_NAME_ENCODING + "/ServletEncoding?type=request&expected=UTF-8",
                                            null);
         String text = response.getText();
 
@@ -156,7 +152,7 @@ public class WCEncodingTest extends LoggingTest {
         HashMap<String, String> headers = new HashMap<String, String>();
 
         headers.put("Explicit-ReqEnc", "EUC-KR");
-        WebResponse response = getResponse("/" + appNameEncoding + "/ServletEncoding?type=request&expected=EUC-KR",
+        WebResponse response = getResponse("/" + APP_NAME_ENCODING + "/ServletEncoding?type=request&expected=EUC-KR",
                                            headers);
         String text = response.getText();
 
@@ -169,8 +165,7 @@ public class WCEncodingTest extends LoggingTest {
      */
     @Test
     public void testResponseEncodingPerModule() throws Exception {
-
-        WebResponse response = getResponse("/" + appNameEncoding + "/ServletEncoding?type=response&expected=Shift-JIS",
+        WebResponse response = getResponse("/" + APP_NAME_ENCODING + "/ServletEncoding?type=response&expected=Shift-JIS",
                                            null);
         String text = response.getText();
 
@@ -190,7 +185,7 @@ public class WCEncodingTest extends LoggingTest {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Explicit-RespEnc", "EUC-KR");
 
-        WebResponse response = getResponse("/" + appNameEncoding + "/ServletEncoding?type=response&expected=EUC-KR",
+        WebResponse response = getResponse("/" + APP_NAME_ENCODING + "/ServletEncoding?type=response&expected=EUC-KR",
                                            headers);
         String text = response.getText();
 
@@ -218,7 +213,6 @@ public class WCEncodingTest extends LoggingTest {
     }
 
     private WebResponse getResponse(String uri, HashMap<String, String> headers) throws Exception {
-
         WebConversation wc = new WebConversation();
 
         if (headers != null && !headers.isEmpty()) {
@@ -228,13 +222,8 @@ public class WCEncodingTest extends LoggingTest {
             }
         }
 
-        // WebRequest request = new
-        // GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot +
-        // uri));
         WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, uri));
         WebResponse response = wc.getResponse(request);
-        // String text = response.getText();
-        // int code = response.getResponseCode();
 
         return response;
 

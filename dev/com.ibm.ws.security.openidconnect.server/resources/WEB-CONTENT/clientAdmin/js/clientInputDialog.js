@@ -359,7 +359,7 @@ var clientInputDialog = (function() {
                             return;
                         }
                     } 
-                    // Something else happed with the request.  Put up an error message...
+                    // Something else happened with the request.  Put up an error message...
                     var errTitle = messages.GENERIC_UPDATE_FAIL;
                     var errDescription = "";
                     if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
@@ -545,8 +545,8 @@ var clientInputDialog = (function() {
             var optionId = 'rb_' + option.value.replace(/\s/g, '__');
             var defaultValue = option.value === fldDefault;
             field +=
+                "       <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + ">" +
                 "       <label for='" + optionId + "' class='tool_modal_radio_button_label'>" +
-                "           <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + ">" +
                 "           <span class='tool_modal_radio_button_appearance'></span>" + 
                 "           " + option.value + 
                 "       </label>";
@@ -592,16 +592,16 @@ var clientInputDialog = (function() {
             "       <legend class='tool_modal_body_field_label'>" + fldName + "</legend>" +
             "       <div class='tool_modal_body_field_helper_text'>" + fldDescription + "</div>" +
             "       <div class='tool_modal_radio_button_horizontal_wrapper'>" +
-            "           <label for='" + fldId + "-true' class='tool_modal_radio_button_label'>" +
-            "               <input id='" + fldId + "-true' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='true'";
+            "           <input id='" + fldId + "-true' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='true'";
         field += fldDefault === 'true' ? " data-default='true'" : " data-default='false'";
         field += ">" +
+            "           <label for='" + fldId + "-true' class='tool_modal_radio_button_label'>" +
             "               <span class='tool_modal_radio_button_appearance'></span>" + messages.TRUE + 
             "           </label>" +
+            "           <input id='" + fldId + "-false' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='false'";
+        field += fldDefault === 'false' ? " data-default='true'" : " data-default='false'";
+        field += ">" +
             "           <label for='" + fldId + "-false' class='tool_modal_radio_button_label'>" +
-            "               <input id='" + fldId + "-false' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='false'";
-            field += fldDefault === 'false' ? " data-default='true'" : " data-default='false'";
-            field += ">" +
             "               <span class='tool_modal_radio_button_appearance'></span>" + messages.FALSE +
             "           </label>" +
             "       </div>" +

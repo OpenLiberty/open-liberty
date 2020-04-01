@@ -318,7 +318,7 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Valoarea indicat\u0103 a pa
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Asigura\u0163i-v\u0103 c\u0103 valorile din parametrul cererii sunt valide.
 
 # this message is also emitted by the oidc client via the PublicErrorFacingServlet
-security.oauth20.front.end.error=CWOAU0073E: S-a \u00eent\u00e2lnit o eroare \u00een timpul autentific\u0103rii unui utilizator. V\u0103 rug\u0103m \u00eencerca\u0163i s\u0103 \u00eenchide\u0163i browser-ul web \u015fi s\u0103 v\u0103 autentifica\u0163i din nou sau contacta\u0163i administratorul de site dac\u0103 problema persist\u0103.
+security.oauth20.front.end.error=CWOAU0073E: A ap\u0103rut o eroare de autentificare. \u00cencerca\u0163i s\u0103 \u00eenchide\u0163i browser-ul web \u015fi s\u0103 v\u0103 autentifica\u0163i din nou sau contacta\u0163i administratorul site-ului dac\u0103 problema persist\u0103.
 security.oauth20.front.end.error.explanation=Ar putea lipsi informa\u0163ii din cerere, serverul ar putea \u00eent\u00e2lni o eroare intern\u0103 sau alt\u0103 eroare ar putea \u00eempiedica serverul s\u0103 autentifice cu succes utilizatorul.
 security.oauth20.front.end.error.useraction=Contacta\u0163i administratorul de sistem pentru a rezolva problema.
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -219,65 +219,65 @@ public class CDIInjectionTests extends CDITestBase {
     public void testViewScopeInjections() throws Exception {
         String contextRoot = "CDIInjectionTests";
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient(); WebClient webClient2 = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "ViewScope.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "ViewScope.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Make sure the page initially renders correctly
-        if (page == null) {
-            Assert.fail("ViewScope.xhtml did not render properly.");
+            // Make sure the page initially renders correctly
+            if (page == null) {
+                Assert.fail("ViewScope.xhtml did not render properly.");
+            }
+
+            LOG.info("First request output is:" + page.asText());
+
+            int app = getAreaHashCode(page, "vab");
+            int sess = getAreaHashCode(page, "vsb");
+            int req = getAreaHashCode(page, "vrb");
+            int dep = getAreaHashCode(page, "vdb");
+
+            HtmlElement button = (HtmlElement) page.getElementById("button:test");
+            page = button.click();
+
+            if (page == null) {
+                Assert.fail("ViewScope.xhtml did not render properly after button press.");
+            }
+
+            LOG.info("After button click content is:" + page.asText());
+
+            int app2 = getAreaHashCode(page, "vab");
+            int sess2 = getAreaHashCode(page, "vsb");
+            int req2 = getAreaHashCode(page, "vrb");
+            int dep2 = getAreaHashCode(page, "vdb");
+
+            Assert.assertEquals("App Scoped beans were not identical for consecutive requests.", app, app2);
+            Assert.assertEquals("Session Scoped beans were not identical for consecutive requests.", sess, sess2);
+            Assert.assertTrue("Request bean is equivalent when it should not be.", (req != req2));
+            Assert.assertTrue("Dependent bean is equivalent when it should not be.", (dep != dep2));
+
+            webClient2.getCookieManager().clearCookies();
+
+            // Construct the URL for the test
+            url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "ViewScope.jsf");
+            HtmlPage page2 = (HtmlPage) webClient2.getPage(url);
+
+            // Make sure the page initially renders correctly
+            if (page2 == null) {
+                Assert.fail("ViewScope.xhtml did not render properly for second client.");
+            }
+
+            LOG.info("Second client page request content:" + page2.asText());
+
+            int app3 = getAreaHashCode(page2, "vab");
+            int sess3 = getAreaHashCode(page2, "vsb");
+            int req3 = getAreaHashCode(page2, "vrb");
+            int dep3 = getAreaHashCode(page2, "vdb");
+
+            Assert.assertEquals("App Scoped beans were not identical for two different clients.", app, app3);
+            Assert.assertTrue("Session Scoped bean is equivalent when it should not be.", (sess != sess3));
+            Assert.assertTrue("Request bean is equivalent when it should not be.", (req2 != req3));
+            Assert.assertTrue("Dependent bean is equivalent when it should not be.", (dep != dep3));
         }
-
-        LOG.info("First request output is:" + page.asText());
-
-        int app = getAreaHashCode(page, "vab");
-        int sess = getAreaHashCode(page, "vsb");
-        int req = getAreaHashCode(page, "vrb");
-        int dep = getAreaHashCode(page, "vdb");
-
-        HtmlElement button = (HtmlElement) page.getElementById("button:test");
-        page = button.click();
-
-        if (page == null) {
-            Assert.fail("ViewScope.xhtml did not render properly after button press.");
-        }
-
-        LOG.info("After button click content is:" + page.asText());
-
-        int app2 = getAreaHashCode(page, "vab");
-        int sess2 = getAreaHashCode(page, "vsb");
-        int req2 = getAreaHashCode(page, "vrb");
-        int dep2 = getAreaHashCode(page, "vdb");
-
-        Assert.assertEquals("App Scoped beans were not identical for consecutive requests.", app, app2);
-        Assert.assertEquals("Session Scoped beans were not identical for consecutive requests.", sess, sess2);
-        Assert.assertTrue("Request bean is equivalent when it should not be.", (req != req2));
-        Assert.assertTrue("Dependent bean is equivalent when it should not be.", (dep != dep2));
-
-        WebClient webClient2 = new WebClient();
-        webClient2.getCookieManager().clearCookies();
-
-        // Construct the URL for the test
-        url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "ViewScope.jsf");
-        HtmlPage page2 = (HtmlPage) webClient2.getPage(url);
-
-        // Make sure the page initially renders correctly
-        if (page2 == null) {
-            Assert.fail("ViewScope.xhtml did not render properly for second client.");
-        }
-
-        LOG.info("Second client page request content:" + page2.asText());
-
-        int app3 = getAreaHashCode(page2, "vab");
-        int sess3 = getAreaHashCode(page2, "vsb");
-        int req3 = getAreaHashCode(page2, "vrb");
-        int dep3 = getAreaHashCode(page2, "vdb");
-
-        Assert.assertEquals("App Scoped beans were not identical for two different clients.", app, app3);
-        Assert.assertTrue("Session Scoped bean is equivalent when it should not be.", (sess != sess3));
-        Assert.assertTrue("Request bean is equivalent when it should not be.", (req2 != req3));
-        Assert.assertTrue("Dependent bean is equivalent when it should not be.", (dep != dep3));
 
     }
 

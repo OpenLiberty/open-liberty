@@ -24,6 +24,7 @@ public class EJBContainerElement extends ConfigElement {
     private Boolean startEJBsAtAppStart;
     private EJBAsynchronousElement asynchronous;
     private EJBTimerServiceElement timerService;
+    private String customBindingsOnError;
 
     public Integer getCacheSize() {
         return cacheSize;
@@ -79,6 +80,15 @@ public class EJBContainerElement extends ConfigElement {
         this.timerService = timerService;
     }
 
+    public String getCustomBindingsOnError() {
+        return customBindingsOnError;
+    }
+
+    @XmlElement(name = "customBindingsOnError")
+    public void setCustomBindingsOnError(String customBindingsOnError) {
+        this.customBindingsOnError = customBindingsOnError;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("EJBContainerElement {");
@@ -89,6 +99,8 @@ public class EJBContainerElement extends ConfigElement {
             buf.append("poolCleanupInterval=\"" + poolCleanupInterval + "\" ");
         if (cacheCleanupInterval != null)
             buf.append("cacheCleanupInterval=\"" + cacheCleanupInterval + "\" ");
+        if (customBindingsOnError != null)
+            buf.append("customBindingsOnError=\"" + customBindingsOnError + "\" ");
         if (asynchronous != null)
             buf.append(", " + asynchronous);
         if (timerService != null)

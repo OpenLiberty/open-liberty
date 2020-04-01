@@ -3,6 +3,9 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/BindingNameEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/BindingNameWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/BndErrorEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/ComponentIDBndEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/ComponentIDBndWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EJB3BndBean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/EJB3BndWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EJB3DefBndBean.jar/src"/>
@@ -20,6 +23,6 @@
 	<classpathentry kind="src" path="test-applications/SimpleBindingNameEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/SimpleBindingNameWeb.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,7 +3,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.core.3.2
 Bundle-Activator:  com.ibm.ws.cxf.core.NoOpActivator
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # This needs to stay at 3.2.4 even though the bundle version is 3.3.0.
 # The reason is that the feature checker in WS-CD-Open has an ignore rule
@@ -108,23 +107,29 @@ Private-Package: \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
-  !com.ctc.wstx.*,\
+  !com.sun.codemodel.writer, \
+  !com.sun.tools.internal.xjc.api, \
+  !com.sun.tools.xjc.api, \
+  !com.sun.xml.bind.api, \
+  !org.apache.karaf.jaas.boot.principal, \
+  !sun.misc, \
+  !com.ctc.wstx.*, \
   !com.sun.xml.fastinfoset.*;resolution:=optional, \
-  !org.codehaus.stax2.*,\
-  !com.sun.msv.*,\
-  !com.sun.xml.bind.marshaller,\
-  !org.apache.log4j.*,\
-  !net.sf.cglib.proxy.*,\
-  !org.springframework.*,\
+  !org.codehaus.stax2.*, \
+  !com.sun.msv.*, \
+  !com.sun.xml.bind.marshaller, \
+  !org.apache.log4j.*, \
+  !net.sf.cglib.proxy.*, \
+  !org.springframework.*, \
   !javax.validation.*, \
-  !org.apache.aries.*,\
-  !org.apache.cxf.transport.https,\
-  !org.osgi.service.blueprint.*,\
-  javax.xml.bind;version=!,\
-  javax.xml.bind.annotation;version=!,\
-  javax.xml.bind.annotation.adapters;version=!,\
-  javax.xml.bind.attachment;version=!,\
-  !javax.xml.ws.*,\
+  !org.apache.aries.*, \
+  !org.apache.cxf.transport.https, \
+  !org.osgi.service.blueprint.*, \
+  javax.xml.bind;version=!, \
+  javax.xml.bind.annotation;version=!, \
+  javax.xml.bind.annotation.adapters;version=!, \
+  javax.xml.bind.attachment;version=!, \
+  !javax.xml.ws.*, \
   *
 
 DynamicImport-Package: \

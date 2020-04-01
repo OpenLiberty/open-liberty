@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -136,10 +136,6 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             // initiating a recycle, so there's no need to proceed with pending actions here, and doing so will likely result in
             // an NPE because the app handler no longer exists.
             cleanupActions();
-
-            // Clear interruptible flag
-            if (!isInterruptible())
-                setInterruptible();
 
             ApplicationDependency appHandlerFuture = createDependency("resolves when the app handler for app " + getAppName() + " arrives");
             appHandlerFuture = waitingForAppHandlerFuture.getAndSet(appHandlerFuture);
@@ -646,7 +642,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
     private volatile Throwable _failedThrowable;
 
-    private final Object _interruptibleLock = new Object() {};
+    private final Object _interruptibleLock = new Object() {
+    };
     private volatile boolean _interruptible;
     private volatile boolean _performingQueuedActions;
     private final ConcurrentLinkedQueue<QueuedStateChangeAction> _queuedActions = new ConcurrentLinkedQueue<QueuedStateChangeAction>();
@@ -663,7 +660,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private final ConcurrentLinkedQueue<ApplicationDependency> _notifyAppStarted = new ConcurrentLinkedQueue<ApplicationDependency>();
     private final ConcurrentLinkedQueue<ApplicationDependency> _notifyAppRemoved = new ConcurrentLinkedQueue<ApplicationDependency>();
 
-    private final Object _stateLock = new Object() {};
+    private final Object _stateLock = new Object() {
+    };
     private final AtomicReference<InternalState> _internalState = new AtomicReference<InternalState>();
     private final AtomicReference<Action> _currentAction = new AtomicReference<Action>();
     private final AtomicReference<ResolveFileAction> _rfa = new AtomicReference<ResolveFileAction>();
@@ -1356,4 +1354,5 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         return false;
     }
+
 }

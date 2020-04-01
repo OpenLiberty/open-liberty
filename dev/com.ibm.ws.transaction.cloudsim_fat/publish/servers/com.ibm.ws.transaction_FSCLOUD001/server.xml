@@ -22,11 +22,13 @@
     </featureManager>
       
     <transaction
-        recoverOnStartup="true"
-        waitForRecovery="false"
-        heuristicRetryInterval="10"
-        recoveryIdentity="FScloud001"
-        recoveryGroup="defaultGroup"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="10"
+      recoveryIdentity="FScloud001"
+      recoveryGroup="defaultGroup"
+      leaseLength="20"
+      leaseCheckInterval="25"
     />
 	<application location="transaction.war"/>
 	

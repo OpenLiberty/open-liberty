@@ -980,7 +980,7 @@ class ConfigEvaluator {
             return MetatypeUtils.evaluateDuration(strVal, TimeUnit.MINUTES);
         } else if (type == MetaTypeFactory.DURATION_H_TYPE) {
             return MetatypeUtils.evaluateDuration(strVal, TimeUnit.HOURS);
-        } else if (type == MetaTypeFactory.PASSWORD_TYPE || type == MetaTypeFactory.HASHED_PASSWORD_TYPE) {
+        } else if (type == MetaTypeFactory.PASSWORD_TYPE || type == MetaTypeFactory.HASHED_PASSWORD_TYPE || attrDef.isObscured()) {
             return new SerializableProtectedString(strVal.toCharArray());
         } else if (type == MetaTypeFactory.ON_ERROR_TYPE) {
             return Enum.valueOf(OnError.class, strVal.trim().toUpperCase());
@@ -1281,10 +1281,6 @@ class ConfigEvaluator {
      */
     @FFDCIgnore(URISyntaxException.class)
     private String processString(String value, ExtendedAttributeDefinition attrDef, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
-
-        // If this is an ID value, don't do any processing
-        if (XMLConfigConstants.CFG_INSTANCE_ID.equalsIgnoreCase(context.getAttributeName()))
-            return value;
 
         if (attrDef == null) {
             return context.resolveString(value, ignoreWarnings);

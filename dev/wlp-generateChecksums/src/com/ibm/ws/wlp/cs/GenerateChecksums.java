@@ -58,7 +58,8 @@ public class GenerateChecksums extends Task {
         try {
             // generate platform blst's checksums
             generateChecksums(platformDir, platformChecksums);
-            generateChecksums(featuresDir, featureChecksums);
+	    // Only generated for platform
+            // generateChecksums(featuresDir, featureChecksums);
 
         } catch (IOException e) {
             throw new BuildException(e);

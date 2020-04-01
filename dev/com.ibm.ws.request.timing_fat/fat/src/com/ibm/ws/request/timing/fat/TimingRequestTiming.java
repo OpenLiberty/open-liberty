@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -86,7 +85,7 @@ public class TimingRequestTiming {
     public void testTimingLocalOverridingGlobal() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global - slow : 9s , hung : 20s> <timing - Slow : 5s , hung : 7s>");
         server.setServerConfigurationFile("server_timing_local.xml");
-        server.waitForStringInLog("CWWKG0017I", 30000);
+        waitForConfigurationUpdate();
 
         server.setMarkToEndOfLog();
 

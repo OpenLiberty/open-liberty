@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,64 +78,64 @@ public class JSF23UIRepeatConditionTests {
     @Test
     public void testUIRepeatCondition() throws Exception {
         String contextRoot = "UIRepeatConditionCheck";
-        WebClient webClient = new WebClient();
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-        // The initial value expected
-        String expected = "0123456789";
+            // The initial value expected
+            String expected = "0123456789";
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "UIRepeatBeginEnd.jsf");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "UIRepeatBeginEnd.jsf");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput beginInput = (HtmlTextInput) page.getElementById("beginInput");
-        HtmlTextInput endInput = (HtmlTextInput) page.getElementById("endInput");
-        HtmlTextInput stepInput = (HtmlTextInput) page.getElementById("stepInput");
+            HtmlTextInput beginInput = (HtmlTextInput) page.getElementById("beginInput");
+            HtmlTextInput endInput = (HtmlTextInput) page.getElementById("endInput");
+            HtmlTextInput stepInput = (HtmlTextInput) page.getElementById("stepInput");
 
-        String output = page.getElementById("panel1").getTextContent().replaceAll("\\s", "");
+            String output = page.getElementById("panel1").getTextContent().replaceAll("\\s", "");
 
-        // Test the inital output for the default values of begin = 0, end = 9 and step = 1
-        assertTrue("The output should have been: " + expected + " but was: " + output, output.equals(expected));
+            // Test the inital output for the default values of begin = 0, end = 9 and step = 1
+            assertTrue("The output should have been: " + expected + " but was: " + output, output.equals(expected));
 
-        // Set step = 2 and ensure we get the proper output
-        expected = "02468";
-        stepInput.setValueAttribute("2");
+            // Set step = 2 and ensure we get the proper output
+            expected = "02468";
+            stepInput.setValueAttribute("2");
 
-        // Now click the submit button
-        page = page.getElementById("button1").click();
+            // Now click the submit button
+            page = page.getElementById("button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        output = page.getElementById("panel1").getTextContent().replaceAll("\\s", "");
+            output = page.getElementById("panel1").getTextContent().replaceAll("\\s", "");
 
-        // Ensure that the resulting output is correct
-        assertTrue("The output should have been: " + expected + " but was: " + output, output.equals(expected));
+            // Ensure that the resulting output is correct
+            assertTrue("The output should have been: " + expected + " but was: " + output, output.equals(expected));
 
-        // Set step = 1, begin = 4 and end = 6 and ensure we get the proper output
-        expected = "456";
-        stepInput.setValueAttribute("1");
-        beginInput.setValueAttribute("4");
-        endInput.setValueAttribute("6");
+            // Set step = 1, begin = 4 and end = 6 and ensure we get the proper output
+            expected = "456";
+            stepInput.setValueAttribute("1");
+            beginInput.setValueAttribute("4");
+            endInput.setValueAttribute("6");
 
-        // Now click the submit button
-        page = page.getElementById("button1").click();
+            // Now click the submit button
+            page = page.getElementById("button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        output = page.getElementById("panel1").getTextContent().replaceAll("\\s", "");
+            output = page.getElementById("panel1").getTextContent().replaceAll("\\s", "");
 
-        // Ensure that the resulting output is correct
-        assertTrue("The output should have been: " + expected + " but was: " + output, output.equals(expected));
-
+            // Ensure that the resulting output is correct
+            assertTrue("The output should have been: " + expected + " but was: " + output, output.equals(expected));
+        }
     }
 
     /**
@@ -150,23 +150,22 @@ public class JSF23UIRepeatConditionTests {
         String contextRoot = "UIRepeatConditionCheck";
         String errorText = "end cannot be greater than collection size";
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Ensure the test does not fail due to the error condition we are creating
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        jsf23CDIServer.addIgnoredErrors(Arrays.asList("SRVE0777E:.*", "SRVE0315E:.*"));
+            // Ensure the test does not fail due to the error condition we are creating
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            jsf23CDIServer.addIgnoredErrors(Arrays.asList("SRVE0777E:.*", "SRVE0315E:.*"));
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "UIRepeatEndTooLarge.jsf");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "UIRepeatEndTooLarge.jsf");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The following error was not found on the page: " + errorText, page.asText().contains(errorText));
-
+            assertTrue("The following error was not found on the page: " + errorText, page.asText().contains(errorText));
+        }
     }
-
 }

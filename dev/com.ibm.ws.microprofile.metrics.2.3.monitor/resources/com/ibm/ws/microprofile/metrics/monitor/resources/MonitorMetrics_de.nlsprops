@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring MicroProfile Metrics API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MonitorMetrics Impl -  range is 2000-2199
+#-----------------------------------------------------------------------------------------------------------------------------
+FEATURE_REGISTERED=CWPMI2003I: Die \u00dcberwachungsmetriken k\u00f6nnen \u00fcber das Feature mpMetrics abgerufen werden.
+FEATURE_REGISTERED.explanation=Die Features monitor-1.0 und mpMetrics-2.3 sind aktiviert und \u00dcberwachungsmetriken k\u00f6nnen \u00fcber das Feature mpMetrics abgerufen werden.
+FEATURE_REGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.
+
+FEATURE_UNREGISTERED=CWPMI2004I: Die Registrierung aller \u00dcberwachungsmetriken wurde in mpMetrics aufgehoben.
+FEATURE_UNREGISTERED.explanation=Das Feature monitor-1.0, das Feature mpMetrics-2.3 oder beide Features wurden aus dem Server entfernt und die Registrierung aller \u00dcberwachungsmetriken wurde in mpMetrics aufgehoben.
+FEATURE_UNREGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.

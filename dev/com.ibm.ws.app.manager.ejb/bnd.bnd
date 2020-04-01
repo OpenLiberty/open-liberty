@@ -14,21 +14,23 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.app.manager.ejb
 
 Include-Resource: \
- OSGI-INF=resources/OSGI-INF
+  OSGI-INF=resources/OSGI-INF
 
 Import-Package: \
- com.ibm.ws.app.manager.module.internal, \
- *
+  !com.ibm.ws.container.service.metadata, \
+  !com.ibm.ws.container.service.state, \
+  com.ibm.ws.app.manager.module.internal, \
+  ${defaultPackageImport}
 
 Private-Package: \
- com.ibm.ws.app.manager.ejb.*
+  com.ibm.ws.app.manager.ejb.*
 
 -dsannotations-inherit: true
 -dsannotations: \
- com.ibm.ws.app.manager.ejb.internal.EJBApplicationHandlerImpl, \
- com.ibm.ws.app.manager.ejb.internal.EJBApplicationTypeSupported, \
- com.ibm.ws.app.manager.ejb.internal.EJBDeployedAppInfoFactoryImpl,\
- com.ibm.ws.app.manager.ejb.internal.EJBModuleHandlerImpl
+  com.ibm.ws.app.manager.ejb.internal.EJBApplicationHandlerImpl, \
+  com.ibm.ws.app.manager.ejb.internal.EJBApplicationTypeSupported, \
+  com.ibm.ws.app.manager.ejb.internal.EJBDeployedAppInfoFactoryImpl, \
+  com.ibm.ws.app.manager.ejb.internal.EJBModuleHandlerImpl
 
 instrument.classesExcludes: com/ibm/ws/app/manager/ejb/internal/resources/*.class
 

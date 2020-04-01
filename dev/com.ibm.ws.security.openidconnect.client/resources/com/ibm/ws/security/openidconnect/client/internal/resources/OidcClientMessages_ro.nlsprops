@@ -272,5 +272,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Mesaj informativ. Nicio ac\u
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Atributul de configurare [{0}] necesar lipse\u015fte sau este gol \u015fi nu este furnizat\u0103 o valoare implicit\u0103. Verifica\u0163i dac\u0103 atributul este configurat sau descoperit de la furnizor, dac\u0103 este completat \u015fi dac\u0103 nu con\u0163ine doar caractere spa\u0163iu.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=E posibil ca atributul de configurare specificat s\u0103 lipseasc\u0103 din configura\u0163ia serverului. Dac\u0103 este specificat\u0103 o valoare, spa\u0163iul alb de la \u00eenceputul \u015fi sf\u00e2r\u015fitul valorii este \u00eenl\u0103turat c\u00e2nd este procesat\u0103 valoarea, astfel \u00eenc\u00e2t \u00een configura\u0163ie s\u0103 poat\u0103 fi goal\u0103 sau s\u0103 con\u0163in\u0103 doar caractere spa\u0163ii albe. Dac\u0103 este specificat punctul final de descoperire pentru ob\u0163inerea valorii acestui atribut de la furnizor, s-a putea ca descoperirea s\u0103 aib\u0103 o problem\u0103.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul de configurare specificat este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163iu. Dac\u0103 este configurat punctul final de descoperire pentru ob\u0163inerea acestei informa\u0163ii, asigura\u0163i-v\u0103 c\u0103 nu exist\u0103 erori privind cererea de descoperire.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Mai mult de o configura\u0163ie de client OpenID Connect specific\u0103 acela\u015fi filtru de autentificare [{0}]. Aceasta poate cauza un comportament nedeterminat.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Mai mult de o configura\u0163ie de client OpenID Connect con\u0163ine un atribut authFilterRef care se refer\u0103 la acela\u015fi filtru. Oricare dintre ace\u015fti clien\u0163i ar putea procesa o cerere care se potrive\u015fte cu filtrul, ceea ce duce la un comportament nedeterminat.  
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Examina\u0163i fi\u015fierul server.xml \u015fi corecta\u0163i configura\u0163ia.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Mai mult de un filtru de autentificare client OpenID Connect se potrive\u015fte cu o cerere la URL-ul [{0}]. Filtrele de potrivire au fost [{1}]. Aceasta poate cauza un comportament nedeterminat.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=Mai mult de un filtru de autentificare se potrive\u015fte cu o cerere de intrare. Orice client care utilizeaz\u0103 unul din aceste filtre poate procesa cererea, ceea ce duce la un comportament nedeterminat. 
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Examina\u0163i fi\u015fierul server.xml \u015fi corecta\u0163i configura\u0163ia.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

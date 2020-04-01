@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018 IBM Corporation and others.
+    Copyright (c) 2018,2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -44,9 +44,16 @@
     <properties databaseName="memory:testdb;create=true"/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
+  <dataSource id="poolOf1" jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
               enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
-    <connectionManager maxPoolSize="1"/>
+    <connectionManager maxPoolSize="1" connectionTimeout="0"/>
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+    <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
+  </dataSource>
+
+  <dataSource id="poolOf2" jndiName="jdbc/poolOf2" >
+    <connectionManager maxPoolSize="2" connectionTimeout="0" enableHandleList="true"/> <!-- TODO use correct property name once decided -->
     <jdbcDriver libraryRef="D43Lib"/>
     <properties databaseName="memory:testdb;create=true"/>
     <containerAuthData user="user43" password="{xor}Lyg7a2w="/>

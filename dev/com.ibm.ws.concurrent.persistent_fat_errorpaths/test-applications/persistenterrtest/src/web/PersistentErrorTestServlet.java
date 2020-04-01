@@ -34,12 +34,14 @@ import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
 
 import com.ibm.websphere.concurrent.persistent.AutoPurge;
@@ -66,6 +68,14 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Maximum number of nanoseconds to wait for a task to finish.
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    /**
+     * A higher limit on the maximum number of nanoseconds to wait for a task to finish,
+     * which is used when the test case intentionally causes an exception path where FFDC
+     * information is logged to disk, which can randomly take several minutes on poorly
+     * performing test infrastructure.
+     */
+    private static final long TIMEOUT_NS_FFDC_PATH = TimeUnit.MINUTES.toNanos(10);
 
     @Resource(name = "java:comp/env/concurrent/mySchedulerRef", lookup = "concurrent/myScheduler")
     private PersistentExecutor scheduler;
@@ -102,6 +112,12 @@ public class PersistentErrorTestServlet extends HttpServlet {
             out.flush();
             out.close();
         }
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        // Make UserTransaction available to task that otherwise runs without JEE metadata context
+        WaitForRollbackTask.tran = tran;
     }
 
     /**
@@ -856,15 +872,37 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
-     * testRetryIntervalBelowMissedTaskThreshold - attempt to use a persistent executor where the retryInterval value is less than
-     * the missedTaskThreshold. The detailed error message that is logged is tested by the caller of this method.
+     * testRetryIntervalAndMissedTaskThresholdBothEnabled - attempt to use a persistent executor where the retryInterval and
+     * the missedTaskThreshold are both enabled. The detailed error message that is logged is tested by the caller of this method.
      */
-    public void testRetryIntervalBelowMissedTaskThreshold(HttpServletRequest request, PrintWriter out) throws Exception {
+    public void testRetryIntervalAndMissedTaskThresholdBothEnabled(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
-            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/retryIntervalBelowMissedTaskThreshold");
-            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval value is less than the missedTaskThreshold. " + misconfiguredExecutor);
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/retryIntervalAndMissedTaskThresholdBothEnabled");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval and missedTaskThreshold are both enabled. " + misconfiguredExecutor);
         } catch (NamingException x) {
             // expected
+        }
+    }
+
+    /**
+     * testRollbackWhenMissedTaskThresholdExceeded - verify that a task's transaction times out by having the task wait for
+     * the transaction status to be set to rollback-only.
+     */
+    public void testRollbackWhenMissedTaskThresholdExceeded(HttpServletRequest request, PrintWriter out) throws Exception {
+        WaitForRollbackTask task = new WaitForRollbackTask();
+        TaskStatus<Integer> status = scheduler.schedule(task, 4, TimeUnit.MILLISECONDS);
+        for (long start = System.nanoTime(); status != null && !status.hasResult() && System.nanoTime() - start < TIMEOUT_NS; status = scheduler.getStatus(status.getTaskId()))
+            Thread.sleep(POLL_INTERVAL);
+        try {
+            Integer result = status.get();
+            throw new Exception("Should not be able to get a result from a task that always rolls back: " + result);
+        } catch (AbortedException x) {
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1555E")
+                    || !(x.getCause() instanceof RollbackException)
+                    || x.getCause().getMessage() == null
+                    || !x.getCause().getMessage().startsWith("CWWKC1505E")
+                    || !x.getCause().getMessage().contains(" 4 ")) // value of missedTaskThreshold in seconds
+                throw x;
         }
     }
 
@@ -970,7 +1008,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -995,7 +1033,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -1014,7 +1052,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<?> status = scheduler.schedule(task, trigger);
 
-        for (long start = System.nanoTime(); !status.toString().contains("SKIPPED") && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); !status.toString().contains("SKIPPED") && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (!status.isDone() || status.isCancelled())
@@ -1043,7 +1081,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -1068,7 +1106,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<Long> status = scheduler.schedule((Callable<Long>) task, trigger);
 
-        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); status != null && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (status != null)
@@ -1088,7 +1126,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
 
         TaskStatus<?> status = scheduler.schedule(task, trigger);
 
-        for (long start = System.nanoTime(); !status.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+        for (long start = System.nanoTime(); !status.hasResult() && System.nanoTime() - start < TIMEOUT_NS_FFDC_PATH; Thread.sleep(POLL_INTERVAL))
             status = scheduler.getStatus(status.getTaskId());
 
         if (!status.isDone() || status.isCancelled())

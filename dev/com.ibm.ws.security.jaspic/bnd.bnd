@@ -15,7 +15,6 @@ Bundle-Name: WAS Security JASPI
 Bundle-Description: WAS Security JASPI 1.1, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.jaspic.1.1
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 WS-TraceGroup: \
   JASPI
@@ -30,6 +29,7 @@ Export-Package: \
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   com.ibm.ws.common.internal.encoder,\
+  !com.ibm.ws.security.jaspi, \
   !*.internal.*,\
   !com.ibm.ws.kernel.boot.cmdline,\
   javax.xml.bind;version=!,\

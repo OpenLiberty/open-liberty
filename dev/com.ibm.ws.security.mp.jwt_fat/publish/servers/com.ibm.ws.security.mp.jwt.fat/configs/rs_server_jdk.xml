@@ -12,4 +12,6 @@
 
         <include location="${shared.config.dir}/rs_fatTestPorts.xml" />
 
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
 </server>

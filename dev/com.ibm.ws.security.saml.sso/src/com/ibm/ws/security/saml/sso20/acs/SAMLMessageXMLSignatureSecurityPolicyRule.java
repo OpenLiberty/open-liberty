@@ -1,9 +1,9 @@
 /*
- * Licensed to the University Corporation for Advanced Internet Development, 
- * Inc. (UCAID) under one or more contributor license agreements.  See the 
+ * Licensed to the University Corporation for Advanced Internet Development,
+ * Inc. (UCAID) under one or more contributor license agreements.  See the
  * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache 
- * License, Version 2.0 (the "License"); you may not use this file except in 
+ * copyright ownership. The UCAID licenses this file to You under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
@@ -42,13 +42,13 @@ import com.ibm.ws.security.saml.sso20.internal.utils.SignatureMethods;
 /**
  * SAML security policy rule which validates the signature (if present) on the {@link SAMLObject} which represents the
  * SAML profile message being processed.
- * 
+ *
  * <p>
  * If the message is not an instance of {@link SignableSAMLObject}, then no processing is performed. If signature
  * validation is successful, and the SAML message context issuer was not previously authenticated, then the context's
  * issuer authentication state will be set to <code>true</code>.
  * </p>
- * 
+ *
  * <p>
  * If an optional {@link Validator} for {@link Signature} objects is supplied, this validator will be used to validate
  * the XML Signature element prior to the actual cryptographic validation of the signature. This might for example be
@@ -68,9 +68,9 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
 
     /**
      * Constructor.
-     * 
+     *
      * Signature pre-validator defaults to {@link SAMLSignatureProfileValidator}.
-     * 
+     *
      * @param engine Trust engine used to verify the signature
      */
     public SAMLMessageXMLSignatureSecurityPolicyRule(TrustEngine<Signature> engine) {
@@ -80,10 +80,10 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
 
     /**
      * Constructor.
-     * 
-     * @param engine Trust engine used to verify the signature
+     *
+     * @param engine             Trust engine used to verify the signature
      * @param signatureValidator optional pre-validator used to validate Signature elements prior to the actual
-     *            cryptographic validation operation
+     *                               cryptographic validation operation
      */
     public SAMLMessageXMLSignatureSecurityPolicyRule(TrustEngine<Signature> engine,
                                                      Validator<Signature> signatureValidator) {
@@ -208,14 +208,13 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
     /**
      * Perform cryptographic validation and trust evaluation on the Signature token using the configured Signature trust
      * engine.
-     * 
-     * @param signature the signature which is being evaluated
+     *
+     * @param signature      the signature which is being evaluated
      * @param signableObject the signable object which contained the signature
-     * @param samlMsgCtx the SAML message context being processed
+     * @param samlMsgCtx     the SAML message context being processed
      * @throws SecurityPolicyException thrown if the signature fails validation
      */
-    protected void doEvaluate(Signature signature, SignableSAMLObject signableObject, SAMLMessageContext<?, ?, ?> samlMsgCtx)
-                    throws SecurityPolicyException {
+    protected void doEvaluate(Signature signature, SignableSAMLObject signableObject, SAMLMessageContext<?, ?, ?> samlMsgCtx) throws SecurityPolicyException {
 
         String contextIssuer = samlMsgCtx.getInboundMessageIssuer();
         if (contextIssuer != null) {
@@ -252,7 +251,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
 
     /**
      * Get the validator used to perform pre-validation on Signature tokens.
-     * 
+     *
      * @return the configured Signature validator, or null
      */
     protected Validator<Signature> getSignaturePrevalidator() {
@@ -261,7 +260,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
 
     /**
      * Perform pre-validation on the Signature token.
-     * 
+     *
      * @param signature the signature to evaluate
      * @throws SecurityPolicyException thrown if the signature element fails pre-validation
      */
@@ -275,8 +274,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
                 }
                 throw new SecurityPolicyException(processType + " message signature failed signature pre-validation", e);
             }
-        }
-        else {
+        } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, processType + " message signature failed without pre-validation");
             }

@@ -11,6 +11,8 @@
 
 	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
 
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
 	<mpJwt
 		id="mpJwt_1"
 		jwksUri="http://localhost:${bvt.prop.security_2_HTTP_default}/jwt/ibm/api/JWKEnabled/jwk"

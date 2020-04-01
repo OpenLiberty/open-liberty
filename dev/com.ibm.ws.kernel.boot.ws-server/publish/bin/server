@@ -2,7 +2,7 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2019
+# Copyright IBM Corp. 2011, 2020
 # The source code for this program is not published or other-
 # wise divested of its trade secrets, irrespective of what has
 # been deposited with the U.S. Copyright Office.
@@ -561,7 +561,6 @@ serverEnvDefaults()
         substitutePrefixVar "${WLP_DEFAULT_JAVA_HOME}" WLP_INSTALL_DIR "${WLP_INSTALL_DIR}"
         JAVA_HOME=${substitutePrefixVarResult}
         JAVA_CMD=${JAVA_HOME}/bin/java
-        WLP_SKIP_MAXPERMSIZE=${WLP_DEFAULT_SKIP_MAXPERMSIZE}
       fi
     else
       JAVA_HOME=${JRE_HOME}
@@ -576,31 +575,44 @@ serverEnvDefaults()
     fi
   fi
 
+# Prefer OPENJ9_JAVA_OPTIONS to deprecated IBM_JAVA_OPTIONS
+  if [ -z "${OPENJ9_JAVA_OPTIONS}" ]
+  then
+    SPECIFIED_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
+  else
+    SPECIFIED_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
+  fi
+  
   # Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   case ${WLP_OUTPUT_DIR} in
   *,*)
-    SERVER_IBM_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
+    SERVER_IBM_JAVA_OPTIONS=${SPECIFIED_JAVA_OPTIONS}
     ;;
   *)
-    if $shareclassesCacheDirPerm
-    then
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${OPENJ9_JAVA_OPTIONS}"
+    if ( echo "${SPECIFIED_JAVA_OPTIONS}" | grep -q "Xshareclasses"); then
+      SERVER_IBM_JAVA_OPTIONS=${SPECIFIED_JAVA_OPTIONS}
     else
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${OPENJ9_JAVA_OPTIONS}"
+      if $shareclassesCacheDirPerm
+      then
+        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${SPECIFIED_JAVA_OPTIONS}"
+      else
+        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${SPECIFIED_JAVA_OPTIONS}"
+      fi
     fi
   esac
 
-  # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs have conflicting
-  # options, and it's more important that the server JVMs be able to use AOT.
+  # Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
+  # shared classes cache created for client operations.
   # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach on z/OS
-  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${OPENJ9_JAVA_OPTIONS}"
+  
+  IBM_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none"
   export IBM_JAVA_OPTIONS
-  OPENJ9_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${OPENJ9_JAVA_OPTIONS}"
+  OPENJ9_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none"
   export OPENJ9_JAVA_OPTIONS
 
   # Set a default file encoding if needed
   if [ -n "$defaultFileEncoding" ]; then
-    if ! expr "${JVM_OPTIONS_QUOTED} ${JVM_ARGS} ${OPENJ9_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
+    if ! expr "${JVM_OPTIONS_QUOTED} ${JVM_ARGS} ${SPECIFIED_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
       JVM_ARGS="${JVM_ARGS} -Dfile.encoding=$defaultFileEncoding"
     fi
   fi
@@ -631,11 +643,6 @@ serverEnvAndJVMOptions()
   # Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
   JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
   SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
-
-  # Add -XX:MaxPermSize unless WLP_SKIP_MAXPERMSIZE is set.
-  if [ -z "${WLP_SKIP_MAXPERMSIZE}" ]; then
-    SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} -XX:MaxPermSize=256m"
-  fi
 
   rc=0
 
@@ -936,8 +943,10 @@ serverCmd()
 
   SAVE_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
   JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
-  SAVE_IBM_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
+  
+  SAVE_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
   IBM_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
+  SAVE_OPENJ9_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
   OPENJ9_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
 
   if $os400lib; then
@@ -946,7 +955,7 @@ serverCmd()
 
     JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
     IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
-    OPENJ9_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+    OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
       PID=`cat "${X_PID_FILE}"`
@@ -968,7 +977,7 @@ serverCmd()
 
       JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
       IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
-      OPENJ9_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+      OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
       if [ $rc = 0 ]; then
         # Verify/wait for the process to start
@@ -1029,7 +1038,7 @@ serverCmd()
 
     JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
     IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
-    OPENJ9_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+    OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
       # Verify/wait for the process to start

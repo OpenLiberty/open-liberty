@@ -26,6 +26,7 @@ Export-Package: \
 Import-Package: \
     !*.internal.*, \
     !com.ibm.ws.kernel.boot.cmdline, \
+    !com.ibm.ws.security.common.token.propagation, \
     org.apache.http.*;resolution:=optional, \
     org.jose4j.*;version="[0.5,1)", \
     *

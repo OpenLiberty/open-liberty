@@ -64,6 +64,7 @@ public class CommonSecurityFat {
 
     @AfterClass
     public static void commonAfterClass() throws Exception {
+        Log.info(thisClass, "commonAfterClass", " from CommonSecurityFat");
         serverTracker.stopAllServers();
         Log.info(thisClass, "commonAfterClass", "Ending Class");
     }

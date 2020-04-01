@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -618,6 +619,13 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * some MBean operations are performed. Users should not do this. This test is only written to experiment with
      * what would happen and explore how to cope with it.
      */
+    @AllowedFFDC({
+        // due to transaction timeout:
+        "javax.transaction.RollbackException",
+        "javax.transaction.xa.XAException",
+        "javax.persistence.PersistenceException",
+        "java.lang.IllegalStateException"
+        })
     @Test
     public void testRemoveFailOverEnablementWhileServerIsStopped() throws Exception {
         // start with fail over enabled
@@ -659,7 +667,15 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/execRF&test=testRemoveFailOverEnablementWhileServerIsStopped[3]");
 
-            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+            server.stopServer(
+                    // rollback due to transaction timeout
+                    "DSRA0304E.*",
+                    "DSRA0302E.*XA_RBROLLBACK",
+                    "J2CA0079E",
+                    "J2CA0088W",
+                    "CWWKC1503W.*IncTask_testRemoveFailOverEnablementWhileServerIsStopped"
+                     // might also need to allow for expected warnings if the server shuts down while a task is running
+                    );
 
             // Disable fail over
             persistentExecRF.setMissedTaskThreshold(null);

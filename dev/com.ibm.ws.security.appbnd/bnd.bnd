@@ -16,9 +16,12 @@ Bundle-SymbolicName: com.ibm.ws.security.appbnd
 Bundle-Description: Security Application Bindings, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
-
 WS-TraceGroup: \
   security
+
+Import-Package: \
+  !org.osgi.service.cm, \
+  ${defaultPackageImport}
 
 Private-Package: \
   com.ibm.ws.security.appbnd.internal.*

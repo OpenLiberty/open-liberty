@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: Database Connectivity
 Bundle-SymbolicName: com.ibm.ws.jdbc.4.2
@@ -20,7 +18,6 @@ Bundle-Description: Database connectivity infrastructure, version ${bVersion}
 
 WS-TraceGroup: RRA
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
   com.ibm.ws.rsadapter.jdbc.v42

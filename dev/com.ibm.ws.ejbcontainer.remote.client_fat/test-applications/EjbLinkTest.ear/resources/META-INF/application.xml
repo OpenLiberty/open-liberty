@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application id="Application_ID" version="5"
+      xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd">
+   <display-name>EjbLinkTest</display-name>
+   <module>
+     <java>EjbLinkClient.jar</java>
+  </module>
+   <module>
+      <ejb>EjbLinkBean.jar</ejb>
+   </module>
+   <module>
+      <ejb>EjbLinkOtherBean.jar</ejb>
+   </module>
+   <module>
+      <web>
+          <web-uri>EjbLinkInWar.war</web-uri>
+          <context-root>/EjbLinkInWar</context-root>
+      </web>
+   </module>
+   <module>
+      <web>
+          <web-uri>EjbLinkInOtherWar.war</web-uri>
+          <context-root>/EjbLinkInOtherWar</context-root>
+      </web>
+   </module>
+</application>

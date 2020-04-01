@@ -839,6 +839,14 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Spus\u0165te featureUtility s
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: N\u00e1sleduj\u00edc\u00ed u\u017eivatelsk\u00e9 funkce jsou ur\u010deny v souboru server.xml, a nebudou nainstalov\u00e1ny: {0}
 
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Funkce {0} a {1} jsou vz\u00e1jemn\u011b nekompatibiln\u00ed, a nemohou b\u00fdt instalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Funkce nemohou b\u00fdt nainstalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Odeberte jednu z funkc\u00ed a zopakujte operaci.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Funkce typu singleton {0} a {1} jsou vz\u00e1jemn\u011b nekompatibiln\u00ed, a nemohou b\u00fdt instalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Funkce nemohou b\u00fdt nainstalov\u00e1ny sou\u010dasn\u011b.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Odeberte jednu z funkc\u00ed a zopakujte operaci.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Funkce byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Funkce byla sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

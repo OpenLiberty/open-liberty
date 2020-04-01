@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,11 +40,10 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
     private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker");
 
-//    static {
-//        // The default ping timeout for Testcontainers is 10s. Increase to 60s for remote Docker hosts.
-//        if (useRemoteDocker())
-//            System.setProperty("testcontainers.environmentprovider.timeout", "60");
-//    }
+    /**
+     * Used to specify a particular docker host machine to run with. For example: -Dfat.test.docker.host=some-docker-host.mycompany.com
+     */
+    private static final String USE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
 
     /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
@@ -79,6 +78,11 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             String dockerHostURL = "tcp://" + dockerService.getAddress() + ":" + dockerService.getPort();
             Log.info(c, m, "Checking if Docker host " + dockerHostURL + " is available and healthy...");
 
+            if (USE_DOCKER_HOST != null && !dockerHostURL.contains(USE_DOCKER_HOST)) {
+                Log.info(c, m, "Will not select " + dockerHostURL + " because " + USE_DOCKER_HOST + " was specifically requested.");
+                return false;
+            }
+
             System.setProperty("DOCKER_HOST", dockerHostURL);
             File certDir = new File("docker-certificates");
             certDir.mkdirs();
@@ -96,6 +100,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                 throw e;
             }
             Log.info(c, m, "Docker host " + dockerHostURL + " is healthy.");
+
+            // Provide information on how to manually connect to the machine if running locally
+            if (FATRunner.FAT_TEST_LOCALRUN) {
+                Log.info(c, m, "If you need to connect to any currently running docker containers manaully, export the following environment variables in your terminal:");
+                Log.info(c, m, "export DOCKER_HOST=" + dockerHostURL);
+                Log.info(c, m, "export DOCKER_TLS_VERIFY=1");
+                Log.info(c, m, "export DOCKER_CERT_PATH=" + certDir.getAbsolutePath());
+            }
             return true;
         }
 
@@ -175,9 +187,9 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     }
 
     private static boolean useRemoteDocker() {
-        return System.getProperty("os.name", "unknown").toLowerCase().contains("windows") || // we are on windows (no docker support)
-               !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
-               USE_REMOTE_DOCKER; // or if remote docker hosts are specifically requested
+        return !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
+               USE_REMOTE_DOCKER || // or if remote docker hosts are specifically requested
+               USE_DOCKER_HOST != null; // or if a specific docker host machine was requested
     }
 
 }

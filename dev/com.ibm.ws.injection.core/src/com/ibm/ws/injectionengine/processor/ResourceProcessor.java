@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2016 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,8 +63,7 @@ import com.ibm.wsspi.injectionengine.factory.ResourceInfoRefAddr;
  * stanzas in XML ( env-entry, resource-ref, resource-env-ref, and
  * message-destination-ref ). <p>
  */
-public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
-{
+public class ResourceProcessor extends InjectionProcessor<Resource, Resources> {
     private static final String CLASS_NAME = ResourceProcessor.class.getName();
     private static final TraceComponent tc = Tr.register(ResourceProcessor.class, InjectionConfigConstants.traceString, InjectionConfigConstants.messageFile);
 
@@ -127,14 +126,12 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
     // F743-34301
     private MBLinkReferenceFactory ivManagedBeanRefFactory;
 
-    public ResourceProcessor()
-    {
+    public ResourceProcessor() {
         super(Resource.class, Resources.class);
     }
 
     @Override
-    public void initProcessor()
-    {
+    public void initProcessor() {
         ComponentNameSpaceConfiguration fCompNSConfig = ivNameSpaceConfig;
 
         // Set local variables; held in this processor for performance.    d446270
@@ -149,8 +146,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         ivEnvEntryBindings = fCompNSConfig.getEnvEntryBindings(); // F743-29779
 
         ivResRefList = fCompNSConfig.getResourceRefConfigList();
-        if (ivResRefList == null) // F88163
-        {
+        if (ivResRefList == null) {
             ivResRefList = InternalInjectionEngineAccessor.getInstance().createResourceRefConfigList();
         }
     }
@@ -167,9 +163,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * @see InjectionProcessor#processXML()
      */
     @Override
-    public void processXML()
-                    throws InjectionException
-    {
+    public void processXML() throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processXML");
@@ -178,26 +172,22 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         // order other than it is the same as in prior releases.
 
         List<? extends EnvEntry> envEntries = ivNameSpaceConfig.getEnvEntries();
-        if (envEntries != null)
-        {
+        if (envEntries != null) {
             processXMLEnvEntries(envEntries);
         }
 
         List<? extends ResourceRef> resourceRefs = ivNameSpaceConfig.getResourceRefs();
-        if (resourceRefs != null)
-        {
+        if (resourceRefs != null) {
             processXMLResourceRefs(resourceRefs);
         }
 
         List<? extends ResourceEnvRef> resourceEnvRefs = ivNameSpaceConfig.getResourceEnvRefs();
-        if (resourceEnvRefs != null)
-        {
+        if (resourceEnvRefs != null) {
             processXMLResourceEnvRefs(resourceEnvRefs);
         }
 
         List<? extends MessageDestinationRef> msgDestRefs = ivNameSpaceConfig.getMsgDestRefs();
-        if (msgDestRefs != null)
-        {
+        if (msgDestRefs != null) {
             processXMLMsgDestRefs(msgDestRefs);
         }
 
@@ -209,15 +199,12 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
     public InjectionBinding<Resource> createInjectionBinding(Resource annotation,
                                                              Class<?> instanceClass,
                                                              Member member,
-                                                             String jndiName)
-                    throws InjectionException
-    {
+                                                             String jndiName) throws InjectionException {
         return new ResourceInjectionBinding(annotation, ivNameSpaceConfig);
     }
 
     @Override
-    public void resolve(InjectionBinding<Resource> binding) throws InjectionException
-    {
+    public void resolve(InjectionBinding<Resource> binding) throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "resolve : " + binding);
@@ -254,8 +241,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         //       but will instead look for a binding below.                PK63562
         if (xmlType == ResourceXMLType.ENV_ENTRY ||
             (xmlType == ResourceXMLType.UNKNOWN &&
-            isEnvEntryType(injectType)))
-        {
+             isEnvEntryType(injectType))) {
             String boundToJndiName = null;
 
             // First check for a binding.
@@ -267,8 +253,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             }
 
             // If no binding, check for lookup-name.
-            if (boundToJndiName == null)
-            {
+            if (boundToJndiName == null) {
                 boundToJndiName = lookupName;
             }
 
@@ -278,19 +263,16 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             // here from processXMLEnvEntries because the env-entry-type
             // is optional in xml and thus the value may not be properly
             // processed until after annotation processing.            F743-22218.3
-            if (boundToJndiName == null)
-            {
+            if (boundToJndiName == null) {
                 String value = null;
 
                 // First check for a binding value.
-                if (ivEnvEntryValues != null) // F743-29779
-                {
+                if (ivEnvEntryValues != null) {
                     value = ivEnvEntryValues.get(refJndiName);
                 }
 
                 // If no binding, use the value from XML.
-                if (value == null)
-                {
+                if (value == null) {
                     value = resourceBinding.ivEnvValue;
                 }
 
@@ -301,8 +283,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 Object injectionObj = resourceBinding.resolveEnvEntryValue(value);
 
                 // May be null if value is bad or was not specified.
-                if (injectionObj != null)
-                {
+                if (injectionObj != null) {
                     // For EJB 1.0 compatibility only
                     if (resourceBinding.getInjectionClassType() == String.class) {
                         collectEjb10Properties(refJndiName, injectionObj);
@@ -312,8 +293,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 }
             }
 
-            if (binding.getBindingObject() == null)
-            {
+            if (binding.getBindingObject() == null) {
                 // If no binding, lookup-name, or value and this is a ManagedBean
                 // with an annotation that explicitly specified a name in
                 // java:comp, then use an indirect lookup into the 'caller's comp
@@ -321,13 +301,11 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 if (boundToJndiName == null &&
                     ivNameSpaceConfig.getOwningFlow() == ComponentNameSpaceConfiguration.ReferenceFlowKind.MANAGED_BEAN &&
                     binding.getInjectionScope() == InjectionScope.COMP &&
-                    !"".equals(binding.getAnnotation().name()))
-                {
+                    !"".equals(binding.getAnnotation().name())) {
                     boundToJndiName = InjectionScope.denormalize(refJndiName); // d726563
                 }
 
-                if (boundToJndiName != null)
-                {
+                if (boundToJndiName != null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "resolve : env-entry - binding lookup : " + boundToJndiName);
 
@@ -337,31 +315,25 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 }
             }
 
-            if (binding.getBindingObject() == null)
-            {
-                if (binding.getInjectionScope() != InjectionScope.COMP) // d702893
-                {
+            if (binding.getBindingObject() == null) {
+                if (binding.getInjectionScope() != InjectionScope.COMP) {
                     InjectionScopeData isd = getNonCompInjectionScopeData(resourceBinding);
                     ResourceInjectionBinding injectableEnvEntry = (ResourceInjectionBinding) isd.getInjectableEnvEntry(refJndiName);
-                    if (injectableEnvEntry != null)
-                    {
+                    if (injectableEnvEntry != null) {
                         // Set the binding object just to allow injection, and set the
                         // binding value and binding name to allow merging.     F91489
                         // InjectionProcessor.performJavaNameSpaceBinding should not
                         // bind the object, and InjectionBinding.getInjectableObject
                         // should not use the object.
                         String bindingValue = injectableEnvEntry.ivBindingValue;
-                        if (bindingValue != null)
-                        {
+                        if (bindingValue != null) {
                             if (isTraceOn && tc.isDebugEnabled())
                                 Tr.debug(tc, "resolve : env-entry - binding injectable lookup : " + bindingValue);
 
                             Object injectionObj = resourceBinding.resolveEnvEntryValue(bindingValue);
                             resourceBinding.setObjects(injectionObj, injectionObj); // F91489
                             resourceBinding.ivBindingValue = bindingValue; // F91489
-                        }
-                        else
-                        {
+                        } else {
                             String bindingName = injectableEnvEntry.ivBindingName;
 
                             if (isTraceOn && tc.isDebugEnabled())
@@ -380,20 +352,16 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 // as that has already been logged.                        F743-22218.3
                 if (!binding.hasAnyInjectionTargets() &&
                     binding.getBindingObject() == null &&
-                    resourceBinding.ivEnvValue == null)
-                {
+                    resourceBinding.ivEnvValue == null) {
                     String displayName = ivNameSpaceConfig.getDisplayName();
                     Tr.warning(tc, "UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W",
                                refJndiName, displayName);
                 }
-            }
-            else
-            {
+            } else {
                 InjectionScope scope = binding.getInjectionScope();
                 if (scope == InjectionScope.APP &&
                     ivNameSpaceConfig.getJ2EEName() != null &&
-                    ivNameSpaceConfig.getJ2EEName().getModule() == null) // F91489
-                {
+                    ivNameSpaceConfig.getJ2EEName().getModule() == null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "resolve : env-entry - adding injectable");
 
@@ -406,8 +374,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 }
             }
 
-            if (resourceBinding.ivResRefConfig == null) // F88163
-            {
+            if (resourceBinding.ivResRefConfig == null) {
                 resourceBinding.ivResRefConfig = InternalInjectionEngineAccessor.getInstance().getDefaultResourceRefConfig();
             }
 
@@ -423,8 +390,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         // all of the interesting metadata for this reference.          F623-841.1
         // -----------------------------------------------------------------------
         ObjectFactoryInfo extensionFactory = getNoOverrideObjectFactory(injectType, injectTypeName);
-        if (extensionFactory != null) // d696076, d698312
-        {
+        if (extensionFactory != null) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "resolve : binding factory : " + extensionFactory);
 
@@ -432,25 +398,20 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
 
             // d675976 - Check for disallowed attributes. d707905 - ignore mappedName
 
-            if (extensionFactory.isAttributeAllowed("lookup")) // d713431
-            {
-                if (lookupName != null)
-                {
+            if (extensionFactory.isAttributeAllowed("lookup")) {
+                if (lookupName != null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "resolve : Binding : " + lookupName);
                     ref = createIndirectJndiLookup(resourceBinding, lookupName);
                     binding.setObjects(null, ref);
                 }
-            }
-            else
-            {
+            } else {
                 checkObjectFactoryAttribute(resourceBinding, "lookup", resourceBinding.ivLookup, "");
             }
 
             checkObjectFactoryAttributes(resourceBinding, extensionFactory);
 
-            if (ref == null)
-            {
+            if (ref == null) {
                 ref = createExtensionFactoryReference(extensionFactory, resourceBinding);
                 binding.setReferenceObject(ref, extensionFactory.getObjectFactoryClass());
             }
@@ -461,8 +422,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         // all other resources, except env-entry.  This information is obtained
         // from the binding file.                                          d446270
         // -----------------------------------------------------------------------
-        else
-        {
+        else {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "resolve : looking for binding");
 
@@ -494,8 +454,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             // for <lookup-name> or the lookup annotation attribute and use that
             // as the JNDI binding name.
             // --------------------------------------------------------------------
-            if (ref == null && lookupName != null)
-            {
+            if (ref == null && lookupName != null) {
                 // The type of indirect lookup depends on whether the object is
                 // managed or not. If the type is managed, then full ResRefList
                 // support is required, otherwise a simple indirect lookup is all
@@ -508,14 +467,15 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 // and the less likely some other part of WAS accidentally codes
                 // to rely on the ResRefList when it shouldn't.         F743-21028.4
                 if (xmlType == ResourceXMLType.RESOURCE_REF ||
-                    xmlType == ResourceXMLType.UNKNOWN)
-                {
+                    xmlType == ResourceXMLType.UNKNOWN) {
+                    // There was no binding, but check for other config by full name
+                    if (resourceBinding.ivResRefConfig == null && refJndiName != refFullJndiName) {
+                        resourceBinding.ivResRefConfig = ivResRefList.findByName(refFullJndiName);
+                    }
                     ref = createResRefJndiLookup(resourceBinding,
                                                  refJndiName,
                                                  resourceBinding.ivLookup);
-                }
-                else
-                {
+                } else {
                     ref = createIndirectJndiLookup(resourceBinding,
                                                    resourceBinding.ivLookup);
                 }
@@ -530,16 +490,14 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             // /specification has provided an ObjectFactory for.  This would be
             // an extension to the Java EE spec, or for a later spec.
             // --------------------------------------------------------------------
-            if (ref == null)
-            {
+            if (ref == null) {
                 extensionFactory = getObjectFactoryInfo(injectType, injectTypeName);
 
                 // If an ObjectFactory was registered for this data type, then
                 // create a Reference for that factory, and use the 'generic'
                 // info object that contains pretty much all of the interesting
                 // metadata for this reference.
-                if (extensionFactory != null)
-                {
+                if (extensionFactory != null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "resolve : binding factory : " + extensionFactory);
 
@@ -557,20 +515,18 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             // the @Resource annotation must be the ManagedBean class, which is
             // annotated @ManagedBean.
             // --------------------------------------------------------------------
-            if (ref == null && isManagedBeanRef(injectType, injectTypeName)) // d675172 d702400
-            {
+            if (ref == null && isManagedBeanRef(injectType, injectTypeName)) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "resolve : ManagedBean - using MBLink");
 
                 // Use the MBLink Reference factory (which may be overridden) to
                 // create the Reference object that will be bound into Naming and
                 // resolve the object to inject.
-                ref = ivManagedBeanRefFactory.createMBLinkReference
-                                (refJndiName, // d655264.1
-                                 resourceBinding.ivApplication,
-                                 resourceBinding.ivModule,
-                                 ivNameSpaceConfig.getDisplayName(),
-                                 injectTypeName);
+                ref = ivManagedBeanRefFactory.createMBLinkReference(refJndiName, // d655264.1
+                                                                    resourceBinding.ivApplication,
+                                                                    resourceBinding.ivModule,
+                                                                    ivNameSpaceConfig.getDisplayName(),
+                                                                    injectTypeName);
             }
 
             // --------------------------------------------------------------------
@@ -582,8 +538,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             // --------------------------------------------------------------------
             if (ref == null &&
                 ivNameSpaceConfig.getOwningFlow() == ComponentNameSpaceConfiguration.ReferenceFlowKind.MANAGED_BEAN &&
-                binding.getInjectionScope() == InjectionScope.COMP)
-            {
+                binding.getInjectionScope() == InjectionScope.COMP) {
                 if (!"".equals(binding.getAnnotation().name())) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "resolve : ManagedBean resource - binding to consumer java:comp/env");
@@ -600,8 +555,11 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             // name, or it might otherwise know how to automatically create a
             // binding for the reference.
             // --------------------------------------------------------------------
-            if (ref == null && ivResAutoLinkRefFactory != null) //455334 start
-            {
+            if (ref == null && ivResAutoLinkRefFactory != null) {
+                // There was no binding, but check for other config by full name
+                if (resourceBinding.ivResRefConfig == null && refJndiName != refFullJndiName) {
+                    resourceBinding.ivResRefConfig = ivResRefList.findByName(refFullJndiName);
+                }
                 ref = ivResAutoLinkRefFactory.createResAutoLinkReference(createResourceInfo(resourceBinding));
             }
 
@@ -612,32 +570,26 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             //        do warnings when WebContainer is calling multiple times
             //        until the last time.
 
-            if (ref != null)
-            {
+            if (ref != null) {
                 // If an extension ObjectFactory is associated with the reference,
                 // then pass it along with the reference, so the binding won't
                 // need to try and load the class.                        F623-841.1
-                if (extensionFactory != null)
-                {
+                if (extensionFactory != null) {
                     binding.setReferenceObject(ref, extensionFactory.getObjectFactoryClass());
                 }
                 // Otherwise, just set the reference on the binding, and it will
                 // load the ObjectFactory from the reference itself.
-                else
-                {
+                else {
                     binding.setObjects(null, ref);
                 }
-            }
-            else
-            {
+            } else {
                 // Add the jndiName to the missing bindings list.  The list
                 // will be displayed when all InjectionBindids have been processed.
                 super.ivMissingBindings.add(refJndiName); //d435329
             }
         }
 
-        if (resourceBinding.ivResRefConfig == null) // F88163
-        {
+        if (resourceBinding.ivResRefConfig == null) {
             resourceBinding.ivResRefConfig = InternalInjectionEngineAccessor.getInstance().getDefaultResourceRefConfig();
         }
 
@@ -659,7 +611,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * message-destination-ref binding.
      *
      * @param resourceBinding the resource binding to resolve
-     * @param refJndiName normalized or denormalized ref name
+     * @param refJndiName     normalized or denormalized ref name
      * @return the Reference object that resolves the binding or null
      * @throws InjectionException if an error occurs creating the reference
      */
@@ -716,12 +668,9 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         return ref;
     }
 
-    private InjectionScopeData getNonCompInjectionScopeData(ResourceInjectionBinding binding) // d702893
-    {
+    private InjectionScopeData getNonCompInjectionScopeData(ResourceInjectionBinding binding) {
         InjectionScope scope = binding.getInjectionScope();
-        MetaData md = scope == InjectionScope.APP ? ivNameSpaceConfig.getApplicationMetaData() :
-                        scope == InjectionScope.MODULE ? ivNameSpaceConfig.getModuleMetaData() :
-                                        null;
+        MetaData md = scope == InjectionScope.APP ? ivNameSpaceConfig.getApplicationMetaData() : scope == InjectionScope.MODULE ? ivNameSpaceConfig.getModuleMetaData() : null;
         AbstractInjectionEngine injectionEngine = (AbstractInjectionEngine) InjectionEngineAccessor.getInstance();
         return injectionEngine.getInjectionScopeData(md);
     }
@@ -730,8 +679,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Common code to create the special indirect JNDI lookup Reference for
      * a managed resource reference, and add it to the ResRefList.
      *
-     * @param binding the specific resource injection binding being processed.
-     * @param refJndiName JNDI name of the resource reference.
+     * @param binding         the specific resource injection binding being processed.
+     * @param refJndiName     JNDI name of the resource reference.
      * @param boundToJndiName JNDI name to re-direct the refJndiName to.
      *
      * @return an indirect JNDI lookup Reference.
@@ -739,9 +688,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
     // F743-21028.4
     private Reference createResRefJndiLookup(ResourceInjectionBinding binding,
                                              String refJndiName,
-                                             String boundToJndiName)
-                    throws InjectionException
-    {
+                                             String boundToJndiName) throws InjectionException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Binding resource ref " + refJndiName +
                          " to resource " + boundToJndiName);
@@ -764,20 +711,15 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         Resource resourceAnnotation = binding.getAnnotation();
         String description = resourceAnnotation.description();
         String classType = binding.getInjectionClassTypeName(); // F743-32443
-        int resAuthType = resourceAnnotation.authenticationType() == AuthenticationType.CONTAINER ?
-                        ResourceRef.AUTH_CONTAINER :
-                        ResourceRef.AUTH_APPLICATION;
-        int resSharingScope = resourceAnnotation.shareable() ?
-                        ResourceRef.SHARING_SCOPE_SHAREABLE :
-                        ResourceRef.SHARING_SCOPE_UNSHAREABLE;
+        int resAuthType = resourceAnnotation.authenticationType() == AuthenticationType.CONTAINER ? ResourceRef.AUTH_CONTAINER : ResourceRef.AUTH_APPLICATION;
+        int resSharingScope = resourceAnnotation.shareable() ? ResourceRef.SHARING_SCOPE_SHAREABLE : ResourceRef.SHARING_SCOPE_UNSHAREABLE;
 
         binding.ivBindingName = boundToJndiName; // F88163
 
         // Create and add a ResRef object to the ResRefList for
         // this resource reference.
         ResourceRefConfig resRef = binding.ivResRefConfig; // F88163
-        if (resRef == null)
-        {
+        if (resRef == null) {
             resRef = ivResRefList.findOrAddByName(refJndiName);
             binding.ivResRefConfig = resRef;
         }
@@ -796,18 +738,16 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Common code to create the indirect JNDI lookup Reference for
      * a non-managed resource reference.
      *
-     * @param binding the specific resource injection binding being processed.
-     * @param refJndiName JNDI name of the resource reference.
+     * @param binding         the specific resource injection binding being processed.
+     * @param refJndiName     JNDI name of the resource reference.
      * @param boundToJndiName JNDI name to re-direct the refJndiName to.
-     * @param type the XML type of the resource reference.
+     * @param type            the XML type of the resource reference.
      *
      * @return an indirect JNDI lookup Reference.
      **/
     // F743-21028.4
     private Reference createIndirectJndiLookup(ResourceInjectionBinding binding,
-                                               String boundToJndiName)
-                    throws InjectionException
-    {
+                                               String boundToJndiName) throws InjectionException {
         // -----------------------------------------------------------------------
         // Bind an indirect JNDI reference using the reference jndi name.
         // When a lookup is performed on the reference, an indirect lookup will
@@ -821,8 +761,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                          " (" + classType + ") to resource " + boundToJndiName);
 
         binding.ivBindingName = boundToJndiName; // F88163
-        if (binding.ivResRefConfig != null)
-        {
+        if (binding.ivResRefConfig != null) {
             binding.ivResRefConfig.setJNDIName(boundToJndiName); // F88163
         }
 
@@ -838,9 +777,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      *
      * @return an indirect JNDI lookup Reference.
      **/
-    private Reference createIndirectJndiLookupInConsumerContext(ResourceInjectionBinding binding)
-                    throws InjectionException
-    {
+    private Reference createIndirectJndiLookupInConsumerContext(ResourceInjectionBinding binding) throws InjectionException {
         // -----------------------------------------------------------------------
         // Bind an indirect JNDI reference using the reference jndi name.
         // When a lookup is performed on the reference, an indirect lookup will
@@ -871,18 +808,15 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      */
     private void checkObjectFactoryAttributes(ResourceInjectionBinding resourceBinding,
                                               ObjectFactoryInfo extensionFactory) // d675976
-    throws InjectionConfigurationException
-    {
+                    throws InjectionConfigurationException {
         Resource resourceAnnotation = resourceBinding.getAnnotation();
 
-        if (!extensionFactory.isAttributeAllowed("authenticationType"))
-        {
+        if (!extensionFactory.isAttributeAllowed("authenticationType")) {
             checkObjectFactoryAttribute(resourceBinding, "authenticationType",
                                         resourceAnnotation.authenticationType(), AuthenticationType.CONTAINER);
         }
 
-        if (!extensionFactory.isAttributeAllowed("shareable"))
-        {
+        if (!extensionFactory.isAttributeAllowed("shareable")) {
             checkObjectFactoryAttribute(resourceBinding, "shareable",
                                         resourceAnnotation.shareable(), true);
         }
@@ -892,10 +826,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                                              String attributeName,
                                              Object value,
                                              Object defaultValue) // d675976
-    throws InjectionConfigurationException
-    {
-        if (value != null && !value.equals(defaultValue))
-        {
+                    throws InjectionConfigurationException {
+        if (value != null && !value.equals(defaultValue)) {
             String name = resourceBinding.getJndiName();
             String injectTypeName = resourceBinding.getInjectionClassTypeName();
 
@@ -922,17 +854,15 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Creates a Reference for a binding from a registered ObjectFactory.
      *
      * @param extensionFactory the object factory info
-     * @param resourceBinding the resource binding
+     * @param resourceBinding  the resource binding
      * @return the reference
      */
     private Reference createExtensionFactoryReference(ObjectFactoryInfo extensionFactory,
-                                                      ResourceInjectionBinding resourceBinding) // F48603.9
-    {
+                                                      ResourceInjectionBinding resourceBinding) {
         String className = extensionFactory.getObjectFactoryClass().getName();
         Reference ref = new Reference(resourceBinding.getInjectionClassTypeName(), className, null);
 
-        if (extensionFactory.isRefAddrNeeded()) // F48603
-        {
+        if (extensionFactory.isRefAddrNeeded()) {
             ref.add(new ResourceInfoRefAddr(createResourceInfo(resourceBinding)));
         }
 
@@ -945,23 +875,17 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * @param resourceBinding the binding
      * @return the info
      */
-    private ResourceInfo createResourceInfo(ResourceInjectionBinding resourceBinding) // F48603.9
-    {
+    private ResourceInfo createResourceInfo(ResourceInjectionBinding resourceBinding) {
         J2EEName j2eeName = ivNameSpaceConfig.getJ2EEName();
         Resource resourceAnnotation = resourceBinding.getAnnotation();
 
-        return new ResourceInfo(j2eeName == null ? null : j2eeName.getApplication(),
-                        j2eeName == null ? null : j2eeName.getModule(),
+        return new ResourceInfo(j2eeName == null ? null : j2eeName.getApplication(), j2eeName == null ? null : j2eeName.getModule(),
                         // TODO: This should be j2eeName.getComponent(), but at least
                         // SIP is known to improperly depend on this being the module
                         // name without ".war".
-                        ivNameSpaceConfig.getDisplayName(),
-                        resourceBinding.getJndiName(),
-                        resourceBinding.getInjectionClassTypeName(),
-                        resourceAnnotation.authenticationType(),
-                        resourceAnnotation.shareable(),
-                        resourceBinding.ivLink,
-                        getResourceRefConfig(resourceBinding, resourceBinding.getJndiName(), null));
+                        ivNameSpaceConfig.getDisplayName(), resourceBinding.getJndiName(), resourceBinding.getInjectionClassTypeName(), resourceAnnotation.authenticationType(), resourceAnnotation.shareable(), resourceBinding.ivLink, getResourceRefConfig(resourceBinding,
+                                                                                                                                                                                                                                                              resourceBinding.getJndiName(),
+                                                                                                                                                                                                                                                              null));
     }
 
     /**
@@ -985,24 +909,20 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Properties env = ejbContext.getEnvironment();
      * String value = env.getProperty("hello");
      *
-     * @param jndiName env-entry-name value
+     * @param jndiName        env-entry-name value
      * @param injectionObject env-entry value
      *
      * @throws InjectionException if a problem occurs parsing the jndiName
      */
     // F743-22218.3
-    private void collectEjb10Properties(String jndiName, Object injectionObject)
-                    throws InjectionException
-    {
+    private void collectEjb10Properties(String jndiName, Object injectionObject) throws InjectionException {
         // For EJB 1.0 compatibility only
         // According to spec remove the first element
         // of the name (ejb10-properties)
         final String prefix = "ejb10-properties/";
-        if (jndiName.startsWith(prefix)) // d710771.1
-        {
+        if (jndiName.startsWith(prefix)) {
             Properties envProperties = ivNameSpaceConfig.getEnvProperties();
-            if (envProperties != null)
-            {
+            if (envProperties != null) {
                 envProperties.put(jndiName.substring(prefix.length()), injectionObject);
             }
         }
@@ -1014,24 +934,20 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Supports the type in class form (normal server) and String form
      * (server side client support). <p>
      *
-     * @param injectType injection type; may be null if name specified.
+     * @param injectType     injection type; may be null if name specified.
      * @param injectTypeName injection type; may be null if class specified.
      */
     // d702400
-    private boolean isManagedBeanRef(Class<?> injectType, String injectTypeName)
-    {
+    private boolean isManagedBeanRef(Class<?> injectType, String injectTypeName) {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "isManagedBeanRef: " + injectType + ", " + injectTypeName);
 
         boolean result;
 
-        if (injectType != null && injectType != Object.class) // d675172
-        {
+        if (injectType != null && injectType != Object.class) {
             result = injectType.isAnnotationPresent(ManagedBean.class);
-        }
-        else
-        {
+        } else {
             Set<String> mbClassNames = ivNameSpaceConfig.getManagedBeanClassNames();
             result = mbClassNames != null && mbClassNames.contains(injectTypeName);
         }
@@ -1041,8 +957,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         return result;
     }
 
-    private static String getDescription(Describable desc)
-    {
+    private static String getDescription(Describable desc) {
         List<Description> descs = desc.getDescriptions();
         return descs.isEmpty() ? null : descs.get(0).getValue();
     }
@@ -1055,11 +970,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Double, Byte, Short, Long, Float )
      * - String
      **/
-    private void processXMLEnvEntries(List<? extends EnvEntry> envEntries)
-                    throws InjectionException
-    {
-        for (EnvEntry envEntry : envEntries)
-        {
+    private void processXMLEnvEntries(List<? extends EnvEntry> envEntries) throws InjectionException {
+        for (EnvEntry envEntry : envEntries) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "processing : " + envEntry);
 
@@ -1068,12 +980,9 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             // the new env entry into it.
             String jndiName = envEntry.getName();
             InjectionBinding<Resource> injectionBinding = ivAllAnnotationsCollection.get(jndiName);
-            if (injectionBinding != null)
-            {
+            if (injectionBinding != null) {
                 ((ResourceInjectionBinding) injectionBinding).merge(envEntry);
-            }
-            else
-            {
+            } else {
                 String mappedName = envEntry.getMappedName();
                 String description = getDescription(envEntry);
                 String lookup = envEntry.getLookupName(); // F743-21028.4
@@ -1093,14 +1002,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 // Note: env-entry-type will be determined in binding constructor,
                 //       and updated in annotation at that time.          F743-25853
 
-                ResourceImpl resourceAnnotation = new ResourceImpl(jndiName,
-                                null,
-                                mappedName,
-                                description,
-                                lookup); // F743-21028.4
-                injectionBinding = new ResourceInjectionBinding(resourceAnnotation,
-                                envEntry,
-                                ivNameSpaceConfig); // d479669
+                ResourceImpl resourceAnnotation = new ResourceImpl(jndiName, null, mappedName, description, lookup); // F743-21028.4
+                injectionBinding = new ResourceInjectionBinding(resourceAnnotation, envEntry, ivNameSpaceConfig); // d479669
                 addInjectionBinding(injectionBinding);
 
                 // d654054
@@ -1127,12 +1030,10 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 // the .loadTypeClass()
 
                 // Support multiple injection targets
-                if (!targets.isEmpty())
-                {
+                if (!targets.isEmpty()) {
                     Class<?> injectionType = injectionBinding.getInjectionClassType();
 
-                    for (InjectionTarget target : targets)
-                    {
+                    for (InjectionTarget target : targets) {
                         String targetClassName = target.getInjectionTargetClassName();
                         String targetName = target.getInjectionTargetName();
                         injectionBinding.addInjectionTarget(injectionType, targetName, targetClassName);
@@ -1152,11 +1053,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Resource manager connection factories may be configured as shared or
      * not shared, and may have CONTAINER or APPLICATION authentication.
      **/
-    private void processXMLResourceRefs(List<? extends ResourceRef> resourceRefs)
-                    throws InjectionException
-    {
-        for (ResourceRef resourceRef : resourceRefs)
-        {
+    private void processXMLResourceRefs(List<? extends ResourceRef> resourceRefs) throws InjectionException {
+        for (ResourceRef resourceRef : resourceRefs) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "processing : " + resourceRef);
 
@@ -1167,9 +1065,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             InjectionBinding<Resource> injectionBinding = ivAllAnnotationsCollection.get(jndiName);
             if (injectionBinding != null) {
                 ((ResourceInjectionBinding) injectionBinding).merge(resourceRef);
-            }
-            else
-            {
+            } else {
                 Class<?> injectionType = null;
                 String injectionTypeName = null;
                 String targetName = null;
@@ -1178,8 +1074,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 AuthenticationType authenticationType = convertAuthToEnum(resourceRef.getAuthValue());
                 int resSharingScope = resourceRef.getSharingScopeValue();
                 Boolean shareable = null;
-                if (resSharingScope != ResourceRef.SHARING_SCOPE_UNSPECIFIED)
-                {
+                if (resSharingScope != ResourceRef.SHARING_SCOPE_UNSPECIFIED) {
                     shareable = resSharingScope == ResourceRef.SHARING_SCOPE_SHAREABLE;
                 }
 
@@ -1197,26 +1092,14 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "targetType : " + injectionType);
 
-                    Resource resourceAnnotation =
-                                    new ResourceImpl(jndiName,
-                                                    injectionType == null ? Object.class : injectionType, // d701306.1
-                                                    authenticationType,
-                                                    shareable,
-                                                    mappedName,
-                                                    description,
-                                                    lookup); // F743-21028.4
-                    injectionBinding = new ResourceInjectionBinding(resourceAnnotation,
-                                    injectionTypeName,
-                                    lookup,
-                                    ResourceXMLType.RESOURCE_REF,
-                                    ivNameSpaceConfig); // d479669
+                    Resource resourceAnnotation = new ResourceImpl(jndiName, injectionType == null ? Object.class : injectionType, // d701306.1
+                                    authenticationType, shareable, mappedName, description, lookup); // F743-21028.4
+                    injectionBinding = new ResourceInjectionBinding(resourceAnnotation, injectionTypeName, lookup, ResourceXMLType.RESOURCE_REF, ivNameSpaceConfig); // d479669
                     addInjectionBinding(injectionBinding);
 
                     // Support multiple injection targets
-                    if (!targets.isEmpty())
-                    {
-                        for (InjectionTarget target : targets)
-                        {
+                    if (!targets.isEmpty()) {
+                        for (InjectionTarget target : targets) {
                             targetClassName = target.getInjectionTargetClassName();
                             targetName = target.getInjectionTargetName();
 
@@ -1229,8 +1112,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                             injectionBinding.addInjectionTarget(injectionType, targetName, targetClassName);
                         }
                     }
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     FFDCFilter.processException(e, CLASS_NAME + ".processXMLResourceRefs",
                                                 "898", this, new Object[] { resourceRef, jndiName, injectionBinding, targetName, targetClassName });
                     InjectionException icex;
@@ -1255,11 +1137,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * Differs from resource references in that resource env references are
      * not shareable and do not require authentication.
      **/
-    private void processXMLResourceEnvRefs(List<? extends ResourceEnvRef> resourceEnvRefs)
-                    throws InjectionException
-    {
-        for (ResourceEnvRef resourceEnvRef : resourceEnvRefs)
-        {
+    private void processXMLResourceEnvRefs(List<? extends ResourceEnvRef> resourceEnvRefs) throws InjectionException {
+        for (ResourceEnvRef resourceEnvRef : resourceEnvRefs) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "processing : " + resourceEnvRef);
 
@@ -1270,9 +1149,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             InjectionBinding<Resource> injectionBinding = ivAllAnnotationsCollection.get(jndiName);
             if (injectionBinding != null) {
                 ((ResourceInjectionBinding) injectionBinding).merge(resourceEnvRef);
-            }
-            else
-            {
+            } else {
                 Class<?> injectionType = null; // d367834.10
                 String injectionTypeName = null;
                 String targetName = null;
@@ -1286,31 +1163,20 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                 }
 
                 List<InjectionTarget> targets = resourceEnvRef.getInjectionTargets();
-                try
-                {
+                try {
                     injectionTypeName = resourceEnvRef.getTypeName();
                     injectionType = loadTypeClass(injectionTypeName, jndiName); // d476227 d476227.1
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "injectionType : " + injectionType);
 
-                    Resource resourceAnnotation =
-                                    new ResourceImpl(jndiName,
-                                                    injectionType == null ? Object.class : injectionType, // d701306.1
-                                                    mappedName,
-                                                    description,
-                                                    lookup); // F743-21028.4
-                    injectionBinding = new ResourceInjectionBinding(resourceAnnotation,
-                                    injectionTypeName,
-                                    lookup,
-                                    ResourceXMLType.RESOURCE_ENV_REF,
-                                    ivNameSpaceConfig); // d479669
+                    Resource resourceAnnotation = new ResourceImpl(jndiName, injectionType == null ? Object.class : injectionType, // d701306.1
+                                    mappedName, description, lookup); // F743-21028.4
+                    injectionBinding = new ResourceInjectionBinding(resourceAnnotation, injectionTypeName, lookup, ResourceXMLType.RESOURCE_ENV_REF, ivNameSpaceConfig); // d479669
                     addInjectionBinding(injectionBinding);
 
                     // Support multiple injection targets
-                    if (!targets.isEmpty())
-                    {
-                        for (InjectionTarget target : targets)
-                        {
+                    if (!targets.isEmpty()) {
+                        for (InjectionTarget target : targets) {
                             targetClassName = target.getInjectionTargetClassName();
                             targetName = target.getInjectionTargetName();
 
@@ -1323,8 +1189,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                             injectionBinding.addInjectionTarget(injectionType, targetName, targetClassName);
                         }
                     }
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     FFDCFilter.processException(e, CLASS_NAME + ".processXMLResourceEnvRefs",
                                                 "454", this, new Object[] { resourceEnvRef, jndiName, injectionBinding, targetName, targetClassName });
                     InjectionException icex;
@@ -1346,11 +1211,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      *
      * @throws InjectionException
      **/
-    private void processXMLMsgDestRefs(List<? extends MessageDestinationRef> msgDestRefs)
-                    throws InjectionException //449021
-    {
-        for (MessageDestinationRef msgDestRef : msgDestRefs)
-        {
+    private void processXMLMsgDestRefs(List<? extends MessageDestinationRef> msgDestRefs) throws InjectionException {
+        for (MessageDestinationRef msgDestRef : msgDestRefs) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "processing : " + msgDestRef);
 
@@ -1361,9 +1223,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             InjectionBinding<Resource> injectionBinding = ivAllAnnotationsCollection.get(jndiName);
             if (injectionBinding != null) {
                 ((ResourceInjectionBinding) injectionBinding).merge(msgDestRef);
-            }
-            else
-            {
+            } else {
 
                 Class<?> injectionType = null; // d367834.10
                 String targetName = null;
@@ -1386,31 +1246,19 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "targetType : " + injectionType);
 
-                    Resource resourceAnnotation =
-                                    new ResourceImpl(jndiName,
-                                                    injectionType == null ? Object.class : injectionType, // d701306.1
-                                                    mappedName,
-                                                    description,
-                                                    lookup); // F743-21028.4
+                    Resource resourceAnnotation = new ResourceImpl(jndiName, injectionType == null ? Object.class : injectionType, // d701306.1
+                                    mappedName, description, lookup); // F743-21028.4
                     if (msgDestRef.getLink() != null) {
                         injectionBinding = new ResourceInjectionBinding(resourceAnnotation, msgDestRef, lookup, ivNameSpaceConfig);
                         addInjectionBinding(injectionBinding);
-                    }
-                    else {
-                        injectionBinding = new ResourceInjectionBinding
-                                        (resourceAnnotation,
-                                                        msgDestType,
-                                                        lookup,
-                                                        ResourceXMLType.MESSAGE_DESTINATION_REF,
-                                                        ivNameSpaceConfig); // d479669
+                    } else {
+                        injectionBinding = new ResourceInjectionBinding(resourceAnnotation, msgDestType, lookup, ResourceXMLType.MESSAGE_DESTINATION_REF, ivNameSpaceConfig); // d479669
                         addInjectionBinding(injectionBinding);
                     }
 
                     // Support multiple injection targets
-                    if (!targets.isEmpty())
-                    {
-                        for (InjectionTarget target : targets)
-                        {
+                    if (!targets.isEmpty()) {
+                        for (InjectionTarget target : targets) {
                             targetClassName = target.getInjectionTargetClassName();
                             targetName = target.getInjectionTargetName();
 
@@ -1436,14 +1284,12 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
     }
 
     @Override
-    public String getJndiName(Resource annotation)
-    {
+    public String getJndiName(Resource annotation) {
         return annotation.name();
     }
 
     @Override
-    public Resource[] getAnnotations(Resources annotation)
-    {
+    public Resource[] getAnnotations(Resources annotation) {
         return annotation.value();
     }
 
@@ -1458,8 +1304,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * @param clazz class to check for type.
      * @return true if the class is a simple environment entry type.
      **/
-    private static boolean isEnvEntryType(Class<?> clazz)
-    {
+    private static boolean isEnvEntryType(Class<?> clazz) {
         if (clazz.isPrimitive() ||
             clazz == String.class ||
             clazz == Integer.class ||
@@ -1469,8 +1314,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
             clazz == Character.class ||
             clazz == Float.class ||
             clazz == Double.class ||
-            clazz == Short.class)
-        {
+            clazz == Short.class) {
             return true;
         }
 
@@ -1478,8 +1322,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
         // are also both env-entries starting in EJB 3.1.       F743-25853 d657801
         if (!EE5Compatibility &&
             (clazz == Class.class ||
-            clazz.isEnum()))
-        {
+             clazz.isEnum())) {
             return true;
         }
 
@@ -1495,19 +1338,17 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * class loader was null, or if the class fails to load. <p>
      *
      * @param className name of the class to load
-     * @param refName name of the resource reference this class is
-     *            associated with, for ras.
+     * @param refName   name of the resource reference this class is
+     *                      associated with, for ras.
      **/
     private Class<?> loadTypeClass(String className, String refName) // d476227.1
-    throws InjectionConfigurationException
-    {
+                    throws InjectionConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "loadTypeClass : " + className);
 
         ClassLoader classLoader = ivNameSpaceConfig.getClassLoader();
-        if (className == null || className.equals("") || classLoader == null)
-        {
+        if (className == null || className.equals("") || classLoader == null) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "loadTypeClass : null");
             return null; // d701306.1
@@ -1515,11 +1356,9 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
 
         Class<?> loadedClass;
 
-        try
-        {
+        try {
             loadedClass = classLoader.loadClass(className);
-        } catch (ClassNotFoundException ex)
-        {
+        } catch (ClassNotFoundException ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".loadTypeClass",
                                         "1142", this, new Object[] { className });
 
@@ -1531,8 +1370,7 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
 
             String module = ivNameSpaceConfig.getModuleName();
             Tr.warning(tc, "RESOURCE_TYPE_NOT_FOUND_CWNEN0046W", className, refName, module); // d479669
-            if (isValidationFailable()) // F50309.6
-            {
+            if (isValidationFailable()) {
                 throw new InjectionConfigurationException("CWNEN0046W: The " + className +
                                                           " type specified on the resource-ref, resource-env-ref, or" +
                                                           " message-destination-ref with the " + refName +
@@ -1564,12 +1402,10 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources>
      * @return the @Resouce AuthenticationType enum value
      **/
     // d543514
-    static AuthenticationType convertAuthToEnum(int resAuthType)
-    {
+    static AuthenticationType convertAuthToEnum(int resAuthType) {
         AuthenticationType authType = AuthenticationType.CONTAINER;
 
-        if (resAuthType == ResourceRef.AUTH_APPLICATION)
-        {
+        if (resAuthType == ResourceRef.AUTH_APPLICATION) {
             authType = AuthenticationType.APPLICATION;
         }
 

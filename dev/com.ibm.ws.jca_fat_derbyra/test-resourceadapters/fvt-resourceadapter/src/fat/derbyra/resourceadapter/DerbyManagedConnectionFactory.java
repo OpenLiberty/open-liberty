@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
 
     transient DerbyResourceAdapter adapter;
     private transient boolean dissociatable;
+    private transient boolean lazyEnlistable;
     transient String password; // confidential config-property
     transient String userName; // config-property
     private transient boolean exceptionOnDestroy; // config-property
@@ -54,7 +55,12 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
     @Override
     public ManagedConnection createManagedConnection(Subject subject, ConnectionRequestInfo cri) throws ResourceException {
         if (dissociatable)
-            return new DerbyDissociatableManagedConnection(this, (DerbyConnectionRequestInfo) cri, subject);
+            if (lazyEnlistable)
+                return new DerbyDissociatableLazyEnlistableManagedConnection(this, (DerbyConnectionRequestInfo) cri, subject);
+            else
+                return new DerbyDissociatableManagedConnection(this, (DerbyConnectionRequestInfo) cri, subject);
+        else if (lazyEnlistable)
+            return new DerbyLazyEnlistableManagedConnection(this, (DerbyConnectionRequestInfo) cri, subject);
         else
             return new DerbyManagedConnection(this, (DerbyConnectionRequestInfo) cri, subject);
     }
@@ -99,6 +105,10 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
         return dissociatable;
     }
 
+    public boolean isLazyEnlistable() {
+        return lazyEnlistable;
+    }
+
     public boolean getExceptionOnDestroy() {
         return this.exceptionOnDestroy;
     }
@@ -125,6 +135,10 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
 
     public void setExceptionOnDestroy(boolean exceptionOnDestroy) {
         this.exceptionOnDestroy = exceptionOnDestroy;
+    }
+
+    public void setLazyEnlistable(boolean lazyEnlistable) {
+        this.lazyEnlistable = lazyEnlistable;
     }
 
     /** {@inheritDoc} */

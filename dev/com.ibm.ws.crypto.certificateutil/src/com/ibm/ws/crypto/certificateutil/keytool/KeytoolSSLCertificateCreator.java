@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.crypto.certificateutil.keytool;
 
 import java.io.File;
+import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import javax.naming.ldap.LdapName;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 
 /**
- *
+ * Creates a self-signed certificate using the Java keytool.
  */
 public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreator {
 
@@ -145,4 +146,10 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
             return KEYALG_RSA_TYPE;
     }
 
+    @Override
+    public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, String password) {
+        /*
+         * Will not be updating self-signed certificates at this time.
+         */
+    }
 }

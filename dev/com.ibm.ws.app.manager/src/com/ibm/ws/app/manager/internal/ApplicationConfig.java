@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -196,6 +196,18 @@ public final class ApplicationConfig {
 
         // If that fails, try to get the value from the application manager
         return _applicationManager.getUseJandex();
+    }
+
+    public String[] getStartAfter() {
+        String[] resultPids = null;
+        if (_config != null) {
+            resultPids = (String[]) _config.get(AppManagerConstants.START_AFTER);
+        }
+
+        if (resultPids == null)
+            resultPids = new String[0];
+        return resultPids;
+
     }
 
     void describe(StringBuilder sb) {

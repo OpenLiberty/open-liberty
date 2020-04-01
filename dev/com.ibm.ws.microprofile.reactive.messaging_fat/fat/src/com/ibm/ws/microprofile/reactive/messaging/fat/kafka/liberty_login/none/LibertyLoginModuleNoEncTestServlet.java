@@ -23,9 +23,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 import componenttest.app.FATServlet;
 
@@ -51,13 +51,13 @@ public class LibertyLoginModuleNoEncTestServlet extends FATServlet {
 
     @Test
     public void testLoginModuleNoEnc() {
-        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(NoEncTestBean.CHANNEL_OUT);
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(NoEncTestBean.CHANNEL_IN);
+        KafkaReader<String, String> reader = kafkaTestClient.readerFor(NoEncTestBean.CHANNEL_OUT);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(NoEncTestBean.CHANNEL_IN);
 
         writer.sendMessage("abc");
         writer.sendMessage("xyz");
 
-        List<String> msgs = reader.waitForMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        List<String> msgs = reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         assertThat(msgs, contains("none-abc", "none-xyz"));
     }

@@ -10,30 +10,44 @@
  *******************************************************************************/
 package com.ibm.ws.testtooling.testlogic;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
-import javax.persistence.Query;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
-import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 
 public abstract class AbstractTestLogic {
     // Can switch the value of this constant to enable validation of @preUpdate
     // on exception paths if EclipseLink is ever updated to support this behavior.
     public static final boolean ECLIPSELINK_VALIDATE_PREUPDATE_ON_EXCEPTION = false;
+
+    public final static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    public final static ObjectName fatServerInfoMBeanObjectName;
+
+    static {
+        ObjectName on = null;
+        try {
+            on = new ObjectName("WebSphereFAT:name=ServerInfo");
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            fatServerInfoMBeanObjectName = on;
+        }
+    }
 
     protected Class<?> resolveEntityClass(JPAEntityClassEnum enumerationRef) throws ClassNotFoundException {
         if (enumerationRef == null) {
@@ -78,98 +92,6 @@ public abstract class AbstractTestLogic {
         Object newEntity = classConstructor.newInstance(constructorArgs);
 
         return newEntity;
-    }
-
-    /**
-     * Cleans the database tables for the entities specified by the array of
-     * enumerations. The enumerations provided in the array must have the method
-     * "getEntityName" with no parameters. This method must return a String
-     * containing the entity named to be used in the query to select all
-     * instances of the entity.
-     *
-     * @param em
-     * @param tj
-     * @param testEntityEnumArr
-     * @param log
-     */
-    protected final void cleanupDatabase(EntityManager em, TransactionJacket tj, JPAEntityClassEnum testEntityEnumArr[]) {
-        if (testEntityEnumArr == null || testEntityEnumArr.length == 0) {
-            return;
-        }
-
-        try {
-            System.out.println("Cleaning database up...");
-
-            // Begin Transaction
-            if (tj.isTransactionActive()) {
-                System.out.println("Cleanup routine is rolling back currently active transaction.");
-                tj.rollbackTransaction();
-            }
-            tj.beginTransaction();
-            if (tj.isApplicationManaged()) {
-                em.joinTransaction();
-            }
-
-            // Clear persistence context
-            em.clear();
-
-            // Set the default flush mode to COMMIT, as some persistence providers may try flush
-            // between queries and cause foreign key constraint violations.
-            em.setFlushMode(FlushModeType.COMMIT);
-
-            // Iterate through all of the enumerations in the array provided by the caller.
-            // Consumable enumerations MUST define the method "public String getEntityName()".
-            for (int index = 0; index < testEntityEnumArr.length; index++) {
-                String entityName = testEntityEnumArr[index].getEntityName();
-                System.out.println("Removing all instances of " + entityName + " from database...");
-
-                String queryStr = "SELECT e FROM " + entityName + " e";
-                Query query = em.createQuery(queryStr);
-                List<?> resultList = query.getResultList();
-
-                // Skip if resultList is null
-                if (resultList == null) {
-                    continue;
-                }
-
-                // Iterate through each entity object in the resultList. We don't care what class type the object is,
-                // we know that it's an entity, and we want to remove it, so we iterate through every object in the list
-                // and em.remove() it.
-                Iterator<?> i = resultList.iterator();
-                while (i.hasNext()) {
-                    Object entityObj = i.next();
-                    em.remove(entityObj);
-                }
-            }
-
-            // Commit transaction
-            tj.commitTransaction();
-        } catch (Throwable t) {
-            throw t;
-        } finally {
-            if (tj.isTransactionActive())
-                tj.rollbackTransaction();
-        }
-    }
-
-    /**
-     * Cleans the database tables for the entities specified by the array of enumerations. The enumerations provided
-     * in the array must have the method "getEntityName" with no parameters. This method must return a String
-     * containing the entity named to be used in the query to select all instances of the entity.
-     *
-     * This is a convenience method that uses List instead of an array of JPAEntityClassEnum objects.
-     *
-     * @param em
-     * @param tj
-     * @param testEntityEnumArr
-     * @param log
-     */
-    protected final void cleanupDatabase(
-                                         EntityManager em, // EntityManager
-                                         TransactionJacket tj, // Wrapper for EntityTransaction/JTA User Tran
-                                         List<JPAEntityClassEnum> testEntityEnumList) { // Array of entity enumerations that are to be cleared from the database
-        JPAEntityClassEnum[] testEntityEnumArr = (JPAEntityClassEnum[]) testEntityEnumList.toArray();
-        cleanupDatabase(em, tj, testEntityEnumArr);
     }
 
     public enum JPAProviderImpl {
@@ -362,5 +284,47 @@ public abstract class AbstractTestLogic {
 
     protected boolean isDerby(String lDbProductName) throws Exception {
         return (lDbProductName == null) ? false : lDbProductName.contains("derby");
+    }
+
+    protected Set<String> getInstalledFeatures() {
+        HashSet<String> retVal = new HashSet<String>();
+
+        try {
+            Set<String> instFeatureSet = (Set<String>) mbeanServer.getAttribute(fatServerInfoMBeanObjectName, "InstalledFeatures");
+            if (instFeatureSet != null) {
+                retVal.addAll(instFeatureSet);
+            }
+        } catch (Throwable t) {
+        }
+        return retVal;
+    }
+
+    protected boolean isUsingJPA20Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.0");
+    }
+
+    protected boolean isUsingJPA21Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.1");
+    }
+
+    protected boolean isUsingJPA22Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.2");
+    }
+
+    protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.1"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.1");
+    }
+
+    protected boolean isUsingJPA22ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.2"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.2");
     }
 }

@@ -20,14 +20,14 @@ import java.io.IOException;
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.ejb.Timer;
 
 /**
  * This class uses the @Schedule annotation.
  * Using this annotation will start the timer immediately on start and will run every other minute.
  */
-@Singleton
+@Stateless
 public class AutomaticIO {
     private static final Class<AutomaticIO> c = AutomaticIO.class;
 
@@ -35,6 +35,7 @@ public class AutomaticIO {
     private SessionContext sessionContext; //Used to get information about timer
 
     private int count; //Incremented with each execution of timers
+
     private final File file = new File("files/timertestoutput.txt");
 
     /**

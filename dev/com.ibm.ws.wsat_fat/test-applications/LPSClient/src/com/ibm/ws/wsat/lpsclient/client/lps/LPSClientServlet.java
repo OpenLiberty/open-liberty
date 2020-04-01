@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.lpsclient.client.lps;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -31,11 +34,34 @@ import com.ibm.tx.jta.ut.util.OnePhaseXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
-import com.ibm.tx.jta.ut.util.AbstractTestServlet;
 
 @WebServlet({ "/LPSClientServlet" })
-public class LPSClientServlet extends AbstractTestServlet {
+public class LPSClientServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+
+    private static String TEST_NAME_PARAM = "testName";
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        System.out.println("Servlet: " + request.getRequestURI());
+        System.out.println("Test: " + request.getParameter(TEST_NAME_PARAM));
+
+        final Enumeration<?> params = request.getParameterNames();
+
+        while (params.hasMoreElements()) {
+            final String param = (String) params.nextElement();
+
+            if (!TEST_NAME_PARAM.equals(param)) {
+                System.out.println(param + ": " + request.getParameter(param));
+            }
+        }
+
+        final String result = get(request);
+        
+        response.getWriter().println(result);
+    }
 
 	protected String get(HttpServletRequest request) throws ServletException, IOException {
 
@@ -69,7 +95,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -87,7 +113,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -105,7 +131,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output += "Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -123,7 +149,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				}catch (RollbackException e) {
 					output += "Get expected RollbackException: " + e.toString() + ". Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -139,7 +165,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -157,7 +183,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				}catch (RollbackException e) {
 					output += "Get expected RollbackException: " + e.toString() + ". Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -173,7 +199,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -190,7 +216,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -207,7 +233,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -224,7 +250,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -241,7 +267,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -258,7 +284,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -276,7 +302,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				}catch (RollbackException e) {
 					output += "Get expected RollbackException: " + e.toString() + ". Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -293,7 +319,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -310,7 +336,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -327,7 +353,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -344,7 +370,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -363,17 +389,17 @@ public class LPSClientServlet extends AbstractTestServlet {
 						onePhaseXAResource.setExpectedDirection(XAResourceImpl.DIRECTION_COMMIT);
 						result = TM.getTransaction().enlistResource(onePhaseXAResource);
 					} catch (IllegalStateException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "IllegalStateException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (RollbackException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "RollbackException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (SystemException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "SystemException happens: " + e.toString();
 						System.out.println(output);
 						return output;
@@ -388,7 +414,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -405,7 +431,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -424,17 +450,17 @@ public class LPSClientServlet extends AbstractTestServlet {
 						onePhaseXAResource.setExpectedDirection(XAResourceImpl.DIRECTION_COMMIT);
 						result = TM.getTransaction().enlistResource(onePhaseXAResource);
 					} catch (IllegalStateException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "IllegalStateException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (RollbackException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "RollbackException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (SystemException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "SystemException happens: " + e.toString();
 						System.out.println(output);
 						return output;
@@ -449,7 +475,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				}catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -470,17 +496,17 @@ public class LPSClientServlet extends AbstractTestServlet {
 						onePhaseXAResource.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 						result = TM.getTransaction().enlistResource(onePhaseXAResource);
 					} catch (IllegalStateException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "IllegalStateException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (RollbackException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "RollbackException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (SystemException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "SystemException happens: " + e.toString();
 						System.out.println(output);
 						return output;
@@ -496,7 +522,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -516,17 +542,17 @@ public class LPSClientServlet extends AbstractTestServlet {
 						onePhaseXAResource.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 						result = TM.getTransaction().enlistResource(onePhaseXAResource);
 					} catch (IllegalStateException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "IllegalStateException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (RollbackException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "RollbackException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (SystemException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "SystemException happens: " + e.toString();
 						System.out.println(output);
 						return output;
@@ -543,7 +569,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -563,17 +589,17 @@ public class LPSClientServlet extends AbstractTestServlet {
 						onePhaseXAResource.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 						result = TM.getTransaction().enlistResource(onePhaseXAResource);
 					} catch (IllegalStateException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "IllegalStateException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (RollbackException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "RollbackException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (SystemException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "SystemException happens: " + e.toString();
 						System.out.println(output);
 						return output;
@@ -595,7 +621,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 				} catch (RollbackException e) {
 					output +="Get expected RollbackException: " + e.toString() + ". Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;
@@ -614,17 +640,17 @@ public class LPSClientServlet extends AbstractTestServlet {
 						XAResourceImpl onePhaseXAResource = new OnePhaseXAResourceImpl();
 						result = TM.getTransaction().enlistResource(onePhaseXAResource);
 					} catch (IllegalStateException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "IllegalStateException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (RollbackException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "RollbackException happens: " + e.toString();
 						System.out.println(output);
 						return output;
 					} catch (SystemException e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 						output = "SystemException happens: " + e.toString();
 						System.out.println(output);
 						return output;
@@ -646,7 +672,7 @@ public class LPSClientServlet extends AbstractTestServlet {
 					userTransaction.commit();
 					output += " Test passed.";
 				} catch(java.lang.Exception e){
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					output += " Exception happens: " + e.toString() + ". Test failed.";
 				}
 				break;

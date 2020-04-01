@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,13 @@ package com.ibm.ws.jsf22.fat.tests;
 
 import java.net.URL;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -19,13 +26,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -68,27 +68,28 @@ public class JSF22BeanValidationTests {
     /**
      * Test whether beanValidation-1.1 is actually enabled when jsf-2.2 is enabled
      * We do this by looking for a message in the logs
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testBeanValidation11Enabled() throws Exception {
         String methodName = "testBeanValidation11Enabled";
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsf22beanvalServer, contextRoot, "BeanValidation.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsf22beanvalServer, contextRoot, "BeanValidation.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
+            Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
 
-        Log.info(c, name.getMethodName(), "Looking for message \"MyFaces Bean Validation support enabled\" in the logs");
+            Log.info(c, name.getMethodName(), "Looking for message \"MyFaces Bean Validation support enabled\" in the logs");
 
-        String logMessage = jsf22beanvalServer.waitForStringInLog("MyFaces Bean Validation support enabled");
+            String logMessage = jsf22beanvalServer.waitForStringInLog("MyFaces Bean Validation support enabled");
 
-        Log.info(c, name.getMethodName(), "Message found in the logs : " + logMessage);
+            Log.info(c, name.getMethodName(), "Message found in the logs : " + logMessage);
 
-        Assert.assertNotNull("Correct message not found", logMessage);
+            Assert.assertNotNull("Correct message not found", logMessage);
+        }
     }
 
     /**
@@ -96,45 +97,45 @@ public class JSF22BeanValidationTests {
      * This test has two states. First it executes an evaluation with a size greater than the max
      * That test is expected to fail
      * The second test is one that test something at the max length. This test is expected to pass
-     * 
+     *
      * The rest of the bean validation tests are run in com.ibm.ws.jsf_fat_jsf22.JSF20BeanValidation
      * This test was moved out of the above bucket because of a message difference between bean validation
      * 1.0 and 1.1
-     * 
-     * 
+     *
+     *
      * @throws Exception
      */
     @Test
     public void testValidationBeanTagBinding() throws Exception {
         String methodName = "testValidationBeanTagBinding";
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsf22beanvalServer, contextRoot, "BeanValidation.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsf22beanvalServer, contextRoot, "BeanValidation.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
+            Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
 
-        Log.info(c, name.getMethodName(), "Attempting to validate with a string greater than max length");
-        HtmlTextInput bindingInputText = (HtmlTextInput) page.getElementById("binding");
-        bindingInputText.setValueAttribute("aaa");
-        page = doClick(page);
+            Log.info(c, name.getMethodName(), "Attempting to validate with a string greater than max length");
+            HtmlTextInput bindingInputText = (HtmlTextInput) page.getElementById("binding");
+            bindingInputText.setValueAttribute("aaa");
+            page = doClick(page);
 
-        Assert.assertTrue("Sting greater than max did not cause a validation error: \n\n" + page.asText(),
-                          page.getElementById("bindingError").getTextContent().equals("binding: Validation Error: Length is greater than allowable maximum of '2'"));
+            Assert.assertTrue("Sting greater than max did not cause a validation error: \n\n" + page.asText(),
+                              page.getElementById("bindingError").getTextContent().equals("binding: Validation Error: Length is greater than allowable maximum of '2'"));
 
-        Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
+            Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
 
-        page = (HtmlPage) (HtmlPage) webClient.getPage(url);
+            page = (HtmlPage) webClient.getPage(url);
 
-        Log.info(c, name.getMethodName(), "Attempting to validate with a string of max length");
-        bindingInputText = (HtmlTextInput) page.getElementById("binding");
-        bindingInputText.setValueAttribute("aa");
-        page = doClick(page);
+            Log.info(c, name.getMethodName(), "Attempting to validate with a string of max length");
+            bindingInputText = (HtmlTextInput) page.getElementById("binding");
+            bindingInputText.setValueAttribute("aa");
+            page = doClick(page);
 
-        Assert.assertTrue("Valid input caused a validation error: \n\n" + page.asText(),
-                          page.getElementById("success").getTextContent().equals("SUCCESS"));
-
+            Assert.assertTrue("Valid input caused a validation error: \n\n" + page.asText(),
+                              page.getElementById("success").getTextContent().equals("SUCCESS"));
+        }
     }
 
     private HtmlPage doClick(HtmlPage page) throws Exception {

@@ -11,13 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.persistence.2.2; singleton:=true
 Bundle-Activator: com.ibm.ws.javaee.persistence.internal.HybridPersistenceActivator
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
   org.osgi.framework;version="[1.6,2)", \

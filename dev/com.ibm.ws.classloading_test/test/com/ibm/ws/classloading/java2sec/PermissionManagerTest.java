@@ -72,7 +72,7 @@ public class PermissionManagerTest {
     @SuppressWarnings("unchecked")
     private final ServiceReference<URLStreamHandlerService> urlStreamHandlerServiceRef = mock.mock(ServiceReference.class, "urlStreamHandlerServiceRef");
 
-    private PermissionManager permissionManager = new PermissionManager(true);
+    private PermissionManager permissionManager = new PermissionManager();
     private final ComponentContext componentContext = mock.mock(ComponentContext.class);
     private final BundleContext bundleContext = mock.mock(BundleContext.class);
     private final ClassLoadingService classLoadingService = mock.mock(ClassLoadingService.class, "classLoadingService");
@@ -90,7 +90,7 @@ public class PermissionManagerTest {
         withSystemBundleAndCapabilities();
 
         savedPolicy = Policy.getPolicy();
-        permissionManager = new PermissionManager(true);
+        permissionManager = new PermissionManager();
         permissionManager.setWsjarURLStreamHandler(urlStreamHandlerServiceRef);
         permissionManager.setClassLoadingService(classLoadingService);
         permissionManager.activate(componentContext);
@@ -273,7 +273,7 @@ public class PermissionManagerTest {
 
     @Test
     public void activateDeactivateSetsAndRemovesSelfInWLPDynamicPolicy() throws Exception {
-        final PermissionManager anotherPermissionManager = new PermissionManager(true);
+        final PermissionManager anotherPermissionManager = new PermissionManager();
         Policy.setPolicy(wlpDynamicPolicy);
         mock.checking(new Expectations() {
             {

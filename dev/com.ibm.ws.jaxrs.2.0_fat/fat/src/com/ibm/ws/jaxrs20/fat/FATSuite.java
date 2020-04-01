@@ -29,6 +29,7 @@ import com.ibm.ws.jaxrs20.fat.client.ClientTest;
 import com.ibm.ws.jaxrs20.fat.context.ContextTest;
 import com.ibm.ws.jaxrs20.fat.contextresolver.DepartmentTest;
 import com.ibm.ws.jaxrs20.fat.exceptionmappers.ExceptionMappersTest;
+import com.ibm.ws.jaxrs20.fat.exceptionmappingWithOT.ExceptionMappingWithOTTest;
 import com.ibm.ws.jaxrs20.fat.extraproviders.ExtraProvidersTest;
 import com.ibm.ws.jaxrs20.fat.getClasses_getSingletons.SameClassInGetClassesAndGetSingletonsTest;
 import com.ibm.ws.jaxrs20.fat.helloworld.HelloWorldTest;
@@ -73,6 +74,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ContextTest.class,
                 DepartmentTest.class,
                 ExceptionMappersTest.class,
+                ExceptionMappingWithOTTest.class,
                 ExceptionsSubresourcesTest.class,
                 ExtraProvidersTest.class,
                 HelloWorldTest.class,

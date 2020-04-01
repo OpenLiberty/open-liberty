@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -724,6 +724,13 @@ final public class SessionProperties {
         if (bValue != null) {
             smc.setSessionCookieHttpOnly(bValue.booleanValue());
         }
+        s = "cookieSameSite";
+        sValue = propertyToString(xtpProperties.get(s));
+
+        if (sValue != null) {
+            smc.setSessionCookieSameSite(SameSiteCookie.get(sValue));  
+        }
+
         s = "maxInMemorySessionCount";
         iValue = propertyToInteger(xtpProperties.get(s));
         if (iValue != null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,29 +102,30 @@ public class JSF22BeanValidationTests extends FATServletClient {
      * 1.0 and 1.1
      */
     private void testValidationBeanTagBinding(String app) throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        HtmlPage page = (HtmlPage) webClient.getPage(getServerURL() + app + "/BeanValidation.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(getServerURL() + app + "/BeanValidation.jsf");
 
-        Log.info(getClass(), testName.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
-        Log.info(getClass(), testName.getMethodName(), "Attempting to validate with a string greater than max length");
-        HtmlTextInput bindingInputText = (HtmlTextInput) page.getElementById("binding");
-        bindingInputText.setValueAttribute("aaa");
-        page = doClick(page);
+            Log.info(getClass(), testName.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
+            Log.info(getClass(), testName.getMethodName(), "Attempting to validate with a string greater than max length");
+            HtmlTextInput bindingInputText = (HtmlTextInput) page.getElementById("binding");
+            bindingInputText.setValueAttribute("aaa");
+            page = doClick(page);
 
-        Assert.assertTrue("Sting greater than max did not cause a validation error: \n\n" + page.asText(),
-                          page.getElementById("bindingError").getTextContent().equals("binding: Validation Error: Length is greater than allowable maximum of '2'"));
+            Assert.assertTrue("Sting greater than max did not cause a validation error: \n\n" + page.asText(),
+                              page.getElementById("bindingError").getTextContent().equals("binding: Validation Error: Length is greater than allowable maximum of '2'"));
 
-        Log.info(getClass(), testName.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
-        page = (HtmlPage) webClient.getPage(getServerURL() + app + "/BeanValidation.jsf");
+            Log.info(getClass(), testName.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
+            page = (HtmlPage) webClient.getPage(getServerURL() + app + "/BeanValidation.jsf");
 
-        Log.info(getClass(), testName.getMethodName(), "Attempting to validate with a string of max length");
-        bindingInputText = (HtmlTextInput) page.getElementById("binding");
-        bindingInputText.setValueAttribute("aa");
-        page = doClick(page);
+            Log.info(getClass(), testName.getMethodName(), "Attempting to validate with a string of max length");
+            bindingInputText = (HtmlTextInput) page.getElementById("binding");
+            bindingInputText.setValueAttribute("aa");
+            page = doClick(page);
 
-        Assert.assertTrue("Valid input caused a validation error: \n\n" + page.asText(),
-                          page.getElementById("success").getTextContent().equals("SUCCESS"));
+            Assert.assertTrue("Valid input caused a validation error: \n\n" + page.asText(),
+                              page.getElementById("success").getTextContent().equals("SUCCESS"));
+        }
     }
 
     private HtmlPage doClick(HtmlPage page) throws Exception {

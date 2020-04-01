@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,8 +65,7 @@ public class SimpleBindingNameBean implements javax.ejb.SessionBean {
         svLogger.info("       " + beanName + " : " + msg);
     }
 
-    @Override
-    public String toString() {
+    public String foo() {
         return "SimpleBindingNameBean.toString()";
     }
 }

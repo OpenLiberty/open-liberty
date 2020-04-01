@@ -1,0 +1,17 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>ejbHome-3.2</feature>
+		<feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
+    
+    <ejbContainer bindToServerRoot="true"/>
+	
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+</server>

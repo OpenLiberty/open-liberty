@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=Erh\u00f6hen Sie die Verf\u00fcgbarkei
 application.shutdown.CWMFT0002W=CWMFT0002W: Die asynchrone Methode {0} kann nicht ausgef\u00fchrt werden, weil die Anwendung oder die Komponente, die die Methode aufgerufen hat, gestoppt wurde.
 application.shutdown.CWMFT0002W.explanation=Asynchrone Methoden werden im Kontext der Komponente ausgef\u00fchrt, die sie gestartet haben. Die Anwendung oder Komponente, die die asynchrone Methode aufgerufen hat, wurde gestoppt, sodass die Ausf\u00fchrung der asynchronen Methode nicht abgeschlossen werden konnte.
 application.shutdown.CWMFT0002W.useraction= Diese Warnung wird in der Regel angezeigt, wenn eine Anwendung, Komponente oder ein Server heruntergefahren wird. Wenn alle asynchronen Methoden ausgef\u00fchrt werden sollen, muss die Anwendung bzw. die Komponente vor dem Stoppen auf die Ergebnisse warten.
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: Die asynchrone Methode {0} hat null zur\u00fcckgegeben. 
+asynchronous.returned.null.CWMFT0003W.explanation=Methoden, die mit @Asynchronous annotiert sind, d\u00fcrfen keinen Nullwert zur\u00fcckgeben.
+asynchronous.returned.null.CWMFT0003W.useraction=Vermeiden Sie die R\u00fcckgabe eines Nullwerts durch die Methode.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Es ist ein interner Fehler aufgetreten. Ausnahme: {0}

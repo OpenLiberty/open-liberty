@@ -74,7 +74,7 @@ public class PortComponentRefTest {
         }
 
         if (server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKS4000E");
         }
 
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,8 @@ public class XMLConfigParserTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -85,7 +87,7 @@ public class XMLConfigParserTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
     }
 
     private Dictionary<String, Object> evaluateToDictionary(ConfigElement entry) throws ConfigEvaluatorException {
@@ -501,6 +503,48 @@ public class XMLConfigParserTest {
     }
 
     @Test
+    public void testVariableImport() throws Exception {
+        changeLocationSettings("variable.import");
+
+        WsResource resource = wsLocation.resolveResource(CONFIG_ROOT);
+        ServerConfiguration serverConfig = null;
+
+        // Run tests twice to test for variable registry contamination
+        for (int i = 0; i < 2; i++) {
+            serverConfig = new ServerConfiguration();
+            configParser.parseServerConfiguration(resource, serverConfig);
+
+            assertNotNull("server config should not be null after parsing", serverConfig);
+
+            // Verify server.xml
+            ConfigElement applied = serverConfig.getSingleton("foo1", null);
+            Dictionary<String, Object> map = evaluateToDictionary(applied);
+            assertEquals("test1", map.get("bar"));
+
+            // verify that server.xml gets parsed after the good import
+            applied = serverConfig.getSingleton("foo2", null);
+            map = evaluateToDictionary(applied);
+            assertEquals("test2", map.get("bar"));
+
+            // verify that good-import.xml gets parsed
+            applied = serverConfig.getSingleton("foo3", null);
+            map = evaluateToDictionary(applied);
+            assertEquals("test3", map.get("bar"));
+
+            // verify that good-import.xml gets parsed after the nested import
+            applied = serverConfig.getSingleton("foo4", null);
+            map = evaluateToDictionary(applied);
+            assertEquals("test4", map.get("bar"));
+
+            // verify that nested-good-import gets parsed
+            applied = serverConfig.getSingleton("foo5", null);
+            map = evaluateToDictionary(applied);
+            assertEquals("test5", map.get("bar"));
+        }
+
+    }
+
+    @Test
     public void testOptionalImport() throws Exception {
         changeLocationSettings("default");
 
@@ -567,29 +611,31 @@ public class XMLConfigParserTest {
         // test absolute
         base = CONFIG_ROOT;
 
-        resource = XMLConfigParser.resolveInclude("http://localhost/xml/server.xml", base, wsLocation);
+        Map<String, ConfigVariable> vars = Collections.emptyMap();
+        XMLConfigParser parser = new XMLConfigParser(wsLocation, variableRegistry);
+        resource = parser.resolveInclude("http://localhost/xml/server.xml", base, wsLocation);
         assertEquals(new URI("http://localhost/xml/server.xml"), resource.toExternalURI());
 
         // test absolute as variable
         SymbolRegistry.getRegistry().addStringSymbol("absolute.import", "https://localhost:8080/server-config.xml");
-        resource = XMLConfigParser.resolveInclude("${absolute.import}", base, wsLocation);
+        resource = parser.resolveInclude("${absolute.import}", base, wsLocation);
         assertEquals(new URI("https://localhost:8080/server-config.xml"), resource.toExternalURI());
 
         // test relative
         base = "http://localhost/xml/server.xml";
 
-        resource = XMLConfigParser.resolveInclude("a.xml", base, wsLocation);
+        resource = parser.resolveInclude("a.xml", base, wsLocation);
         assertEquals(new URI("http://localhost/xml/a.xml"), resource.toExternalURI());
 
-        resource = XMLConfigParser.resolveInclude("../b.xml", base, wsLocation);
+        resource = parser.resolveInclude("../b.xml", base, wsLocation);
         assertEquals(new URI("http://localhost/xml/../b.xml"), resource.toExternalURI());
 
-        resource = XMLConfigParser.resolveInclude("common/c.xml", base, wsLocation);
+        resource = parser.resolveInclude("common/c.xml", base, wsLocation);
         assertEquals(new URI("http://localhost/xml/common/c.xml"), resource.toExternalURI());
 
         // test relative as variable
         SymbolRegistry.getRegistry().addStringSymbol("relative.import", "shared/d.xml");
-        resource = XMLConfigParser.resolveInclude("${relative.import}", base, wsLocation);
+        resource = parser.resolveInclude("${relative.import}", base, wsLocation);
         assertEquals(new URI("http://localhost/xml/shared/d.xml"), resource.toExternalURI());
     }
 }

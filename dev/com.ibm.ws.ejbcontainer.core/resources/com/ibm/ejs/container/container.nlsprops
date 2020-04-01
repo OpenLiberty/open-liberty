@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1539,11 +1539,28 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Entity enterprise beans declared in a
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Remove the use of the unsupported entity enterprise bean from the application or package the bean in a version 6 or older application.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Each enterprise bean interface must specify a unique binding location.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Correct the binding file for one of these two bean interfaces so that each interface has a unique binding location.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Each enterprise bean interface must specify a unique binding location.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Correct the binding file for one of these two bean interfaces so that each interface has a unique binding location.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: The {2} Java Naming and Directory Interface (JNDI) binding name for the {0} bean or home interface in the {1} module contains a namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=JNDI binding names must not contain the colon (:) character, which denotes a namespace. The entire string before and including the colon (:) character is considered a namespace.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace.
+
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: The {2} Java Naming and Directory Interface (JNDI) binding name for the {0} bean or local home interface in the {1} module contains a namespace that is not valid.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=The local binding name can only contain one namespace and it must start with ejblocal:. Namespaces are denoted by the colon (:) character. The entire string before and including the colon (:) character is considered a namespace.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace that is not valid.
 
 #-------------------------------------------------------------------------------
 #

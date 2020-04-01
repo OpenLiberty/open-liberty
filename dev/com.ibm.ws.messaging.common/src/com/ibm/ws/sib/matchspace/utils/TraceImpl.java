@@ -849,7 +849,7 @@ public class TraceImpl implements Trace
     /*
      * Byte array formatting methods
      */
-    private final static String ls = System.getProperty("line.separator");
+    private final static String ls = System.lineSeparator();
     private final static String DEAD_CHAR = ".";
 
     private static String pad (String s, int l)

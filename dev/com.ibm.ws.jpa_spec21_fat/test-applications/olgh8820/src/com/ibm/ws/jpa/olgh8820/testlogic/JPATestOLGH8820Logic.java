@@ -61,53 +61,36 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
+            em.clear();
 
-            //Setup a stored procedure
-            try {
-                StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
-                storedProcedure.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter(4, String.class, ParameterMode.OUT);
-                storedProcedure.setParameter(1, "One");
-                storedProcedure.setParameter(2, "Two");
-                storedProcedure.setParameter(3, "Three");
-                storedProcedure.execute();
+            //Test simple order
+            StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
+            storedProcedure.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter(4, String.class, ParameterMode.OUT);
+            storedProcedure.setParameter(1, "One");
+            storedProcedure.setParameter(2, "Two");
+            storedProcedure.setParameter(3, "Three");
+            storedProcedure.execute();
 
-                String returnValue = (String) storedProcedure.getOutputParameterValue(4);
-                Assert.assertEquals("One: One Two: Two Three: Three", returnValue);
-            } finally {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                if (em.isOpen()) {
-                    em.close();
-                }
-            }
+            String returnValue = (String) storedProcedure.getOutputParameterValue(4);
+            Assert.assertEquals("One: One Two: Two Three: Three", returnValue);
 
             //Make sure changing the order does change the result
             em = jpaResource.getEm();
-            try {
-                StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
-                storedProcedure.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter(4, String.class, ParameterMode.OUT);
-                storedProcedure.setParameter(2, "Two");
-                storedProcedure.setParameter(1, "One");
-                storedProcedure.setParameter(3, "Three");
-                storedProcedure.execute();
+            storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
+            storedProcedure.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter(4, String.class, ParameterMode.OUT);
+            storedProcedure.setParameter(2, "Two");
+            storedProcedure.setParameter(1, "One");
+            storedProcedure.setParameter(3, "Three");
+            storedProcedure.execute();
 
-                String returnValue = (String) storedProcedure.getOutputParameterValue(4);
-                Assert.assertEquals("One: Two Two: One Three: Three", returnValue);
-            } finally {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                if (em.isOpen()) {
-                    em.close();
-                }
-            }
+            returnValue = (String) storedProcedure.getOutputParameterValue(4);
+            Assert.assertEquals("One: Two Two: One Three: Three", returnValue);
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -153,52 +136,34 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
         try {
             EntityManager em = jpaResource.getEm();
 
-            //Setup a stored procedure
-            try {
-                StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
-                storedProcedure.registerStoredProcedureParameter("in_param_one", String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter("in_param_two", String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter("in_param_three", String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter("out_param_one", String.class, ParameterMode.OUT);
-                storedProcedure.setParameter("in_param_one", "One");
-                storedProcedure.setParameter("in_param_two", "Two");
-                storedProcedure.setParameter("in_param_three", "Three");
-                storedProcedure.execute();
+            //Test simple order
+            StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
+            storedProcedure.registerStoredProcedureParameter("in_param_one", String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("in_param_two", String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("in_param_three", String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("out_param_one", String.class, ParameterMode.OUT);
+            storedProcedure.setParameter("in_param_one", "One");
+            storedProcedure.setParameter("in_param_two", "Two");
+            storedProcedure.setParameter("in_param_three", "Three");
+            storedProcedure.execute();
 
-                String returnValue = (String) storedProcedure.getOutputParameterValue("out_param_one");
-                Assert.assertEquals("One: One Two: Two Three: Three", returnValue);
-            } finally {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                if (em.isOpen()) {
-                    em.close();
-                }
-            }
+            String returnValue = (String) storedProcedure.getOutputParameterValue("out_param_one");
+            Assert.assertEquals("One: One Two: Two Three: Three", returnValue);
 
             //Make sure changing the order doesn't change the result
             em = jpaResource.getEm();
-            try {
-                StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
-                storedProcedure.registerStoredProcedureParameter("out_param_one", String.class, ParameterMode.OUT);
-                storedProcedure.registerStoredProcedureParameter("in_param_two", String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter("in_param_one", String.class, ParameterMode.IN);
-                storedProcedure.registerStoredProcedureParameter("in_param_three", String.class, ParameterMode.IN);
-                storedProcedure.setParameter("in_param_two", "Two");
-                storedProcedure.setParameter("in_param_one", "One");
-                storedProcedure.setParameter("in_param_three", "Three");
-                storedProcedure.execute();
+            storedProcedure = em.createStoredProcedureQuery("simple_order_procedure");
+            storedProcedure.registerStoredProcedureParameter("out_param_one", String.class, ParameterMode.OUT);
+            storedProcedure.registerStoredProcedureParameter("in_param_two", String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("in_param_one", String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("in_param_three", String.class, ParameterMode.IN);
+            storedProcedure.setParameter("in_param_two", "Two");
+            storedProcedure.setParameter("in_param_one", "One");
+            storedProcedure.setParameter("in_param_three", "Three");
+            storedProcedure.execute();
 
-                String returnValue = (String) storedProcedure.getOutputParameterValue("out_param_one");
-                Assert.assertEquals("One: One Two: Two Three: Three", returnValue);
-            } finally {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                if (em.isOpen()) {
-                    em.close();
-                }
-            }
+            returnValue = (String) storedProcedure.getOutputParameterValue("out_param_one");
+            Assert.assertEquals("One: One Two: Two Three: Three", returnValue);
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {

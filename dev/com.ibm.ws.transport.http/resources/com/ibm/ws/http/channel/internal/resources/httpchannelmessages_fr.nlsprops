@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,39 @@ duplicateAlias.useraction=V\u00e9rifiez que tous les alias d'h\u00f4te d\u00e9fi
 context.root.changed=CWWKT0028I: Application Web d\u00e9plac\u00e9e ({0}) : {1}
 context.root.changed.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
 context.root.changed.useraction=Aucune action n'est n\u00e9cessaire.
+
+compression.duplicateType=CWWKT0029W: Vous avez tent\u00e9 d''ajouter deux fois le type {0}. La configuration par d\u00e9faut {1} est utilis\u00e9e \u00e0 la place. 
+compression.duplicateType.explanation=La valeur sp\u00e9cifi\u00e9e a d\u00e9j\u00e0 \u00e9t\u00e9 enregistr\u00e9e comme type de contenu acceptable pour la compression.
+compression.duplicateType.useraction=Lorsque vous d\u00e9finissez la valeur des codages acceptables, assurez-vous que chaque valeur est unique. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: Vous avez tent\u00e9 de retirer deux fois le codage {0}. La configuration par d\u00e9faut {1} est utilis\u00e9e \u00e0 la place.
+compression.duplicateTypeRemoval.explanation=La valeur sp\u00e9cifi\u00e9e a d\u00e9j\u00e0 \u00e9t\u00e9 enregistr\u00e9e comme type de contenu exclu pour la compression.
+compression.duplicateTypeRemoval.useraction=Lorsque vous utilisez l'option de retrait (-), assurez-vous que la valeur sp\u00e9cifi\u00e9e n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 enregistr\u00e9e comme type de contenu exclu.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: Vous avez tent\u00e9 d''ajouter et de retirer simultan\u00e9ment le m\u00eame type de contenu {0}. La configuration par d\u00e9faut {1} est utilis\u00e9e \u00e0 la place.
+compression.duplicateTypeAddRemove.explanation=La valeur sp\u00e9cifi\u00e9e est simultan\u00e9ment ajout\u00e9e et retir\u00e9e par les options de configuration '+/-'.
+compression.duplicateTypeAddRemove.useraction=N'ajoutez pas (+) et ne retirez pas (-) simultan\u00e9ment le m\u00eame type de contenu.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Vous avez tent\u00e9 de remplacer la configuration par d\u00e9faut de la compression mais avez \u00e9galement utilis\u00e9 l''option d''ajout (+) pour un ou plusieurs autres types de contenu. La configuration par d\u00e9faut {0} est utilis\u00e9e \u00e0 la place.
+compression.duplicateOverwriteAndAdd.explanation=La configuration tente de remplacer la valeur par d\u00e9faut tout en utilisant en m\u00eame temps l'option d'ajout (+). Vous ne pouvez pas utiliser l'option d'ajout si vous remplacez les valeurs par d\u00e9faut.
+compression.duplicateOverwriteAndAdd.useraction=Si la configuration par d\u00e9faut doit \u00eatre remplac\u00e9e, n'utilisez pas l'option d'ajout (+). S'il n'est pas n\u00e9cessaire de la remplacer, incluez tout autre type de contenu de votre choix \u00e0 l'aide de l'option d'ajout (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: Vous avez tent\u00e9 de configurer {0} comme algorithme pr\u00e9f\u00e9r\u00e9 du serveur. Les valeurs prises en charge sont gzip, x-gzip, zlib, deflate, identity et none. La configuration par d\u00e9faut {1} est utilis\u00e9e \u00e0 la place.
+compression.unsupportedAlgorithm.explanation=La configuration tente de d\u00e9finir un algorithme non pris en charge comme algorithme pr\u00e9f\u00e9r\u00e9 du serveur \u00e0 utiliser pour la compression. 
+compression.unsupportedAlgorithm.useraction= Lorsque vous d\u00e9finissez la valeur, assurez-vous de sp\u00e9cifier gzip, x-gzip, deflate, zlib, identity ou none.
+
+decompression.tolerance.reached=CWWKT0034E: Le canal HTTP a tent\u00e9 de d\u00e9compresser un corps avec un rapport sup\u00e9rieur au rapport tol\u00e9r\u00e9.
+decompression.tolerance.reached.explanation=Le nombre maximal de cycles de d\u00e9compression a \u00e9t\u00e9 atteint, ce qui g\u00e9n\u00e8re un rapport de d\u00e9compression sup\u00e9rieur \u00e0 la limite configur\u00e9e. La limite de d\u00e9compression est d\u00e9finie par l'attribut decompressionRatioLimit de httpOption.
+decompression.tolerance.reached.useraction=Lorsque cette exception est \u00e9mise pour un corps de demande valide, reconfigurez les attributs decompressionTolerance et decompressionRatioLimit de httpOption pour obtenir les r\u00e9sultats de d\u00e9compression appropri\u00e9s.
+
+cookies.samesite.duplicateName=CWWKT0035W: Un nom ou de cookie ou un masque en double [{0}] a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la configuration SameSite [{1}]. Le nom de cookie ou le masque [{0}] est ignor\u00e9 pour toutes les listes de configuration. Tout nom de cookie ou masque qui est d\u00e9fini par les configurations ''lax'', ''none'' et ''strict'' ne peut \u00eatre d\u00e9fini que dans l''une des trois configurations. 
+cookies.samesite.duplicateName.explanation=La valeur sp\u00e9cifi\u00e9e a d\u00e9j\u00e0 \u00e9t\u00e9 trouv\u00e9e par la configuration et est d\u00e9j\u00e0 mapp\u00e9e \u00e0 une valeur SameSite.
+cookies.samesite.duplicateName.useraction=Assurez-vous que les noms de cookie et les masques sont uniques dans les listes de configuration 'lax', 'none' et 'strict'.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: Une utilisation non prise en charge du caract\u00e8re g\u00e9n\u00e9rique a \u00e9t\u00e9 tent\u00e9e par la valeur [{0}]. La configuration SameSite n''est pas d\u00e9finie pour cette valeur.
+cookies.samesite.unsupportedWildcard.explanation=La mani\u00e8re dont le caract\u00e8re g\u00e9n\u00e9rique (*) a \u00e9t\u00e9 utilis\u00e9 n'est pas admise. Un caract\u00e8re g\u00e9n\u00e9rique (*) unique peut \u00eatre utilis\u00e9 comme valeur autonome ou apr\u00e8s des pr\u00e9fixes de nom de cookie.
+cookies.samesite.unsupportedWildcard.useraction=Assurez-vous qu'un seul caract\u00e8re g\u00e9n\u00e9rique (*) est utilis\u00e9 par masque dans les listes 'lax', 'none' et 'strict'. De plus, l'utilisation de ce caract\u00e8re est pris en charge uniquement dans les deux cas suivants : en tant que valeur autonome ou apr\u00e8s des pr\u00e9fixes de nom de cookie.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: Un nom de cookie ou un masque [{0}], signal\u00e9 comme doublon, a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la configuration SameSite [{1}]. Le nom de cookie ou le masque [{0}] est ignor\u00e9. Tout nom de cookie ou masque qui est d\u00e9fini par les configurations ''lax'', ''none'' et ''strict'' ne peut \u00eatre d\u00e9fini que dans l''une des trois configurations. 
+cookies.samesite.knownDuplicateName.explanation=La valeur sp\u00e9cifi\u00e9e a d\u00e9j\u00e0 \u00e9t\u00e9 trouv\u00e9e par la configuration et est d\u00e9j\u00e0 mapp\u00e9e \u00e0 une valeur SameSite.
+cookies.samesite.knownDuplicateName.useraction=Assurez-vous que les noms de cookie et les masques sont uniques dans les listes de configuration 'lax', 'none' et 'strict'.

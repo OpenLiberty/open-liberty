@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,56 +79,57 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_AjaxRequest() throws Exception {
-        WebClient webClient = new WebClient(BrowserVersion.CHROME);
-        // Use a synchronizing ajax controller to allow proper ajax updating
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
+            // Use a synchronizing ajax controller to allow proper ajax updating
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupAjaxRequest.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupAjaxRequest.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Ajax Request"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Ajax Request"));
 
-        // Get radio button 1
-        HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio1A");
-        // Mark it as checked
-        testPage = (HtmlPage) radioButton1.setChecked(true);
+            // Get radio button 1
+            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio1A");
+            // Mark it as checked
+            testPage = (HtmlPage) radioButton1.setChecked(true);
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio1A");
+            // Get the radio button again after submitting the form
+            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio1A");
 
-        // Verify that it is checked
-        assertTrue("Radio button 1 is not checked.", radioButton1.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button 1 is not checked.", radioButton1.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue2"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue2"));
 
-        // Get radio button 0
-        HtmlRadioButtonInput radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio0");
-        // Mark it as checked
-        testPage = (HtmlPage) radioButton0.setChecked(true);
+            // Get radio button 0
+            HtmlRadioButtonInput radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio0");
+            // Mark it as checked
+            testPage = (HtmlPage) radioButton0.setChecked(true);
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio0");
+            // Get the radio button again after submitting the form
+            radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio0");
 
-        // Verify that it is checked
-        assertTrue("Radio button 0 is not checked.", radioButton0.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button 0 is not checked.", radioButton0.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue1"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue1"));
+        }
     }
 
     /**
@@ -140,44 +141,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_defaultID() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupDefaultID.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupDefaultID.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: DefaultID"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: DefaultID"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("j_id_9");
-        // Mark it as checked
-        radioButton1.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("j_id_9");
+            // Mark it as checked
+            radioButton1.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("j_id_9");
+            // Get the radio button again after submitting the form
+            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("j_id_9");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton1.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton1.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue1"));
-
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue1"));
+        }
     }
 
     /**
@@ -189,43 +190,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_individual() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupIndividual.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupIndividual.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: individual usage"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: individual usage"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
-        // Mark it as checked
-        radioButton2.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Mark it as checked
+            radioButton2.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Get the radio button again after submitting the form
+            radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton2.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton2.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
+        }
     }
 
     /**
@@ -237,51 +239,52 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_interweaveGroups() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupInterweaveGroups.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupInterweaveGroups.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: InterweaveGroups"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: InterweaveGroups"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
-        // Mark it as checked
-        radioButton1.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Mark it as checked
+            radioButton1.setChecked(true);
 
-        // Get the another radio button
-        HtmlRadioButtonInput radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
-        // Mark it as checked
-        radioButton5.setChecked(true);
+            // Get the another radio button
+            HtmlRadioButtonInput radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
+            // Mark it as checked
+            radioButton5.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio buttons again after submitting the form
-        radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
-        radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
+            // Get the radio buttons again after submitting the form
+            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
 
-        // Verify that they are checked
-        assertTrue("Radio button 'radio1' is not checked.", radioButton1.isChecked());
-        assertTrue("Radio button 'radio5' is not checked.", radioButton5.isChecked());
+            // Verify that they are checked
+            assertTrue("Radio button 'radio1' is not checked.", radioButton1.isChecked());
+            assertTrue("Radio button 'radio5' is not checked.", radioButton5.isChecked());
 
-        assertTrue("Selected value from testGroup was not found.", resultingPage.contains("Selected Value testGroup: Value2"));
-        assertTrue("Selected value from testGroup1 was not found.", resultingPage.contains("Selected Value testGroup1: Value6"));
+            assertTrue("Selected value from testGroup was not found.", resultingPage.contains("Selected Value testGroup: Value2"));
+            assertTrue("Selected value from testGroup1 was not found.", resultingPage.contains("Selected Value testGroup1: Value6"));
+        }
     }
 
     /**
@@ -293,51 +296,52 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_multipleGroups() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupMultipleGroups.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupMultipleGroups.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: MultipleGroups"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: MultipleGroups"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
-        // Mark it as checked
-        radioButton1.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Mark it as checked
+            radioButton1.setChecked(true);
 
-        // Get the another radio button
-        HtmlRadioButtonInput radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
-        // Mark it as checked
-        radioButton5.setChecked(true);
+            // Get the another radio button
+            HtmlRadioButtonInput radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
+            // Mark it as checked
+            radioButton5.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio buttons again after submitting the form
-        radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
-        radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
+            // Get the radio buttons again after submitting the form
+            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            radioButton5 = (HtmlRadioButtonInput) testPage.getElementById("radio5");
 
-        // Verify that they are checked
-        assertTrue("Radio button 'radio1' is not checked.", radioButton1.isChecked());
-        assertTrue("Radio button 'radio5' is not checked.", radioButton5.isChecked());
+            // Verify that they are checked
+            assertTrue("Radio button 'radio1' is not checked.", radioButton1.isChecked());
+            assertTrue("Radio button 'radio5' is not checked.", radioButton5.isChecked());
 
-        assertTrue("Selected value from testGroup was not found.", resultingPage.contains("Selected Value testGroup: Value2"));
-        assertTrue("Selected value from testGroup1 was not found.", resultingPage.contains("Selected Value testGroup1: Value6"));
+            assertTrue("Selected value from testGroup was not found.", resultingPage.contains("Selected Value testGroup: Value2"));
+            assertTrue("Selected value from testGroup1 was not found.", resultingPage.contains("Selected Value testGroup1: Value6"));
+        }
     }
 
     /**
@@ -349,43 +353,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_multipleSelectItem() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupMultipleSelectItem.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupMultipleSelectItem.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: Multiple selectItem"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: Multiple selectItem"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
-        // Mark it as checked
-        radioButton1.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Mark it as checked
+            radioButton1.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Get the radio button again after submitting the form
+            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton1.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton1.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value2"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value2"));
+        }
     }
 
     /**
@@ -397,43 +402,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_oneValue() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupOneValue.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupOneValue.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: OneValue"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: OneValue"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
-        // Mark it as checked
-        radioButton1.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Mark it as checked
+            radioButton1.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Get the radio button again after submitting the form
+            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked", radioButton1.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked", radioButton1.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value2"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value2"));
+        }
     }
 
     /**
@@ -446,43 +452,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_selectItems() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItems.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItems.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: selectItems"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: selectItems"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
-        // Mark it as checked
-        radioButton2.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Mark it as checked
+            radioButton2.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Get the radio button again after submitting the form
+            radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton2.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton2.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
+        }
     }
 
     /**
@@ -494,43 +501,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_selectItemsCollection() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItemsCollection.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItemsCollection.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: selectItems Collection"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: selectItems Collection"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
-        // Mark it as checked
-        radioButton2.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Mark it as checked
+            radioButton2.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Get the radio button again after submitting the form
+            radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton2.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton2.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
+        }
     }
 
     /**
@@ -542,43 +550,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_selectItemsOverride() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItemsOverride.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItemsOverride.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: selectItems Override"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: selectItems Override"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
-        // Mark it as checked
-        radioButton2.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Mark it as checked
+            radioButton2.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
+            // Get the radio button again after submitting the form
+            radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("radio2");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton2.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton2.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: ValueOverride"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: ValueOverride"));
+        }
     }
 
     /**
@@ -590,43 +599,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_staticValue() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupStaticValue.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupStaticValue.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: Static Value"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: Static Value"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
-        // Mark it as checked
-        radioButton1.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Mark it as checked
+            radioButton1.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
+            // Get the radio button again after submitting the form
+            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("radio1");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton1.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton1.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue2"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue2"));
+        }
     }
 
     /**
@@ -640,44 +650,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_table() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupTable.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupTable.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: used in a table"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: used in a table"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("table1:2:radio");
-        // Mark it as checked
-        radioButton2.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("table1:2:radio");
+            // Mark it as checked
+            radioButton2.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("table1:2:radio");
+            // Get the radio button again after submitting the form
+            radioButton2 = (HtmlRadioButtonInput) testPage.getElementById("table1:2:radio");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton2.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton2.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
-
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value3"));
+        }
     }
 
     /**
@@ -691,43 +701,44 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testSelectOneRadioGroup_uiRepeat() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupUIRepeat.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupUIRepeat.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asText();
+            String resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: used with ui:repeat"));
+            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Group Attribute: used with ui:repeat"));
 
-        // Get the a radio button
-        HtmlRadioButtonInput radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("ui_repeat_id:0:radio");
-        // Mark it as checked
-        radioButton0.setChecked(true);
+            // Get the a radio button
+            HtmlRadioButtonInput radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("ui_repeat_id:0:radio");
+            // Mark it as checked
+            radioButton0.setChecked(true);
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
-        testPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) testPage.getElementById("submitButton");
+            testPage = submitButton.click();
 
-        resultingPage = testPage.asText();
+            resultingPage = testPage.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Get the radio button again after submitting the form
-        radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("ui_repeat_id:0:radio");
+            // Get the radio button again after submitting the form
+            radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("ui_repeat_id:0:radio");
 
-        // Verify that it is checked
-        assertTrue("Radio button is not checked.", radioButton0.isChecked());
+            // Verify that it is checked
+            assertTrue("Radio button is not checked.", radioButton0.isChecked());
 
-        assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value1"));
+            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: Value1"));
+        }
     }
 
     /**
@@ -742,22 +753,23 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testMyFaces4169RendingIssue_IDEndingWithNumberNextWithLetter() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDEndingWithNumberNextWithLetter.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDEndingWithNumberNextWithLetter.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asXml();
+            String resultingPage = testPage.asXml();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testPage.asText());
-        Log.info(c, name.getMethodName(), resultingPage);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testPage.asText());
+            Log.info(c, name.getMethodName(), resultingPage);
 
-        assertTrue("ID of first radio button is incorrect.", resultingPage.contains("id=\"radio0\""));
-        assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radio1A\""));
-        assertTrue("ID of third radio button is incorrect.", resultingPage.contains("id=\"radio1B\""));
+            assertTrue("ID of first radio button is incorrect.", resultingPage.contains("id=\"radio0\""));
+            assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radio1A\""));
+            assertTrue("ID of third radio button is incorrect.", resultingPage.contains("id=\"radio1B\""));
+        }
     }
 
     /**
@@ -772,22 +784,23 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testMyFaces4169RendingIssue_IDNumberGreaterThanSelectItems() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDNumberGreaterThanSelectItems.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDNumberGreaterThanSelectItems.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asXml();
+            String resultingPage = testPage.asXml();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testPage.asText());
-        Log.info(c, name.getMethodName(), resultingPage);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testPage.asText());
+            Log.info(c, name.getMethodName(), resultingPage);
 
-        assertTrue("ID of first radio button is incorrect.", resultingPage.contains("id=\"radio8\""));
-        assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radio1\""));
-        assertTrue("ID of third radio button is incorrect.", resultingPage.contains("id=\"radio2\""));
+            assertTrue("ID of first radio button is incorrect.", resultingPage.contains("id=\"radio8\""));
+            assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radio1\""));
+            assertTrue("ID of third radio button is incorrect.", resultingPage.contains("id=\"radio2\""));
+        }
     }
 
     /**
@@ -802,21 +815,22 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testMyFaces4169RendingIssue_IDStartingWithIndex1() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDStartingWithIndex1.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDStartingWithIndex1.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asXml();
+            String resultingPage = testPage.asXml();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testPage.asText());
-        Log.info(c, name.getMethodName(), resultingPage);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testPage.asText());
+            Log.info(c, name.getMethodName(), resultingPage);
 
-        assertTrue("Value of first radio button is incorrect.", resultingPage.contains("value=\"radio1:staticValue1\""));
-        assertTrue("Value of second radio button is incorrect.", resultingPage.contains("value=\"radio2:staticValue2\""));
+            assertTrue("Value of first radio button is incorrect.", resultingPage.contains("value=\"radio1:staticValue1\""));
+            assertTrue("Value of second radio button is incorrect.", resultingPage.contains("value=\"radio2:staticValue2\""));
+        }
     }
 
     /**
@@ -831,22 +845,23 @@ public class JSF23SelectOneRadioGroupTests {
      */
     @Test
     public void testMyFaces4169RendingIssue_IDWithoutNumber() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDWithoutNumberAtTheEnd.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDWithoutNumberAtTheEnd.xhtml");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        String resultingPage = testPage.asXml();
+            String resultingPage = testPage.asXml();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testPage.asText());
-        Log.info(c, name.getMethodName(), resultingPage);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testPage.asText());
+            Log.info(c, name.getMethodName(), resultingPage);
 
-        assertTrue("ID of first radio button is incorrect.", resultingPage.contains("id=\"radioOther\""));
-        assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radioOtherA\""));
-        assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radioOtherB\""));
+            assertTrue("ID of first radio button is incorrect.", resultingPage.contains("id=\"radioOther\""));
+            assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radioOtherA\""));
+            assertTrue("ID of second radio button is incorrect.", resultingPage.contains("id=\"radioOtherB\""));
+        }
     }
 
 }

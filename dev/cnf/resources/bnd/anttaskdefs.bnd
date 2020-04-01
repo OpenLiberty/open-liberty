@@ -11,7 +11,14 @@
 
 repo.rasInstrumentation.path: ${path;\
     ${repo;wlp-rasInstrumentation}}
-
+    
+repo.generateChecksums.path: ${path;\
+	${repo;wlp-generateChecksums},\
+    ${repo;com.ibm.ws.kernel.boot.core},\
+    ${repo;com.ibm.ws.org.apache.ant},\
+	${repo;com.ibm.ws.org.apache.aries.util},\
+	${repo;com.ibm.websphere.org.osgi.core}}
+    
 repo.nlsTasks.path: ${path;\
     ${repo;commons-io:commons-io;2.4},\
     ${repo;commons-lang:commons-lang;2.4},\
@@ -26,7 +33,7 @@ repo.featureTasks.path: ${path;\
     ${repo;wlp-featureTasks},\
     ${repo;com.ibm.ws.kernel.boot.core},\
     ${repo;com.ibm.ws.logging.core},\
-    ${repo;biz.aQute.bnd:biz.aQute.bnd;4.1.0},\
+    ${repo;biz.aQute.bnd:biz.aQute.bnd;4.3.0},\
     ${repo;org.apache.ant:ant;1.9.6},\
     ${repo;com.ibm.ws.componenttest:infra.buildtasks-core;4.0.0},\
     ${repo;org.jsoup:jsoup;1.7.2},\

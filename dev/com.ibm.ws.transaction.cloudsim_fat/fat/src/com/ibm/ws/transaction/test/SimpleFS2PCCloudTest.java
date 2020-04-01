@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,8 +35,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -82,7 +80,6 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
      *
      * @throws Exception
      */
-    @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testFSBaseRecovery() throws Exception {
@@ -133,7 +130,6 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
      *
      * @throws Exception
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testFSRecoveryTakeover() throws Exception {
         final String method = "testFSRecoveryTakeover";
@@ -185,7 +181,6 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
      * @throws Exception
      */
 
-    @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "java.lang.IllegalStateException" })
     // defect 227411, if FScloud002 starts slowly, then access to FScloud001's indoubt tx
@@ -262,11 +257,11 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         String installRoot = server1.getInstallRoot();
 
         Log.info(this.getClass(), method, "install root is: " + installRoot);
-        String leaseFileString = installRoot + String.valueOf(File.separatorChar) + "usr" +
-                                 String.valueOf(File.separatorChar) + "shared" +
-                                 String.valueOf(File.separatorChar) + "leaselog" +
-                                 String.valueOf(File.separatorChar) + "defaultGroup" +
-                                 String.valueOf(File.separatorChar) + recoveryId;
+        String leaseFileString = installRoot + File.separator + "usr" +
+                                 File.separator + "shared" +
+                                 File.separator + "leases" +
+                                 File.separator + "defaultGroup" +
+                                 File.separator + recoveryId;
 
         Log.info(this.getClass(), method, "lease file to lock is: " + leaseFileString);
         final File leaseFile = new File(leaseFileString);

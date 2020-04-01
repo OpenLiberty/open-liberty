@@ -79,7 +79,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 
         cd open-liberty/dev
         ./gradlew cnf:initialize
-        ./gradlew assemble`
+        ./gradlew assemble
     
 3. Run the unit or FAT tests.
 

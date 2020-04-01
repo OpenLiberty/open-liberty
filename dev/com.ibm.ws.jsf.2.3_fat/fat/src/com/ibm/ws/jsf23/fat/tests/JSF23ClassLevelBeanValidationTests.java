@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,52 +79,53 @@ public class JSF23ClassLevelBeanValidationTests {
     @Test
     public void testValidateWholeBeanSerialized() throws Exception {
         String contextRoot = "ClassLevelBeanValidation";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanSerialized.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanSerialized.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        //Enter passwords that do not match in each input text
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testUnMatched");
+            //Enter passwords that do not match in each input text
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testUnMatched");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //There should be a validation failure message displayed on the page because the two password fields did not match.
-        assertTrue("The class-level bean validate failed, password mismatch message not displayed.", page.asText().contains("Password fields must match"));
+            //There should be a validation failure message displayed on the page because the two password fields did not match.
+            assertTrue("The class-level bean validate failed, password mismatch message not displayed.", page.asText().contains("Password fields must match"));
 
-        //Enter matching passwords in each input text
-        password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            //Enter matching passwords in each input text
+            password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testPassword");
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testPassword");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
-        assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
-        assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
-                    page.asText().contains("Password fields must match"));
+            //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
+            assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
+            assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
+                        page.asText().contains("Password fields must match"));
+        }
     }
 
     /**
@@ -139,52 +140,53 @@ public class JSF23ClassLevelBeanValidationTests {
     @Test
     public void testValidateWholeBeanCloneable() throws Exception {
         String contextRoot = "ClassLevelBeanValidation";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCloneable.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCloneable.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        //Enter passwords that do not match in each input text
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testUnMatched");
+            //Enter passwords that do not match in each input text
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testUnMatched");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //There should be a validation failure message displayed on the page because the two password fields did not match.
-        assertTrue("The class-level bean validate failed, password mismatch message not displayed.", page.asText().contains("Password fields must match"));
+            //There should be a validation failure message displayed on the page because the two password fields did not match.
+            assertTrue("The class-level bean validate failed, password mismatch message not displayed.", page.asText().contains("Password fields must match"));
 
-        //Enter matching passwords in each input text
-        password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            //Enter matching passwords in each input text
+            password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testPassword");
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testPassword");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
-        assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
-        assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
-                    page.asText().contains("Password fields must match"));
+            //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
+            assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
+            assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
+                        page.asText().contains("Password fields must match"));
+        }
     }
 
     /**
@@ -199,52 +201,53 @@ public class JSF23ClassLevelBeanValidationTests {
     @Test
     public void testValidateWholeBeanCopyConstructor() throws Exception {
         String contextRoot = "ClassLevelBeanValidation";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCopyConstructor.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCopyConstructor.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        //Enter passwords that do not match in each input text
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testUnMatched");
+            //Enter passwords that do not match in each input text
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testUnMatched");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //There should be a validation failure message displayed on the page because the two password fields did not match.
-        assertTrue("The class-level bean validate failed, password mismatch message not displayed.", page.asText().contains("Password fields must match"));
+            //There should be a validation failure message displayed on the page because the two password fields did not match.
+            assertTrue("The class-level bean validate failed, password mismatch message not displayed.", page.asText().contains("Password fields must match"));
 
-        //Enter matching passwords in each input text
-        password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            //Enter matching passwords in each input text
+            password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testPassword");
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testPassword");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
-        assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
-        assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
-                    page.asText().contains("Password fields must match"));
+            //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
+            assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
+            assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
+                        page.asText().contains("Password fields must match"));
+        }
     }
 
     /**
@@ -263,69 +266,70 @@ public class JSF23ClassLevelBeanValidationTests {
     @Test
     public void testValidateWholeBeanIllegalAccess() throws Exception {
         String contextRoot = "ClassLevelBeanValidation";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanIllegalAccess.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanIllegalAccess.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        //Enter passwords that do not match in each input text
-        password1Input.setValueAttribute("2short");
-        password2Input.setValueAttribute("testpassword");
+            //Enter passwords that do not match in each input text
+            password1Input.setValueAttribute("2short");
+            password2Input.setValueAttribute("testpassword");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //There should be a validation failure message displayed on the page because the two password fields did not match.
-        assertTrue("The field-level validation did not display the 'form1:password1: Password must be between 8 and 16 characters long' message.",
-                   page.asText().contains("form1:password1: Password must be between 8 and 16 characters long"));
+            //There should be a validation failure message displayed on the page because the two password fields did not match.
+            assertTrue("The field-level validation did not display the 'form1:password1: Password must be between 8 and 16 characters long' message.",
+                       page.asText().contains("form1:password1: Password must be between 8 and 16 characters long"));
 
-        //Enter matching passwords in each input text
-        password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            //Enter matching passwords in each input text
+            password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testPassword");
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testPassword");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
-        assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
-        assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
-                    page.asText().contains("Password fields must match"));
+            //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
+            assertTrue("The class-level bean validate failed, password not displayed.", page.asText().contains("password1: testPassword"));
+            assertFalse("The class-level bean validate failed, The validation message regarding mismatched passwords is displayed.",
+                        page.asText().contains("Password fields must match"));
 
-        /*
-         * check the trace file to make sure the IllegalAcessException was logged.
-         *
-         * Need to use a regular expression because different JDKs format this differently:
-         *
-         * Class java.lang.IllegalAccessException: Class org.apache.myfaces.component.validate.WholeBeanValidator can not access a member of class
-         * com.ibm.ws.jsf23.fat.beans.TestPasswordBeanIllegalAccess with modifiers "private"
-         *
-         * Class java.lang.IllegalAccessException: Class org/apache/myfaces/component/validate/WholeBeanValidator illegally accessing "private" member of class
-         * com/ibm/ws/jsf23/fat/beans/TestPasswordBeanIllegalAccess
-         */
+            /*
+             * check the trace file to make sure the IllegalAcessException was logged.
+             *
+             * Need to use a regular expression because different JDKs format this differently:
+             *
+             * Class java.lang.IllegalAccessException: Class org.apache.myfaces.component.validate.WholeBeanValidator can not access a member of class
+             * com.ibm.ws.jsf23.fat.beans.TestPasswordBeanIllegalAccess with modifiers "private"
+             *
+             * Class java.lang.IllegalAccessException: Class org/apache/myfaces/component/validate/WholeBeanValidator illegally accessing "private" member of class
+             * com/ibm/ws/jsf23/fat/beans/TestPasswordBeanIllegalAccess
+             */
 
-        String illegalAccessException = jsf23CDIBVServer
-                        .waitForStringInTraceUsingLastOffset("java.lang.IllegalAccessException:.*WholeBeanValidator.*TestPasswordBeanIllegalAccess.*");
-        assertTrue("The IllegalAccessException was not logged in the trace file.", illegalAccessException != null);
+            String illegalAccessException = jsf23CDIBVServer
+                            .waitForStringInTraceUsingLastOffset("java.lang.IllegalAccessException:.*WholeBeanValidator.*TestPasswordBeanIllegalAccess.*");
+            assertTrue("The IllegalAccessException was not logged in the trace file.", illegalAccessException != null);
+        }
     }
 
     /**
@@ -341,37 +345,38 @@ public class JSF23ClassLevelBeanValidationTests {
     @ExpectedFFDC({ "javax.servlet.ServletException" })
     public void testValidateWholeBeanCopyFailure() throws Exception {
         String contextRoot = "ClassLevelBeanValidation";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Ensure the test does not fail due to the error condition we are creating
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        jsf23CDIBVServer.addIgnoredErrors(Arrays.asList("SRVE0777E.*"));
+            // Ensure the test does not fail due to the error condition we are creating
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            jsf23CDIBVServer.addIgnoredErrors(Arrays.asList("SRVE0777E.*"));
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCopyFailure.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCopyFailure.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        password1Input.setValueAttribute("testPassword");
-        password2Input.setValueAttribute("testPassword");
+            password1Input.setValueAttribute("testPassword");
+            password2Input.setValueAttribute("testPassword");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
-        assertTrue("The FacesException was not displayed.",
-                   page.asText().contains("Cannot create copy for wholeBeanValidator:"));
+            //if the validation code works properly the password will be displayed on the page and the previous validation message will be gone
+            assertTrue("The FacesException was not displayed.",
+                       page.asText().contains("Cannot create copy for wholeBeanValidator:"));
+        }
     }
 
     /**
@@ -384,35 +389,36 @@ public class JSF23ClassLevelBeanValidationTests {
     @Test
     public void testValidateWholeBeanDisabled() throws Exception {
         String contextRoot = "ClassLevelBeanValidation";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanDisabled.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanDisabled.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
-        HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
+            HtmlTextInput password1Input = (HtmlTextInput) page.getElementById("form1:password1");
+            HtmlTextInput password2Input = (HtmlTextInput) page.getElementById("form1:password2");
 
-        //put two different passwords to test that the validateWholeBean does not validate that they do not match.
-        password1Input.setValueAttribute("testPassword1");
-        password2Input.setValueAttribute("testPassword2");
+            //put two different passwords to test that the validateWholeBean does not validate that they do not match.
+            password1Input.setValueAttribute("testPassword1");
+            password2Input.setValueAttribute("testPassword2");
 
-        // click the submit button to call the validateWholeBean
-        page = page.getElementById("form1:button1").click();
+            // click the submit button to call the validateWholeBean
+            page = page.getElementById("form1:button1").click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the test works properly, the class level validation will not be performed, therefore allowing for two different passwords in the text boxes.
-        //We will check that the password from the first text box is displayed, which means the validation didn't occur.
-        assertTrue("The password was not displayed.", page.asText().contains("password1: testPassword1"));
-        assertFalse("The class-level bean validate was called, The validation message regarding mismatched passwords is displayed when it should not have.",
-                    page.asText().contains("Password fields must match"));
+            //if the test works properly, the class level validation will not be performed, therefore allowing for two different passwords in the text boxes.
+            //We will check that the password from the first text box is displayed, which means the validation didn't occur.
+            assertTrue("The password was not displayed.", page.asText().contains("password1: testPassword1"));
+            assertFalse("The class-level bean validate was called, The validation message regarding mismatched passwords is displayed when it should not have.",
+                        page.asText().contains("Password fields must match"));
+        }
     }
 }

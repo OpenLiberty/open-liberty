@@ -40,7 +40,7 @@ public class AbstractReceptionBean<T> {
         return CompletableFuture.completedFuture(null);
     }
 
-    public List<Message<T>> getReceivedMessages(int count, Duration timeout) throws InterruptedException {
+    public List<Message<T>> assertReceivedMessages(int count, Duration timeout) throws InterruptedException {
         ArrayList<Message<T>> result = new ArrayList<>();
         Duration remaining = timeout;
         long startTime = System.nanoTime();

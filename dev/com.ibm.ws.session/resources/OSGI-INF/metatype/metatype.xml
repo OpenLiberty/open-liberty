@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2013 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -111,6 +111,16 @@
             description="%cookie.http.only.desc" 
             ibmui:group="cookies"
             required="false" type="Boolean" default="true" /> 
+
+        <AD id="cookieSameSite"
+            name="%cookie.same.site"
+            description="%cookie.same.site.desc"
+            required="false" type="String" default="Disabled">
+            <Option label="%cookie.same.site.disabled" value="Disabled"/>
+            <Option label="%cookie.same.site.lax" value="Lax"/>
+            <Option label="%cookie.same.site.none" value="None"/>
+            <Option label="%cookie.same.site.strict" value="Strict"/>
+        </AD>
             
         <!-- ibmui:group=url.rewriting -->
         <AD id="rewriteId" 

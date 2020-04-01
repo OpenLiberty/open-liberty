@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,28 +72,28 @@ public class JSF23IterableSupportTests {
     @Test
     public void testUIRepeatIterableSupport() throws Exception {
         String contextRoot = "IterableSupport";
-        WebClient webClient = new WebClient();
-        String value;
+        try (WebClient webClient = new WebClient()) {
+            String value;
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "uiRepeatSupportForIterable.jsf");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "uiRepeatSupportForIterable.jsf");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testPage.asText());
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testPage.asText());
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Ensure the first value returned by the Iterable's iterator is correct.
-        value = testPage.getElementById("repeat:0:iterableValue").getTextContent();
+            // Ensure the first value returned by the Iterable's iterator is correct.
+            value = testPage.getElementById("repeat:0:iterableValue").getTextContent();
 
-        assertTrue("The first value returned by the Iterable's iterator was incorrect.", value.equals("5"));
+            assertTrue("The first value returned by the Iterable's iterator was incorrect.", value.equals("5"));
 
-        // Ensure the second value returned by the Iterable's iterator is correct.
-        value = testPage.getElementById("repeat:1:iterableValue").getTextContent();
+            // Ensure the second value returned by the Iterable's iterator is correct.
+            value = testPage.getElementById("repeat:1:iterableValue").getTextContent();
 
-        assertTrue("The second value returned by the Iterable's iterator was incorrect.", value.equals("6"));
-
+            assertTrue("The second value returned by the Iterable's iterator was incorrect.", value.equals("6"));
+        }
     }
 
     /**
@@ -104,28 +104,27 @@ public class JSF23IterableSupportTests {
     @Test
     public void testUIDataIterableSupport() throws Exception {
         String contextRoot = "IterableSupport";
-        WebClient webClient = new WebClient();
-        String value;
+        try (WebClient webClient = new WebClient()) {
+            String value;
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "uiDataSupportForIterable.jsf");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "uiDataSupportForIterable.jsf");
 
-        HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testPage.asText());
-        Log.info(c, name.getMethodName(), testPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testPage.asText());
+            Log.info(c, name.getMethodName(), testPage.asXml());
 
-        // Ensure the first value returned by the Iterable's iterator is correct.
-        value = testPage.getElementById("table:0:iterableValue").getTextContent();
+            // Ensure the first value returned by the Iterable's iterator is correct.
+            value = testPage.getElementById("table:0:iterableValue").getTextContent();
 
-        assertTrue("The first value returned by the Iterable's iterator was incorrect.", value.equals("5"));
+            assertTrue("The first value returned by the Iterable's iterator was incorrect.", value.equals("5"));
 
-        // Ensure the second value returned by the Iterable's iterator is correct.
-        value = testPage.getElementById("table:1:iterableValue").getTextContent();
+            // Ensure the second value returned by the Iterable's iterator is correct.
+            value = testPage.getElementById("table:1:iterableValue").getTextContent();
 
-        assertTrue("The second value returned by the Iterable's iterator was incorrect.", value.equals("6"));
-
+            assertTrue("The second value returned by the Iterable's iterator was incorrect.", value.equals("6"));
+        }
     }
-
 }

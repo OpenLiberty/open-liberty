@@ -26,6 +26,8 @@ public class LoggerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Hello, this is just a SystemOut message!");
+        System.err.println("Bye, this is just a SystemErr message!");
         response.getWriter().println("Hello world!");
         // Use severe, which is higher than AUDIT, to ensure this message would
         // normally show up in console.log if output wasn't disabled.

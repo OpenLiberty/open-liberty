@@ -54,7 +54,8 @@ com.ibm.ws.security.social.internal.GoogleLoginConfigImpl,\
 com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl,\
 com.ibm.ws.security.social.internal.TwitterLoginConfigImpl, \
 com.ibm.ws.security.social.internal.SocialLoginWebappConfigImpl, \
-com.ibm.ws.security.social.internal.OidcLoginConfigImpl
+com.ibm.ws.security.social.internal.OidcLoginConfigImpl, \
+com.ibm.ws.security.social.internal.OkdServiceLoginImpl
 
 -dsannotations-inherit = true
 
@@ -167,4 +168,5 @@ Include-Resource: \
     com.ibm.ws.kernel.boot.logging;version=latest, \
     com.ibm.ws.kernel.security.thread;version=latest, \
     com.ibm.ws.kernel.boot.core;version=latest, \
+    com.ibm.ws.container.service.compat;version=latest, \
     com.ibm.ws.kernel.boot;version=latest

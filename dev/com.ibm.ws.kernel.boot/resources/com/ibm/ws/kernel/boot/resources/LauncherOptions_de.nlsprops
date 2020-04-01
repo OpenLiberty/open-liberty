@@ -124,8 +124,9 @@ action-desc.resume=\tAusf\u00fchrung aller angehaltenen Komponenten im Server \n
 \tfortgesetzt werden soll.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tAlle zwischengespeicherten Informationen bereinigen, \n\
+option-desc.start.clean=\tAlle zwischengespeicherten Informationen bereinigen, \n\
 \tdie sich auf diese Serverinstanz beziehen.
+
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="Pfad zur Zielarchivdatei"
 option-desc.dump.archive=\tGeben Sie das durch die Speicherauszugsaktion zu generierende Archivierungsziel an.\n\
@@ -187,3 +188,15 @@ option-desc.no-password=\tInaktiviert die Generierung des Standard-Keystore-Kenn
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="Serverstammordner im Archiv"
 option-desc.package.server-root=\tGibt den Namen des Serverstammordners in der Archivdatei an.\n
+#------------------------------\n\
+\ at 72 chars -- leading tab-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\t\u00dcberspringt die Quiescephase, bevor der Server heruntergefahren wird. Der normale\n\
+\tServerstopp beinhaltet eine Quiescephase, bevor der Server heruntergefahren wird. Die Quiescephase,\n\
+\teine Zeit von 30 Sekunden, erm\u00f6glicht Services, Arbeiten vorab zu beenden, z. B. eingehende\n\
+\tListener werden gestoppt, w\u00e4hrend vorhandene Anforderungen noch ausgef\u00fchrt werden \n\
+\td\u00fcrfen. Die Option --force option wirkt sich nicht aus, wenn der Serverstopp bereits \n\
+\taufgerufen wurde. Wenn Sie die Option --force verwenden, werden m\u00f6glicherweise nicht \n\
+\terwartete Ausnahmen in der Datei messages.log angezeigt, die nach dem Empfang des Befehls \n\
+\tzum Stoppen des Servers vom Server empfangen wurden.

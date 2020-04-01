@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,47 +67,47 @@ public class JSF22ThirdPartyApiTests {
 
     /**
      * Test that an application with the "third-party" classloader visibility enabled has access to the jsf-2.3 org.apache.myfaces packages.
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testJSFThirdPartyAPIAccess() throws Exception {
         String contextRoot = "JSF22ThirdPartyApi";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf22ThirdPartyApiServer, contextRoot, "JSF22ThirdPartyAPI.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf22ThirdPartyApiServer, contextRoot, "JSF22ThirdPartyAPI.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The MyFaces API classes were not accessible by the application:\n" + page.asText(), page.asXml().contains("test passed!"));
-        webClient.close();
+            assertTrue("The MyFaces API classes were not accessible by the application:\n" + page.asText(), page.asXml().contains("test passed!"));
+        }
     }
 
     /**
      * Test that the same app cannot access those org.apache.myfaces packages which have not been exposed
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testJSFThirdPartyAPIAccessFails() throws Exception {
         String contextRoot = "JSF22ThirdPartyApi";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf22ThirdPartyApiServer, contextRoot, "JSF22ThirdPartyAPIFailure.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf22ThirdPartyApiServer, contextRoot, "JSF22ThirdPartyAPIFailure.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("org.apache.myfaces classes were accessible when they should not have been:\n" + page.asText(), page.asXml().contains("test passed!"));
-        webClient.close();
+            assertTrue("org.apache.myfaces classes were accessible when they should not have been:\n" + page.asText(), page.asXml().contains("test passed!"));
+        }
     }
 }

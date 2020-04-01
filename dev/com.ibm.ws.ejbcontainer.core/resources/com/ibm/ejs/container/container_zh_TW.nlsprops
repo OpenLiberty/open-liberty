@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1552,12 +1552,29 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=\u7576\u6a21\u7d44\u5305\u88dd\u5728 
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=\u8acb\u5728\u61c9\u7528\u7a0b\u5f0f\u4e2d\u53d6\u6d88\u4f7f\u7528\u4e0d\u652f\u63f4\u7684 Entity Enterprise Bean\uff0c\u6216\u8005\u5c07\u8a72 Bean \u5305\u88dd\u5728\u7b2c 6 \u7248\u6216\u66f4\u820a\u7248\u672c\u61c9\u7528\u7a0b\u5f0f\u4e2d\u3002
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\u7684 {1} Bean \u7684 {0} \u4ecb\u9762\u7121\u6cd5\u9023\u7d50\u81f3 {4} \u540d\u7a31\u4f4d\u7f6e\u3002{8} \u61c9\u7528\u7a0b\u5f0f\u7684 {7} \u6a21\u7d44\u4e2d\u7684 {6} Bean \u7684 {5} \u4ecb\u9762\u5df2\u9023\u7d50\u81f3 {4} \u540d\u7a31\u4f4d\u7f6e\u3002\
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: \u5728 {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\uff0c{1} Bean \u7684 {0} \u4ecb\u9762\u7121\u6cd5\u9023\u7d50\u81f3 {4} \u540d\u7a31\u4f4d\u7f6e\u3002{8} \u61c9\u7528\u7a0b\u5f0f\u7684 {7} \u6a21\u7d44\u4e2d\u7684 {6} Bean \u7684 {5} \u4ecb\u9762\u5df2\u9023\u7d50\u81f3 {4} \u540d\u7a31\u4f4d\u7f6e\u3002\
 {4} \u540d\u7a31\u4f4d\u7f6e\u7121\u6cd5\u5b58\u53d6\u3002
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=\u6bcf\u4e00\u500b Enterprise Bean \u4ecb\u9762\u90fd\u5fc5\u9808\u6307\u5b9a\u552f\u4e00\u7684\u9023\u7d50\u4f4d\u7f6e\u3002
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=\u8acb\u66f4\u6b63\u4e0a\u8ff0\u5169\u500b Bean \u4ecb\u9762\u4e4b\u4e00\u7684\u9023\u7d50\u6a94\uff0c\u8b93\u6bcf\u4e00\u500b\u4ecb\u9762\u7684\u9023\u7d50\u4f4d\u7f6e\u90fd\u662f\u552f\u4e00\u7684\u3002
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=\u6bcf\u4e00\u500b Enterprise Bean \u4ecb\u9762\u90fd\u5fc5\u9808\u6307\u5b9a\u552f\u4e00\u7684\u9023\u7d50\u4f4d\u7f6e\u3002
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=\u8acb\u66f4\u6b63\u4e0a\u8ff0\u5169\u500b Bean \u4ecb\u9762\u4e4b\u4e00\u7684\u9023\u7d50\u6a94\uff0c\u8b93\u6bcf\u4e00\u500b\u4ecb\u9762\u7684\u9023\u7d50\u4f4d\u7f6e\u90fd\u662f\u552f\u4e00\u7684\u3002
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: {0} Bean \u7684 {2} Java \u547d\u540d\u548c\u76ee\u9304\u4ecb\u9762 (JNDI) \u9023\u7d50\u540d\u7a31\u6216\u8005 {1} \u6a21\u7d44\u4e2d\u7684 Home \u4ecb\u9762\u5305\u542b\u540d\u7a31\u7a7a\u9593\u3002
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=JNDI \u9023\u7d50\u540d\u7a31\u4e0d\u5f97\u5305\u542b\u5192\u865f (:) \u5b57\u5143\uff0c\u8a72\u5b57\u5143\u8868\u793a\u4e00\u500b\u540d\u7a31\u7a7a\u9593\u3002\u5192\u865f (:) \u5b57\u5143\u4e4b\u524d\u7684\u6574\u500b\u5b57\u4e32\uff08\u5305\u62ec\u8a72\u5192\u865f\u5b57\u5143\uff09\u90fd\u5c07\u8996\u70ba\u4e00\u500b\u540d\u7a31\u7a7a\u9593\u3002
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=\u900f\u904e\u79fb\u9664\u540d\u7a31\u7a7a\u9593\uff0c\u4f86\u66f4\u6b63 ibm-ejb-jar-bnd.xml \u9023\u7d50\u6a94\uff0c\u4ee5\u63d0\u4f9b\u6709\u6548\u7684 JNDI \u9023\u7d50\u540d\u7a31\u7d66\u9019\u500b Bean\u3002
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: {0} Bean \u7684 {2} Java \u547d\u540d\u548c\u76ee\u9304\u4ecb\u9762 (JNDI) \u9023\u7d50\u540d\u7a31\u6216\u8005 {1} \u6a21\u7d44\u4e2d\u7684\u672c\u7aef Home \u4ecb\u9762\u5305\u542b\u7121\u6548\u7684\u540d\u7a31\u7a7a\u9593\u3002
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=\u672c\u7aef\u9023\u7d50\u540d\u7a31\u53ea\u80fd\u5305\u542b\u4e00\u500b\u540d\u7a31\u7a7a\u9593\uff0c\u4e14\u5fc5\u9808\u4ee5 ejblocal: \u958b\u982d\u3002\u540d\u7a31\u7a7a\u9593\u7531\u5192\u865f (:) \u5b57\u5143\u8868\u793a\u3002\u5192\u865f (:) \u5b57\u5143\u4e4b\u524d\u7684\u6574\u500b\u5b57\u4e32\uff08\u5305\u62ec\u8a72\u5192\u865f\u5b57\u5143\uff09\u90fd\u5c07\u8996\u70ba\u4e00\u500b\u540d\u7a31\u7a7a\u9593\u3002
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=\u900f\u904e\u79fb\u9664\u7121\u6548\u7684\u540d\u7a31\u7a7a\u9593\uff0c\u4f86\u66f4\u6b63 ibm-ejb-jar-bnd.xml \u9023\u7d50\u6a94\uff0c\u4ee5\u63d0\u4f9b\u6709\u6548\u7684 JNDI \u9023\u7d50\u540d\u7a31\u7d66\u9019\u500b Bean\u3002
 
 #-------------------------------------------------------------------------------
 #

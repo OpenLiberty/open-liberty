@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
     protected static final String DIRECT_BUFFS = "allocateBuffersDirect";
     protected static final String ACCEPT_THREAD = "acceptThread";
     protected static final String WAIT_TO_ACCEPT = "waitToAccept";
+    protected static final String PORT_OPEN_RETRIES = "portOpenRetries";
     protected static final String COMM_OPTION = "commOption";
     protected static final String DUMP_STATS_INTERVAL = "dumpStatsInterval";
     protected static final String GROUPNAME = "workGroup";
@@ -64,6 +65,9 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
     // msec
     // in
     // code.
+
+    private int portOpenRetries = 0;
+
     private String addressExcludeList[] = null;
     private String hostNameExcludeList[] = null;
     private String addressIncludeList[] = null;
@@ -320,6 +324,16 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         continue;
                     }
 
+                    if (key.equalsIgnoreCase(PORT_OPEN_RETRIES)) {
+                        // convert and check
+                        keyType = ValidateUtils.KEY_TYPE_INT;
+                        minValue = ValidateUtils.PORT_OPEN_RETRIES_MIN;
+                        maxValue = ValidateUtils.PORT_OPEN_RETRIES_MAX;
+                        this.portOpenRetries = convertIntegerValue(value);
+                        result = ValidateUtils.testPortOpenRetries(this.portOpenRetries);
+                        continue;
+                    }
+
                     if (key.equalsIgnoreCase(TCPConfigConstants.LISTENING_PORT)) {
                         // just ignore this
                         continue;
@@ -357,6 +371,12 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     }
 
                     if (key.equalsIgnoreCase(ACCEPT_THREAD)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(PORT_OPEN_RETRIES)) {
                         //This is a valid configuration option but outbound channels do not use it
                         //Adding this prevents a message from being output saying it's invalid
                         continue;
@@ -682,6 +702,16 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         keyType = ValidateUtils.KEY_TYPE_STRING;
                         strOldValue = this.endPointName;
                         if (!(((String) value).equals(strOldValue))) {
+                            result = ValidateUtils.VALIDATE_NOT_EQUAL;
+                        }
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(PORT_OPEN_RETRIES)) {
+                        // convert and check
+                        keyType = ValidateUtils.KEY_TYPE_INT;
+                        oldValue = this.portOpenRetries;
+                        if (convertIntegerValue(value) != oldValue) {
                             result = ValidateUtils.VALIDATE_NOT_EQUAL;
                         }
                         continue;
@@ -1083,6 +1113,15 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
         return (this.commOption == COMM_OPTION_FORCE_NIO);
     }
 
+    /**
+     * Get the port open retries property.
+     *
+     * @return int
+     */
+    protected int getPortOpenRetries() {
+        return this.portOpenRetries;
+    }
+
     protected void outputConfigToTrace() {
         Tr.debug(tc, "Config parameters for TCP Channel: " + getChannelData().getExternalName());
         if (isInbound()) {
@@ -1096,6 +1135,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
             Tr.debug(tc, NAME_INC_LIST + ": " + debugStringArray(getHostNameIncludeList()));
             Tr.debug(tc, BACKLOG + ": " + getListenBacklog());
             Tr.debug(tc, NEW_BUFF_SIZE + ": " + getNewConnectionBufferSize());
+            Tr.debug(tc, PORT_OPEN_RETRIES + ": " + getPortOpenRetries());
             Tr.debug(tc, CASE_INSENSITIVE_HOSTNAMES + ": " + getCaseInsensitiveHostnames());
         } else {
             // outbound specific values
@@ -1126,6 +1166,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
             output.add(NAME_INC_LIST + "=" + debugStringArray(this.hostNameIncludeList));
             output.add(BACKLOG + "=" + this.listenBacklog);
             output.add(NEW_BUFF_SIZE + "=" + this.newConnectionBufferSize);
+            output.add(PORT_OPEN_RETRIES + "=" + this.portOpenRetries);
         } else {
             // outbound
         }

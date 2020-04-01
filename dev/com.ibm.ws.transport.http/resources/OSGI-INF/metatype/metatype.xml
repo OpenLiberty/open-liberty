@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2019 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -98,7 +98,11 @@
             
         <AD id="compressionRef" name="%endpoint.compression" description="%endpoint.compression.desc" ibm:beta="true" 
         	ibm:reference="com.ibm.ws.http.compression" ibm:type="pid"
-        	type="String" required="false" default="defaultCompression" />    
+        	type="String" required="false" default="defaultCompression" />
+        	
+        <AD id="samesiteRef" name="%endpoint.samesite" description="%endpoint.samesite.desc"
+        	ibm:reference="com.ibm.ws.http.samesite" ibm:type="pid"
+        	type="String" required="false" default="defaultSameSite" />    
 
          <!--  n.b.  In these filters, the final e.g. (id=defaultHttpOptions) clause is needed to assure that when the explicitly matched service is removed,
          httpEndpoint falls back to the default immediately _before_ the target filter is changed to the updated one pointing to the default.  Without this clause,
@@ -114,6 +118,10 @@
        <AD id="compression.target" name="internal" description="internal use only"
 			ibm:final="true" required="false" type = "String"
 			default="(|(service.pid=${compressionRef})(&amp;(service.factoryPid=com.ibm.ws.http.compression)(|(id=com.ibm.ws.http-${id}/*)(id=defaultCompression))))" />
+    
+    	<AD id="samesite.target" name="internal" description="internal use only"
+			ibm:final="true" required="false" type = "String"
+			default="(|(service.pid=${samesiteRef})(&amp;(service.factoryPid=com.ibm.ws.http.samesite)(|(id=com.ibm.ws.http-${id}/*)(id=defaultSameSite))))" />
     
         <AD id="sslOptionsRef" name="%endpoint.sslOptions" description="%endpoint.sslOptions.desc"
             ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid"
@@ -189,7 +197,13 @@
             id="incomingBodyBufferSize" required="false" type="Integer" min="1024" max="1048576" default="32768" />
             
         <AD name="%http.throwIOEForInboundConnections" description="%http.throwIOEForInboundConnections.desc"
-            id="ThrowIOEForInboundConnections" required="false" type="Boolean"/>   
+            id="ThrowIOEForInboundConnections" required="false" type="Boolean"/> 
+            
+        <AD name="%http.decompressionRatioLimit" description="%http.decompressionRatioLimit.desc"
+			id="decompressionRatioLimit" required="false" type="Integer" min="1" default="200" />
+
+		<AD name="%http.decompressionTolerance" description="%http.decompressionTolerance.desc"
+			id="decompressionTolerance" required="false" type="Integer" min="0" default="3" />	  
             
         <AD name="%http2.connectionIdleTimeout" description="%http2.connectionIdleTimeout.desc"
 			id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
@@ -251,6 +265,28 @@
 
     <Designate factoryPid="com.ibm.ws.http.compression">
     	<Object ocdref="com.ibm.ws.http.compression"/>
+    </Designate>
+    
+    <OCD name="%http.samesite" description="%http.samesite.desc"
+    	id="com.ibm.ws.http.samesite"
+    	ibm:alias="samesite">
+    	
+    	<AD name="%http.samesite.lax" description="%http.samesite.lax.desc"
+		id="lax" required="false" type="String" cardinality="5000"/>
+    	
+    	<AD name="%http.samesite.none" description="%http.samesite.none.desc"
+		id="none" required="false" type="String" cardinality="5000"/> 
+		
+		<AD name="%http.samesite.strict" description="%http.samesite.strict.desc"
+		id="strict" required="false" type="String" cardinality="5000"/>
+
+    	<AD name="internal" description="internal use only"
+    		id="service.ranking" required="false" type="Integer" default="0"/>
+
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.http.samesite">
+    	<Object ocdref="com.ibm.ws.http.samesite"/>
     </Designate>
             
     <OCD name="%http.dispatcher" description="%http.dispatcher.desc" 

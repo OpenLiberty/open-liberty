@@ -17,14 +17,17 @@ import static org.junit.Assert.assertNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
+@RunWith(FATRunner.class)
 public class FATTestIgnoreCase {
     private static final String DEFAULT_CONFIG_FILE = "basic.ignore.server.xml.orig";
     private static final String ALTERNATE_BASIC_REGISTRY_CONFIG_IGNORE_CASE_TRUE = "alternateIgnoreCaseTrueBasicRegistry.xml";

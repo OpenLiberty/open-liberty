@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.tcpchannel.internal;
 
 import java.io.IOException;
+import java.io.EOFException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.AccessController;
@@ -696,8 +697,11 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
                 } catch (Exception x) {
                     // do not alter the message if the socket got nuked while we tried to look at it
                 }
-                ioe = new IOException(s);
-
+                if (-1==req.getLastIOAmt()) {
+                  ioe = new EOFException(s);
+                } else {
+                  ioe = new IOException(s);
+                }
             } else {
                 // Add local and remote address information
                 String s = "Connection closed: Write failed.";

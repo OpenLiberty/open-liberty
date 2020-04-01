@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: Certificate Creator 2.0
+Bundle-SymbolicName: com.ibm.ws.crypto.certificate.creator.acme
+Bundle-Description: ACME 2.0 Certificate Creator; version=${bVersion}
+
+-dsannotations: \
+    com.ibm.ws.crypto.certificate.creator.acme.AcmeSSLCertificateCreator
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.crypto.certificateutil;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.logging.core;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.security.acme;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest	
+	

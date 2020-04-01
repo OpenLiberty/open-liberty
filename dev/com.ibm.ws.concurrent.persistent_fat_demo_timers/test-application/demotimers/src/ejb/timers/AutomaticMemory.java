@@ -15,14 +15,14 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.ejb.Timer;
 
 /**
  * This class uses the @Schedule annotation.
  * Using this annotation will start the timer immediately on start and will run every other second.
  */
-@Singleton
+@Stateless
 public class AutomaticMemory {
     @Resource
     private SessionContext sessionContext; //Used to get information about timer

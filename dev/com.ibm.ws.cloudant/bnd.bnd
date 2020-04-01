@@ -5,10 +5,7 @@ Bundle-Name: Cloudant
 Bundle-SymbolicName: com.ibm.ws.cloudant
 Bundle-Description: Allow applications to access Cloudant client APIs as a feature; version=${bVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: cloudant
 

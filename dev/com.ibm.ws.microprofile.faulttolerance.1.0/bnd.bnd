@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.faulttolerance.1.0
 Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.1.0
@@ -32,7 +30,6 @@ Import-Package: \
 
 Private-Package: com.ibm.ws.microprofile.faulttolerance.executor.impl.*
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 testsrc: test/src

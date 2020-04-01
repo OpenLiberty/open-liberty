@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1553,11 +1553,28 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Los enterprise beans de entidad decla
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Suprima de la aplicaci\u00f3n la utilizaci\u00f3n del enterprise bean de entidad no soportado o empaquete el bean en una aplicaci\u00f3n de la versi\u00f3n 6 o m\u00e1s antigua.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: La interfaz {0} del bean {1} en el m\u00f3dulo {2} de la aplicaci\u00f3n {3} no se puede enlazar a la ubicaci\u00f3n de nombre {4}. La interfaz {5} del bean {6} en el m\u00f3dulo {7} de la aplicaci\u00f3n {8} ya est\u00e1 enlazada a la ubicaci\u00f3n de nombre {4}. La ubicaci\u00f3n de nombre {4} no es accesible.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Cada interfaz de enterprise bean debe especificar una ubicaci\u00f3n de enlace \u00fanica.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corrija el archivo de enlace de una de estas dos interfaces de bean de forma que cada interfaz tenga una ubicaci\u00f3n de enlace \u00fanica.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: La interfaz {0} del bean {1} en el m\u00f3dulo {2} de la aplicaci\u00f3n {3} no se puede enlazar a la ubicaci\u00f3n de nombre {4}. La interfaz {5} del bean {6} en el m\u00f3dulo {7} de la aplicaci\u00f3n {8} ya est\u00e1 enlazada a la ubicaci\u00f3n de nombre {4}. La ubicaci\u00f3n de nombre {4} no es accesible.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Cada interfaz de enterprise bean debe especificar una ubicaci\u00f3n de enlace \u00fanica.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corrija el archivo de enlace de una de estas dos interfaces de bean de forma que cada interfaz tenga una ubicaci\u00f3n de enlace \u00fanica.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E=CNTR0339E: El nombre de enlace de JNDI (Java Naming and Directory Interface) {2} para el bean {0} o interfaz inicial en el m\u00f3dulo {1} contiene un espacio de nombres.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.explanation=Los nombres de enlace JNDI no deben contener el car\u00e1cter de dos puntos (:), que indica un espacio de nombres. La serie entera anterior e incluyendo el car\u00e1cter de dos puntos (:) se considera un espacio de nombres.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339E.useraction=Corrija el archivo de enlaces ibm-ejb-jar-bnd.xml para asignar a este bean un nombre de enlace JNDI v\u00e1lido eliminando el espacio de nombres.
+
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E=CNTR0340E: El nombre de enlace de JNDI (Java Naming and Directory Interface) {2} para el bean {0} o interfaz inicial local en el m\u00f3dulo {1} contiene un espacio de nombres que no es v\u00e1lido.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.explanation=El nombre de enlace local s\u00f3lo puede contener un espacio de nombres y debe empezar con ejblocal:. Los espacios de nombres se indican mediante el car\u00e1cter de dos puntos (:). La serie entera anterior e incluyendo el car\u00e1cter de dos puntos (:) se considera un espacio de nombres.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340E.useraction=Corrija el archivo de enlaces ibm-ejb-jar-bnd.xml para asignar a este bean un nombre de enlace JNDI v\u00e1lido eliminando el espacio de nombres que no es v\u00e1lido.
 
 #-------------------------------------------------------------------------------
 #

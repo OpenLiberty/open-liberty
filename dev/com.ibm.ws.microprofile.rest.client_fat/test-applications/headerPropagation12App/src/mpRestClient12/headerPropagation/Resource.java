@@ -93,6 +93,17 @@ public class Resource extends Application {
     }
 
     @GET
+    @Path("/cdiClientHeadersFactory")
+    public String cdiClientHeadersFactory() throws Exception {
+        LOG.info("cdiClientHeadersFactory()");
+        String baseUri = InAppConfigSource.getUriForClient(Client.class);
+        CdiClientHeadersFactoryClient c = RestClientBuilder.newBuilder()
+                                                           .baseUri(URI.create(baseUri))
+                                                           .build(CdiClientHeadersFactoryClient.class);
+        return c.normalMethod();
+    }
+
+    @GET
     @Path("normal")
     public String normalMethod() {
         LOG.info("normalMethod");

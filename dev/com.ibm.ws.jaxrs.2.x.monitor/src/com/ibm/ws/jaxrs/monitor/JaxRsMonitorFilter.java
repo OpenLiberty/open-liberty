@@ -36,21 +36,21 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 /**
  * Monitor Class for RESTful Resource Methods.
  */ 
-@Monitor(group = "RESTful")
+@Monitor(group = "REST")
 @Provider
 public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     @Context
     ResourceInfo resourceInfo;
     
-    // jaxRSCountByName is a MeterCollection that will hold the RESTfulStats MXBean for each RESTful
+    // jaxRSCountByName is a MeterCollection that will hold the RESTStats MXBean for each RESTful
     // resource method
     @PublishedMetric
-    public MeterCollection<RESTful_Stats> jaxRsCountByName = new MeterCollection<RESTful_Stats>("RESTful",this);
+    public MeterCollection<REST_Stats> jaxRsCountByName = new MeterCollection<REST_Stats>("REST",this);
     
     // appMetricInfos is a hashmap used to store information for runtime and cleanup at 
     // application stop time.
-    ConcurrentHashMap<String,RestfulMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestfulMetricInfo>();
+    ConcurrentHashMap<String,RestMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestMetricInfo>();
     
     private static final String START_TIME = "Start_Time";
 
@@ -82,7 +82,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      *            This method will be called whenever a response arrives from a
      *            RESTful resource method.
      *            It will calculate the cumulative response time for the resource
-     *            method and store the result in the RESTful_Stats MXBean.
+     *            method and store the result in the REST_Stats MXBean.
      * 
      */
 
@@ -104,9 +104,9 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
             Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
             int i = 0;
             String parameter;
-            String fullMethodName = resourceClass.getName() + "." + resourceMethod.getName() + "(";
+            String fullMethodName = resourceClass.getName() + "/" + resourceMethod.getName() + "(";
             for (Class<?> p : parameterClasses) {
-             	parameter = p.getName(); 
+             	parameter = p.getCanonicalName();
             	if (i > 0) {
             		fullMethodName = fullMethodName + "_" + parameter;
             	} else {
@@ -122,7 +122,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
             String keyPrefix = createKeyPrefix(appName,modName);
             String key = keyPrefix + "/" + fullMethodName; 
             
-            RESTful_Stats stats = jaxRsCountByName.get(key);
+            REST_Stats stats = jaxRsCountByName.get(key);
             if (stats == null) {
                  stats =initJaxRsStats(key, keyPrefix, fullMethodName);
             }
@@ -142,20 +142,20 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     /**
      * Method : initJaxRsStats()
      * 
-     * @param key = Key for the RESTful_Stats instance in the MeterCollection
+     * @param key = Key for the REST_Stats instance in the MeterCollection
      * @param keyPrefix = Application name / module name portion of the key
      * @param _method =  Resource Method Name
      * 
-     *            This method will create a RESTful_Stats object for current resource method.
+     *            This method will create a REST_Stats object for current resource method.
      *            This method needs to be synchronized.
      * 
      *            This method gets called only at first request.
      * 
      */
-    private synchronized RESTful_Stats initJaxRsStats(String key, String keyPrefix, String method) {
-       RESTful_Stats nStats = this.jaxRsCountByName.get(key);
+    private synchronized REST_Stats initJaxRsStats(String key, String keyPrefix, String method) {
+       REST_Stats nStats = this.jaxRsCountByName.get(key);
         if (nStats == null) {
-             nStats = new RESTful_Stats(keyPrefix, method);
+             nStats = new REST_Stats(keyPrefix, method);
             this.jaxRsCountByName.put(key, nStats);            
         }
         return nStats;
@@ -195,10 +195,10 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     }
     
     
-    protected RestfulMetricInfo getMetricInfo(String appName) {
-    	RestfulMetricInfo rMetricInfo = appMetricInfos.get(appName);
+    protected RestMetricInfo getMetricInfo(String appName) {
+    	RestMetricInfo rMetricInfo = appMetricInfos.get(appName);
     	if (rMetricInfo == null) {
-    		rMetricInfo = new RestfulMetricInfo();
+    		rMetricInfo = new RestMetricInfo();
     		appMetricInfos.put(appName, rMetricInfo);
     	}
     		return rMetricInfo;
@@ -208,7 +208,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     // MeteredCollection.  To do this we will need to store the keys for every 
     // entry in this collection.
     private void addKeyToMetricInfo(String appName, String key) {
-    	RestfulMetricInfo rMetricInfo = appMetricInfos.get(appName);
+    	RestMetricInfo rMetricInfo = appMetricInfos.get(appName);
     	if (rMetricInfo != null) {
     		rMetricInfo.setKey(key);
      	}
@@ -217,7 +217,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     // Clean up the resources that were created for each resource method within
     // an application
     protected void cleanApplication(String appName) {   	
-    	RestfulMetricInfo rMetricInfo = appMetricInfos.get(appName);
+    	RestMetricInfo rMetricInfo = appMetricInfos.get(appName);
     	if (rMetricInfo != null) {
     		HashSet<String> keys = rMetricInfo.getKeys();
     		if (!keys.isEmpty()) {
@@ -233,7 +233,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     	}
     }
     
-    class  RestfulMetricInfo {
+    class  RestMetricInfo {
     	boolean isEar = false;
     	HashSet<String> keys = new HashSet<String>();
     	

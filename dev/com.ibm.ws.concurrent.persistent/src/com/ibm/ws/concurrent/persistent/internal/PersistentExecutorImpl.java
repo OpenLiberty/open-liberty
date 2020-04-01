@@ -230,12 +230,20 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Unique identifier for a partition of the task table based on the combination of
-     * (persistent executor, Liberty server, host name)
+     * (persistent executor, Liberty server, host name).
+     * Only used when fail over (missedTaskThreshold) is disabled.
      */
     private long partitionId;
 
     /**
-     * Lock that must be used when accessing the partition id.
+     * Unique identifier for a partition of the responsibility for polling across all
+     * instances that are configured with fail over (missedTaskThreshold) enabled and
+     * pollInterval unspecified.
+     */
+    private long partitionIdForPolling;
+
+    /**
+     * Lock that must be used when accessing the partitionId and partitionIdForPolling.
      */
     private final ReadWriteLock partitionIdLock = new ReentrantReadWriteLock();
 
@@ -790,6 +798,73 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 }
 
                 return partitionId;
+            } finally {
+                partitionIdLock.writeLock().unlock();
+            }
+        } finally {
+            try {
+                // resume
+                if (suspendedTran != null)
+                    tranMgr.resume(suspendedTran);
+                else if (suspendedLTC != null)
+                    ltcCurrent.resume(suspendedLTC);
+            } finally {
+                if (failure != null)
+                    throw failure;
+            }
+        }
+    }
+
+    /**
+     * Returns the id of the poll partition, which is shared across all instances that are configured
+     * with missedTaskThreshold enabled and pollInterval unspecified.
+     *
+     * @return the partition id for the polling partition.
+     * @throws Exception if unable to obtain the poll partition id.
+     */
+    @FFDCIgnore(Exception.class)
+    long getPollPartitionId() throws Exception {
+        partitionIdLock.readLock().lock();
+        try {
+            if (partitionIdForPolling != 0)
+                return partitionIdForPolling;
+        } finally {
+            partitionIdLock.readLock().unlock();
+        }
+
+        // Run under a new transaction and commit right away
+        EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+        int tranStatus = tranMgr.getStatus();
+        LocalTransactionCurrent ltcCurrent = tranStatus == Status.STATUS_NO_TRANSACTION ? localTranCurrentRef.getServiceWithException() : null;
+        LocalTransactionCoordinator suspendedLTC = ltcCurrent == null ? null : ltcCurrent.suspend();
+        Transaction suspendedTran = tranStatus == Status.STATUS_ACTIVE ? tranMgr.suspend() : null;
+        Exception failure = null;
+        try {
+            partitionIdLock.writeLock().lock();
+            try {
+                if (partitionIdForPolling != 0)
+                    return partitionIdForPolling;
+
+                Long newPollPartitionId = null;
+                for (int i = 0; i < 10 && newPollPartitionId == null && !deactivated; i++) {
+                    failure = null;
+                    tranMgr.begin();
+                    try {
+                        newPollPartitionId = taskStore.findOrCreatePollPartition();
+                    } catch (Exception x) {
+                        failure = x;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "deactivated? " + deactivated, x);
+                    } finally {
+                        if (failure == null && newPollPartitionId != null) {
+                            tranMgr.commit();
+                            partitionIdForPolling = newPollPartitionId;
+                        } else
+                            tranMgr.rollback();
+                    }
+                }
+
+                return partitionIdForPolling;
             } finally {
                 partitionIdLock.writeLock().unlock();
             }
@@ -2176,6 +2251,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
          */
         private final Config initialConfig;
 
+        private boolean isFirstTimeCoordinating = true;
+
         private PollingTask(Config config) {
             initialConfig = config;
         }
@@ -2200,6 +2277,78 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         @Override
         public void beforeCompletion() {
+        }
+
+        /**
+         * Using the persistent store, coordinates with other instances to partition out the responsibility for polling at the desired interval.
+         *
+         * @param config persistent executor configuration, including the desired poll interval.
+         * @return the computed time (millis) at which this task should poll again.
+         */
+        private long coordinateNextPoll(Config config) {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+            long expiry;
+            try {
+                EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+                long pollPartitionId = getPollPartitionId();
+                boolean successful = false;
+
+                tranMgr.begin();
+                try {
+                    Object[] expiryAndLastUpdated = taskStore.findPollInfoForUpdate(pollPartitionId);
+                    expiry = (Long) expiryAndLastUpdated[0];
+                    long lastUpdated = (Long) expiryAndLastUpdated[1];
+                    long now = System.currentTimeMillis();
+                    int slot = 0;
+                    long delay = -1;
+                    // number of poll intervals to miss before resetting
+                    final int missedPollsThreshold = 2; // Could be make configurable in the future.
+
+                    /*
+                     * If we have missed more than two poll intervals in a row we want to reset the polling data, as we're assuming
+                     * something bad happened to the cluster.
+                     * If a PollingTask is running for the first time and the next poll is to be scheduled more than 5 intervals into the future,
+                     * reset the polling data. This prevents a massive outage that recovered very quickly (under 2 poll intervals) from creating
+                     * a potentially large gap in polling.
+                     */
+                    // We add 1 to missedPollsThreshold to allow up to the next poll interval before considering it a miss.
+                    if (now - lastUpdated > (missedPollsThreshold + 1) * config.pollInterval || (isFirstTimeCoordinating && expiry - now > 5 * config.pollInterval)) {
+                        expiry = now / 1000 * 1000 + 600;
+                        delay = config.pollInterval - (now - expiry);
+                        slot = 1;
+                        if (trace && tc.isDebugEnabled()) {
+                            if (now - lastUpdated > missedPollsThreshold * config.pollInterval) {
+                                Tr.debug(PersistentExecutorImpl.this, tc, "Detected " + missedPollsThreshold + " or more poll intervals were missed.  Resetting poll info.");
+                            } else {
+                                Tr.debug(PersistentExecutorImpl.this, tc, "Detected starting new PollingTask. Resetting poll info.");
+                            }
+                        }
+                    } else {
+                        while (delay < 0) {
+                            delay = ((++slot) * config.pollInterval) - (now - expiry);
+                        }
+
+                    }
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(PersistentExecutorImpl.this, tc, "now = " + now + "; slot = " + slot);
+
+                    expiry = expiry + slot * config.pollInterval;
+                    taskStore.updatePollInfo(pollPartitionId, expiry);
+                    successful = true;
+                } finally {
+                    if (successful)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+            } catch (Throwable x) {
+                expiry = System.currentTimeMillis() + config.pollInterval;
+            }
+
+            isFirstTimeCoordinating = false;
+            return expiry;
         }
 
         /**
@@ -2328,12 +2477,20 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                     // Schedule next poll
                     config = configRef.get();
                     if (config.enableTaskExecution && config.pollInterval >= 0 && config == initialConfig) {
-                        long duration = System.nanoTime() - beginPoll;
-                        long delay = config.pollInterval - TimeUnit.NANOSECONDS.toMillis(duration);
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(PersistentExecutorImpl.this, tc, "Poll completed in " + duration + "ns. Next poll " + delay + "ms from now");
                         ScheduledFuture<?> future;
-                        future = scheduledExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
+                        long duration;
+                        if (config.pollingCoordination && config.missedTaskThreshold > 0) {
+                            long expiry = coordinateNextPoll(config);
+                            duration = System.nanoTime() - beginPoll;
+                            future = scheduledExecutor.schedule(this, expiry - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+                        } else {
+                            duration = System.nanoTime() - beginPoll;
+                            long delay = config.pollInterval - TimeUnit.NANOSECONDS.toMillis(duration);
+                            future = scheduledExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
+                        }
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(PersistentExecutorImpl.this, tc, "Poll completed in " + duration + "ns. Next poll " + future.getDelay(TimeUnit.MILLISECONDS) + "ms from now");
 
                         pollingFutureRef.getAndSet(future);
                     }

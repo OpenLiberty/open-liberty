@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: Sk\u0142adnik MicroProfile JWT nie mo\u017c
 JWT_NOT_FOUND_IN_REQUEST.explanation=Aby mo\u017cna by\u0142o wykona\u0107 uwierzytelnianie, znacznik MicroProfile JWT musi zosta\u0107 do\u0142\u0105czony do nag\u0142\u00f3wka Authorization przy u\u017cyciu schematu autoryzacji Bearer lub jako parametr POST. Brak nag\u0142\u00f3wka Authorization, schemat autoryzacji w nag\u0142\u00f3wku Authorization nie jest ustawiony na warto\u015b\u0107 Bearer, \u017c\u0105danie nie jest \u017c\u0105daniem POST lub znacznik MicroProfile JWT nie jest do\u0142\u0105czony jako parametr.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Do\u0142\u0105cz znacznik MicroProfile JWT do nag\u0142\u00f3wka Authorization lub jako parametr POST \u017c\u0105dania.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Sk\u0142adnik MicroProfile JWT nie mo\u017ce uwierzytelni\u0107 \u017c\u0105dania, poniewa\u017c nie mo\u017cna utworzy\u0107 poprawnego znacznika JWT na podstawie znacznika do\u0142\u0105czonego do \u017c\u0105dania. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Funkcja MicroProfile JWT nie mo\u017ce uwierzytelni\u0107 \u017c\u0105dania, poniewa\u017c nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika zawartego w \u017c\u0105daniu. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=Sk\u0142adnik MicroProfile JWT napotka\u0142 b\u0142\u0105d podczas tworzenia znacznika JWT z podanego \u0142a\u0144cucha znacznika. Nie mo\u017cna utworzy\u0107 konsumenta znacznik\u00f3w JWT lub konsument znacznik\u00f3w JWT napotka\u0142 b\u0142\u0105d podczas analizowania i sprawdzania poprawno\u015bci \u0142a\u0144cucha znacznika.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
 

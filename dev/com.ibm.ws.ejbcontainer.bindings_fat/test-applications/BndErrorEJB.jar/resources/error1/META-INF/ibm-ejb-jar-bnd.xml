@@ -1,0 +1,13 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+
+<session name="TargetBean">
+  <!-- missing "ejblocal:" in  binding-name -->
+  <interface class="com.ibm.bnd.err.ejb.error1.ejb.LocalBiz" binding-name="ejb/LocalBiz"/>
+</session>
+
+</ejb-jar-bnd>

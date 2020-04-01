@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,19 +15,19 @@ import static org.junit.Assert.assertFalse;
 import java.net.URL;
 import java.util.List;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jsf22.fat.JSFUtils;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
 /**
- * 
+ *
  * /**
  * Component System Event and EL tests for story 153719.
  */
@@ -72,55 +72,55 @@ public class JSFCompELTests {
     }
 
     protected void verifyResponse(String contextRoot, String resource, String expectedResponse) throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail(resource + " did not render properly.");
-        }
+            if (page == null) {
+                Assert.fail(resource + " did not render properly.");
+            }
 
-        if (!page.asText().contains(expectedResponse)) {
-            Assert.fail("The page did not contain the following expected response: " + expectedResponse);
-        }
-
-    }
-
-    protected void verifyXmlResponse(String contextRoot, String resource, String expectedResponse) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
-        WebClient webClient = new WebClient();
-
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-        if (page == null) {
-            Assert.fail(resource + " did not render properly.");
-        }
-
-        if (!page.asXml().contains(expectedResponse)) {
-            Assert.fail("The page did not contain the following expected response: " + expectedResponse);
-        }
-
-    }
-
-    protected void verifyResponse(String contextRoot, String resource, String... expectedResponseStrings) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponseStrings);
-        WebClient webClient = new WebClient();
-
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-        if (page == null) {
-            Assert.fail(resource + " did not render properly.");
-        }
-
-        for (String expectedResponse : expectedResponseStrings) {
             if (!page.asText().contains(expectedResponse)) {
                 Assert.fail("The page did not contain the following expected response: " + expectedResponse);
             }
         }
+    }
 
+    protected void verifyXmlResponse(String contextRoot, String resource, String expectedResponse) throws Exception {
+        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
+        try (WebClient webClient = new WebClient()) {
+
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            if (page == null) {
+                Assert.fail(resource + " did not render properly.");
+            }
+
+            if (!page.asXml().contains(expectedResponse)) {
+                Assert.fail("The page did not contain the following expected response: " + expectedResponse);
+            }
+        }
+    }
+
+    protected void verifyResponse(String contextRoot, String resource, String... expectedResponseStrings) throws Exception {
+        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponseStrings);
+        try (WebClient webClient = new WebClient()) {
+
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            if (page == null) {
+                Assert.fail(resource + " did not render properly.");
+            }
+
+            for (String expectedResponse : expectedResponseStrings) {
+                if (!page.asText().contains(expectedResponse)) {
+                    Assert.fail("The page did not contain the following expected response: " + expectedResponse);
+                }
+            }
+        }
     }
 
     //this tests Jira http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-1164 AND
@@ -139,31 +139,32 @@ public class JSFCompELTests {
     @Test
     @ExpectedFFDC({ "javax.servlet.ServletException" })
     public void testELException() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "ELException.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-        HtmlForm form = page.getFormByName("form1");
-        HtmlSubmitInput button = form.getInputByName("submit");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "ELException.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlForm form = page.getFormByName("form1");
+            HtmlSubmitInput button = form.getInputByName("submit");
 
-        // com.meterware.httpunit.WebConversation wc = new WebConversation();
-        // com.meterware.httpunit.WebRequest req = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, "/TestJSFEL/ELException.xhtml"));
-        // com.meterware.httpunit.WebResponse resp = wc.getResponse(req);
-        // com.meterware.httpunit.WebForm[] forms = resp.getForms();
-        try {
-            // forms[0].submit();
-            button.click();
-        } catch (Throwable t) {
-            //do nothing since the test case intentionally throws NullPointerException on  valueChangeListener, NPE gets converted to Throwable 
-            //when it reaches here
+            // com.meterware.httpunit.WebConversation wc = new WebConversation();
+            // com.meterware.httpunit.WebRequest req = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, "/TestJSFEL/ELException.xhtml"));
+            // com.meterware.httpunit.WebResponse resp = wc.getResponse(req);
+            // com.meterware.httpunit.WebForm[] forms = resp.getForms();
+            try {
+                // forms[0].submit();
+                button.click();
+            } catch (Throwable t) {
+                //do nothing since the test case intentionally throws NullPointerException on  valueChangeListener, NPE gets converted to Throwable
+                //when it reaches here
+            }
+
+            //Test case on the server, which is ELExceptionBean intentionally throws exception for valueChangeListener. Hence check if it's in the log
+            String msgToSearchFor = "javax.servlet.ServletException: javax.el.ELException: java.lang.NullPointerException";
+            List<String> msgs = jsfTestServer2.findStringsInLogs(msgToSearchFor);
+
+            //There should be a match so fail if there is not.
+            assertFalse(msgs.isEmpty());
         }
-
-        //Test case on the server, which is ELExceptionBean intentionally throws exception for valueChangeListener. Hence check if it's in the log
-        String msgToSearchFor = "javax.servlet.ServletException: javax.el.ELException: java.lang.NullPointerException";
-        List<String> msgs = jsfTestServer2.findStringsInLogs(msgToSearchFor);
-
-        //There should be a match so fail if there is not.
-        assertFalse(msgs.isEmpty());
     }
 
     //tests EL30 static methods
@@ -196,7 +197,7 @@ public class JSFCompELTests {
         this.verifyResponse(contextRoot, "EL30Operators.xhtml", expectedInResponse);
     }
 
-    //tests EL30 map/collection 
+    //tests EL30 map/collection
     @Test
     public void testEL30MapCollection() throws Exception {
         String[] expectedInResponse = {

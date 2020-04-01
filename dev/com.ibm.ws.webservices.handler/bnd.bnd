@@ -16,14 +16,19 @@ Bundle-SymbolicName: com.ibm.ws.webservices.handler; singleton:=true
 Bundle-Description: WebSphere WebServices Global Handler service, version ${bVersion}
 
 -dsannotations: com.ibm.webservices.handler.impl.GlobalHandlerServiceImpl
+-nouses: true
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
- com.ibm.wsspi.webservices.handler;provide:=true, \
- com.ibm.webservices.handler.impl;provide:=true
+  com.ibm.wsspi.webservices.handler;provide:=true, \
+  com.ibm.webservices.handler.impl;provide:=true
+
+Import-Package: \
+  !com.ibm.webservices.handler.impl, \
+  ${defaultPackageImport}
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\

@@ -15,6 +15,9 @@ src: \
 	fat/src, \
 	test-applications/BindingNameEJB.jar/src, \
 	test-applications/BindingNameWeb.war/src, \
+	test-applications/BndErrorEJB.jar/src, \
+	test-applications/ComponentIDBndEJB.jar/src, \
+	test-applications/ComponentIDBndWeb.war/src, \
 	test-applications/EJB3BndBean.jar/src, \
 	test-applications/EJB3BndWeb.war/src, \
 	test-applications/EJB3DefBndBean.jar/src, \

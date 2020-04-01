@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1603,3 +1603,14 @@ exception.occurred.while.running.ServletContainerInitializers.onStartup.useracti
 no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: Nie znaleziono definicji serwletu dla nazwy serwletu {0} w odwzorowaniu filtru {1}.
 no.servlet.defined.for.servlet.filter.name.mapping.explanation=Nazwa serwletu zosta\u0142a u\u017cyta w odwzorowaniu filtru, ale jego definicja nie zosta\u0142a podana.
 no.servlet.defined.for.servlet.filter.name.mapping.useraction=Zdefiniuj serwlet u\u017cyty w odwzorowaniu filtru nazwy serwletu.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: Nazwa informacji cookie {0} o istniej\u0105cej warto\u015bci atrybutu SameSite {1} jest skonfigurowana przy u\u017cyciu nowej warto\u015bci {2}. Dla tej informacji cookie nie dodano atrybutu SameSite.
+duplicate.samesite.attribute.for.cookie.name.explanation=Nazwa informacji cookie nie mo\u017ce by\u0107 skonfigurowana dla wielu warto\u015bci atrybut\u00f3w SameSite. Atrybut nie zosta\u0142 dodany do informacji cookie.
+duplicate.samesite.attribute.for.cookie.name.useraction=Sprawd\u017a konfiguracj\u0119 deskryptora wdra\u017cania, aby upewni\u0107 si\u0119, \u017ce nazwa informacji cookie zosta\u0142a skonfigurowana dla tylko jednej z nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' albo 'SameSiteCookies_Strict'. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Nazwa informacji cookie {0}, kt\u00f3ra jest skonfigurowana dla warto\u015bci atrybutu SameSite {1}, zosta\u0142a wcze\u015bniej zidentyfikowana jako duplikat. Dla tej informacji cookie nie dodano atrybutu SameSite.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=Nazwa informacji cookie nie mo\u017ce by\u0107 skonfigurowana dla wielu warto\u015bci atrybut\u00f3w SameSite. Ta nazwa informacji cookie zosta\u0142a ju\u017c zidentyfikowana jako duplikat.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=Sprawd\u017a konfiguracj\u0119 deskryptora wdra\u017cania, aby upewni\u0107 si\u0119, \u017ce nazwa informacji cookie zosta\u0142a skonfigurowana dla tylko jednej z nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' albo 'SameSiteCookies_Strict'. 

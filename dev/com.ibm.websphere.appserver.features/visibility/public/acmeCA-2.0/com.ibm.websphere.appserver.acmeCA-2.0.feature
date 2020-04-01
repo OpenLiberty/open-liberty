@@ -6,10 +6,12 @@ IBM-ShortName: acmeCA-2.0
 Subsystem-Version: 2.0
 Subsystem-Name: Automatic Certificate Management Environment (ACME) Support 2.0
 -features=\
-  com.ibm.wsspi.appserver.webBundle-1.0,\
-  com.ibm.websphere.appserver.appSecurity-3.0, \
-  com.ibm.websphere.appserver.servlet-4.0, \
-
+  com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:=3.1, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.transportSecurity-1.0, \
+  com.ibm.wsspi.appserver.webBundle-1.0, \
+  com.ibm.websphere.appserver.certificateCreator-2.0, \
+  com.ibm.websphere.appserver.restHandler-1.0
 -bundles=\
   com.ibm.ws.security.acme; start-phase:=APPLICATION_EARLY
 kind=noship

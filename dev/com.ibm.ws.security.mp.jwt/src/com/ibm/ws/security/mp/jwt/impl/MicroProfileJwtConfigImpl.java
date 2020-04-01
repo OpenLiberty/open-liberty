@@ -92,6 +92,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String KEY_groupNameAttribute = "groupNameAttribute";
     protected String groupNameAttribute = null;
 
+    public static final String KEY_authorizationHeaderScheme = "authorizationHeaderScheme";
+    protected String authorizationHeaderScheme = null;
+
     public static final String CFG_KEY_TOKEN_REUSE = "tokenReuse";
     protected boolean tokenReuse = true;
 
@@ -162,6 +165,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
         this.groupNameAttribute = configUtils.getConfigAttribute(props, KEY_groupNameAttribute);
 
+        this.authorizationHeaderScheme = configUtils.getConfigAttribute(props, KEY_authorizationHeaderScheme);
         this.clockSkewMilliSeconds = configUtils.getLongConfigAttribute(props, CFG_KEY_CLOCK_SKEW, clockSkewMilliSeconds);
 
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
@@ -456,6 +460,12 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public String getGroupNameAttribute() {
         return this.groupNameAttribute;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getAuthorizationHeaderScheme() {
+        return this.authorizationHeaderScheme;
     }
 
     /** {@inheritDoc} */

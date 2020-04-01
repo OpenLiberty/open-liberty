@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.assertion.client.assertion;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 import java.io.IOException;
 import java.net.URL;
 
@@ -21,15 +24,37 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.UserTransaction;
 import javax.xml.ws.BindingProvider;
 
-import com.ibm.tx.jta.ut.util.AbstractTestServlet;
-
 @WebServlet({ "/AssertionClientServlet" })
-public class AssertionClientServlet extends AbstractTestServlet {
+public class AssertionClientServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+
+    private static String TEST_NAME_PARAM = "testName";
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        System.out.println("Servlet: " + request.getRequestURI());
+        System.out.println("Test: " + request.getParameter(TEST_NAME_PARAM));
+
+        final Enumeration<?> params = request.getParameterNames();
+
+        while (params.hasMoreElements()) {
+            final String param = (String) params.nextElement();
+
+            if (!TEST_NAME_PARAM.equals(param)) {
+                System.out.println(param + ": " + request.getParameter(param));
+            }
+        }
+
+        final String result = get(request);
+        
+        response.getWriter().println(result);
+    }
 
 	protected String get(HttpServletRequest request) throws ServletException, IOException {
 		String output = "";
-		String type = request.getParameter("testName");
+		String type = request.getParameter(TEST_NAME_PARAM);
 		System.out.println("==============Test type: " + type
 				+ "================");
 		String BASE_URL = request.getParameter("baseurl");

@@ -15,12 +15,16 @@ Bundle-Name: WebSphere Application Client Support
 Bundle-SymbolicName: com.ibm.ws.app.manager.client
 Bundle-Description: WebSphere Application Client Support, version ${bVersion}
 
-Import-Package: \
-    com.ibm.ws.app.manager.module.internal, \
-    *
-
 Export-Package: \
-    com.ibm.ws.app.manager.client.*
+  com.ibm.ws.app.manager.client.*
+
+Import-Package: \
+  !com.ibm.ws.app.manager.client.internal, \
+  !com.ibm.ws.container.service.metadata, \
+  !com.ibm.ws.container.service.state, \
+  !com.ibm.ws.threading, \
+  com.ibm.ws.app.manager.module.internal, \
+  ${defaultPackageImport}
 
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.app.manager.client.internal.ClientModuleHandlerImpl

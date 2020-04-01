@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.concurrent.persistent.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -23,7 +22,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
@@ -41,8 +39,7 @@ public class PersistentExecutorTest extends FATServletClient {
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
     
-    @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     /**
      * Before running any tests, start the server
@@ -62,7 +59,7 @@ public class PersistentExecutorTest extends FATServletClient {
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
-		//Add application to server
+	//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         server.startServer();
@@ -79,8 +76,10 @@ public class PersistentExecutorTest extends FATServletClient {
             runTest(server, APP_NAME, "verifyNoTasksRunning");
         } finally {
             if (server != null && server.isStarted())
-                server.stopServer("CWWKC1500W", //Persistent Executor Rollback
-                                  "CWWKC1510W", //Persistent Executor Rollback and Failed
+                server.stopServer("CWWKC1500W", //Task rolled back
+                                  "CWWKC1501W", //Task rolled back due to failure ...
+                                  "CWWKC1510W", //Task rolled back and aborted
+                                  "CWWKC1511W", //Task rolled back and aborted. Failure is ...
                                   "DSRA0174W"); //Generic Datasource Helper
         }
     }

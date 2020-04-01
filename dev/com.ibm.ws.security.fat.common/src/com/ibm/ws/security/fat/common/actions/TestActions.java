@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.security.fat.common.actions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
@@ -21,6 +22,7 @@ import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
@@ -59,6 +61,13 @@ public class TestActions {
     /**
      * Invoke the specified URL, adding a basic auth header first
      */
+    public Page invokeUrlWithBasicAuth(String currentTest, String url, String user, String password) throws Exception {
+        return invokeUrlWithBasicAuth(currentTest, createWebClient(), url, user, password);
+    }
+
+    /**
+     * Invoke the specified URL, adding a basic auth header first
+     */
     public Page invokeUrlWithBasicAuth(String currentTest, WebClient wc, String url, String user, String password) throws Exception {
         String thisMethod = "invokeUrlWithBasicAuth";
         loggingUtils.printMethodName(thisMethod);
@@ -76,15 +85,33 @@ public class TestActions {
      * Invoke the specified URL, adding a bearer token header first.
      */
     public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token) throws Exception {
-        return invokeUrlWithBearerToken(currentTest, wc, url, token, null);
+        return invokeUrlWithBearerTokenUsingGet(currentTest, wc, url, token);
     }
 
-    public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token, List<NameValuePair> requestParms) throws Exception {
+    public Page invokeUrlWithBearerTokenUsingGet(String currentTest, WebClient wc, String url, String token) throws Exception {
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, wc, url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.GET, null);
+    }
+
+    public Page invokeUrlWithBearerTokenUsingGet(String currentTest, String url, String token) throws Exception {
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, new WebClient(), url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.GET, null);
+    }
+
+    public Page invokeUrlWithBearerTokenUsingPost(String currentTest, WebClient wc, String url, String token) throws Exception {
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, wc, url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.POST, null);
+    }
+
+    public Page invokeUrlWithBearerTokenUsingPost(String currentTest, String url, String token) throws Exception {
+        return invokeUrlWithAuthorizationHeaderToken(currentTest, new WebClient(), url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.POST, null);
+    }
+
+    public Page invokeUrlWithAuthorizationHeaderToken(String currentTest, WebClient wc, String url, String tokenPrefix, String token, HttpMethod method, List<NameValuePair> requestParms) throws Exception {
         String thisMethod = "invokeUrlWithBearerToken";
         loggingUtils.printMethodName(thisMethod);
         try {
-            WebRequest request = createGetRequest(url);
-            request.setAdditionalHeader("Authorization", "Bearer " + token);
+            WebRequest request = createHttpRequest(url, method);
+            if (tokenPrefix != null) {
+                request.setAdditionalHeader("Authorization", tokenPrefix + " " + token);
+            }
             if (requestParms != null) {
                 request.setRequestParameters(requestParms);
             }
@@ -117,12 +144,52 @@ public class TestActions {
      * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
      */
     public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParametersUsingGet(currentTest, wc, url, requestParams);
+    }
+
+    public Page invokeUrlWithParametersUsingGet(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.GET, requestParams);
+    }
+
+    public Page invokeUrlWithParametersUsingGet(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, createWebClient(), url, HttpMethod.GET, requestParams);
+    }
+
+    public Page invokeUrlWithParametersUsingPost(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.POST, requestParams);
+    }
+
+    public Page invokeUrlWithParametersUsingPost(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, createWebClient(), url, HttpMethod.POST, requestParams);
+    }
+
+    public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, HttpMethod method, List<NameValuePair> requestParams) throws Exception {
+        String thisMethod = "invokeUrlWithParameters";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createHttpRequest(url, method);
+            if (requestParams != null) {
+                request.setRequestParameters(requestParams);
+            }
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+
+    /**
+     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     */
+    public Page invokeUrlWithParametersAndHeaders(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams, Map<String, String> requestHeaders) throws Exception {
         String thisMethod = "invokeUrlWithParameters";
         loggingUtils.printMethodName(thisMethod);
         try {
             WebRequest request = createGetRequest(url);
             if (requestParams != null) {
                 request.setRequestParameters(requestParams);
+            }
+            if (requestHeaders != null) {
+                request.setAdditionalHeaders(requestHeaders);
             }
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
@@ -212,6 +279,10 @@ public class TestActions {
         return webClient;
     }
 
+    public WebRequest createHttpRequest(String url, HttpMethod method) throws MalformedURLException {
+        return new WebRequest(new URL(url), method);
+    }
+
     public WebRequest createGetRequest(String url) throws MalformedURLException {
         return new WebRequest(new URL(url), HttpMethod.GET);
     }
@@ -220,7 +291,7 @@ public class TestActions {
         return new WebRequest(new URL(url), HttpMethod.POST);
     }
 
-public WebRequest createPostRequest(String url, String body) throws MalformedURLException {
+    public WebRequest createPostRequest(String url, String body) throws MalformedURLException {
         URL reqUrl = new URL(url);
         WebRequest request = new WebRequest(reqUrl, HttpMethod.POST);
         request.setRequestBody(body);

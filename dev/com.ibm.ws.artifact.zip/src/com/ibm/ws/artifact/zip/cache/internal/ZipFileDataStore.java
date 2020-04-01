@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Utility encapsulation of an ordered zip data collection.
+ * 
+ * Methods in this class are not thread safe and require synchronization by the user of the class.
  */
 public class ZipFileDataStore {
     public ZipFileDataStore(String name) {
@@ -110,7 +112,7 @@ public class ZipFileDataStore {
     }
     
     public static class Cell {
-        public ZipFileData data;
+        public final ZipFileData data;
 
         public Cell prev;
         public Cell next;
@@ -324,19 +326,16 @@ public class ZipFileDataStore {
      *     size has not yet been reached.
      */
     public ZipFileData addLast(ZipFileData newLastData, int maximumSize) {
+        if ( (maximumSize == -1) || (cells.size() < maximumSize) ) {
+            addLast(newLastData);
+            return null;
+        }
+
         String newLastPath = newLastData.path;
 
         Cell dupCell = cells.get(newLastPath);
         if ( dupCell != null ) {
             throw new IllegalArgumentException("Path [ " + newLastPath + " ] is already stored");
-        }
-
-        int size = size();
-
-        if ( (maximumSize == -1) || (size < maximumSize) ) {
-            @SuppressWarnings("unused")
-            ZipFileData oldLastData = addLast(newLastData);
-            return null;
         }
 
         Cell oldFirstCell = anchor.next;
@@ -347,13 +346,10 @@ public class ZipFileDataStore {
             throw new IllegalStateException("Bad cell alignment on path [ " + oldFirstPath + " ]");
         }
 
-        oldFirstCell.data = newLastData;
-        cells.put(newLastPath,  oldFirstCell);
-
-        if ( size != 1 ) {
-            oldFirstCell.excise();
-            oldFirstCell.putBetween(anchor.prev, anchor);
-        }
+        Cell newLastCell = new Cell(newLastData);
+        cells.put(newLastPath,  newLastCell);
+        oldFirstCell.excise();
+        newLastCell.putBetween(anchor.prev, anchor);
 
         return oldFirstData;
     }
@@ -373,7 +369,7 @@ public class ZipFileDataStore {
         }
     }
 
-    public void display(int cellNo, Cell cell) {
+    private void display(int cellNo, Cell cell) {
         String thisCell = cellText(cellNo, cell);
         String prevCell = cellText(cellNo - 1, cell.prev);
         String nextCell = cellText(cellNo + 1, cell.next);
@@ -408,7 +404,7 @@ public class ZipFileDataStore {
         }
     }
 
-    public void validate(int cellNo, Cell cell, boolean nullData) {
+    private void validate(int cellNo, Cell cell, boolean nullData) {
         if ( nullData ) {
             if ( cell.data != null ) {
                 throw new IllegalStateException("Non-null data " + cellText(cellNo, cell));

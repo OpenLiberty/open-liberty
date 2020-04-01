@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.concurrent.persistent.fat.timers;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -23,7 +22,6 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
@@ -45,8 +43,7 @@ public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletC
     @TestServlet(servlet = PersistentTimersTestServlet.class, path = APP_NAME)
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.timers");
     
-    @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     /**
      * Before running any tests, start the server
@@ -64,8 +61,9 @@ public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletC
 
         PersistentExecutor defaultEJBPersistentTimerExecutor = new PersistentExecutor();
         defaultEJBPersistentTimerExecutor.setId("defaultEJBPersistentTimerExecutor");
-        defaultEJBPersistentTimerExecutor.setPollInterval("5h"); // polling should not be required by the test, but the fail over capability needs it enabled
-        defaultEJBPersistentTimerExecutor.setExtraAttribute("missedTaskThreshold2", "4s"); // TODO rename if the code path being tested is chosen
+        defaultEJBPersistentTimerExecutor.setPollInterval("15s");
+        defaultEJBPersistentTimerExecutor.setExtraAttribute("missedTaskThreshold", "4s");
+        defaultEJBPersistentTimerExecutor.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         config.getPersistentExecutors().add(defaultEJBPersistentTimerExecutor);
 
         server.updateServerConfiguration(config);

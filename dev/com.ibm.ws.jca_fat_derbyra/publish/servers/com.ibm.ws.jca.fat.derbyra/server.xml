@@ -2,10 +2,10 @@
     <featureManager>
       <feature>componenttest-1.0</feature>
       <feature>concurrent-1.0</feature>
+      <feature>ejb-3.2</feature>
       <feature>jca-1.7</feature>
       <feature>jndi-1.0</feature>
       <feature>localConnector-1.0</feature>
-      <feature>mdb-3.2</feature>
       <feature>servlet-3.1</feature>
       <feature>monitor-1.0</feature>
     </featureManager>
@@ -38,6 +38,11 @@
       <properties.DerbyRA/>
     </connectionFactory>
 
+    <connectionFactory jndiName="eis/ds5">
+      <connectionManager maxPoolSize="1" connectionTimeout="0"/>
+      <properties.DerbyRA dissociatable="false" lazyEnlistable="true" userName="DS1USER" password="{xor}GwxuDwgb"/>
+    </connectionFactory>
+
     <activationSpec id="derbyRAApp/fvtweb/DerbyRAMessageDrivenBean">
       <recoveryAuthData userName="ActvSpecUser" password="ActvSpecPwd"/> <!-- convenient place to test recoveryAuthData for activation specs -->
       <!-- TODO remove configuration of qmid once application server starts setting the value on XA recovery path -->
@@ -57,7 +62,7 @@
 
     <application type="ear" id="derbyRAApp" name="${id}Name" location="derbyRAApp.ear"/>
 
-    <transaction heuristicRetryInterval="2s"/>
+    <transaction heuristicRetryInterval="2"/>
 
     <!-- 
     NOTE: for this bucket to run cleanly with j2sec enabled with IBM JDK, the following permission must 

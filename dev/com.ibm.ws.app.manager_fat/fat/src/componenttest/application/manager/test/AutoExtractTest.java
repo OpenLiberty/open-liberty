@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,18 +19,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -51,13 +46,10 @@ public class AutoExtractTest extends AbstractAppManagerTest {
     @Rule
     public TestName testName = new TestName();
 
-    /** Holds paths of files that need to be cleaned up after the test run. */
-    List<String> pathsToCleanup = new ArrayList<String>();
-
-    private static final String APPS_DIR = "apps";
-    private static final String EXPANDED_DIR = APPS_DIR + "/expanded";
-
-    protected static final String DROPINS_DIR = "dropins";
+    @Override
+    protected LibertyServer getServer() {
+        return AutoExtractTest.server;
+    }
 
     /**
      * Verify that a WAR installed into dropins with auto extract set to true will be extracted to apps/expanded
@@ -466,6 +458,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                        line.contains("For testing this servlet"));
             con.disconnect();
 
+            server.setMarkToEndOfLog();
             // Add snoop.war to the extracted directory
             server.copyFileToLibertyServerRoot(PUBLISH_FILES, EXPANDED_DIR + "/app-j2ee.ear", SNOOP_WAR);
 
@@ -473,6 +466,10 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             assertNotNull("The web application app-j2ee did not appear to have been updated.",
                           server.waitForStringInLog("CWWKZ0003I.* app-j2ee"));
 
+            // Make sure the files are not both copied within the monitor interval
+            Thread.sleep(1000);
+
+            server.setMarkToEndOfLog();
             // copy application.xml that contains snoop.war and changes test-web1 to test-web2
             server.copyFileToLibertyServerRoot(EXPANDED_DIR + "/app-j2ee.ear/META-INF", "autoExpand/application.xml");
             // wait for update
@@ -543,23 +540,6 @@ public class AutoExtractTest extends AbstractAppManagerTest {
     @Override
     protected Class<?> getLogClass() {
         return c;
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        // stop the server first so that the server gives up any locks on
-        // files we need to clean up
-        if (server.isStarted()) {
-            server.stopServer();
-        }
-
-        Machine machine = server.getMachine();
-        for (String path : pathsToCleanup) {
-            LibertyFileManager.deleteLibertyFile(machine, path);
-        }
-
-        // clear so next test populates fresh list
-        pathsToCleanup.clear();
     }
 
 }

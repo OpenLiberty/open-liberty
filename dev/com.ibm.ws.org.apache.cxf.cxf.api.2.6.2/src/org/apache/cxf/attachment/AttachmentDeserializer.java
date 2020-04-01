@@ -53,6 +53,11 @@ public class AttachmentDeserializer {
     public static final String ATTACHMENT_MAX_SIZE = "attachment-max-size";
 
     /**
+     * The maximum number of attachments permitted in a message. The default is 50.
+     */
+    public static final String ATTACHMENT_MAX_COUNT = "attachment-max-count"; // Liberty Change CVE-2019-12406
+
+    /**
      * The maximum MIME Header Length. The default is 300.
      */
     public static final String ATTACHMENT_MAX_HEADER_SIZE = "attachment-max-header-size";
@@ -106,7 +111,20 @@ public class AttachmentDeserializer {
     public void initializeAttachments() throws IOException {
         initializeRootMessage();
 
-        attachments = new LazyAttachmentCollection(this);
+        // Liberty Change Start
+        // CVE-2019-12406: Apache CXF does not restrict the number of message attachments
+        Object maxCountProperty = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_COUNT);
+        int maxCount = 50;
+        if (maxCountProperty != null) {
+            if (maxCountProperty instanceof Integer) {
+                maxCount = (Integer)maxCountProperty;
+            } else {
+                maxCount = Integer.parseInt((String)maxCountProperty);
+            }
+        }
+
+        attachments = new LazyAttachmentCollection(this, maxCount);
+        // Liberty Change End
         message.setAttachments(attachments);
     }
 

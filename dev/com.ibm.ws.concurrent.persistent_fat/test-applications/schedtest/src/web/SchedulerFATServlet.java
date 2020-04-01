@@ -1240,7 +1240,10 @@ public class SchedulerFATServlet extends HttpServlet {
         try {
             taskStatus = scheduler.submit((Callable<Integer>) task);
             try {
-                phaser.awaitAdvance(1);
+                int nextPhase = phaser.awaitAdvance(0);
+                if (nextPhase != 1)
+                    throw new Exception("Unexpected next phase: " + nextPhase);
+
                 System.out.println("Task is running and has canceled itself...");
 
                 // The PROP entry for the task will remain locked within a suspended transaction
@@ -1302,7 +1305,10 @@ public class SchedulerFATServlet extends HttpServlet {
         try {
             taskStatus = scheduler.submit((Callable<Integer>) task);
             try {
-                phaser.awaitAdvance(1);
+                int nextPhase = phaser.awaitAdvance(0);
+                if (nextPhase != 1)
+                    throw new Exception("Unexpected next phase: " + nextPhase);
+
                 System.out.println("Task is running and has removed itself...");
 
                 // The PROP entry for the task will remain locked within a suspended transaction

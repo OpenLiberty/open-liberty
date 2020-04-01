@@ -94,6 +94,41 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: The social 
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=The user API response does not contain a key that corresponds to the value of the configuration attribute that is specified in the message. The social login feature attempts to use a different key instead.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verify that the configuration attribute that is specified in the message is configured correctly. Ensure that the value of the configuration attribute corresponds to the entry in the user API response that should be used as the username.
 
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: The following response from the user API cannot be processed: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Information about the service account cannot be obtained because another error occurred.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for more error messages that might indicate where the other error occurred.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: The user API returned an unexpected [{0}] response code. Verify that the request to the API contains all required information. The response from the API is [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=The user API did not return the expected status code. The request might be missing information, or the request might not be authorized.
+USER_API_RESPONSE_BAD_STATUS.useraction=Check the API response that is in the error message for more information. Verify that the request to the API contains all required information. Verify that all tokens that are included in the request are valid.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: The content of the response is not a valid JSON object. The full response is {0}. {1}
+RESPONSE_NOT_JSON.explanation=The response must be a valid JSON object.
+RESPONSE_NOT_JSON.useraction=Verify that request was sent to the expected target. Ensure that the intended target of the request is capable of returning JSON data. Check the response to see whether more information is included.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: The JSON object that is provided is missing an expected key: [{0}]. The full JSON object is [{1}].
+JSON_MISSING_KEY.explanation=The key that is specified in the message must be within the JSON data. The key might be missing, or it might be in an unexpected location.
+JSON_MISSING_KEY.useraction=Check the JSON data to determine whether the key is missing.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: The value for the [{0}] key in the JSON data must be of type {1}, but the value is of type {2}. The JSON data is [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=The value for the specified key did not have the correct type. The JSON data might be malformed or might have an unexpected structure.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Check the structure of the JSON data. Check the JSON data to see whether an error occurred.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: The response from the token introspection API cannot be processed: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Information about the authenticated user cannot be obtained because another error occurred.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for more error messages that might indicate where the other error occurred.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: The token introspection request failed because the token that is included in the request is not valid. The full response is {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=The authorization server did not issue the token, the resource owner revoked the token, the token is expired, or another error occurred.
+INTROSPECT_USER_API_INACTIVE.useraction=Check the response that is included in the message. Verify that the correct token introspection endpoint is used. Verify that the token is valid and that the token can be introspected.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No action is required.

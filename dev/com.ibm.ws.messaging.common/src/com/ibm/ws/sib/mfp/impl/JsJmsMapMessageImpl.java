@@ -448,7 +448,7 @@ final class JsJmsMapMessageImpl extends JsJmsMessageImpl implements JsJmsMapMess
       String name;
       Object value;
       StringBuilder buff = new StringBuilder();
-      String lineSeparator = System.getProperty("line.separator");
+      String lineSeparator = System.lineSeparator();
 
       /* Get the first name=value pair and append it to the buffer */
       name = names.nextElement();

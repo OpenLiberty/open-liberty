@@ -7,6 +7,7 @@ After=network-online.target
 [Service]
 Type=forking
 
+RuntimeDirectory=openliberty
 ExecStart=/usr/libexec/openliberty start %i
 ExecStop=/usr/libexec/openliberty stop %i
 

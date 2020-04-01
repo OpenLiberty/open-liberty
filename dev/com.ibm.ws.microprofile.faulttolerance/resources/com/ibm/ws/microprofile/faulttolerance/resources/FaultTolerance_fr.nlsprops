@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=Augmentez la disponibilit\u00e9 dans l
 application.shutdown.CWMFT0002W=CWMFT0002W: La m\u00e9thode asynchrone {0} ne peut pas aboutir car l'application ou le composant qui l'a appel\u00e9e s'est arr\u00eat\u00e9.
 application.shutdown.CWMFT0002W.explanation=Les m\u00e9thodes asynchrones s'ex\u00e9cutent dans le contexte du composant qui les a d\u00e9marr\u00e9es. L'application ou le composant qui a appel\u00e9 la m\u00e9thode asynchrone s'est arr\u00eat\u00e9, ce qui emp\u00eache la m\u00e9thode asynchrone d'aboutir.
 application.shutdown.CWMFT0002W.useraction= En g\u00e9n\u00e9ral, cet avertissement est \u00e9mis lorsqu'une application, un composant ou un serveur s'arr\u00eate. Si toutes les m\u00e9thodes asynchrones en cours d'ex\u00e9cution doivent aboutir, l'application ou le composant doit attendre les r\u00e9sultats avant de s'arr\u00eater.
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: La m\u00e9thode asynchrone {0} a renvoy\u00e9 la valeur null. 
+asynchronous.returned.null.CWMFT0003W.explanation=Les m\u00e9thodes annot\u00e9es avec @Asynchronous ne doivent pas renvoyer une valeur null.
+asynchronous.returned.null.CWMFT0003W.useraction=Evitez le renvoi d'une valeur null par la m\u00e9thode.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Une erreur interne s'est produite. L'exception est {0}.

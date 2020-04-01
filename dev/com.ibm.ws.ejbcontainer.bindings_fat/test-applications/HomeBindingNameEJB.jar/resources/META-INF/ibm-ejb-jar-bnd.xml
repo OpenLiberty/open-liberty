@@ -4,19 +4,13 @@
         xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
         version="1.0">
         
-  <session name="LocalHomeBindingName1" 
-  	local-home-binding-name="ejblocal:com/ibm/ejb3x/HomeBindingName/ejb/LocalHomeBindingNameHome1"/>
-  <session name="LocalHomeBindingName2" 
-  	local-home-binding-name="ejblocal:ejb/com/ibm/ejb3x/HomeBindingName/ejb/LocalHomeBindingNameHome2"/>
-  <session name="LocalHomeBindingName3" 
-  	local-home-binding-name="ejblocal:ejblocal:com/ibm/ejb3x/HomeBindingName/ejb/LocalHomeBindingNameHome3"/>
-  <session name="LocalHomeBindingName4" 
-  	local-home-binding-name="ejblocal:local:com/ibm/ejb3x/HomeBindingName/ejb/LocalHomeBindingNameHome4"/>
-  <session name="LocalHomeBindingName5" 
-  	local-home-binding-name="ejblocal:local:ejb/com/ibm/ejb3x/HomeBindingName/ejb/LocalHomeBindingNameHome5"/>
-  <session name="LocalHomeBindingName6" 
-  	local-home-binding-name="ejblocal:local:ejblocal:com/ibm/ejb3x/HomeBindingName/ejb/LocalHomeBindingNameHome6"/>
-  <session name="LocalHomeBindingName7" 
-  	local-home-binding-name="ejblocal:ejblocal:local:ejb/com/ibm/ejb3x/HomeBindingName/ejb/LocalHomeBindingNameHome7"/>
+  <session name="HomeBindingName1" 
+  	local-home-binding-name="ejblocal:com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome1"/>
+  <session name="HomeBindingName2" 
+  	local-home-binding-name="ejblocal:ejb/com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome2"/>
+  <session name="HomeBindingName3" 
+  	remote-home-binding-name="com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome3"/>
+  <session name="HomeBindingName4" 
+  	remote-home-binding-name="ejb/com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome4"/>
  
 </ejb-jar-bnd>

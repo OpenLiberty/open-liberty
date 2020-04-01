@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,8 +14,6 @@
 bSymbolicName=com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
@@ -32,9 +30,6 @@ Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 Import-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.resources,\
                 *
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
-instrument.disabled: true
 
 src: src
 #testsrc: test/src
@@ -42,8 +37,10 @@ src: src
 -buildpath: \
   com.ibm.ws.logging;version=latest, \
   com.ibm.ws.logging.core;version=latest, \
+  com.ibm.ws.kernel.boot;version=latest, \
   org.eclipse.osgi;version=latest, \
   com.ibm.websphere.org.osgi.core;version=latest, \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

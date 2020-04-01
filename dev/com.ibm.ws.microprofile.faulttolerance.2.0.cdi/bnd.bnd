@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.faulttolerance.2.0.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.2.0.cdi
@@ -31,10 +29,11 @@ Include-Resource: \
 
 WS-TraceGroup: FAULTTOLERANCE
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.faulttolerance.cdi20.FaultToleranceCDI20Extension
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\

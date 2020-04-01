@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,15 +77,17 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
 
     @Override
     public void addCookie(Cookie cookie) {
+        String cookieName = cookie.getName();
+
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
-            logger.logp(Level.FINE, CLASS_NAME, "addCookie", "Adding cookie --> " + cookie.getName(), "[" + this + "]");
+            logger.logp(Level.FINE, CLASS_NAME, "addCookie", "Adding cookie --> " + cookieName, "[" + this + "]");
         }
         // d151464 - check the include flag
         WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext) getRequest().getWebAppDispatcherContext();
         if (dispatchContext.isInclude() == true) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
                 logger.logp(Level.FINE, CLASS_NAME, "addCookie", nls.getString("Illegal.from.included.servlet", "Illegal from included servlet"),
-                            "addCookie cookie --> " + cookie.getName()); //311717
+                            "addCookie cookie --> " + cookieName); //311717
         } else {
             if (!_ignoreStateErrors && isCommitted()) {
                 // log a warning (only the first time)...ignore headers set after response is committed
@@ -183,7 +185,7 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
         return trailerFieldSupplier;
     }
 
-    @Override 
+    @Override
     public void closeResponseOutput(boolean releaseChannel) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.entering(CLASS_NAME, "closeResponseOutput", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");
@@ -204,7 +206,7 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
         super.closeResponseOutput(releaseChannel);
     }
 
-    @Override 
+    @Override
     public void finish() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.entering(CLASS_NAME, "finish", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");

@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: La funzione JWT del microprofilo non pu\u00
 JWT_NOT_FOUND_IN_REQUEST.explanation=Per eseguire l'autenticazione, \u00e8 necessario includere un JWT del microprofilo nell'intestazione Autorizzazione utilizzando lo schema di autorizzazione Bearer o come parametro POST. L'intestazione Autorizzazione \u00e8 mancante, lo schema di autorizzazione dell'intestazione Autorizzazione non \u00e8 impostato su Bearer, la richiesta non \u00e8 di tipo POST oppure un JWT del microprofilo non \u00e8 incluso come parametro.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Accertarsi che un JWT del microprofilo sia incluso nell'intestazione Autorizzazione o come parametro POST della richiesta.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La funzione JWT del microprofilo non \u00e8 in grado di autenticare la richiesta perch\u00e9 non \u00e8 possibile creare un JWT valido dal token incluso nella richiesta. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La funzione JWT del microprofilo non \u00e8 in grado di autenticare la richieste perch\u00e9 non \u00e8 possibile convalidare il token incluso nella richiesta. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=La funzione JWT del microprofilo ha rilevato un errore durante la creazione di un JWT dalla stringa token fornita. Non \u00e8 possibile creare un consumer JWT oppure il consumer JWT ha rilevato un errore durante l'analisi e la convalida della stringa token.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
 

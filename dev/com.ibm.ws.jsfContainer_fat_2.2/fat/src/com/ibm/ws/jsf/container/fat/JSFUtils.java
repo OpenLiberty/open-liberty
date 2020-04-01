@@ -12,9 +12,6 @@ package com.ibm.ws.jsf.container.fat;
 
 import java.net.URL;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.ibm.websphere.simplicity.log.Log;
-
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -27,9 +24,9 @@ public class JSFUtils {
     /**
      * Construct a URL for a test case so a request can be made.
      *
-     * @param server - The server that is under test, this is used to get the port and host name.
+     * @param server      - The server that is under test, this is used to get the port and host name.
      * @param contextRoot - The context root of the application
-     * @param path - Additional path information for the request.
+     * @param path        - Additional path information for the request.
      * @return - A fully formed URL.
      * @throws Exception
      */

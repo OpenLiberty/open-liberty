@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2020 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-v10.html 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ibm.ws.microprofile.rest.client</groupId>
+    <artifactId>tck.runner.tck</artifactId>
+    <version>1.4</version>
+    <name>MicroProfile RestClient 1.4 TCK Runner TCK Module</name>
+
+    <properties>
+        <microprofile.rest.client.version>1.4-RC2</microprofile.rest.client.version>
+        <arquillian.version>1.1.13.Final</arquillian.version>
+
+        <!-- the below is used in arquillian.xml -->
+        <wlp>${wlp}</wlp>
+        <!-- <wlp>${project.basedir}/../../../../build.image/wlp/</wlp> -->
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
+        <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+        <jetty.version>9.4.18.v20190429</jetty.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+       <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>fattest.simplicity</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-tck</artifactId>
+            <version>${microprofile.rest.client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-api</artifactId>
+            <version>${microprofile.rest.client.version}</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.rt.rs.mp.client</artifactId>
+            <version>3.3.3.20190529</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.3_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.rt.rs.client</artifactId>
+            <version>3.3.3.20190529</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.rt.frontend.jaxrs</artifactId>
+            <version>3.3.3.20190529</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.rt.transports.http</artifactId>
+            <version>3.3.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.core</artifactId>
+            <version>3.3.3.20190529</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.core.3.2_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>jaxrs20.cdi</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.jaxrs.2.0.cdi_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>logging</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.logging_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.annotation.1.2_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.jaxrs.2.1_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.cdi.2.0_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>1.1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.jsonp.1.1_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.json.bind</groupId>
+            <artifactId>javax.json.bind-api</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.jsonb.1.0_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>${arquillian.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed</artifactId>
+	    <version>1.0.5</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+ 
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.11</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-io</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-security</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <version>${jetty.version}</version>
+            <exclusions>
+              <exclusion>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-commons</artifactId>
+              </exclusion>
+            </exclusions> 
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+    </dependencies>
+ 
+    <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
+                    <systemPropertyVariables>
+                        <wlp>${wlp}</wlp>
+                        <!-- <wlp>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp</wlp> -->
+                        <!-- <tck_server>${tck_server}</tck_server> -->
+                        <tck_server>FATServer</tck_server>
+                        <!-- <tck_port>${tck_port}</tck_port>  -->
+                        <tck_port>8010</tck_port>
+                        <!-- <wiremock.server.port>8765</wiremock.server.port> -->
+                        <com.ibm.ws.jaxrs.testing>true</com.ibm.ws.jaxrs.testing>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                        <!-- <suiteXmlFile>tck-suite.xml</suiteXmlFile> -->
+                    </suiteXmlFiles>
+                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+               <groupId>uk.co.automatictester</groupId>
+               <artifactId>wiremock-maven-plugin</artifactId>
+               <version>4.1.0</version>
+               <executions>
+                   <execution>
+                       <phase>generate-test-sources</phase>
+                       <goals>
+                           <goal>run</goal>
+                       </goals>
+                       <configuration>
+                           <dir>target/classes</dir>
+                           <params>--port=8765 --verbose</params>
+                       </configuration>
+                   </execution>
+               </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

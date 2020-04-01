@@ -5,7 +5,6 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2
 
 Bundle-Activator: com.ibm.ws.jaxrs21.rt.frontend.jaxrs.NoOpActivator
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations: com.ibm.ws.jaxrs21.component.*
 
@@ -13,6 +12,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+  !com.ibm.xml.xlxp2.api.stax, \
+  !com.ibm.xml.xlxp2.api.wssec, \
   !org.apache.aries.*,\
   !org.springframework.*,\
   !org.osgi.service.blueprint.*,\

@@ -17,10 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.common
 Bundle-Description: IBM JAX-WS 2.3 Common; version=${bVersion}
 Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 
 # in cxf-rt-frontend-jaxws-3.2 bundle, we exposed:
@@ -45,11 +42,13 @@ Import-Package: \
    javax.xml.bind.*;version="[2.3,3)", \
    javax.xml.ws.*;version="[2.3,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
-   !com.sun.tools.ws.wscompile.*;version=!,\
-   !org.apache.tools.ant;version=!,\
+   !com.sun.tools.ws.wscompile.*;version=!, \
+   !org.apache.tools.ant;version=!, \
+   !com.ibm.ws.jaxws.globalhandler, \
+   !com.ibm.ws.jaxws.threading, \
    org.apache.cxf.*;version="[3.2,4)", \
-   javax.annotation;version=!,\
-   javax.xml.soap;version=!,\
+   javax.annotation;version=!, \
+   javax.xml.soap;version=!, \
    *
 
 Private-Package:\
@@ -134,8 +133,8 @@ Service-Component: \
   com.ibm.ws.jaxws.threading.libertyThreadPoolAdapter; \
      activate:=activate; \
      deactivate:=deactivate; \
-     scheduledExecutorService=java.util.concurrent.ScheduledExecutorService('service.vendor=IBM'); \
-     executorService=com.ibm.wsspi.threading.WSExecutorService('service.vendor=IBM'); \
+     scheduledExecutorService="java.util.concurrent.ScheduledExecutorService(service.vendor=IBM)"; \
+     executorService="com.ibm.wsspi.threading.WSExecutorService(service.vendor=IBM)"; \
      implementation:=com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter; \
      provide:='com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter'; \
      immediate:=true; \

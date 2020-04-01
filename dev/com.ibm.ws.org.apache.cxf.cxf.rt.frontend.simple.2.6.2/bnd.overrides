@@ -6,7 +6,6 @@ Bundle-Description: Apache CXF Runtime Simple Frontend, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2
 Bundle-Activator: com.ibm.ws.cxf.rt.frontend.simple.NoOpActivator
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
   !schemas.blueprint, \

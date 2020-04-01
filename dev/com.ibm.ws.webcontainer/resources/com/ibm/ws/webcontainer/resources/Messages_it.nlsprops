@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1603,3 +1603,14 @@ exception.occurred.while.running.ServletContainerInitializers.onStartup.useracti
 no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: Nessuna definizione servlet trovata per il nome servlet {0} nell''associazione filtro{1}.
 no.servlet.defined.for.servlet.filter.name.mapping.explanation=Il nome servlet \u00e8 utilizzato nell'associazione filtro, ma la sua definizione non \u00e8 definita.
 no.servlet.defined.for.servlet.filter.name.mapping.useraction=Definire il servlet utilizzato nell'associazione filtro servlet.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: Un nome cookie {0} con il valore attributo SameSite esistente {1} \u00e8 configurato con il nuovo valore {2}. Non viene aggiunto alcun attributo SameSite per questo cookie.
+duplicate.samesite.attribute.for.cookie.name.explanation=Un nome cookie non pu\u00f2 essere configurato per pi\u00f9 valori attributo SameSite. L'attributo non viene aggiunto per il cookie.
+duplicate.samesite.attribute.for.cookie.name.useraction=Controllare la configurazione del descrittore di distribuzione per assicurarsi che il nome cookie sia configurato per uno solo dei seguenti valori di attributo SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' o 'SameSiteCookies_Strict'. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Un nome cookie {0} configurato per il valore dell''attributo SameSite {1} \u00e8 stato precedentemente identificato come un duplicato. Non viene aggiunto alcun attributo SameSite per questo cookie.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=Un nome cookie non pu\u00f2 essere configurato per pi\u00f9 valori attributo SameSite. Questo nome cookie \u00e8 gi\u00e0 stato identificato come un duplicato.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=Controllare la configurazione del descrittore di distribuzione per assicurarsi che il nome cookie sia configurato per uno solo dei seguenti valori di attributo SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' o 'SameSiteCookies_Strict'. 

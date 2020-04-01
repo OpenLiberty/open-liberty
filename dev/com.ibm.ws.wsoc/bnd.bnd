@@ -52,8 +52,8 @@ Service-Component: \
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
     configuration-policy:=ignore;\
     immediate:=true;\
-    scheduledExecutorService=java.util.concurrent.ScheduledExecutorService('service.vendor=IBM'); \
-    executorService=java.util.concurrent.ExecutorService('service.vendor=IBM'); \
+    scheduledExecutorService='java.util.concurrent.ScheduledExecutorService(service.vendor=IBM)'; \
+    executorService='java.util.concurrent.ExecutorService(service.vendor=IBM)'; \
     injectionEngine=com.ibm.wsspi.injectionengine.InjectionEngine; \
     injectionService=com.ibm.ws.wsoc.injection.InjectionService; \
     injectionService12=com.ibm.ws.wsoc.injection.InjectionService12; \
@@ -64,7 +64,7 @@ Service-Component: \
     implementation:=com.ibm.ws.wsoc.WebSocketVersionServiceManager; \
     configuration-policy:=ignore;\
     immediate:=true;\
-    websocketFactoryService=com.ibm.ws.wsoc.external.WebSocketFactory('service.vendor=IBM'); \
+    websocketFactoryService='com.ibm.ws.wsoc.external.WebSocketFactory(service.vendor=IBM)'; \
     dynamic:='websocketFactoryService'; \
     optional:='websocketFactoryService'; \
     properties:="service.vendor=IBM", \
@@ -90,7 +90,6 @@ Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
   META-INF=resources/META-INF
   
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 instrument.classesExcludes: \
   com.ibm.ws.wsoc.Utils.class, \

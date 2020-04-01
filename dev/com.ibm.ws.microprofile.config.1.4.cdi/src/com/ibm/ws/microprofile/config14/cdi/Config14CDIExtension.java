@@ -52,26 +52,30 @@ public class Config14CDIExtension extends Config12CDIExtension implements Extens
         abd.addBean(converterBean);
     }
 
-    <T, X> void processObserverMethod(@Observes ProcessObserverMethod<T, X> pot) {
+    public <T, X> void processObserverMethod(@Observes ProcessObserverMethod<T, X> pot) {
         AnnotatedMethod<X> annotatedMethod = pot.getAnnotatedMethod();
-        List<AnnotatedParameter<X>> parameters = annotatedMethod.getParameters();
-        for (AnnotatedParameter<X> parameter : parameters) {
-            Type type = parameter.getBaseType();
-            Set<Annotation> annotations = parameter.getAnnotations();
-            for (Annotation annotation : annotations) {
-                if (ConfigProperty.class.isAssignableFrom(annotation.annotationType())) {
-                    ConfigProperty configProperty = (ConfigProperty) annotation;
-                    String propertyName = configProperty.name();
-                    String defaultValue = configProperty.defaultValue();
+        if (annotatedMethod != null) {
+            List<AnnotatedParameter<X>> parameters = annotatedMethod.getParameters();
+            for (AnnotatedParameter<X> parameter : parameters) {
+                Type type = parameter.getBaseType();
+                Set<Annotation> annotations = parameter.getAnnotations();
+                for (Annotation annotation : annotations) {
+                    if (ConfigProperty.class.isAssignableFrom(annotation.annotationType())) {
+                        ConfigProperty configProperty = (ConfigProperty) annotation;
+                        String propertyName = configProperty.name();
+                        String defaultValue = configProperty.defaultValue();
 
-                    ClassLoader classLoader = annotatedMethod.getDeclaringType().getJavaClass().getClassLoader();
+                        ClassLoader classLoader = annotatedMethod.getDeclaringType().getJavaClass().getClassLoader();
 
-                    Throwable configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
-                    if (configException != null) {
-                        Tr.error(tc, "unable.to.resolve.observer.injection.point.CWMCG5005E", annotatedMethod.getJavaMember(), configException);
+                        Throwable configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
+                        if (configException != null) {
+                            Tr.error(tc, "unable.to.resolve.observer.injection.point.CWMCG5005E", annotatedMethod.getJavaMember(), configException);
+                        }
                     }
                 }
             }
+        } else {
+            Tr.error(tc, "unable.to.process.observer.injection.point.CWMCG5006E", pot.getObserverMethod().getBeanClass());
         }
     }
 }

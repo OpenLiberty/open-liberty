@@ -1,0 +1,66 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>appSecurity-2.0</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>concurrent-1.0</feature>
+      <feature>jca-1.7</feature>
+      <feature>jndi-1.0</feature>
+      <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <application location="derbyRAApp.ear"/>
+
+    <resourceAdapter id="DerbyLMRA" location="${server.config.dir}/connectors/DerbyLMRA.rar"/>
+
+    <!-- injected into application, but otherwise not used by tests -->
+    <adminObject jndiName="eis/bootstrapContext">
+      <properties.DerbyLMRA.BootstrapContext/>
+    </adminObject>
+
+    <!-- injected into application, but otherwise not used by tests -->
+    <adminObject jndiName="eis/map1">
+      <properties.DerbyLMRA.Map tableName="MAP1"/>
+    </adminObject>
+
+    <connectionFactory jndiName="eis/ds1">
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <properties.DerbyLMRA/>
+    </connectionFactory>    
+
+    <jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntryName">
+      <loginModule className="com.ibm.ws.jca.fat.security.login.TestLoginModule" classProviderRef="DerbyLMRA"/>
+    </jaasLoginContextEntry>
+
+    <!-- "APP" is the default schema for Derby -->
+    <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>
+
+    <!-- TODO go through these copied permissions once we are properly loading the login module from the resource adapter -->
+    <!-- 
+    NOTE: for this bucket to run cleanly with j2sec enabled with IBM JDK, the following permission must 
+    be manually granted in the java.policy file at $JAVA_HOME/jre/lib/security/java.policy: 
+    permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
+    -->
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/connectors/DerbyLMRA.rar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntryName"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.HashMap" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="javax.management.MBeanPermission" name="*" actions="*"/>
+    <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+</server>

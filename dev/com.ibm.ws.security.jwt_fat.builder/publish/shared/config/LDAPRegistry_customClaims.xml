@@ -1,0 +1,76 @@
+<server>
+
+	<ldapRegistry
+		id="ldap"
+		realm="SampleLdapIDSRealm"
+		host="localhost"
+		port="${MY_LDAP_PORT}"
+		ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		bindDN="uid=admin,ou=system"
+		bindPassword="secret"
+		ldapType="Custom"
+		idsFilters="ibm_dir_server"
+		searchTimeout="8m"
+	>
+	</ldapRegistry>
+	
+	<!-- 
+		<ldapRegistry
+		id="ldap"
+		realm="SampleLdapIDSRealm"
+		host="${ldap.server.4.name}"
+		port="${ldap.server.4.port}"
+		ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		bindDN="cn=root"
+		bindPassword="rootpwd"
+		ldapType="IBM Tivoli Directory Server"
+		idsFilters="ibm_dir_server"
+		searchTimeout="8m"
+	>
+		<failoverServers name="failoverLdapServers">
+			<server
+				host="${ldap.server.8.name}"
+				port="${ldap.server.8.port}" />
+		</failoverServers>
+	</ldapRegistry>
+-->
+	<!-- Yes, this is valid XML -->
+
+	<idsLdapFilterProperties
+		id="ibm_dir_server"
+		userFilter="(&amp;(uid=%v)(objectclass=ePerson))"
+		groupFilter="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))"
+		userIdMap="*:uid"
+		groupIdMap="*:cn"
+		groupMemberIdMap="ibm-allGroups:member;ibm-allGroups:uniqueMember;groupOfNames:member;groupOfUniqueNames:uniqueMember"
+	>
+	</idsLdapFilterProperties>
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+	<authorization-roles id="com.ibm.ws.security.oidc10">
+		<security-role name="authenticated">
+			<user name="testuser" />
+			<group name="group1" />
+		</security-role>
+		<security-role name="clientManager">
+			<user name="testuser" />
+			<group name="group1" />
+		</security-role>
+	</authorization-roles>
+
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<group name="group1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+</server>

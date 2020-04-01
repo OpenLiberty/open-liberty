@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat.sharedTests;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -26,6 +27,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -53,6 +55,9 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
 
     @Server("com.ibm.ws.security.mp.jwt.fat.builder")
     public static LibertyServer jwtBuilderServer;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
 
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
@@ -84,7 +89,7 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
 
     /**
      * Deploy the Apps that we'll use to test LoginConfig settings
-     * 
+     *
      * @param server - the server to install the apps on
      * @throws Exception
      */
@@ -106,7 +111,7 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
      * Only tests that use form login call this method.
      * If ignoreApplicationAuthMethod is true, the server will always use mp_jwt, but, if it's false and there is login-config set
      * to MP-JWT, it'll use whatever login-config is set to. This method is called in a flow that expects to use FORM_LOGIN
-     * 
+     *
      * @param _testName
      *            - test case name
      * @param builtToken
@@ -150,7 +155,7 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
      * Depending on the the config and settings in the app, we expect access to the app, or a 401. This method makes sure that
      * we access the correct app, or get a 401 as expected. (it does check for a failure when success is expected, and for success
      * when a failure is expected)
-     * 
+     *
      * @param rootContext
      *            - the apps root context
      * @param app

@@ -55,6 +55,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
     private String authenticatedId = null;
     private String securityName = null;
     private boolean collectiveCert = false;
+    public static ThreadLocal<Boolean> collectiveCertificate = new ThreadLocal<Boolean>();
 
     /**
      * Gets the required Callback objects needed by this login module.
@@ -227,6 +228,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
      */
     private void handleCollectiveLogin(X509Certificate certChain[], CollectiveAuthenticationPlugin plugin,
                                        boolean collectiveCert) throws InvalidNameException, AuthenticationException, Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.debug(tc, "inbound-collectiveCertificate=" + CertificateLoginModule.collectiveCertificate.get());
         // If the chain is not authenticated, it will throw an AuthenticationException
         plugin.authenticateCertificateChain(certChain, collectiveCert);
         X509Certificate cert = certChain[0];
@@ -237,6 +239,8 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         username = x509Subject.getName();
         authenticatedId = x509Subject.getName();
         addCredentials(accessId);
+        collectiveCertificate.set(true);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.debug(tc, "collectiveCertificate=" + CertificateLoginModule.collectiveCertificate.get());
     }
 
     /**

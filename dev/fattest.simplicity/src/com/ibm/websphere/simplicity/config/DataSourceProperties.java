@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ public class DataSourceProperties extends ConfigElement {
     public static final String INFORMIX_JDBC = "properties.informix";
     public static final String ORACLE_JDBC = "properties.oracle";
     public static final String ORACLE_UCP = "properties.oracle.ucp";
+    public static final String POSTGRESQL = "properties.postgresql";
     public static final String DATADIRECT_SQLSERVER = "properties.datadirect.sqlserver";
     public static final String MICROSOFT_SQLSERVER = "properties.microsoft.sqlserver";
     public static final String SYBASE = "properties.sybase";

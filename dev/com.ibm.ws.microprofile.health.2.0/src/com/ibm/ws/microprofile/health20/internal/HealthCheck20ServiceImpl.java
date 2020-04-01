@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,7 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
             if (!appTracker.isStarted(appName)) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): Application : " + appName + " has not started yet.");
-                if (healthCheckProcedure == HealthCheckConstants.HEALTH_CHECK_READY || healthCheckProcedure == HealthCheckConstants.HEALTH_CHECK_ALL) {
+                if (!(healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE))) {
                     hcHttpResponseBuilder.setOverallState(State.DOWN);
                     // Keep track of the unstarted applications names
                     if (!unstartedAppsSet.contains(appName)) {

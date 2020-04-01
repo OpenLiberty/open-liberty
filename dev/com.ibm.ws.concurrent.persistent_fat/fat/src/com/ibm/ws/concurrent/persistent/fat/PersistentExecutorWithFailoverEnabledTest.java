@@ -12,7 +12,6 @@ package com.ibm.ws.concurrent.persistent.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -25,7 +24,6 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
@@ -45,8 +43,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
     
-    @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     /**
      * Before running any tests, start the server
@@ -73,8 +70,8 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("2h30m"); // the test case does not expect polling, so set a large value that will never be reached
-        myScheduler.setRetryInterval("6s");
+        myScheduler.setInitialPollDelay("2s");
+        myScheduler.setPollInterval("2s500ms"); // a couple of tests require polling in order to perform retries
         myScheduler.setMissedTaskThreshold("6s");
         myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
@@ -95,9 +92,13 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
             if (server != null)
                 try {
                     if (server.isStarted())
-                    server.stopServer("CWWKC1500W", //Persistent Executor Rollback
-                                      "CWWKC1510W", //Persistent Executor Rollback and Failed
-                                      "DSRA0174W"); //Generic Datasource Helper
+                        server.stopServer("CWWKC1500W", //Task rolled back
+                                          "CWWKC1501W", //Task rolled back due to failure ...
+                                          "CWWKC1502W", //Task rolled back, retry time unspecified
+                                          "CWWKC1503W", //Task rolled back due to failure ..., retry time unspecified
+                                          "CWWKC1510W", //Task rolled back and aborted
+                                          "CWWKC1511W", //Task rolled back and aborted. Failure is ...
+                                          "DSRA0174W"); //Generic Datasource Helper
                 } finally {
                     if (originalConfig != null)
                         server.updateServerConfiguration(originalConfig);

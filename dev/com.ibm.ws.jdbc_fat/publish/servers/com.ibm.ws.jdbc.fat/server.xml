@@ -11,6 +11,10 @@
 <server>
 <!-- All datasources that have fat.modify="true" will be modified at test
 		run time to run against alternative databases. -->
+		
+<!-- Derby database has two save locations
+	${shared.resource.dir}/data/jdbcfat - for datasources enlisted in database rotation
+	${shared.resource.dir}/data/derbyfat - for datasources that always run against derby -->
 
     <featureManager>
       <feature>componenttest-1.0</feature>
@@ -30,7 +34,7 @@
 
 	<!-- Test: library + nested fileset -->
     <library id="AutomaticDerbyLibrary">
-      <fileset dir="${shared.resource.dir}/lib/AutomaticDerbyLibrary" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/AutomaticDerbyLibrary" includes="derby.jar"/>
     </library>
     
 	<!-- Test: nested Library + anonymous driver -->
@@ -149,8 +153,8 @@
     </dataSource>
     
     <!-- This is a Derby-only data source -->
-    <dataSource id="dsfat5derby" jndiName="jdbc/dsfat5" jdbcDriverRef="Derby" connectionManagerRef="conMgr5" containerAuthDataRef="derbyAuth1" queryTimeout="30s" syncQueryTimeoutWithTransactionTimeout="true">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create"/> 
+    <dataSource id="dsfat5derby" jndiName="jdbc/dsfat5" jdbcDriverRef="Derby" connectionManagerRef="conMgr5" queryTimeout="30s" syncQueryTimeoutWithTransactionTimeout="true">
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> 
     </dataSource>
 	
 	<!-- ### dsfat6, dsfat7, dsfat8, dsfat9 are defined via @DataSourceDefinition in DataSourceTestServlet
@@ -248,7 +252,7 @@
     <javaPermission codebase="${shared.resource.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}anonymous/${env.ANON_DRIVER}" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}lib/AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
 	
 	<!-- Login module -->
@@ -261,6 +265,10 @@
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
 	<!-- Postgres and SQLServer permission to make a basic query-->
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+
+	<!-- Postgres permission during commit cycle -->
+	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 	
     <variable name="onError" value="FAIL"/>
 </server>

@@ -72,6 +72,10 @@ Service-Component: \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.SSOTokenBytesCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
     properties:="service.vendor=IBM", \
+  com.ibm.ws.security.authentication.internal.cache.keyproviders.X509CertCacheKeyProvider; \
+    implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.X509CertCacheKeyProvider; \
+    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
+    properties:="service.vendor=IBM", \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.CustomCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.CustomCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \

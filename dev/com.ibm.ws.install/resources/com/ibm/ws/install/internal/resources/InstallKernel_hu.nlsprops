@@ -839,6 +839,14 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Futtassa a featureUtility par
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: A server.xml f\u00e1jlban a k\u00f6vetkez\u0151 felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok vannak megadva, \u00e9s ezek nem lesznek telep\u00edtve: {0}
 
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: A(z) {0} \u00e9s {1} szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES.explanation=A szolg\u00e1ltat\u00e1sok nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES.useraction=T\u00e1vol\u00edtsa el az egyik szolg\u00e1ltat\u00e1st, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: A(z) {0} \u00e9s {1} singleton szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=A szolg\u00e1ltat\u00e1sok nem telep\u00edthet\u0151k egyidej\u0171leg.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=T\u00e1vol\u00edtsa el az egyik szolg\u00e1ltat\u00e1st, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: A szolg\u00e1ltat\u00e1s let\u00f6lt\u00e9se siker\u00fclt.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=A szolg\u00e1ltat\u00e1s le lett t\u00f6ltve.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Semmit sem kell tennie.

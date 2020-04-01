@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2007, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ public class NBAccept {
      */
     public void registerPort(TCPPort endPoint) throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "registerPort: " + endPoint.getServerSocket());
+            Tr.entry(tc, "registerPort", endPoint.getServerSocket());
         }
 
         synchronized (this) {
@@ -147,7 +147,7 @@ public class NBAccept {
      */
     public void removePort(TCPPort endPoint) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "removePort: " + endPoint.getServerSocket());
+            Tr.entry(tc, "removePort", endPoint.getServerSocket());
         }
 
         synchronized (this) {
@@ -168,7 +168,7 @@ public class NBAccept {
 
                 synchronized (workSync) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Passing remove to selector; " + endPoint.getServerSocket());
+                        Tr.event(this, tc, "Passing remove to selector: " + endPoint.getServerSocket());
                     }
                     accept.addWork(work);
 

@@ -46,7 +46,7 @@ public class JsonbServlet extends FATServlet {
         t.b = 42;
         executor.submit(() -> deliveryBean.sendMessage(t));
 
-        List<Message<TestData>> receivedMessages = receptionBean.getReceivedMessages(1, Duration.ofSeconds(10));
+        List<Message<TestData>> receivedMessages = receptionBean.assertReceivedMessages(1, Duration.ofSeconds(10));
         TestData received = receivedMessages.get(0).getPayload();
 
         assertEquals(t, received);

@@ -581,7 +581,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      *
      * @param code
      * @param failure
-     * @param         message/body
+     * @param message/body
      */
     @FFDCIgnore(IOException.class)
     private void sendResponse(StatusCodes code, String detail, Exception failure, boolean addAddress) {
@@ -746,7 +746,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
             if (scheme == null && isc != null && !isc.useForwardedHeaders()) {
                 //if remoteIp is not enabled, still verify for the x-forwarded-proto
-                scheme = request.getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+                scheme = getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
             }
 
             if (scheme == null && request.getHeader(HttpHeaderKeys.HDR_HOST.getName()) != null) {

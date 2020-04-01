@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.config.dsprops.testrules.DataSourcePropertie
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -63,9 +64,9 @@ public class FATServletClient {
     /**
      * Runs a servlet test method.
      *
-     * @param server the started server containing the started application
+     * @param server   the started server containing the started application
      * @param testName the {@code @Rule public TestName testName} field
-     * @param path the servlet context and path (e.g., {@code "test"})
+     * @param path     the servlet context and path (e.g., {@code "test"})
      */
     public static void runTest(LibertyServer server, String path, TestName testName) throws Exception {
         runTest(server, path, testName.getMethodName());
@@ -74,8 +75,8 @@ public class FATServletClient {
     /**
      * Runs a servlet test method.
      *
-     * @param server the started server containing the started application
-     * @param path the servlet context and path (e.g., {@code "test"})
+     * @param server   the started server containing the started application
+     * @param path     the servlet context and path (e.g., {@code "test"})
      * @param testName the servlet test method name
      */
     public static void runTest(LibertyServer server, String path, String testName) throws Exception {
@@ -85,9 +86,9 @@ public class FATServletClient {
     /**
      * Runs a servlet test method and verifies that the expected response code was returned.
      *
-     * @param server the started server containing the started application
-     * @param path the servlet context and path (e.g., {@code "test"})
-     * @param testName the servlet test method name
+     * @param server             the started server containing the started application
+     * @param path               the servlet context and path (e.g., {@code "test"})
+     * @param testName           the servlet test method name
      * @param allowedReturnCodes an array of allowed HttpUrlConnection response codes
      */
     public static int runTestForResponseCode(LibertyServer server, String path, String testName) throws Exception {
@@ -100,10 +101,10 @@ public class FATServletClient {
     /**
      * Runs a test in the servlet and returns the servlet output.
      *
-     * @param server the started server containing the started application
-     * @param the url path (e.g. myApp/myServlet)
-     * @param queryString query string including at least the test name
-     * @return output of the servlet
+     * @param  server      the started server containing the started application
+     * @param  the         url path (e.g. myApp/myServlet)
+     * @param  queryString query string including at least the test name
+     * @return             output of the servlet
      */
     public StringBuilder runTestWithResponse(LibertyServer server, String path, String queryString) throws Exception {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + getPathAndQuery(path, queryString));
@@ -139,11 +140,30 @@ public class FATServletClient {
     }
 
     /**
+     * Returns the test method name without the RepeatTests suffix.
+     *
+     * For example, when using RepeatTests with EE7_FEATURES, the suffix _EE7_FEATURES is added
+     * to provide unique test names for junit reporting purposes. The simple test method name
+     * dose not include the suffix.
+     *
+     * @return test method name without the RepeatTests suffix.
+     */
+    public String getTestMethodSimpleName() {
+        String testMethodName = testName.getMethodName();
+        String currentAction = RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        if (currentAction != null && testMethodName.endsWith(currentAction)) {
+            testMethodName = testMethodName.substring(0, testMethodName.length() - (currentAction.length() + 1));
+        }
+
+        return testMethodName;
+    }
+
+    /**
      * Return the path and query for a servlet test method URL.
      *
-     * @param path the servlet context and path (e.g., {@code "test"})
-     * @param testName the test name
-     * @return the path and query (e.g., {@code "/test?testMethod=test"})
+     * @param  path     the servlet context and path (e.g., {@code "test"})
+     * @param  testName the test name
+     * @return          the path and query (e.g., {@code "/test?testMethod=test"})
      */
     public static String getPathAndQuery(String path, String testName) {
         if (!path.contains("?")) {

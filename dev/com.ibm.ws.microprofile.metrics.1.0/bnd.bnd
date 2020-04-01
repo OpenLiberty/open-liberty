@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: MicroProfile Metrics 1.0
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.1.0
@@ -22,7 +20,6 @@ Bundle-Description: MicroProfile Metrics 1.0, version ${bVersion}
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations-inherit: true
 -dsannotations: \

@@ -30,11 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.internal.ExceptionUtils;
+import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.LicenseUpgradeUtility;
@@ -83,7 +82,12 @@ public class FeatureUtility {
 
         this.fromDir = builder.fromDir; //this can be overwritten by the env prop
         // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
-        
+        List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
+        Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
+
+        this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
+        Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
+        jsonsRequired.addAll(Arrays.asList("io.openliberty.features", "com.ibm.websphere.appserver.features"));
 
         this.esaFile = builder.esaFile;
         this.noCache = builder.noCache;
@@ -96,6 +100,7 @@ public class FeatureUtility {
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }
+
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
         for (String key: envMapKeys) {
@@ -182,12 +187,8 @@ public class FeatureUtility {
         Set<String> featuresRequired = new HashSet<>();
 
         String openLibertyVersion = getLibertyVersion();
-        String groupId, artifactId, version, packaging;
+        String groupId, artifactId, version, packaging = null;
         for (String feature : featureNames) {
-            groupId = null;
-            artifactId = null;
-            version = null;
-            packaging = null;
             String[] mavenCoords = feature.split(":");
             switch(mavenCoords.length){
                 case 1: // artifactId
@@ -243,10 +244,10 @@ public class FeatureUtility {
         if(!"esa".equals(packaging)){
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_PACKAGING", feature));
         }
-        // block closed liberty features
-        if("com.ibm.websphere.appserver.features".equals(groupId)){
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
-        }
+//        // block closed liberty features
+//        if("com.ibm.websphere.appserver.features".equals(groupId)){
+//            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
+//        }
 
     }
 

@@ -27,8 +27,8 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.confi
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RequestRetryCountingBean;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RetryTesterServlet;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.WarRetryCountingBean;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;

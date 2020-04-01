@@ -96,7 +96,7 @@ public class SibDiagnosticModule extends DiagnosticModule
 
 
   /** Helper for getting line separator on the executing platform */                        //255802
-  protected static final String lineSeparator = System.getProperty("line.separator", "\n"); //255802
+  protected static final String lineSeparator = System.lineSeparator();
 
   /** In Collections, Maps and Arrays - how many objects to trace */                        //255802
   protected int multiple_object_count_to_ffdc = 20;                                         //255802
