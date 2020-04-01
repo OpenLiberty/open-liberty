@@ -12,6 +12,7 @@ package com.ibm.ws.install.featureUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
@@ -35,9 +36,20 @@ import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.LicenseUpgradeUtility;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
+import com.ibm.ws.kernel.boot.ReturnCode;
+import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
+import com.ibm.ws.repository.connections.ProductDefinition;
+import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
+import com.ibm.ws.repository.exceptions.RepositoryException;
+import com.ibm.ws.repository.resources.RepositoryResource;
 //import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
@@ -51,12 +63,15 @@ public class FeatureUtility {
     private final Boolean noCache;
     private Boolean isDownload;
     private Boolean isBasicInit;
+    private final Boolean licenseAccepted;
     private final List<String> featuresToInstall;
+    private final List<String> jsons;
     private static String openLibertyVersion;
     private final Logger logger;
     private ProgressBar progressBar;
 
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+    private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
 
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
@@ -67,7 +82,6 @@ public class FeatureUtility {
 
         this.fromDir = builder.fromDir; //this can be overwritten by the env prop
         // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
-
         List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
         Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
 
@@ -77,6 +91,7 @@ public class FeatureUtility {
 
         this.esaFile = builder.esaFile;
         this.noCache = builder.noCache;
+        this.licenseAccepted = builder.licenseAccepted;
 
 
         map = new InstallKernelMap();
@@ -103,8 +118,22 @@ public class FeatureUtility {
             fine("Features installed from the remote repository will not be cached locally");
         }
         map.put("cleanup.needed", noCache);
+        this.jsons = (List<String>) builder.jsons; //TODO remove?
+        
+        fine("these are the jsons group ids: " + this.jsons);
+        List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
+        Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
+        fine("jsonsandfeatures: " + jsonsAndFeatures.toString());
+        this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
+        Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
         //log all the env props we find or don't find to debug
+        if (this.jsons != null) {
+        	Set<String> additionaljsons = new HashSet<String>(this.jsons);
+            jsonsRequired.addAll(additionaljsons);
+        }
+        
         List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
+        
         updateProgress(progressBar.getMethodIncrement("fetchJsons"));
         fine("Finished finding jsons");
 
@@ -116,24 +145,11 @@ public class FeatureUtility {
     /**
      * Initialize the Install kernel map.
      *
-     * @throws IOException
-     */
-    private void initializeMap() throws IOException {
-        map.put("runtime.install.dir", Utils.getInstallDir());
-        map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
-        map.put("license.accept", true);
-        map.get("install.kernel.init.code");
-        map.put("is.feature.utility", true);
-
-    }
-
-    /**
-     * Initialize the Install kernel map.
-     *
      * @param jsonPaths
      * @throws IOException
      */
-    private void initializeMap(List<File> jsonPaths) throws IOException {
+    @SuppressWarnings("restriction")
+	private void initializeMap(List<File> jsonPaths) throws IOException {
         map.put("is.feature.utility", true);
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
@@ -149,7 +165,7 @@ public class FeatureUtility {
             map.put("install.individual.esas", true);
         }
 
-        map.put("license.accept", true);
+        map.put("license.accept", licenseAccepted);
         map.get("install.kernel.init.code");
 
     }
@@ -206,6 +222,7 @@ public class FeatureUtility {
             jsonsRequired.add(groupId);
             featuresRequired.add(artifactId);
         }
+        jsonsRequired.add(WEBSPHERE_LIBERTY_GROUP_ID);
         jsonsAndFeatures.put("jsons", jsonsRequired);
         jsonsAndFeatures.put("features", featuresRequired);
 
@@ -277,9 +294,20 @@ public class FeatureUtility {
     @SuppressWarnings("unchecked")
     public void installFeatures() throws InstallException, IOException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
+        if (fromDir != null) {
+        	map.put("from.repo", fromDir.toString());
+        }
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         // fine("resolved features: " + resolvedFeatures);
         checkResolvedFeatures(resolvedFeatures);
+        boolean upgraded = (boolean) map.get("upgrade.complete");
+        if (upgraded) {
+        	LicenseUpgradeUtility luu = new LicenseUpgradeUtility.LicenseUpgradeUtilityBuilder().setFeatures(featuresToInstall).setAcceptLicense(licenseAccepted).build();
+            if (!luu.handleLicenses()) {
+                map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+            }
+        }
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
@@ -522,8 +550,10 @@ public class FeatureUtility {
     public static class FeatureUtilityBuilder {
         File fromDir;
         Collection<String> featuresToInstall;
+        Collection<String> jsons;
         File esaFile;
         boolean noCache;
+        boolean licenseAccepted;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
@@ -539,9 +569,19 @@ public class FeatureUtility {
             this.noCache = noCache;
             return this;
         }
+        
+        public FeatureUtilityBuilder setlicenseAccepted(Boolean licenseAccepted) {
+            this.licenseAccepted = licenseAccepted;
+            return this;
+        }
 
         public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
             this.featuresToInstall = featuresToInstall;
+            return this;
+        }
+        
+        public FeatureUtilityBuilder setJsons(Collection<String> jsons) {
+            this.jsons = jsons;
             return this;
         }
 
@@ -590,7 +630,30 @@ public class FeatureUtility {
         }
         return result;
     }
-    
 
+	public void generateJson(String targetJsonFile, List<String> jsonFiles) throws IOException, RepositoryException, InstallException {
+		Path targetDir = Files.createTempDirectory("generatedJson");
+		Map<String, String> shortNameMap = new HashMap<String, String>();
+		List<File> jsons = new ArrayList<File>();
+		for (String json: jsonFiles) {
+			jsons.add(new File(json));
+		}
+		map.put("individual.esas", jsons);
+		map.generateJson(targetDir, shortNameMap);
+		fine("targetDir: " + targetDir.toString());
+		File tempFile = new File(targetDir.toString() + "/SingleJson.json");
+		fine("targetJsonFile: " + targetJsonFile.toString());
+		File targetFile = new File(targetJsonFile);
+		FileInputStream instream = new FileInputStream(tempFile);
+		FileOutputStream outstream = new FileOutputStream(targetFile);
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = instream.read(buffer)) > 0){
+	    	outstream.write(buffer, 0, length);
+	    }
+		instream.close();
+	    outstream.close();
+	}
+    
 
 }
