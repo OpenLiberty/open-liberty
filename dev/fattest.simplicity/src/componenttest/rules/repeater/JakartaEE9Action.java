@@ -16,6 +16,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -147,9 +148,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     /**
      * Invokes the Jakarta transformer on a given application (ear or war).
      * After completion, the transformed application will be available at the $appPath,
-     * and the original application will be available at $appPath.backup
+     * and the original application will be available at <server>/backup/
      *
-     * @param appPath The application path to be transformed to Jakarta
+     * @param  appPath     The application path to be transformed to Jakarta
      */
     public static void transformApp(Path appPath) {
         final String m = "transformApp";
@@ -174,22 +175,22 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
         Path outputPath = appPath.resolveSibling(appPath.getFileName() + ".jakarta");
 
-        //create backup directory
+        // create backup directory
         Path serverPath = appPath.getParent().getParent();
         Path backupPath = serverPath.resolve("backup");
-            try {
-                if (!Files.exists(backupPath)) {
-                    Files.createDirectory(backupPath); // throws IOException
-                }
-             } catch (IOException e) {
-                 Log.info(c, m, "Unable to create backup directory.");
-                 Log.error(c, m, e);
-                 throw new RuntimeException(e);
-             }
+        try {
+            if (!Files.exists(backupPath)) {
+                Files.createDirectory(backupPath); // throws IOException
+            }
+        } catch (IOException e) {
+            Log.info(c, m, "Unable to create backup directory.");
+            Log.error(c, m, e);
+            throw new RuntimeException(e);
+        }
 
         String userDir = System.getProperty("user.dir");
         String transformerRulesRoot = userDir.substring(0, userDir.lastIndexOf("/dev/")) + "/dev/wlp-jakartaee-transform/rules/";
-
+ 
         try {
             // Invoke the jakarta transformer
             String[] args = new String[11];
@@ -207,9 +208,15 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
             JakartaTransformer.main(args);
 
-            // Swap out the transformed file with the original
             if (outputPath.toFile().exists()) {
-                Files.move(appPath, backupPath);
+
+                Path backupAppPath = backupPath.resolve(appPath.getFileName());
+                if(!Files.exists(backupAppPath)){
+                    Files.createFile(backupAppPath);
+                }
+                //move original to backup
+                Files.move(appPath, backupAppPath, StandardCopyOption.REPLACE_EXISTING);
+                //rename jakarta app to the original filename 
                 Files.move(outputPath, appPath);
             } else {
                 throw new RuntimeException("Jakarta transformer failed for: " + appPath);
