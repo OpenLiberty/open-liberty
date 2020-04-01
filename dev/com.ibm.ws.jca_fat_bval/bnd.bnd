@@ -14,7 +14,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/jca-bval/src,\
-	test-resourceadapters/bvalRA/src
+	test-resourceadapters/BValRA/src
 
 fat.project: true
 

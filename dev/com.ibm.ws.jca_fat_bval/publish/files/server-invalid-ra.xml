@@ -21,7 +21,7 @@
   
   <application type="war" id="jca-bval" name="jca-bval" location="jca-bval.war" />
 
-  <resourceAdapter id="BValRA" location="${server.config.dir}/connectors/BValRA.rar">
+  <resourceAdapter id="BValRA" location="${server.config.dir}connectors/BValRA.rar">
     <properties.BValRA xmlBValIntValue="-550"/>
   </resourceAdapter>
 
