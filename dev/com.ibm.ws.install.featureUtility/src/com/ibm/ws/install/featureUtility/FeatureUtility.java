@@ -120,17 +120,17 @@ public class FeatureUtility {
         map.put("cleanup.needed", noCache);
         this.jsons = (List<String>) builder.jsons; //TODO remove?
         
-        fine("these are the jsons group ids: " + this.jsons);
-        List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
-        Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
-        fine("jsonsandfeatures: " + jsonsAndFeatures.toString());
-        this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
-        Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
+        //fine("these are the jsons group ids: " + this.jsons);
+        //List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
+        //Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
+        //fine("jsonsandfeatures: " + jsonsAndFeatures.toString());
+        //this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
+        //Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
         //log all the env props we find or don't find to debug
-        if (this.jsons != null) {
-        	Set<String> additionaljsons = new HashSet<String>(this.jsons);
-            jsonsRequired.addAll(additionaljsons);
-        }
+        //if (this.jsons != null) {
+        //	Set<String> additionaljsons = new HashSet<String>(this.jsons);
+        //    jsonsRequired.addAll(additionaljsons);
+        //}
         
         List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
         
