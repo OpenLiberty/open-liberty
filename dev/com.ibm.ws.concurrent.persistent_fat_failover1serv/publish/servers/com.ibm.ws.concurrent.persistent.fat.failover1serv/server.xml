@@ -37,8 +37,9 @@
   <library id="JDBCLib">
     <fileset dir="${shared.resource.dir}/derbyclient" includes="derbyclient.jar"/>
   </library>
-  
-  <javaPermission codebase="${shared.resource.dir}/derby/derbyclient.jar" className="java.security.AllPermission"/>
+
+  <javaPermission codebase="${shared.resource.dir}/derbyclient/derbyclient.jar" className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  <javaPermission codebase="${shared.resource.dir}/derbyclient/derbyclient.jar" className="java.security.AllPermission"/>
   <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 
   <variable name="onError" value="FAIL"/>
