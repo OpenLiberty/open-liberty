@@ -111,7 +111,7 @@ import com.ibm.ws.microprofile.metrics.cdi23.helper.Utils;
 
     @Produces
     private static SimpleTimer simpleTimer(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
-        Metadata metadata = metricName.metadataOf(ip, Timer.class);
+        Metadata metadata = metricName.metadataOf(ip, SimpleTimer.class);
         String[] tags = metricName.tagOf(ip);
         MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
         extension.addMetricID(mid);
