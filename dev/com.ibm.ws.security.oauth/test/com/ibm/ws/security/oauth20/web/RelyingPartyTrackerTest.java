@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
@@ -41,16 +42,20 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
 
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
+    private final OAuth20Provider provider = mockery.mock(OAuth20Provider.class);
     private final WebAppSecurityConfig config = mockery.mock(WebAppSecurityConfig.class);
-    private final Cookie cookie = mockery.mock(Cookie.class);
+
+    private final String providerId = "myOAuthProvider";
+    private final String expectedCookiePath = "/oidc/endpoint/" + providerId;
+    private final String requestUri = expectedCookiePath + "/authorize";
 
     private ReferrerURLCookieHandler handler;
 
     RelyingPartyTracker tracker;
 
     class TestRelyingPartyTracker extends RelyingPartyTracker {
-        public TestRelyingPartyTracker(HttpServletRequest request, HttpServletResponse response) {
-            super(request, response);
+        public TestRelyingPartyTracker(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider) {
+            super(request, response, provider);
         }
 
         @Override
@@ -68,7 +73,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
         handler = new ReferrerURLCookieHandler(config);
-        tracker = new TestRelyingPartyTracker(request, response);
+        tracker = new TestRelyingPartyTracker(request, response, provider);
 
         // Set some expectations for things that don't overly matter for testing this class
         mockery.checking(new Expectations() {
@@ -79,9 +84,8 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
-                allowing(request).getPathInfo();
-                allowing(request).getRequestURI();
-                allowing(request).getRequestURL();
+                allowing(provider).getID();
+                will(returnValue(providerId));
             }
         });
     }
@@ -106,49 +110,119 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
             {
                 one(request).getCookies();
                 will(returnValue(null));
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
                 one(response).addCookie(with(any(Cookie.class)));
             }
         });
-        tracker.trackRelyingParty(clientId);
+        Cookie result = tracker.trackRelyingParty(clientId);
+
+        assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
+        // Each entry should be encoded, then the whole cookie value will be encoded
+        String expectedValue = tracker.encodeValue(tracker.encodeValue(clientId));
+        assertEquals("Created cookie does not have the correctly encoded value.", expectedValue, result.getValue());
+        assertEquals("Created cookie does not have the correct path.", expectedCookiePath, result.getPath());
+        assertTrue("Cookie should have the secure flag set, but didn't. Cookie was: " + result, result.getSecure());
     }
 
     @Test
     public void test_createNewRelyingPartyTrackingCookie_emptyClientId() {
         String clientId = "";
-        Cookie result = tracker.createNewRelyingPartyTrackingCookie(request, handler, clientId);
-        assertEquals("Created cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
-        assertEquals("Created cookie does not have the correctly encoded value.", clientId, result.getValue());
-        assertEquals("Created cookie does not have the correct path.", "/", result.getPath());
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        Cookie result = tracker.createNewRelyingPartyTrackingCookie(handler, clientId);
+
+        assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
+        assertEquals("Created cookie does not have an empty value as expected.", clientId, result.getValue());
     }
 
     @Test
     public void test_createNewRelyingPartyTrackingCookie_simpleClientId() {
         String clientId = "myClientId";
-        Cookie result = tracker.createNewRelyingPartyTrackingCookie(request, handler, clientId);
-        assertEquals("Created cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        Cookie result = tracker.createNewRelyingPartyTrackingCookie(handler, clientId);
+
+        assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
         String expectedValue = tracker.encodeValue(tracker.encodeValue(clientId));
         assertEquals("Created cookie does not have the correctly encoded value.", expectedValue, result.getValue());
-        assertEquals("Created cookie does not have the correct path.", "/", result.getPath());
     }
 
     @Test
     public void test_createNewRelyingPartyTrackingCookie_complexClientId() {
         String clientId = "my !@#$%^&*(),./ id";
-        Cookie result = tracker.createNewRelyingPartyTrackingCookie(request, handler, clientId);
-        assertEquals("Created cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        Cookie result = tracker.createNewRelyingPartyTrackingCookie(handler, clientId);
+
+        assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
         String expectedValue = tracker.encodeValue(tracker.encodeValue(clientId));
         assertEquals("Created cookie does not have the correctly encoded value.", expectedValue, result.getValue());
-        assertEquals("Created cookie does not have the correct path.", "/", result.getPath());
+    }
+
+    @Test
+    public void test_createCookie_emptyValue() {
+        String cookieValue = "";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        Cookie result = tracker.createCookie(handler, cookieValue);
+
+        assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
+        assertEquals("Created cookie does not have the correct value.", cookieValue, result.getValue());
+        assertEquals("Created cookie does not have the correct path.", expectedCookiePath, result.getPath());
+        assertTrue("Cookie should have the secure flag set, but didn't. Cookie was: " + result, result.getSecure());
+    }
+
+    @Test
+    public void test_createCookie_complexValue() {
+        String cookieValue = "my !@#$%^&*(),./ id";
+        // Cookie value will have certain characters encoded
+        String expectedValue = cookieValue.replace("%", "%25").replace(",", "%2C");
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        Cookie result = tracker.createCookie(handler, cookieValue);
+
+        assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
+        assertEquals("Created cookie does not have the correctly encoded value.", expectedValue, result.getValue());
+        assertEquals("Created cookie does not have the correct path.", expectedCookiePath, result.getPath());
+        assertTrue("Cookie should have the secure flag set, but didn't. Cookie was: " + result, result.getSecure());
     }
 
     @Test
     public void test_updateExistingTrackingCookie_nullValue() {
         Cookie trackingCookie = new Cookie("name", null);
         String clientId = "clientId";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
         Cookie result = tracker.updateExistingTrackingCookie(trackingCookie, clientId, handler);
-        assertEquals("Updated cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+
+        assertEquals("Updated cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
         String expectedValue = tracker.encodeValue(tracker.encodeValue(clientId));
         assertEquals("Updated cookie does not have the correct value.", expectedValue, result.getValue());
@@ -158,21 +232,35 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     public void test_updateExistingTrackingCookie_emptyValue() {
         Cookie trackingCookie = new Cookie("name", "");
         String clientId = "clientId";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
         Cookie result = tracker.updateExistingTrackingCookie(trackingCookie, clientId, handler);
-        assertEquals("Updated cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+
+        assertEquals("Updated cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
         String expectedValue = tracker.encodeValue(tracker.encodeValue(clientId));
         assertEquals("Updated cookie does not have the correct value.", expectedValue, result.getValue());
     }
 
     @Test
-    public void test_updateExistingTrackingCookie() {
+    public void test_updateExistingTrackingCookie_cookieAlreadyContainsEntries() {
         String client1 = "client1";
         String client2 = "client2";
         Cookie trackingCookie = new Cookie("name", tracker.encodeValue(tracker.encodeValue(client1) + "," + tracker.encodeValue(client2)));
         String clientId = "new client ID";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
         Cookie result = tracker.updateExistingTrackingCookie(trackingCookie, clientId, handler);
-        assertEquals("Updated cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+
+        assertEquals("Updated cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
         String expectedValue = tracker.encodeValue(tracker.encodeValue(client1) + "," + tracker.encodeValue(client2) + "," + tracker.encodeValue(clientId));
         assertEquals("Updated cookie does not have the correct value.", expectedValue, result.getValue());
@@ -182,20 +270,35 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     public void test_updateExistingCookieValue_nullExistingCookieValue() {
         String existingCookieValue = null;
         String clientId = "clientId";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
         Cookie result = tracker.updateExistingCookieValue(existingCookieValue, clientId, handler);
-        assertEquals("Updated cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+
+        assertEquals("Updated cookie does not have the correct name.", getExpectedCookieName(), result.getName());
+        // Each entry should be encoded, then the whole cookie value will be encoded
         String expectedValue = tracker.encodeValue(tracker.encodeValue(clientId));
         assertEquals("Updated cookie does not have the correct value.", expectedValue, result.getValue());
     }
 
     @Test
-    public void test_updateExistingCookieValue() {
+    public void test_updateExistingCookieValue_cookieAlreadyContainsEntries() {
         String client1 = "1";
         String client2 = "2";
         String existingCookieValue = tracker.encodeValue(tracker.encodeValue(client1) + "," + tracker.encodeValue(client2));
         String clientId = "3";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
         Cookie result = tracker.updateExistingCookieValue(existingCookieValue, clientId, handler);
-        assertEquals("Updated cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+
+        assertEquals("Updated cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         String expectedValue = tracker.encodeValue(tracker.encodeValue(client1) + "," + tracker.encodeValue(client2) + "," + tracker.encodeValue(clientId));
         assertEquals("Updated cookie does not have the correct value.", expectedValue, result.getValue());
     }
@@ -206,8 +309,15 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         String client2 = "2";
         String existingCookieValue = tracker.encodeValue(tracker.encodeValue(client1) + "," + tracker.encodeValue(client2));
         String clientId = client2;
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
         Cookie result = tracker.updateExistingCookieValue(existingCookieValue, clientId, handler);
-        assertEquals("Updated cookie does not have the correct name.", RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME, result.getName());
+
+        assertEquals("Updated cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         assertEquals("Updated cookie should have had the same value as the original cookie value.", existingCookieValue, result.getValue());
     }
 
@@ -297,6 +407,60 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     }
 
     @Test
+    public void test_getCookiePath_requestUriEmpty() {
+        String requestUri = "";
+        mockery.checking(new Expectations() {
+            {
+                allowing(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        String result = tracker.getCookiePath();
+        assertEquals("Result should have matched the original value.", requestUri, result);
+    }
+
+    @Test
+    public void test_getCookiePath_requestUriNoSlashes() {
+        String requestUri = "my request uri";
+        mockery.checking(new Expectations() {
+            {
+                allowing(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        String result = tracker.getCookiePath();
+        assertEquals("Result should have matched the original value.", requestUri, result);
+    }
+
+    @Test
+    public void test_getCookiePath_requestUriOneSlash() {
+        String firstPart = "myRequest";
+        String requestUri = firstPart + "/uri";
+        mockery.checking(new Expectations() {
+            {
+                allowing(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        String result = tracker.getCookiePath();
+        assertEquals("Result should have matched the request URI up to the last slash.", firstPart, result);
+    }
+
+    @Test
+    public void test_getCookiePath_requestUriMultipleSlashes() {
+        String firstPart = "my/request/with/multiple";
+        String requestUri = firstPart + "/slashes";
+        mockery.checking(new Expectations() {
+            {
+                allowing(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        String result = tracker.getCookiePath();
+        assertEquals("Result should have matched the request URI up to the last slash.", firstPart, result);
+    }
+
+    @Test
     public void test_encodeValue_emptyInput() {
         String input = "";
         String result = tracker.encodeValue(input);
@@ -331,6 +495,10 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         String result = tracker.decodeValue(input);
         String expectedResult = "1,2&3|4";
         assertEquals("Decoding value did not match the expected value.", expectedResult, result);
+    }
+
+    private String getExpectedCookieName() {
+        return RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME + "_" + providerId.hashCode();
     }
 
 }

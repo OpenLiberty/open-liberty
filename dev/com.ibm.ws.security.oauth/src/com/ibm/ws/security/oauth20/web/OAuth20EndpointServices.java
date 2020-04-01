@@ -768,7 +768,7 @@ public class OAuth20EndpointServices {
         }
 
         if (provider.isTrackRelyingParties()) {
-            RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response);
+            RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response, provider);
             rpTracker.trackRelyingParty(clientId);
         }
 

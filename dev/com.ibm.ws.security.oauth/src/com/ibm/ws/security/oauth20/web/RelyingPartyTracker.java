@@ -12,55 +12,66 @@ package com.ibm.ws.security.oauth20.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 
 public class RelyingPartyTracker {
 
-    public static final String TRACK_RELYING_PARTY_COOKIE_NAME = "WasOidcTrackRps";
+    public static final String TRACK_RELYING_PARTY_COOKIE_NAME = "WasOAuthTrackRps";
 
     private final String clientIdDelimiter = ",";
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
+    private final OAuth20Provider provider;
 
-    public RelyingPartyTracker(HttpServletRequest request, HttpServletResponse response) {
+    public RelyingPartyTracker(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider) {
         this.request = request;
         this.response = response;
+        this.provider = provider;
     }
 
-    public void trackRelyingParty(String clientId) {
+    public Cookie trackRelyingParty(String clientId) {
         ReferrerURLCookieHandler handler = getReferrerURLCookieHandler();
-        Cookie trackingCookie = CookieHelper.getCookie(request.getCookies(), TRACK_RELYING_PARTY_COOKIE_NAME);
+        Cookie trackingCookie = CookieHelper.getCookie(request.getCookies(), getCookieName());
         if (trackingCookie == null) {
-            trackingCookie = createNewRelyingPartyTrackingCookie(request, handler, clientId);
+            trackingCookie = createNewRelyingPartyTrackingCookie(handler, clientId);
         } else {
             trackingCookie = updateExistingTrackingCookie(trackingCookie, clientId, handler);
         }
-        setAdditionalCookieProperties(trackingCookie);
         response.addCookie(trackingCookie);
+        return trackingCookie;
     }
 
     ReferrerURLCookieHandler getReferrerURLCookieHandler() {
         return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().createReferrerURLCookieHandler();
     }
 
-    Cookie createNewRelyingPartyTrackingCookie(HttpServletRequest request, ReferrerURLCookieHandler handler, String clientId) {
+    Cookie createNewRelyingPartyTrackingCookie(ReferrerURLCookieHandler handler, String clientId) {
         // Each entry in the cookie value is encoded, then the whole cookie value is encoded - hence the double encoding here
-        return handler.createCookie(TRACK_RELYING_PARTY_COOKIE_NAME, encodeValue(encodeValue(clientId)), request);
+        return createCookie(handler, encodeValue(encodeValue(clientId)));
+    }
+
+    Cookie createCookie(ReferrerURLCookieHandler handler, String cookieValue) {
+        Cookie cookie = handler.createCookie(getCookieName(), cookieValue, request);
+        setAdditionalCookieProperties(cookie);
+        return cookie;
     }
 
     Cookie updateExistingTrackingCookie(Cookie trackingCookie, String clientId, ReferrerURLCookieHandler handler) {
         String existingCookieValue = trackingCookie.getValue();
         if (existingCookieValue == null || existingCookieValue.isEmpty()) {
-            trackingCookie = createNewRelyingPartyTrackingCookie(request, handler, clientId);
+            trackingCookie = createNewRelyingPartyTrackingCookie(handler, clientId);
         } else {
             trackingCookie = updateExistingCookieValue(existingCookieValue, clientId, handler);
         }
@@ -73,7 +84,7 @@ public class RelyingPartyTracker {
             clientIdList.add(clientId);
         }
         String updatedCookieValue = createCookieValue(clientIdList);
-        return handler.createCookie(TRACK_RELYING_PARTY_COOKIE_NAME, updatedCookieValue, request);
+        return createCookie(handler, updatedCookieValue);
     }
 
     List<String> getExistingTrackedClientIds(String rawExistingCookieValue) {
@@ -106,10 +117,23 @@ public class RelyingPartyTracker {
     }
 
     void setAdditionalCookieProperties(Cookie trackingCookie) {
+        trackingCookie.setPath(getCookiePath());
+        trackingCookie.setSecure(true);
+    }
+
+    String getCookiePath() {
         String requestUri = request.getRequestURI();
-        // /oidc/endpoint/OidcConfigSample/authorize
-        System.out.println("getRequestURI: [" + requestUri + "]");
-        // TODO Set cookie path
+        int lastSlashIndex = requestUri.lastIndexOf("/");
+        if (lastSlashIndex < 0) {
+            return requestUri;
+        }
+        String path = requestUri.substring(0, lastSlashIndex);
+        Pattern pathPattern = Pattern.compile("(/oidc/[^/]+/[^/]+)/authorize");
+        Matcher matcher = pathPattern.matcher(requestUri);
+        if (matcher.matches()) {
+            path = matcher.group(1);
+        }
+        return path;
     }
 
     String encodeValue(String input) {
@@ -118,6 +142,10 @@ public class RelyingPartyTracker {
 
     String decodeValue(String input) {
         return Base64Coder.base64Decode(input);
+    }
+
+    private String getCookieName() {
+        return TRACK_RELYING_PARTY_COOKIE_NAME + "_" + provider.getID().hashCode();
     }
 
 }
