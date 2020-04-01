@@ -10,16 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics.helper;
 
+import java.util.Map;
+
 import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Counting;
 import org.eclipse.microprofile.metrics.Gauge;
-import org.eclipse.microprofile.metrics.Histogram;
-import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Metered;
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Sampling;
-import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,30 +37,43 @@ public class PrometheusBuilder {
     private static final String QUANTILE = "quantile";
 
     @FFDCIgnore({ IllegalStateException.class })
-    public static void buildGauge(StringBuilder builder, String name, Gauge<?> gauge, String description, Double conversionFactor, String tags, String appendUnit) {
-        // Skip non number values
-        Number gaugeValNumber = null;
-        Object gaugeValue = null;
-        try {
-            gaugeValue = gauge.getValue();
-        } catch (IllegalStateException e) {
-            // The forwarding gauge is likely unloaded. A warning has already been emitted
-            return;
-        }
-        if (!Number.class.isInstance(gaugeValue)) {
-            Tr.event(tc, "Skipping Prometheus output for Gauge: " + name + " of type " + gauge.getValue().getClass());
-            return;
-        }
-        gaugeValNumber = (Number) gaugeValue;
-        if (!(Double.isNaN(conversionFactor))) {
-            gaugeValNumber = gaugeValNumber.doubleValue() * conversionFactor;
-        }
+
+    public static void buildGauge(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap, Double conversionFactor,
+                                  String appendUnit) {
         getPromTypeLine(builder, name, "gauge", appendUnit);
         getPromHelpLine(builder, name, description, appendUnit);
-        getPromValueLine(builder, name, gaugeValNumber, tags, appendUnit);
+
+        for (MetricID mid : currentMetricMap.keySet()) {
+            // Skip non number values
+            Number gaugeValNumber = null;
+            Object gaugeValue = null;
+            try {
+                gaugeValue = ((Gauge) currentMetricMap.get(mid)).getValue();
+            } catch (IllegalStateException e) {
+                // The forwarding gauge is likely unloaded. A warning has already been emitted
+                return;
+            }
+            if (!Number.class.isInstance(gaugeValue)) {
+                Tr.event(tc, "Skipping Prometheus output for Gauge: " + name + " of type " + ((Gauge) currentMetricMap.get(mid)).getValue().getClass());
+                return;
+            }
+            gaugeValNumber = (Number) gaugeValue;
+            if (!(Double.isNaN(conversionFactor))) {
+                gaugeValNumber = gaugeValNumber.doubleValue() * conversionFactor;
+            }
+
+            getPromValueLine(builder, name, gaugeValNumber, mid.getTagsAsString(), appendUnit);
+        }
+
     }
 
-    public static void buildCounter(StringBuilder builder, String name, Counter counter, String description, String tags) {
+    /**
+     * @param builder
+     * @param metricNamePrometheus
+     * @param description
+     * @param currentMetricMap
+     */
+    public static void buildCounter(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap) {
         /*
          * As per the microprofile metric specification for prometheus output
          * if the metric name already ends with "_total" do nothing.
@@ -68,130 +82,157 @@ public class PrometheusBuilder {
 
         getPromTypeLine(builder, lineName, "counter");
         getPromHelpLine(builder, lineName, description);
-        getPromValueLine(builder, lineName, counter.getCount(), tags);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            getPromValueLine(builder, lineName, ((Counter) currentMetricMap.get(mid)).getCount(), mid.getTagsAsString());
+        }
+
     }
 
-    public static void buildConcurrentGauge(StringBuilder builder, String name, ConcurrentGauge counter, String description, String tags) {
+    /**
+     * @param builder
+     * @param metricNamePrometheus
+     * @param description
+     * @param currentMetricMap
+     */
+    public static void buildConcurrentGauge(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap) {
         String lineName = name + "_current";
 
         getPromTypeLine(builder, lineName, "gauge");
         getPromHelpLine(builder, lineName, description);
-        getPromValueLine(builder, lineName, counter.getCount(), tags);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            getPromValueLine(builder, lineName, ((ConcurrentGauge) currentMetricMap.get(mid)).getCount(), mid.getTagsAsString());
+        }
 
         lineName = name + "_min";
 
         getPromTypeLine(builder, lineName, "gauge");
-        getPromHelpLine(builder, lineName, description);
-        getPromValueLine(builder, lineName, counter.getMin(), tags);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            getPromValueLine(builder, lineName, ((ConcurrentGauge) currentMetricMap.get(mid)).getMin(), mid.getTagsAsString());
+        }
 
         lineName = name + "_max";
 
         getPromTypeLine(builder, lineName, "gauge");
-        getPromHelpLine(builder, lineName, description);
-        getPromValueLine(builder, lineName, counter.getMax(), tags);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            getPromValueLine(builder, lineName, ((ConcurrentGauge) currentMetricMap.get(mid)).getMax(), mid.getTagsAsString());
+        }
+
     }
 
-    public static void buildTimer(StringBuilder builder, String name, Timer timer, String description, String tags) {
-        buildMetered(builder, name, timer, description, tags);
+    public static void buildTimer(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap) {
+        buildMetered(builder, name, description, currentMetricMap);
         double conversionFactor = Constants.NANOSECONDCONVERSION;
         // Build Histogram
-        buildSampling(builder, name, timer, description, conversionFactor, tags, Constants.APPENDEDSECONDS);
+        buildSampling(builder, name, description, currentMetricMap, conversionFactor, Constants.APPENDEDSECONDS);
     }
 
-    public static void buildHistogram(StringBuilder builder, String name, Histogram histogram, String description, Double conversionFactor, String tags,
+    public static void buildHistogram(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap, Double conversionFactor,
                                       String appendUnit) {
-        // Build Histogram
-        buildSampling(builder, name, histogram, description, conversionFactor, tags, appendUnit);
+        buildSampling(builder, name, description, currentMetricMap, conversionFactor, appendUnit);
     }
 
-    public static void buildMeter(StringBuilder builder, String name, Meter meter, String description, String tags) {
-        buildCounting(builder, name, meter, description, tags);
-        buildMetered(builder, name, meter, description, tags);
+    public static void buildMeter(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap) {
+        buildCounting(builder, name, description, currentMetricMap);
+        buildMetered(builder, name, description, currentMetricMap);
     }
 
-    protected static void buildSampling(StringBuilder builder, String name, Sampling sampling, String description, Double conversionFactor, String tags,
-                                        String appendUnit) {
-
-        double meanVal = sampling.getSnapshot().getMean();
-        double maxVal = sampling.getSnapshot().getMax();
-        double minVal = sampling.getSnapshot().getMin();
-        double stdDevVal = sampling.getSnapshot().getStdDev();
-        double medianVal = sampling.getSnapshot().getMedian();
-        double percentile75th = sampling.getSnapshot().get75thPercentile();
-        double percentile95th = sampling.getSnapshot().get95thPercentile();
-        double percentile98th = sampling.getSnapshot().get98thPercentile();
-        double percentile99th = sampling.getSnapshot().get99thPercentile();
-        double percentile999th = sampling.getSnapshot().get999thPercentile();
-
-        if (!(Double.isNaN(conversionFactor))) {
-            meanVal = sampling.getSnapshot().getMean() * conversionFactor;
-            maxVal = sampling.getSnapshot().getMax() * conversionFactor;
-            minVal = sampling.getSnapshot().getMin() * conversionFactor;
-            stdDevVal = sampling.getSnapshot().getStdDev() * conversionFactor;
-            medianVal = sampling.getSnapshot().getMedian() * conversionFactor;
-            percentile75th = sampling.getSnapshot().get75thPercentile() * conversionFactor;
-            percentile95th = sampling.getSnapshot().get95thPercentile() * conversionFactor;
-            percentile98th = sampling.getSnapshot().get98thPercentile() * conversionFactor;
-            percentile99th = sampling.getSnapshot().get99thPercentile() * conversionFactor;
-            percentile999th = sampling.getSnapshot().get999thPercentile() * conversionFactor;
-        }
+    private static void buildSampling(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap, Double conversionFactor, String appendUnit) {
 
         String lineName = name + "_mean";
         getPromTypeLine(builder, lineName, "gauge", appendUnit);
-        getPromValueLine(builder, lineName, meanVal, tags, appendUnit);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            Sampling sampling = (Sampling) currentMetricMap.get(mid);
+            double meanVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMean() * conversionFactor : sampling.getSnapshot().getMean();
+            getPromValueLine(builder, lineName, meanVal, mid.getTagsAsString(), appendUnit);
+        }
+
         lineName = name + "_max";
         getPromTypeLine(builder, lineName, "gauge", appendUnit);
-        getPromValueLine(builder, lineName, maxVal, tags, appendUnit);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            Sampling sampling = (Sampling) currentMetricMap.get(mid);
+            double maxVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMax() * conversionFactor : sampling.getSnapshot().getMax();
+            getPromValueLine(builder, lineName, maxVal, mid.getTagsAsString(), appendUnit);
+        }
+
         lineName = name + "_min";
         getPromTypeLine(builder, lineName, "gauge", appendUnit);
-        getPromValueLine(builder, lineName, minVal, tags, appendUnit);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            Sampling sampling = (Sampling) currentMetricMap.get(mid);
+            double minVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMin() * conversionFactor : sampling.getSnapshot().getMin();
+            getPromValueLine(builder, lineName, minVal, mid.getTagsAsString(), appendUnit);
+        }
+
         lineName = name + "_stddev";
         getPromTypeLine(builder, lineName, "gauge", appendUnit);
-        getPromValueLine(builder, lineName, stdDevVal, tags, appendUnit);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            Sampling sampling = (Sampling) currentMetricMap.get(mid);
+            double stdDevVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getStdDev() * conversionFactor : sampling.getSnapshot().getStdDev();
+            getPromValueLine(builder, lineName, stdDevVal, mid.getTagsAsString(), appendUnit);
+        }
 
         getPromTypeLine(builder, name, "summary", appendUnit);
         getPromHelpLine(builder, name, description, appendUnit);
-        if (Counting.class.isInstance(sampling)) {
-            getPromValueLine(builder, name, ((Counting) sampling).getCount(), tags, appendUnit == null ? "_count" : appendUnit + "_count");
+        for (MetricID mid : currentMetricMap.keySet()) {
+            Sampling sampling = (Sampling) currentMetricMap.get(mid);
+            if (Counting.class.isInstance(sampling)) {
+                getPromValueLine(builder, name, ((Counting) sampling).getCount(), mid.getTagsAsString(), appendUnit == null ? "_count" : appendUnit + "_count");
+            }
+            double medianVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMedian() * conversionFactor : sampling.getSnapshot().getMedian();
+            double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get75thPercentile()
+                                                                          * conversionFactor : sampling.getSnapshot().get75thPercentile();
+            double percentile95th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get95thPercentile()
+                                                                          * conversionFactor : sampling.getSnapshot().get95thPercentile();
+            double percentile98th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get98thPercentile()
+                                                                          * conversionFactor : sampling.getSnapshot().get98thPercentile();
+            double percentile99th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get99thPercentile()
+                                                                          * conversionFactor : sampling.getSnapshot().get99thPercentile();
+            double percentile999th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get999thPercentile()
+                                                                           * conversionFactor : sampling.getSnapshot().get999thPercentile();
+            getPromValueLine(builder, name, medianVal, mid.getTagsAsString(), new Tag(QUANTILE, "0.5"), appendUnit);
+            getPromValueLine(builder, name, percentile75th, mid.getTagsAsString(), new Tag(QUANTILE, "0.75"), appendUnit);
+            getPromValueLine(builder, name, percentile95th, mid.getTagsAsString(), new Tag(QUANTILE, "0.95"), appendUnit);
+            getPromValueLine(builder, name, percentile98th, mid.getTagsAsString(), new Tag(QUANTILE, "0.98"), appendUnit);
+            getPromValueLine(builder, name, percentile99th, mid.getTagsAsString(), new Tag(QUANTILE, "0.99"), appendUnit);
+            getPromValueLine(builder, name, percentile999th, mid.getTagsAsString(), new Tag(QUANTILE, "0.999"), appendUnit);
         }
-        getPromValueLine(builder, name, medianVal, tags, new Tag(QUANTILE, "0.5"), appendUnit);
-        getPromValueLine(builder, name, percentile75th, tags, new Tag(QUANTILE, "0.75"), appendUnit);
-        getPromValueLine(builder, name, percentile95th, tags, new Tag(QUANTILE, "0.95"), appendUnit);
-        getPromValueLine(builder, name, percentile98th, tags, new Tag(QUANTILE, "0.98"), appendUnit);
-        getPromValueLine(builder, name, percentile99th, tags, new Tag(QUANTILE, "0.99"), appendUnit);
-        getPromValueLine(builder, name, percentile999th, tags, new Tag(QUANTILE, "0.999"), appendUnit);
+
     }
 
-    protected static void buildCounting(StringBuilder builder, String name, Counting counting, String description, String tags) {
+    protected static void buildCounting(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap) {
         String lineName = name + "_total";
         getPromTypeLine(builder, lineName, "counter");
         getPromHelpLine(builder, lineName, description);
-        getPromValueLine(builder, lineName, counting.getCount(), tags);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            getPromValueLine(builder, lineName, ((Counting) currentMetricMap.get(mid)).getCount(), mid.getTagsAsString());
+        }
+
     }
 
-    /**
-     *
-     *
-     * @param builder
-     * @param name
-     * @param metered
-     */
-    protected static void buildMetered(StringBuilder builder, String name, Metered metered, String description, String tags) {
+    protected static void buildMetered(StringBuilder builder, String name, String description, Map<MetricID, Metric> map) {
         String lineName = name + "_rate_" + MetricUnits.PER_SECOND.toString();
         getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, metered.getMeanRate(), tags);
+        for (MetricID mid : map.keySet()) {
+            getPromValueLine(builder, lineName, ((Metered) map.get(mid)).getMeanRate(), mid.getTagsAsString());
+        }
 
         lineName = name + "_one_min_rate_" + MetricUnits.PER_SECOND.toString();
         getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, metered.getOneMinuteRate(), tags);
+        for (MetricID mid : map.keySet()) {
+            getPromValueLine(builder, lineName, ((Metered) map.get(mid)).getOneMinuteRate(), mid.getTagsAsString());
+        }
 
         lineName = name + "_five_min_rate_" + MetricUnits.PER_SECOND.toString();
         getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, metered.getFiveMinuteRate(), tags);
+        for (MetricID mid : map.keySet()) {
+            getPromValueLine(builder, lineName, ((Metered) map.get(mid)).getFiveMinuteRate(), mid.getTagsAsString());
+        }
 
         lineName = name + "_fifteen_min_rate_" + MetricUnits.PER_SECOND.toString();
         getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, metered.getFifteenMinuteRate(), tags);
+        for (MetricID mid : map.keySet()) {
+            getPromValueLine(builder, lineName, ((Metered) map.get(mid)).getFifteenMinuteRate(), mid.getTagsAsString());
+        }
+
     }
 
     protected static void getPromValueLine(StringBuilder builder, String name, Number value, String tags) {
@@ -276,4 +317,5 @@ public class PrometheusBuilder {
     protected static String appendSuffixIfNeeded(String metricName, String suffix) {
         return (!metricName.endsWith("_" + suffix)) ? metricName + "_" + suffix : metricName;
     }
+
 }

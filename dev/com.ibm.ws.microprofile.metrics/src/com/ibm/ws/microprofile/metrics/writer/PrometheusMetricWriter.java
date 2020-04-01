@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.metrics.writer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.AbstractMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -91,140 +92,37 @@ public class PrometheusMetricWriter implements OutputWriter {
 
     private void writeMetricsAsPrometheus(StringBuilder builder, String registryName,
                                           String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
-        writeMetricMapAsPrometheus(builder, registryName, Util.getMetricsAsMap(registryName, metricName), Util.getMetricsMetadataAsMap(registryName));
+        writeMetricMapAsPrometheus(builder, registryName, Util.getMetricsAsMap(registryName, metricName), Util.getMetricsMetadataAsMap(registryName, metricName));
     }
 
-    private void writeMetricMapAsPrometheus(StringBuilder builder, String registryName, Map<String, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
-        for (Entry<String, Metric> entry : metricMap.entrySet()) {
-            String metricNamePrometheus = registryName + ":" + entry.getKey();
-            Metric metric = entry.getValue();
-            String entryName = entry.getKey();
+    protected void writeMetricMapAsPrometheus(StringBuilder builder, String registryName, Map<String, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
+        for (Entry<String, Metadata> metadataEntry : metricMetadataMap.entrySet()) {
 
-            //description
-            Metadata metricMetaData = metricMetadataMap.get(entryName);
+            String metricName = metadataEntry.getKey();
+            String metricNamePrometheus = registryName + ":" + metricName;
 
-            String description = "";
+            Metadata metricMetadata = metadataEntry.getValue();
+            Metric metric = metricMap.get(metricName);
 
-            if (metricMetaData.getDescription() == null || metricMetaData.getDescription().trim().isEmpty()) {
-                description = "";
-            } else {
-                description = Tr.formatMessage(tc, locale, metricMetaData.getDescription());
-            }
+            //Get Description
+            String description = (metricMetadata.getDescription() == null
+                                  || metricMetadata.getDescription().trim().isEmpty()) ? "" : Tr.formatMessage(tc, locale, metricMetadata.getDescription());
 
-            String tags = metricMetaData.getTagsAsString();
+            //Get Unit
+            String unit = metricMetadata.getUnit();
 
-            //appending unit to the metric name
-            String unit = metricMetaData.getUnit();
+            //Get Tags
+            String tags = metricMetadata.getTagsAsString();
 
             //Unit determination / translation
-            double conversionFactor = 0;
-            String appendUnit = null;
-
-            if (unit == null || unit.trim().isEmpty() || unit.equals(MetricUnits.NONE)) {
-
-                conversionFactor = Double.NaN;
-                appendUnit = null;
-
-            } else if (unit.equals(MetricUnits.NANOSECONDS)) {
-
-                conversionFactor = Constants.NANOSECONDCONVERSION;
-                appendUnit = Constants.APPENDEDSECONDS;
-
-            } else if (unit.equals(MetricUnits.MICROSECONDS)) {
-
-                conversionFactor = Constants.MICROSECONDCONVERSION;
-                appendUnit = Constants.APPENDEDSECONDS;
-
-            } else if (unit.equals(MetricUnits.SECONDS)) {
-
-                conversionFactor = Constants.SECONDCONVERSION;
-                appendUnit = Constants.APPENDEDSECONDS;
-
-            } else if (unit.equals(MetricUnits.MINUTES)) {
-
-                conversionFactor = Constants.MINUTECONVERSION;
-                appendUnit = Constants.APPENDEDSECONDS;
-
-            } else if (unit.equals(MetricUnits.HOURS)) {
-
-                conversionFactor = Constants.HOURCONVERSION;
-                appendUnit = Constants.APPENDEDSECONDS;
-
-            } else if (unit.equals(MetricUnits.DAYS)) {
-
-                conversionFactor = Constants.DAYCONVERSION;
-                appendUnit = Constants.APPENDEDSECONDS;
-
-            } else if (unit.equals(MetricUnits.PERCENT)) {
-
-                conversionFactor = Double.NaN;
-                appendUnit = Constants.APPENDEDPERCENT;
-
-            } else if (unit.equals(MetricUnits.BYTES)) {
-
-                conversionFactor = Constants.BYTECONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.KILOBYTES)) {
-
-                conversionFactor = Constants.KILOBYTECONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.MEGABYTES)) {
-
-                conversionFactor = Constants.MEGABYTECONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.GIGABYTES)) {
-
-                conversionFactor = Constants.GIGABYTECONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.KILOBITS)) {
-
-                conversionFactor = Constants.KILOBITCONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.MEGABITS)) {
-
-                conversionFactor = Constants.MEGABITCONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.GIGABITS)) {
-
-                conversionFactor = Constants.GIGABITCONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.KIBIBITS)) {
-
-                conversionFactor = Constants.KIBIBITCONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.MEBIBITS)) {
-
-                conversionFactor = Constants.MEBIBITCONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.GIBIBITS)) {
-
-                conversionFactor = Constants.GIBIBITCONVERSION;
-                appendUnit = Constants.APPENDEDBYTES;
-
-            } else if (unit.equals(MetricUnits.MILLISECONDS)) {
-
-                conversionFactor = Constants.MILLISECONDCONVERSION;
-                appendUnit = Constants.APPENDEDSECONDS;
-
-            } else {
-
-                conversionFactor = Double.NaN;
-                appendUnit = "_" + unit;
-            }
+            Map.Entry<String, Double> conversionAppendEntry = resolveConversionFactorXappendUnitEntry(unit);
+            double conversionFactor = conversionAppendEntry.getValue();
+            String appendUnit = conversionAppendEntry.getKey();
 
             if (Counter.class.isInstance(metric)) {
                 PrometheusBuilder.buildCounter(builder, metricNamePrometheus, (Counter) metric, description, tags);
             } else if (Gauge.class.isInstance(metric)) {
-                PrometheusBuilder.buildGauge(builder, metricNamePrometheus, (Gauge) metric, description, conversionFactor, tags, appendUnit);
+                PrometheusBuilder.buildGauge(builder, metricNamePrometheus, (Gauge) metric, description, conversionFactor, appendUnit, tags);
             } else if (Timer.class.isInstance(metric)) {
                 PrometheusBuilder.buildTimer(builder, metricNamePrometheus, (Timer) metric, description, tags);
             } else if (Histogram.class.isInstance(metric)) {
@@ -232,8 +130,60 @@ public class PrometheusMetricWriter implements OutputWriter {
             } else if (Meter.class.isInstance(metric)) {
                 PrometheusBuilder.buildMeter(builder, metricNamePrometheus, (Meter) metric, description, tags);
             } else {
-                Tr.event(tc, "Metric type '" + metric.getClass() + " for " + entryName + " is invalid.");
+                Tr.event(tc, "Metric type '" + metric.getClass() + " for " + metricName + " is invalid.");
             }
+
+        }
+    }
+
+    /**
+     * Calculates the unit String suffix and conversion factor used for later calculations
+     *
+     * @param unit String that encompasses the unit needed to calculate appropriate conversion factor and value to append
+     * @return Map.Entry<String, Double> that contains the unit string suffix and conversion factor
+     */
+    protected Map.Entry<String, Double> resolveConversionFactorXappendUnitEntry(String unit) {
+
+        if (unit == null || unit.trim().isEmpty() || unit.equals(MetricUnits.NONE)) {
+            return new AbstractMap.SimpleEntry<String, Double>(null, Double.NaN);
+        } else if (unit.equals(MetricUnits.NANOSECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.NANOSECONDCONVERSION);
+        } else if (unit.equals(MetricUnits.MICROSECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MICROSECONDCONVERSION);
+        } else if (unit.equals(MetricUnits.SECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.SECONDCONVERSION);
+        } else if (unit.equals(MetricUnits.MINUTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MINUTECONVERSION);
+        } else if (unit.equals(MetricUnits.HOURS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.HOURCONVERSION);
+        } else if (unit.equals(MetricUnits.DAYS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.DAYCONVERSION);
+        } else if (unit.equals(MetricUnits.PERCENT)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDPERCENT, Double.NaN);
+        } else if (unit.equals(MetricUnits.BYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.BYTECONVERSION);
+        } else if (unit.equals(MetricUnits.KILOBYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KILOBYTECONVERSION);
+        } else if (unit.equals(MetricUnits.MEGABYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEGABYTECONVERSION);
+        } else if (unit.equals(MetricUnits.GIGABYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIGABYTECONVERSION);
+        } else if (unit.equals(MetricUnits.KILOBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KILOBITCONVERSION);
+        } else if (unit.equals(MetricUnits.MEGABITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEGABITCONVERSION);
+        } else if (unit.equals(MetricUnits.GIGABITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIGABITCONVERSION);
+        } else if (unit.equals(MetricUnits.KIBIBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KIBIBITCONVERSION);
+        } else if (unit.equals(MetricUnits.MEBIBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEBIBITCONVERSION);
+        } else if (unit.equals(MetricUnits.GIBIBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIBIBITCONVERSION);
+        } else if (unit.equals(MetricUnits.MILLISECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MILLISECONDCONVERSION);
+        } else {
+            return new AbstractMap.SimpleEntry<String, Double>("_" + unit, Double.NaN);
         }
     }
 
