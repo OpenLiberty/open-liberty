@@ -173,13 +173,38 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         }
 
         Path outputPath = appPath.resolveSibling(appPath.getFileName() + ".jakarta");
-        Path backupPath = appPath.resolveSibling(appPath.getFileName() + ".backup");
+
+        //create backup directory
+        Path serverPath = appPath.getParent().getParent();
+        Path backupPath = serverPath.resolve("backup");
+            try {
+                if (!Files.exists(backupPath)) {
+                    Files.createDirectory(backupPath); // throws IOException
+                }
+             } catch (IOException e) {
+                 Log.info(c, m, "Unable to create backup directory.");
+                 Log.error(c, m, e);
+                 throw new RuntimeException(e);
+             }
+
+        String userDir = System.getProperty("user.dir");
+        String transformerRulesRoot = userDir.substring(0, userDir.lastIndexOf("/dev/")) + "/dev/wlp-jakartaee-transform/rules/";
+
         try {
             // Invoke the jakarta transformer
-            String[] args = new String[3];
+            String[] args = new String[11];
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
             args[2] = "-v"; // verbose
+            args[3] = "-tr"; // override default properties in transformer jar
+            args[4] = transformerRulesRoot + "jakarta-renames.properties";
+            args[5] = "-ts";
+            args[6] = transformerRulesRoot + "jakarta-selections.properties";
+            args[7] = "-tv";
+            args[8] = transformerRulesRoot + "jakarta-versions.properties";
+            args[9] = "-tb";
+            args[10] = transformerRulesRoot + "jakarta-bundles.properties";
+
             JakartaTransformer.main(args);
 
             // Swap out the transformed file with the original

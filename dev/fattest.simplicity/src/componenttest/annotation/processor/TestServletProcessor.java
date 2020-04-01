@@ -98,6 +98,10 @@ public class TestServletProcessor {
     }
 
     private static Method[] getTestServletMethods(TestServlet anno) {
+        if (!!!(javax.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet()) ||
+                jakarta.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet()))) {
+            throw new IllegalArgumentException("For the @TestServlet annotation, servlet() must be a subclass of javax.servlet.http.HttpServlet or jakarta.servlet.http.HttpServlet!");
+        }
         try {
             return anno.servlet().getMethods();
         } catch (TypeNotPresentException | LinkageError e) {
