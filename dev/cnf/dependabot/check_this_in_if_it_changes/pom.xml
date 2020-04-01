@@ -1522,6 +1522,11 @@
       <version>1.4</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.wink</groupId>
+      <artifactId>wink-client-apache-httpclient</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.ws.xmlschema</groupId>
       <artifactId>xmlschema-core</artifactId>
       <version>2.0.3</version>
