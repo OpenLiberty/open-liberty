@@ -92,6 +92,7 @@ public class BookStoreWithValidation extends AbstractBookStoreWithValidation imp
     public Response addBookNoValidation(@NotNull @FormParam("id") String id) {
         return Response.ok().build();
     }
+
     @POST
     @Path("/booksValidate")
     @ValidateOnExecution(type = ExecutableType.IMPLICIT)

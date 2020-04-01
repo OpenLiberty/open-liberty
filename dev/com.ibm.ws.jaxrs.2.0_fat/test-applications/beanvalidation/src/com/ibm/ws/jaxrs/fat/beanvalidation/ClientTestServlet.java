@@ -134,16 +134,13 @@ public class ClientTestServlet extends HttpServlet {
 
     public void testThatNotNullValidationSkipped(Map<String, String> param, StringBuilder ret) throws Exception {
         String uri = getAddress("bookstore/booksNoValidate");
- //       Response resp = client.target(uri).request().post(Entity.entity("id=1234&name=cxf", MediaType.APPLICATION_FORM_URLENCODED + "; charset=UTF-8"));
-//        Response resp = client.target(uri).request().post(Entity.entity(new Form()));
         Response resp = client.target(uri).request().post(null);
         assertEquals(Status.OK.getStatusCode(), resp.getStatus());
         ret.append("OK");
     }
 
     public void testThatNotNullValidationNotSkipped(Map<String, String> param, StringBuilder ret) throws Exception {
-        String uri = getAddress("bookstore/booksNoValidate");
-//        Response resp = client.target(uri).request().post(Entity.entity("id=1234&name=cxf", MediaType.APPLICATION_FORM_URLENCODED + "; charset=UTF-8"));
+        String uri = getAddress("bookstore/booksValidate");
         Response resp = client.target(uri).request().post(null);
         assertEquals(Status.BAD_REQUEST.getStatusCode(), resp.getStatus());
         ret.append("OK");
