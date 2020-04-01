@@ -132,9 +132,9 @@ public class CollectorJsonUtils_JSON {
         .addField(AccessLogData.getRemoteHostKeyJSON(), accessLogData.getRemoteHost(), false, true)
         .addField(AccessLogData.getUserAgentKeyJSON(), userAgent, false, false)
         .addField(AccessLogData.getRequestProtocolKeyJSON(), accessLogData.getRequestProtocol(), false, true)
-        .addField(AccessLogData.getBytesReceivedKeyJSON(), Long.toString(accessLogData.getBytesReceived()), false, true)
-        .addField(AccessLogData.getResponseCodeKeyJSON(), Integer.toString(accessLogData.getResponseCode()), false, true)
-        .addField(AccessLogData.getElapsedTimeKeyJSON(), Long.toString(accessLogData.getElapsedTime()), false, true)
+        .addField(AccessLogData.getBytesReceivedKeyJSON(), accessLogData.getBytesReceived(), false)
+        .addField(AccessLogData.getResponseCodeKeyJSON(), accessLogData.getResponseCode(), false)
+        .addField(AccessLogData.getElapsedTimeKeyJSON(), accessLogData.getElapsedTime(), false)
         .addField(AccessLogData.getDatetimeKeyJSON(), datetime, false, true)
         .addField(AccessLogData.getSequenceKeyJSON(), accessLogData.getSequence(), false, true);
         //@formatter:on
