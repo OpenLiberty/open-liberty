@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.executable.ExecutableType;
+import javax.validation.executable.ValidateOnExecution;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.JAXRSInvoker;
@@ -365,6 +367,14 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
 
         if (m == null) {
             return;
+        }
+        
+        ValidateOnExecution validateOnExec = m.getAnnotation(ValidateOnExecution.class);
+        if (validateOnExec != null) {
+            ExecutableType[] execTypes = validateOnExec.type();
+            if (execTypes.length == 1 && execTypes[0] == ExecutableType.NONE) {
+                return;
+            }
         }
 
         try {
