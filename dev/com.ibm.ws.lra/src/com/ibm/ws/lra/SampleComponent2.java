@@ -22,6 +22,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
+import io.narayana.lra.filter.ClientLRARequestFilter;
+import io.narayana.lra.filter.ClientLRAResponseFilter;
 import io.narayana.lra.filter.ServerLRAFilter;
 
 /**
@@ -70,48 +72,29 @@ public class SampleComponent2 implements JaxRsProviderRegister {
     /** {@inheritDoc} */
     @Override
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
-        Tr.warning(tc, "I don't want to do anything just yet");
-        String methodName = "installProvider";
+        Tr.warning(tc, "Trying to register something");
 
         if (clientSide) {
-            OpentracingClientFilter useClientFilter = getClientFilter();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName, "Client Filter", useClientFilter);
-            }
-            if (useClientFilter != null) {
-                providers.add(useClientFilter);
-            } else {
-                // Ignore: The component is not active.
-            }
-
+            Tr.warning(tc, "Adding client filters");
+            ClientLRARequestFilter requestFilter = new ClientLRARequestFilter();
+            providers.add(requestFilter);
+            ClientLRAResponseFilter responseFilter = new ClientLRAResponseFilter();
+            providers.add(responseFilter);
         } else {
-            OpentracingContainerFilter useContainerFilter = getContainerFilter();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName, "Container Filter", useContainerFilter);
+            Tr.warning(tc, "Adding server filters");
+            ServerLRAFilter filter = null;
+            try {
+                filter = new ServerLRAFilter();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                // https://websphere.pok.ibm.com/~alpine/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
+                Tr.error(tc, "Couldn't register the Server filter", e);
+                return;
             }
-            if (useContainerFilter != null) {
-                providers.add(useContainerFilter);
-            } else {
-                // Ignore: The component is not active.
-            }
+            providers.add(filter);
         }
 
-    }
-
-    public static class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
-
-    }
-
-    public static class OpentracingContainerFilter implements ClientRequestFilter, ClientResponseFilter {
-
-    }
-
-    public OpentracingClientFilter getClientFilter() {
-        return new OpentracingClientFilter();
-    }
-
-    public OpentracingContainerFilter getContainerFilter() {
-        return new OpentracingContainerFilter();
     }
 
 }
