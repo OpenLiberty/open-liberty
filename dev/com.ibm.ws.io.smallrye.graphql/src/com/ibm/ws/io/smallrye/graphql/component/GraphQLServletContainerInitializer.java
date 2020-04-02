@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.io.smallrye.graphql.component;
 
 import java.net.MalformedURLException;
@@ -10,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
@@ -19,7 +27,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -28,6 +39,7 @@ import graphql.schema.GraphQLSchema;
 
 import io.smallrye.graphql.bootstrap.SmallRyeGraphQLBootstrap;
 import io.smallrye.graphql.bootstrap.index.IndexInitializer;
+import io.smallrye.graphql.bootstrap.type.SchemaTypeCreateException;
 import io.smallrye.graphql.execution.ExecutionService;
 import io.smallrye.graphql.execution.GraphQLConfig;
 import io.smallrye.graphql.servlet.SmallRyeGraphQLExecutionServlet;
@@ -38,23 +50,19 @@ import org.jboss.jandex.IndexView;
 
 @Component(property = { "service.vendor=IBM" })
 public class GraphQLServletContainerInitializer implements ServletContainerInitializer {
-    private static final String c = GraphQLServletContainerInitializer.class.getName();
-    private static final Logger LOG = Logger.getLogger(c);
+    private static final TraceComponent tc = Tr.register(GraphQLServletContainerInitializer.class);
 
+    @FFDCIgnore({SchemaTypeCreateException.class})
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
-        if (LOG.isLoggable(Level.FINER)) {
-            LOG.entering(c, "onStartup", new Object[] {classes, ctx});
-            LOG.finest("servletContextName: " + ctx.getServletContextName() + " contextPath: " + ctx.getContextPath());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, "onStartup", new Object[] {classes, ctx, ctx.getServletContextName(), ctx.getContextPath()});
         }
 
-        //TODO: change to debug
-        
-        
         URL webinfClassesUrl = null;
         try {
             String realPath = ctx.getRealPath("/WEB-INF/classes");
-            if (LOG.isLoggable(Level.FINER)) {
-                LOG.finest("realPath: " + realPath);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "realPath: " + realPath);
             }
             if (realPath != null) {
                 webinfClassesUrl = Paths.get(realPath).toUri().toURL();
@@ -68,14 +76,14 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 NonPersistentCache overlayCache = wapp.getModuleContainer().adapt(NonPersistentCache.class);
                 ModuleInfo moduleInfo = (ModuleInfo) overlayCache.getFromCache(ModuleInfo.class);
                 String containerPhysicalPath = moduleInfo.getContainer().getPhysicalPath();
-                if (LOG.isLoggable(Level.FINEST)) {
-                    LOG.finest("moduleInfo.getContainer().getPhysicalPath() == " + containerPhysicalPath);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "moduleInfo.getContainer().getPhysicalPath() == " + containerPhysicalPath);
                 }
                 
                 if (containerPhysicalPath == null) {
                     // this can occur for "system" apps
-                    if (LOG.isLoggable(Level.FINEST)) {
-                        LOG.finest("Cannot find app path, will not process for GraphQL APIs");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Cannot find app path, will not process for GraphQL APIs");
                     }
                     return;
                 }
@@ -89,20 +97,24 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 
                 
             } catch (Exception ex) {
-                if (LOG.isLoggable(Level.FINEST)) {
-                    LOG.log(Level.FINEST, "Failed to find WEB-INF/classes from container in moduleInfo", ex);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to find WEB-INF/classes from container in moduleInfo", ex);
                 }
             }
         }
 
-        SmallRyeGraphQLBootstrap bootstrap = new SmallRyeGraphQLBootstrap();
         IndexInitializer indexInitializer = new IndexInitializer();
-        GraphQLSchema schema;
-
         IndexView index = indexInitializer.createIndex(webinfClassesUrl);
-        schema = bootstrap.bootstrap(index);
-        if (LOG.isLoggable(Level.FINEST)) {
-            LOG.finest("SmallRye GraphQL initialized");
+        GraphQLSchema schema = null;
+        try {
+            schema = SmallRyeGraphQLBootstrap.bootstrap(index);
+        } catch (SchemaTypeCreateException ex) {
+            Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
+            throw new ServletException(ex);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "SmallRye GraphQL initialized");
         }
 
         ctx.setAttribute(SmallRyeGraphQLSchemaServlet.SCHEMA_PROP, schema);
@@ -111,16 +123,20 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         config.setDefaultErrorMessage("Server Error");
         config.setBlackList(Arrays.asList("**empty**"));
         config.setWhiteList(Arrays.asList("**empty**"));
-        ExecutionService executionService = new ExecutionService(config, bootstrap);
+        ExecutionService executionService = new ExecutionService(config, schema);
         executionService.init();
+        
+        String path = "/" + ConfigFacade.getOptionalValue("mp.graphql.contextpath", String.class)
+                                        .filter(s -> {return s.replaceAll("/", "").length() > 0;})
+                                        .orElse("graphql");
         SmallRyeGraphQLExecutionServlet execServlet = new SmallRyeGraphQLExecutionServlet(executionService, config);
         ServletRegistration.Dynamic execServletReg = ctx.addServlet("SmallRyeGraphQLExecutionServlet", execServlet);
-        execServletReg.addMapping("/graphql/*");
+        execServletReg.addMapping(path + "/*");
         ServletRegistration.Dynamic schemaServletReg = ctx.addServlet("SmallRyeGraphQLSchemaServlet", new SmallRyeGraphQLSchemaServlet());
-        schemaServletReg.addMapping("/graphql/schema.graphql");
+        schemaServletReg.addMapping(path + "/schema.graphql");
 
-        if (LOG.isLoggable(Level.FINER)) {
-            LOG.exiting(c, "onStartup");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "onStartup");
         }
     }
 }

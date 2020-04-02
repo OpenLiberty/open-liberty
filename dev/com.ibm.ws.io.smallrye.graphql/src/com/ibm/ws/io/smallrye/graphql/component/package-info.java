@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "GraphQL")
+@TraceOptions(traceGroup = "GraphQL", messageBundle="com.ibm.ws.io.smallrye.graphql.SmallRyeGraphQL")
 package com.ibm.ws.io.smallrye.graphql.component;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
