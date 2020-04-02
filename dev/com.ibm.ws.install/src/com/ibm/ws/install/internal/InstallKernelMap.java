@@ -47,8 +47,6 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
-import com.ibm.ws.repository.common.enums.ResourceType;
-import com.ibm.ws.repository.resources.EsaResource;
 import org.apache.aries.util.manifest.ManifestProcessor;
 
 import com.ibm.ws.install.CancelException;
@@ -767,7 +765,7 @@ public class InstallKernelMap implements Map {
             resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
             ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
 
-            if(!resolveResult.isEmpty()){
+            if (!resolveResult.isEmpty()) {
                 for (List<RepositoryResource> item : resolveResult) {
                     for (RepositoryResource repoResrc : item) {
                         String license = repoResrc.getLicenseId();
@@ -783,7 +781,7 @@ public class InstallKernelMap implements Map {
 
                             // determine whether the license should be auto accepted
                             boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
-                                    || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
+                                                        || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
 
                             if (!autoAcceptLicense) {
                                 // check whether the license has been accepted
@@ -1693,7 +1691,7 @@ public class InstallKernelMap implements Map {
         try {
             unpackLicenseObject(downloadDir, licenseCoord, WLP_DIR);
         } catch (IOException e) {
-            throw new InstallException(e.getMessage()); //TODO
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_UNPACK_LICENSE", licenseCoord, downloadDir.toString()));
         }
     }
 
@@ -1749,7 +1747,7 @@ public class InstallKernelMap implements Map {
             }
 
         } catch (FileNotFoundException e) {
-            throw new InstallException("Websphere json file not found"); //TODO
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", WEBSPHERE_LIBERTY_GROUP_ID));
         }
         return result;
     }
