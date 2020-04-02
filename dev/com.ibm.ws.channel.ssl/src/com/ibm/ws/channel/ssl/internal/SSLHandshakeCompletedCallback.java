@@ -40,11 +40,11 @@ public interface SSLHandshakeCompletedCallback {
     /**
      * Called to let code inform the callback that netBuffer was replaced
      */
-    public void updateNetBuffer(WsByteBuffer newBuffer);
+    void updateNetBuffer(WsByteBuffer newBuffer);
 
     /**
      * Allow code using the callback to check if netBuffer was replaced
      */
-    public WsByteBuffer getUpdatedNetBuffer();
+    WsByteBuffer getUpdatedNetBuffer();
 
 }
