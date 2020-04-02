@@ -32,13 +32,6 @@ Import-Package:  \
   net.sf.ehcache.*, \
   *
 
-Include-Resource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/cxf/*,\
-  cxf-ehcache.xml=resources/cxf-ehcache.xml
-
 Archiver-Version:
 Build-Jdk:
 Built-By:

@@ -16,13 +16,18 @@ instrument.ffdc: true
 cxfVersion=2.6.2
 
 -includeresource: \
-    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*|\
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*|, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/cxf/*, \
     META-INF/cxf/bus-extensions.txt=override/META-INF/cxf/bus-extensions.txt, \
     cxf-ehcache.xml=resources/cxf-ehcache.xml, \
     org/apache/cxf/ws/security/policy/interceptors/Messages.properties=resources/org/apache/cxf/ws/security/policy/interceptors/Messages.nlsprops, \
     org/apache/cxf/ws/security/policy/model/Messages.properties=resources/org/apache/cxf/ws/security/policy/model/Messages.nlsprops, \
     org/apache/cxf/ws/security/trust/Messages.properties=resources/org/apache/cxf/ws/security/trust/Messages.nlsprops, \
-    org/apache/cxf/ws/security/wss4j/Messages.properties=resources/org/apache/cxf/ws/security/wss4j/Messages.nlsprops
+    org/apache/cxf/ws/security/wss4j/Messages.properties=resources/org/apache/cxf/ws/security/wss4j/Messages.nlsprops, \
+    org/apache/cxf=${bin}/org/apache/cxf
 
 
 -buildpath: \
@@ -32,8 +37,7 @@ cxfVersion=2.6.2
     com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2, \
     com.ibm.ws.org.opensaml.opensaml.2.6.1, \
     com.ibm.ws.org.apache.ws.security.wss4j.1.6.7, \
-    com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2, \
     com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2, \
     com.ibm.ws.org.apache.neethi.3.0.2, \
     com.ibm.ws.net.sf.ehcache.core.2.5.2
-
