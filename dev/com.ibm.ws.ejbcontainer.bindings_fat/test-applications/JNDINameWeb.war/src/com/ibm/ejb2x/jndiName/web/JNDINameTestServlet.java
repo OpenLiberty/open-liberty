@@ -15,12 +15,15 @@ import static org.junit.Assert.fail;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ejb2x.jndiName.ejb.JNDIName;
 import com.ibm.ejb2x.jndiName.ejb.JNDINameHome;
 import com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome;
+import com.ibm.ejb2x.jndiName.ejb.JNDIRemoteName;
 
 import componenttest.app.FATServlet;
 
@@ -173,10 +176,10 @@ public class JNDINameTestServlet extends FATServlet {
      * Tests that the remote default binding should not have been bound because we have custom bindings.
      *
      */
-    //@Test
+    @Test
     public void testRemoteDefaultDisabledJNDIName() {
         try {
-            Object bean = new InitialContext().lookup("ejb/JNDINameTestApp/JNDINameEJB.jar/JNDIName4#com.ibm.ejb2x.jndiName.ejb.JNDIRemoteNameHome");
+            Object bean = new InitialContext().lookup("ejb/JNDINameTestApp/JNDINameEJB.jar/JNDIName4#com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome");
             if (bean != null) {
                 fail("remote default bindings lookup should not have worked because we have custom bindings");
             }
@@ -499,8 +502,13 @@ public class JNDINameTestServlet extends FATServlet {
                     fail("lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                 }
                 try {
+                    JNDIName bean = beanHome.create();
                     if (beanHome.create() == null) {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
+                    }
+                    System.out.println("Got bean, calling method");
+                    if (bean.foo() == null) {
+                        fail("bean.method() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                     }
                 } catch (Exception e) {
                     e.printStackTrace(System.out);
@@ -518,20 +526,35 @@ public class JNDINameTestServlet extends FATServlet {
             } else {
                 // expected to fail in other cases
             }
+        } catch (ClassCastException cce) {
+            // For the hybrid beans they might have a remote bound in the lookup string, so we'll get a class cast
+            // since we try all the lookup combinations, just ignore it.
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While performing lookup " + lookupName + " for " + jndiName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
+            }
         }
     }
 
     private void testLookupCombinationsHelperRemote(Context context, String contextString, String lookupName, String jndiName, String beanNum, String passingCases) {
         try {
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + jndiName);
-            JNDINameRemoteHome beanHome = (JNDINameRemoteHome) context.lookup(lookupName);
+            Object lookup = context.lookup(lookupName);
+            JNDINameRemoteHome beanHome = (JNDINameRemoteHome) PortableRemoteObject.narrow(lookup, JNDINameRemoteHome.class);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {
                     fail("lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                 }
                 try {
+                    JNDIRemoteName bean = beanHome.create();
                     if (beanHome.create() == null) {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
+                    }
+                    System.out.println("Got bean, calling method");
+                    if (bean.foo() == null) {
+                        fail("bean.method() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                     }
                 } catch (Exception e) {
                     e.printStackTrace(System.out);
@@ -541,6 +564,13 @@ public class JNDINameTestServlet extends FATServlet {
                 if (beanHome != null) {
                     fail("lookup " + lookupName + " should have failed for " + jndiName + " and context " + contextString);
                 }
+            }
+        } catch (ClassCastException cce) {
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While narrowing lookup " + lookupName + " for " + jndiName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
@@ -564,13 +594,13 @@ public class JNDINameTestServlet extends FATServlet {
         testLookupCombinations(false, "jndiName=\"ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2\"", 2);
     }
 
-    //@Test
+    @Test
     public void testRemotejndiNameStartsWithCom() throws Exception {
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         testLookupCombinations(true, "jndiName=\"com/ibm/ejb2x/jndiName/ejb/JNDINameHome3\"", 3);
     }
 
-    //@Test
+    @Test
     public void testRemotejndiNameStartsWithEJB() throws Exception {
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         testLookupCombinations(true, "jndiName=\"ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome4\"", 4);
@@ -588,13 +618,13 @@ public class JNDINameTestServlet extends FATServlet {
         testLookupCombinations(false, "jndiName=\"ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome6\"", 6);
     }
 
-    //@Test
+    @Test
     public void testHybridjndiNameStartsWithComRemoteMode() throws Exception {
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         testLookupCombinations(true, "jndiName=\"com/ibm/ejb2x/jndiName/ejb/JNDINameHome7\"", 7);
     }
 
-    //@Test
+    @Test
     public void testHybridjndiNameStartsWithEJBRemoteMode() throws Exception {
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome8">
         testLookupCombinations(true, "jndiName=\"ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome8\"", 8);
