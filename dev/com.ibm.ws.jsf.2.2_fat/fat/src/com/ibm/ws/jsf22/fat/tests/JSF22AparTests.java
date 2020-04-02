@@ -194,7 +194,6 @@ public class JSF22AparTests {
     public void testPI30335DefaultBehavior() throws Exception {
         String msgToSearchFor = "ManagedBean Ref: com.ibm.ws.jsf22.fat.tests.PI30335.ManagedBean2";
 
-        // Use the SharedServer to verify a response.
         this.verifyResponse("PI30335_Default", "", "ManagedBean1", jsfAparServer);
 
         // Check the logs to see if the message was found.
@@ -213,7 +212,6 @@ public class JSF22AparTests {
     public void testPI30335PropertySetToFalse() throws Exception {
         String msgToSearchFor = "ManagedBean Ref: null";
 
-        // Use the SharedServer to verify a response
         this.verifyResponse("PI30335_False", "", "ManagedBean1", jsfAparServer);
 
         // Check the logs to see if the message was found
@@ -1036,7 +1034,7 @@ public class JSF22AparTests {
 
             // Verify that PostConstruct is called
             assertNotNull("PostConstruct was not called",
-                       jsfAparServer.waitForStringInLogUsingMark("Post construct from TestActionListener"));
+                          jsfAparServer.waitForStringInLogUsingMark("Post construct from TestActionListener"));
 
             // Verify that PreDestroy is not being called
             assertTrue("PreDestroy was called",
@@ -1080,7 +1078,7 @@ public class JSF22AparTests {
 
             // Verify that PostConstruct is called
             assertNotNull("PostConstruct was not called",
-                       jsfAparServer.waitForStringInLogUsingMark("Post construct from TestActionListener"));
+                          jsfAparServer.waitForStringInLogUsingMark("Post construct from TestActionListener"));
 
             // Verify that PreDestroy is not being called
             assertTrue("PreDestroy was called",
