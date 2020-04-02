@@ -4361,6 +4361,8 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.setServerConfigurationFile("serverConfigs/SameSiteSecurityServer.xml");
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE_SECURITY), true);
+        // CWWKS4105I: LTPA configuration is ready after x seconds
+        sameSiteServer.waitForStringInLogUsingMark("CWWKS4105I");
         configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Updated server configuration: " + configuration);
 
