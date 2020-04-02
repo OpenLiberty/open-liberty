@@ -14,6 +14,8 @@ import java.io.IOException;
 
 import javax.net.ssl.SSLEngineResult;
 
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+
 /**
  * This callback will be used when calling the SSL utils code to do an asynchronous
  * handshake. When it is complete or an error occurs, this callback will be called
@@ -23,16 +25,26 @@ public interface SSLHandshakeCompletedCallback {
 
     /**
      * Called when the handshake is completed with the input result.
-     * 
+     *
      * @param sslResult
      */
     void complete(SSLEngineResult sslResult);
 
     /**
      * Called when the handshake fails with the input exception.
-     * 
+     *
      * @param ioe
      */
     void error(IOException ioe);
+
+    /**
+     * Called to let code inform the callback that netBuffer was replaced
+     */
+    public void updateNetBuffer(WsByteBuffer newBuffer);
+
+    /**
+     * Allow code using the callback to check if netBuffer was replaced
+     */
+    public WsByteBuffer getUpdatedNetBuffer();
 
 }

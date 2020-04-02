@@ -1387,6 +1387,8 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
         private WsByteBuffer decryptedNetBuffer;
         /** Buffer used in handshake wrap calls */
         private WsByteBuffer encryptedAppBuffer;
+        /** allow other code to tell this class if they changed netBuffer */
+        private WsByteBuffer updatedNetBuffer = null;
 
         /**
          * Internal callback used for handshake exchanges.
@@ -1408,6 +1410,17 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
             this.hsNetBuffer = _netBuffer;
             this.decryptedNetBuffer = _decryptedNetBuffer;
             this.encryptedAppBuffer = _encryptedAppBuffer;
+        }
+
+        @Override
+        public void updateNetBuffer(WsByteBuffer newBuffer) {
+            netBuffer = newBuffer;
+            updatedNetBuffer = newBuffer;
+        }
+
+        @Override
+        public WsByteBuffer getUpdatedNetBuffer() {
+            return updatedNetBuffer;
         }
 
         /*
@@ -1515,6 +1528,11 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
                                                  null,
                                                  handshakeCallback,
                                                  false);
+
+            if (handshakeCallback.getUpdatedNetBuffer() != null) {
+                netBuffer = handshakeCallback.getUpdatedNetBuffer();
+            }
+
         } catch (IOException e) {
             // Release buffers used in the handshake.
             localNetBuffer.release();

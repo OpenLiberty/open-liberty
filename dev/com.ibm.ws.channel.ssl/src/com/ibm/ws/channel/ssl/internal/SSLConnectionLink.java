@@ -100,8 +100,6 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
     private boolean http2Enabled = false;
     /** The third party ALPN negotiator used for this link */
     private ThirdPartyAlpnNegotiator alpnNegotiator = null;
-    /** inner class inbound callback for this link. needed for outside access */
-    private MyHandshakeCompletedCallback inboundCallback = null;
 
     private final Lock cleanupLock = new ReentrantLock();
 
@@ -379,6 +377,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         private WsByteBuffer encryptedAppBuffer;
         /** Inbound or outbound */
         private final FlowType flowType;
+        /** allow other code to tell this class if they changed netBuffer */
+        private WsByteBuffer updatedNetBuffer = null;
 
         /**
          * Constructor.
@@ -403,8 +403,15 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             this.flowType = _flowType;
         }
 
+        @Override
         public void updateNetBuffer(WsByteBuffer newBuffer) {
             netBuffer = newBuffer;
+            updatedNetBuffer = newBuffer;
+        }
+
+        @Override
+        public WsByteBuffer getUpdatedNetBuffer() {
+            return updatedNetBuffer;
         }
 
         /*
@@ -478,17 +485,6 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "error (handshake), vc=" + getVCHash());
             }
-        }
-    }
-
-    /**
-     * Provide a way for the connection link to be updated with a new netBuffer.
-     *
-     * @param newBuffer
-     */
-    public void updateInboundCallbackNetBuffer(WsByteBuffer newBuffer) {
-        if (inboundCallback != null) {
-            inboundCallback.updateNetBuffer(newBuffer);
         }
     }
 
@@ -588,13 +584,19 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             }
 
             // Build a callback for the asynchronous SSL handshake
-            inboundCallback = new MyHandshakeCompletedCallback(this, netBuffer, decryptedNetBuffer, encryptedAppBuffer, FlowType.INBOUND);
+            MyHandshakeCompletedCallback callback = new MyHandshakeCompletedCallback(this, netBuffer, decryptedNetBuffer, encryptedAppBuffer, FlowType.INBOUND);
             // Continue the SSL handshake. Do this with asynchronous handShake
             result = SSLUtils.handleHandshake(this, netBuffer, decryptedNetBuffer,
-                                              encryptedAppBuffer, result, inboundCallback, false);
+                                              encryptedAppBuffer, result, callback, false);
+
             // Check to see if the work was able to be done synchronously.
             if (result != null) {
                 // Handshake is done.
+
+                if (callback.getUpdatedNetBuffer() != null) {
+                    netBuffer = callback.getUpdatedNetBuffer();
+                }
+
                 readyInboundPostHandshake(netBuffer, decryptedNetBuffer,
                                           encryptedAppBuffer, result.getHandshakeStatus());
             } else {
@@ -817,6 +819,11 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // Check to see if the work was able to be done synchronously.
             if (sslResult != null) {
                 // Handshake was done synchronously.
+
+                if (callback.getUpdatedNetBuffer() != null) {
+                    netBuffer = callback.getUpdatedNetBuffer();
+                }
+
                 readyOutboundPostHandshake(netBuffer, decryptedNetBuffer,
                                            encryptedAppBuffer, sslResult.getHandshakeStatus(), async);
             }

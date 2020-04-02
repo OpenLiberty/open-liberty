@@ -783,7 +783,9 @@ public class SSLUtils {
                     netBuffer.release();
                     netBuffer = tempBuffer;
 
-                    connLink.updateInboundCallbackNetBuffer(netBuffer);
+                    if (handshakeCallback != null) {
+                        handshakeCallback.updateNetBuffer(netBuffer);
+                    }
 
                     if (bTrace && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Had to grow the netBuf: " + getBufferTraceInfo(netBuffer));
