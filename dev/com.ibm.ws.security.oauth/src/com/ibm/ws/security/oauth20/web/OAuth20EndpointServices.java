@@ -767,9 +767,9 @@ public class OAuth20EndpointServices {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
         }
 
-        if (provider.isTrackRelyingParties()) {
-            RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response, provider);
-            rpTracker.trackRelyingParty(clientId);
+        if (provider.isTrackOAuthClients()) {
+            OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
+            clientTracker.trackOAuthClient(clientId);
         }
 
         consent.handleConsent(provider, request, prompt, clientId);

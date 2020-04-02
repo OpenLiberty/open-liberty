@@ -207,7 +207,7 @@ public class OidcEndpointServicesTest {
                     will(returnValue(oidcoauth20clientprovider));
                     one(oidcoauth20clientprovider).get(with(clientId));
                     will(returnValue(oidcbaseclient));
-                    one(oauth20Provider).isTrackRelyingParties();
+                    one(oauth20Provider).isTrackOAuthClients();
                     will(returnValue(false));
 
                     one(response).sendRedirect(with(redirectUri));
@@ -273,7 +273,7 @@ public class OidcEndpointServicesTest {
                     will(returnValue(clientId));
                     one(principal).getName();
                     will(returnValue(username2));
-                    one(oauth20Provider).isTrackRelyingParties();
+                    one(oauth20Provider).isTrackOAuthClients();
                     will(returnValue(false));
 
                     one(response).sendRedirect(with("/end_session_error.html"));
@@ -352,7 +352,7 @@ public class OidcEndpointServicesTest {
                     will(returnValue(oidcoauth20clientprovider));
                     one(oidcoauth20clientprovider).get(with(clientId));
                     will(returnValue(oidcbaseclient));
-                    one(oauth20Provider).isTrackRelyingParties();
+                    one(oauth20Provider).isTrackOAuthClients();
                     will(returnValue(false));
                     allowing(response).sendRedirect(with("/end_session_logout.html"));
                 }
@@ -405,7 +405,7 @@ public class OidcEndpointServicesTest {
                     will(returnValue(null));
                     allowing(principal).getName();
                     will(returnValue(IDTokenUtil.KEY_STRING));
-                    one(oauth20Provider).isTrackRelyingParties();
+                    one(oauth20Provider).isTrackOAuthClients();
                     will(returnValue(false));
 
                     allowing(response).sendRedirect(with("/end_session_error.html"));
@@ -454,7 +454,7 @@ public class OidcEndpointServicesTest {
         try {
             context.checking(new Expectations() {
                 {
-                    one(oauth20Provider).isTrackRelyingParties();
+                    one(oauth20Provider).isTrackOAuthClients();
                     will(returnValue(false));
                     one(response).sendRedirect(with("/end_session_logout.html"));
                 }

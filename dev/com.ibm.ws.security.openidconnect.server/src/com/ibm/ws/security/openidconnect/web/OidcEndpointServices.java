@@ -69,7 +69,7 @@ import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.EndpointUtils;
 import com.ibm.ws.security.oauth20.web.OAuth20EndpointServices;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
-import com.ibm.ws.security.oauth20.web.RelyingPartyTracker;
+import com.ibm.ws.security.oauth20.web.OAuthClientTracker;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HttpUtils;
@@ -519,8 +519,8 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                 }
             }
         }
-        if (oauth20provider.isTrackRelyingParties()) {
-            redirectUri = updateRedirectUriWithTrackedRelyingParties(request, response, oauth20provider, redirectUri);
+        if (oauth20provider.isTrackOAuthClients()) {
+            redirectUri = updateRedirectUriWithTrackedOAuthClients(request, response, oauth20provider, redirectUri);
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri +"]");
@@ -528,9 +528,9 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         response.sendRedirect(redirectUri);
     }
 
-    String updateRedirectUriWithTrackedRelyingParties(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, String redirectUri) {
-        RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response, provider);
-        return rpTracker.updateLogoutUrlAndDeleteCookie(redirectUri);
+    String updateRedirectUriWithTrackedOAuthClients(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, String redirectUri) {
+        OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
+        return clientTracker.updateLogoutUrlAndDeleteCookie(redirectUri);
     }
 
     /**
