@@ -35,6 +35,7 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.security.acme.internal.AcmeConfigService;
 import com.ibm.ws.security.acme.internal.AcmeProviderImpl;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 
@@ -171,7 +172,23 @@ public class HttpConnector {
 		/*
 		 * Get the configured SSL properties.
 		 */
-		SSLConfig sslConfig = AcmeProviderImpl.getSSLConfig();
+		SSLConfig sslConfig;
+		if (AcmeConfigService.getThreadLocalAcmeConfig() != null) {
+			/*
+			 * ThreadLocal indicates we are probably testing configuration.
+			 */
+			sslConfig = AcmeConfigService.getThreadLocalAcmeConfig().getSSLConfig();
+		} else {
+			/*
+			 * Normal 'configured' path.
+			 */
+			sslConfig = AcmeProviderImpl.getSSLConfig();
+		}
+
+		/*
+		 * Use the SSLConfig if one is provided, otherwise just use the default
+		 * TrustManager.
+		 */
 		if (sslConfig.getProperty(Constants.SSLPROP_TRUST_STORE) != null) {
 
 			/*

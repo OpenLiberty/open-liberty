@@ -79,7 +79,7 @@ public class AcmeCA extends ConfigElement {
      * @return the acmeTransportConfig
      */
     public AcmeTransportConfig getAcmeTransportConfig() {
-        return (acmeTransportConfig == null) ? (acmeTransportConfig = new AcmeTransportConfig()) : acmeTransportConfig;
+        return acmeTransportConfig;
     }
 
     /**
@@ -121,7 +121,7 @@ public class AcmeCA extends ConfigElement {
      * @return the domain
      */
     public List<String> getDomain() {
-        return (domain == null) ? (domain = new ArrayList<String>()) : domain;
+        return domain;
     }
 
     /**
@@ -176,7 +176,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param acceptTermsOfService the acceptTermsOfService to set
      */
-    @XmlElement(name = "acceptTermsOfService")
+    @XmlAttribute(name = "acceptTermsOfService")
     public void setAcceptTermsOfService(Boolean acceptTermsOfService) {
         this.acceptTermsOfService = acceptTermsOfService;
     }
@@ -192,7 +192,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param accountKeyFile the accountKeyFile to set
      */
-    @XmlElement(name = "accountKeyFile")
+    @XmlAttribute(name = "accountKeyFile")
     public void setAccountKeyFile(String accountKeyFile) {
         this.accountKeyFile = accountKeyFile;
     }
@@ -208,7 +208,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param challengeRetries the challengeRetries to set
      */
-    @XmlElement(name = "challengeRetries")
+    @XmlAttribute(name = "challengeRetries")
     public void setChallengeRetries(Integer challengeRetries) {
         this.challengeRetries = challengeRetries;
     }
@@ -216,7 +216,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param challengeRetryWait the challengeRetryWait to set
      */
-    @XmlElement(name = "challengeRetryWait")
+    @XmlAttribute(name = "challengeRetryWait")
     public void setChallengeRetryWait(String challengeRetryWait) {
         this.challengeRetryWait = challengeRetryWait;
     }
@@ -224,7 +224,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param country the country to set
      */
-    @XmlElement(name = "country")
+    @XmlAttribute(name = "country")
     public void setCountry(String country) {
         this.country = country;
     }
@@ -240,7 +240,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param directoryURI the directoryURI to set
      */
-    @XmlElement(name = "directoryURI")
+    @XmlAttribute(name = "directoryURI")
     public void setDirectoryURI(String directoryURI) {
         this.directoryURI = directoryURI;
     }
@@ -256,7 +256,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param locality the locality to set
      */
-    @XmlElement(name = "locality")
+    @XmlAttribute(name = "locality")
     public void setLocality(String locality) {
         this.locality = locality;
     }
@@ -264,7 +264,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param orderRetries the orderRetries to set
      */
-    @XmlElement(name = "orderRetries")
+    @XmlAttribute(name = "orderRetries")
     public void setOrderRetries(Integer orderRetries) {
         this.orderRetries = orderRetries;
     }
@@ -272,7 +272,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param orderRetryWait the orderRetryWait to set
      */
-    @XmlElement(name = "orderRetryWait")
+    @XmlAttribute(name = "orderRetryWait")
     public void setOrderRetryWait(String orderRetryWait) {
         this.orderRetryWait = orderRetryWait;
     }
@@ -280,7 +280,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param organization the organization to set
      */
-    @XmlElement(name = "organization")
+    @XmlAttribute(name = "organization")
     public void setOrganization(String organization) {
         this.organization = organization;
     }
@@ -288,7 +288,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param organizationalUnit the organizationalUnit to set
      */
-    @XmlElement(name = "organizationalUnit")
+    @XmlAttribute(name = "organizationalUnit")
     public void setOrganizationalUnit(String organizationalUnit) {
         this.organizationalUnit = organizationalUnit;
     }
@@ -296,7 +296,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param state the state to set
      */
-    @XmlElement(name = "state")
+    @XmlAttribute(name = "state")
     public void setState(String state) {
         this.state = state;
     }
@@ -304,7 +304,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param validFor the validFor to set
      */
-    @XmlElement(name = "validFor")
+    @XmlAttribute(name = "validFor")
     public void setValidFor(String validFor) {
         this.validFor = validFor;
     }

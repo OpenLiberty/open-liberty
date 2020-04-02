@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ 
 package com.ibm.ws.security.acme.docker;
 
 import java.util.ArrayList;
@@ -56,7 +67,7 @@ public class PebbleDriver {
 		/*
 		 * Wait until the process has been cancelled via ctrl-c.
 		 */
-		printBanner();
+		printBanner(domainList);
 		while (true) {
 			try {
 				Thread.sleep(10000);
@@ -69,15 +80,16 @@ public class PebbleDriver {
 		stop();
 	}
 
-	private static void printBanner() {
+	private static void printBanner(List<String> domainList) {
 		StringBuffer banner = new StringBuffer();
 		banner.append("\n\n\n");
 		banner.append("***********************************************************************\n");
 		banner.append("*\n");
 		banner.append("*\n");
-		banner.append(
-				"* Pebble URI: " + pebble.getAcmeDirectoryURI(true) + " or " + pebble.getAcmeDirectoryURI(true) + "\n");
+		banner.append("* Pebble URI: " + pebble.getAcmeDirectoryURI(false) + " or " + pebble.getAcmeDirectoryURI(true)
+				+ "\n");
 		banner.append("* HTTP port: " + PebbleContainer.HTTP_PORT + "\n");
+		banner.append("* Domains: " + domainList + "\n");
 		banner.append("*\n");
 		banner.append("*\n");
 		banner.append("***********************************************************************\n");

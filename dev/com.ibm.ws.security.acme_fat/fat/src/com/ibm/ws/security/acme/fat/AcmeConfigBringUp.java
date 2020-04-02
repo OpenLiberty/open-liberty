@@ -54,7 +54,7 @@ public class AcmeConfigBringUp extends FATServletClient {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		server.stopServer();
+		server.stopServer("CWPKI2016E");
 	}
 
 	@Test

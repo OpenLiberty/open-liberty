@@ -22,7 +22,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,45 +57,12 @@ import com.ibm.ws.security.acme.internal.util.AcmeConstants;
  */
 public class AcmeClient {
 
-	/*
-	 * TODO Support external account binding?
-	 */
-
-	/**
-	 * The class' trace component.
-	 */
 	private static final TraceComponent tc = Tr.register(AcmeClient.class);
 
 	/**
-	 * A collection of account contacts.
+	 * Acme configuration for this client.
 	 */
-	private Collection<String> accountContacts;
-
-	/**
-	 * File name of the account key pair.
-	 */
-	private String accountKeyFilePath = null;
-
-	/**
-	 * The number of times to retry updating the status of a challenge.
-	 */
-	private int challengeRetries = 10;
-
-	/**
-	 * How long to wait (in ms) before retrying to update the status of a
-	 * challenge.
-	 */
-	private long challengeRetryWaitMs = 5000L;
-
-	/**
-	 * The URI of ACME CA server's directory.
-	 */
-	private String directoryURI = null;
-
-	/**
-	 * File name of the domain key pair.
-	 */
-	private String domainKeyFilePath = null;
+	private final AcmeConfig acmeConfig;
 
 	/**
 	 * This is a map of HTTP-01 challenge tokens to authorizations. The
@@ -108,51 +74,16 @@ public class AcmeClient {
 	private final Map<String, String> httpTokenToAuthzMap = new HashMap<String, String>();
 
 	/**
-	 * The number of times to retry updating the status of an order.
-	 */
-	private int orderRetries = 10;
-
-	/**
-	 * How long to wait (in ms) before retrying to update the status of an
-	 * order.
-	 */
-	private long orderRetryWaitMs = 3000L;
-
-	/**
-	 * Whether the account accepts any terms of service.
-	 */
-	private boolean termsOfServiceAgreed = false;
-
-	/**
 	 * Create a new {@link AcmeClient} instance.
 	 * 
-	 * @param directoryURI
-	 *            The URI of the ACME CA's directory service. Must be non-null
-	 *            and non-empty.
-	 * @param accountKeyFilePath
-	 *            The path to the account account key file. This path must be
-	 *            readable if it exists and writable if it does not exist.
-	 * @param domainKeyFilePath
-	 *            The path to the account domain key file. This path must be
-	 *            readable if it exists and writable if it does not exist.
-	 * @param accountContacts
-	 *            A collection of account contacts.
+	 * @param acmeConfig
+	 *            The {@link AcmeConfig} object to create the {@link AcmeClient}
+	 *            from.
 	 * @throws AcmeCaException
 	 *             if the parameters passed in were invalid.
 	 */
-	public AcmeClient(String directoryURI, String accountKeyFilePath, String domainKeyFilePath,
-			Collection<String> accountContacts) throws AcmeCaException {
-
-		if (directoryURI == null || directoryURI.trim().isEmpty()) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2008E", directoryURI));
-		}
-		validateKeyFilePath(accountKeyFilePath, AcmeConstants.ACCOUNT_TYPE);
-		validateKeyFilePath(domainKeyFilePath, AcmeConstants.DOMAIN_TYPE);
-
-		this.directoryURI = directoryURI;
-		this.accountKeyFilePath = accountKeyFilePath;
-		this.domainKeyFilePath = domainKeyFilePath;
-		this.accountContacts = accountContacts;
+	public AcmeClient(AcmeConfig acmeConfig) throws AcmeCaException {
+		this.acmeConfig = acmeConfig;
 	}
 
 	/**
@@ -193,27 +124,27 @@ public class AcmeClient {
 			try {
 				challenge.trigger();
 			} catch (AcmeException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2009E", directoryURI, e.getMessage()), e);
+				throw new AcmeCaException(
+						Tr.formatMessage(tc, "CWPKI2009E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
 			}
 
 			/*
 			 * Poll for the challenge to complete.
 			 */
-			int attempts = challengeRetries + 1;
+			int attempts = acmeConfig.getChallengeRetries() + 1;
 			while (challenge.getStatus() != Status.VALID && attempts-- > 0) {
 				// Did the authorization fail?
 				if (challenge.getStatus() == Status.INVALID) {
-					String msg = Tr.formatMessage(tc, "CWPKI2001E", directoryURI,
+					String msg = Tr.formatMessage(tc, "CWPKI2001E", acmeConfig.getDirectoryURI(),
 							authorization.getIdentifier().getDomain(), challenge.getStatus().toString(),
 							challenge.getError().toString());
-					//Tr.error(tc, msg);
 					throw new AcmeCaException(msg);
 				}
 
 				/*
 				 * Wait to update the status.
 				 */
-				sleep(challengeRetryWaitMs);
+				sleep(acmeConfig.getChallengeRetryWaitMs());
 
 				/*
 				 * Then update the status
@@ -225,7 +156,8 @@ public class AcmeClient {
 					// Instant.
 					// Instant when = e.getRetryAfter();
 				} catch (AcmeException e) {
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2010E", directoryURI, e.getMessage()), e);
+					throw new AcmeCaException(
+							Tr.formatMessage(tc, "CWPKI2010E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
 				}
 			}
 
@@ -234,9 +166,9 @@ public class AcmeClient {
 			 * authorization?
 			 */
 			if (challenge.getStatus() != Status.VALID) {
-				String msg = Tr.formatMessage(tc, "CWPKI2002E", directoryURI, authorization.getIdentifier().getDomain(),
-						challenge.getStatus().toString(), (challengeRetries * challengeRetryWaitMs) + "ms");
-				//Tr.error(tc, msg); TODO -- Do we want to log and throw?
+				String msg = Tr.formatMessage(tc, "CWPKI2002E", acmeConfig.getDirectoryURI(),
+						authorization.getIdentifier().getDomain(), challenge.getStatus().toString(),
+						(acmeConfig.getChallengeRetries() * acmeConfig.getChallengeRetryWaitMs()) + "ms");
 				throw new AcmeCaException(msg);
 			}
 
@@ -254,15 +186,17 @@ public class AcmeClient {
 	 * Generates a certificate for the CSR options. Also takes care for the
 	 * registration process.
 	 *
-	 * @param options
-	 *            The certificate signing request options.
+	 * @param dryRun
+	 *            Whether this should be a dry run to report any errors. The no
+	 *            order will be made with the ACME CA server and no certificate
+	 *            will be retrieved.
 	 * @return The {@link X509Certificate} returned from the certificate
 	 *         authority.
 	 * @throws AcmeCaException
 	 *             if there was an issue fetching the certificate.
 	 */
 	@FFDCIgnore({ IOException.class, AcmeException.class, AcmeRetryAfterException.class })
-	public AcmeCertificate fetchCertificate(CSROptions csrOptions) throws AcmeCaException {
+	public AcmeCertificate fetchCertificate(boolean dryRun) throws AcmeCaException {
 
 		/*
 		 * Load the account key file. If there is no key file, create a new one.
@@ -285,18 +219,26 @@ public class AcmeClient {
 		KeyPair domainKeyPair = loadOrCreateDomainKeyPair();
 
 		/*
+		 * Stop now if this is a dry run.
+		 */
+		if (dryRun) {
+			return null;
+		}
+
+		/*
 		 * Order the certificate
 		 */
 		OrderBuilder orderBuilder = acct.newOrder();
-		orderBuilder.domains(csrOptions.getDomains());
-		if (csrOptions.getValidForMs() != null && csrOptions.getValidForMs() > 0) {
-			orderBuilder.notAfter(Instant.now().plusMillis(csrOptions.getValidForMs()));
+		orderBuilder.domains(acmeConfig.getDomains());
+		if (acmeConfig.getValidFor() != null && acmeConfig.getValidFor() > 0) {
+			orderBuilder.notAfter(Instant.now().plusMillis(acmeConfig.getValidFor()));
 		}
 		Order order;
 		try {
 			order = orderBuilder.create();
 		} catch (AcmeException e) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2011E", directoryURI, e.getMessage()), e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2011E", acmeConfig.getDirectoryURI(), e.getMessage()),
+					e);
 		}
 
 		/*
@@ -311,25 +253,25 @@ public class AcmeClient {
 		 * key pair.
 		 */
 		CSRBuilder csrb = new CSRBuilder();
-		csrb.addDomains(csrOptions.getDomains());
+		csrb.addDomains(acmeConfig.getDomains());
 
 		/*
 		 * Some CA's ignore these options, but set them anyway.
 		 */
-		if (csrOptions.getCountry() != null) {
-			csrb.setCountry(csrOptions.getCountry());
+		if (acmeConfig.getCountry() != null) {
+			csrb.setCountry(acmeConfig.getCountry());
 		}
-		if (csrOptions.getState() != null) {
-			csrb.setState(csrOptions.getState());
+		if (acmeConfig.getState() != null) {
+			csrb.setState(acmeConfig.getState());
 		}
-		if (csrOptions.getLocality() != null) {
-			csrb.setLocality(csrOptions.getLocality());
+		if (acmeConfig.getLocality() != null) {
+			csrb.setLocality(acmeConfig.getLocality());
 		}
-		if (csrOptions.getOrganization() != null) {
-			csrb.setOrganization(csrOptions.getOrganization());
+		if (acmeConfig.getOrganization() != null) {
+			csrb.setOrganization(acmeConfig.getOrganization());
 		}
-		if (csrOptions.getOrganizationalUnit() != null) {
-			csrb.setOrganizationalUnit(csrOptions.getOrganizationalUnit());
+		if (acmeConfig.getOrganizationalUnit() != null) {
+			csrb.setOrganizationalUnit(acmeConfig.getOrganizationalUnit());
 		}
 
 		/*
@@ -338,7 +280,8 @@ public class AcmeClient {
 		try {
 			csrb.sign(domainKeyPair);
 		} catch (IOException e) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2012E", directoryURI, e.getMessage()), e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2012E", acmeConfig.getDirectoryURI(), e.getMessage()),
+					e);
 		}
 		Tr.debug(tc, "Certificate Signing Request: " + csrb.toString());
 
@@ -348,29 +291,31 @@ public class AcmeClient {
 		try {
 			order.execute(csrb.getEncoded());
 		} catch (AcmeException e) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2013E", directoryURI, e.getMessage()), e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2013E", acmeConfig.getDirectoryURI(), e.getMessage()),
+					e);
 		} catch (IOException e) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2014E", directoryURI, e.getMessage()), e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2014E", acmeConfig.getDirectoryURI(), e.getMessage()),
+					e);
 		}
 
 		/*
 		 * Wait for the order to complete
 		 */
-		int attempts = orderRetries + 1;
+		int attempts = acmeConfig.getOrderRetries() + 1;
 		while (order.getStatus() != Status.VALID && attempts-- > 0) {
 			/*
 			 * Did the order fail?
 			 */
 			if (order.getStatus() == Status.INVALID) {
-				String msg = Tr.formatMessage(tc, "CWPKI2001E", directoryURI,
-						csrOptions.getDomains(), order.getStatus().toString(), order.getError().toString());
+				String msg = Tr.formatMessage(tc, "CWPKI2001E", acmeConfig.getDirectoryURI(), acmeConfig.getDomains(),
+						order.getStatus().toString(), order.getError().toString());
 				throw new AcmeCaException(msg);
 			}
 
 			/*
 			 * Wait to update the status.
 			 */
-			sleep(orderRetryWaitMs);
+			sleep(acmeConfig.getOrderRetryWaitMs());
 
 			/*
 			 * Then update the status
@@ -381,7 +326,8 @@ public class AcmeClient {
 				// TODO Wait until the moment defined in the returned Instant.
 				// Instant when = e.getRetryAfter();
 			} catch (AcmeException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2015E", directoryURI, e.getMessage()), e);
+				throw new AcmeCaException(
+						Tr.formatMessage(tc, "CWPKI2015E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
 			}
 		}
 
@@ -389,9 +335,9 @@ public class AcmeClient {
 		 * All re-attempts are used up and there is still no valid order?
 		 */
 		if (order.getStatus() != Status.VALID) {
-			String msg = Tr.formatMessage(tc, "CWPKI2004E", directoryURI, csrOptions.getDomains(),
-					order.getStatus().toString(), (orderRetries * orderRetryWaitMs) + "ms");
-			//Tr.error(tc, msg); TODO -- Do we want to log and throw?
+			String msg = Tr.formatMessage(tc, "CWPKI2004E", acmeConfig.getDirectoryURI(), acmeConfig.getDomains(),
+					order.getStatus().toString(),
+					(acmeConfig.getOrderRetries() * acmeConfig.getOrderRetryWaitMs()) + "ms");
 			throw new AcmeCaException(msg);
 		}
 
@@ -425,7 +371,8 @@ public class AcmeClient {
 			 * We want FFDC here as this will usually be the first communication
 			 * we try with the ACME server. We want to capture why we failed.
 			 */
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2016E", directoryURI, e.getMessage()), e);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2016E",
+					new Object[] { acmeConfig.getDirectoryURI(), getRootCauseMessage(e) }), e);
 		}
 	}
 
@@ -459,7 +406,8 @@ public class AcmeClient {
 			try {
 				tosURI = session.getMetadata().getTermsOfService();
 			} catch (AcmeException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2017E", directoryURI, e.getMessage()), e);
+				throw new AcmeCaException(
+						Tr.formatMessage(tc, "CWPKI2017E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
 			}
 
 			/*
@@ -469,7 +417,7 @@ public class AcmeClient {
 			if (tosURI == null) {
 				Tr.debug(tc, "No terms of service provided");
 			} else {
-				Tr.audit(tc, "CWPKI2006I", directoryURI, tosURI);
+				Tr.audit(tc, "CWPKI2006I", acmeConfig.getDirectoryURI(), tosURI);
 			}
 
 			/*
@@ -480,8 +428,8 @@ public class AcmeClient {
 			/*
 			 * Add any account contacts.
 			 */
-			if (accountContacts != null && !accountContacts.isEmpty()) {
-				for (String contact : accountContacts) {
+			if (acmeConfig.getAccountContacts() != null && !acmeConfig.getAccountContacts().isEmpty()) {
+				for (String contact : acmeConfig.getAccountContacts()) {
 					accountBuilder.addContact(contact);
 				}
 			}
@@ -492,11 +440,12 @@ public class AcmeClient {
 			try {
 				account = accountBuilder.create(session);
 			} catch (AcmeException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2018E", directoryURI, e.getMessage()), e);
+				throw new AcmeCaException(
+						Tr.formatMessage(tc, "CWPKI2018E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
 			}
 		}
 
-		Tr.audit(tc, "CWPKI2019I", directoryURI, account.getLocation());
+		Tr.audit(tc, "CWPKI2019I", acmeConfig.getDirectoryURI(), account.getLocation());
 		return account;
 	}
 
@@ -524,8 +473,8 @@ public class AcmeClient {
 	private KeyPair loadAccountKeyPair() throws AcmeCaException {
 
 		File accountKeyFile = null;
-		if (accountKeyFilePath != null) {
-			accountKeyFile = new File(accountKeyFilePath);
+		if (acmeConfig.getAccountKeyFile() != null) {
+			accountKeyFile = new File(acmeConfig.getAccountKeyFile());
 		}
 
 		if (accountKeyFile != null && accountKeyFile.exists()) {
@@ -535,7 +484,7 @@ public class AcmeClient {
 			try (FileReader fr = new FileReader(accountKeyFile)) {
 				return KeyPairUtils.readKeyPair(fr);
 			} catch (IOException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", directoryURI, accountKeyFile, e.getMessage()), e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", accountKeyFile, e.getMessage()), e);
 			}
 		}
 
@@ -553,8 +502,8 @@ public class AcmeClient {
 	private KeyPair loadDomainKeyPair() throws AcmeCaException {
 
 		File domainKeyFile = null;
-		if (domainKeyFilePath != null) {
-			domainKeyFile = new File(domainKeyFilePath);
+		if (acmeConfig.getDomainKeyFile() != null) {
+			domainKeyFile = new File(acmeConfig.getDomainKeyFile());
 		}
 
 		if (domainKeyFile != null && domainKeyFile.exists()) {
@@ -564,7 +513,7 @@ public class AcmeClient {
 			try (FileReader fr = new FileReader(domainKeyFile)) {
 				return KeyPairUtils.readKeyPair(fr);
 			} catch (IOException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2020E", directoryURI, domainKeyFile, e.getMessage()), e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2020E", domainKeyFile, e.getMessage()), e);
 			}
 		}
 
@@ -601,8 +550,8 @@ public class AcmeClient {
 			accountKeyPair = KeyPairUtils.createKeyPair(AcmeConstants.KEY_SIZE);
 
 			File accountKeyFile = null;
-			if (accountKeyFilePath != null) {
-				accountKeyFile = new File(accountKeyFilePath);
+			if (acmeConfig.getAccountKeyFile() != null) {
+				accountKeyFile = new File(acmeConfig.getAccountKeyFile());
 
 				/*
 				 * Create parent directories if the abstract path contains
@@ -616,8 +565,8 @@ public class AcmeClient {
 				try (FileWriter fw = new FileWriter(accountKeyFile)) {
 					KeyPairUtils.writeKeyPair(accountKeyPair, fw);
 				} catch (IOException e) {
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E",
-							directoryURI, accountKeyFile, e.getMessage()), e);
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E", acmeConfig.getDirectoryURI(),
+							accountKeyFile, e.getMessage()), e);
 				}
 			}
 		}
@@ -655,8 +604,8 @@ public class AcmeClient {
 			domainKeyPair = KeyPairUtils.createKeyPair(AcmeConstants.KEY_SIZE);
 
 			File domainKeyFile = null;
-			if (domainKeyFilePath != null) {
-				domainKeyFile = new File(domainKeyFilePath);
+			if (acmeConfig.getDomainKeyFile() != null) {
+				domainKeyFile = new File(acmeConfig.getDomainKeyFile());
 
 				/*
 				 * Create parent directories if the abstract path contains
@@ -670,8 +619,8 @@ public class AcmeClient {
 				try (FileWriter fw = new FileWriter(domainKeyFile)) {
 					KeyPairUtils.writeKeyPair(domainKeyPair, fw);
 				} catch (IOException e) {
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2022E",
-							directoryURI, domainKeyFile, e.getMessage()), e);
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2022E", acmeConfig.getDirectoryURI(),
+							domainKeyFile, e.getMessage()), e);
 				}
 			}
 		}
@@ -702,8 +651,8 @@ public class AcmeClient {
 		 */
 		Http01Challenge challenge = auth.findChallenge(Http01Challenge.TYPE);
 		if (challenge == null) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2005E",
-					directoryURI, Http01Challenge.TYPE));
+			throw new AcmeCaException(
+					Tr.formatMessage(tc, "CWPKI2005E", acmeConfig.getDirectoryURI(), Http01Challenge.TYPE));
 		}
 
 		/*
@@ -733,7 +682,7 @@ public class AcmeClient {
 		 */
 		KeyPair accountKeyPair = loadAccountKeyPair();
 		if (accountKeyPair == null) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", directoryURI));
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", acmeConfig.getDirectoryURI()));
 		}
 
 		/*
@@ -754,73 +703,11 @@ public class AcmeClient {
 			try {
 				Certificate.revoke(login, certificate, RevocationReason.UNSPECIFIED);
 			} catch (AcmeException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", directoryURI, e.getMessage()), e);
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", acmeConfig.getDirectoryURI(),
+						certificate.getSerialNumber().toString(16), e.getMessage()), e);
 			}
 		} else {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", directoryURI));
-		}
-	}
-
-	/**
-	 * Set the accept terms of service response. If the ACME CA service has
-	 * terms of service, this needs to be set to 'true'.
-	 * 
-	 * @param acceptTos
-	 *            Whether to accept any terms of service issued by the ACME CA.
-	 */
-	public void setAcceptTos(Boolean acceptTos) {
-		if (acceptTos != null) {
-			this.termsOfServiceAgreed = acceptTos;
-		}
-	}
-
-	/**
-	 * Set the number of times to try to update a challenge before failing.
-	 * 
-	 * @param retries
-	 *            The number of time to try to update a challenge.
-	 */
-	public void setChallengeRetries(Integer retries) {
-		if (retries != null && retries >= 0) {
-			this.challengeRetries = retries;
-		}
-	}
-
-	/**
-	 * Set the amount of time, in milliseconds, to wait to retry updating the
-	 * challenge.
-	 * 
-	 * @param retryWaitMs
-	 *            The time to wait before re-trying to update a challenge.
-	 */
-	public void setChallengeRetryWait(Long retryWaitMs) {
-		if (retryWaitMs != null && retryWaitMs >= 0) {
-			this.challengeRetryWaitMs = retryWaitMs;
-		}
-	}
-
-	/**
-	 * Set the number of times to try to update an order before failing.
-	 * 
-	 * @param retries
-	 *            The number of time to try to update an order.
-	 */
-	public void setOrderRetries(Integer retries) {
-		if (retries != null && retries >= 0) {
-			this.orderRetries = retries;
-		}
-	}
-
-	/**
-	 * Set the amount of time, in milliseconds, to wait to retry updating the
-	 * order.
-	 * 
-	 * @param retryWaitMs
-	 *            The time to wait before re-trying to update an order.
-	 */
-	public void setOrderRetryWait(Long retryWaitMs) {
-		if (retryWaitMs != null && retryWaitMs >= 0) {
-			this.orderRetryWaitMs = retryWaitMs;
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", acmeConfig.getDirectoryURI()));
 		}
 	}
 
@@ -844,46 +731,13 @@ public class AcmeClient {
 	}
 
 	/**
-	 * Validate the key file path is usable.
-	 * 
-	 * @param path
-	 *            The file path to verify.
-	 * @param type
-	 *            The key file type (account or domain). For logging only.
-	 * @throws AcmeCaException
-	 *             if the file path exists and is not readable or if the file
-	 *             path does not exist and is not writable.
-	 */
-	private static void validateKeyFilePath(String path, String type) throws AcmeCaException {
-		if (path == null || path.trim().isEmpty()) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2027E", type, path));
-		}
-
-		File file = new File(path);
-		if (file.exists() && !file.canRead()) {
-			if (type.equals(AcmeConstants.DOMAIN_TYPE)) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2020E", type, path));
-			} else {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", type, path));
-			}
-		}
-		if (file.exists() && !file.canWrite()) {
-			if (type.equals(AcmeConstants.DOMAIN_TYPE)) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2022E", type, path));
-			} else {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E", type, path));
-			}
-		}
-	}
-
-	/**
 	 * Create a new session with the ACME CA server.
 	 * 
 	 * @return the session
 	 * @throws AcmeCaException
 	 *             If there was an error trying to create the new session.
 	 */
-	@FFDCIgnore({ PrivilegedActionException.class })
+	@FFDCIgnore({ Exception.class })
 	private Session getNewSession() throws AcmeCaException {
 
 		try {
@@ -903,21 +757,31 @@ public class AcmeClient {
 						origLoader = Thread.currentThread().getContextClassLoader();
 						Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-						return new Session(AcmeClient.this.directoryURI);
+						return new Session(AcmeClient.this.acmeConfig.getDirectoryURI());
 					} finally {
 						Thread.currentThread().setContextClassLoader(origLoader);
 					}
 				}
 			});
-		} catch (PrivilegedActionException e) {
+		} catch (Exception e) {
 			if (tc.isDebugEnabled()) {
-				Tr.debug(tc, "Getting a new session failed for " + directoryURI + ", full stack trace is", e);
+				Tr.debug(tc,
+						"Getting a new session failed for " + acmeConfig.getDirectoryURI() + ", full stack trace is",
+						e);
 			}
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2028E", directoryURI), e.getCause()); // during test,
-																										// the getCause
-																										// provided
-																										// better
-																										// information
+
+			/*
+			 * Get the cause. PrivilegedActionException ONLY wraps checked
+			 * exceptions.
+			 */
+			Throwable cause;
+			if (e instanceof PrivilegedActionException) {
+				cause = ((PrivilegedActionException) e).getException();
+			} else {
+				cause = e;
+			}
+
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2028E", acmeConfig.getDirectoryURI()), cause);
 		}
 	}
 
