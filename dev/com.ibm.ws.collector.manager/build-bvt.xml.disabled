@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.collector.manager_bvt" default="bvt">
+
+  <!-- ant project and java project names can't match -->
+  <property name="skip.validate.project" value="true" />
+  
+  <!-- BVT test server: should match the name of the server being published: publish/servers/x -->
+  <property name="profile" value="com.ibm.ws.collector.manager.bvt" />
+  
+  <!-- Specify something to wait for before we start running the "client-side" JUnit tests:
+       see: http://was.pok.ibm.com/xwiki/bin/view/Liberty/Test-BVT -->
+  <!-- property name="test.url" value="/hello" / -->
+  
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+  <import file="../ant_build/public_imports/bvt_imports.xml"/>
+  
+  <target name="prestart-server">
+    <!-- If the project builds a bundle, it is easiest to use fileinstall to
+         install/start the test bundle at runtime. this target makes sure the
+         bundles directory gets cleaned up to ensure correct behavior (i.e. no 
+         leftovers from a previous run... ) --> 
+    <delete dir="${bvt.prop.server.root}/bundles" includeemptydirs="yes" failonerror="false" />
+    <mkdir dir="${bvt.prop.server.root}/bundles" />
+
+    <copy todir="${bvt.prop.server.root}/bundles">
+      <fileset dir="${lib.dir}" includes="*.jar"/>
+    </copy>
+  </target>
+</project>
