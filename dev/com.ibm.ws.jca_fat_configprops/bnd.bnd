@@ -13,7 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-resourceadapters/fvt-resourceadapter/src,\
+	test-resourceadapters/MapRA/src,\
 	test-applications/fvtweb/src
 
 fat.project: true

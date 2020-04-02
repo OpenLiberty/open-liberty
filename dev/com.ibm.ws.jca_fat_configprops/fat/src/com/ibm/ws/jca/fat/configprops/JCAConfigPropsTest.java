@@ -11,69 +11,41 @@
 package com.ibm.ws.jca.fat.configprops;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * General tests that don't involve updating configuration while the server is running.
  */
-public class JCAConfigPropsTest {
+@RunWith(FATRunner.class)
+public class JCAConfigPropsTest extends FATServletClient {
+
     private static final String APP_NAME = "fvtweb";
+    private static final String RAR_NAME = "MapRA";
 
-    private static LibertyServer server;
+    @Server("com.ibm.ws.jca.fat.configprops")
+    public static LibertyServer server;
 
-    /**
-     * Utility method to run a test on ConfigPropsRATestServlet.
-     *
-     * @param test Test name to supply as an argument to the servlet
-     * @return output of the servlet
-     * @throws IOException if an error occurs
-     */
-    private StringBuilder runInServlet(String test) throws IOException {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/fvtweb?test=" + test);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
+    private void runTest() throws Exception {
+        runTest(server, APP_NAME, testName);
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.configprops");
 
-        server.addInstalledAppForValidation(APP_NAME);
+        ShrinkHelper.defaultApp(server, APP_NAME, "web");
+        ShrinkHelper.defaultRar(server, RAR_NAME, "fat.configpropsra.adapter");
+
         server.startServer();
         server.waitForStringInLog("CWWKE0002I");
         assertNotNull("FeatureManager should report update is complete",
@@ -84,51 +56,52 @@ public class JCAConfigPropsTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        if (server.isStarted())
+            server.stopServer();
     }
 
     @Test
     public void testMCFAnnotationOverridesRAWLPExtension() throws Exception {
-        runInServlet("testMCFAnnotationOverridesRAWLPExtension");
+        runTest();
     }
 
     @Test
     public void testMCFDDOverridesMCFAnnotation() throws Exception {
-        runInServlet("testMCFDDOverridesMCFAnnotation");
+        runTest();
     }
 
     @Test
     public void testMCFJavaBean() throws Exception {
-        runInServlet("testMCFJavaBean");
+        runTest();
     }
 
     @Test
     public void testRAAnnotationOverridesRAJavaBean() throws Exception {
-        runInServlet("testRAAnnotationOverridesRAJavaBean");
+        runTest();
     }
 
     @Test
     public void testRADeploymentDescriptorOverridesRAAnnotation() throws Exception {
-        runInServlet("testRADeploymentDescriptorOverridesRAAnnotation");
+        runTest();
     }
 
     @Test
     public void testRAJavaBeanOverridesMCFJavaBean() throws Exception {
-        runInServlet("testRAJavaBeanOverridesMCFJavaBean");
+        runTest();
     }
 
     @Test
     public void testRAWLPExtensionOverridesRADeploymentDescriptor() throws Exception {
-        runInServlet("testRAWLPExtensionOverridesRADeploymentDescriptor");
+        runTest();
     }
 
     @Test
     public void testServerXMLOverridesWLPExtension() throws Exception {
-        runInServlet("testServerXMLOverridesWLPExtension");
+        runTest();
     }
 
     @Test
     public void testWLPExtensionOverridesMCFDeploymentDescriptor() throws Exception {
-        runInServlet("testWLPExtensionOverridesMCFDeploymentDescriptor");
+        runTest();
     }
 }

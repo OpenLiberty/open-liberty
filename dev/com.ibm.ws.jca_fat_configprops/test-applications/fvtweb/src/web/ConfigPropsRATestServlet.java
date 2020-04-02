@@ -27,18 +27,18 @@ public class ConfigPropsRATestServlet extends HttpServlet {
     /**
      * Message written to servlet to indicate that is has been successfully invoked.
      */
-    public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
+    public static final String SUCCESS_MESSAGE = "SUCCESS";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
+        String test = request.getParameter("testMethod");
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
         System.out.println("-----> " + test + " starting");
         try {
             getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class).invoke(this, request, response);
             System.out.println("<----- " + test + " successful");
-            out.println(test + " COMPLETED SUCCESSFULLY");
+            out.println(test + " " + SUCCESS_MESSAGE);
         } catch (Throwable x) {
             if (x instanceof InvocationTargetException)
                 x = x.getCause();
