@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,12 +91,12 @@ public class LTPAKeyInfoManager {
      * Loads the contents of the key import file if necessary.
      *
      * @param keyImportFile The URL of the key import file. If it's not the URL, it is assumed as a relative path from
-     *            ${App.root}/config
-     * @param keyPassword The password of the LTPA keys
+     *                          ${App.root}/config
+     * @param keyPassword   The password of the LTPA keys
      * @throws IOException
      */
     @SuppressWarnings("deprecation")
-    public synchronized final void prepareLTPAKeyInfo(WsLocationAdmin locService, String keyImportFile, @Sensitive byte[] keyPassword) throws Exception {
+    public synchronized final void prepareLTPAKeyInfo(WsLocationAdmin locService, String keyImportFile, @Sensitive byte[] keyPassword, String realmName) throws Exception {
         if (!this.importFileCache.contains(keyImportFile)) {
             // Need to load the key import file
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -113,7 +113,7 @@ public class LTPAKeyInfoManager {
                 Tr.info(tc, "LTPA_CREATE_KEYS_START");
 
                 LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
-                props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
+                props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword, realmName);
 
                 Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
             }
@@ -198,7 +198,7 @@ public class LTPAKeyInfoManager {
      * Get the LTPA secret key.
      *
      * @param keyImportFile The URL of the key import file. If it's not the URL, it is assumed as a relative path from
-     *            ${App.root}/config
+     *                          ${App.root}/config
      * @return The LTPA secret key
      */
     @Sensitive
@@ -210,7 +210,7 @@ public class LTPAKeyInfoManager {
      * Get the LTPA private key.
      *
      * @param keyImportFile The URL of the key import file. If it's not the URL, it is assumed as a relative path from
-     *            ${App.root}/config
+     *                          ${App.root}/config
      * @return The LTPA private key
      */
     @Sensitive
@@ -222,7 +222,7 @@ public class LTPAKeyInfoManager {
      * Get the LTPA public key.
      *
      * @param keyImportFile The URL of the key import file. If it's not the URL, it is assumed as a relative path from
-     *            ${App.root}/config
+     *                          ${App.root}/config
      * @return The LTPA public key
      */
     public final byte[] getPublicKey(String keyImportFile) {
@@ -233,7 +233,7 @@ public class LTPAKeyInfoManager {
      * Get the LTPA realm.
      *
      * @param keyImportFile The URL of the key import file. If it's not the URL, it is assumed as a relative path from
-     *            ${App.root}/config
+     *                          ${App.root}/config
      * @return The LTPA realm
      */
     final String getRealm(String keyImportFile) {
