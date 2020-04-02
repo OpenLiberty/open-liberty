@@ -48,7 +48,6 @@ public class CDI12ExtensionTest extends LoggingTest {
     public static String INSTALL_USERBUNDLE = "cdi.helloworld.extension";
     public static String INSTALL_USERFEATURE = "cdi.helloworld.extension";
 
-    public static String EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE = "cdi12.internals-1.0";
     private static LibertyServer server;
 
 
@@ -102,7 +101,6 @@ public class CDI12ExtensionTest extends LoggingTest {
         System.out.println("Intall the user feature bundle... cdi.helloworld.extension");
         server.installUserBundle(INSTALL_USERBUNDLE);
         server.installUserFeature(INSTALL_USERFEATURE);
-        server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE);
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");
     }
@@ -151,7 +149,6 @@ public class CDI12ExtensionTest extends LoggingTest {
             server.stopServer();
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
-        server.uninstallSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE);
         server.uninstallUserBundle(INSTALL_USERBUNDLE);
         server.uninstallUserFeature(INSTALL_USERFEATURE);
     }

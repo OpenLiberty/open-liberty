@@ -11,7 +11,6 @@
         <feature>cdi-1.2</feature>
         <feature>ejbLite-3.2</feature>
         <feature>componentTest-1.0</feature>
-        <feature>cdi12.internals-1.0</feature>
         <feature>usr:cdi.helloworld.extension</feature>
     </featureManager>
 
