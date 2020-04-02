@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2012, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>jca-1.6</feature>
+      <feature>jndi-1.0</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>servlet-3.0</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <resourceAdapter location="${server.config.dir}/connectors/MapRA.rar"/>
+
+    <connectionFactory jndiName="eis/map1">
+      <properties.MapRA/>
+    </connectionFactory>
+
+    <connectionFactory jndiName="eis/map2">
+      <!-- We don't currently support primitives. -->
+<!--
+      <properties.MapRA propInt1_WLP="12345" propInteger2_WLP="12345" propString_WLP="server.xml default value"/>
+-->
+      <properties.MapRA propInteger2_WLP="12345" propString_WLP="server.xml default value"/>
+    </connectionFactory>
+
+    <application location="fvtweb.war"/>
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+</server>
