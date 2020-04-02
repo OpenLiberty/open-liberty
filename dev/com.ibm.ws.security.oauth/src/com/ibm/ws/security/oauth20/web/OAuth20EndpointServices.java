@@ -268,7 +268,7 @@ public class OAuth20EndpointServices {
                     revoke(oauth20Provider, request, response);
                 }
                 break;
-            case coverage_map:
+            case coverage_map: // non-spec extension
                 coverageMapServices.handleEndpointRequest(oauth20Provider, request, response);
                 break;
             case registration:
@@ -823,6 +823,7 @@ public class OAuth20EndpointServices {
         OAuthResult result = clientAuthorization.validateAndHandle2LegsScope(provider, request, response, clientId);
         if (result.getStatus() == OAuthResult.STATUS_OK) {
             result = provider.processTokenRequest(clientId, request, response);
+
         }
         if (result.getStatus() != OAuthResult.STATUS_OK) {
             OAuth20TokenRequestExceptionHandler handler = new OAuth20TokenRequestExceptionHandler();

@@ -371,7 +371,10 @@
            <AD id="introspectTokens" name="%introspectTokens" description="%introspectTokens.desc" required="false" type="Boolean" default="false"/>
            
            <AD id="allowRegexpRedirects" name="%allowRegexpRedirects" description="%allowRegexpRedirects.desc" required="false" type="Boolean" default="false"/>
-             
+            
+           <!--  non spec extension.  info is returned by CoverageMapEndpointServices.
+                 For a given client,  used to check which downstream uri's can be trusted to propagate a token to. 
+           --> 
            <AD id="trustedUriPrefixes" name="%trustedUriPrefixes" description="%trustedUriPrefixes.desc" required="false" type="String" cardinality="2147483647"/>
            
            <AD id="resourceIds" name="%resourceIds" description="%resourceIds.desc" required="false" type="String" cardinality="2147483647"/>
