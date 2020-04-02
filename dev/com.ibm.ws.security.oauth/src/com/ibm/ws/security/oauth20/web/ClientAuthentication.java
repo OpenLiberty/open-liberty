@@ -500,7 +500,7 @@ public class ClientAuthentication {
         } catch (OAuth20MissingParameterException e) {
             throw e;
         } catch (Exception e1) {
-            Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName);
+            Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName); // CWOAU0074E
             throw new OidcServerException("invalid_resource_owner_credential", OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_BAD_REQUEST, e1);
         }
         return valid;
@@ -531,16 +531,9 @@ public class ClientAuthentication {
         }
         accessToken = assertTokenIsUsedByAllowedClient(accessToken, clientAuthnData, provider);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "checkAppPassword obtained access token " + accessToken);
+            Tr.debug(tc, "checkAppPassword obtained access token: " + accessToken);
         }
-        /*
-         * if (accessToken != null && accessToken.getGrantType().equals(OAuth20Constants.APP_PASSWORD)) {
-         * if (tc.isDebugEnabled()) {
-         * Tr.debug(tc, "checkAppPassword has found access token " + accessToken);
-         * }
-         * return accessToken;
-         * }
-         */
+        // returning null will produce CWWKS0074E
         if (accessToken == null) {
             return null;
         }
@@ -559,7 +552,6 @@ public class ClientAuthentication {
                 Tr.debug(tc, "UserName from token request: " + userName +
                         " does not match userName of app password: " + accessToken.getUsername() + ", return null");
             }
-            Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", new Object[] { userName }); // CWOAU0074E
             return null;
         }
 

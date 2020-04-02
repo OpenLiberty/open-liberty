@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: An authentication error occurred. T
 security.oauth20.front.end.error.explanation=The request might be missing information, the server might have encountered an internal error, or some other error may have prevented the server from successfully authenticating the user.
 security.oauth20.front.end.error.useraction=Contact the system administrator to resolve the problem.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: The application password exchange request for the {0} user was not completed because the application password was not able to be verified. The application password is either incorrect, expired, or revoked, or the provided client ID is not valid.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: The application password exchange request for the {0} user was not completed because the application password was not able to be verified. The application password is either incorrect, expired, or revoked, or the provided client ID or user ID is not valid.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=The OAuth provider was not able to verify the application password.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Confirm that the application password is valid, is not expired, and was not revoked. Also, confirm that the client ID in the access token is the same as the client ID in the Authorization header.
 
