@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.web;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -28,6 +30,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 public class RelyingPartyTracker {
 
     public static final String TRACK_RELYING_PARTY_COOKIE_NAME = "WasOAuthTrackRps";
+    public static final String POST_LOGOUT_QUERY_PARAMETER_NAME = "clients_interacted_with";
 
     private final String clientIdDelimiter = ",";
 
@@ -51,6 +54,19 @@ public class RelyingPartyTracker {
         }
         response.addCookie(trackingCookie);
         return trackingCookie;
+    }
+
+    public String updateLogoutUrlAndDeleteCookie(String logoutUrl) {
+        if (logoutUrl == null || logoutUrl.isEmpty()) {
+            return logoutUrl;
+        }
+        Cookie trackingCookie = CookieHelper.getCookie(request.getCookies(), getCookieName());
+        if (trackingCookie == null) {
+            return logoutUrl;
+        }
+        String updatedUrl = getUpdatedLogoutUrl(logoutUrl, trackingCookie);
+        invalidateCookie();
+        return updatedUrl;
     }
 
     ReferrerURLCookieHandler getReferrerURLCookieHandler() {
@@ -134,6 +150,45 @@ public class RelyingPartyTracker {
             path = matcher.group(1);
         }
         return path;
+    }
+
+    String getUpdatedLogoutUrl(String logoutUrl, Cookie trackingCookie) {
+        String existingCookieValue = trackingCookie.getValue();
+        if (existingCookieValue == null || existingCookieValue.isEmpty()) {
+            return logoutUrl;
+        }
+        List<String> clientIdList = getExistingTrackedClientIds(existingCookieValue);
+        return addTrackedClientIdsToUrl(logoutUrl, clientIdList);
+    }
+
+    String addTrackedClientIdsToUrl(String url, List<String> clientIdList) {
+        if (clientIdList == null || clientIdList.isEmpty()) {
+            return url;
+        }
+        String newUrl = url;
+        if (url.contains("?")) {
+            newUrl += "&";
+        } else {
+            newUrl += "?";
+        }
+        newUrl += POST_LOGOUT_QUERY_PARAMETER_NAME + "=";
+        for (String clientId : clientIdList) {
+            try {
+                newUrl += URLEncoder.encode(encodeValue(clientId), "UTF-8") + ",";
+            } catch (UnsupportedEncodingException e) {
+                // Do nothing - UTF-8 encoding will be supported
+            }
+        }
+        if (newUrl.endsWith(",")) {
+            // Remove trailing comma
+            newUrl = newUrl.substring(0, newUrl.length() - 1);
+        }
+        return newUrl;
+    }
+
+    void invalidateCookie() {
+        ReferrerURLCookieHandler handler = getReferrerURLCookieHandler();
+        handler.invalidateReferrerURLCookie(request, response, getCookieName());
     }
 
     String encodeValue(String input) {

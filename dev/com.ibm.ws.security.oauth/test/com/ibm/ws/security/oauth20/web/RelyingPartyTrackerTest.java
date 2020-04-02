@@ -44,10 +44,12 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     private final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
     private final OAuth20Provider provider = mockery.mock(OAuth20Provider.class);
     private final WebAppSecurityConfig config = mockery.mock(WebAppSecurityConfig.class);
+    private final Cookie cookie = mockery.mock(Cookie.class);
 
     private final String providerId = "myOAuthProvider";
     private final String expectedCookiePath = "/oidc/endpoint/" + providerId;
     private final String requestUri = expectedCookiePath + "/authorize";
+    private final String logoutUrl = "my/logout/url";
 
     private ReferrerURLCookieHandler handler;
 
@@ -123,6 +125,74 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         assertEquals("Created cookie does not have the correctly encoded value.", expectedValue, result.getValue());
         assertEquals("Created cookie does not have the correct path.", expectedCookiePath, result.getPath());
         assertTrue("Cookie should have the secure flag set, but didn't. Cookie was: " + result, result.getSecure());
+    }
+
+    @Test
+    public void test_updateLogoutUrlAndDeleteCookie_urlNull() {
+        String logoutUrl = null;
+        String result = tracker.updateLogoutUrlAndDeleteCookie(logoutUrl);
+        assertNull("Updated URL should have been null but was [" + result + "].", result);
+    }
+
+    @Test
+    public void test_updateLogoutUrlAndDeleteCookie_emptyNull() {
+        String logoutUrl = "";
+        String result = tracker.updateLogoutUrlAndDeleteCookie(logoutUrl);
+        assertEquals("Updated URL should have been empty.", logoutUrl, result);
+    }
+
+    @Test
+    public void test_updateLogoutUrlAndDeleteCookie_noTrackingCookie() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getCookies();
+                will(returnValue(null));
+            }
+        });
+        String result = tracker.updateLogoutUrlAndDeleteCookie(logoutUrl);
+        assertEquals("URL should have remained unchanged, but did not.", logoutUrl, result);
+    }
+
+    @Test
+    public void test_updateLogoutUrlAndDeleteCookie_trackingCookieHasNoValue() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        Cookie trackingCookie = tracker.createNewRelyingPartyTrackingCookie(handler, "");
+        mockery.checking(new Expectations() {
+            {
+                one(request).getCookies();
+                will(returnValue(new Cookie[] { trackingCookie }));
+                one(response).addCookie(with(any(Cookie.class)));
+            }
+        });
+        String result = tracker.updateLogoutUrlAndDeleteCookie(logoutUrl);
+        assertEquals("URL should have remained unchanged, but did not.", logoutUrl, result);
+    }
+
+    @Test
+    public void test_updateLogoutUrlAndDeleteCookie() {
+        String existingClientId = "client1";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURI();
+                will(returnValue(requestUri));
+            }
+        });
+        Cookie trackingCookie = tracker.createNewRelyingPartyTrackingCookie(handler, existingClientId);
+        mockery.checking(new Expectations() {
+            {
+                one(request).getCookies();
+                will(returnValue(new Cookie[] { trackingCookie }));
+                one(response).addCookie(with(any(Cookie.class)));
+            }
+        });
+        String result = tracker.updateLogoutUrlAndDeleteCookie(logoutUrl);
+        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(existingClientId).replace("=", "%3D");
+        assertEquals("Updated URL did not match the expected value.", expectedResult, result);
     }
 
     @Test
@@ -411,7 +481,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         String requestUri = "";
         mockery.checking(new Expectations() {
             {
-                allowing(request).getRequestURI();
+                one(request).getRequestURI();
                 will(returnValue(requestUri));
             }
         });
@@ -424,7 +494,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         String requestUri = "my request uri";
         mockery.checking(new Expectations() {
             {
-                allowing(request).getRequestURI();
+                one(request).getRequestURI();
                 will(returnValue(requestUri));
             }
         });
@@ -438,7 +508,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         String requestUri = firstPart + "/uri";
         mockery.checking(new Expectations() {
             {
-                allowing(request).getRequestURI();
+                one(request).getRequestURI();
                 will(returnValue(requestUri));
             }
         });
@@ -452,12 +522,111 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         String requestUri = firstPart + "/slashes";
         mockery.checking(new Expectations() {
             {
-                allowing(request).getRequestURI();
+                one(request).getRequestURI();
                 will(returnValue(requestUri));
             }
         });
         String result = tracker.getCookiePath();
         assertEquals("Result should have matched the request URI up to the last slash.", firstPart, result);
+    }
+
+    @Test
+    public void test_getUpdatedLogoutUrl_cookieValueNull() {
+        mockery.checking(new Expectations() {
+            {
+                one(cookie).getValue();
+                will(returnValue(null));
+            }
+        });
+        String result = tracker.getUpdatedLogoutUrl(logoutUrl, cookie);
+        assertEquals("Returned URL should not have been any different from the input.", logoutUrl, result);
+    }
+
+    @Test
+    public void test_getUpdatedLogoutUrl_cookieValueEmpty() {
+        mockery.checking(new Expectations() {
+            {
+                one(cookie).getValue();
+                will(returnValue(""));
+            }
+        });
+        String result = tracker.getUpdatedLogoutUrl(logoutUrl, cookie);
+        assertEquals("Returned URL should not have been any different from the input.", logoutUrl, result);
+    }
+
+    @Test
+    public void test_getUpdatedLogoutUrl() {
+        String clientId = "my client id";
+        mockery.checking(new Expectations() {
+            {
+                one(cookie).getValue();
+                will(returnValue(tracker.encodeValue(tracker.encodeValue(clientId))));
+            }
+        });
+        String result = tracker.getUpdatedLogoutUrl(logoutUrl, cookie);
+        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
+        assertEquals("URL did not match the expected value.", expectedResult, result);
+    }
+
+    @Test
+    public void test_addTrackedClientIdsToUrl_emptyClientIdList() {
+        List<String> clientIdList = new ArrayList<String>();
+        String result = tracker.addTrackedClientIdsToUrl(logoutUrl, clientIdList);
+        assertEquals("URL should have remained unchanged.", logoutUrl, result);
+    }
+
+    @Test
+    public void test_addTrackedClientIdsToUrl_singleClient_noExistingQueryString() {
+        List<String> clientIdList = new ArrayList<String>();
+        String clientId = "my client id";
+        clientIdList.add(clientId);
+
+        String result = tracker.addTrackedClientIdsToUrl(logoutUrl, clientIdList);
+
+        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
+        assertEquals("URL did not match the expected value.", expectedResult, result);
+    }
+
+    @Test
+    public void test_addTrackedClientIdsToUrl_singleClient_withExistingQueryString() {
+        List<String> clientIdList = new ArrayList<String>();
+        String clientId = "my client id";
+        clientIdList.add(clientId);
+        String logoutUrlWithQuery = logoutUrl + "?with=other&param=values";
+
+        String result = tracker.addTrackedClientIdsToUrl(logoutUrlWithQuery, clientIdList);
+
+        String expectedResult = logoutUrlWithQuery + "&" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
+        assertEquals("URL did not match the expected value.", expectedResult, result);
+    }
+
+    @Test
+    public void test_addTrackedClientIdsToUrl_multipleClient_noExistingQueryString() {
+        List<String> clientIdList = new ArrayList<String>();
+        String client1 = "my client id";
+        String client2 = "some !@#$%^&*() other ID";
+        clientIdList.add(client1);
+        clientIdList.add(client2);
+
+        String result = tracker.addTrackedClientIdsToUrl(logoutUrl, clientIdList);
+
+        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(client1) + "," + tracker.encodeValue(client2);
+        assertEquals("URL did not match the expected value.", expectedResult, result);
+    }
+
+    @Test
+    public void test_addTrackedClientIdsToUrl_multipleClient_withExistingQueryString() {
+        List<String> clientIdList = new ArrayList<String>();
+        String client1 = "my client id";
+        String client2 = "some !@#$%^&*() other ID";
+        clientIdList.add(client1);
+        clientIdList.add(client2);
+        String logoutUrlWithQuery = logoutUrl + "?with=other&param=values";
+
+        String result = tracker.addTrackedClientIdsToUrl(logoutUrlWithQuery, clientIdList);
+
+        String expectedResult = logoutUrlWithQuery + "&" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(client1) + "," + tracker.encodeValue(client2);
+        assertEquals("URL did not match the expected value.", expectedResult, result);
     }
 
     @Test
