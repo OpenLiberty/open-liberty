@@ -12,6 +12,7 @@ package com.ibm.ws.jsonb.fat;
 
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON_JSONP;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -25,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -34,6 +36,7 @@ import componenttest.topology.utils.FATServletClient;
  * Consider if we should move to the JSON-P bucket once that is written.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE9_FEATURES)
 public class JsonUserFeatureTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonp.container.userfeature.fat")

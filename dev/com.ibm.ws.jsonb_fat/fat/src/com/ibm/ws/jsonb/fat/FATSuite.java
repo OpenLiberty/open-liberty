@@ -12,12 +12,15 @@ package com.ibm.ws.jsonb.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -30,6 +33,10 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JsonUserFeatureTest.class
 })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
+                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
+
     public static final String PROVIDER_YASSON = "org.eclipse.yasson.JsonBindingProvider";
     public static final String PROVIDER_JOHNZON = "org.apache.johnzon.jsonb.JohnzonProvider";
     public static final String PROVIDER_GLASSFISH_JSONP = "org.glassfish.json.JsonProviderImpl";
