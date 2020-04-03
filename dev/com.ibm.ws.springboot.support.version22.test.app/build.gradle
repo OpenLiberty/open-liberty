@@ -9,35 +9,18 @@ group = 'com.ibm.ws.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
+repositories.clear()
 repositories {
   if (isUsingArtifactory) {
-    maven {
-          credentials {
-            username userProps.getProperty("artifactory.download.user")
-            password userProps.getProperty("artifactory.download.token")
-          }
-          url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
-    }
     maven {
       credentials {
         username userProps.getProperty("artifactory.download.user")
         password userProps.getProperty("artifactory.download.token")
       }
-      url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
-      metadataSources {
-        mavenPom()
-        artifact()
-      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
     }
   } else {
     mavenCentral()
-    maven {
-      url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
-      metadataSources {
-        mavenPom()
-        artifact()
-      }
-    }
   }
 }
 
