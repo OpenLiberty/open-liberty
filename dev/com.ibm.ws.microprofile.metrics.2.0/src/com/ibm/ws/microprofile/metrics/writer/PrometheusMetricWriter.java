@@ -14,9 +14,11 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
@@ -43,6 +45,8 @@ public class PrometheusMetricWriter implements OutputWriter {
 
     private final Writer writer;
     protected final Locale locale;
+
+    protected final Set<Metadata> improperMetadataSet = new HashSet<Metadata>();
 
     public PrometheusMetricWriter(Writer writer, Locale locale) {
         this.writer = writer;
@@ -131,8 +135,9 @@ public class PrometheusMetricWriter implements OutputWriter {
                 PrometheusBuilder.buildHistogram(builder, metricNamePrometheus, description, currentMetricMap, conversionFactor, appendUnit);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.METERED)) {
                 PrometheusBuilder.buildMeter(builder, metricNamePrometheus, description, currentMetricMap);
-            } else {
+            } else if (!improperMetadataSet.contains(metricMetadata)) {
                 Tr.event(tc, "Metadata " + metricMetadata.toString() + " does not have an appropriate Metric Type");
+                improperMetadataSet.add(metricMetadata);
             }
 
         }

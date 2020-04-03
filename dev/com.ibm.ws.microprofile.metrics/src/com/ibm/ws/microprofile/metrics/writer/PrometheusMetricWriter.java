@@ -13,9 +13,11 @@ package com.ibm.ws.microprofile.metrics.writer;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
@@ -45,6 +47,8 @@ public class PrometheusMetricWriter implements OutputWriter {
 
     private final Writer writer;
     private final Locale locale;
+
+    private final Set<String> improperMetricSet = new HashSet<String>();
 
     public PrometheusMetricWriter(Writer writer, Locale locale) {
         this.writer = writer;
@@ -129,8 +133,9 @@ public class PrometheusMetricWriter implements OutputWriter {
                 PrometheusBuilder.buildHistogram(builder, metricNamePrometheus, (Histogram) metric, description, conversionFactor, tags, appendUnit);
             } else if (Meter.class.isInstance(metric)) {
                 PrometheusBuilder.buildMeter(builder, metricNamePrometheus, (Meter) metric, description, tags);
-            } else {
+            } else if (!improperMetricSet.contains(metricName)) {
                 Tr.event(tc, "Metric type '" + metric.getClass() + " for " + metricName + " is invalid.");
+                improperMetricSet.add(metricName);
             }
 
         }
