@@ -399,6 +399,9 @@ public class AcmeClient {
 		 * If there is no existing account, create one.
 		 */
 		if (account == null) {
+			if (tc.isDebugEnabled()) {
+				Tr.debug(tc, "An existing account was not found, requesting terms of service.");
+			}
 			/*
 			 * Get the terms of service from the ACME server.
 			 */
@@ -415,7 +418,9 @@ public class AcmeClient {
 			 * them.
 			 */
 			if (tosURI == null) {
-				Tr.debug(tc, "No terms of service provided");
+				if (tc.isDebugEnabled()) {
+					Tr.debug(tc, "No terms of service provided");
+				}
 			} else {
 				Tr.audit(tc, "CWPKI2006I", acmeConfig.getDirectoryURI(), tosURI);
 			}

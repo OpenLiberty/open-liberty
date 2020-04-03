@@ -51,6 +51,8 @@ Include-Resource: \
     @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
     org=${bin}/org
 
+instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
+
 -dsannotations: \
     com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet, \
     com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler, \
