@@ -1,0 +1,32 @@
+<!--
+    Copyright (c) 2013, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>jca-1.6</feature>
+      <feature>servlet-3.0</feature>  
+      <feature>jndi-1.0</feature> 
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <resourceAdapter id="dcra" location="${server.config.dir}/connectors/loose/DynamicConfigRA.rar.xml"/>
+
+    <adminObject id="myAdminObject" jndiName="eis/myAdminObject">
+      <properties.dcra.List/>
+    </adminObject>
+    
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" principalName="*" principalType="*" signedBy="javax.resource.spi.security.PasswordCredential" actions="read"/>
+
+    <application type="ear" id="dynaCfgTestAppID" location="dynaCfgTestApp.ear"/>
+
+</server>

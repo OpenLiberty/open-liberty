@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright (c) 2013, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6">
+  <description>This is the ra.xml for DynamicConfigRA</description> 
+  <display-name>Dynamic Configuration Test Resource Adapter</display-name> 
+  <vendor-name>IBM</vendor-name> 
+  <eis-type>Multiple</eis-type> 
+  <resourceadapter-version>1.0</resourceadapter-version> 
+  <resourceadapter>
+    <resourceadapter-class>com.ibm.test.dynamicconfigadapter.DynaCfgResourceAdapter</resourceadapter-class>
+    <outbound-resourceadapter>
+      <connection-definition>
+        <managedconnectionfactory-class>com.ibm.test.dynamicconfigadapter.DynaCfgManagedConnectionFactory</managedconnectionfactory-class>
+        <config-property>
+          <config-property-name>loginTimeout</config-property-name> 
+          <config-property-type>java.lang.Integer</config-property-type>
+          <config-property-value>100</config-property-value> 
+        </config-property>
+        <connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface>
+        <connectionfactory-impl-class>com.ibm.test.dynamicconfigadapter.DynaCfgDataSource</connectionfactory-impl-class>
+        <connection-interface>java.sql.Connection</connection-interface>
+        <connection-impl-class>com.ibm.test.dynamicconfigadapter.DynaCfgConnection</connection-impl-class>
+      </connection-definition>
+      <transaction-support>LocalTransaction</transaction-support> <!-- ManagedConnectionFactory will override with NoTransaction --> 
+      <reauthentication-support>false</reauthentication-support> 
+    </outbound-resourceadapter>
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener>
+          <messagelistener-type>javax.resource.cci.MessageListener</messagelistener-type>
+          <activationspec>
+            <activationspec-class>com.ibm.test.dynamicconfigadapter.DynaCfgActivationSpec</activationspec-class>
+            <config-property>
+              <description>Maximum number for which to send a message</description>
+              <config-property-name>messageFilterMax</config-property-name>
+              <config-property-type>java.lang.Integer</config-property-type>
+            </config-property>
+            <config-property>
+              <description>Minimum number for which to send a message</description>
+              <config-property-name>messageFilterMin</config-property-name>
+              <config-property-type>java.lang.Integer</config-property-type>
+            </config-property>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
+    <adminobject>
+      <adminobject-interface>java.util.Date</adminobject-interface>
+      <adminobject-class>java.util.Date</adminobject-class>
+      <config-property>
+        <description>Day of month</description>
+        <config-property-name>date</config-property-name> 
+        <config-property-type>java.lang.Integer</config-property-type>
+        <config-property-value>1</config-property-value> 
+      </config-property>
+      <config-property>
+        <description>Month</description>
+        <config-property-name>month</config-property-name> 
+        <config-property-type>java.lang.Integer</config-property-type>
+        <config-property-value>0</config-property-value> 
+      </config-property>
+      <config-property>
+        <description>Year</description>
+        <config-property-name>year</config-property-name> 
+        <config-property-type>java.lang.Integer</config-property-type> 
+      </config-property>
+      <config-property>
+        <config-property-name>time</config-property-name> 
+        <config-property-type>java.lang.Long</config-property-type>
+        <config-property-ignore>true</config-property-ignore> 
+      </config-property>
+    </adminobject>
+    <adminobject>
+      <adminobject-interface>java.util.List</adminobject-interface>
+      <adminobject-class>java.util.LinkedList</adminobject-class>
+    </adminobject>
+
+  </resourceadapter>
+</connector>
