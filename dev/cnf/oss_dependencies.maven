@@ -300,6 +300,7 @@ org.apache.thrift:libthrift:0.11.0
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4
+org.apache.wink:wink-client-apache-httpclient:1.4
 org.apache.ws.xmlschema:xmlschema-core:2.0.3
 org.bitbucket.b_c:jose4j:0.5.1
 org.bitbucket.b_c:jose4j:0.6.4
