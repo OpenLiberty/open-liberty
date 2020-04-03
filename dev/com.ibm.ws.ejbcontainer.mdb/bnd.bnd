@@ -14,6 +14,8 @@ bVersion=1.0
 Bundle-Name: Message-Driven Beans
 Bundle-SymbolicName: com.ibm.ws.ejbcontainer.mdb
 Bundle-Description: Message-Driven Beans; version=${bVersion}
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+Include-Resource: OSGI-INF=resources/OSGI-INF
 
 WS-TraceGroup: EJBContainer
 
@@ -67,7 +69,8 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/mdb/resources/*.class
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.messaging.runtime
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
