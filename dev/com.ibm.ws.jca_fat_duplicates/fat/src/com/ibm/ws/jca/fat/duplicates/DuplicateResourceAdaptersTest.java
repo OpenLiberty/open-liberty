@@ -12,23 +12,43 @@ package com.ibm.ws.jca.fat.duplicates;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Test of duplicate configurations that try to use the same resource adapter name.
  */
+@RunWith(FATRunner.class)
 public class DuplicateResourceAdaptersTest {
+    private static final String RAR_NAME = "DuplicateRA";
+    private static final String RAR_NAME_COPY = "DuplicateRA2";
 
-    private static LibertyServer server;
+    @Server("com.ibm.ws.jca.fat.duplicates")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.duplicates");
+        ResourceAdapterArchive original = ShrinkWrap.create(ResourceAdapterArchive.class, RAR_NAME + ".rar");
+        ResourceAdapterArchive copy = ShrinkWrap.create(ResourceAdapterArchive.class, RAR_NAME_COPY + ".rar");
+
+        original.addAsManifestResource(new File("test-resourceadapters/DuplicateRA/resources/META-INF/ra.xml"));
+        copy.addAsManifestResource(new File("test-resourceadapters/DuplicateRA/resources/META-INF/ra.xml"));
+
+        ShrinkHelper.exportToServer(server, "connectors", original);
+        ShrinkHelper.exportToServer(server, "connectors", copy);
+
         server.startServer();
         server.waitForStringInLog("CWWKE0002I");
         assertNotNull("FeatureManager should report update is complete",
