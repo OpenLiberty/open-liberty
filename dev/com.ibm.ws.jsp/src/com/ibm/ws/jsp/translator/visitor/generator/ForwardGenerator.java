@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,12 @@ package com.ibm.ws.jsp.translator.visitor.generator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Stack;
 
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
 import com.ibm.ws.jsp.translator.utils.JspTranslatorUtil;
+import com.ibm.ws.jsp.translator.visitor.generator.CustomTagGenerator.TagInstanceInfo;
 
 public class ForwardGenerator extends CodeGeneratorBase {
     
@@ -101,7 +103,27 @@ public class ForwardGenerator extends CodeGeneratorBase {
                     persistentData.put("methodNesting", new Integer(0));
                 }
                 int methodNesting =  ((Integer)persistentData.get("methodNesting")).intValue();
-                writer.println((methodNesting > 0) ? "return true;" : "return;");
+                if (methodNesting > 0) {
+                    // pull in parentTagName in order to clean up CDI
+                    Stack tagInstanceInfoStack = (Stack)persistentData.get("tagInstanceInfoStack");
+                    String parentTagName = null;
+                    if (tagInstanceInfoStack.size() > 0) {
+                        TagInstanceInfo tagInstanceInfo = (TagInstanceInfo)tagInstanceInfoStack.peek();
+                        parentTagName = tagInstanceInfo.getTagHandlerVar();
+                    }
+                    
+                    writer.println(" {");
+                    if (!jspOptions.isDisableResourceInjection() && parentTagName != null) {
+                       writer.println("   _jspx_iaHelper.doPreDestroy("+parentTagName+");");
+                       writer.println("   _jspx_iaHelper.cleanUpTagHandlerFromCdiMap("+parentTagName+");");
+                    }
+
+                    writer.println("   return true;");
+                    writer.print("}");
+                }
+                else {
+                    writer.print(" return;"); 
+                }
             }
             writer.println("}");
             writeDebugStartEnd(writer);
