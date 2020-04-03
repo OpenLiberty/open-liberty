@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.messaging.security.RuntimeSecurityService;
+import com.ibm.ws.messaging.service.JSMainAdminComponent;
 import com.ibm.ws.messaging.service.JsMainAdminServiceImpl;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
@@ -46,7 +47,7 @@ import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class JsMainAdminComponentImpl implements ConfigurationListener {
+public class JsMainAdminComponentImpl implements JSMainAdminComponent, ConfigurationListener {
 
     /**  */
     private static final String KEY_JS_ADMIN_SERVICE = "jsAdminService";

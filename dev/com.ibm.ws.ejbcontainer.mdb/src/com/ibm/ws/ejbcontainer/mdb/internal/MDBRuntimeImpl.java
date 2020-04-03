@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -53,6 +54,7 @@ import com.ibm.ws.injectionengine.osgi.util.JNDIHelper;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
+import com.ibm.ws.messaging.service.JSMainAdminComponent;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -60,8 +62,10 @@ import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 
-@Component(name = "com.ibm.ws.ejbcontainer.osgi.MDBRuntime", service = { MDBRuntime.class },
-           configurationPolicy = org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           immediate = true,
+           property = { "service.vendor=IBM" })
 public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     private static final TraceComponent tc = Tr.register(MDBRuntimeImpl.class);
 
@@ -268,7 +272,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
                 return null;
             }
             if (service == null) {
-                service = (EndpointActivationService) context.locateService(REFERENCE_ENDPOINT_ACTIVATION_SERVICES, serviceRef);
+                service = context.locateService(REFERENCE_ENDPOINT_ACTIVATION_SERVICES, serviceRef);
             }
             return service;
         }
@@ -317,6 +321,23 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     private BeanOFactory ivBMMessageDrivenBeanOFactory;
 
     private static MDBRuntimeImpl instance;
+
+    /**
+     * Start using the JsMainAdminComponent
+     *
+     * If the Messaging Engine is defined, prevent this service from starting until JsMainAdminComponent is available.
+     *
+     * @param jsMainAdminComponent which has been defined.
+     */
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE)
+    protected void setMessagingRuntimeService(JSMainAdminComponent jsMainAdminComponent) {
+        final String methodName = "setMessagingRuntimeService";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, methodName, new Object[] { this, jsMainAdminComponent });
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, methodName);
+    }
 
     @Reference(name = REFERENCE_RUNTIME_VERSION,
                service = EJBRuntimeVersion.class,
@@ -402,7 +423,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      * Method to get the XAResource corresponding to an ActivationSpec from the RRSXAResourceFactory
      *
      * @param activationSpecId The id of the ActivationSpec
-     * @param xid Transaction branch qualifier
+     * @param xid              Transaction branch qualifier
      * @return the XAResource
      */
     @Override
@@ -443,8 +464,8 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      * <p>Caller must hold a lock on this object.
      *
      * @param reference the service reference
-     * @param id the id or jndiName
-     * @param jndiName true if the id is the jndiName
+     * @param id        the id or jndiName
+     * @param jndiName  true if the id is the jndiName
      */
     private void addAdminObjectService(ServiceReference<AdminObjectService> reference, String id, boolean jndiName) {
         NamedAdminObjectServiceInfo aosInfo = createNamedAdminObjectServiceInfo(id);
@@ -505,8 +526,8 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      * <p>Caller must hold a lock on this object.
      *
      * @param reference the service reference
-     * @param id the id or jndiName
-     * @param jndiName true if the id is the jndiName
+     * @param id        the id or jndiName
+     * @param jndiName  true if the id is the jndiName
      */
     // Should be private, but findbugs complains about remove method with SR.
     protected void removeAdminObjectService(ServiceReference<AdminObjectService> reference, String id, boolean jndiName) {
@@ -745,7 +766,8 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     }
 
     // declarative service
-    protected void unsetMetaDataSlotService(MetaDataSlotService slotService) {}
+    protected void unsetMetaDataSlotService(MetaDataSlotService slotService) {
+    }
 
     /**
      * Coordinates all of the resources necessary for activation of endpoints.
@@ -969,7 +991,8 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     }
 
     @Override
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {}
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+    }
 
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
@@ -982,5 +1005,6 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     }
 
     @Override
-    public void applicationStopped(ApplicationInfo appInfo) {}
+    public void applicationStopped(ApplicationInfo appInfo) {
+    }
 }
