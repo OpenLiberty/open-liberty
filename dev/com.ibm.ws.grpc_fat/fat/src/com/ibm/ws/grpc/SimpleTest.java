@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.example;
+package com.ibm.ws.grpc;
 
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
