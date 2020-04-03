@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/disablejaxrs11/src"/>
 	<classpathentry kind="src" path="test-applications/helloworld/src"/>
 	<classpathentry kind="src" path="test-applications/jsonp/src"/>
 	<classpathentry kind="src" path="test-applications/thirdpartylib/src"/>

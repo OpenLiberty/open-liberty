@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.example;
+package com.ibm.ws.grpc;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
