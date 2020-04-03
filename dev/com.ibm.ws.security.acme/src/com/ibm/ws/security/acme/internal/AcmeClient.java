@@ -25,6 +25,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.ldap.Rdn;
+
 import org.shredzone.acme4j.Account;
 import org.shredzone.acme4j.AccountBuilder;
 import org.shredzone.acme4j.Authorization;
@@ -230,8 +232,8 @@ public class AcmeClient {
 		 */
 		OrderBuilder orderBuilder = acct.newOrder();
 		orderBuilder.domains(acmeConfig.getDomains());
-		if (acmeConfig.getValidFor() != null && acmeConfig.getValidFor() > 0) {
-			orderBuilder.notAfter(Instant.now().plusMillis(acmeConfig.getValidFor()));
+		if (acmeConfig.getValidForMs() != null && acmeConfig.getValidForMs() > 0) {
+			orderBuilder.notAfter(Instant.now().plusMillis(acmeConfig.getValidForMs()));
 		}
 		Order order;
 		try {
@@ -256,22 +258,26 @@ public class AcmeClient {
 		csrb.addDomains(acmeConfig.getDomains());
 
 		/*
-		 * Some CA's ignore these options, but set them anyway.
+		 * Add the RDN's for the subjectDN in order.
 		 */
-		if (acmeConfig.getCountry() != null) {
-			csrb.setCountry(acmeConfig.getCountry());
-		}
-		if (acmeConfig.getState() != null) {
-			csrb.setState(acmeConfig.getState());
-		}
-		if (acmeConfig.getLocality() != null) {
-			csrb.setLocality(acmeConfig.getLocality());
-		}
-		if (acmeConfig.getOrganization() != null) {
-			csrb.setOrganization(acmeConfig.getOrganization());
-		}
-		if (acmeConfig.getOrganizationalUnit() != null) {
-			csrb.setOrganizationalUnit(acmeConfig.getOrganizationalUnit());
+		for (Rdn rdn : acmeConfig.getSubjectDN()) {
+			switch (rdn.getType().toLowerCase()) {
+			case "o":
+				csrb.setOrganization((String) rdn.getValue());
+				break;
+			case "ou":
+				csrb.setOrganizationalUnit((String) rdn.getValue());
+				break;
+			case "c":
+				csrb.setCountry((String) rdn.getValue());
+				break;
+			case "st":
+				csrb.setState((String) rdn.getValue());
+				break;
+			case "l":
+				csrb.setLocality((String) rdn.getValue());
+				break;
+			}
 		}
 
 		/*

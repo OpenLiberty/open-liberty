@@ -13,8 +13,13 @@ package com.ibm.ws.security.acme.internal;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -22,6 +27,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
@@ -34,12 +40,8 @@ public class AcmeConfig {
 
 	private String directoryURI = null;
 	private List<String> domains = null;
-	private Long validFor = null;
-	private String country = null;
-	private String locality = null;
-	private String state = null;
-	private String organization = null;
-	private String organizationalUnit = null;
+	private Long validForMs = null;
+	private List<Rdn> subjectDN = new ArrayList<Rdn>();
 
 	// Challenge and order related fields.
 	private Integer challengeRetries = 10;
@@ -92,12 +94,8 @@ public class AcmeConfig {
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2037E"));
 		}
 
-		validFor = getLongValue(properties, AcmeConstants.VALID_FOR);
-		country = getStringValue(properties, AcmeConstants.COUNTRY);
-		locality = getStringValue(properties, AcmeConstants.LOCALITY);
-		state = getStringValue(properties, AcmeConstants.STATE);
-		organization = getStringValue(properties, AcmeConstants.ORG);
-		organizationalUnit = getStringValue(properties, AcmeConstants.OU);
+		setValidFor(getLongValue(properties, AcmeConstants.VALID_FOR));
+		processSubjectDN(getStringValue(properties, AcmeConstants.SUBJECT_DN));
 		setChallengeRetries(getIntegerValue(properties, AcmeConstants.CHALL_RETRIES));
 		setChallengeRetryWait(getLongValue(properties, AcmeConstants.CHALL_RETRY_WAIT));
 		setOrderRetries(getIntegerValue(properties, AcmeConstants.ORDER_RETRIES));
@@ -261,45 +259,10 @@ public class AcmeConfig {
 	}
 
 	/**
-	 * @return the validFor
+	 * @return the validForMs
 	 */
-	public Long getValidFor() {
-		return validFor;
-	}
-
-	/**
-	 * @return the country
-	 */
-	public String getCountry() {
-		return country;
-	}
-
-	/**
-	 * @return the locality
-	 */
-	public String getLocality() {
-		return locality;
-	}
-
-	/**
-	 * @return the state
-	 */
-	public String getState() {
-		return state;
-	}
-
-	/**
-	 * @return the organization
-	 */
-	public String getOrganization() {
-		return organization;
-	}
-
-	/**
-	 * @return the organizationalUnit
-	 */
-	public String getOrganizationalUnit() {
-		return organizationalUnit;
+	public Long getValidForMs() {
+		return validForMs;
 	}
 
 	/**
@@ -352,13 +315,6 @@ public class AcmeConfig {
 	}
 
 	/**
-	 * @return the protocol
-	 */
-	public String getProtocol() {
-		return protocol;
-	}
-
-	/**
 	 * Get the {@link SSLConfig} object that contains the user-specified SSL
 	 * configuration.
 	 * 
@@ -393,24 +349,94 @@ public class AcmeConfig {
 	}
 
 	/**
-	 * @return the trustStore
+	 * @return the subjectDN
 	 */
-	public String getTrustStore() {
-		return trustStore;
+	public List<Rdn> getSubjectDN() {
+		return subjectDN;
 	}
 
 	/**
-	 * @return the trustStorePassword
+	 * Process the subject DN and by breaking it apart into an ordered list of
+	 * RDNs while validating the format.
+	 * 
+	 * @param subjectDN
+	 *            The subject distinguished name.
+	 * @throws AcmeCaException
+	 *             If there was an error processing the subject DN.
 	 */
-	public SerializableProtectedString getTrustStorePassword() {
-		return trustStorePassword;
-	}
+	@FFDCIgnore(InvalidNameException.class)
+	private void processSubjectDN(String subjectDN) throws AcmeCaException {
 
-	/**
-	 * @return the trustStoreType
-	 */
-	public String getTrustStoreType() {
-		return trustStoreType;
+		if (subjectDN != null && !subjectDN.isEmpty()) {
+
+			/*
+			 * Parse the subject DN.
+			 */
+			try {
+				this.subjectDN.addAll(new LdapName(subjectDN).getRdns());
+				Collections.reverse(this.subjectDN);
+
+				for (int idx = 0; idx < this.subjectDN.size(); idx++) {
+					Rdn rdn = this.subjectDN.get(idx);
+					switch (rdn.getType().toLowerCase()) {
+					case "cn":
+						if (idx == 0) {
+							/*
+							 * The CN RDN value must match one of the domains.
+							 */
+							String cnValue = (String) rdn.getValue();
+							int dIdx = -1;
+							for (int jdx = 0; jdx < domains.size(); jdx++) {
+								if (domains.get(jdx).equalsIgnoreCase(cnValue)) {
+									dIdx = jdx;
+									break;
+								}
+							}
+							if (dIdx == -1) {
+								throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2039E", subjectDN, cnValue));
+							}
+
+							/*
+							 * Put the CN domain first in the list of domains so
+							 * the CSR uses it as the CN for the certificate.
+							 */
+							String domain = domains.remove(dIdx);
+							domains.add(0, domain);
+						} else {
+							/*
+							 * If defined, the CN RDN must be the first RDN.
+							 */
+							throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2040E", (Object[]) null));
+						}
+					case "o":
+					case "ou":
+					case "c":
+					case "st":
+					case "l":
+						break;
+					default:
+						/*
+						 * Invalid RDN type.
+						 */
+						throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2041E", rdn.getType()));
+					}
+				}
+			} catch (InvalidNameException e) {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2042E", subjectDN, e.getMessage()), e);
+			}
+		}
+
+		/*
+		 * Prepend the 'cn' if it is not already included.
+		 */
+		if (this.subjectDN.isEmpty() || !"cn".equalsIgnoreCase(this.subjectDN.get(0).getType())) {
+			try {
+				this.subjectDN.add(0, new Rdn("cn", domains.get(0)));
+			} catch (InvalidNameException e) {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2043E", "cn=" + domains.get(0), e.getMessage()),
+						e);
+			}
+		}
 	}
 
 	/**
@@ -468,6 +494,20 @@ public class AcmeConfig {
 	}
 
 	/**
+	 * Set the amount of time, in milliseconds, the certificate should be valid
+	 * for.
+	 * 
+	 * @param validForMs
+	 *            The time the certificate should be valid for.
+	 */
+	@Trivial
+	private void setValidFor(Long validForMs) {
+		if (validForMs != null && validForMs >= 0) {
+			this.validForMs = validForMs;
+		}
+	}
+
+	/**
 	 * Validate the key file path is usable.
 	 * 
 	 * @param path
@@ -489,7 +529,9 @@ public class AcmeConfig {
 			String cause = Tr.formatMessage(tc, "FILE_NOT_READABLE");
 			throw new AcmeCaException(Tr.formatMessage(tc, messageId, path, cause));
 		}
-		if (file.exists() && !file.canWrite()) {
+
+		File parentDir = file.getParentFile();
+		if (!file.exists() && parentDir != null && !parentDir.canWrite()) {
 			String messageId = AcmeConstants.DOMAIN_TYPE.equals(type) ? "CWPKI2022E" : "CWPKI2023E";
 			String cause = Tr.formatMessage(tc, "FILE_NOT_WRITABLE");
 			throw new AcmeCaException(Tr.formatMessage(tc, messageId, path, cause));
