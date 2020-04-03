@@ -592,7 +592,7 @@ public class OAuthClientTrackerTest extends CommonTestClass {
         List<String> clientIdList = new ArrayList<String>();
         String clientId = "my client id";
         clientIdList.add(clientId);
-        String logoutUrlWithQuery = logoutUrl + "?with=other&param=values";
+        String logoutUrlWithQuery = logoutUrl + "?with=param";
 
         String result = tracker.addTrackedClientIdsToUrl(logoutUrlWithQuery, clientIdList);
 

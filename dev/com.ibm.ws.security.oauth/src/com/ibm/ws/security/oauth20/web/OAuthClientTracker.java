@@ -157,7 +157,7 @@ public class OAuthClientTracker {
         if (clientIdList == null || clientIdList.isEmpty()) {
             return url;
         }
-        String newUrl = (url.contains("&")) ? (url + "&") : (url + "?");
+        String newUrl = (url.contains("?")) ? (url + "&") : (url + "?");
         newUrl += POST_LOGOUT_QUERY_PARAMETER_NAME + "=";
         for (String clientId : clientIdList) {
             try {
