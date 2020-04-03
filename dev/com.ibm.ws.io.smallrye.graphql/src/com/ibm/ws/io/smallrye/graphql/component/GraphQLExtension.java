@@ -80,7 +80,7 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension {
         if (beans != null) {
             for (Bean<?> bean : beans) {
                 if (LOG.isLoggable(Level.FINEST)) {
-                    LOG.finest("ANDY adding Bean, " + bean + " to afterBeanDiscovery");
+                    LOG.finest("adding Bean, " + bean + " to afterBeanDiscovery");
                 }
                 afterBeanDiscovery.addBean(bean);
             }

@@ -22,5 +22,5 @@ Bundle-Description: Provides GraphQL as a bundle
   @${repo;org.antlr:antlr4-runtime;4.7.1}
   
 Export-Package: \
-  graphql.*;version=13.0,\
+  graphql.*;version=14.0,\
   org.dataloader.*;version=2.2.1
