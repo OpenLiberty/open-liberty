@@ -62,7 +62,7 @@ public class HpelPurgeMaxSizeBackupFileTest {
     public TestName name = new TestName();
 
     @BeforeClass
-    public void setUp() throws Exception {
+    public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
         // Confirm HPEL is enabled

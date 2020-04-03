@@ -50,13 +50,13 @@ import org.junit.runners.Suite.SuiteClasses;
                 TraceSpecificationSetToAllTest.class,
                 HpelPurgeMaxSizeIgnoreTest_2.class,
                 HpelPurgeMaxSizeIgnoreTest_1.class
-//                HpelTextLogRetention.class
-//                HPELDataDirFalsePositiveWarningTest.class
-//                HpelLogDirectoryChangeTest.class
-//                HpelLoggingElementDeleteTest
-//                HPELLogDirectoryPurgeMaxSizeTest.class
-//                HpelPurgeMaxSizeBackupFileTest.class
-//                HpelTextLogRetention.class
+
+//                HPELDataDirFalsePositiveWarningTest.class,
+//                HpelLogDirectoryChangeTest.class,
+//                HpelLoggingElementDeleteTest.class,
+//                HPELLogDirectoryPurgeMaxSizeTest.class,
+//                HpelPurgeMaxSizeBackupFileTest.class,
+//                HpelTextLogRetention.class,
 //                LogViewerExec.class
 })
 
