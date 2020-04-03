@@ -68,4 +68,4 @@ WS-TraceGroup: APPCONFIG
 	com.sun.xml.bind:jaxb-core;version=2.2.10,\
 	com.sun.xml.bind:jaxb-impl;version=2.2.10,\
     org.apache.commons:commons-lang3;version=3.8, \
-    ./resources/;version=file
+    ./test/resources/;version=file

@@ -17,7 +17,7 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
-public class ConversionTest extends AbstractConfigTest {
+public class ConversionTest {
 
     @Test
     public void testCharacter() {

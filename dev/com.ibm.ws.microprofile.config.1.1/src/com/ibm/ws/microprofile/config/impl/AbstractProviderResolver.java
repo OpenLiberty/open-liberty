@@ -74,6 +74,10 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
         this.scheduledExecutorServiceRef.unsetReference(ref);
     }
 
+    protected void setStaticInstance(ConfigProviderResolver instance) {
+        ConfigProviderResolver.setInstance(instance);
+    }
+
     /**
      * Activate a context and set the instance
      *
@@ -81,7 +85,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      */
     public void activate(ComponentContext cc) {
         this.scheduledExecutorServiceRef.activate(cc);
-        ConfigProviderResolver.setInstance(this);
+        setStaticInstance(this);
     }
 
     /**

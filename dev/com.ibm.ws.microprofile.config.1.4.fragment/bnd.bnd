@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: com.ibm.ws.microprofile.config.1.4.fragment
+Bundle-SymbolicName: com.ibm.ws.microprofile.config.1.4.fragment
+Fragment-Host: com.ibm.websphere.org.eclipse.microprofile.config.1.4
+
+Bundle-Description:MicroProfile Configuration 1.4 Bundle Fragment, version ${bVersion}
+
+Import-Package: \
+        org.eclipse.microprofile.config;version="[1.0.1,2)", \
+        org.eclipse.microprofile.config.inject;version="[1.1.0,2)", \
+        org.eclipse.microprofile.config.spi;version="[1.4,2)", \
+        *
+
+Export-Package: com.ibm.ws.microprofile.config14.fragment
+
+WS-TraceGroup: APPCONFIG
+
+Include-Resource: \
+  META-INF=resources/META-INF
+
+-buildpath: \
+        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+        com.ibm.ws.logging;version=latest, \
+        org.eclipse.osgi;version=latest, \
+        com.ibm.websphere.org.osgi.core;version=latest, \
+        com.ibm.websphere.org.osgi.service.component;version=latest, \
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+        com.ibm.ws.kernel.service;version=latest, \
+        com.ibm.ws.container.service;version=latest, \
+        com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest

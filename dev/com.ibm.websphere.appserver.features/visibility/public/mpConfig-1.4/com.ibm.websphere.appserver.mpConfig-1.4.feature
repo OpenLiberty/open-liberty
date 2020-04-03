@@ -21,6 +21,7 @@ Subsystem-Name: MicroProfile Config 1.4
  com.ibm.ws.microprofile.config.1.3, \
  com.ibm.ws.microprofile.config.1.4, \
  com.ibm.ws.microprofile.config.1.4.services, \
+ com.ibm.ws.microprofile.config.1.4.fragment, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.lang3
 kind=ga

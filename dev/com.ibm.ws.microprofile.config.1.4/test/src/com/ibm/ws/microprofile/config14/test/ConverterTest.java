@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.config14.converters.Config14DefaultConverters;
 
-public class ConverterTest extends AbstractConfigTest {
+public class ConverterTest {
 
     @SuppressWarnings("unchecked")
     private static <T> T defaultConversion(Class<T> type, String value) {
