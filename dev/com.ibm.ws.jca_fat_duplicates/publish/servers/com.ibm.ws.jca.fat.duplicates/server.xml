@@ -1,0 +1,22 @@
+<!--
+    Copyright (c) 2013, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>jca-1.6</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <!-- These resource adapters will end up with duplicate names ignoring case -->
+    <resourceAdapter location="${server.config.dir}/connectors/DuplicateRA.rar"/>
+    <resourceAdapter id="duplicatera" location="${server.config.dir}/connectors/DuplicateRA2.rar"/>
+
+</server>
