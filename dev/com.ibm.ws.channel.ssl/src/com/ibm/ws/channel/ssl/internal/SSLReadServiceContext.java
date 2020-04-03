@@ -1529,12 +1529,12 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
                                                  handshakeCallback,
                                                  false);
 
-            if (handshakeCallback.getUpdatedNetBuffer() != null) {
+            if ((handshakeCallback != null) && (handshakeCallback.getUpdatedNetBuffer() != null)) {
                 localNetBuffer = handshakeCallback.getUpdatedNetBuffer();
             }
 
         } catch (IOException e) {
-            if (handshakeCallback.getUpdatedNetBuffer() != null) {
+            if ((handshakeCallback != null) && (handshakeCallback.getUpdatedNetBuffer() != null)) {
                 localNetBuffer = handshakeCallback.getUpdatedNetBuffer();
             }
             // Release buffers used in the handshake.

@@ -593,7 +593,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             if (result != null) {
                 // Handshake is done.
 
-                if (callback.getUpdatedNetBuffer() != null) {
+                if ((callback != null) && (callback.getUpdatedNetBuffer() != null)) {
                     netBuffer = callback.getUpdatedNetBuffer();
                 }
 
@@ -819,8 +819,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // Check to see if the work was able to be done synchronously.
             if (sslResult != null) {
                 // Handshake was done synchronously.
-
-                if (callback.getUpdatedNetBuffer() != null) {
+                if ((callback != null) && (callback.getUpdatedNetBuffer() != null)) {
                     netBuffer = callback.getUpdatedNetBuffer();
                 }
 

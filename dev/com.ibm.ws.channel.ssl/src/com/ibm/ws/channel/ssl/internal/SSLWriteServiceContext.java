@@ -667,13 +667,13 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                                                  hsCallback,
                                                  false);
 
-            if (hsCallback.getUpdatedNetBuffer() != null) {
+            if ((hsCallback != null) && (hsCallback.getUpdatedNetBuffer() != null)) {
                 netBuffer = hsCallback.getUpdatedNetBuffer();
             }
 
         } catch (IOException e) {
             // Release buffers used in the handshake.
-            if (hsCallback.getUpdatedNetBuffer() != null) {
+            if ((hsCallback != null) && (hsCallback.getUpdatedNetBuffer() != null)) {
                 netBuffer = hsCallback.getUpdatedNetBuffer();
             }
             netBuffer.release();
@@ -681,7 +681,7 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
             throw e;
         } catch (ReadOnlyBufferException robe) {
             // Release buffers used in the handshake.
-            if (hsCallback.getUpdatedNetBuffer() != null) {
+            if ((hsCallback != null) && (hsCallback.getUpdatedNetBuffer() != null)) {
                 netBuffer = hsCallback.getUpdatedNetBuffer();
             }
             netBuffer.release();
