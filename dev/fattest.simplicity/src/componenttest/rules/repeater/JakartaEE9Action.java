@@ -175,7 +175,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
         Path outputPath = appPath.resolveSibling(appPath.getFileName() + ".jakarta");
 
-        //create backup directory
+        // Create backup directory
         Path serverPath = appPath.getParent().getParent();
         Path backupPath = serverPath.resolve("backup");
         try {
@@ -188,9 +188,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             throw new RuntimeException(e);
         }
 
-        String userDir = System.getProperty("user.dir");
-        String transformerRulesRoot = userDir.substring(0, userDir.lastIndexOf("/dev/")) + "/dev/wlp-jakartaee-transform/rules/";
-
+        String transformerRulesRoot = System.getProperty("user.dir") + "/autoFVT-templates/";
         try {
             // Invoke the jakarta transformer
             String[] args = new String[11];
@@ -214,9 +212,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                 if (!Files.exists(backupAppPath)) {
                     Files.createFile(backupAppPath);
                 }
-                //move original to backup
+                // move original to backup
                 Files.move(appPath, backupAppPath, StandardCopyOption.REPLACE_EXISTING);
-                //rename jakarta app to the original filename
+                // rename jakarta app to the original filename
                 Files.move(outputPath, appPath);
             } else {
                 throw new RuntimeException("Jakarta transformer failed for: " + appPath);

@@ -82,8 +82,22 @@ task addRequiredLibraries(type: Copy) {
   into new File(autoFvtDir, 'lib')
 }
 
+task addJakartaTransformerRules {
+  mustRunAfter jar
+
+  doLast{
+    copy {
+      from project(':wlp-jakartaee-transform').file('rules')
+      include 'jakarta*.properties'
+      into new File(autoFvtDir, 'autoFVT-templates')
+    }
+  }
+}
+
 task addJakartaTransformer(type: Copy) {
   mustRunAfter jar
+  dependsOn addJakartaTransformerRules
+
   from configurations.jakartaTransformer
   into new File(autoFvtDir, 'lib')
 }
