@@ -13,7 +13,6 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/disablejaxrs11/src,\
   test-applications/helloworld/src,\
   test-applications/jsonp/src,\
   test-applications/thirdpartylib/src

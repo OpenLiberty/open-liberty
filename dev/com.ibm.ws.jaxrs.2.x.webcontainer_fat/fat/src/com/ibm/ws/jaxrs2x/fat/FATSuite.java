@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jaxrs2x.fat.disablejaxrs11.DisableJaxRS11Test;
 import com.ibm.ws.jaxrs2x.fat.helloworld.HelloWorldTest;
 import com.ibm.ws.jaxrs2x.fat.jsonp.JaxRsJsonPTest;
 import com.ibm.ws.jaxrs2x.fat.multipart.MultipartTest;
@@ -29,7 +28,6 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                AlwaysPassesTest.class,
                HelloWorldTest.class,
-               DisableJaxRS11Test.class,
                MultipartTest.class,
                JaxRsJsonPTest.class
 })
