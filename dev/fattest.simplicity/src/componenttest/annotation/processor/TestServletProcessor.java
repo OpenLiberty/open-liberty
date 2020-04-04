@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,6 +98,14 @@ public class TestServletProcessor {
     }
 
     private static Method[] getTestServletMethods(TestServlet anno) {
+        if (!!!(javax.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet()) ||
+                jakarta.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet()))) {
+            throw new IllegalArgumentException("The servlet referenced by the " + annoToString(anno) + " annotation " +
+                                               "is not a subclass of javax.servlet.http.HttpServlet nor jakarta.servlet.http.HttpServlet. " +
+                                               "When using the @TestServlet annotation make sure to declare a servlet class that " +
+                                               "extends either javax.servlet.http.HttpServlet or jakarta.servlet.http.HttpServlet");
+
+        }
         try {
             return anno.servlet().getMethods();
         } catch (TypeNotPresentException | LinkageError e) {
