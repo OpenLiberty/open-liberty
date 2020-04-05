@@ -161,6 +161,6 @@ public interface OAuth20Provider extends OAuth20ConfigProvider, OAuthComponentIn
 
     public boolean isROPCPreferUserSecurityName();
 
-    public boolean isTrackRelyingParties();
+    public boolean isTrackOAuthClients();
 
 }

@@ -189,7 +189,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     protected static final String KEY_logoutRedirectURL = "logoutRedirectURL";
     protected static final String KEY_CACHE_ACCESSTOKEN = "accessTokenCacheEnabled";
     protected static final String KEY_REVOKE_ACCESSTOK_W_REFRESHTOK = "revokeAccessTokensWithRefreshTokens";
-    public static final String KEY_TRACK_RELYING_PARTIES = "trackRelyingParties";
+    public static final String KEY_TRACK_OAUTH_CLIENTS = "trackOAuthClients";
 
     // TODO: Rational Jazz props. Determine if these can be move to OIDC config.
     protected static final String KEY_COVERAGE_MAP_SESSION_MAX_AGE = "coverageMapSessionMaxAge";
@@ -347,7 +347,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     private String tokenFormat;
     private boolean revokeAccessTokensWithRefreshTokens = true;
     private boolean ropcPreferUserSecurityName = false;
-    private boolean trackRelyingParties = false;
+    private boolean trackOAuthClients = false;
 
     // DS related methods
 
@@ -470,7 +470,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         appTokenOrPasswordLimit = (Long) properties.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT);
         clientSecretEncoding = getClientSecretEncodingFromConfig();
         ropcPreferUserSecurityName = (Boolean) properties.get(KEY_ROPC_PREFER_USERSECURITYNAME);
-        trackRelyingParties = (Boolean) properties.get(KEY_TRACK_RELYING_PARTIES);
+        trackOAuthClients = (Boolean) properties.get(KEY_TRACK_OAUTH_CLIENTS);
 
         setUpInternalClient();
         // tolerate old jwtAccessToken attrib but if tokenFormat attrib is specified,
@@ -2426,8 +2426,8 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     }
 
     @Override
-    public boolean isTrackRelyingParties() {
-        return trackRelyingParties;
+    public boolean isTrackOAuthClients() {
+        return trackOAuthClients;
     }
 
 }

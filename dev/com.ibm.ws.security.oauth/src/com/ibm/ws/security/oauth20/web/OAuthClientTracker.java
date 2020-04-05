@@ -14,8 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +25,9 @@ import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 
-public class RelyingPartyTracker {
+public class OAuthClientTracker {
 
-    public static final String TRACK_RELYING_PARTY_COOKIE_NAME = "WasOAuthTrackRps";
+    public static final String TRACK_OAUTH_CLIENT_COOKIE_NAME = "WasOAuthTrackClients";
     public static final String POST_LOGOUT_QUERY_PARAMETER_NAME = "clients_interacted_with";
 
     private final String clientIdDelimiter = ",";
@@ -38,17 +36,17 @@ public class RelyingPartyTracker {
     private final HttpServletResponse response;
     private final OAuth20Provider provider;
 
-    public RelyingPartyTracker(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider) {
+    public OAuthClientTracker(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider) {
         this.request = request;
         this.response = response;
         this.provider = provider;
     }
 
-    public Cookie trackRelyingParty(String clientId) {
+    public Cookie trackOAuthClient(String clientId) {
         ReferrerURLCookieHandler handler = getReferrerURLCookieHandler();
         Cookie trackingCookie = CookieHelper.getCookie(request.getCookies(), getCookieName());
         if (trackingCookie == null) {
-            trackingCookie = createNewRelyingPartyTrackingCookie(handler, clientId);
+            trackingCookie = createNewClientTrackingCookie(handler, clientId);
         } else {
             trackingCookie = updateExistingTrackingCookie(trackingCookie, clientId, handler);
         }
@@ -73,7 +71,7 @@ public class RelyingPartyTracker {
         return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().createReferrerURLCookieHandler();
     }
 
-    Cookie createNewRelyingPartyTrackingCookie(ReferrerURLCookieHandler handler, String clientId) {
+    Cookie createNewClientTrackingCookie(ReferrerURLCookieHandler handler, String clientId) {
         // Each entry in the cookie value is encoded, then the whole cookie value is encoded - hence the double encoding here
         return createCookie(handler, encodeValue(encodeValue(clientId)));
     }
@@ -87,7 +85,7 @@ public class RelyingPartyTracker {
     Cookie updateExistingTrackingCookie(Cookie trackingCookie, String clientId, ReferrerURLCookieHandler handler) {
         String existingCookieValue = trackingCookie.getValue();
         if (existingCookieValue == null || existingCookieValue.isEmpty()) {
-            trackingCookie = createNewRelyingPartyTrackingCookie(handler, clientId);
+            trackingCookie = createNewClientTrackingCookie(handler, clientId);
         } else {
             trackingCookie = updateExistingCookieValue(existingCookieValue, clientId, handler);
         }
@@ -139,17 +137,11 @@ public class RelyingPartyTracker {
 
     String getCookiePath() {
         String requestUri = request.getRequestURI();
-        int lastSlashIndex = requestUri.lastIndexOf("/");
-        if (lastSlashIndex < 0) {
+        int firstSlashIndex = requestUri.indexOf("/", 1);
+        if (firstSlashIndex < 0) {
             return requestUri;
         }
-        String path = requestUri.substring(0, lastSlashIndex);
-        Pattern pathPattern = Pattern.compile("(/oidc/[^/]+/[^/]+)/authorize");
-        Matcher matcher = pathPattern.matcher(requestUri);
-        if (matcher.matches()) {
-            path = matcher.group(1);
-        }
-        return path;
+        return requestUri.substring(0, firstSlashIndex);
     }
 
     String getUpdatedLogoutUrl(String logoutUrl, Cookie trackingCookie) {
@@ -165,12 +157,7 @@ public class RelyingPartyTracker {
         if (clientIdList == null || clientIdList.isEmpty()) {
             return url;
         }
-        String newUrl = url;
-        if (url.contains("?")) {
-            newUrl += "&";
-        } else {
-            newUrl += "?";
-        }
+        String newUrl = (url.contains("?")) ? (url + "&") : (url + "?");
         newUrl += POST_LOGOUT_QUERY_PARAMETER_NAME + "=";
         for (String clientId : clientIdList) {
             try {
@@ -188,7 +175,9 @@ public class RelyingPartyTracker {
 
     void invalidateCookie() {
         ReferrerURLCookieHandler handler = getReferrerURLCookieHandler();
-        handler.invalidateReferrerURLCookie(request, response, getCookieName());
+        Cookie cookie = createCookie(handler, "");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     String encodeValue(String input) {
@@ -200,7 +189,7 @@ public class RelyingPartyTracker {
     }
 
     private String getCookieName() {
-        return TRACK_RELYING_PARTY_COOKIE_NAME + "_" + provider.getID().hashCode();
+        return TRACK_OAUTH_CLIENT_COOKIE_NAME + "_" + provider.getID().hashCode();
     }
 
 }

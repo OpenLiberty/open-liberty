@@ -36,7 +36,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
 import test.common.SharedOutputManager;
 
-public class RelyingPartyTrackerTest extends CommonTestClass {
+public class OAuthClientTrackerTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.oauth.*=all");
 
@@ -47,16 +47,16 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     private final Cookie cookie = mockery.mock(Cookie.class);
 
     private final String providerId = "myOAuthProvider";
-    private final String expectedCookiePath = "/oidc/endpoint/" + providerId;
-    private final String requestUri = expectedCookiePath + "/authorize";
+    private final String expectedCookiePath = "/oidc";
+    private final String requestUri = expectedCookiePath + "/endpoint/" + providerId + "/authorize";
     private final String logoutUrl = "my/logout/url";
 
     private ReferrerURLCookieHandler handler;
 
-    RelyingPartyTracker tracker;
+    OAuthClientTracker tracker;
 
-    class TestRelyingPartyTracker extends RelyingPartyTracker {
-        public TestRelyingPartyTracker(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider) {
+    class TestOAuthClientTracker extends OAuthClientTracker {
+        public TestOAuthClientTracker(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider) {
             super(request, response, provider);
         }
 
@@ -75,7 +75,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
         handler = new ReferrerURLCookieHandler(config);
-        tracker = new TestRelyingPartyTracker(request, response, provider);
+        tracker = new TestOAuthClientTracker(request, response, provider);
 
         // Set some expectations for things that don't overly matter for testing this class
         mockery.checking(new Expectations() {
@@ -106,7 +106,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     }
 
     @Test
-    public void test_trackRelyingParty_noCookies() {
+    public void test_trackOAuthClient_noCookies() {
         String clientId = "myClientId";
         mockery.checking(new Expectations() {
             {
@@ -117,7 +117,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
                 one(response).addCookie(with(any(Cookie.class)));
             }
         });
-        Cookie result = tracker.trackRelyingParty(clientId);
+        Cookie result = tracker.trackOAuthClient(clientId);
 
         assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
@@ -157,11 +157,11 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     public void test_updateLogoutUrlAndDeleteCookie_trackingCookieHasNoValue() {
         mockery.checking(new Expectations() {
             {
-                one(request).getRequestURI();
+                allowing(request).getRequestURI();
                 will(returnValue(requestUri));
             }
         });
-        Cookie trackingCookie = tracker.createNewRelyingPartyTrackingCookie(handler, "");
+        Cookie trackingCookie = tracker.createNewClientTrackingCookie(handler, "");
         mockery.checking(new Expectations() {
             {
                 one(request).getCookies();
@@ -178,11 +178,11 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         String existingClientId = "client1";
         mockery.checking(new Expectations() {
             {
-                one(request).getRequestURI();
+                allowing(request).getRequestURI();
                 will(returnValue(requestUri));
             }
         });
-        Cookie trackingCookie = tracker.createNewRelyingPartyTrackingCookie(handler, existingClientId);
+        Cookie trackingCookie = tracker.createNewClientTrackingCookie(handler, existingClientId);
         mockery.checking(new Expectations() {
             {
                 one(request).getCookies();
@@ -191,12 +191,12 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
             }
         });
         String result = tracker.updateLogoutUrlAndDeleteCookie(logoutUrl);
-        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(existingClientId).replace("=", "%3D");
+        String expectedResult = logoutUrl + "?" + OAuthClientTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(existingClientId).replace("=", "%3D");
         assertEquals("Updated URL did not match the expected value.", expectedResult, result);
     }
 
     @Test
-    public void test_createNewRelyingPartyTrackingCookie_emptyClientId() {
+    public void test_createNewClientTrackingCookie_emptyClientId() {
         String clientId = "";
         mockery.checking(new Expectations() {
             {
@@ -204,14 +204,14 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
                 will(returnValue(requestUri));
             }
         });
-        Cookie result = tracker.createNewRelyingPartyTrackingCookie(handler, clientId);
+        Cookie result = tracker.createNewClientTrackingCookie(handler, clientId);
 
         assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         assertEquals("Created cookie does not have an empty value as expected.", clientId, result.getValue());
     }
 
     @Test
-    public void test_createNewRelyingPartyTrackingCookie_simpleClientId() {
+    public void test_createNewClientTrackingCookie_simpleClientId() {
         String clientId = "myClientId";
         mockery.checking(new Expectations() {
             {
@@ -219,7 +219,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
                 will(returnValue(requestUri));
             }
         });
-        Cookie result = tracker.createNewRelyingPartyTrackingCookie(handler, clientId);
+        Cookie result = tracker.createNewClientTrackingCookie(handler, clientId);
 
         assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
@@ -228,7 +228,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     }
 
     @Test
-    public void test_createNewRelyingPartyTrackingCookie_complexClientId() {
+    public void test_createNewClientTrackingCookie_complexClientId() {
         String clientId = "my !@#$%^&*(),./ id";
         mockery.checking(new Expectations() {
             {
@@ -236,7 +236,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
                 will(returnValue(requestUri));
             }
         });
-        Cookie result = tracker.createNewRelyingPartyTrackingCookie(handler, clientId);
+        Cookie result = tracker.createNewClientTrackingCookie(handler, clientId);
 
         assertEquals("Created cookie does not have the correct name.", getExpectedCookieName(), result.getName());
         // Each entry should be encoded, then the whole cookie value will be encoded
@@ -504,7 +504,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
 
     @Test
     public void test_getCookiePath_requestUriOneSlash() {
-        String firstPart = "myRequest";
+        String firstPart = "/myRequest";
         String requestUri = firstPart + "/uri";
         mockery.checking(new Expectations() {
             {
@@ -513,13 +513,13 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
             }
         });
         String result = tracker.getCookiePath();
-        assertEquals("Result should have matched the request URI up to the last slash.", firstPart, result);
+        assertEquals("Result should have matched the request URI up to the first slash.", firstPart, result);
     }
 
     @Test
     public void test_getCookiePath_requestUriMultipleSlashes() {
-        String firstPart = "my/request/with/multiple";
-        String requestUri = firstPart + "/slashes";
+        String firstPart = "my";
+        String requestUri = firstPart + "/request/with/multiple/slashes";
         mockery.checking(new Expectations() {
             {
                 one(request).getRequestURI();
@@ -527,7 +527,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
             }
         });
         String result = tracker.getCookiePath();
-        assertEquals("Result should have matched the request URI up to the last slash.", firstPart, result);
+        assertEquals("Result should have matched the request URI up to the first slash.", firstPart, result);
     }
 
     @Test
@@ -564,7 +564,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
             }
         });
         String result = tracker.getUpdatedLogoutUrl(logoutUrl, cookie);
-        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
+        String expectedResult = logoutUrl + "?" + OAuthClientTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
         assertEquals("URL did not match the expected value.", expectedResult, result);
     }
 
@@ -583,7 +583,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
 
         String result = tracker.addTrackedClientIdsToUrl(logoutUrl, clientIdList);
 
-        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
+        String expectedResult = logoutUrl + "?" + OAuthClientTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
         assertEquals("URL did not match the expected value.", expectedResult, result);
     }
 
@@ -592,11 +592,11 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
         List<String> clientIdList = new ArrayList<String>();
         String clientId = "my client id";
         clientIdList.add(clientId);
-        String logoutUrlWithQuery = logoutUrl + "?with=other&param=values";
+        String logoutUrlWithQuery = logoutUrl + "?with=param";
 
         String result = tracker.addTrackedClientIdsToUrl(logoutUrlWithQuery, clientIdList);
 
-        String expectedResult = logoutUrlWithQuery + "&" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
+        String expectedResult = logoutUrlWithQuery + "&" + OAuthClientTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(clientId);
         assertEquals("URL did not match the expected value.", expectedResult, result);
     }
 
@@ -610,7 +610,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
 
         String result = tracker.addTrackedClientIdsToUrl(logoutUrl, clientIdList);
 
-        String expectedResult = logoutUrl + "?" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(client1) + "," + tracker.encodeValue(client2);
+        String expectedResult = logoutUrl + "?" + OAuthClientTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(client1) + "," + tracker.encodeValue(client2);
         assertEquals("URL did not match the expected value.", expectedResult, result);
     }
 
@@ -625,7 +625,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
 
         String result = tracker.addTrackedClientIdsToUrl(logoutUrlWithQuery, clientIdList);
 
-        String expectedResult = logoutUrlWithQuery + "&" + RelyingPartyTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(client1) + "," + tracker.encodeValue(client2);
+        String expectedResult = logoutUrlWithQuery + "&" + OAuthClientTracker.POST_LOGOUT_QUERY_PARAMETER_NAME + "=" + tracker.encodeValue(client1) + "," + tracker.encodeValue(client2);
         assertEquals("URL did not match the expected value.", expectedResult, result);
     }
 
@@ -667,7 +667,7 @@ public class RelyingPartyTrackerTest extends CommonTestClass {
     }
 
     private String getExpectedCookieName() {
-        return RelyingPartyTracker.TRACK_RELYING_PARTY_COOKIE_NAME + "_" + providerId.hashCode();
+        return OAuthClientTracker.TRACK_OAUTH_CLIENT_COOKIE_NAME + "_" + providerId.hashCode();
     }
 
 }

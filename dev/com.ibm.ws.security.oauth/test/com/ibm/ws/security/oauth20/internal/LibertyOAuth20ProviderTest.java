@@ -652,7 +652,7 @@ public class LibertyOAuth20ProviderTest {
         properties.put(LibertyOAuth20Provider.KEY_APP_TOKEN_OR_PASSWORD_LIMIT, 100L);
         properties.put(LibertyOAuth20Provider.KEY_STORE_ACCESSTOKEN_ENCODING, "plain");
         properties.put(LibertyOAuth20Provider.KEY_ROPC_PREFER_USERSECURITYNAME, Boolean.FALSE);
-        properties.put(LibertyOAuth20Provider.KEY_TRACK_RELYING_PARTIES, Boolean.FALSE);
+        properties.put(LibertyOAuth20Provider.KEY_TRACK_OAUTH_CLIENTS, Boolean.FALSE);
 
         return properties;
     }
