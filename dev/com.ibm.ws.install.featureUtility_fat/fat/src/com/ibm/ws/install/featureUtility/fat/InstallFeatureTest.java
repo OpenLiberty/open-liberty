@@ -104,33 +104,28 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     /**
      * Test the installation of a closed liberty feature (adminCenter-1.0) in Open Liberty
      * using Feature Utility.
+     * TODO re-enable this test case to support license upgrading interactively
      * @throws Exception
      */
-    @Test
-    public void testClosedLibertyFeature() throws Exception {
-        final String METHOD_NAME = "testClosedLibertyFeature";
-        Log.entering(c, METHOD_NAME);
-
-        String[] param1s = { "installFeature", "adminCenter-1.0" };
-
-        deleteFeaturesAndLafilesFolders(METHOD_NAME);
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 21", 21, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Should contain CWWKF1402E", (output.indexOf("CWWKF1402E")>=0));
-
-        // try adding closed libery group id
-        String [] param2s = {"installFeature", "com.ibm.websphere.appserver.adminCenter-1.0"};
-        po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 21", 21, po.getReturnCode());
-        output = po.getStdout();
-        assertTrue("Should contain CWWKF1402E", (output.indexOf("CWWKF1402E") >= 0));
-
-        deleteFeaturesAndLafilesFolders(METHOD_NAME);
-
-
-        Log.exiting(c, METHOD_NAME);
-    }
+//    @Test
+//    public void testClosedLibertyFeature() throws Exception {
+//        final String METHOD_NAME = "testClosedLibertyFeature";
+//        Log.entering(c, METHOD_NAME);
+//
+//        String[] param1s = { "installFeature", "adminCenter-1.0" };
+//
+//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+//        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+//        assertEquals("Exit code should be 0", 0, po.getReturnCode());
+//        String output = po.getStdout();
+//        assertTrue("Should contain adminCenter-1.0", (output.contains("adminCenter-1.0")));
+//
+//
+//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+//
+//
+//        Log.exiting(c, METHOD_NAME);
+//    }
 
 
     /**
@@ -183,21 +178,22 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
     }
 
-    @Test
-    public void testInvalidMavenCoordinateGroupId() throws Exception {
-        String methodName = "testInvalidMavenCoordinateGroupId";
-        deleteFeaturesAndLafilesFolders(methodName);
-
-        String [] param1s = {"if", "madeUpGroupId:mpHealth-2.0"};
-        ProgramOutput po = runFeatureUtility(methodName, param1s);
-        assertEquals("Group ID does not exist", 21, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Msg contains CWWKF1402E", output.indexOf("CWWKF1402E") >=0);
-        deleteFeaturesAndLafilesFolders(methodName);
-
-        // TODO change this message in FeatureUtility
-
-    }
+    // test case disabled for now
+//    @Test
+//    public void testInvalidMavenCoordinateGroupId() throws Exception {
+//        String methodName = "testInvalidMavenCoordinateGroupId";
+//        deleteFeaturesAndLafilesFolders(methodName);
+//
+//        String [] param1s = {"if", "madeUpGroupId:mpHealth-2.0"};
+//        ProgramOutput po = runFeatureUtility(methodName, param1s);
+//        assertEquals("Group ID does not exist", 21, po.getReturnCode());
+//        String output = po.getStdout();
+//        assertTrue("Msg contains CWWKF1402E", output.indexOf("CWWKF1402E") >=0);
+//        deleteFeaturesAndLafilesFolders(methodName);
+//
+//        // TODO change this message in FeatureUtility
+//
+//    }
 
     @Test
     public void testInvalidMavenCoordinateArtifactId() throws Exception {
