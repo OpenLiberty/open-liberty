@@ -38,6 +38,12 @@ public class SubjectHelper {
     private static final TraceComponent tc = Tr.register(SubjectHelper.class);
 
     /**
+     * This key maps to a boolean property in a Subject's private credentials
+     * hashtable. When the property is true, the authentication service will
+     * not put a LTPA cookie in the response and will not use the LTPA SSO cache key to cache the subject.
+     */
+
+    /**
      * Check whether the subject is un-authenticated or not.
      *
      * @param subject {@code null} is supported.
@@ -96,6 +102,8 @@ public class SubjectHelper {
      * @return
      */
     public Hashtable<String, ?> getHashtableFromSubject(final Subject subject, final String[] properties) {
+        if (subject == null)
+            return null;
         return AccessController.doPrivileged(new PrivilegedAction<Hashtable<String, ?>>() {
             @Override
             public Hashtable<String, ?> run() {

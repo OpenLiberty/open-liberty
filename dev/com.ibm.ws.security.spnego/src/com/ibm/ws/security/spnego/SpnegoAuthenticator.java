@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.krb5.SpnegoUtil;
 import com.ibm.ws.security.spnego.internal.Krb5Util;
@@ -52,10 +50,6 @@ public class SpnegoAuthenticator {
 
             String reqHostName = getReqHostName(req, spnegoConfig);
             result = krb5Util.processSpnegoToken(resp, tokenByte, reqHostName, spnegoConfig);
-            Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
-            if (spnegoConfig.isDisableLtpaCookie()) {
-                hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
-            }
         } catch (AuthenticationException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unexpected exception:", new Object[] { e });

@@ -153,6 +153,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
             Tr.debug(tc, "trimKerberosRealmNameFromPrincipal: " + trimKerberosRealmNameFromPrincipal);
             Tr.debug(tc, "includeClientGSSCredentialInSubject: " + includeClientGSSCredentialInSubject);
             Tr.debug(tc, "includeCustomCacheKeyInSubject: " + includeCustomCacheKeyInSubject);
+            Tr.debug(tc, "disableLtpaCookie: " + disableLtpaCookie);
         }
     }
 

@@ -370,7 +370,7 @@ public class TAIAuthenticator implements WebAuthenticator {
      */
     private void addDisableLtpaSSOCacheProp(Subject subject, SubjectHelper subjectHelper) {
         Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
-        hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
+        hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, Boolean.TRUE);
     }
 
     private boolean addLtpaCookieToResponse(Subject subject, String taiId) {

@@ -262,7 +262,7 @@ public class OidcClientAuthenticator {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groups);
         }
         if (clientConfig.isDisableLtpaCookie()) {
-            customProperties.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
+            customProperties.put(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, Boolean.TRUE);
         }
     }
 

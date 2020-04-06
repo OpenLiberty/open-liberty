@@ -254,7 +254,7 @@ public class Krb5Util {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
         }
         if (spnegoConfig.isDisableLtpaCookie()) {
-            customProperties.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
+            customProperties.put(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, Boolean.TRUE);
         }
         subject.getPrivateCredentials().add(customProperties);
     }

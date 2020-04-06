@@ -28,7 +28,7 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  * Provides the SSO token bytes as the cache key.
  */
 public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
-    private static final String[] disableLtpaSSOCache = new String[] { AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE };
+    private static final String[] disableSsoLtpaCookie = new String[] { AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE };
 
     /** {@inheritDoc} */
     @Override
@@ -58,7 +58,7 @@ public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
     private boolean isDisableLtpaSSOCache(final Subject subject) {
         SubjectHelper subjectHelper = new SubjectHelper();
         //No need to check for value true or false.
-        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableLtpaSSOCache);
+        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie);
         if (hashtable != null)
             return true;
         else
