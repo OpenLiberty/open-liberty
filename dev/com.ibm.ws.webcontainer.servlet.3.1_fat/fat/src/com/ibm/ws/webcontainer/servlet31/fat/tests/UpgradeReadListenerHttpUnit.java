@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -24,20 +24,27 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import java.util.Set;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
-import componenttest.annotation.MinimumJavaLevel;
 
-@MinimumJavaLevel(javaLevel = 7)
+import componenttest.custom.junit.runner.FATRunner;
+
+@RunWith(FATRunner.class)
 public class UpgradeReadListenerHttpUnit extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(UpgradeReadListenerHttpUnit.class.getName());
+
+    private static final String LIBERTY_READ_WRITE_LISTENER_APP_NAME = "LibertyReadWriteListenerTest";
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
@@ -45,18 +52,27 @@ public class UpgradeReadListenerHttpUnit extends LoggingTest {
     private static final String UPGRADE_HANDLER_SERVLET_URL = "/LibertyReadWriteListenerTest/UpgradeHandlerTestServlet";
     private static final String URLString = SHARED_SERVER.getServerUrl(true, UPGRADE_HANDLER_SERVLET_URL);
 
-    private static ArrayList<Socket> connections = new ArrayList<Socket>();
+    private static ArrayList<Socket> connections;
 
-    // if server needs to be restarted after each test, uncomment @After section.
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        connections = new ArrayList<Socket>();
+        WebArchive LibertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.readListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
+        LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
 
-    /*
-     * @After
-     * public void tearDown() throws Exception {
-     * LOG.info("Restarting server !!! " + SHARED_SERVER.getServerName());
-     * SHARED_SERVER.getLibertyServer().restartServer();
-     * LOG.info("Finished restarting server !!! " + SHARED_SERVER.getServerName());
-     * }
-     */
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
+        }
+        SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+    }
 
     //After each test is complete it will add it's connection to the list of connections to close. Then when the tests are all done it will close them all at once
     @AfterClass
@@ -73,11 +89,9 @@ public class UpgradeReadListenerHttpUnit extends LoggingTest {
 
         connections.clear();
         connections = null;
-    }
-
-    @Before
-    public void before() {
-        SHARED_SERVER.setExpectedErrors("SRVE8015E:.*");
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*");
+        }
     }
 
     @Test
@@ -283,8 +297,7 @@ public class UpgradeReadListenerHttpUnit extends LoggingTest {
     }
 
     // helper method to connect to the server, through a socket. The method returns a connection socket.
-    private Socket CreateSocketConnection() throws Exception
-    {
+    private Socket CreateSocketConnection() throws Exception {
         URL url = new URL(URLString);
         String host = url.getHost();
         int port = url.getPort();
@@ -326,15 +339,12 @@ public class UpgradeReadListenerHttpUnit extends LoggingTest {
 
         if ((testName.equals("testUpgradeReadListenerSmallData")) || (testName.equals("testUpgradeReadSmallDataInHandler"))
             || (testName.equals("testUpgradeReadListenerSmallDataThrowException")) || (testName.equals("testUpgrade_WriteListener_From_ReadListener"))
-            || testName.equals("testRead_ContextTransferProperly_WhenUpgradeRLSet"))
-        {
+            || testName.equals("testRead_ContextTransferProperly_WhenUpgradeRLSet")) {
 
             output.write(DataToSend);
             output.flush();
             LOG.info("Sent the test string, reading the data");
-        }
-        else if (testName.equals("testUpgradeReadListenerLargeData"))
-        {
+        } else if (testName.equals("testUpgradeReadListenerLargeData")) {
             for (long i = 0; i < DataSentSize; i++) {
                 output.write(1);
             }
@@ -350,6 +360,16 @@ public class UpgradeReadListenerHttpUnit extends LoggingTest {
         //return data to the tests, read from the server.
         return line1;
 
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
     }
 
 }

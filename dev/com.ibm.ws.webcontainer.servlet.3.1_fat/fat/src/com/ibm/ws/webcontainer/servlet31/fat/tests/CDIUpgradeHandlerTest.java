@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -24,23 +24,31 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.Set;
 
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
-import componenttest.annotation.MinimumJavaLevel;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * CDI Tests
- * 
+ *
  * These cases are tested:
- * 
+ *
  * <ul>
  * <li>Constructor Injection
  * <li>PostConstruct
@@ -53,24 +61,58 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * <li>PreDestroy
  * <li>Interceptor
  * </ul>
- * 
+ *
  * These cases are not tested:
  * <ul>
  * <li>Decorator (not implemented)
  * </ul>
  */
-@MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class CDIUpgradeHandlerTest extends LoggingTest {
-
+    
     // Server instance ...
 
     /** A single shared server used by all of the tests. */
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiUpgradeHandlerServer");
 
+    private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
+    private static final String CDI12_TEST_V2_UPGRADE_APP_NAME = "CDI12TestV2Upgrade";
+
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        // Build the CDI12TestV2 jar to add to the war app as a lib
+        JavaArchive CDI12TestV2Jar = ShrinkHelper.buildJavaArchive(CDI12_TEST_V2_JAR_NAME + ".jar",
+                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2.jar.cdi.beans.v2.log",
+                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2.jar.cdi.beans.v2");
+        CDI12TestV2Jar = (JavaArchive) ShrinkHelper.addDirectory(CDI12TestV2Jar, "test-applications/CDI12TestV2.jar/resources");
+        // Build the war app CDI12TestV2Upgrade.war and add the dependencies
+        WebArchive CDI12TestV2UpgradeApp = ShrinkHelper.buildDefaultApp(CDI12_TEST_V2_UPGRADE_APP_NAME + ".war",
+                                                                        "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2upgrade.war.cdi.upgrade.handlers",
+                                                                        "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2upgrade.war.cdi.upgrade.servlets");
+        CDI12TestV2UpgradeApp = CDI12TestV2UpgradeApp.addAsLibrary(CDI12TestV2Jar);
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_UPGRADE_APP_NAME);
+            LOG.info("addAppToServer : " + CDI12_TEST_V2_UPGRADE_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+              ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2UpgradeApp);
+          }
+        SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_UPGRADE_APP_NAME);
+    }
+    
+    @AfterClass
+    public static void testCleanup() throws Exception {
+        // test cleanup
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer(null);
+        }
+    }
+
     /**
      * Log text at the info level. Use the shared server to perform the logging.
-     * 
+     *
      * @param text Text which is to be logged.
      */
     public static void logInfo(String text) {
@@ -79,7 +121,7 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
 
     /**
      * Wrapper for {@link #createWebBrowserForTestCase()} with relaxed protection.
-     * 
+     *
      * @return A web brower.
      */
     protected WebBrowser createWebBrowser() {
@@ -93,9 +135,9 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
 
     /**
      * Answer the URL text for a relative URI for the shared server.
-     * 
+     *
      * @param relativeURL The relative URI for the URL.
-     * 
+     *
      * @return Text of the URL.
      */
     protected String getRequestURL(String relativeURL) {
@@ -106,24 +148,22 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
      * Perform a request to the the server instance and verify that the
      * response has expected text. Throw an exception if the expected
      * text is not present or if the unexpected text is present.
-     * 
+     *
      * The request path is used to create a request URL via {@link SharedServer.getServerUrl}.
-     * 
+     *
      * Both the expected text and the unexpected text are tested using a contains
      * test. The test does not look for an exact match.
-     * 
-     * @param webBrowser Simulated web browser instance through which the request is made.
-     * @param requestPath The path which will be requested.
-     * @param expectedResponses Expected response text. All elements are tested.
+     *
+     * @param webBrowser          Simulated web browser instance through which the request is made.
+     * @param requestPath         The path which will be requested.
+     * @param expectedResponses   Expected response text. All elements are tested.
      * @param unexpectedResponses Unexpected response text. All elements are tested.
      * @return The encapsulated response.
-     * 
+     *
      * @throws Exception Thrown if the expected response text is not present or if the
-     *             unexpected response text is present.
+     *                       unexpected response text is present.
      */
-    protected WebResponse verifyResponse(WebBrowser webBrowser, String resourceURL, String[] expectedResponses, String[] unexpectedResponses) throws Exception {
-        return SHARED_SERVER.verifyResponse(webBrowser, resourceURL, expectedResponses, unexpectedResponses); // throws Exception
-    }
+    
 
     /** Standard failure text. Usually unexpected. */
     public static final String[] FAILED_RESPONSE = new String[] { "FAILED" };
@@ -199,7 +239,7 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
     /**
      * Test that the servlet is up and running, and can handle a no-upgrade
      * request.
-     * 
+     *
      * The response must be "NoUpgrade".
      */
     public void implTestCDINoUpgrade() throws Exception {
@@ -289,7 +329,7 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
         } catch (Exception e) {
             String failureMessage = "Unexpected exception";
             logAndFail(methodName, testName, failureMessage, e); // Never returns
-            return; // Only present to avoid a warning.            
+            return; // Only present to avoid a warning.
 
         } finally {
             if (socket != null) {
@@ -441,11 +481,11 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
     public static final String[] EXPECTED_LOG1 = {
         "Header [ Upgrade ] [ null ]: No upgrade",
         "Parameter [ ShowLog ] [ Application ]: Show application log",
-        "Application Log"                                                  
+        "Application Log"
     };
 
     public static final String[] EXPECTED_LOG2 = {
-        "Header [ Upgrade ] [ TestUpgrade ]: Upgrade",                                                  
+        "Header [ Upgrade ] [ TestUpgrade ]: Upgrade",
         "Parameter [ ShowLog ] [ Application ]: Show application log",
         "Application Log",
 
@@ -475,7 +515,7 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
         ":CDITestWriteListener:onWritePossible:Field:Application:ApplicationFieldBean:RV:WP:RA:",
         ":CDITestWriteListener:onWritePossible:Field:Dependent:DependentFieldBean:RV:WP:RA:",
         ":CDITestWriteListener:onWritePossible:Method:Dependent:MethodBean:RV:WP:RA:",
-        
+
         ":CDITestReadListener:onAllDataRead:Entry:",
         ":CDITestReadListener:onAllDataRead:Exit:",
         ":CDITestReadListener:onAllDataRead:Field:Dependent:DependentFieldBean:RV:WP:RA:",
@@ -518,7 +558,7 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
         ":CDITestReadListener:onDataAvailable:Field:Application:ApplicationFieldBean:RV:WP:RA:RV:",
         ":CDITestReadListener:onDataAvailable:Field:Dependent:DependentFieldBean:RV:",
         ":CDITestReadListener:onDataAvailable:Method:Dependent:MethodBean:RV:",
-        
+
         ":CDITestReadListener:onAllDataRead:Entry:",
         ":CDITestReadListener:onAllDataRead:Exit:",
         ":CDITestReadListener:onAllDataRead:Field:Dependent:DependentFieldBean:RV:WP:RA:",
@@ -535,5 +575,13 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
         ":CDITestWriteListener:onWritePossible:Method:Dependent:MethodBean:RV:WP:RA:"
     };
     // @formatter:off
+
+    /* (non-Javadoc)
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
+    }
 
 }

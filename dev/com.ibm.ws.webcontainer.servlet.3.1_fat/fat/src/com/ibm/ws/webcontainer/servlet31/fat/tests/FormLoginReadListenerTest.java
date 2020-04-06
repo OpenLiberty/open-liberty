@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -27,26 +28,34 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.junit.Before;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.security.PostParamsClient;
+import com.ibm.ws.webcontainer.security.test.servlets.PostParamsClient;
 
-import componenttest.annotation.MinimumJavaLevel;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-@MinimumJavaLevel(javaLevel = 7)
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class FormLoginReadListenerTest extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(FormLoginReadListenerTest.class.getName());
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_formLoginServer");
+    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+
+    private static final String FORM_LOGIN_READ_LISTENER_APP_NAME = "FormLogin_ReadListener";
 
     private static final String READ_LISTENER_SERVLET_URL = "/FormLogin_ReadListener/TestAsyncReadServlet";
     protected static final String CONTEXT_ROOT = "/FormLogin_ReadListener/";
@@ -55,17 +64,35 @@ public class FormLoginReadListenerTest extends LoggingTest {
 
     protected static HttpEntity entity;
 
-    @Before
-    public void before() {
-        try {
-            SHARED_SERVER.startIfNotStarted();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            e.printStackTrace();
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        // Build the war app and add the dependencies
+        WebArchive FormLoginReadListenerApp = ShrinkHelper.buildDefaultApp(FORM_LOGIN_READ_LISTENER_APP_NAME + ".war",
+                                                                           "com.ibm.ws.webcontainer.servlet_31_fat.formlogin_readlistener.war.web");
+        FormLoginReadListenerApp = (WebArchive) ShrinkHelper.addDirectory(FormLoginReadListenerApp, "test-applications/FormLogin_ReadListener.war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(FORM_LOGIN_READ_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + FORM_LOGIN_READ_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+              ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), FormLoginReadListenerApp);
+          }
+        //Replace config for the other server
+        LibertyServer wlp = SHARED_SERVER.getLibertyServer();
+        wlp.saveServerConfiguration();
+        wlp.setServerConfigurationFile("FormLogin_ReadListener/server.xml");
+        
+        SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
+    }
+    
+    @AfterClass
+    public static void testCleanup() throws Exception {
+        // test cleanup
+        SHARED_SERVER.getLibertyServer().restoreServerConfiguration();
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*");
         }
-
     }
 
     /*
@@ -142,6 +169,16 @@ public class FormLoginReadListenerTest extends LoggingTest {
             fail("unexpecgted exception " + e);
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
     }
 
 }

@@ -14,7 +14,7 @@
 
  <servlet>
    <servlet-name>Test1</servlet-name>
-   <servlet-class>servlets.TestServlet</servlet-class>
+   <servlet-class>com.ibm.ws.webcontainer.servlet_31_fat.testservletmapping.war.servlets.TestServlet</servlet-class>
    </servlet>
    
  <servlet-mapping>
@@ -24,7 +24,7 @@
    
  <servlet>
    <servlet-name>Test2</servlet-name>
-   <servlet-class>servlets.TestServlet2</servlet-class>
+   <servlet-class>com.ibm.ws.webcontainer.servlet_31_fat.testservletmapping.war.servlets.TestServlet2</servlet-class>
    </servlet>
    
  <servlet-mapping>

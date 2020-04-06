@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,24 +21,34 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Logger;
+import java.util.Set;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.junit.Before;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
+
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-@MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+
+    private static final String LIBERTY_WRITE_LISTENER_FILTER_APP_NAME = "LibertyWriteListenerFilterTest";
+    private static final String LIBERTY_READ_WRITE_LISTENER_APP_NAME = "LibertyReadWriteListenerTest";
 
     private static final String WRITE_LISTENER_SERVLET_URL = "/LibertyReadWriteListenerTest/TestAsyncWriteServlet";
     private static final String WRITE_LISTENER__FILTER_SERVLET_URL = "/LibertyWriteListenerFilterTest/WriteListenerFilterServlet";
@@ -65,17 +75,51 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     //17)TestWL_Write_Less_InFilter
     //18)TestWriteFromFilter_AftersetWL
 
-    @Before
-    public void before() {
-        SHARED_SERVER.setExpectedErrors("SRVE8015E:.*");
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        // SHARED_SERVER.getLibertyServer().stopServer(false, "SRVE8015E:.*");
+        // Build the war app CDI12TestV2Injection.war and add the dependencies
+        WebArchive LibertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + ".war",
+                                                                                "com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener");
+        LibertyWriteListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(LibertyWriteListenerFilterApp, "test-applications/LibertyWriteListenerFilterTest.war/resources");
+        WebArchive LibertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.readListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
+        LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
+            LOG.info("addAppToServer : " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
+        }
+        SHARED_SERVER.startIfNotStarted();
+
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
+    }
+
+    @AfterClass
+    public static void testCleanup() throws Exception {
+        // test cleanup
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer("SRVE0918E:.*", "SRVE8015E:.*", "SRVE9007E:.*", "SRVE9009E:.*", "SRVE9005E:.*", "SRVE8015E:.*");
+        }
     }
 
     @Test
     @Mode(TestMode.LITE)
-    public void TestWrite_DontCheckisReady_fromWL() throws Exception
-    {
+    public void TestWrite_DontCheckisReady_fromWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE0918E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWrite_DontCheckisReady_fromWL";
 
@@ -101,10 +145,9 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     // TestWLWriteLessData is now already done in this
     @Test
     @Mode(TestMode.LITE)
-    public void TestWriteFromServlet_AftersetWL() throws Exception
-    {
+    public void TestWriteFromServlet_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE0918E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromServlet_AftersetWL";
 
@@ -137,8 +180,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
     @Test
     @Mode(TestMode.LITE)
-    public void TestWL_Write_Medium() throws Exception
-    {
+    public void TestWL_Write_Medium() throws Exception {
         String testToCall = "TestWL_Write_Medium";
         LOG.info("[WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int expectedResponseSize = 500000;
@@ -155,8 +197,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
     @Test
     @Mode(TestMode.LITE)
-    public void TestWL_Write_Large() throws Exception
-    {
+    public void TestWL_Write_Large() throws Exception {
         String testToCall = "TestWL_Write_Large";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int expectedResponseSize = 1000000;
@@ -172,8 +213,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
     @Test
     @Mode(TestMode.LITE)
-    public void TestWL_Println_Large() throws Exception
-    {
+    public void TestWL_Println_Large() throws Exception {
         String testToCall = "TestWL_Println_Large";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "************");
         int expectedResponseSize = 1000000;
@@ -196,7 +236,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     public void Test_ISE_SetWL_NonAsyncServlet() throws Exception {
         String testToCall = "Test_ISE_SetWL_NonAsyncServlet";
         // Make sure the test framework knows that SRVE9014E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9007E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int responseCode = 0;
@@ -223,8 +263,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             post.releaseConnection();
 
             org.junit.Assert.assertTrue(pass);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             fail(testToCall + " Exception from request: " + e.getMessage());
         } finally {
@@ -242,8 +281,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
         String testToCall = "Test_ISE_setSecondWriteListener";
         // Make sure the test framework knows that SRVE9009E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9009E:.*");
-
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
 
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
@@ -295,7 +333,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
         String testToCall = "Test_NPE_setNullWriteListener";
         // Make sure the test framework knows that SRVE9014E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9005E:.*");
+        
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         try {
             HttpClient httpClient = new HttpClient();
@@ -357,8 +395,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    public void TestWL_Write_MediumChunks() throws Exception
-    {
+    public void TestWL_Write_MediumChunks() throws Exception {
         String testToCall = "TestWL_Write_MediumChunks";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int expectedResponseSize = 500000;
@@ -374,8 +411,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    public void TestWL_Write_LargeChunks() throws Exception
-    {
+    public void TestWL_Write_LargeChunks() throws Exception {
         String testToCall = "TestWL_Write_LargeChunks";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int expectedResponseSize = 1000000;
@@ -391,8 +427,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    public void TestWL_Println_MediumChunks() throws Exception
-    {
+    public void TestWL_Println_MediumChunks() throws Exception {
         String testToCall = "TestWL_Println_MediumChunks";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int expectedResponseSize = 500000;
@@ -408,8 +443,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    public void TestWL_Println_LargeChunks() throws Exception
-    {
+    public void TestWL_Println_LargeChunks() throws Exception {
         String testToCall = "TestWL_Println_LargeChunks";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int expectedResponseSize = 1000000;
@@ -454,8 +488,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             LOG.info("Contents of sb is " + sb.toString());
             assertEquals(0, sb.toString().length());//compare with 0
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Exception from request: " + e.getMessage());
         }
@@ -490,8 +523,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
             assertTrue(data);
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             fail(testcase + " Exception from request: " + e.getMessage());
         }
@@ -565,10 +597,9 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
     @Test
     @Mode(TestMode.LITE)
-    public void TestWriteFromFilter_AftersetWL() throws Exception
-    {
+    public void TestWriteFromFilter_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE0918E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromFilter_AftersetWL";
 
@@ -603,16 +634,15 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
      * @param ExpectdResponseSize
      * @return
      * @throws Exception
-     * 
-     *             This method will not take care of println
+     *
+     *                       This method will not take care of println
      */
     private int connectSendExpectDataSizeInResponse(int ExpectdResponseSize, String testtocall) throws Exception {
 
         String URLString = null;
         if (testtocall.equals("TestWriteFromFilter_AftersetWL")) {
             URLString = SHARED_SERVER.getServerUrl(true, WRITE_LISTENER__FILTER_SERVLET_URL);
-        }
-        else
+        } else
             URLString = SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL);
 
         URL url = null;
@@ -690,8 +720,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 //            }
 //            else
             con.setRequestProperty("TestToCall", testName);
-        }
-        else if (noOfChunks.equalsIgnoreCase("one")) {
+        } else if (noOfChunks.equalsIgnoreCase("one")) {
 //            if (testName.equalsIgnoreCase("TestWL_Println_Large")) {
 //                con.setRequestProperty("TestToCall", testName);
 //            }
@@ -745,5 +774,10 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
         LOG.info("End reading the response.  Expected response size : " + ExpectdResponseSize);
         return total;
 
+    }
+
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
     }
 }

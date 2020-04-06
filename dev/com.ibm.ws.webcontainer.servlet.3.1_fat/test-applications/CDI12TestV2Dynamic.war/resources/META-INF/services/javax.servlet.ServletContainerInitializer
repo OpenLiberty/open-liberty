@@ -8,4 +8,4 @@
 ## Contributors:
 ##     IBM Corporation - initial API and implementation
 ################################################################################
-cdi.dynamic.CDIDynamicInitializer
+com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2dynamic.war.cdi.dynamic.CDIDynamicInitializer

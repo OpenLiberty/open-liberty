@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,55 +8,99 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.logging.Logger;
+import java.util.Set;
 
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebResponse;
-import componenttest.annotation.MinimumJavaLevel;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * CDI Test
- * 
+ *
  * Verify that injection is performed into several listener types.
  */
-@MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class CDIListenersTest extends LoggingTest {
+    
+    private static final Logger LOG = Logger.getLogger(CDIListenersTest.class.getName());
 
     // Server instance ...
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiListenersServer");
 
+    private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
+    private static final String CDI12_TEST_V2_LISTENERS_APP_NAME = "CDI12TestV2Listeners";
+
     /**
      * Perform a request to the the server instance and verify that the
      * response has expected text. Throw an exception if the expected
      * text is not present or if the unexpected text is present.
-     * 
+     *
      * The request path is used to create a request URL via {@link SharedServer.getServerUrl}.
-     * 
+     *
      * Both the expected text and the unexpected text are tested using a contains
      * test. The test does not look for an exact match.
-     * 
-     * @param webBrowser Simulated web browser instance through which the request is made.
-     * @param requestPath The path which will be requested.
-     * @param expectedResponses Expected response text. All elements are tested.
+     *
+     * @param webBrowser          Simulated web browser instance through which the request is made.
+     * @param requestPath         The path which will be requested.
+     * @param expectedResponses   Expected response text. All elements are tested.
      * @param unexpectedResponses Unexpected response text. All elements are tested.
      * @return The encapsulated response.
-     * 
+     *
      * @throws Exception Thrown if the expected response text is not present or if the
-     *             unexpected response text is present.
+     *                       unexpected response text is present.
      */
-    protected WebResponse verifyResponse(WebBrowser webBrowser, String resourceURL, String[] expectedResponses, String[] unexpectedResponses) throws Exception {
-        return SHARED_SERVER.verifyResponse(webBrowser, resourceURL, expectedResponses, unexpectedResponses); // throws Exception
+
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        // Build the CDI12TestV2 jar to add to the war app as a lib
+        JavaArchive CDI12TestV2Jar = ShrinkHelper.buildJavaArchive(CDI12_TEST_V2_JAR_NAME + ".jar",
+                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2.jar.cdi.beans.v2.log",
+                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2.jar.cdi.beans.v2");
+        CDI12TestV2Jar = (JavaArchive) ShrinkHelper.addDirectory(CDI12TestV2Jar, "test-applications/CDI12TestV2.jar/resources");
+        // Build the war app CDI12TestV2Listeners.war and add the dependencies
+        WebArchive CDI12TestV2ListenersApp = ShrinkHelper.buildDefaultApp(CDI12_TEST_V2_LISTENERS_APP_NAME + ".war",
+                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2listeners.war.cdi.listeners.beans",
+                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2listeners.war.cdi.listeners.interceptors",
+                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2listeners.war.cdi.listeners.listeners",
+                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2listeners.war.cdi.listeners.servlets");
+        CDI12TestV2ListenersApp = (WebArchive) ShrinkHelper.addDirectory(CDI12TestV2ListenersApp, "test-applications/CDI12TestV2Listeners.war/resources");
+        CDI12TestV2ListenersApp = CDI12TestV2ListenersApp.addAsLibraries(CDI12TestV2Jar);
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_LISTENERS_APP_NAME);
+            LOG.info("addAppToServer : " + CDI12_TEST_V2_LISTENERS_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2ListenersApp);
+        }
+        SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
+    }
+    
+    @AfterClass
+    public static void testCleanup() throws Exception {
+        // test cleanup
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer(null);
+        }
     }
 
     /** Standard failure text. Usually unexpected. */
@@ -79,14 +123,14 @@ public class CDIListenersTest extends LoggingTest {
     public static final String COMMENT_PARAMETER_NAME = "comment";
 
     public String getListenersURL(String operationName, String comment) throws UnsupportedEncodingException {
-        comment = URLEncoder.encode(comment, "UTF-8"); // throws UnsupportedEncodingException        
+        comment = URLEncoder.encode(comment, "UTF-8"); // throws UnsupportedEncodingException
 
         // @formatter:off
         return
             LISTENERS_SERVLET_URL + "?" +
             OPERATION_PARAMETER_NAME + "=" + operationName + "&" +
             COMMENT_PARAMETER_NAME + "=" + comment;
-        // @formatter:on        
+        // @formatter:on
     }
 
     public String getListenersURL(String operationName,
@@ -97,30 +141,30 @@ public class CDIListenersTest extends LoggingTest {
         // @formatter:off
         return
             LISTENERS_SERVLET_URL + "?" +
-            OPERATION_PARAMETER_NAME + "=" + operationName + "&" + 
+            OPERATION_PARAMETER_NAME + "=" + operationName + "&" +
             ATTRIBUTE_NAME_PARAMETER_NAME + "=" + attributeName + "&" +
             ATTRIBUTE_VALUE_PARAMETER_NAME + "=" + attributeValue + "&" +
             COMMENT_PARAMETER_NAME + "=" + comment;
-        // @formatter:on        
+        // @formatter:on
     }
 
     /**
      * Verify that injection is performed into several listener types.
-     * 
+     *
      * The test servlet is placed in a WAR with several listeners which are
      * tagged with "@WebListener". Those are:
-     * 
+     *
      * CDIHttpSessionAttributeListener
      * CDIHttpSessionListener
-     * 
+     *
      * CDIHttpSessionIdListener
-     * 
+     *
      * CDIHttpServletContextAttributeListener
      * CDIHttpServletContextListener
-     * 
+     *
      * CDIHttpServletRequestAttributeListener
      * CDIHttpServletRequestListener
-     * 
+     *
      * The test invokes the servlet, which performs operations to trigger
      * methods in each of the listeners, then displays data relayed back
      * through an application scoped log bean.
@@ -194,14 +238,14 @@ public class CDIListenersTest extends LoggingTest {
     // @formatter:off
 
     private static final String CDI_ATTRIBUTE_NAME_PREFIX = "CDI";
-        
+
     public static final String[] LISTENERS_SERVLET_EXPECTED_VERIFICATION = new String[] {
         // First call ... making sure the listeners servlet is up and running ...
 
         "Hello! CDIListenersServlet",
-        
+
         "Comment [ Verify CDI Listeners Servlet ]",
-        
+
         "Application Log",
         "Parameter [ operation ] [ displayLog ]: Show application log",
 
@@ -241,21 +285,21 @@ public class CDIListenersTest extends LoggingTest {
 
     private static final String[] LISTENERS_SERVLET_EXPECTED_ASSIGN_A1 = {
         "Hello! CDIListenersServlet",
-        
+
         "Comment [ Assignment to A1 of V1 in S1 ]",
-        
+
         "Parameter [ operation ] [ addAttributes ]",
         "Parameter [ attributeName ] [ CDI_A1 ]",
-        "Parameter [ parameterValue ] [ V1 ]"                                                                            
+        "Parameter [ parameterValue ] [ V1 ]"
     };
-                                                                             
+
     public static final String[] LISTENERS_SERVLET_EXPECTED_ASSIGNED_A1 = new String[] {
         // Assign A1=V1 in the next request, then obtain the log in a request after that.
 
         "Hello! CDIListenersServlet",
-        
+
         "Comment [ Log assignment to A1 of V1 in S1 ]",
-        
+
         "Application Log",
         "Parameter [ operation ] [ addAttributes ]: Add attribute [ CDI_A1 ] [ V1 ]",
         "Parameter [ operation ] [ displayLog ]: Show application log",
@@ -350,22 +394,22 @@ public class CDIListenersTest extends LoggingTest {
 
     private static final String[] LISTENERS_SERVLET_EXPECTED_ASSIGN_A2 = {
         "Hello! CDIListenersServlet",
-                                                       
+
         "Comment [ Assignment to A2 of V2 in S1 ]",
-        
+
         "Parameter [ operation ] [ addAttributes ]",
         "Parameter [ attributeName ] [ CDI_A2 ]",
-        "Parameter [ parameterValue ] [ V2 ]"                                                                            
+        "Parameter [ parameterValue ] [ V2 ]"
     };
-    
+
     public static final String[] LISTENERS_SERVLET_EXPECTED_ASSIGNED_A2 = new String[] {
         // We assign A2=V2 in the next request, then obtain the log in a request after that.
         // We are still in the same session as for the A1=V1 assignment.
 
         "Hello! CDIListenersServlet",
-        
+
         "Comment [ Log assignment to A2 of V2 in S1 ]",
-        
+
         "Application Log",
         "Parameter [ operation ] [ addAttributes ]: Add attribute [ CDI_A2 ] [ V2 ]",
         "Parameter [ operation ] [ displayLog ]: Show application log",
@@ -461,12 +505,12 @@ public class CDIListenersTest extends LoggingTest {
 
     private static final String[] LISTENERS_SERVLET_EXPECTED_ASSIGN_A3 = {
         "Hello! CDIListenersServlet",
-        
+
         "Comment [ Assignment to A3 of V3 in S2 ]",
-        
+
         "Parameter [ operation ] [ addAttributes ]",
         "Parameter [ attributeName ] [ CDI_A3 ]",
-        "Parameter [ parameterValue ] [ V3 ]"                                                                            
+        "Parameter [ parameterValue ] [ V3 ]"
     };
 
     public static final String[] LISTENERS_SERVLET_EXPECTED_ASSIGNED_A3 = new String[] {
@@ -474,9 +518,9 @@ public class CDIListenersTest extends LoggingTest {
         // We are in a new, second, session.
 
         "Hello! CDIListenersServlet",
-        
+
         "Comment [ Log assignment to A3 of V3 in S2 ]",
-        
+
         "Application Log",
         "Parameter [ operation ] [ addAttributes ]: Add attribute [ CDI_A3 ] [ V3 ]",
         "Parameter [ operation ] [ displayLog ]: Show application log",
@@ -585,24 +629,24 @@ public class CDIListenersTest extends LoggingTest {
 
         "Parameter [ operation ] [ addAttributes ]",
         "Parameter [ attributeName ] [ CDI_A4 ]",
-        "Parameter [ parameterValue ] [ V4 ]"                                                                            
+        "Parameter [ parameterValue ] [ V4 ]"
     };
-    
+
     public static final String[] LISTENERS_SERVLET_EXPECTED_ASSIGNED_A4 = new String[] {
         // We assign A4=V4 in the next request, then obtain the log in a request after that.
         // We are still in the same session as for the A3=V3 assignment.
 
         "Hello! CDIListenersServlet",
-        
+
         "Comment [ Log assignment to A4 of V4 in S2 ]",
-        
+
         "Application Log",
         "Parameter [ operation ] [ addAttributes ]: Add attribute [ CDI_A4 ] [ V4 ]",
         "Parameter [ operation ] [ displayLog ]: Show application log",
 
         // Destruction of the log request.
         "CDIServletRequestListener: requestDestroyed:",
-        
+
         ":CDIServletRequestListener:Constructor:Dependent:CDIConstructorBean_RL:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:",
         ":CDIServletRequestListener:PostConstruct:Start:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:",
         ":CDIServletRequestListener:Field:Dependent:CDIListenerFieldBean_RL:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:",
@@ -614,7 +658,7 @@ public class CDIListenersTest extends LoggingTest {
 
         // Creation of the assignment request.
         "CDIServletRequestListener: requestInitialized:",
-        
+
         ":CDIServletRequestListener:Constructor:Dependent:CDIConstructorBean_RL:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:",
         ":CDIServletRequestListener:PostConstruct:Start:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:",
         ":CDIServletRequestListener:Field:Dependent:CDIListenerFieldBean_RL:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:RL:D:Int2:RL:I:Int1:",
@@ -695,6 +739,14 @@ public class CDIListenersTest extends LoggingTest {
         // very long durations.  We could try to log the session destructions, but that would be hard
         // to make happen in a reliable sequence.
     };
-    
+
+    /* (non-Javadoc)
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
+    }
+
     // @formatter:on
 }

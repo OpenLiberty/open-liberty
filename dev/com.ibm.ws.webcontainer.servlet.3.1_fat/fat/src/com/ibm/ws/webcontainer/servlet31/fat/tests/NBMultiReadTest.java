@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,16 +18,21 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
+import java.util.Set;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -35,11 +40,12 @@ import componenttest.topology.utils.HttpUtils;
 /**
  *
  */
-@MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class NBMultiReadTest {
-
+    private static final Logger LOG = Logger.getLogger(NBMultiReadTest.class.getName());
     private static LibertyServer server;
 
+    private static final String MULTI_NB_READ_APP_NAME = "multiNBReadApp";
     private final static Class<?> c = NBMultiReadTest.class;
     protected static final int CONN_TIMEOUT = 5;
     private final String contextRoot = "/multiNBReadApp";
@@ -49,11 +55,20 @@ public class NBMultiReadTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-
         server = LibertyServerFactory.getLibertyServer("NBmultiReadServer");
-        server.startServer();
-
-        assertNotNull("The application NBmultiread did not appear to have started", server.waitForStringInLog("CWWKZ0001I.*multiNBReadApp"));
+        WebArchive NBMultiReadApp = ShrinkHelper.buildDefaultApp(MULTI_NB_READ_APP_NAME + ".war",
+                                                                  "com.ibm.ws.webcontainer.servlet_31_fat.multinbreadapp.war.test.filters",
+                                                                  "com.ibm.ws.webcontainer.servlet_31_fat.multinbreadapp.war.test.listeners",
+                                                                  "com.ibm.ws.webcontainer.servlet_31_fat.multinbreadapp.war.test.servlets");
+        server.startServer(NBMultiReadTest.class.getSimpleName() + ".log");
+        // Verify if the apps are in the server before trying to deploy them
+        if (server.isStarted()) {
+            Set<String> appInstalled = server.getInstalledAppNames(MULTI_NB_READ_APP_NAME);
+            LOG.info("addAppToServer : " + MULTI_NB_READ_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+              ShrinkHelper.exportDropinAppToServer(server, NBMultiReadApp);
+          }
+        assertNotNull("The application NBmultiread did not appear to have started", server.waitForStringInLog("CWWKZ0001I.* " + MULTI_NB_READ_APP_NAME));
     }
 
     /**

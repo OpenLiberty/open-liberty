@@ -13,7 +13,7 @@
 <filter>
     <filter-name>WriteListenerFilter</filter-name>
     <filter-class>
-        com.ibm.ws.fat.wc.servlet31.writeListener.WriteListenerFilter
+        com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener.WriteListenerFilter
     </filter-class>
         <init-param>
         <param-name>test-param</param-name>
@@ -26,7 +26,7 @@
  </filter-mapping>
 <servlet>
    <servlet-name>WriteListenerFilterServlet</servlet-name>
-   <servlet-class>com.ibm.ws.fat.wc.servlet31.writeListener.WriteListenerFilterServlet</servlet-class>
+   <servlet-class>com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener.WriteListenerFilterServlet</servlet-class>
    </servlet>
  <servlet-mapping>
       <servlet-name>WriteListenerFilterServlet</servlet-name>

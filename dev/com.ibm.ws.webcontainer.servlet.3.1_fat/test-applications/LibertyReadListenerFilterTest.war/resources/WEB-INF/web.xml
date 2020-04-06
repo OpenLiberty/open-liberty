@@ -13,7 +13,7 @@
 <filter>
     <filter-name>ReadListenerFilter</filter-name>
     <filter-class>
-        com.ibm.ws.fat.wc.servlet31.readListener.ReadListenerFilter
+        com.ibm.ws.webcontainer.servlet_31_fat.libertyreadlistenerfiltertest.war.readListener.ReadListenerFilter
     </filter-class>
         <init-param>
         <param-name>test-param</param-name>
@@ -28,7 +28,7 @@
   </filter-mapping>
 <servlet>
    <servlet-name>ReadListenerFilterServlet</servlet-name>
-   <servlet-class>com.ibm.ws.fat.wc.servlet31.readListener.ReadListenerFilterServlet</servlet-class>
+   <servlet-class>com.ibm.ws.webcontainer.servlet_31_fat.libertyreadlistenerfiltertest.war.readListener.ReadListenerFilterServlet</servlet-class>
    </servlet>
  <servlet-mapping>
       <servlet-name>ReadListenerFilterServlet</servlet-name>

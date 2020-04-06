@@ -16,7 +16,7 @@
        version="1.1">
        
   <interceptors>
-    <class>cdi.interceptors.currency.CurrencyExchangeEventLogInterceptor</class>
+    <class>com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2currency.war.cdi.interceptors.currency.CurrencyExchangeEventLogInterceptor</class>
   </interceptors>
          
 </beans>

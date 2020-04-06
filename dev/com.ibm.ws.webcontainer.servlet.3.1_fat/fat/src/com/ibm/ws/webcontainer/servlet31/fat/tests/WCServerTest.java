@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import java.io.File;
 import java.io.FileReader;
@@ -18,18 +18,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.Set;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -38,7 +47,7 @@ import junit.framework.Assert;
 /**
  * All Servlet 3.1 tests with all applicable server features enabled.
  */
-@MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class WCServerTest extends LoggingTest {
 
     @SuppressWarnings("unused")
@@ -46,32 +55,155 @@ public class WCServerTest extends LoggingTest {
 
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
+    private static final String SESSION_ID_LISTENER_JAR_NAME = "SessionIdListener";
+    private static final String TEST_SERVLET_31_JAR_NAME = "TestServlet31";
+    private static final String TEST_METADATA_COMPLETE_JAR_NAME = "TestMetadataComplete";
+    private static final String TEST_METADATA_COMPLETE_EXCLUDED_FRAGMENT_JAR_NAME = "TestMetadataCompleteExcludedFragment";
+    private static final String TEST_PROGRAMATIC_LISTENER_ADDITION_JAR_NAME = "TestProgrammaticListenerAddition";
+    private static final String SINGLETON_STORE_JAR_NAME = "SingletonStore";
+    private static final String TEST_SERVLET_31_APP_NAME = "TestServlet31";
+    private static final String TEST_METADATA_COMPLETE_APP_NAME = "TestMetadataComplete";
+    private static final String SESSION_ID_ADD_LISTENER_APP_NAME = "SessionIdListenerAddListener";
+    private static final String SESSION_ID_LISTENER_APP_NAME = "SessionIdListener";
+    private static final String SERVLET_CONTEXT_ADD_LISTENER_APP_NAME = "ServletContextAddListener";
+    private static final String SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME = "ServletContextCreateListener";
+    private static final String TEST_PROGRAMATIC_LISTENER_ADDITION_APP_NAME = "TestProgrammaticListenerAddition";
+    private static final String TEST_SERVLET_MAPPING_APP_NAME = "TestServletMapping";
+    private static final String TEST_SERVLET_MAPPING_ANNO_APP_NAME = "TestServletMappingAnno";
+
+
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        // Build the jars to add to the war app as a lib
+        JavaArchive SessionIdListenerJar = ShrinkHelper.buildJavaArchive(SESSION_ID_LISTENER_JAR_NAME + ".jar",
+                                                                         "com.ibm.ws.webcontainer.servlet_31_fat.sessionidlistener.jar.listeners",
+                                                                         "com.ibm.ws.webcontainer.servlet_31_fat.sessionidlistener.jar.servlets");
+        JavaArchive TestServlet31Jar = ShrinkHelper.buildJavaArchive(TEST_SERVLET_31_JAR_NAME + ".jar",
+                                                                     "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.jar.servlets");
+        JavaArchive TestMetadataCompleteJar = ShrinkHelper.buildJavaArchive(TEST_METADATA_COMPLETE_JAR_NAME + ".jar",
+                                                                            "com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.jar.initializer");
+        TestMetadataCompleteJar = (JavaArchive) ShrinkHelper.addDirectory(TestMetadataCompleteJar, "test-applications/TestMetadataComplete.jar/resources");
+        JavaArchive TestMetadataCompleteExcludeJar = ShrinkHelper.buildJavaArchive(TEST_METADATA_COMPLETE_EXCLUDED_FRAGMENT_JAR_NAME + ".jar",
+                                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacompleteexcludedfragment.jar.initializer",
+                                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacompleteexcludedfragment.jar.servlets");
+        TestMetadataCompleteExcludeJar = (JavaArchive) ShrinkHelper.addDirectory(TestMetadataCompleteExcludeJar,
+                                                                                 "test-applications/TestMetadataCompleteExcludedFragment.jar/resources");
+        JavaArchive TestProgrammaticListenerJar = ShrinkHelper.buildJavaArchive(TEST_PROGRAMATIC_LISTENER_ADDITION_JAR_NAME + ".jar",
+                                                                                "com.ibm.ws.webcontainer.servlet_31_fat.testprogrammaticlisteneraddition.jar.listeners");
+        TestProgrammaticListenerJar = (JavaArchive) ShrinkHelper.addDirectory(TestProgrammaticListenerJar, "test-applications/TestProgrammaticListenerAddition.jar/resources");
+        JavaArchive SingletonStoreJar = ShrinkHelper.buildJavaArchive(SINGLETON_STORE_JAR_NAME + ".jar",
+                                                                      "com.ibm.ws.webcontainer.servlet_31_fat.singletonstore.jar.teststorage");
+        // Build the war apps and add the dependencies
+        WebArchive TestServlet31App = ShrinkHelper.buildDefaultApp(TEST_SERVLET_31_APP_NAME + ".war",
+                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.war.servlets",
+                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.war.listeners");
+        TestServlet31App = (WebArchive) ShrinkHelper.addDirectory(TestServlet31App, "test-applications/TestServlet31.war/resources");
+        TestServlet31App = TestServlet31App.addAsLibraries(SessionIdListenerJar, TestServlet31Jar);
+        WebArchive TestMetadataCompleteApp = ShrinkHelper.buildDefaultApp(TEST_METADATA_COMPLETE_APP_NAME + ".war",
+                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.servlets",
+                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack");
+        TestMetadataCompleteApp = TestMetadataCompleteApp.addAsLibraries(TestMetadataCompleteJar, TestMetadataCompleteExcludeJar, SingletonStoreJar);
+        TestMetadataCompleteApp = (WebArchive) ShrinkHelper.addDirectory(TestMetadataCompleteApp, "test-applications/TestMetadataComplete.war/resources");
+        WebArchive SessionIdAddListenerApp = ShrinkHelper.buildDefaultApp(SESSION_ID_ADD_LISTENER_APP_NAME + ".war",
+                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.sessionidlisteneraddlistener.war.listeners");
+        SessionIdAddListenerApp = (WebArchive) ShrinkHelper.addDirectory(SessionIdAddListenerApp, "test-applications/SessionIdListenerAddListener.war/resources");
+        SessionIdAddListenerApp = SessionIdAddListenerApp.addAsLibraries(SessionIdListenerJar);
+        WebArchive SessionIdListenerApp = ShrinkHelper.buildDefaultApp(SESSION_ID_LISTENER_APP_NAME + ".war");
+        SessionIdListenerApp = (WebArchive) ShrinkHelper.addDirectory(SessionIdListenerApp, "test-applications/SessionIdListener.war/resources");
+        SessionIdListenerApp = SessionIdListenerApp.addAsLibraries(SessionIdListenerJar);
+        WebArchive ServletContextAddListenerApp = ShrinkHelper.buildDefaultApp(SERVLET_CONTEXT_ADD_LISTENER_APP_NAME + ".war",
+                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.servletcontextaddlistener.war.listeners");
+        ServletContextAddListenerApp = ServletContextAddListenerApp.addAsLibraries(TestServlet31Jar);
+        WebArchive ServletContextCreateListenerApp = ShrinkHelper.buildDefaultApp(SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME + ".war",
+                                                                                  "com.ibm.ws.webcontainer.servlet_31_fat.servletcontextcreatelistener.war.listeners");
+        ServletContextCreateListenerApp = ServletContextCreateListenerApp.addAsLibraries(TestServlet31Jar);
+
+        WebArchive TestProgrammaticListenerApp = ShrinkHelper.buildDefaultApp(TEST_PROGRAMATIC_LISTENER_ADDITION_APP_NAME + ".war");
+        TestProgrammaticListenerApp = TestProgrammaticListenerApp.addAsLibraries(TestServlet31Jar, TestProgrammaticListenerJar);
+        WebArchive TestServletMappingApp = ShrinkHelper.buildDefaultApp(TEST_SERVLET_MAPPING_APP_NAME + ".war",
+                                                                        "com.ibm.ws.webcontainer.servlet_31_fat.testservletmapping.war.servlets");
+        TestServletMappingApp = (WebArchive) ShrinkHelper.addDirectory(TestServletMappingApp, "test-applications/TestServletMapping.war/resources");
+        WebArchive TestServletMappingAnnoApp = ShrinkHelper.buildDefaultApp(TEST_SERVLET_MAPPING_ANNO_APP_NAME + ".war",
+                                                                            "com.ibm.ws.webcontainer.servlet_31_fat.testservletmappinganno.war.servlets");
+        TestServletMappingAnnoApp = (WebArchive) ShrinkHelper.addDirectory(TestServletMappingAnnoApp, "test-applications/TestServletMappingAnno.war/resources");
+        
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_31_APP_NAME);
+            LOG.info("addAppToServer : " + TEST_SERVLET_31_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+              ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), TestServlet31App);
+            
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SESSION_ID_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + SESSION_ID_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), SessionIdListenerApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SESSION_ID_ADD_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + SESSION_ID_ADD_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), SessionIdAddListenerApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SERVLET_CONTEXT_ADD_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + SERVLET_CONTEXT_ADD_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), ServletContextAddListenerApp);
+            
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_PROGRAMATIC_LISTENER_ADDITION_APP_NAME);
+            LOG.info("addAppToServer : " + TEST_PROGRAMATIC_LISTENER_ADDITION_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), TestProgrammaticListenerApp);
+            
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), ServletContextCreateListenerApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_METADATA_COMPLETE_APP_NAME);
+            LOG.info("addAppToServer : " + TEST_METADATA_COMPLETE_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), TestMetadataCompleteApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_MAPPING_APP_NAME);
+            LOG.info("addAppToServer : " + TEST_SERVLET_MAPPING_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_MAPPING_ANNO_APP_NAME);
+            LOG.info("addAppToServer : " + TEST_SERVLET_MAPPING_ANNO_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingAnnoApp);
+          }
+        
+        /*
+         * Specify the deploy options to be server only. With this, we start with a clean state on the
+         * Shared server every time it starts up. Then we deploy the apps as necessary without validating
+         * if the app is already there.
+         */
+        // Drop apps to server
+        // ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingApp, options);
+        // ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingAnnoApp, options);
+        SHARED_SERVER.startIfNotStarted();
+
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SESSION_ID_ADD_LISTENER_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SERVLET_CONTEXT_ADD_LISTENER_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_PROGRAMATIC_LISTENER_ADDITION_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SERVLET_CONTEXT_CREATE_LISTENER_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + SESSION_ID_LISTENER_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_METADATA_COMPLETE_APP_NAME);
+
+    }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-    }
-
-    protected WebResponse verifyResponse(String resource, String expectedResponse) throws Exception {
-        return SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
-    }
-
-    protected WebResponse verifyResponse(String resource, String expectedResponse, int numberToMatch, String extraMatch) throws Exception {
-        return SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse, numberToMatch, extraMatch);
-    }
-
-    protected WebResponse verifyResponse(WebBrowser wb, String resource, String expectedResponse) throws Exception {
-        return SHARED_SERVER.verifyResponse(wb, resource, expectedResponse);
-    }
-
-    protected WebResponse verifyResponse(WebBrowser wb, String resource, String... expectedResponseStrings) throws Exception {
-        return SHARED_SERVER.verifyResponse(wb, resource, expectedResponseStrings);
-    }
-
-    protected WebResponse verifyResponse(WebBrowser wb, String resource, String[] expectedResponses, String[] unexpectedResponses) throws Exception {
-        return SHARED_SERVER.verifyResponse(wb, resource, expectedResponses, unexpectedResponses);
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer("SRVE9016E:.*", "CWWKZ0002E:.*", "SRVE8015E:.*", "SRVE9002E:.*", "SRVE9014E:.*");
+        }
     }
 
     protected String parseResponse(WebResponse wr, String beginText, String endText) {
@@ -88,18 +220,36 @@ public class WCServerTest extends LoggingTest {
     }
 
     /**
-     * Sample test
+     * Sample test for running with Servlet 3.1
      *
      * @throws Exception
-     *             if something goes horribly wrong
+     *                       if something goes horribly wrong
      */
     @Test
     //@Mode(TestMode.FULL)
-    public void testServlet() throws Exception {
+    @SkipForRepeat("SERVLET-4.0")
+    public void testServlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
         // verify the X-Powered-By Response header
         response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/3.1",
+                                            true, false);
+    }
+    
+    /**
+     * Sample test for running with Servlet 4.0
+     *
+     * @throws Exception
+     *                       if something goes horribly wrong
+     */
+    @Test
+    //@Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testServlet40() throws Exception {
+        WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
+
+        // verify the X-Powered-By Response header
+        response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/4.0",
                                             true, false);
     }
 
@@ -115,8 +265,10 @@ public class WCServerTest extends LoggingTest {
     @Test
     public void testMetadataCompleteHandlesTypesServlet() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
-        this.verifyResponse(wb, "/TestMetadataComplete/DisplayInits", "ParentServletInitializer: servlets.DisplayInits", "HashSetChildInitializer: stack.HelperMethodChild",
-                            "HashSetChildInitializer: stack.HelperMethod");
+        this.verifyResponse(wb, "/TestMetadataComplete/DisplayInits",
+                            new String[] { "ParentServletInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.servlets.DisplayInits",
+                                           "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethodChild",
+                                           "HashSetChildInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.stack.HelperMethod" });
     }
 
     //This isn't duplicating testMetadataCompleteHandlesTypesServlet since we want granularity on the functions.
@@ -137,12 +289,11 @@ public class WCServerTest extends LoggingTest {
      * Verifies that container lifecycle events are behaving correctly (JSR-299 section 11.5).
      *
      * @throws Exception
-     *             if validation fails, or if an unexpected error occurs
+     *                       if validation fails, or if an unexpected error occurs
      */
     @Test
     public void testSessionIdListenerChangeServlet() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9014E:.*");
 
         testSessionIdListener("/TestServlet31/SessionIdListenerChangeServlet");
     }
@@ -157,7 +308,6 @@ public class WCServerTest extends LoggingTest {
     @Test
     public void testSessionIdListenerRegisteredWebXml() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9014E:.*");
 
         testSessionIdListener("/SessionIdListener/SessionIdListenerChangeServlet");
     }
@@ -172,7 +322,6 @@ public class WCServerTest extends LoggingTest {
     @Test
     public void testSessionIdListenerServletContextAddListener() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9014E:.*");
 
         testSessionIdListener("/SessionIdListenerAddListener/SessionIdListenerChangeServlet");
     }
@@ -183,8 +332,9 @@ public class WCServerTest extends LoggingTest {
     private void testSessionIdListener(String url) throws Exception {
         this.verifyResponse(url, "Expected IllegalStateException");
         WebBrowser wb = createWebBrowserForTestCase();
-        WebResponse wr = this.verifyResponse(wb, url + "?getSessionFirst=true", "Session id returned from changeSessionId",
-                                             "Change count = 1");
+        WebResponse wr = this.verifyResponse(wb, url + "?getSessionFirst=true",
+                                             new String[] { "Session id returned from changeSessionId",
+                                                            "Change count = 1" });
         String oldSessionId = parseResponse(wr, "Original session id = <sessionid>", "</sessionid>");
         String newSessionId = parseResponse(wr, "Session id returned from changeSessionId = <sessionid>", "</sessionid>");
         Assert.assertTrue("ids are equal: old=" + oldSessionId + ":new=" + newSessionId, !oldSessionId.equals(newSessionId));
@@ -195,8 +345,9 @@ public class WCServerTest extends LoggingTest {
     @Mode(TestMode.LITE)
     public void testRequestedSessionId() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
-        this.verifyResponse(wb, "/TestServlet31/SessionIdTest;jsessionid=mysessionid", "Requested session id was mysessionid",
-                            "Requested Session id is invalid");
+        this.verifyResponse(wb, "/TestServlet31/SessionIdTest;jsessionid=mysessionid",
+                            new String[] { "Requested session id was mysessionid",
+                                           "Requested Session id is invalid" });
     }
 
     @Test
@@ -222,7 +373,7 @@ public class WCServerTest extends LoggingTest {
      * Verifies that a response.reset works
      *
      * @throws Exception
-     *             if validation fails, or if an unexpected error occurs
+     *                       if validation fails, or if an unexpected error occurs
      */
     @Test
     //@Mode(TestMode.FULL)
@@ -252,9 +403,22 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    public void testServletContextMinorVersion() throws Exception {
+    @SkipForRepeat("SERVLET-4.0")
+    public void testServlet31ContextMinorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMinorVersion=true",
                             "minorVersion: 1");
+    }
+    
+    /**
+     * Verifies that the ServletContext.getMinorVersion() returns 0 for Servlet 4.0.
+     *
+     * @throws Exception
+     */
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testServlet40ContextMinorVersion() throws Exception {
+        this.verifyResponse("/TestServlet31/MyServlet?TestMinorVersion=true",
+                            "minorVersion: 0");
     }
 
     /**
@@ -269,7 +433,7 @@ public class WCServerTest extends LoggingTest {
 
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.setMarkToEndOfLog();
-        SHARED_SERVER.setExpectedErrors("SRVE9016E:.*", "CWWKZ0002E:.*");
+//        SHARED_SERVER.setExpectedErrors("SRVE9016E:.*", "CWWKZ0002E:.*");
 
         wlp.saveServerConfiguration();
         // copy server.xml for TestServletMapping.war
@@ -307,7 +471,6 @@ public class WCServerTest extends LoggingTest {
     public void testServletContextAddListener() throws Exception {
 
         // Make sure the test framework knows that SRVE8015E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE8015E:.*");
 
         this.verifyResponse("/ServletContextAddListener/SimpleTestServlet", "Hello World");
 
@@ -329,7 +492,6 @@ public class WCServerTest extends LoggingTest {
     @Test
     @Mode(TestMode.LITE)
     public void testProgrammaticListenerAddition() throws Exception {
-        SHARED_SERVER.setExpectedErrors("SRVE9002E:.*");
 
         // Drive a request to the SimpleTestServlet to initialize the application
         this.verifyResponse("/TestProgrammaticListenerAddition/SimpleTestServlet", "Hello World");
@@ -340,7 +502,7 @@ public class WCServerTest extends LoggingTest {
         server.resetLogMarks();
 
         // PI41941: Changed the message. Wait for the full message.
-        String logMessage = server.waitForStringInLog("SRVE9002E:.*\\(Operation: getVirtualServerName \\| Listener: listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
+        String logMessage = server.waitForStringInLog("SRVE9002E:.*\\(Operation: getVirtualServerName \\| Listener: com.ibm.ws.webcontainer.servlet_31_fat.testprogrammaticlisteneraddition.jar.listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
         Assert.assertNotNull("The correct message was not logged.", logMessage);
 
     }
@@ -355,7 +517,6 @@ public class WCServerTest extends LoggingTest {
     public void testServletContextCreateListenerBadListener() throws Exception {
 
         // Make sure the test framework knows that SRVE9014E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9014E:.*");
 
         // Drive a request to the SimpleTestServlet to initialize the application
         this.verifyResponse("/ServletContextCreateListener/SimpleTestServlet", "Hello World");
@@ -372,5 +533,15 @@ public class WCServerTest extends LoggingTest {
         Assert.assertNotNull("REQUEST_INITIALIZED was not found in the logs. The listener must not have been created and added correctly",
                              logMessage);
 
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
     }
 }

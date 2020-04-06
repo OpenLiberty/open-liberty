@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,34 +22,86 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Logger;
-
-import junit.framework.Assert;
+import java.util.Set;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.junit.Before;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
-import com.meterware.httpunit.HttpException;
-import componenttest.annotation.MinimumJavaLevel;
 
-@MinimumJavaLevel(javaLevel = 7)
+import componenttest.custom.junit.runner.FATRunner;
+import junit.framework.Assert;
+
+@RunWith(FATRunner.class)
 public class AsyncReadListenerHttpUnit extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(AsyncReadListenerHttpUnit.class.getName());
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
 
+    private static final String LIBERTY_WRITE_LISTENER_FILTER_APP_NAME = "LibertyWriteListenerFilterTest";
+    private static final String LIBERTY_READ_LISTENER_FILTER_APP_NAME = "LibertyReadListenerFilterTest";
+    private static final String LIBERTY_READ_WRITE_LISTENER_APP_NAME = "LibertyReadWriteListenerTest";
+
     private static final String READ_LISTENER_SERVLET_URL = "/LibertyReadWriteListenerTest/TestAsyncReadServlet";
     private static final String READ_LISTENER_SERVLET_FALSE_URL = "/LibertyReadWriteListenerTest/BasicReadListenerAsyncFalseServlet";
     private static final String READ_LISTENER__FILTER_SERVLET_URL = "/LibertyReadListenerFilterTest/ReadListenerFilterServlet";
 
-    @Before
-    public void before() {
-        SHARED_SERVER.setExpectedErrors("SRVE8015E:.*");
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        // Build the war apps and add the dependencies
+        WebArchive LibertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME+ ".war",
+                                                                                "com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener");
+        LibertyWriteListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(LibertyWriteListenerFilterApp, "test-applications/LibertyWriteListenerFilterTest.war/resources");
+        WebArchive LibertyReadListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_LISTENER_FILTER_APP_NAME + ".war",
+                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadlistenerfiltertest.war.readListener");
+        LibertyReadListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadListenerFilterApp, "test-applications/LibertyReadListenerFilterTest.war/resources");
+        WebArchive LibertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.readListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
+        LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
+            LOG.info("addAppToServer : " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_LISTENER_FILTER_APP_NAME);
+            LOG.info("addAppToServer : " + LIBERTY_READ_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadListenerFilterApp);
+
+            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
+        }
+        SHARED_SERVER.startIfNotStarted();
+        
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_LISTENER_FILTER_APP_NAME);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
+    }
+
+    @AfterClass
+    public static void testCleanup() throws Exception {
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer("SRVE9010E:.*", "SRVE9004E:.*", "SRVE8015E:.*", "SRVE9008E:.*", "SRVE9006E:.*", "SRVE8015E:.*");
+        }
     }
 
     /*
@@ -75,8 +127,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         int inputData = 0;
         try {
 
-            for (int j = 0; j < PostDataSize.length; j++)
-            {
+            for (int j = 0; j < PostDataSize.length; j++) {
                 inputData = PostDataSize[j];
                 LOG.info("Sending data -> " + inputData);
                 con = (HttpURLConnection) url.openConnection();
@@ -175,8 +226,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_onSecondReadListener() throws Exception {
 
         // Make sure the test framework knows that SRVE9008E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9008E:.*");
-
+        
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onSecondReadListener Start");
         LOG.info("\n /************************************************************************************/");
@@ -224,8 +274,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_onNullReadListener() throws Exception {
 
         // Make sure the test framework knows that SRVE9004E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9004E:.*");
-
+        
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onNullReadListener Start");
         LOG.info("\n /************************************************************************************/");
@@ -272,8 +321,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_onReadingData_isReadyFalse() throws Exception {
 
         // Make sure the test framework knows that SRVE9010E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9010E:.*");
-
+        
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onReadingData_isReadyFalse Start");
         LOG.info("\n /************************************************************************************/");
@@ -351,7 +399,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     /*
      * Call isReady() within the ReadLister after it has already returned false. Previously this would result in an exception
      * but now it should be passing and we get the expected exception below.
-     * 
+     *
      * Previously the test behavior would return:
      * com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException: Illegal chunk length digit: 0
      */
@@ -360,8 +408,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_IsReadyAfterIsReadyFalse() throws Exception {
 
         // Make sure the test framework knows that SRVE9010E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9010E:.*");
-
+        
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_IsReadyAfterIsReadyFalse Start");
         LOG.info("\n /************************************************************************************/");
@@ -480,7 +527,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
             assertEquals(request + " : The response did not equal the expected data. Response = " + sb.toString() + ", Expected data = " + EXPECTED_DATA, EXPECTED_DATA,
                          sb.toString());
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             fail("Exception from request: " + e.getMessage());
         }
 
@@ -536,8 +583,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
             connection.disconnect();
             assertEquals("The response did not equal the expected data. Response = " + sb.toString()
                          + ", Expected data = " + EXPECTED_DATA, EXPECTED_DATA, sb.toString());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Exception from request: " + e.getMessage());
         }
@@ -572,8 +618,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
 
             Assert.assertTrue("The response body did not equal the post data. Response body = " + responseBody + " post data = " + POST_DATA,
                               responseBody.equals(POST_DATA));
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Exception from request: " + e.getMessage());
         }
@@ -624,7 +669,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
             assertEquals(request + " : The response did not equal the expected data. Response = " + sb.toString() + ", Expected data = " + EXPECTED_DATA, EXPECTED_DATA,
                          sb.toString());
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             fail("Exception from request: " + e.getMessage());
         }
 
@@ -642,8 +687,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_setRL_onNonAsyncServlet() throws HttpException, IOException {
 
         // Make sure the test framework knows that SRVE9006E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9006E:.*");
-
+        
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_setRL_onNonAsyncServlet Start");
         LOG.info("\n /************************************************************************************/");
@@ -720,8 +764,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
 
             Assert.assertFalse("The response body did not equal the post data. Response body = " + ResponseBody + " post data = " + POST_DATA,
                                ResponseBody.equals(POST_DATA));
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Exception from request: " + e.getMessage());
         }
@@ -823,6 +866,11 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_ContextTransferProperly_WhenRLset Finish");
         LOG.info("\n /************************************************************************************/");
+    }
+
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
     }
 
 }

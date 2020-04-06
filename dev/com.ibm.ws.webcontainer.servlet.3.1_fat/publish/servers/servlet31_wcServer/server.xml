@@ -23,8 +23,10 @@
     maxFiles="10"
     traceFormat="BASIC"/>
 
-  <webContainer allowqueryparamwithnoequal="true"/>
+  <!-- <webContainer allowqueryparamwithnoequal="true"/>
   <webContainer decodeparamviareqencoding="true"/>
-  <webContainer servlet31.private.buffersizeforlargepostdata="32"/>
+  <webContainer servlet31.private.buffersizeforlargepostdata="32"/> -->
+  <webContainer servlet31.private.buffersizeforlargepostdata="32" allowqueryparamwithnoequal="true" decodeparamviareqencoding="true"/>
+
 
 </server>

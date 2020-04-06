@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wc.tests;
+package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,38 +21,68 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.util.logging.Logger;
+import java.util.Set;
 
-import org.junit.Before;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
-import componenttest.annotation.MinimumJavaLevel;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-@MinimumJavaLevel(javaLevel = 7)
+@RunWith(FATRunner.class)
 public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
 
+    private static final String LIBERTY_READ_WRITE_LISTENER_APP_NAME = "LibertyReadWriteListenerTest";
+
     private static final String URLString = SHARED_SERVER.getServerUrl(true, "/LibertyReadWriteListenerTest/UpgradeHandlerTestServlet");
     private static final Logger LOG = Logger.getLogger(UpgradeWriteListenerHttpUnit.class.getName());
     private BufferedReader input = null;
 
-    @Before
-    public void before() {
-        SHARED_SERVER.setExpectedErrors("SRVE8015E:.*");
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        WebArchive LibertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.readListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
+                                                                              "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
+        LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
+        }
+        SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+    }
+
+    @AfterClass
+    public static void testCleanup() throws Exception {
+        // test cleanup
+        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*", "SRVE0918E:.*", "SRVE9009E:.*", "SRVE9005E:.*");
+        }
     }
 
     /*
      * This test expects small data to be written out by the server after the upgrade.
-     * 
+     *
      * The servlet upgrades, and then sets a writeListener.
      * Then, the write Listener writes out a small data chunk to this client .
-     * 
+     *
      * This "Test passes" if the client verifies the data is the expected data.
      */
     @Test
@@ -65,8 +95,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         try {
             s = CreateSocketConnection();
             callUpgrade = checkif_UpgradeRecvd(0, "test_SmallData_UpgradeWL", s);
-            if (callUpgrade == true)
-            {
+            if (callUpgrade == true) {
                 try {
                     line1 = writeListener_SmallDataSize(s);
                 } catch (Exception e) {
@@ -78,8 +107,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
                 String test = "0123456789";
                 //check if data received, from write by writeListener is the expected data.
                 assertEquals(test, line1);
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: test_SmallData_UpgradeWL: " + " upgrade request to server failed, upgrade did not happen ");
             }
 
@@ -97,16 +125,15 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
     /*
      * This test expects large data to be written out by the server after the upgrade.
-     * 
+     *
      * The servlet upgrades, and then sets a writeListener.
      * The writeListener writes out large data to the client by writing data chunks that are in a queue data structure.
      * multiple chunks of data are written out from the server side, to together constitute a large data size.
-     * 
+     *
      * This "Test passes" if the client verifies the size of the data received from the server is equal to a expected data size.
      */
     @Test
-    public void test_LargeDataInChunks_UpgradeWL() throws Exception
-    {
+    public void test_LargeDataInChunks_UpgradeWL() throws Exception {
         // test async write Listener by asking the servlet to send large chunk data of size 1000000 bytes.
 
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST : test_LargeDataInChunks_UpgradeWL");
@@ -116,13 +143,11 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         try {
             s = CreateSocketConnection();
             callUpgrade = checkif_UpgradeRecvd(expectedResponseSize, "test_LargeDataInChunks_UpgradeWL", s);
-            if (callUpgrade == true)
-            {
+            if (callUpgrade == true) {
                 int actualResponseSize = readResponse_returnTotal(s);// call helper method to run test for writeListener with large data sizes.
                 LOG.info("Returned data from server is " + actualResponseSize);
                 assertEquals(expectedResponseSize, actualResponseSize); //check if the correct dataSize is received.
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: test_LargeDataInChunks_UpgradeWL: " + " upgrade request to server failed, upgrade did not happen ");
             }
         } catch (Exception e) {
@@ -140,16 +165,15 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
     /*
      * This test expects large data to be written out by the server after the upgrade.
-     * 
-     * 
+     *
+     *
      * One large data chunk is written out from the WriteListener.
-     * 
+     *
      * This "Test passes" if the client verifies the size of the data received from the server is equal to a expected data size.
      */
 
     @Test
-    public void test_SingleWriteLargeData1000000__UpgradeWL() throws Exception
-    {
+    public void test_SingleWriteLargeData1000000__UpgradeWL() throws Exception {
         // test async write Listener by asking the servlet to send large chunk data of size 1000000 bytes.
 
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST : test_SingleWriteLargeData1000000__UpgradeWL");
@@ -159,13 +183,11 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         try {
             s = CreateSocketConnection();
             callUpgrade = checkif_UpgradeRecvd(expectedResponseSize, "test_SingleWriteLargeData1000000__UpgradeWL", s);
-            if (callUpgrade == true)
-            {
+            if (callUpgrade == true) {
                 int actualResponseSize = readResponse_returnTotal(s);// call helper method to run test for writeListener with large data sizes.
                 LOG.info("Returned data from server is " + actualResponseSize);
                 assertEquals(expectedResponseSize, actualResponseSize); //check if the correct dataSize is received.
-            }
-            else {
+            } else {
                 fail("TEST FAILURE:test_SingleWriteLargeData1000000__UpgradeWL: " + " upgrade request to server failed, upgrade did not happen ");
             }
 
@@ -182,7 +204,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
     /*
      * This test expects small data to be written out by the server, from the handler without a writeListener, after the upgrade.
-     * 
+     *
      * This "Test passes" if the client verifies the data is the expected data.
      */
     @Test
@@ -195,16 +217,14 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         try {
             s = CreateSocketConnection();
             callUpgrade = checkif_UpgradeRecvd(0, "test_SmallDataInHandler_NoWriteListener", s);
-            if (callUpgrade == true)
-            {
+            if (callUpgrade == true) {
 
                 line1 = writeListener_SmallDataSize(s);
                 LOG.info("Read from the test app: " + line1);
                 String test = "0123456789";
                 //check if data received, from write by Handler is the expected data.
                 assertEquals(test, line1);
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: test_SmallDataInHandler_NoWriteListener: " + " upgrade request to server failed, upgrade did not happen ");
             }
 
@@ -221,10 +241,10 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
     /*
      * This Test closes the web connection and then closes the webContainer.
-     * 
+     *
      * added some sleep after setWriteListener is called from handler. write small data from listener and then call close.
      * We need to check on behavior on webcontainer close when the listener thread finishes faster and had already called closed.
-     * 
+     *
      * This "Test passes" if the client verifies the data is the expected data.
      */
 
@@ -238,16 +258,14 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         try {
             s = CreateSocketConnection();
             callUpgrade = checkif_UpgradeRecvd(0, "test_Close_WebConnection_Container_UpgradeWL", s);
-            if (callUpgrade == true)
-            {
+            if (callUpgrade == true) {
 
                 line1 = writeListener_SmallDataSize(s);
                 LOG.info("Read from the test app: " + line1);
                 String test = "0123456789";
                 //check if data received, from write by writeListener is the expected data.
                 assertEquals(test, line1);
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: test_Close_WebConnection_Container_UpgradeWL: " + " upgrade request to server failed, upgrade did not happen ");
             }
         } catch (Exception e) {
@@ -271,16 +289,14 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         try {
             s = CreateSocketConnection();
             callUpgrade = checkif_UpgradeRecvd(0, "test_ContextTransferProperly_UpgradeWL", s);
-            if (callUpgrade == true)
-            {
+            if (callUpgrade == true) {
 
                 line1 = writeListener_SmallDataSize(s);
                 LOG.info("Read from the test app: " + line1);
                 String test = "javax.naming.NameNotFoundException: java:comp/UserTransaction";
                 //check if data received, from write by writeListener is the expected data.
                 assertEquals(test, line1);
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: test_ContextTransferProperly_UpgradeWL: " + " upgrade request to server failed, upgrade did not happen ");
             }
         } catch (Exception e) {
@@ -297,10 +313,9 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
     //This is misspelled on purpose
     @Test
     @Mode(TestMode.LITE)
-    public void TestWrite_DontCheckisRedy_fromUpgradeWL() throws Exception
-    {
+    public void TestWrite_DontCheckisRedy_fromUpgradeWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE0918E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWrite_DontCheckisRedy_fromUpgradeWL";
 
@@ -322,8 +337,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
                 String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("SRVE0918E");
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: " + testToCall + " upgrade request to server failed, upgrade did not happen ");
             }
         } catch (Exception e) {
@@ -341,10 +355,9 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
     @Test
     @Mode(TestMode.LITE)
-    public void TestWriteFromHandler_AftersetWL() throws Exception
-    {
+    public void TestWriteFromHandler_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE0918E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromHandler_AftersetWL";
 
@@ -371,8 +384,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
                 String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("SRVE0918E");
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: " + testToCall + " upgrade request to server failed, upgrade did not happen ");
             }
         } catch (Exception e) {
@@ -398,7 +410,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
         String testToCall = "TestUpgrade_ISE_setSecondWriteListener";
         // Make sure the test framework knows that SRVE9009E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9009E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST:" + testToCall + "*************");
         int expectedResponseSize = 1000;
@@ -422,8 +434,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
                 message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark(expectedData2);
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: " + testToCall + " upgrade request to server failed, upgrade did not happen ");
             }
         } catch (Exception e) {
@@ -445,7 +456,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
         String testToCall = "TestUpgrade_NPE_setNullWriteListener";
         // Make sure the test framework knows that SRVE9014E is expected
-        SHARED_SERVER.setExpectedErrors("SRVE9005E:.*");
+        
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST:" + testToCall + "*************");
         int expectedResponseSize = 1000;
@@ -464,8 +475,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
 
-            }
-            else {
+            } else {
                 fail("TEST FAILURE: " + testToCall + " upgrade request to server failed, upgrade did not happen ");
             }
         } catch (Exception e) {
@@ -483,8 +493,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
     // TEST FINISH
     // helper method to connect to the server, through a socket. The method returns a connection socket.
-    private Socket CreateSocketConnection() throws Exception
-    {
+    private Socket CreateSocketConnection() throws Exception {
         URL url = new URL(URLString);
         String host = url.getHost();
         int port = url.getPort();
@@ -493,8 +502,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
     }
 
     //helper method to close down a socket, called from each test.
-    private void CloseSocketConnection(Socket s) throws Exception
-    {
+    private void CloseSocketConnection(Socket s) throws Exception {
         if (!(s.isClosed())) // check if socket is closed before closing it.
         {
             input = null;
@@ -595,14 +603,23 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
         }
 
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
         //return data to the tests, read from the server.
         return line1;
 
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        return SHARED_SERVER;
     }
 
     // if server needs to be restarted after each test, uncomment @After section.
@@ -612,7 +629,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
  * LOG.info("Restarting server !!! " + SHARED_SERVER.getServerName());
  * SHARED_SERVER.getLibertyServer().restartServer();
  * LOG.info("Finished restarting server !!! " + SHARED_SERVER.getServerName());
- * 
+ *
  * }
  */
 

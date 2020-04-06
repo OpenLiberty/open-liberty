@@ -16,7 +16,7 @@
        version="1.1">
        
   <interceptors>
-    <clas>cdi.interceptors.servlet.ServletCounterInterceptor</class>  
+    <clas>com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2counter.war.cdi.interceptors.servlet.ServletCounterInterceptor</class>  
   </interceptors>
          
 </beans>

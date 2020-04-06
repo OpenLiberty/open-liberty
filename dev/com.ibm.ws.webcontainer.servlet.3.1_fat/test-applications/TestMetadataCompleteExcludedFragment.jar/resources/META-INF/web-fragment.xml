@@ -18,7 +18,7 @@
 
     <servlet>
     	<servlet-name>ExcludedServlet</servlet-name>
-    	<servlet-class>servlets.ExcludedServlet</servlet-class>
+    	<servlet-class>com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacompleteexcludedfragment.jar.servlets.ExcludedServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>
