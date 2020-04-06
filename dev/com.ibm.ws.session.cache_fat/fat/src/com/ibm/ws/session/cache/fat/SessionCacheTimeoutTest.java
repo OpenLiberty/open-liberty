@@ -55,12 +55,14 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, false, "session.cache.web", "session.cache.web.listener1");
 
-        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+//        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+//
+//        if (FATSuite.isMulticastDisabled()) {
+//            Log.info(SessionCacheTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+//            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+//        }
 
-        if (FATSuite.isMulticastDisabled()) {
-            Log.info(SessionCacheTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        }
+        String hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
 
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
                                            "-Dhazelcast.config.file=" + hazelcastConfigFile));

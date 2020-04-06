@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>jndi-1.0</feature>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>persistentExecutor-1.0</feature>
+    <feature>servlet-4.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <!-- database for scheduled tasks -->
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="JDBCLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:autonomicalpolling1db"/>
+  </dataSource>
+
+  <library id="JDBCLib">
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  </library>
+  
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  <javaPermission codebase="${server.config.dir}/dropins/autonomicalpolling1servApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission codebase="${server.config.dir}/dropins/autonomicalpolling1servApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+
+  <variable name="onError" value="FAIL"/>
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.reflect.Method;
 
+import javax.enterprise.inject.Instance;
+
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -35,6 +38,7 @@ public class AggregatedFTPolicy {
     private TimeoutPolicy timeout;
     private FallbackPolicy fallbackPolicy;
     private Executor<?> executor;
+    private Instance<AsyncRequestContextController> rcInstance;
 
     /**
      * @return the method this policy will be applied to
@@ -43,9 +47,6 @@ public class AggregatedFTPolicy {
         this.method = method;
     }
 
-    /**
-     * @param asynchronous
-     */
     public void setAsynchronousResultWrapper(Class<?> asyncResultWrapper) {
         this.asyncResultWrapper = asyncResultWrapper;
     }
@@ -57,23 +58,14 @@ public class AggregatedFTPolicy {
         this.timeout = timeout;
     }
 
-    /**
-     * @param retryPolicy
-     */
     public void setRetryPolicy(RetryPolicy retryPolicy) {
         this.retryPolicy = retryPolicy;
     }
 
-    /**
-     * @param circuitBreakerPolicy
-     */
     public void setCircuitBreakerPolicy(CircuitBreakerPolicy circuitBreakerPolicy) {
         this.circuitBreakerPolicy = circuitBreakerPolicy;
     }
 
-    /**
-     * @param bulkheadPolicy
-     */
     public void setBulkheadPolicy(BulkheadPolicy bulkheadPolicy) {
         this.bulkheadPolicy = bulkheadPolicy;
     }
@@ -85,37 +77,25 @@ public class AggregatedFTPolicy {
         return method;
     }
 
-    /**
-     * @return
-     */
     public boolean isAsynchronous() {
         return asyncResultWrapper != null;
     }
 
-    /**
-     * @return
-     */
     public BulkheadPolicy getBulkheadPolicy() {
         return bulkheadPolicy;
     }
 
-    /**
-     * @return
-     */
     public RetryPolicy getRetryPolicy() {
         return retryPolicy;
     }
 
     /**
-     * @return the timeoutMillis
+     * @return timeoutMillis
      */
     public TimeoutPolicy getTimeoutPolicy() {
         return timeout;
     }
 
-    /**
-     * @return the circuitBreakerPolicy
-     */
     public CircuitBreakerPolicy getCircuitBreakerPolicy() {
         return circuitBreakerPolicy;
     }
@@ -128,14 +108,23 @@ public class AggregatedFTPolicy {
         return this.fallbackPolicy;
     }
 
+    public void setRequestContextInstance(Instance<AsyncRequestContextController> rcInstance) {
+        this.rcInstance = rcInstance;
+    }
+
     /**
-     * @return
+     * @param rcInstance an instance of the request context controller
+     * @return Executor<Object> built with {@link ExecutorBuilder} if not already set
      */
     @SuppressWarnings("unchecked")
     public Executor<Object> getExecutor() {
         synchronized (this) {
             if (this.executor == null) {
                 ExecutorBuilder<?> builder = newBuilder();
+
+                if (!rcInstance.isUnsatisfied() && !rcInstance.isAmbiguous()) {
+                    builder.setRequestContextController(rcInstance.get());
+                }
 
                 if (isAsynchronous()) {
                     this.executor = builder.buildAsync(asyncResultWrapper);

@@ -79,5 +79,4 @@ Include-Resource: \
   @${repo;org.jboss.weld:weld-osgi-bundle;[3.1.1.Final,3.2)}!/!META-INF/maven/*,\
   @${repo;org.jboss.weld.se:weld-se-core;[3.1.1.Final,3.2)}!/!META-INF/maven/*
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

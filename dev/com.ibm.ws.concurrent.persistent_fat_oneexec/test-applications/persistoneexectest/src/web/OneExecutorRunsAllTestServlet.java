@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -222,6 +221,34 @@ public class OneExecutorRunsAllTestServlet extends HttpServlet {
     }
 
     /**
+     * Verify that the interface to EJB Timer Service indicates that fail over is enabled.
+     */
+    public void testFailOverIsEnabled(HttpServletRequest request, PrintWriter out) throws Exception {
+        TimersPersistentExecutor executorB = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorB");
+        TimersPersistentExecutor executorC = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorC");
+
+        if (!executorB.isFailOverEnabled())
+            throw new Exception("persistentExecutor with a positive missedTaskThreshold and with polling disabled reports that fail over is not enabled.");
+
+        if (!executorC.isFailOverEnabled())
+            throw new Exception("persistentExecutor with a positive missedTaskThreshold and with polling enabled reports that fail over is not enabled.");
+    }
+
+    /**
+     * Verify that the interface to EJB Timer Service indicates that fail over is not enabled.
+     */
+    public void testFailOverIsNotEnabled(HttpServletRequest request, PrintWriter out) throws Exception {
+        TimersPersistentExecutor executorB = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorB");
+        TimersPersistentExecutor executorC = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorC");
+
+        if (executorB.isFailOverEnabled())
+            throw new Exception("persistentExecutor without a missedTaskThreshold and with polling disabled reports that fail over is enabled.");
+
+        if (executorC.isFailOverEnabled())
+            throw new Exception("persistentExecutor without a missedTaskThreshold and with polling enabled reports that fail over is enabled.");
+    }
+
+    /**
      * Removes a task
      */
     public void testRemoveTask(HttpServletRequest request, PrintWriter out) throws Exception {
@@ -337,38 +364,6 @@ public class OneExecutorRunsAllTestServlet extends HttpServlet {
 
         mbs.invoke(bean.getObjectName(), "transfer", new Object[] { maxTaskId, oldPartitionId }
                    , new String[] { "java.lang.Long", "long" });
-    }
-
-    /**
-     * Updates a partition entry.
-     */
-    public void testUpdatePartitions(HttpServletRequest request, PrintWriter out) throws Exception {
-        int expectedUpdateCount = Integer.parseInt(request.getParameter("expectedUpdateCount"));
-
-        String executorName = request.getParameter("executorId");
-        String hostName = request.getParameter("hostName");
-        String libertyServer = request.getParameter("libertyServer");
-        String userDir = request.getParameter("userDir");
-
-        String newExecutorName = request.getParameter("newExecutorId");
-        String newHostName = request.getParameter("newHostName");
-        String newLibertyServer = request.getParameter("newLibertyServer");
-        String newUserDir = request.getParameter("newUserDir");
-
-        String jndiName = request.getParameter("jndiName");
-
-        // TODO in the future we should use the mbean to do the update
-        PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
-        Method updatePartitionInfo = executor.getClass().getDeclaredMethod("updatePartitionInfo",
-                                                                           String.class, String.class, String.class, String.class,
-                                                                           String.class, String.class, String.class, String.class);
-        updatePartitionInfo.setAccessible(true);
-
-        int updateCount = (Integer) updatePartitionInfo.invoke(executor, hostName, userDir, libertyServer, executorName,
-                                                               newHostName, newUserDir, newLibertyServer, newExecutorName);
-
-        if (updateCount != expectedUpdateCount)
-            throw new Exception("Expected " + expectedUpdateCount + " partition entries updated, not " + updateCount);
     }
 
     /**

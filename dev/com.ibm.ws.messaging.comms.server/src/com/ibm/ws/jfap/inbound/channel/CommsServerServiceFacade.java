@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,7 +137,7 @@ public class CommsServerServiceFacade {
     protected void modified(ComponentContext context,
                             Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "modified ", properties);
+            SibTr.entry(tc, "modified", properties);
 
         iswasJmsEndpointEnabled = MetatypeUtils.parseBoolean(Inbound_ConfigAlias, "enabled",
                                                              properties.get("enabled"),
@@ -174,7 +174,7 @@ public class CommsServerServiceFacade {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "modified ");
+            SibTr.exit(tc, "modified");
     }
 
     // Four Runnable actions (i.e stopBasicChain,stopSecureChain,updateBasicChain and updateSecureChain). However all these run() are called in-line ( not from other thread) in SCR action thread
@@ -377,7 +377,7 @@ public class CommsServerServiceFacade {
     @Trivial
     protected void setSslOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "set tcp options " + service.getProperty("id"));
+            Tr.event(this, tc, "set ssl options " + service.getProperty("id"));
         }
         _sslOptionsRef.setReference(service);
 

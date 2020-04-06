@@ -23,7 +23,7 @@ public class JSPTestController {
 	@Value("${application.test.message:Default Message}")
 	private String message = "Default Message";
 
-	@GetMapping("/")
+	@GetMapping("/test")
 	public String welcome(Map<String, Object> model) {
 		model.put("time", new Date());
 		model.put("message", this.message);

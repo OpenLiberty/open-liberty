@@ -177,8 +177,9 @@ public class TokenExchange {
             processCommonDelete(isAppPasswordRequest, provider, request, response);
         } else {
             String endpoint = isAppPasswordRequest ? OAuth20Constants.APP_PASSWORD_URI : OAuth20Constants.APP_TOKEN_URI;
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), endpoint });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), endpoint });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMsg.getBrowserErrorMessage());
             auditMap.get().put(AuditConstants.AUDIT_OUTCOME, AuditConstants.FAILURE);
             auditMap.get().put(AuditConstants.DETAILED_ERROR, AuditConstants.BAD_REQUEST_UNSUPPORTED_METHOD);
@@ -281,6 +282,7 @@ public class TokenExchange {
         BrowserAndServerLogMessage errorMsg = checkAppNameValidAndNotInUse(appPasswordRequest, authRes, appName, provider, tokenCollection);
         if (errorMsg != null) {
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
             Audit.audit(Audit.EventID.APPLICATION_PASSWORD_TOKEN_01, auditMap.get());
             return;
@@ -290,6 +292,7 @@ public class TokenExchange {
         errorMsg = checkTokenQuantityLimit(appPasswordRequest, authRes, provider, tokenCollection);
         if (errorMsg != null) {
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
             Audit.audit(Audit.EventID.APPLICATION_PASSWORD_TOKEN_01, auditMap.get());
             return;
@@ -329,7 +332,7 @@ public class TokenExchange {
         okToCreate = tokenCollection.size() < maxQuantity;
 
         if (!okToCreate) {
-            return new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS", new Object[] { authRes.user });
+            return new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS", new Object[] { authRes.user });
         } else {
             return null;
         }
@@ -397,9 +400,10 @@ public class TokenExchange {
             return result;
         }
         if (!isAccessTokenPresent(request)) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_NO_TOKEN", new Object[] { request.getMethod(), request.getRequestURI() });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_NO_TOKEN", new Object[] { request.getMethod(), request.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
             RateLimiter.limit();
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
             return result;
         }
@@ -407,9 +411,10 @@ public class TokenExchange {
         // call authenticate here
         String user = null;
         if (!clientIdAndSecretValid(provider, clientIdAndSecret)) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_AUTHN_FAIL", new Object[] { request.getMethod(), request.getRequestURI() });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_AUTHN_FAIL", new Object[] { request.getMethod(), request.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
             RateLimiter.limit();
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
             return result;
         } else {
@@ -423,8 +428,9 @@ public class TokenExchange {
         String clientId = clientIdAndSecret[0];
         // see if client is configured to allow use of app passwords/tokens
         if (!checkClientAuthorization(appPasswordRequest, provider, clientId, request.getMethod())) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_UNAUTHORIZED_CLIENT", new Object[] { clientId });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_UNAUTHORIZED_CLIENT", new Object[] { clientId });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendUnauthorizedClientError(errorMsg.getBrowserErrorMessage(), response);
             return result;
         }
@@ -443,8 +449,9 @@ public class TokenExchange {
             targetUser = escapeIllegalCharacters(targetUser);
             isAdmin = isAdminUser(user, request);
             if (!isAdmin && !targetUser.equals(user)) { // non-admin requesting processing of somebody else's token is invalid
-                BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED", new Object[] { request.getMethod(), request.getRequestURI() });
+                BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED", new Object[] { request.getMethod(), request.getRequestURI() });
                 Tr.error(tc, errorMsg.getServerErrorMessage());
+                errorMsg.setLocales(requestLocales);
                 sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
                 return result;
             }
@@ -499,7 +506,8 @@ public class TokenExchange {
     }
 
     /**
-     * Given an access token, examine it and determine if it is valid and who it represents
+     * Given an access token, examine it and determine if it is valid and who it represents.
+     * Also perform checks of type and clientId to see if token is valid to be used for exchange.
      * @param provider
      * @param accessTokenStr
      * @param request
@@ -534,7 +542,8 @@ public class TokenExchange {
             if (refreshTokenId != null) {
                 refreshToken = provider.getTokenCache().get(refreshTokenId);
             }
-            if (!validateGrantType(grantType, accessToken, refreshToken, request, response)) {
+            // disallow types that might go around a 2-factor flow
+            if (!validateGrantType(grantType, accessToken, refreshToken, request, response)) { // CWWKS1497E
                 return null;
             }
 
@@ -579,17 +588,16 @@ public class TokenExchange {
     private boolean validateGrantType(String grantType, OAuth20Token accessToken, OAuth20Token refreshToken, HttpServletRequest request, HttpServletResponse response) {
 
         if (grantType == null || !isGrantTypeInAllowedGrantTypes(grantType)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "grantType is not one we accept: " + grantType + ",  return false");
-            }
-            handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL");
+            Tr.error(tc, "WRONG_TOKEN_GRANTTYPE", grantType, Arrays.toString(ALLOWED_AT_GT)); // CWWKS1497E
+            handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL"); // CWWKS1489E
             return false;
         }
         if (OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN.equals(grantType)) {
             // refreshed access token
             // do more checking to make sure that refresh token associated with this access token has original grant type set to authorization_code
             if (refreshToken == null || !validateRefreshTokenGrantType(refreshToken)) {
-                handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL"); // TODO : message update?
+                Tr.error(tc, "WRONG_TOKEN_GRANTTYPE", grantType, Arrays.toString(ALLOWED_RT_GT)); // CWWKS1497E
+                handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL"); // CWWKS1489E
                 return false;
             }
         }
@@ -647,8 +655,9 @@ public class TokenExchange {
      *
      */
     private void handleInvalidAccessTokenError(HttpServletRequest request, HttpServletResponse response, String msgKey) {
-        BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, msgKey, new Object[] { request.getMethod(), request.getRequestURI() });
+        BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, msgKey, new Object[] { request.getMethod(), request.getRequestURI() });
         Tr.error(tc, errorMsg.getServerErrorMessage());
+        errorMsg.setLocales(requestLocales);
         sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
 
     }
@@ -727,8 +736,9 @@ public class TokenExchange {
      */
     private boolean checkParamLength(String paramName, String param, String URI, HttpServletResponse resp) {
         if (param.length() > PARAM_MAX_LENGTH) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG", new Object[] { paramName, URI, PARAM_MAX_LENGTH });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG", new Object[] { paramName, URI, PARAM_MAX_LENGTH });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), resp);
             return false;
         }
@@ -882,14 +892,16 @@ public class TokenExchange {
         String clientSecret = null;
         String authHeader = req.getHeader(HDR_AUTHORIZATION);
         if (authHeader == null) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, req.getLocales(), "OAUTH_INVALID_REQUEST_NO_AUTHHEADER", new Object[] { req.getMethod(), req.getRequestURI() });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_NO_AUTHHEADER", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
             return null;
         }
         if (!authHeader.startsWith("Basic ")) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, req.getLocales(), "OAUTH_AUTH_HEADER_NOT_BASIC_AUTH", new Object[] { req.getMethod(), req.getRequestURI() });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_AUTH_HEADER_NOT_BASIC_AUTH", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
             return null;
         }
@@ -904,8 +916,9 @@ public class TokenExchange {
         }
         boolean valid = clientId != null && clientId.length() > 0 && clientSecret != null && clientSecret.length() > 0;
         if (!valid) {
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_INVALID_REQUEST_NO_ID_SECRET", new Object[] { req.getMethod(), req.getRequestURI() });
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_NO_ID_SECRET", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
         }
         return valid ? new String[] { clientId, clientSecret } : null;
@@ -1003,14 +1016,14 @@ public class TokenExchange {
         boolean inuse = false;
         boolean missing = appName == null || appName.length() == 0;
         if (missing) {
-            return new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM", new Object[] { OAuth20Constants.APP_NAME });
+            return new BrowserAndServerLogMessage(tc, "OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM", new Object[] { OAuth20Constants.APP_NAME });
         }
 
         boolean badLength = appName.length() > PARAM_MAX_LENGTH;
         if (!badLength)
             inuse = isAppNameInUse(tokenCollection, appName);
         if (badLength || inuse) {
-            return new BrowserAndServerLogMessage(tc, requestLocales, "OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG", new Object[] { appName, provider.getID() });
+            return new BrowserAndServerLogMessage(tc, "OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG", new Object[] { appName, provider.getID() });
         }
         return null;
     }

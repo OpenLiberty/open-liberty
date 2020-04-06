@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    version="3.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncBMTSLBuddyEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSLBuddyLocal</local>
+        <ejb-link>TxSyncBMTSLBuddyEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncBMTSFBuddyEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFBuddyLocal</local>
+        <ejb-link>TxSyncBMTSFBuddyEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncCMTSLBuddyEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSLBuddyLocal</local>
+        <ejb-link>TxSyncCMTSLBuddyEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncCMTSFBuddyEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFBuddyLocal</local>
+        <ejb-link>TxSyncCMTSFBuddyEJB</ejb-link>
+    </ejb-local-ref>
+            
+    <ejb-local-ref>
+      <ejb-ref-name>ejb/TxSyncCMTSFEXSyncBuddyEJB</ejb-ref-name>
+      <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXSyncBuddyLocal</local>
+      <ejb-link>TxSyncCMTSFEXSyncBuddyEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+      <ejb-ref-name>ejb/TxSyncCMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+      <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXUnsyncBuddyLocal</local>
+      <ejb-link>TxSyncCMTSFEXUnsyncBuddyEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>jpa/TxSyncTestServletDD/emCMTSTxSync</persistence-context-ref-name>
+        <persistence-unit-name>TxSync</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <persistence-context-synchronization>Synchronized</persistence-context-synchronization>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.jpa.fvt.txsync.tests.dd.web.TxSynchronizationDDWebTestServlet</injection-target-class>
+            <injection-target-name>emCMTSTxSync</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    <persistence-context-ref>
+        <persistence-context-ref-name>jpa/TxSyncTestServletDD/emCMTSTxUnsync</persistence-context-ref-name>
+        <persistence-unit-name>TxSync</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <persistence-context-synchronization>Unsynchronized</persistence-context-synchronization>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.jpa.fvt.txsync.tests.dd.web.TxSynchronizationDDWebTestServlet</injection-target-class>
+            <injection-target-name>emCMTSTxUnsync</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>jpa/TxSyncTestServletDD/emCMTSTxSyncSpecific</persistence-context-ref-name>
+        <persistence-unit-name>TxSync</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <persistence-context-synchronization>Synchronized</persistence-context-synchronization>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.jpa.fvt.txsync.tests.dd.web.TxSynchronizationDDCMTSSpecificWebTestServlet</injection-target-class>
+            <injection-target-name>emCMTSTxSync</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    <persistence-context-ref>
+        <persistence-context-ref-name>jpa/TxSyncTestServletDD/emCMTSTxUnsyncSpecific</persistence-context-ref-name>
+        <persistence-unit-name>TxSync</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <persistence-context-synchronization>Unsynchronized</persistence-context-synchronization>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.jpa.fvt.txsync.tests.dd.web.TxSynchronizationDDCMTSSpecificWebTestServlet</injection-target-class>
+            <injection-target-name>emCMTSTxUnsync</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+</web-app>

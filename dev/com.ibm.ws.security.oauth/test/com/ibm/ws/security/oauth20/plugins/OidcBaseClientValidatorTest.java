@@ -38,16 +38,14 @@ public class OidcBaseClientValidatorTest {
     private OidcBaseClient client;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         redirectUris.add(new JsonPrimitive(redirectUri1));
         redirectUris.add(new JsonPrimitive(redirectUri2));
         client = new OidcBaseClient(clientId, clientSecret, redirectUris, clientName, componentId, true);
     }
 
     @Test
-    public void testClientValidation()
-    {
+    public void testClientValidation() {
         JsonArray grantTypes = new JsonArray();
         grantTypes.add(new JsonPrimitive("authorization_code"));
         grantTypes.add(new JsonPrimitive("client_credentials"));
@@ -87,9 +85,8 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testInvalidAppType()
-    {
-        //Set an invalid application type on client
+    public void testInvalidAppType() {
+        // Set an invalid application type on client
         client.setApplicationType("mobile");
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
@@ -104,9 +101,8 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testInvalidResponseType() throws OidcServerException
-    {
-        //Set an invalid response type on client
+    public void testInvalidResponseType() throws OidcServerException {
+        // Set an invalid response type on client
         JsonArray responseTypes = new JsonArray();
         responseTypes.add(new JsonPrimitive("code"));
         responseTypes.add(new JsonPrimitive("token"));
@@ -125,9 +121,8 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testDuplicateResponseType() throws OidcServerException
-    {
-        //Set an invalid response type on client
+    public void testDuplicateResponseType() throws OidcServerException {
+        // Set an invalid response type on client
         JsonArray responseTypes = new JsonArray();
         responseTypes.add(new JsonPrimitive("code"));
         responseTypes.add(new JsonPrimitive("token"));
@@ -147,13 +142,12 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testInvalidGrantType() throws OidcServerException
-    {
-        //Set an invalid grant type on client
+    public void testInvalidGrantType() throws OidcServerException {
+        // Set an invalid grant type on client
         JsonArray grantTypes = new JsonArray();
         grantTypes.add(new JsonPrimitive("authorization_code"));
         grantTypes.add(new JsonPrimitive("implicit"));
-        grantTypes.add(new JsonPrimitive("server_credentials"));//invalid grant type 
+        grantTypes.add(new JsonPrimitive("server_credentials"));// invalid grant type
         client.setGrantTypes(grantTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
@@ -168,13 +162,12 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testDuplicateGrantType() throws OidcServerException
-    {
-        //Set an invalid grant type on client
+    public void testDuplicateGrantType() throws OidcServerException {
+        // Set an invalid grant type on client
         JsonArray grantTypes = new JsonArray();
         grantTypes.add(new JsonPrimitive("authorization_code"));
         grantTypes.add(new JsonPrimitive("implicit"));
-        grantTypes.add(new JsonPrimitive("authorization_code"));//invalid grant type 
+        grantTypes.add(new JsonPrimitive("authorization_code"));// invalid grant type
         client.setGrantTypes(grantTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
@@ -189,12 +182,11 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testInvalidResponseAndGrantMatch() throws OidcServerException
-    {
+    public void testInvalidResponseAndGrantMatch() throws OidcServerException {
         JsonArray responseTypes = new JsonArray();
         responseTypes.add(new JsonPrimitive("code"));
         client.setResponseTypes(responseTypes);
-        //Set an invalid grant type on client
+        // Set an invalid grant type on client
         JsonArray grantTypes = new JsonArray();
         grantTypes.add(new JsonPrimitive("implicit"));
         client.setGrantTypes(grantTypes);
@@ -211,12 +203,11 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testInvalidResponseAndGrantMatch2() throws OidcServerException
-    {
+    public void testInvalidResponseAndGrantMatch2() throws OidcServerException {
         JsonArray responseTypes = new JsonArray();
         responseTypes.add(new JsonPrimitive("id_token token"));
         client.setResponseTypes(responseTypes);
-        //Set an invalid grant type on client
+        // Set an invalid grant type on client
         JsonArray grantTypes = new JsonArray();
         grantTypes.add(new JsonPrimitive("authorization_code"));
         client.setGrantTypes(grantTypes);
@@ -233,10 +224,9 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testMalformedRedirectURIs() throws OidcServerException
-    {
+    public void testMalformedRedirectURIs() throws OidcServerException {
         JsonArray redirectUris = new JsonArray();
-        redirectUris.add(new JsonPrimitive("http://finance.yahoo.com/q/h?s=^IXIC"));//invalid URI
+        redirectUris.add(new JsonPrimitive("http://finance.yahoo.com/q/h?s=^IXIC"));// invalid URI
         client.setRedirectUris(redirectUris);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
@@ -251,10 +241,9 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testNonAbsoluteRedirectURIs() throws OidcServerException
-    {
+    public void testNonAbsoluteRedirectURIs() throws OidcServerException {
         JsonArray redirectUris = new JsonArray();
-        redirectUris.add(new JsonPrimitive("../finance.yahoo.com/q/h?s=time"));//invalid URI
+        redirectUris.add(new JsonPrimitive("../finance.yahoo.com/q/h?s=time"));// invalid URI
         client.setRedirectUris(redirectUris);
         client.setApplicationType("web");
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
@@ -270,8 +259,7 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testDuplicateRedirectURIs() throws OidcServerException
-    {
+    public void testDuplicateRedirectURIs() throws OidcServerException {
         JsonArray redirectUris = new JsonArray();
         redirectUris.add(new JsonPrimitive("http://finance.yahoo.com/q/h"));
         redirectUris.add(new JsonPrimitive("http://finance.yahoo.com/q/h"));
@@ -289,9 +277,8 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testOutputParamtersPresent1() throws OidcServerException
-    {
-        client.setClientIdIssuedAt(4000);//non zero value
+    public void testOutputParamtersPresent1() throws OidcServerException {
+        client.setClientIdIssuedAt(4000);// non zero value
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
             validator.validateCreateUpdate();
@@ -305,9 +292,8 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testOutputParamtersPresent2() throws OidcServerException
-    {
-        client.setClientSecretExpiresAt(5000);//non zero value
+    public void testOutputParamtersPresent2() throws OidcServerException {
+        client.setClientSecretExpiresAt(5000);// non zero value
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
             validator.validateCreateUpdate();
@@ -321,8 +307,7 @@ public class OidcBaseClientValidatorTest {
     }
 
     @Test
-    public void testOutputParamtersPresent3() throws OidcServerException
-    {
+    public void testOutputParamtersPresent3() throws OidcServerException {
         client.setRegistrationClientUri("https://localhost:8999/resource/registration/abcd1234");
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {

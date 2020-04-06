@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2007, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -35,7 +36,7 @@ public class NBAccept {
 
     /**
      * Constructor.
-     * 
+     *
      * @param config
      */
     public NBAccept(TCPChannelConfiguration config) {
@@ -56,16 +57,16 @@ public class NBAccept {
      * Register an end point with this request processor.
      * This creates a listener socket for the end point and puts it
      * into the selector so that connections are accepted.
-     * 
+     *
      * Tells the processor to start accepting requests for the
      * specified end point.
-     * 
+     *
      * @param endPoint
      * @throws IOException
      */
     public void registerPort(TCPPort endPoint) throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "registerPort: " + endPoint.getServerSocket());
+            Tr.entry(tc, "registerPort", endPoint.getServerSocket());
         }
 
         synchronized (this) {
@@ -86,12 +87,17 @@ public class NBAccept {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Passing register to selector; " + endPoint.getServerSocket());
                     }
-                    try {
-                        sharedAccept.addWork(work);
-                        workSync.wait();
-                    } catch (InterruptedException x) {
-                        // nothing to do
+                    sharedAccept.addWork(work);
+
+                    // only wait if this is not during startup - to prevent deadlocks
+                    if (CHFWBundle.isServerCompletelyStarted() == true) {
+                        try {
+                            workSync.wait();
+                        } catch (InterruptedException x) {
+                            // nothing to do
+                        }
                     }
+
                 } // end-sync
                 endPointToAccept.put(endPoint, sharedAccept);
 
@@ -111,11 +117,14 @@ public class NBAccept {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Passing register to dedicated selector; " + endPoint.getServerSocket());
                     }
-                    try {
-                        dedicatedAccept.addWork(work);
-                        workSync.wait();
-                    } catch (InterruptedException x) {
-                        // nothing to do
+                    dedicatedAccept.addWork(work);
+                    // only wait if this is not during startup - to prevent deadlocks
+                    if (CHFWBundle.isServerCompletelyStarted() == true) {
+                        try {
+                            workSync.wait();
+                        } catch (InterruptedException x) {
+                            // nothing to do
+                        }
                     }
                 } // end-sync
                 endPointToAccept.put(endPoint, dedicatedAccept);
@@ -130,15 +139,15 @@ public class NBAccept {
      * Removes an end point from the set of end points that we
      * are accepting connections on. This has the effect of removing
      * the server socket from the selector and closing it.
-     * 
+     *
      * Tells the processor to stop accepting requests for the
      * specified end point. The listener socket will be closed.
-     * 
+     *
      * @param endPoint
      */
     public void removePort(TCPPort endPoint) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "removePort: " + endPoint.getServerSocket());
+            Tr.entry(tc, "removePort", endPoint.getServerSocket());
         }
 
         synchronized (this) {
@@ -159,13 +168,17 @@ public class NBAccept {
 
                 synchronized (workSync) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Passing remove to selector; " + endPoint.getServerSocket());
+                        Tr.event(this, tc, "Passing remove to selector: " + endPoint.getServerSocket());
                     }
                     accept.addWork(work);
-                    try {
-                        workSync.wait();
-                    } catch (InterruptedException x) {
-                        // nothing to do
+
+                    // only wait if this is not during startup - to prevent deadlocks
+                    if (CHFWBundle.isServerCompletelyStarted() == true) {
+                        try {
+                            workSync.wait();
+                        } catch (InterruptedException x) {
+                            // nothing to do
+                        }
                     }
                 } // end-sync
 
@@ -179,12 +192,14 @@ public class NBAccept {
                 }
                 FFDCFilter.processException(iae, CLASS_NAME + ".removePort", "387", this);
                 throw iae;
+
             }
         } // end-sync-this
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "removePort");
+            Tr.exit(tc, "removePort:");
         }
+
     }
 
     final static int REGISTER_ENDPOINT = 1;

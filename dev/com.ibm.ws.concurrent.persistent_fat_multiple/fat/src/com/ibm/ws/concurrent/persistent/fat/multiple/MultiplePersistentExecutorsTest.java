@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -26,6 +25,8 @@ import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,11 +37,9 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class MultiplePersistentExecutorsTest extends FATServletClient {
 	private static final String APP_NAME = "persistmultitest";
-	private static final String DB_NAME = "persistmultidb";
     private static final Set<String> appNames = Collections.singleton(APP_NAME);
     
-	@ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
     
     private static ServerConfiguration originalConfig;
     
@@ -55,18 +54,11 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persistmultidb");
 
-    	//Get type
-		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
-		
-    	//Get driver info
-    	String driverName = dbContainerType.getDriverName();
-    	server.addEnvVar("DB_DRIVER", driverName);
+    	//Get driver type
+    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 		
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-    	
-		//Initialize database
-		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
         
     	//Add application to server
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
@@ -203,21 +195,15 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(appNames);
 
-            // Liberty doesn't have high availability support yet, so we need to manually cause the failover.
+            // Automatic fail over is not enabled. We are testing manual fail over via the MBean.
 
-            // Preemptively switch the executor2 partition info to executor4, which we are about to create
-            runInServlet("testUpdatePartitions&jndiName=concurrent/executor3&executorId=executor2&newExecutorId=executor4&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-6");
-
-            PersistentExecutor executor4 = (PersistentExecutor) executor2.clone();
-            executor4.setId("executor4");
-            executor4.setJndiName("concurrent/executor4");
-            config.getPersistentExecutors().add(executor4);
+            config.getPersistentExecutors().add(executor2);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(appNames);
 
             // Determine which tasks assigned to executor1 haven't ended yet and split them into two groups
-            output = runInServlet("testFindTaskIds&jndiName=concurrent/executor3&executorId=executor1&invokedBy=testFailoverWithFourInstances-7");
+            output = runInServlet("testFindTaskIds&jndiName=concurrent/executor3&executorId=executor1&invokedBy=testFailoverWithFourInstances-6");
             start = output.indexOf(TASK_ID_SEARCH_TEXT);
             if (start < 0)
                 throw new Exception("Task ids not found in servlet output: " + output);
@@ -226,40 +212,39 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
             int index = ids.length / 2 - 1;
             String maxTaskIdToAssignToExecutor3 = ids[index];
 
-            // Transfer tasks from executor1 to executor3 and executor4
+            // Transfer tasks from executor1 to executor3 and executor2
             runInServlet("testTransfer&jndiName=concurrent/executor3&oldExecutorId=executor1&maxTaskId=" + maxTaskIdToAssignToExecutor3
-                         + "&invokedBy=testFailoverWithFourInstances-8");
-            runInServlet("testTransfer&jndiName=concurrent/executor4&oldExecutorId=executor1&invokedBy=testFailoverWithFourInstances-9");
+                         + "&invokedBy=testFailoverWithFourInstances-7");
+            runInServlet("testTransfer&jndiName=concurrent/executor2&oldExecutorId=executor1&invokedBy=testFailoverWithFourInstances-8");
 
             // Remove the partition entry for executor1 which doesn't exist anymore
-            runInServlet("testRemovePartitions&jndiName=concurrent/executor3&executorId=executor1&libertyServer=com.ibm.ws.concurrent.persistent.fat.multiple&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-10");
+            runInServlet("testRemovePartitions&jndiName=concurrent/executor3&executorId=executor1&libertyServer=com.ibm.ws.concurrent.persistent.fat.multiple&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-9");
 
             runInServlet("testTasksAreRunning&jndiName=concurrent/executor3&taskId="
                          + taskIdA + "&taskId=" + taskIdB + "&taskId=" + taskIdC + "&taskId=" + taskIdD + "&taskId=" + taskIdE +
                          "&invokedBy=testFailoverWithFourInstances-11");
 
-            runInServlet("testCancelTasks&jndiName=concurrent/executor4&pattern=FW4I-_&state=ENDED&inState=false&numCancelsExpected=5&invokedBy=testFailoverWithFourInstances-12");
+            runInServlet("testCancelTasks&jndiName=concurrent/executor2&pattern=FW4I-_&state=ENDED&inState=false&numCancelsExpected=5&invokedBy=testFailoverWithFourInstances-10");
 
             // Query for partition entries
-            runInServlet("testFindPartitions&jndiName=concurrent/executor3&executorId=executor3&executorId=executor4&invokedBy=testFailoverWithFourInstances-13");
+            runInServlet("testFindPartitions&jndiName=concurrent/executor3&executorId=executor3&executorId=executor2&invokedBy=testFailoverWithFourInstances-11");
 
             // Schedule a task in the distant future
-            runInServlet("testScheduleRepeatingTask&jndiName=concurrent/executor4&taskName=FW4I-F&initialDelay=36000000&interval=3200&invokedBy=testFailoverWithFourInstances-14");
-
-            // Make executor4's partition info look like the executor in the PersistentExecutorMBean JavaDoc code example
-            runInServlet("testUpdatePartitions&jndiName=concurrent/executor4&executorId=executor4&newExecutorId=defaultEJBPersistentTimerExecutor&newHostName=hostA.rchland.ibm.com&newLibertyServer=myServer1&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-15");
+            runInServlet("testScheduleRepeatingTask&jndiName=concurrent/executor2&taskName=FW4I-F&initialDelay=36000000&interval=3200&invokedBy=testFailoverWithFourInstances-12");
 
             // Run the the PersistentExecutorMBean JavaDoc code example
-            runInServlet("testMBeanCodeExample&invokedBy=testFailoverWithFourInstances-16");
+            runInServlet("testMBeanCodeExample&invokedBy=testFailoverWithFourInstances-13");
 
-            // Update one of the partition entries
-            runInServlet("testUpdatePartitions&jndiName=concurrent/executor3&executorId=executor3&newHostName=abcdefg.rchland.ibm.com&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-17");
+            // Remove executor2 because testMBeanCodeExample above destroys its partition info, the lack of which can interfere with subsequent tests.
+            // Later in this test, restoring the original config will restore executor2 and activate it into a clean state which will
+            // require creating partition info anew in the database.
+            server.setMarkToEndOfLog();
+            config.getPersistentExecutors().removeById("executor2");
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
 
             // Remove one of the partition entries
-            runInServlet("testRemovePartitions&jndiName=concurrent/executor3&hostName=abcdefg.rchland.ibm.com&libertyServer=com.ibm.ws.concurrent.persistent.fat.multiple&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-18");
-
-            // Attempt an update to the removed partition entry
-            runInServlet("testUpdatePartitions&jndiName=concurrent/executor3&executorId=executor3&newHostName=xyz@rchland.ibm.com&expectedUpdateCount=0&invokedBy=testFailoverWithFourInstances-19");
+            runInServlet("testRemovePartitions&jndiName=concurrent/executor3&libertyServer=com.ibm.ws.concurrent.persistent.fat.multiple&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-14");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();

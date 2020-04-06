@@ -8,28 +8,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- /*for modules to register and for
- * clients to retrieve data and change instrumentation level.
- * The data are organized in modules. Within a server, the generic module hierarchy
- * is:		module
- *				-> collections (0, 1, or more)
- *					-> data
- *
- * It will automatically takes care of aggregate data in the immediate parent and module
- * level assuming those module objects implment PmiModuleAggregate interface.
- *
- * A predefined module hierarchy for all the default PMI instrumentation provided by
- * WebSphere is as follows where data can be included in any level.
- *
- *		    module
- *             -> instance
- *                  -> submodule
- *						-> subinstance
- *							-> data
- *
- * To reduce footprint and PMI admin burden, method subinstances are not created
- * unless user set the instrumentation level to be LEVEL_MAX for methods submodule.
- */
+/*for modules to register and for
+* clients to retrieve data and change instrumentation level.
+* The data are organized in modules. Within a server, the generic module hierarchy
+* is:		module
+*				-> collections (0, 1, or more)
+*					-> data
+*
+* It will automatically takes care of aggregate data in the immediate parent and module
+* level assuming those module objects implment PmiModuleAggregate interface.
+*
+* A predefined module hierarchy for all the default PMI instrumentation provided by
+* WebSphere is as follows where data can be included in any level.
+*
+*		    module
+*             -> instance
+*                  -> submodule
+*						-> subinstance
+*							-> data
+*
+* To reduce footprint and PMI admin burden, method subinstances are not created
+* unless user set the instrumentation level to be LEVEL_MAX for methods submodule.
+*/
 package com.ibm.ws.pmi.server;
 
 import java.lang.management.ManagementFactory;
@@ -59,11 +59,15 @@ import com.ibm.ws.pmi.stat.StatsImpl;
 import com.ibm.ws.pmi.wire.WpdCollection;
 
 public class PmiRegistry implements PmiConstants {
-    public static final String COPYRIGHT =
-                    "Product 5639-D57,  (C) COPYRIGHT International Business Machines Corp., 2000, 2004\n" +
-                                    "All Rights Reserved * Licensed Materials - Property of IBM\n" +
-                                    "US Government Users Restricted Rights - Use, duplication or disclosure\n" +
-                                    "restricted by GSA ADP Schedule Contract with IBM Corp.";
+    public static final String COPYRIGHT = "Copyright (c) 2000, 2004 IBM Corporation and others.\n" +
+                                           " All rights reserved. This program and the accompanying materials\n" +
+                                           " are made available under the terms of the Eclipse Public License v1.0\n" +
+                                           " which accompanies this distribution, and is available at\n" +
+                                           " http://www.eclipse.org/legal/epl-v10.html\n" +
+                                           " \n" +
+                                           " Contributors:\n" +
+                                           "     IBM Corporation - initial API and implementation";
+
     public static final String PLATFORM = initPlatform();
     public static final String MSG_BUNDLE = PmiConstants.MSG_BUNDLE;
     private static boolean disabled = true;
@@ -167,7 +171,7 @@ public class PmiRegistry implements PmiConstants {
      * Register a module - synchronized l
      * Note: The top level is always TYPE_MODULE. After that, the generic hierarchy
      * is a number (0-n) of TYPE_COLLECTION module objects.
-     * 
+     *
      * A pre-defined module organization for the default PMI instrumentation in
      * WebSphere is as follows (instance, submodule, subinstance are collections).
      * module
@@ -175,11 +179,11 @@ public class PmiRegistry implements PmiConstants {
      * -> instance
      * -> submodule
      * -> subinstance
-     * 
+     *
      * TYPE_INSTANCE, TYPE_SUBMODULE, TYPE_SUBINSTANCE are used for module tree hierarchy
      * that are only visible within the module object itself and this class. From the
      * client's point of view, they are all collecitons.
-     * 
+     *
      */
     public synchronized static ModuleItem registerModule(PmiModule instance) {
         if (tc.isEntryEnabled()) {
@@ -735,7 +739,8 @@ public class PmiRegistry implements PmiConstants {
                         // then we need to get union of them (basically merge both counters)
                         item.setInstanceLevel(
                                               getUnionForAppendInstrumentationLevel(
-                                                                                    oldCounters, newCounters), new int[0],
+                                                                                    oldCounters, newCounters),
+                                              new int[0],
                                               PmiConstants.LEVEL_FINEGRAIN, recursive);
                     }
                 }
@@ -799,8 +804,7 @@ public class PmiRegistry implements PmiConstants {
                 PerfLevelDescriptor[] pld = new PerfLevelDescriptor[1];
                 String[] path = item.getInstance().getPath();
                 PmiModule instance = item.getInstance();
-                pld[0] = new PerfLevelDescriptor(instance.getPath(),
-                                instance.getInstrumentationLevel(), instance.getModuleID());
+                pld[0] = new PerfLevelDescriptor(instance.getPath(), instance.getInstrumentationLevel(), instance.getModuleID());
 
                 return pld;
             } else {
@@ -854,9 +858,7 @@ public class PmiRegistry implements PmiConstants {
             int i = 0;
             while (values.hasNext()) {
                 PmiModule instance = ((ModuleItem) values.next()).getInstance();
-                plds[i++] = new PerfLevelDescriptor(instance.getPath(),
-                                instance.getInstrumentationLevel(),
-                                instance.getModuleID());
+                plds[i++] = new PerfLevelDescriptor(instance.getPath(), instance.getInstrumentationLevel(), instance.getModuleID());
             }
             return PmiUtil.getStringFromPerfLevelSpecs(plds);
         }

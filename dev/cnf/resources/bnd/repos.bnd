@@ -24,6 +24,8 @@
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = Local; \
     noupdateOnRelease = true; \
+    releaseUrl        = ${fileuri;${build}/local}; \
+    snapshotUrl       = ${fileuri;${build}/local}; \
     local             = ${build}/local
 
 -plugin.2.Release: \

@@ -22,8 +22,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChainGroupData;
 import com.ibm.websphere.channelfw.ChannelData;
@@ -51,6 +49,8 @@ import com.ibm.wsspi.channelfw.exception.IncoherentChainException;
 import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 import com.ibm.wsspi.channelfw.exception.InvalidChannelFactoryException;
 import com.ibm.wsspi.channelfw.exception.InvalidChannelNameException;
+
+import test.common.SharedOutputManager;
 
 /**
  * Chain runtime configuration tests.
@@ -119,8 +119,7 @@ public class ChainDataTest {
                 }
 
                 try {
-                    chainData =
-                                    framework.addChain("invalid3", FlowType.INBOUND, new String[] { "tcp", "unknown" });
+                    chainData = framework.addChain("invalid3", FlowType.INBOUND, new String[] { "tcp", "unknown" });
                     fail("Incorrectly allowed unknown channel");
                 } catch (InvalidChannelNameException e) {
                     // expected failure
@@ -317,8 +316,7 @@ public class ChainDataTest {
         }
     }
 
-    private void setupUpdateTest(ChannelFrameworkImpl framework)
-                    throws ChannelException, ChainException, ChainGroupException {
+    private void setupUpdateTest(ChannelFrameworkImpl framework) throws ChannelException, ChainException, ChainGroupException {
         framework.clear();
         framework.addChannel("tcp", TCPChannelFactory.class, getTcpProps("setupUpdateTest.tcpPort", "15002"), 45);
         framework.addChannel("proto", ProtocolDummyFactory.class, null, 33);

@@ -18,7 +18,6 @@ import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
@@ -35,7 +34,6 @@ import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
 import com.ibm.wsspi.channelfw.VirtualConnection;
-import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.IllegalResponseObjectException;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
@@ -75,10 +73,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
     /** Link associated with this SC instance */
     private HttpInboundLink myLink = null;
-    /** Flag on whether we've parsed the Accept-Encoding header yet or not */
-    private boolean bCheckedAcceptEncoding = false;
-    /** Flag on whether compression is allowed or not */
-    private boolean bCompressionAllowed = false;
     /** Flag on whether the request is a "large" one over the standard limit */
     private boolean bContainsLargeMessage = false;
     /** Start time of the request (when access logging is enabled) */
@@ -167,7 +161,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "Clearing ISC: " + this);
         }
         super.clear();
-        this.bCheckedAcceptEncoding = false;
         this.bContainsLargeMessage = false;
         this.remoteUser = "";
         this.forwardedHeaderInitialized = false;
@@ -175,6 +168,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.forwardedProto = null;
         this.forwardedRemoteAddress = null;
         this.forwardedRemotePort = -1;
+
         if (getHttpConfig().runningOnZOS()) {
             // @311734 - clean the statemap of the final write mark
             getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
@@ -369,147 +363,47 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "isCompressionAllowed");
         }
-        // check on whether we've already done this step
-        if (this.bCheckedAcceptEncoding) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "isCompressionAllowed(1): " + this.bCompressionAllowed);
-            }
-            return this.bCompressionAllowed;
-        }
 
         boolean rc = false;
 
-        // check target compression first
-        byte[] name = null;
-        if (isGZipEncoded() || isXGZipEncoded()) {
-            // gzip and x-gzip are functionally the same
-            name = ContentEncodingValues.GZIP.getByteArray();
-        } else if (isZlibEncoded()) {
-            name = ContentEncodingValues.DEFLATE.getByteArray();
-        } else {
-            this.bCheckedAcceptEncoding = true;
-            this.bCompressionAllowed = false;
+        if (getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString() == null) {
+            //If no accept-encoding field is present in a request, the server MAY assume
+            //that the client will accept any content coding.
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "isCompressionAllowed(2)", Boolean.FALSE);
+                Tr.exit(tc, "isCompressionAllowed(1)", Boolean.TRUE);
             }
-            return false;
+            return true;
         }
 
-        // comma separated values, < encoding[;q=x] > or < *[;q=x] >
-
-        // loop through looking for the matching encoding, then check the qvalue
-        // for 0 (not allowed). Keep track if * was found for a final check
-        // if the explicit encoding wasn't found.
-        int index = 0;
-        int x;
-        boolean bStarFound = false;
-        boolean bStarApproved = false;
-        byte[] data = getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asBytes();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "isCompressionAllowed: parsing ["
-                         + getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString()
-                         + "] against requested [" + new String(name) + "]");
+        if (acceptableEncodings.containsKey(this.preferredEncoding)) {
+            //found encoding, verify if value is non-zero
+            rc = (acceptableEncodings.get(this.preferredEncoding) > 0f);
         }
 
-        if (null != data) {
-            while (index < data.length) {
-                // search each encoding token (skip leading white space)
-                index = skipWhiteSpace(data, index);
-                if (index >= data.length) {
-                    // if the header value was just empty space then only
-                    // the identity encoding is acceptable
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Ran out of data");
-                    }
-                    break;
-                }
-                // check for the asteric explicitly
-                if ('*' == data[index]) {
-                    bStarFound = true;
-                    if (++index < data.length && BNFHeaders.SEMICOLON == data[index]) {
-                        // now check for the qvalue and set the approved flag
-                        ReturnCodes myRC = parseQValue(data, ++index);
-                        bStarApproved = myRC.getBooleanValue();
-                        index = GenericUtils.skipToChar(data, myRC.getIntValue(), HttpBaseMessage.COMMA) + 1;
-                    } else {
-                        bStarApproved = true;
-                    }
-                    continue;
-                }
-
-                // compare the name, check for the x-gzip type values
-                if (index < data.length && ('x' == data[index] || 'X' == data[index])) {
-
-                    if (++index < data.length && '-' == data[index]) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "skipping past [x-]");
-                        }
-                        index++;
-                    } else {
-                        // not x-, go back one for the name comparison
-                        index--;
-                    }
-                }
-                for (x = 0; x < name.length && index < data.length; x++, index++) {
-                    if (name[x] != data[index]) {
-                        // try the alternate case for a match
-                        if (GenericUtils.reverseCase(name[x]) != data[index]) {
-                            // no match found, break out of for loop
-                            break;
-                        }
-                    }
-                }
-
-                // check for the explicit failed match
-                if (x != name.length) {
-                    // didn't find a match, skip to the next comma
-                    index = GenericUtils.skipToChar(data, index, HttpBaseMessage.COMMA) + 1;
-                    continue;
-                }
-
-                // name match so far. If the next char is a comma, then no qvalue
-                // and this compression is allowed. If it is a semi-colon, then
-                // a qvalue is following. Anything else and this wasn't a full
-                // match
-                index = skipWhiteSpace(data, index);
-                if (index < data.length && HttpBaseMessage.COMMA == data[index]) {
-                    // this is allowed
-                    rc = true;
-                } else if (index < data.length && BNFHeaders.SEMICOLON == data[index]) {
-                    // parse the qvalue
-                    ReturnCodes myRC = parseQValue(data, ++index);
-                    rc = myRC.getBooleanValue();
-                } else if (index >= data.length) {
-                    // end of data... means we had a full match
-                    rc = true;
-                } else {
-                    // partial match... gzip against gzipMe
-                    index = GenericUtils.skipToChar(data, index, HttpBaseMessage.COMMA) + 1;
-                    continue;
-                }
-
-                break; // out of while loop
+        else if (ContentEncodingValues.GZIP.getName().equals(preferredEncoding)) {
+            //gzip and x-gzip are functionally the same
+            if (acceptableEncodings.containsKey(ContentEncodingValues.XGZIP.getName())) {
+                rc = (acceptableEncodings.get(ContentEncodingValues.XGZIP.getName()) > 0f);
             }
-        } else {
-            // a null (non present) header means that all encodings are accepted
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Accept-Encoding header not present");
-            }
+        }
+
+        else if (ContentEncodingValues.IDENTITY.getName().equals(preferredEncoding)) {
+            //Identity is always acceptable unless specifically set to 0. Since it
+            //wasn't found in acceptableEncodings, return true
+
             rc = true;
         }
 
-        if (!rc && bStarFound && bStarApproved) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "No explicit match, but wildcard was found");
-            }
-            rc = true;
-        }
+        else {
+            //The special symbol "*" in an Accept-Encoding field matches any available
+            //content-coding not explicitly listed in the header field.
 
-        this.bCheckedAcceptEncoding = true;
-        this.bCompressionAllowed = rc;
+            rc = this.bStarEncodingParsed;
+
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "isCompressionAllowed(3): " + rc);
+            Tr.exit(tc, "isCompressionAllowed(2): " + rc);
         }
         return rc;
     }

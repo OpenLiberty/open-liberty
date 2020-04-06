@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017 IBM Corporation and others.
+    Copyright (c) 2017, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -39,28 +39,25 @@
 				<property name="ascii.file.encoding" value="ISO8859_1" />
 			</else>
 		</iff>
-		
+
 		<!-- If we are running an automated build, figuring out the test bucket name is -->
 		<!-- not necessary because it will be passed down by the calling ant script -->
 		<iff if="is.running.automated.build">
 			<else>
-	        <condition property="filesToFind" value="FATSuiteLite.class;FATSuite.class;FATTest.class" else="FATSuite.class;FATTest.class">
-	            <or>
-	                <not>
-	                    <isset property="fat.test.mode" />
-	                </not>
-	                <equals arg1="${fat.test.mode}" arg2="lite" casesensitive="false" trim="true" />
-	            </or>
-	        </condition>
-	        
-	        <!-- Works out what tests to run for the autoFVT.zip-->
-	        <scanJars entry="entry.point" filesToFind="${filesToFind}">
-	            <fileset dir="${basedir}/build/lib" includes="**.jar" />
-	        </scanJars>
-	        <echo message="entry point: ${entry.point}" />
-	
-	        <property name="test.bucket.class" value="${entry.point}" />
-	        <property name="test.bucket.name" value="${test.bucket.class}" />
+				<condition property="filesToFind" value="FATSuiteLite.class;FATSuite.class;FATTest.class" else="FATSuite.class;FATTest.class">
+					<or>
+						<not>
+							<isset property="fat.test.mode" />
+						</not>
+						<equals arg1="${fat.test.mode}" arg2="lite" casesensitive="false" trim="true" />
+					</or>
+				</condition>
+
+				<!-- Works out what tests to run for the autoFVT.zip-->
+				<scanJars entry="entry.point" filesToFind="${filesToFind}">
+					<fileset dir="${basedir}/build/lib" includes="**.jar" />
+				</scanJars>
+				<echo message="entry point: ${entry.point}" />
 			</else>
 		</iff>
 	</target>
@@ -90,23 +87,68 @@
 			<entry key="preferJIIWSWsAdmin" value="${simplicity.preferJIIWSWsAdmin}" />
 		</propertyfile>
 		
-		<!-- Work out the actual entry point based on the current java level -->
+		<echo>Initializing the classpath for ${test.bucket.name}</echo>
+		<property file="${bootstrapping.properties}" />
+
+		<!-- Work out the actual entry point based on the current java level and database properties -->
 		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
-		            
-        <!-- If this test is compiled with a java level higher than the one we're currently running, -->
-        <!-- bypass the tests by invoking the always passes test instead of real FAT tests -->
-        <property file="${basedir}/fat.bnd.properties" />
-		<script language="javascript"> <![CDATA[
-			var testBucketClassForLowJava = "componenttest.custom.junit.runner.AlwaysPassesTest";
+
+		<!-- Get fat.test.databases and fat.minimum.java.level properties-->
+		<property file="${basedir}/fat.bnd.properties" />
+		<property file="${basedir}/fat.sys.properties" />
+		
+		<!-- Enforce fat.minimum.java.level rule. If this test is compiled with a java level 
+           higher than the one we're currently running we should skip these tests. -->
+		<script language="javascript">
+			<![CDATA[
 			var minTestJava = project.getProperty("fat.minimum.java.level");
 			var javaVersion = parseFloat(project.getProperty("java.specification.version"));
 			if(minTestJava != null && javaVersion < parseFloat(minTestJava))
-			  project.setProperty("test.bucket.class", testBucketClassForLowJava);
-        ]]></script>
-        <echo message="fat.minimum.java.level=${fat.minimum.java.level}"/>
-        <echo message="java.specification.version=${java.specification.version}"/>
-        <echo message="FAT entry point will be: ${test.bucket.class}"/>
-		<echo message="micro.version=${micro.version}"/>
+				project.setProperty("skip.java.level", true);
+        ]]>
+		</script>
+		
+		<!-- Output java level info -->
+		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
+		<echo message="java.specification.version=${java.specification.version}" />
+		<echo message="micro.version=${micro.version}" />
+
+		<!-- Enforce fat.test.databases.only rule.  If bucket is not enlisted in database rotation skip it -->
+		<condition property="skip.no.db.tests" value="true">
+			<and>
+				<istrue value="${fat.test.databases.only}" />
+				<not>
+					<isTrue value="${fat.test.databases}" />
+				</not>
+			</and>
+		</condition>
+
+		<!-- Determine if we are going to skip testing or not -->
+		<!-- Bypass the tests by invoking the always passes test instead of real FAT tests -->
+		<iff>
+			<or>
+				<istrue value="${skip.no.db.tests}" />
+				<istrue value="${skip.java.level}" />
+			</or>
+			<then>
+				<var name="test.bucket.class" unset="true" />
+				<var name="test.bucket.name" unset="true" />
+				<property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
+				<property name="test.bucket.name" value="${test.bucket.class}" />
+
+				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
+				<echo message="     Only run database rotation buckets:  ${fat.test.databases.only}" />
+				<echo message="     This bucket uses database rotation:  ${fat.test.databases}" />
+				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
+			</then>
+			<else>
+				<property name="test.bucket.class" value="${entry.point}" />
+			</else>
+		</iff>
+
+		<!-- What will our entry point be? -->
+		<echo message="FAT entry point will be: ${test.bucket.class}" />
+
 	</target>
 
 	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->
@@ -125,13 +167,13 @@
 		<condition property="is.zos.platform" else="false">
 			<os family="z/os" />
 		</condition>
-		
+
 		<condition property="is.windows.platform" else="false">
 			<os family="windows" />
 		</condition>
-		
+
 		<!-- boolean for Java9+ -->
-	    <script language="javascript">
+		<script language="javascript">
 			var curJava = project.getProperty("java.specification.version");
 			project.setProperty("is.java9", (curJava > 8));
 	    </script>
@@ -148,16 +190,13 @@
 			</then>
 		</iff>
 
-		<echo>Initializing the classpath for ${test.bucket.name}</echo>
-		<property file="${bootstrapping.properties}" />
-
 		<!-- Set fattest.timeout to 3 hours if full test is requested, else set it to 1 hour -->
 		<condition property="fattest.timeout" value="10800000" else="3600000">
 			<or>
 				<not>
-					<equals arg1 = "${fat.test.mode}" arg2 = "lite"/>
+					<equals arg1="${fat.test.mode}" arg2="lite" />
 				</not>
-				<contains string="${spawn.fullfat.buckets}"  substring="${test.bucket.name}" casesensitive="false"/>
+				<contains string="${spawn.fullfat.buckets}" substring="${test.bucket.name}" casesensitive="false" />
 			</or>
 		</condition>
 
@@ -165,8 +204,8 @@
 		<mkdir dir="${basedir}/output" />
 
 		<!-- by default, only add spec API to the test classpath -->
-		<property name="test.classpath.wlp.include" value="api/spec/*.jar"/>
-		
+		<property name="test.classpath.wlp.include" value="api/spec/*.jar" />
+
 		<path id="test.bucket.path">
 			<!-- Our tests themselves -->
 			<fileset dir="${basedir}/build/lib">
@@ -179,42 +218,62 @@
 			</fileset>
 
 			<!-- shared libraries from bootstrapping.properties -->
-            <fileset dir="${local.sharedLib}" erroronmissingdir="false">
- 				<include name="**/*.jar" />
- 			</fileset>
-			
+			<fileset dir="${local.sharedLib}" erroronmissingdir="false">
+				<include name="**/*.jar" />
+			</fileset>
+
 			<!-- java libraries for secure SSH authentication -->
 			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
 				<include name="*.jar" />
-			</fileset> 
-			
+			</fileset>
+
 			<!-- The maven dependencies of fattest.simplicity -->
 			<fileset dir="${local.java}/build/libs/lib" erroronmissingdir="false">
-				<include name="*.jar"/>
+				<include name="*.jar" />
 			</fileset>
 
 			<fileset dir="${ant.home}/lib/" includes="ant-junit*.jar, ant.jar" />
 			<!-- junit.jar contains hamcrest classes, so include updated hamcrest JAR first -->
 			<fileset dir="${shared.resources}" includes="*hamcrest*.jar" />
 			<fileset dir="${shared.resources}">
-				<include name="junit/old/junit.jar"/>
-				<include name="jmock/2.6.0/jmock-junit4.jar"/>
+				<include name="junit/old/junit.jar" />
+				<include name="jmock/2.6.0/jmock-junit4.jar" />
 			</fileset>
-			
+
 			<!-- libs that were added to publish/ folder -->
-			<fileset dir="${basedir}" includes="publish/**/*.jar"/>
-			
+			<fileset dir="${basedir}" includes="publish/**/*.jar" />
+
 			<!-- add any libs that may have been added to the server -->
-			<fileset dir="${install.location}" includes="publish/servers/**/*.jar"/>
-			
+			<fileset dir="${install.location}" includes="publish/servers/**/*.jar" />
+
 			<!-- libs that were added to publish/files/ folder -->
-			<fileset dir="${basedir}" includes="publish/files/**/*.jar"/>
-			
-			<!-- Give an opportunity to add API/SPI from the liberty image --> 
-			<fileset dir="${liberty.location}/dev/" includes="${test.classpath.wlp.include}"/>
+			<fileset dir="${basedir}" includes="publish/files/**/*.jar" />
+
+			<!-- Give an opportunity to add API/SPI from the liberty image -->
+			<fileset dir="${liberty.location}/dev/" includes="${test.classpath.wlp.include}" />
 		</path>
 
-		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}"/>
+		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}" />
+
+		<iff>
+			<istrue value="${is.windows.platform}" />
+			<then>
+				<echo>generating classpath jar file.</echo>
+				<property name="classpath.jar.name" value="${basedir}/build/lib/cp.jar" />
+				<manifestclasspath property="classpath.list" maxParentLevels="20" jarfile="${classpath.jar.name}">
+					<classpath refid="test.bucket.path" />
+				</manifestclasspath>
+				<jar jarfile="${classpath.jar.name}">
+					<manifest>
+						<attribute name="Class-Path" value="${classpath.list}" />
+					</manifest>
+				</jar>
+				<path id="test.bucket.path">
+					<fileset file="${classpath.jar.name}" />
+				</path>
+				<echo message="modified test.bucket.path : ${toString:test.bucket.path}" />
+			</then>
+		</iff>
 
 		<echo>Initializing JRE logging</echo>
 		<delete dir="${dir.log}" quiet="true" />
@@ -226,10 +285,10 @@
 		</propertyfile>
 
 		<property name="dir.test.current.directory" value="${basedir}" />
-		
+
 		<!-- Load all env vars into env.* properties -->
-		<property environment="env"/>
-		
+		<property environment="env" />
+
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
 		</tstamp>
@@ -295,6 +354,20 @@
 		<!-- Individual buckets must opt-out if they don't want to have logs checked -->
 		<property name="enable.server.log.validation" value="false" />
 
+		<property name="extra.vmargs" value="" />
+		<echo message="Launching FAT with extra vmargs: ${extra.vmargs}" />
+
+		<iff if="zos.environment">
+			<then>
+				<echo message="Setting zos.extra.vmargs because we are running on zos" />
+				<property name="zos.extra.vmargs" value="-Dcom.ibm.jsse2.overrideDefaultTLS=true -Dcom.ibm.team.repository.transport.client.protocol=TLSv1.2" />
+			</then>
+			<else>
+				<property name="zos.extra.vmargs" value="" />
+			</else>
+		</iff>
+		<echo message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}" />
+
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
 		<property name="jacocoant.file" location="${junit_jar}/jacoco-0.7.6.201602180812/lib/jacocoant.jar" />
@@ -308,7 +381,7 @@
 		<echo>jacocoagent.file: ${jacocoagent.file}</echo>
 
 		<mkdir dir="${build.tmp.dir}" />
-		
+
 		<!-- Note that users can override framework.maxheap from personal build -->
 		<property name="framework.maxheap" value="-Xmx1024m" />
 		<echo>framework.maxheap=${framework.maxheap}</echo>
@@ -323,6 +396,8 @@
 					<sysproperty key="isPersonalBuild" value="${isPersonalBuild}" />
 					<sysproperty key="user.dir" value="${dir.test.current.directory}" />
 					<sysproperty key="console.log" value="console.${buildLabel}.log" />
+					<!-- Tell Junit what the timeout is -->
+					<sysproperty key="fat.timeout" value="${fattest.timeout}" />
 					<!-- set the temp directory -->
 					<sysproperty key="java.io.tmpdir" value="${build.tmp.dir}" />
 					<!-- Tell jUnit where the main property file is -->
@@ -336,14 +411,14 @@
 					<!-- Add the server.origin property -->
 					<sysproperty key="server.origin" value="${server.origin}" />
 					<!-- Pass select env vars in as system properties  -->
-                    <syspropertyset>
-                        <propertyref prefix="env.bvt.prop." />
-                        <propertyref prefix="env.global." />
-                        <propertyref prefix="env.fat.test." />
-                        <propertyref prefix="env.fat.bucket." />
-                        <propertyref prefix="env.ldap." />
-                        <mapper type="glob" from="env.*" to="*" />
-                    </syspropertyset>
+					<syspropertyset>
+						<propertyref prefix="env.bvt.prop." />
+						<propertyref prefix="env.global." />
+						<propertyref prefix="env.fat.test." />
+						<propertyref prefix="env.fat.bucket." />
+						<propertyref prefix="env.ldap." />
+						<mapper type="glob" from="env.*" to="*" />
+					</syspropertyset>
 					<syspropertyset>
 						<propertyref prefix="bvt.prop." />
 						<mapper type="glob" from="bvt.prop.*" to="*" />
@@ -355,7 +430,7 @@
 					<!-- copy any fat.test.* properties into the FAT running framework -->
 					<syspropertyset>
 						<propertyref prefix="fat.test." />
-						<propertyref prefix="fat.bucket."/>
+						<propertyref prefix="fat.bucket." />
 					</syspropertyset>
 					<!-- copy all ldap ports properties -->
 					<syspropertyset>
@@ -377,7 +452,7 @@
 					<!-- if LibertyServer.stopServer() should check messages.log for unexpected errors/warnings -->
 					<sysproperty key="enable.server.log.validation" value="${enable.server.log.validation}" />
 					<!-- Pass bundle micro version -->
-					<sysproperty key="micro.version" value="${micro.version}"/>
+					<sysproperty key="micro.version" value="${micro.version}" />
 					<!-- show junit where the test case is located-->
 					<classpath refid="test.bucket.path" />
 					<!-- report will be generated as xml -->
@@ -399,7 +474,9 @@
 					<sysproperty key="fat.on.mac" value="${test.run.on.mac.sysprop.value}" />
 					<jvmarg value="${framework.maxheap}" />
 					<!-- embedded trace conditionals -->
-					<jvmarg value="${framework.debug.embed.jvmarg1}" /> 
+					<jvmarg value="${framework.debug.embed.jvmarg1}" />
+					<jvmarg line="${extra.vmargs}" />
+					<jvmarg line="${zos.extra.vmargs}" />
 				</junit>
 			</sequential>
 			<finally>
@@ -407,7 +484,7 @@
 				<fileset dir="${basedir}/output" includes="*.mrk" id="markfiles" />
 				<foreach param="serverFile" in="markfiles">
 					<echo>Failure running ${test.bucket.name}, attempting to copy logs from servers that did not stop properly : ${serverFile}</echo>
-					<local name="serverDir"/>
+					<local name="serverDir" />
 					<basename property="serverDir" file="${serverFile}" suffix=".mrk" />
 					<tstamp>
 						<format property="copyTime" pattern="dd-MM-yyyy-HH-mm-ss" />
@@ -425,12 +502,12 @@
 		</try>
 		<echo>Finished running ${test.bucket.name}</echo>
 		<echo>XML report is available at ${dir.log.xml}</echo>
-        <iff if="is.running.automated.build">
-        	<then>
-        		<!-- Restore the keys so nothing is broken -->
-        		<restoreSSHKeys />
-        	</then>
-        </iff>
+		<iff if="is.running.automated.build">
+			<then>
+				<!-- Restore the keys so nothing is broken -->
+				<restoreSSHKeys />
+			</then>
+		</iff>
 
 
 		<iff if="test.failure">
@@ -689,7 +766,7 @@
 		</loadresource>
 
 		<path id="project.under.test.bundles">
-			<fileset dir="${libertyInstallPath}/lib" >
+			<fileset dir="${libertyInstallPath}/lib">
 				<include name="${project.under.test}*.jar" />
 				<exclude name="com.ibm.ws.jaxrs.2.0.common*.jar" />
 			</fileset>
@@ -755,7 +832,7 @@
 			<!--  the class files and optional source files ...  -->
 			<structure name="FAT coverage report for ${project.under.test}">
 				<classfiles>
-					<fileset dir="${libertyInstallPath}/lib" >
+					<fileset dir="${libertyInstallPath}/lib">
 						<include name="${project.under.test}*.jar" />
 						<exclude name="com.ibm.ws.jaxrs.2.0.common*.jar" />
 					</fileset>
@@ -780,7 +857,7 @@
 			<!--  the class files and optional source files ...  -->
 			<structure name="FAT coverage report for ${project.under.test}">
 				<classfiles>
-					<fileset dir="${libertyInstallPath}/lib" >
+					<fileset dir="${libertyInstallPath}/lib">
 						<include name="${project.under.test}*.jar" />
 						<exclude name="com.ibm.ws.jaxrs.2.0.common*.jar" />
 					</fileset>
@@ -813,7 +890,7 @@
 	     status is desired from a single pass.
 	  -->
 	<target name="failIfTestFailures">
-		<echo message="haltOnFailure is '${haltOnFailure}'"/>
+		<echo message="haltOnFailure is '${haltOnFailure}'" />
 		<iff>
 			<and>
 				<not>
@@ -823,9 +900,9 @@
 				<!-- and the halt flag is either not set or set true-ish -->
 				<or>
 					<not>
-						<isset property="haltOnFailure"/>
+						<isset property="haltOnFailure" />
 					</not>
-					<istrue value="haltOnFailure"/>
+					<istrue value="haltOnFailure" />
 				</or>
 			</and>
 			<then>

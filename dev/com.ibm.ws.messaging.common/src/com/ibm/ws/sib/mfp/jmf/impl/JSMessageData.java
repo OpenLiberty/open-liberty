@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.sib.mfp.jmf.JMFEncapsulation;
@@ -125,7 +126,7 @@ import com.ibm.ws.sib.mfp.util.ArrayUtil;
  * very difficult, even with the locking that is in place.
  * 
  */
-public abstract class JSMessageData extends AbstractList implements JMFMessageData, FFDCSelfIntrospectable {
+public abstract class JSMessageData extends AbstractList implements JMFMessageData, FFDCSelfIntrospectable, Traceable {
     private static TraceComponent tc = JmfTr.register(JSMessageData.class, JmfConstants.MSG_GROUP, JmfConstants.MSG_BUNDLE);
 
     // Subclasses must implement the following methods
@@ -1813,6 +1814,11 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
     public String toString() {
         String result = getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(this));
         return result;
+    }
+
+    @Override
+    public String toTraceString() {
+        return toString();
     }
 
     /*

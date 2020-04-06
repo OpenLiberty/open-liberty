@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -34,13 +37,12 @@ import web.PersistentTimersTestServlet;
 public class PersistentExecutorTimersTest extends FATServletClient {
 
     private static final String APP_NAME = "timersapp";
-    private static final String DB_NAME = "persisttimers";
 
     @TestServlet(servlet = PersistentTimersTestServlet.class, path = APP_NAME)
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.timers");
-    
+
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     /**
      * Before running any tests, start the server
@@ -61,9 +63,6 @@ public class PersistentExecutorTimersTest extends FATServletClient {
 
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-
-		//Initialize database
-		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
 		
 		//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "ejb");

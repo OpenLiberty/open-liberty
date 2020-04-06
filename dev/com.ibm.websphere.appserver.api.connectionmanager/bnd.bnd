@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.1
+bVersion: 1.2
 
 Bundle-Name: WebSphere Connection Manager API
 Bundle-Description: WebSphere Connection Manager API, version ${bVersion}

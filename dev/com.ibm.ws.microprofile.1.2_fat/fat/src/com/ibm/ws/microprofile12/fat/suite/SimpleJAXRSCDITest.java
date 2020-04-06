@@ -68,12 +68,12 @@ public class SimpleJAXRSCDITest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer("CWMOT0008E"); //CWMOT0008E: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided.
+            server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
         }
     }
 
-    private static final String[] MP_VERSIONS = { "1.2", "1.3", "1.4", "2.0", "2.1", "2.2", "3.0", "3.2" };
-    private static final String LITE_MODE = "3.2";
+    private static final String[] MP_VERSIONS = { "1.2", "1.3", "1.4", "2.0", "2.1", "2.2", "3.0", "3.2", "3.3" };
+    private static final String LITE_MODE = "3.3";
 
     @ClassRule
     public static RepeatTests r = getMPRepeat();

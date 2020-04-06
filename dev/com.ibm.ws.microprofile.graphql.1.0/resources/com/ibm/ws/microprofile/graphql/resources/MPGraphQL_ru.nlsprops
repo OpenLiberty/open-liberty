@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMGQ
+#COMPONENTNAMEFOR CWMGQ MicroProfile GraphQL API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MP GraphQL Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ERROR_GENERATING_SCHEMA_CWMGQ0001E=CWMGQ0001E: \u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 MicroProfile GraphQL \u043d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c \u0438\u0437-\u0437\u0430 \u043e\u0448\u0438\u0431\u043a\u0438 \u0432 \u0432\u0435\u0431-\u043c\u043e\u0434\u0443\u043b\u0435 {0}.
+ERROR_GENERATING_SCHEMA_CWMGQ0001E.explanation=\u041f\u0440\u0438 \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0435 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f MP GraphQL \u043e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d\u0430 \u0441\u0435\u0440\u044c\u0435\u0437\u043d\u0430\u044f \u043e\u0448\u0438\u0431\u043a\u0430 \u0432 \u0443\u043a\u0430\u0437\u0430\u043d\u043d\u043e\u043c \u043c\u043e\u0434\u0443\u043b\u0435. \u0418\u0437-\u0437\u0430 \u044d\u0442\u043e\u0439 \u043e\u0448\u0438\u0431\u043a\u0438 \u043d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435.
+ERROR_GENERATING_SCHEMA_CWMGQ0001E.useraction=\u041e\u043f\u0440\u0435\u0434\u0435\u043b\u0438\u0442\u0435 \u043e\u0448\u0438\u0431\u043a\u0438 \u0432 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438 GraphQL, \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0435\u0432 \u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b\u044b, \u0443\u0441\u0442\u0440\u0430\u043d\u0438\u0442\u0435 \u0438\u0445 \u0438 \u0437\u0430\u043d\u043e\u0432\u043e \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0438\u0442\u0435 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435.
+

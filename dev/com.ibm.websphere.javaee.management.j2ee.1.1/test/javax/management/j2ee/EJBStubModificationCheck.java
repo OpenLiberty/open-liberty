@@ -27,14 +27,14 @@ public class EJBStubModificationCheck {
 
     @Test
     public void testManagementUnmodified() throws IOException {
-        verifyChecksum("javax/management/j2ee/Management.class", 279782729L, // checksum for java 7-12
-                       1454140383L); // checksum for java 13 (signature is same, only constant pool entries change)
+        verifyChecksum("javax/management/j2ee/Management.class", 2654422574L, // checksum for java 8-12
+                       3627419832L); // checksum for java 13 (signature is same, only constant pool entries change)
     }
 
     @Test
     public void testManagementHomeUnmodified() throws IOException {
-        verifyChecksum("javax/management/j2ee/ManagementHome.class", 2871325588L, // checksum for java 7-12
-                       2790300298L); // checksum for java 13 (signature is same, only constant pool entries change)
+        verifyChecksum("javax/management/j2ee/ManagementHome.class", 298015494L, // checksum for java 8-12
+                       481767960L); // checksum for java 13 (signature is same, only constant pool entries change)
     }
 
     private void verifyChecksum(String clazz, long... expectedChecksums) throws IOException {

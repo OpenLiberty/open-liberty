@@ -42,6 +42,8 @@ public class LooseConfigTest extends AnnoCachingTest {
 
         startServerScrub();
 
+        waitForConsole("LISTENER 2 EXITED");
+
         LOG.info("setUp: RETURN");
     }
 

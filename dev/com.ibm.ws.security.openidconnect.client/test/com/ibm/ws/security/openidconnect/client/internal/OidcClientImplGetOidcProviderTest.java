@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
@@ -272,6 +272,8 @@ public class OidcClientImplGetOidcProviderTest {
             {
                 one(oidcClientConfig3).isOidcclientRequestParameterSupported();
                 will(returnValue(false));
+                allowing(req).getRequestURL();
+                will(returnValue(new StringBuffer("foourl")));
             }
         });
     }
@@ -336,6 +338,8 @@ public class OidcClientImplGetOidcProviderTest {
                     will(returnValue("POST"));
                     one(req).getAttribute("ServletRequestWrapperHashmap");
                     will(returnValue(map));
+                    allowing(req).getRequestURL();
+                    will(returnValue(new StringBuffer("foourl")));
 
                     // this expectation will set the reqProviderHint to oidcClientConfig3
                     one(req).getHeader(ClientConstants.OIDC_AUTHN_HINT_HEADER);

@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: Nincs akt\u00edv WS-AT tranzakci\u00f3 {0} azonos\u00edt\u00f3val.
+NO_WSAT_TRAN_CWLIB0201.explanation=Nem tal\u00e1lhat\u00f3 a k\u00e9rt glob\u00e1lis tranzakci\u00f3azonos\u00edt\u00f3nak megfelel\u0151 akt\u00edv WS-AT tranzakci\u00f3.
+NO_WSAT_TRAN_CWLIB0201.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a napl\u00f3kat.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: Nem tal\u00e1lhat\u00f3 {1} azonos\u00edt\u00f3j\u00fa r\u00e9sztvev\u0151 a(z) {0} tranzakci\u00f3hoz.
+NO_WSAT_PART_CWLIB0202.explanation=Nem tal\u00e1lhat\u00f3 a k\u00e9rt azonos\u00edt\u00f3nak megfelel\u0151 tranzakci\u00f3s r\u00e9sztvev\u0151 a glob\u00e1lis tranzakci\u00f3 r\u00e9szek\u00e9nt.
+NO_WSAT_PART_CWLIB0202.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a napl\u00f3kat.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: A tranzakci\u00f3s id\u0151korl\u00e1t lej\u00e1rt. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=A tranzakci\u00f3s id\u0151korl\u00e1t lej\u00e1rt, \u00e9s a m\u0171velet vissza lett g\u00f6rgetve.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a napl\u00f3kat.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: A protokoll webszolg\u00e1ltat\u00e1s nem h\u00edvhat\u00f3 meg. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=Hiba t\u00f6rt\u00e9nt a rendszer webszolg\u00e1ltat\u00e1sainak megh\u00edv\u00e1sakor.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a napl\u00f3kat.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: Tranzakci\u00f3 feldolgoz\u00e1si hiba.
+TRAN_MGR_ERROR_CWLIB0205.explanation=Hiba t\u00f6rt\u00e9nt a tranzakci\u00f3s f\u00fcggv\u00e9ny feldolgoz\u00e1sakor.
+TRAN_MGR_ERROR_CWLIB0205.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a napl\u00f3kat.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: SSL {0} enged\u00e9lyez\u00e9se a WS-AT sz\u00e1m\u00e1ra.
+WSAT_SECURITY_CWLIB0206.explanation=A WS-AT SSL kapcsolatot haszn\u00e1l a bels\u0151 kommunik\u00e1ci\u00f3 biztons\u00e1goss\u00e1 t\u00e9tel\u00e9hez.
+WSAT_SECURITY_CWLIB0206.useraction=Nincs.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: A(z) {0} externalURLPrefix enged\u00e9lyez\u00e9se a WS-AT sz\u00e1m\u00e1ra.
+WSAT_PROXY_CWLIB0207.explanation=A WS-AT proxyt haszn\u00e1l a bels\u0151 kommunik\u00e1ci\u00f3hoz.
+WSAT_PROXY_CWLIB0207.useraction=Nincs.
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: A tranzakci\u00f3s er\u0151forr\u00e1s soros\u00edt\u00e1sa nem sz\u00fcntethet\u0151 meg.
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=Hiba t\u00f6rt\u00e9nt a tranzakci\u00f3kezel\u0151-er\u0151forr\u00e1s feldolgoz\u00e1sakor.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a napl\u00f3kat.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: A rendszerszolg\u00e1ltat\u00e1s v\u00e9gpontja nem k\u00e9rdezhet\u0151 le.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=Hiba t\u00f6rt\u00e9nt a rendszer webszolg\u00e1ltat\u00e1saihoz tartoz\u00f3 v\u00e9gpont lek\u00e9rdez\u00e9se sor\u00e1n. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a napl\u00f3kat.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: A(z) {0} externalURLPrefix a WS-AT sz\u00e1m\u00e1ra csak http(s):// karaktersorozattal kezd\u0151dhet
+WSAT_PROXY_CWLIB0210.explanation=A WS-AT proxy c\u00edme csak http(s):// karaktersorozattal kezd\u0151dhet
+WSAT_PROXY_CWLIB0210.useraction=M\u00f3dos\u00edtsa az externalURLPrefix c\u00edmet, hogy http(s):// karaktersorozattal kezd\u0151dj\u00f6n
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: A(z) {0} externalURLPrefix a WS-AT sz\u00e1m\u00e1ra csak https:// karaktersorozattal kezd\u0151dhet, ha enged\u00e9lyezve van az SSL.
+WSAT_PROXY_CWLIB0211.explanation=A WS-AT proxy c\u00edme csak https:// karaktersorozattal kezd\u0151dhet, ha enged\u00e9lyezve van az SSL.
+WSAT_PROXY_CWLIB0211.useraction=M\u00f3dos\u00edtsa az externalURLPrefix c\u00edmet, hogy https:// karaktersorozattal kezd\u0151dj\u00f6n, ha enged\u00e9lyezve van az SSL.

@@ -1,0 +1,130 @@
+###############################################################################
+# Copyright (c) 2019,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.acme/resources/com/ibm/ws/security/acme/resources/AcmeMessages.nlsprops
+#COMPONENTPREFIX CWPKI
+#COMPONENTNAMEFOR WebSphere ACME
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWPKI2000 - CWPKI2299
+#-----  ACME messages
+
+# The ACME referred to in these messages stands for Automatic Certificate Management Environment.
+# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
+
+CWPKI2001E=CWPKI2001E: L''autorit\u00e9 de certification ACME dont l''URI est {0} a r\u00e9pondu que la demande d''authentification de l''autorisation a \u00e9chou\u00e9 pour le domaine {1}. Le statut de la demande d''authentification est {2}. L''erreur est la suivante : {3}.
+CWPKI2001E.explanation=Le statut de la demande d'authentification indique que la demande d'authentification de l'autorisation a \u00e9chou\u00e9 et qu'un certificat ne peut pas \u00eatre cr\u00e9\u00e9.
+CWPKI2001E.useraction=Consultez le message d'\u00e9tat et l'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2002E=CWPKI2002E: Le d\u00e9lai d''interrogation du service ACME a \u00e9t\u00e9 d\u00e9pass\u00e9 lors de la recherche d''une demande d''authentification d''autorisation ayant abouti pour le domaine {0} depuis l''autorit\u00e9 de certification ACME dont l''URI est {1}. Le statut est {2}. Le d\u00e9lai configur\u00e9 est {3}.
+CWPKI2002E.explanation=La demande d'authentification de l'autorit\u00e9 de certification n'a pas \u00e9t\u00e9 valid\u00e9e au cours du d\u00e9lai configur\u00e9 et un certificat ne peut pas \u00eatre cr\u00e9\u00e9.
+CWPKI2002E.useraction=V\u00e9rifiez l'URI d'autorit\u00e9 de certification configur\u00e9. Assurez-vous qu'il est accessible par le serveur appelant. V\u00e9rifiez que le serveur appelant peut recevoir une r\u00e9ponse de l'autorit\u00e9 de certification. Prenez connaissance du code de statut. Il se peut que certaines autorit\u00e9s de certification requi\u00e8rent un d\u00e9lai plus long.
+
+CWPKI2003E=CWPKI2003E: L''autorit\u00e9 de certification ACME dont l''URI est {0} a r\u00e9pondu que la demande de certificat a \u00e9chou\u00e9 pour les domaines {1}. Le statut de la demande est {2}. L''erreur est la suivante : {3}.
+CWPKI2003E.explanation=Le statut de la demande indique que la demande d'autorisation a \u00e9chou\u00e9 et qu'un certificat ne peut pas \u00eatre cr\u00e9\u00e9.
+CWPKI2003E.useraction=Consultez le message d'\u00e9tat et l'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2004E=CWPKI2004E: Le d\u00e9lai d''interrogation du service ACME a \u00e9t\u00e9 d\u00e9pass\u00e9 lors de la recherche d''une demande ayant abouti pour le domaine {0} depuis l''autorit\u00e9 de certification ACME dont l''URI est {1}. Le statut est {2}. Le d\u00e9lai configur\u00e9 est {3}.
+CWPKI2004E.explanation=La demande de certificat de domaine de l'autorit\u00e9 de certification n'a pas abouti au cours du d\u00e9lai configur\u00e9 et un certificat ne peut pas \u00eatre cr\u00e9\u00e9.
+CWPKI2004E.useraction=V\u00e9rifiez l'URI d'autorit\u00e9 de certification configur\u00e9. Assurez-vous qu'il est accessible par le serveur appelant. V\u00e9rifiez que le serveur appelant peut recevoir une r\u00e9ponse de l'autorit\u00e9 de certification. Prenez connaissance du code de statut. Il se peut que certaines autorit\u00e9s de certification requi\u00e8rent un d\u00e9lai plus long.
+
+CWPKI2005E=CWPKI2005E: L''autorisation renvoy\u00e9e par l''autorit\u00e9 de certification ACME dont l''URI est {0} n''inclut pas un type de demande d''authentification valide. Les types de demande d''authentification pris en charge sont les suivants : {1}.
+CWPKI2005E.explanation=L'autorit\u00e9 de certification a renvoy\u00e9 un type de demande d'authentification qui n'est pas pris en charge actuellement. V\u00e9rifiez que l'autorit\u00e9 de certification utilise un type figurant dans la liste prise en charge.
+CWPKI2005E.useraction=S\u00e9lectionnez une autorit\u00e9 de certification qui fournit un type de demande d'authentification pris en charge. 
+CWPKI2006I=CWPKI2006I: L''autorit\u00e9 de certification ACME dont l''URI est {0} a indiqu\u00e9 les conditions d''utilisation suivantes : {1}.
+CWPKI2006I.explanation=L'autorit\u00e9 de certification indique les conditions d'utilisation.
+CWPKI2006I.useraction= Prenez connaissance des conditions d'utilisation indiqu\u00e9es.
+
+CWPKI2007I=CWPKI2007I: Le service ACME a install\u00e9 un certificat qui est sign\u00e9 par l''autorit\u00e9 de certification ACME dont l''URI est {0}. La date d''expiration est le {1}.
+CWPKI2007I.explanation=Le service ACME a extrait et install\u00e9 un certificat depuis l'autorit\u00e9 de certification configur\u00e9e.
+CWPKI2007I.useraction=Aucune action n'est requise.
+
+CWPKI2008E=CWPKI2008E: L''URI du r\u00e9pertoire de l''autorit\u00e9 de certification ACME doit \u00eatre valide. L''URI re\u00e7u est nul ou vide. L''URI re\u00e7u est le suivant : '{0}'.
+CWPKI2008E.explanation=L'URI du r\u00e9pertoire de l'autorit\u00e9 de certification n'a pas \u00e9t\u00e9 configur\u00e9 correctement.
+CWPKI2008E.useraction=Entrez un URI de r\u00e9pertoire d'autorit\u00e9 de certification ACME valide dans la configuration.
+
+CWPKI2009E=CWPKI2009E: La demande d''authentification envoy\u00e9e \u00e0 l''autorit\u00e9 de certification ACME dont l''URI est {0} a \u00e9chou\u00e9. L''erreur est la suivante : {1}.
+CWPKI2009E.explanation=La demande d'authentification a \u00e9chou\u00e9 et un certificat ne peut pas \u00eatre cr\u00e9\u00e9.
+CWPKI2009E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2010E=CWPKI2010E: La mise \u00e0 jour de la demande d''authentification envoy\u00e9e \u00e0 l''autorit\u00e9 de certification ACME dont l''URI est {0} a \u00e9chou\u00e9. L''erreur est la suivante : {1}.
+CWPKI2010E.explanation=La mise \u00e0 jour de la demande d'authentification a \u00e9chou\u00e9 et un certificat ne peut pas \u00eatre mis \u00e0 jour.
+CWPKI2010E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2011E=CWPKI2011E: Le service ACME n''est pas parvenu \u00e0 cr\u00e9er la demande de certificat pour l''autorit\u00e9 de certification ACME dont l''URI est {0}. L''erreur est la suivante : {1}.
+CWPKI2011E.explanation=La cr\u00e9ation de la demande de certificat a \u00e9chou\u00e9 et un certificat sign\u00e9 ne peut pas \u00eatre demand\u00e9.
+CWPKI2011E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2012E=CWPKI2012E: Le service ACME n''est pas parvenu \u00e0 signer la demande de signature de certificat pour l''autorit\u00e9 de certification ACME dont l''URI est {0}. L''erreur est la suivante : {1}.
+CWPKI2012E.explanation=La demande de certificat a \u00e9t\u00e9 cr\u00e9\u00e9e mais la signature de la demande a \u00e9chou\u00e9 et un certificat sign\u00e9 ne peut pas \u00eatre demand\u00e9.
+CWPKI2012E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2013E=CWPKI2013E: La demande de signature de certificat a \u00e9t\u00e9 cr\u00e9\u00e9e et sign\u00e9e, mais la demande envoy\u00e9e \u00e0 l''autorit\u00e9 de certification ACME dont l''URI est {0} a \u00e9chou\u00e9. L''erreur est la suivante : {1}.
+CWPKI2013E.explanation=La demande de certificat a \u00e9t\u00e9 cr\u00e9\u00e9e et sign\u00e9e, mais la demande de certificat depuis l'autorit\u00e9 de certification a \u00e9chou\u00e9.
+CWPKI2013E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2014E=CWPKI2014E: La demande de signature de certificat pour l''autorit\u00e9 de certification ACME dont l''URI est {0} a \u00e9t\u00e9 cr\u00e9\u00e9e et sign\u00e9e, mais le codage de la demande a \u00e9chou\u00e9. L''erreur est la suivante : {1}.
+CWPKI2014E.explanation=Le codage de la demande de signature de certificat a \u00e9chou\u00e9 et un certificat sign\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9.
+CWPKI2014E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2015E=CWPKI2015E: La demande de statut de la demande de certificat du service ACME envoy\u00e9e \u00e0 l''autorit\u00e9 de certification ACME dont l''URI est {0} a \u00e9chou\u00e9. L''erreur est la suivante : {1}.
+CWPKI2015E.explanation=Une demande est trait\u00e9e de fa\u00e7on asynchrone par l'autorit\u00e9 de certification. Le service ACME a re\u00e7u une erreur lors de la v\u00e9rification du statut de la demande. Un certificat sign\u00e9 ne peut pas \u00eatre demand\u00e9.
+CWPKI2015E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2016E=CWPKI2016E: La demande de service ACME pour un compte existant aupr\u00e8s de l''autorit\u00e9 de certification ACME dont l''URI est {0} a \u00e9chou\u00e9. L''erreur est la suivante : {1}.
+CWPKI2016E.explanation=Un compte existant est introuvable ou une autre erreur est survenue. Le compte et le certificat ne peuvent pas \u00eatre modifi\u00e9s.
+CWPKI2016E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec. Assurez-vous qu'il est accessible par le serveur appelant. V\u00e9rifiez que le serveur appelant peut recevoir une r\u00e9ponse de l'autorit\u00e9 de certification. 
+CWPKI2017E=CWPKI2017E: La demande ACME pour les conditions d''utilisation de l''autorit\u00e9 de certification ACME dont l''URI est {0} a \u00e9chou\u00e9. L''erreur est la suivante : {1}.
+CWPKI2017E.explanation=Les conditions d'utilisation pour l'autorit\u00e9 de certification ACME ne peuvent pas \u00eatre consign\u00e9es. 
+CWPKI2017E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec. Visitez le site Web de l'autorit\u00e9 de certification ACME pour prendre connaissance des conditions d'utilisation.
+
+CWPKI2018E=CWPKI2018E: Le compte utilisateur n''a pas pu \u00eatre cr\u00e9\u00e9 par l''autorit\u00e9 de certification ACME dont l''URI est {0}. L''erreur est la suivante : {1}.
+CWPKI2018E.explanation=La demande de cr\u00e9ation du compte utilisateur a \u00e9chou\u00e9.
+CWPKI2018E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2019I=CWPKI2019I: L''URL du compte fournie par l''autorit\u00e9 de certification ACME dont l''URI est {0} est {1}.
+CWPKI2019I.explanation=Le compte a \u00e9t\u00e9 cr\u00e9\u00e9.
+CWPKI2019I.useraction=Aucune action n'est requise.
+
+CWPKI2020E=CWPKI2020E: Le service ACME n''a pas pu lire le fichier de cl\u00e9s du domaine pour le compte de l''autorit\u00e9 de certification ACME dont l''URI est {0}. L''emplacement du fichier est {1}. L''erreur est la suivante : {2}.
+CWPKI2020E.explanation=Le fichier de cl\u00e9s du domaine pour le compte de l'autorit\u00e9 de certification n'a pas pu \u00eatre ouvert. Ce probl\u00e8me peut survenir si les droits d'acc\u00e8s au fichier sont incorrects ou si le fichier n'existe pas.
+CWPKI2020E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec. V\u00e9rifiez que l'emplacement du fichier est correct et que le serveur dispose des droits d'acc\u00e8s en lecture pour le fichier.
+
+CWPKI2021E=CWPKI2021E: Le service ACME n''a pas pu lire le fichier de cl\u00e9s du compte pour le compte de l''autorit\u00e9 de certification ACME dont l''URI est {0}. L''emplacement du fichier est {1}. L''erreur est la suivante : {2}.
+CWPKI2021E.explanation=Le fichier de cl\u00e9s du compte pour le compte de l'autorit\u00e9 de certification n'a pas pu \u00eatre ouvert. Ce probl\u00e8me peut survenir si les droits d'acc\u00e8s au fichier sont incorrects ou si le fichier n'existe pas.
+CWPKI2021E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec. V\u00e9rifiez que l'emplacement du fichier est correct et que le serveur dispose des droits d'acc\u00e8s en lecture pour le fichier.
+
+CWPKI2022E=CWPKI2022E: Le service ACME n''a pas pu \u00e9crire dans le fichier de cl\u00e9s du domaine pour le compte de l''autorit\u00e9 de certification ACME dont l''URI est {0}. L''emplacement du fichier est {1}. L''erreur est la suivante : {2}.
+CWPKI2022E.explanation=Les cl\u00e9s du domaine n'ont pas pu \u00eatre stock\u00e9es dans le fichier de cl\u00e9s du domaine. Ce probl\u00e8me peut survenir si les droits d'acc\u00e8s au fichier sont incorrects ou si le fichier n'existe pas.
+CWPKI2022E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec. V\u00e9rifiez que l'emplacement du fichier est correct et que le serveur dispose des droits d'acc\u00e8s en \u00e9criture pour le fichier.
+
+CWPKI2023E=CWPKI2023E: Echec de l''\u00e9criture dans le fichier de cl\u00e9s du compte pour le compte de l''autorit\u00e9 de certification ACME dont l''URI est {0}. L''emplacement du fichier est {1}. L''erreur est la suivante : {2}.
+CWPKI2023E.explanation=Les cl\u00e9s du compte n'ont pas pu \u00eatre stock\u00e9es dans le fichier de cl\u00e9s du compte. Ce probl\u00e8me peut survenir si les droits d'acc\u00e8s au fichier sont incorrects ou si le fichier n'existe pas.
+CWPKI2023E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec. V\u00e9rifiez que l'emplacement du fichier est correct et que le serveur dispose des droits d'acc\u00e8s en \u00e9criture pour le fichier.
+
+CWPKI2024E=CWPKI2024E: Le service ACME n''est pas parvenu \u00e0 r\u00e9voquer le certificat demand\u00e9 pour l''autorit\u00e9 de certification ACME dont l''URI est {0}. Le num\u00e9ro de s\u00e9rie du certificat est {1}. L''erreur est la suivante : {2}.
+CWPKI2024E.explanation=Une demande de r\u00e9vocation de certificat a \u00e9chou\u00e9. Il se peut que le certificat n'ait pas \u00e9t\u00e9 r\u00e9voqu\u00e9 et qu'il soit toujours en cours d'utilisation.
+CWPKI2024E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec.
+
+CWPKI2025W=CWPKI2025W: Le service ACME a re\u00e7u une demande de r\u00e9vocation de certificat, mais la paire de cl\u00e9s de compte pour l''autorit\u00e9 de certification ACME dont l''URI est {0} n''a pas pu \u00eatre charg\u00e9e.
+CWPKI2025W.explanation=La demande de r\u00e9vocation de certificat a \u00e9chou\u00e9 car la paire de cl\u00e9s de compte n'a pas pu \u00eatre charg\u00e9e.
+CWPKI2025W.useraction=Recherchez dans le journal toute erreur pr\u00e9c\u00e9dente pour des d\u00e9tails sur l'\u00e9chec. R\u00e9visez le fichier du magasin de cl\u00e9s afin de v\u00e9rifier que le certificat existe.
+
+CWPKI2026W=CWPKI2026W: Le service ACME a re\u00e7u une demande de r\u00e9vocation de certificat, mais le compte est introuvable dans l''autorit\u00e9 de certification ACME dont l''URI est {0}.
+CWPKI2026W.explanation=La demande de r\u00e9vocation de certificat a \u00e9chou\u00e9 car le compte est introuvable.
+CWPKI2026W.useraction=V\u00e9rifiez l'URI d'autorit\u00e9 de certification. R\u00e9visez le fichier du magasin de cl\u00e9s afin de v\u00e9rifier que le certificat existe.
+
+CWPKI2027E=CWPKI2027E: Le chemin d''acc\u00e8s au fichier {0} pour le service ACME est nul ou vide. Le chemin indiqu\u00e9 est '{1}'.
+CWPKI2027E.explanation=Le chemin d'acc\u00e8s au fichier est nul ou vide et ne peut pas \u00eatre utilis\u00e9 pour les cl\u00e9s de domaine et de compte.
+CWPKI2027E.useraction=Indiquez un chemin d'acc\u00e8s au fichier valide dans la configuration.

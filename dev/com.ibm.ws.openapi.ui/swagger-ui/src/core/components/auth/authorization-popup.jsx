@@ -9,7 +9,7 @@ export default class AuthorizationPopup extends React.Component {
   }
 
   render() {
-    let { authSelectors, authActions, getComponent, errSelectors, specSelectors, fn: { AST } } = this.props
+    let { authSelectors, authActions, getComponent, errSelectors, specSelectors, fn: { AST = {} } } = this.props
     let definitions = authSelectors.shownDefinitions()
     const Auths = getComponent("auths")
 
@@ -21,7 +21,7 @@ export default class AuthorizationPopup extends React.Component {
             <div className="modal-ux-inner">
               <div className="modal-ux-header">
                 <h3>Available authorizations</h3>
-                <button type="button" className="close-modal" aria-label="close modal" onClick={ this.close }>
+                <button type="button" className="close-modal" onClick={ this.close }>
                   <svg width="20" height="20">
                     <use href="#close" xlinkHref="#close" />
                   </svg>

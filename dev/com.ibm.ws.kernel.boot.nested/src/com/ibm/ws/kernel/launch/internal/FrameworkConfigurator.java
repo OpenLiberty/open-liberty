@@ -112,6 +112,10 @@ public class FrameworkConfigurator {
         // It is not clear that multi-threading really helps with performance of the resolver.
         config.putIfAbsent("equinox.resolver.thread.count", "1");
 
+        // Disable the capture of log locations since we do not use location in logging of our entries
+        // when tracing is enabled for the logservice
+        config.putIfAbsent("equinox.log.capture.entry.location", "false");
+
         // By default use multiple threads for activating bundles from start-level
         // Set to the min of 4 or Runtime.getRuntime().availableProcessors().
         // Testing shows that going with more than 4 threads does not help

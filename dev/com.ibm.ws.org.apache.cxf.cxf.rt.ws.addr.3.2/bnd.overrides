@@ -14,10 +14,6 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2
 
-Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.ws.addr.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 Import-Package: \
 !com.ctc.wstx.*,\
 !org.codehaus.stax2.*,\
@@ -31,13 +27,12 @@ Import-Package: \
 !org.apache.aries.*,\
 !org.apache.cxf.transport.https,\
 !org.osgi.service.blueprint.*,\
-javax.xml.bind;version="[2.3,3)",\
-javax.xml.bind.annotation;version="[2.3,3)",\
-javax.xml.bind.annotation.adapters;version="[2.3,3)",\
-javax.xml.bind.attachment;version="[2.3,3)",\
+javax.xml.bind;version=!,\
+javax.xml.bind.annotation;version=!,\
+javax.xml.bind.annotation.adapters;version=!,\
+javax.xml.bind.attachment;version=!,\
 javax.xml.ws.*;version="[2.3,3)", \
 *
 
 Export-Package: \
-  com.ibm.ws.jaxws23.cxf.rt.ws.addr,\
   org.apache.cxf.ws.addr.*;version=${cxfVersion}

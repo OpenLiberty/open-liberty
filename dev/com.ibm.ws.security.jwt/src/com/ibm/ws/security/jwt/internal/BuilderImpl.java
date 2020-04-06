@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.jwt.internal;
@@ -340,7 +340,7 @@ public class BuilderImpl implements Builder {
             claims.put(Claims.EXPIRATION, Long.valueOf(exp));
         } else {
             // Expiration must be greater than the current time
-            String err = Tr.formatMessage(tc, "JWT_INVALID_EXP_CLAIM_ERR", new Object[] { Claims.EXPIRATION, exp, JwtUtils.getDate(exp), JwtUtils.getDate(currTime) });
+            String err = Tr.formatMessage(tc, "JWT_INVALID_EXP_CLAIM_ERR", new Object[] { Claims.EXPIRATION, exp, JwtUtils.getDate(exp * 1000), JwtUtils.getDate(currTime * 1000) });
             throw new InvalidClaimException(err);
         }
         return this;

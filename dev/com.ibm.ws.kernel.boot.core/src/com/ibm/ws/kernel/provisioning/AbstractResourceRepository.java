@@ -201,7 +201,7 @@ public abstract class AbstractResourceRepository {
                         // Kernel.boot jar when ifixed has no base bundle as the jar keeps the same name due to tooling
                         // having the jar by name on manifest classpaths.  Therefore for this jar there will only be a
                         // single match so return as soon as we have it.
-                        if ("com.ibm.ws.kernel.boot".equals(symbolicName)) {
+                        if (("com.ibm.ws.kernel.boot".equals(symbolicName)) || ("com.ibm.ws.kernel.boot.archive".equals(symbolicName))) {
                             return bestMatch.getFile();
                         }
                     }

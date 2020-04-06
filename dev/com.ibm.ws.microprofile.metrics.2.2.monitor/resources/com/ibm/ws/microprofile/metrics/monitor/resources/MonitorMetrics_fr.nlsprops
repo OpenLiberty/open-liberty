@@ -23,5 +23,5 @@ FEATURE_REGISTERED.explanation=Les fonctions monitor-1.0 et mpMetrics-2.2 sont a
 FEATURE_REGISTERED.useraction=Aucune action utilisateur n'est requise.
 
 FEATURE_UNREGISTERED=CWPMI2004I: L'enregistrement de toutes les m\u00e9triques de surveillance a \u00e9t\u00e9 annul\u00e9 depuis mpMetrics.
-FEATURE_UNREGISTERED.explanation=La fonction monitor-1.0, la fonction mpMetrics-2.2 ou les deux fonctions ont \u00e9t\u00e9 retir\u00e9es du serveur et l'enregistrement de toutes les m\u00e9triques de surveillance a \u00e9t\u00e9 annul\u00e9 depuis mpMetrics.
+FEATURE_UNREGISTERED.explanation=La fonction monitor-1.0 ou mpMetrics-2.2 ou les deux ont \u00e9t\u00e9 retir\u00e9es du serveur et l'enregistrement de toutes les m\u00e9triques de surveillance a \u00e9t\u00e9 annul\u00e9 depuis mpMetrics.
 FEATURE_UNREGISTERED.useraction=Aucune action utilisateur n'est requise.

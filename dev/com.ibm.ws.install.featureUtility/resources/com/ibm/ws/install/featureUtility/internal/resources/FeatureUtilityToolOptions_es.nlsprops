@@ -1,0 +1,67 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Uso: {0}
+
+global.description=Descripci\u00f3n:
+global.actions=Acciones:
+global.options=Opciones:
+global.options.lower=opciones
+global.usage=Uso:
+global.options.statement=\tUtilice help [nombreAcci\u00f3n] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
+task.unknown=Acci\u00f3n desconocida: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tImprimir informaci\u00f3n de ayuda para la acci\u00f3n especificada.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tInstale una caracter\u00edstica o una lista de caracter\u00edsticas separadas por espacios.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ nombre ...
+installFeature.option-desc.name...=\tUna o m\u00e1s caracter\u00edsticas que est\u00e1n separadas por un espacio. Para caracter\u00edsticas,    \n\
+\tespecifique el nombre abreviado de la caracter\u00edstica o la coordenada Maven. Si        \n\
+\tespecifica una coordenada Maven, debe contener como m\u00ednimo el ID de                 \n\
+\tgrupo y el ID de artefacto                                     \n\
+\t(por ejemplo, io.openliberty.features:mpHealth-2.0).                 \n\
+\tLa versi\u00f3n toma el valor predeterminado de la versi\u00f3n de tiempo  \n\
+\tde ejecuci\u00f3n actual y el tipo de empaquetado toma el valor predeterminado de      \n\
+\tESA si la versi\u00f3n y el empaquetado no se especifican.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[extensi\u00f3n|usr]
+installFeature.option-desc.--to=\tEspecifique d\u00f3nde debe instalarse la caracter\u00edstica. La caracter\u00edstica puede instalarse en\n\
+\tuna ubicaci\u00f3n de ampliaci\u00f3n de producto configurada, o como una caracter\u00edstica de usuario. Si  \n\
+\testa opci\u00f3n no se especifica, la caracter\u00edstica se instala como una \n\
+\tcaracter\u00edstica de usuario.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
+installFeature.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\
+\trepositorio de artefacto de Maven como origen para que featureUtility instale activos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tVisualiza informaci\u00f3n de depuraci\u00f3n adicional mientras se ejecuta la acci\u00f3n.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tLas caracter\u00edsticas instaladas desde un repositorio remoto     \n\
+\t(por ejemplo, Maven Central) no est\u00e1n almacenadas en memoria cach\u00e9 localmente.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tInstale las caracter\u00edsticas necesarias para un servidor indicado.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ nombre ...
+installServerFeatures.option-desc.name...=\tEl nombre de un servidor existente en el mismo entorno de Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
+installServerFeatures.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\
+\trepositorio de artefacto de Maven como origen para que featureUtility instale activos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tVisualiza informaci\u00f3n de depuraci\u00f3n adicional mientras se ejecuta la acci\u00f3n.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tLas caracter\u00edsticas instaladas desde un repositorio remoto     \n\
+\t(por ejemplo, Maven Central) no est\u00e1n almacenadas en memoria cach\u00e9 localmente.

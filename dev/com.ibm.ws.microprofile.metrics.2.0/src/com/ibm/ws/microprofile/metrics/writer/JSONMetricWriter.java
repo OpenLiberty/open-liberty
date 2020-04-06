@@ -78,11 +78,11 @@ public class JSONMetricWriter implements OutputWriter {
         serialize(payload);
     }
 
-    private JSONObject getMetricsAsJson(String registryName) throws NoSuchRegistryException, EmptyRegistryException {
+    protected JSONObject getMetricsAsJson(String registryName) throws NoSuchRegistryException, EmptyRegistryException {
         return getJsonFromMetricMap(Util.getMetricsAsMap(registryName), Util.getMetricsMetadataAsMap(registryName));
     }
 
-    private JSONObject getMetricsAsJson(String registryName, String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
+    protected JSONObject getMetricsAsJson(String registryName, String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
         return getJsonFromMetricMap(Util.getMetricsAsMap(registryName, metricName), Util.getMetricsMetadataAsMap(registryName, metricName));
     }
 

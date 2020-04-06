@@ -1,0 +1,90 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=\
+Usage: {0}
+
+global.description=Description:
+global.actions=Actions:
+global.options=Options:
+global.options.lower=options
+global.usage=Usage:
+global.options.statement=\
+\tUse help [actionName] for detailed option information of each action.
+task.unknown=Unknown action: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\
+\tPrint help information for the specified action.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\
+\tInstall one feature or a list of space-separated features.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\
+\ \ \ \ name ...
+installFeature.option-desc.name...=\
+\tOne or more features that are separated by a space. For features,    \n\
+\tspecify the feature shortname or the Maven coordinate. If you        \n\
+\tspecify a Maven coordinate, it must contain at least                 \n\
+\tthe group ID and the artifact ID                                     \n\
+\t(for example, io.openliberty.features:mpHealth-2.0).                 \n\
+\tThe version defaults to the current runtime version and the          \n\
+\tpackaging type defaults to ESA if the version and packaging          \n\
+\tare not specified.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\
+\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\
+\tSpecify where to install the feature. The feature can be installed to\n\
+\tany configured product extension location, or as a user feature. If  \n\
+\tthis option is not specified, the feature is installed as a user     \n\
+\tfeature.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\
+\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\
+\tUse this option to specify the file path of a Maven artifact         \n\
+\trepository as a source for featureUtility to install assets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\
+\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\
+\tDisplay additional debug information while the action runs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\
+\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\
+\tFeatures installed from a remote repository                          \n\
+\t(for example, Maven Central) are not cached locally.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\
+\tInstall the required features for a named server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\
+\ \ \ \ name ...
+installServerFeatures.option-desc.name...=\
+\tThe name of an existing server in the same Liberty environment.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\
+\ \ \ \ --from=filePath
+installServerFeatures.option-desc.--from=\
+\tUse this option to specify the file path of a Maven artifact         \n\
+\trepository as a source for featureUtility to install assets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\
+\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\
+\tDisplay additional debug information while the action runs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\
+\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\
+\tFeatures installed from a remote repository                          \n\
+\t(for example, Maven Central) are not cached locally.

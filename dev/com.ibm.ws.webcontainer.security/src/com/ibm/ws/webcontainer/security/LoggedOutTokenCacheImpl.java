@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
 
     /*
      * Add the token to the DistributedMap
-     * 
+     *
      * key is the token string
      * value is the subject
      * timeToLive is the about of time left before the token expires, to become the expiring time of the distributed map entry
@@ -96,8 +96,7 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
 
         DistributedMap map = getDMLoggedOutTokenMap();
 
-        if (map != null)
-        {
+        if (map != null) {
             Object dist_object = map.put(key, value, 1, timeToLive, EntryInfo.SHARED_PUSH, null);
             return dist_object;
         }
@@ -117,8 +116,7 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
         try {
             byte[] tokenBytes = AuthenticationHelper.copyCredToken(Base64Coder.base64DecodeString(keyStr));
             Token token = tm.recreateTokenFromBytes(tokenBytes);
-            if (token != null)
-            {
+            if (token != null) {
                 long tokenExp = token.getExpiration();
                 long calcTimeOut = tokenExp - System.currentTimeMillis();
                 timeOut = (int) calcTimeOut / 1000;
@@ -134,7 +132,7 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
             return null;
         } catch (TokenExpiredException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Token is exipired so do not cache it " + e.getMessage());
+                Tr.debug(tc, "Token is expired so do not cache it " + e.getMessage());
             }
             return null;
         }
@@ -147,8 +145,7 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
      */
     private DistributedMap getDMLoggedOutTokenMap() {
 
-        if (dmns == null)
-        {
+        if (dmns == null) {
             dmns = getDistrubedMap("LoggedOutTokenMap");
         }
 
@@ -159,8 +156,7 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
     /*
      * Creates the LoggedOutTokeMap if it does not exist.
      */
-    private DistributedMap getDistrubedMap(String mapName)
-    {
+    private DistributedMap getDistrubedMap(String mapName) {
         DistributedMap dm = null;
 
         dm = DistributedObjectCacheFactory.getMap(mapName, new Properties());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ class UserData implements Serializable, Cloneable {
 
     /**
      * UserData constructor with an user identifier.
-     * 
+     *
      * @param userid An user identifier
      */
     protected UserData(String userid) {
@@ -46,7 +46,7 @@ class UserData implements Serializable, Cloneable {
 
     /**
      * UserData constructor with a Map of construction information.
-     * 
+     *
      * @param A map of construction information
      */
     protected UserData(Map<String, ArrayList<String>> table) {
@@ -63,7 +63,7 @@ class UserData implements Serializable, Cloneable {
     /**
      * Get the attribute value based on the named value. A string array
      * is returned containing all values of the attribute previously set.
-     * 
+     *
      * @param key The name of a attribute
      * @return A list of the attribute values corresponding with the specified key
      */
@@ -82,7 +82,7 @@ class UserData implements Serializable, Cloneable {
      * appended to but not overwritten. Returns the previous value(s)
      * set for key, not including the current value being set, or null
      * if not previously set.
-     * 
+     *
      * @param key The name of a attribute
      * @param value The value of the attribute
      * @return String[] A list of the attribute values previously binded with the
@@ -117,7 +117,7 @@ class UserData implements Serializable, Cloneable {
      * the specified key. Once an attribute is set, it cannot only be
      * appended to but not overwritten. This method does not return any
      * values.
-     * 
+     *
      * @param key The name of a attribute
      * @param value The value of the attribute
      **/
@@ -139,8 +139,27 @@ class UserData implements Serializable, Cloneable {
     }
 
     /**
+     * Remove the list of attributes
+     *
+     * @param attributes The list of a attributes
+     **/
+    protected final void removeAttributes(String... attributes) {
+        this._toString = null; // reset toString variable
+        int i = 0;
+        if (attributes != null) {
+            while (i < attributes.length) {
+                ArrayList<String> array = this._attributes.get(attributes[i]);
+                if (array != null) {
+                    this._attributes.remove(attributes[i]);
+                }
+                i++;
+            }
+        }
+    }
+
+    /**
      * Get the id (accessId) that is the value of the "id"
-     * 
+     *
      * @return The user identifier
      */
     protected final String getID() {
@@ -149,7 +168,7 @@ class UserData implements Serializable, Cloneable {
 
     /**
      * Return the names of all attributes in the token.
-     * 
+     *
      * @return A list of the names of all attributes
      */
     protected final Enumeration<String> getAttributeNames() {
@@ -158,7 +177,7 @@ class UserData implements Serializable, Cloneable {
 
     /**
      * Return string to bytes.
-     * 
+     *
      * @return The byte representation of the UserData
      */
     protected final byte[] toBytes() {
@@ -167,7 +186,7 @@ class UserData implements Serializable, Cloneable {
 
     /**
      * Return the String form.
-     * 
+     *
      * @return The string representation of the UserData
      */
     @Override
@@ -180,13 +199,12 @@ class UserData implements Serializable, Cloneable {
 
     /**
      * Creates a copy of this userdata area
-     * 
+     *
      * @return A clone of the UserData
      */
     @Override
     public final Object clone() {
-        Map<String, ArrayList<String>> table =
-                        new HashMap<String, ArrayList<String>>(this._attributes.size());
+        Map<String, ArrayList<String>> table = new HashMap<String, ArrayList<String>>(this._attributes.size());
 
         for (Entry<String, ArrayList<String>> entry : this._attributes.entrySet()) {
             ArrayList<String> newList = new ArrayList<String>(entry.getValue());

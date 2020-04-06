@@ -86,7 +86,7 @@ RS_EMPTY_SAML_ASSERTION.useraction=Stellen Sie sicher, dass die rsSaml-Konfigura
 # 0=URL specified in the config, 1=Name of configuration attribute, 2=ID of the SAML configuration element
 SAML20_POST_LOGOUT_URL_NOT_VALID=CWWKS5014W: Die URL [{0}], die im Attribut [{1}] in der Konfiguration [{2}] angegeben ist, ist nicht g\u00fcltig. Es wird die Standardseite nach der Abmeldung verwendet.
 SAML20_POST_LOGOUT_URL_NOT_VALID.explanation=Der angepasste URL-Wert f\u00fcr die Seite nach der Abmeldung ist nicht g\u00fcltig und deshalb kann die Seite nicht angezeigt werden. Der Wert enth\u00e4lt wahrscheinlich Zeichen, die f\u00fcr URI-Pfade nicht g\u00fcltig sind, wie z. B. Leerzeichen oder Fragmentzeichen.
-SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Stellen Sie sicher, dass der angepasste URL-Wert f\u00fcr die Seite nach der Anmeldung nur Zeichen enth\u00e4lt, die in URI-Pfaden verwendet werden k\u00f6nnen.
+SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Stellen Sie sicher, dass der angepasste URL-Wert f\u00fcr die Seite nach der Abmeldung nur Zeichen enth\u00e4lt, die in URI-Pfaden verwendet werden k\u00f6nnen.
 
 SAML20_CONFIG_DEACTIVATED=CWWKS5016I: Die SAML Web SSO Version 2.0-Konfiguration [{0}] wurde erfolgreich inaktiviert.
 SAML20_CONFIG_DEACTIVATED.explanation=Die SAML Web SSO Version 2.0-Konfiguration wurde erfolgreich inaktiviert.
@@ -319,7 +319,7 @@ LOGOUT_REQUEST_MISSING_SSO_REQUEST.explanation=Zur Verarbeitung der Abmeldeanfor
 LOGOUT_REQUEST_MISSING_SSO_REQUEST.useraction=Stellen Sie sicher, dass mindestens ein SAML-Provider (SP) konfiguriert ist, oder dass mindestens ein SP f\u00fcr die Verarbeitung dieser Anforderung konfiguriert ist.
 
 POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT=CWWKS5213E: Der SAML-SLO-Service (Single Logout) kann die Seite nach Abschluss der Abmeldung nicht anzeigen, weil SAML-Nachrichteninformationen fehlen.
-POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.explanation=M\u00f6glicherweise ist im SAML-SSO (Single Sign-On) bei der \u00dcbergabe der SAML-Abmeldeanforderung oder bei der Verarbeitung der SAML-Anmeldeantwort ein Fehler aufgetreten.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.explanation=M\u00f6glicherweise ist im SAML-SSO (Single Sign-On) bei der \u00dcbergabe der SAML-Abmeldeanforderung oder bei der Verarbeitung der SAML-Abmeldeantwort ein Fehler aufgetreten.
 POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.useraction=Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten. Stellen Sie sicher, dass im SAML-SSO-Service keine anderen Fehler aufgetreten sind.
 
 # do not translate HTTP-POST, SingleLogoutService
@@ -329,8 +329,8 @@ SAML20_SLOENDPOINT_NOT_IN_METADATA.useraction=Vergewissern Sie sich, dass die Id
 
 LOGOUT_CANNOT_PERFORM_SLO=CWWKS5215E: Der Abmeldeservice kann die SAML Single Logout-Anforderung nicht ausf\u00fchren, weil er keinen eindeutigen Service-Provider findet. Die Benutzersicherheitssitzung in Service-Providern werden gel\u00f6scht. Die verf\u00fcgbaren Service-Provider sind [{0}].
 LOGOUT_CANNOT_PERFORM_SLO.explanation=Es sind mehrere Service-Provider-Instanzen im Liberty-Server konfiguriert. Der Liberty-Server hat keinen eindeutigen Service-Provider f\u00fcr die Einleitung des SAML Single Logout-Prozesses gefunden. Es wird nur die Benutzersicherheitssitzung in den Service-Providern gel\u00f6scht.
-LOGOUT_CANNOT_PERFORM_SLO.useraction=Stellen Sie sicher, dass die Anmeldeanwendung nur einem einzigen Service-Provider zugeordnet ist.
+LOGOUT_CANNOT_PERFORM_SLO.useraction=Stellen Sie sicher, dass die Abmeldeanwendung nur einem einzigen Service-Provider zugeordnet ist.
 
 LOGOUT_CANNOT_FIND_SAMLTOKEN=CWWKS5218E: Der Abmeldeservice kann die SAML Single Logout-Anforderung nicht ausf\u00fchren, weil er die Benutzersicherheitssitzung nicht findet.
 LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=Der Service-Provider findet die Benutzersicherheitssitzung f\u00fcr die Erstellung der SAML Single Logout-Anforderungsnachricht nicht. Der Benutzer wurde vom Service-Provider angemeldet, hat aber unter Umst\u00e4nden noch eine aktive Sicherheitssitzung beim Identit\u00e4tsprovider (IdP).
-LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Sie k\u00f6nnen die vom Identit\u00e4tsprovider (IdP) eingeleitete Anmeldung implementieren und den Benutzer f\u00fcr die Abmeldung an den Identit\u00e4tsprovider (IdP) umleiten. Dies gilt insbesondere, wenn die Service-Provider-Anmeldung fehlschl\u00e4gt oder nicht abgeschlossen wird. 
+LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Sie k\u00f6nnen die vom Identit\u00e4tsprovider (IdP) eingeleitete Abmeldung implementieren und den Benutzer f\u00fcr die Abmeldung an den Identit\u00e4tsprovider (IdP) umleiten. Dies gilt insbesondere, wenn die Service-Provider-Abmeldung fehlschl\u00e4gt oder nicht abgeschlossen wird. 

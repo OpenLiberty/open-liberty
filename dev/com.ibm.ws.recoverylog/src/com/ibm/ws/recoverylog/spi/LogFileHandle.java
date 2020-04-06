@@ -1103,7 +1103,7 @@ class LogFileHandle
         }
 
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "becomeInactive", this);
+            Tr.exit(tc, "becomeInactive", this);
     }
 
     //------------------------------------------------------------------------------

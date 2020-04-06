@@ -178,4 +178,12 @@ public class EndpointInfo implements Serializable {
     public List<String> getAbstractClassInterfaceList() {
         return abstractClassInterfaceList;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(" ").append(servletName).append(" ").append(appClassName).append(" ").append(appPath);
+        sb.append(" ").append(configuredInWebXml);
+        return sb.toString();
+    }
 }

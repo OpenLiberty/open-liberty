@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="EJBJar_1060639024453" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+      <enterprise-beans>
+         <session id="Session_1051542150766">
+            <ejb-name>TargetBean</ejb-name>
+            <home>com.ibm.bnd.err.ejb.error8.ejb.RemoteTargetHome</home>
+            <remote>com.ibm.bnd.err.ejb.error8.ejb.RemoteTarget</remote>
+            <ejb-class>com.ibm.bnd.err.ejb.error8.ejb.TargetBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session> 
+       </enterprise-beans>
+   </ejb-jar>

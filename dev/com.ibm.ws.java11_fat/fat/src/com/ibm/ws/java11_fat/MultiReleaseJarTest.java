@@ -55,6 +55,7 @@ public class MultiReleaseJarTest extends FATServletClient {
         WebArchive mrJarInWarApp = ShrinkHelper.buildDefaultApp(REGULAR_APP, "java11.multirelease.web")
                         .addAsLibrary(new File("publish/servers/server_MultiReleaseJarTest/lib/multiRelease.jar"));
         ShrinkHelper.exportAppToServer(server, mrJarInWarApp);
+        server.addInstalledAppForValidation(REGULAR_APP);
 
         // This app includes multiRelease.jar as a shared library via server.xml
         ShrinkHelper.defaultApp(server, SHARED_LIB_APP, "java11.multirelease.web");
@@ -74,12 +75,14 @@ public class MultiReleaseJarTest extends FATServletClient {
 
     @Test
     public void testOverriddenClass_RegApp() throws Exception {
+
         FATServletClient.runTest(server, REGULAR_APP + "/MultiReleaseJarTestServlet",
                                  "testOverriddenClass&" + MultiReleaseJarTestServlet.EXPECTED_JAVA_LEVEL + '=' + EXPECTED_JAVA);
     }
 
     @Test
     public void testOverriddenClass_SharedLibApp() throws Exception {
+
         FATServletClient.runTest(server, SHARED_LIB_APP + "/MultiReleaseJarTestServlet",
                                  "testOverriddenClass&" + MultiReleaseJarTestServlet.EXPECTED_JAVA_LEVEL + '=' + EXPECTED_JAVA);
     }

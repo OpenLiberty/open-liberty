@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.osgi.v43;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.BatchUpdateException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -142,9 +145,17 @@ public class JDBC43Runtime implements JDBCRuntimeVersion {
     }
 
     @Override
-    public void doAbort(Connection sqlConn, Executor ex) throws SQLException {
+    public void doAbort(final Connection sqlConn, final Executor ex) throws SQLException {
         try {
-            sqlConn.abort(ex);
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
+                public Void run() throws SQLException {
+                    sqlConn.abort(ex);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException x) {
+            throw (SQLException) x.getCause();
         } catch (IncompatibleClassChangeError e) { // pre-4.1 driver
             throw new SQLFeatureNotSupportedException(e);
         }

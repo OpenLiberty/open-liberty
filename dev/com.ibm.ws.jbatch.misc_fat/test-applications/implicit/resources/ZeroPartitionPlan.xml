@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<job id="ZeroPartitionPlan" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd"
+	version="1.0">
+	<properties>
+		<property name="chunkSize" value="10" />
+	</properties>
+
+	<step id="step1">
+		<listeners>
+			<listener ref="app.misc1.Artifacts$StepListener">
+				<properties>
+					<property name="numPartitions" value="#{jobParameters['numPartitions']}" />
+				</properties>
+			</listener>
+		</listeners>
+		<chunk item-count="#{jobProperties['chunkSize']}">
+			<reader ref="app.misc1.Artifacts$Reader"/>
+			<writer ref="app.misc1.Artifacts$NoOpWriter" />
+		</chunk>
+		<partition>
+			<plan partitions="0"/>
+            <collector ref="app.misc1.Artifacts$Collector">
+				<properties>
+					<property name="jobParam" value="#{jobParameters['jobParam1']}" />
+					<property name="jobProp" value="#{jobProperties['chunkSize']}" />
+					<property name="stepProp" value="#{jobProperties['stepProperty']}" />
+					<property name="i" value="#{partitionPlan['idx']}" />
+				</properties>
+            </collector>
+			<analyzer ref="app.misc1.Artifacts$Analyzer">
+				<properties>
+					<property name="jobParam" value="#{jobParameters['jobParam1']}" />
+					<property name="jobProp" value="#{jobProperties['chunkSize']}" />
+					<property name="stepProp" value="#{jobProperties['stepProperty']}" />
+				</properties>
+			</analyzer>
+			<reducer ref="app.misc1.Artifacts$Reducer">
+				<properties>
+					<property name="stepProp" value="#{jobParameters['sp']}" />
+				</properties>
+			</reducer>
+		</partition>
+	</step>
+</job>

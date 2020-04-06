@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: Nicio tranzac\u0163ie activ\u0103 WS-AT cu ID-ul {0}.
+NO_WSAT_TRAN_CWLIB0201.explanation=Nu a putut fi g\u0103sit\u0103 o tranzac\u0163ie activ\u0103 WS-AT care s\u0103 se potriveasc\u0103 cu ID-ul cerut de tranzac\u0163ie global\u0103.
+NO_WSAT_TRAN_CWLIB0201.useraction=Referi\u0163i-v\u0103 la istorice pentru detalii de erori.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: Nu s-a g\u0103sit niciun participant cu ID-ul {1} pentru tranzac\u0163ia {0}.
+NO_WSAT_PART_CWLIB0202.explanation=Nu poate fi g\u0103sit un participant la tranzac\u0163ie care s\u0103 se potriveasc\u0103 cu ID-ul cerut ca parte a tranzac\u0163iei globale.
+NO_WSAT_PART_CWLIB0202.useraction=Referi\u0163i-v\u0103 la istorice pentru detalii de erori.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: Timeout-ul de tranzac\u0163ie a expirat. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=Timeout-ul de tranzac\u0163ie a expirat \u015fi tranzac\u0163ia a fost derulat\u0103 \u00eenapoi.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=Referi\u0163i-v\u0103 la istorice pentru detalii de erori.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: Nu s-a putut invoca serviciul web de protocol. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=A ap\u0103rut o eroare la invocarea serviciilor web de protocol.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=Referi\u0163i-v\u0103 la istorice pentru detalii de erori.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: Eroare la procesarea tranzac\u0163iei.
+TRAN_MGR_ERROR_CWLIB0205.explanation=A fost primit\u0103 o eroare la procesarea func\u0163iei de tranzac\u0163ie.
+TRAN_MGR_ERROR_CWLIB0205.useraction=Referi\u0163i-v\u0103 la istorice pentru detalii de erori.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: Activa\u0163i SSL-ul {0} pentru WS-AT.
+WSAT_SECURITY_CWLIB0206.explanation=WS-AT utilizeaz\u0103 o conexiune SSL pentru a securiza comunica\u0163ia intern\u0103.
+WSAT_SECURITY_CWLIB0206.useraction=F\u0103r\u0103.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: Activa\u0163i externalURLPrefix {0} pentru WS-AT.
+WSAT_PROXY_CWLIB0207.explanation=WS-AT utilizeaz\u0103 un proxy pentru comunica\u0163ia intern\u0103.
+WSAT_PROXY_CWLIB0207.useraction=F\u0103r\u0103.
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: Nu se poate deserializa resursa tranzac\u0163iilor.
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=A ap\u0103rut o eroare la procesarea unei resurse de manager de tranzac\u0163ii.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=Referi\u0163i-v\u0103 la istorice pentru detalii de erori.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: Nu s-a putut ob\u0163ine punctul final al serviciului de sistem.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=A ap\u0103rut o eroare la \u00eencercarea de a ob\u0163ine punctul pentru serviciile web de sistem. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=Referi\u0163i-v\u0103 la istorice pentru detalii de erori.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: externalURLPrefix {0} pentru WS-AT trebuie s\u0103 \u00eenceap\u0103 cu http(s)://
+WSAT_PROXY_CWLIB0210.explanation=Adresa proxy pentru WS-AT trebuie s\u0103 \u00eenceap\u0103 cu http(s)://
+WSAT_PROXY_CWLIB0210.useraction=Modifica\u0163i adresa externalURLPrefix ca s\u0103 \u00eenceap\u0103 cu http(s)://
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: externalURLPrefix {0} pentru WS-AT trebuie s\u0103 \u00eenceap\u0103 cu https:// c\u00e2nd este activat SSL
+WSAT_PROXY_CWLIB0211.explanation=Adresa proxy pentru WS-AT trebuie s\u0103 \u00eenceap\u0103 cu https:// c\u00e2nd este activat SSL.
+WSAT_PROXY_CWLIB0211.useraction=Modifica\u0163i adresa externalURLPrefix pentru a \u00eencepe cu https:// c\u00e2nd este activat SSL.

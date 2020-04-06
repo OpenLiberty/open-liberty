@@ -92,17 +92,17 @@ public abstract class AbstractOidcEndpointServices {
 
     /**
      * Parses a URI-style query string into a map of key/value pairs.
-     * 
+     *
      * The query string takes on the format of "&foo=1&bar=2&zotz", where parameters in the query are separated by '&' and name/values within a parameter are
      * separated with '='. A parameter may exist without a value. The name/value pair must be encoded if they contain illegal characters.
      * <p>
-     * 
+     *
      * No encoding/decoding of the parameters happens as a side-effect of the parsing.
-     * 
+     *
      * @param query
      *            The URI-style query string. May be <code>null</code> or empty. If <code>null</code> or empty, an empty map is returned. The string may start
      *            with '&' or not.
-     * 
+     *
      * @return The map of key/value pairs. The keys are {@link String} and the values are arrays of {@link String}. Never <code>null</code>.
      */
     protected static Map<String, String[]> parseQueryParameters(String query) {
@@ -111,19 +111,19 @@ public abstract class AbstractOidcEndpointServices {
 
     /**
      * Parses a URI-style query string into a map of key/value pairs.
-     * 
+     *
      * The query string takes on the format of "&foo=1&bar=2&zotz", where parameters in the query are separated by '&' and name/values within a parameter are
      * separated with '='. A parameter may exist without a value. The name/value pair must be encoded if they contain illegal characters.
      * <p>
-     * 
+     *
      * @param query
      *            The URI-style query string. May be <code>null</code> or empty. If <code>null</code> or empty, an empty map is returned. The string may start
      *            with '&' or not.
-     * 
+     *
      * @param decode
      *            Whether or not to decode the name/values (per the URI query spec in RFC 3986) in the referenced <code>parm</code> prior to inserting them into
      *            <code>map</code>. <code>true</code> to decode those name/values, <code>false</code>
-     * 
+     *
      * @return The map of key/value pairs. The keys are {@link String} and the values are arrays of {@link String}. Never <code>null</code>.
      */
     protected static Map<String, String[]> parseQueryParameters(String query, boolean decode) {
@@ -157,8 +157,7 @@ public abstract class AbstractOidcEndpointServices {
                 // If there is no '&' then we're at the end of the line
                 parm = query.substring(startNdx);
                 masterNdx = query.length();
-            }
-            else {
+            } else {
                 parm = query.substring(startNdx, endNdx);
                 masterNdx = endNdx;
             }
@@ -187,14 +186,14 @@ public abstract class AbstractOidcEndpointServices {
     /**
      * Splits a <name>=<value> formatted string into key/value pairs, and inserts them into the referenced HashMap. Keys are for map are Strings - values are an
      * ArrayList. Values for duplicate keys are stored in the ArrayList
-     * 
+     *
      * @param parm
      *            The name/value pair string. Names can exist without values - the following forms are valid syntax: "name=value"; "name"; "name=". Must not be
      *            <code>null</code>.
-     * 
+     *
      * @param map
      *            A hashmap of String/ArrayList pairs. Must not be <code>null</code>.
-     * 
+     *
      * @param decode
      *            Whether or not to decode the name/values (per the URI query spec in RFC 3986) in the referenced <code>parm</code> prior to inserting them into
      *            <code>map</code>. <code>true</code> to decode those name/values, <code>false</code>
@@ -205,11 +204,9 @@ public abstract class AbstractOidcEndpointServices {
         String value = EMPTY_STRING;
         if (equals == -1) {
             key = parm;
-        }
-        else if (equals == parm.length() - 1) {
+        } else if (equals == parm.length() - 1) {
             key = parm.substring(0, equals);
-        }
-        else {
+        } else {
             key = parm.substring(0, equals);
             value = parm.substring(equals + 1);
         }
@@ -230,17 +227,16 @@ public abstract class AbstractOidcEndpointServices {
 
     /**
      * Decodes any encoded characters considered illegal in URIs to their unescaped equivalents.
-     * 
+     *
      * @param str
      *            The string to escape. Must not be <code>null</code>.
-     * 
+     *
      * @return The new string with unescaped characters. If the source contains no illegal characters, the original is returned. If decoding errors are
      *         encountered (which can't be imagined), the error message is returned.
      */
     protected static String decode(String str) {
 
-        if (str == null)
-        {
+        if (str == null) {
             throw new IllegalArgumentException("str must not be null"); //$NON-NLS-1$
         }
 
@@ -287,10 +283,10 @@ public abstract class AbstractOidcEndpointServices {
     /**
      * Normalizes the referenced <code>uri</code> by adding a forward slash character ("/"), if one doesn't already exist. If the referenced uri ends with a
      * backward slash ("\"), that is replaced with a forward slash.
-     * 
+     *
      * @param uri
      *            The string to parse. May be <code>null</code>. If <code>null</code>, <code>null</code> is returned.
-     * 
+     *
      * @return A copy of the references uri with a trailing slash appended. Will be <code>null</code> if <code>uri</code> is <code>null</code>.
      */
     public static String addTrailingSlash(String uri) {
@@ -365,10 +361,10 @@ public abstract class AbstractOidcEndpointServices {
     /**
      * Returns whether or not a JSON response is acceptable to the specified request. If it is not, the response is committed with an appropriate error message,
      * and <code>false</code> is returned. Otherwise, <code>true</code> is returned and the response is untouched.
-     * 
+     *
      * @param request
      *            The request to inspect. Must not be <code>null</code>.
-     * 
+     *
      * @throws IOException
      *             Thrown on response write errors.
      */
@@ -420,8 +416,7 @@ public abstract class AbstractOidcEndpointServices {
             String mSubType = typePair[1];
             if ((entryType.equals(requestType) ||
                     mType.equals(rType) && mSubType.equals("*") || entryType.equals("*/*")) && //$NON-NLS-1$ //$NON-NLS-2$
-                    entry.getQValue().floatValue() != 0)
-            {
+                    entry.getQValue().floatValue() != 0) {
                 if (parameters != null) {
                     boolean acceptable = parmsInMap(parameters, entry.getParameters());
                     return acceptable;
@@ -530,7 +525,7 @@ public abstract class AbstractOidcEndpointServices {
 
         Set<String> headerSet = new HashSet<String>();
         while (headersList.hasMoreElements()) {
-            headerSet.add(((String) headersList.nextElement()));
+            headerSet.add((headersList.nextElement()));
         }
 
         if (headerSet.size() > 0) {
@@ -597,8 +592,7 @@ public abstract class AbstractOidcEndpointServices {
     }
 
     protected static OidcServerException checkConditionalExecution(HttpServletRequest request, boolean isGetOrHead, boolean exists, String eTag, Date lastModified)
-            throws OidcServerException
-    {
+            throws OidcServerException {
         boolean hasETagCondition = !OidcOAuth20Util.isNullEmpty(request.getHeaders(HDR_IF_MATCH)) || !OidcOAuth20Util.isNullEmpty(request.getHeaders(HDR_IF_NONE_MATCH));
         boolean hasModifiedCondition = !OidcOAuth20Util.isNullEmpty(request.getHeaders(HDR_IF_MODIFIED_SINCE)) || !OidcOAuth20Util.isNullEmpty(request.getHeaders(HDR_IF_UNMODIFIED_SINCE));
 
@@ -631,14 +625,11 @@ public abstract class AbstractOidcEndpointServices {
         // had the same status
         if (etagException != null && etagException.getHttpStatus() == HttpServletResponse.SC_NOT_MODIFIED) {
             return lastModifiedException;
-        }
-        else if (lastModifiedException != null && lastModifiedException.getHttpStatus() == HttpServletResponse.SC_NOT_MODIFIED) {
+        } else if (lastModifiedException != null && lastModifiedException.getHttpStatus() == HttpServletResponse.SC_NOT_MODIFIED) {
             return etagException;
-        }
-        else if (etagException != null) {
+        } else if (etagException != null) {
             return etagException;
-        }
-        else if (lastModifiedException != null) {
+        } else if (lastModifiedException != null) {
             return lastModifiedException;
         }
 
@@ -647,16 +638,14 @@ public abstract class AbstractOidcEndpointServices {
     }
 
     private static OidcServerException checkETagConditions(HttpServletRequest request, boolean isGetOrHead, boolean exists, String eTag)
-            throws OidcServerException
-    {
+            throws OidcServerException {
         boolean ifMatch = false;
         String headerName;
         String matchValue = getHeaderValue(HDR_IF_MATCH, request);
         if (matchValue != null && matchValue.length() != 0) {
             ifMatch = true;
             headerName = HDR_IF_MATCH;
-        }
-        else {
+        } else {
             matchValue = getHeaderValue(HDR_IF_NONE_MATCH, request);
             headerName = HDR_IF_NONE_MATCH;
         }
@@ -682,15 +671,13 @@ public abstract class AbstractOidcEndpointServices {
                 if (ifMatch) {
                     String description = "If-Match header specified in request and it did not match.";
 
-                    return exists ? null :
-                            new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_PRECONDITION_FAILED);
+                    return exists ? null : new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_PRECONDITION_FAILED);
                 }
                 // For If-None-Match, condition fails if resource exists
                 if (exists) {
                     String description = "No If-Match header specified in request.";
 
-                    return isGetOrHead ? new OidcServerException(null, null, HttpServletResponse.SC_NOT_MODIFIED) :
-                            new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_PRECONDITION_FAILED);
+                    return isGetOrHead ? new OidcServerException((String) null, null, HttpServletResponse.SC_NOT_MODIFIED) : new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_PRECONDITION_FAILED);
                 }
                 // Condition succeeds
                 return null;
@@ -719,8 +706,7 @@ public abstract class AbstractOidcEndpointServices {
         // or Precondition Failed for everything else
         if (!ifMatch && atLeastOneMatch) {
             String description = "No If-Match header specified in request.";
-            return isGetOrHead ? new OidcServerException(null, null, HttpServletResponse.SC_NOT_MODIFIED) :
-                    new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_PRECONDITION_FAILED);
+            return isGetOrHead ? new OidcServerException((String) null, null, HttpServletResponse.SC_NOT_MODIFIED) : new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_PRECONDITION_FAILED);
         }
 
         // Condition met
@@ -732,8 +718,7 @@ public abstract class AbstractOidcEndpointServices {
         String matchValue = getHeaderValue(HDR_IF_MODIFIED_SINCE, request);
         if (matchValue != null && matchValue.length() != 0) {
             ifModified = true;
-        }
-        else {
+        } else {
             matchValue = getHeaderValue(HDR_IF_UNMODIFIED_SINCE, request);
         }
 
@@ -750,7 +735,7 @@ public abstract class AbstractOidcEndpointServices {
 
         // For If-Modified-Since, if resource not modified, return 304 Not Modified
         if (ifModified && !lastModified.after(matchTime)) {
-            return new OidcServerException(null, null, HttpServletResponse.SC_NOT_MODIFIED);
+            return new OidcServerException((String) null, null, HttpServletResponse.SC_NOT_MODIFIED);
         }
 
         // For If-Unmodified-Since, if resource modified, return 412 Precondition Failed

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,14 @@ package com.ibm.ws.security.utility.tasks;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -177,7 +181,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         String subjectDN = getArgumentValue(ARG_SUBJECT, args, new DefaultSubjectDN(null, ou_name).getSubjectDN());
         int keySize = Integer.valueOf(getArgumentValue(ARG_KEYSIZE, args, String.valueOf(DefaultSSLCertificateCreator.DEFAULT_SIZE)));
         String sigAlg = getArgumentValue(ARG_SIGALG, args, DefaultSSLCertificateCreator.SIGALG);
-        String extInfo = getArgumentValue(ARG_EXT, args, null);
+        List<String> extInfo = getExtInfoArgumentValues(ARG_EXT, args);
 
         try {
             String encoding = getArgumentValue(ARG_ENCODING, args, PasswordUtil.getDefaultEncoding());
@@ -271,6 +275,67 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
      */
     private String getArgumentValue(String arg, String[] args, String defalt) {
         return getArgumentValue(arg, args, defalt, ARG_PASSWORD, stdin, stdout);
+    }
+
+    /**
+     * getExtInfoArgumentValues(String, String[])
+     */
+    private List<String> getExtInfoArgumentValues(String arg, String[] args) {
+        boolean addSAN = true;
+        ArrayList<String> extArgs = new ArrayList<String>();
+        for (int i = 1; i < args.length; i++) {
+            String key = args[i].split("=")[0];
+            if (key.equals(arg)) {
+                String value = getValue(args[i]);
+                if (value.substring(0, 3).equalsIgnoreCase("SAN"))
+                    addSAN = false;
+                extArgs.add(value);
+            }
+        }
+        if (addSAN) {
+            String defaultSAN = defaultExtInfo();
+            if (defaultSAN != null)
+                extArgs.add(defaultSAN);
+        }
+        return extArgs;
+    }
+
+    /**
+     * Create the default SAN extension value
+     *
+     * @param hostName May be {@code null}. If {@code null} an attempt is made to determine it.
+     */
+    public String defaultExtInfo() {
+        String hostname = getHostName();
+        String ext = null;
+
+        InetAddress addr;
+        try {
+            addr = InetAddress.getByName(hostname);
+            if (addr != null && addr.toString().startsWith("/"))
+                ext = "SAN=ip:" + hostname;
+            else {
+                // If the hostname start with a digit keytool will not create a SAN with the value
+                if (!Character.isDigit(hostname.charAt(0)))
+                    ext = "SAN=dns:" + hostname;
+            }
+        } catch (UnknownHostException e) {
+            // use return null and not set SAN if there is an exception here
+        }
+        return ext;
+    }
+
+    /**
+     * Get the host name.
+     *
+     * @return String value of the host name or "localhost" if not able to resolve
+     */
+    private String getHostName() {
+        try {
+            return java.net.InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (java.net.UnknownHostException e) {
+            return "localhost";
+        }
     }
 
     /**

@@ -11,9 +11,6 @@
 package com.ibm.ws.jaxws.tools;
 
 import java.io.File;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.ProtectionDomain;
 import java.util.Arrays;
 
 import com.sun.tools.ws.wscompile.WsgenTool;
@@ -30,7 +27,7 @@ public class WsGen {
 
         //Pass in the JWS and JAX-B APIs as a -classpath arg when Java 9 or above.
         //Otherwise the javac process started by the tooling doesn't contain these APIs.
-        if (getMajorJavaVersion() > 8) {
+        if (WsToolsUtils.getMajorJavaVersion() > 8) {
             String classpathValue = null;
             Class<?> JAXB = null;
             Class<?> WebService = null;
@@ -42,8 +39,8 @@ public class WsGen {
                 System.exit(2);
             }
 
-            classpathValue = getJarFileOfClass(JAXB);
-            classpathValue = classpathValue + File.pathSeparator + getJarFileOfClass(WebService);
+            classpathValue = WsToolsUtils.getJarFileOfClass(JAXB);
+            classpathValue = classpathValue + File.pathSeparator + WsToolsUtils.getJarFileOfClass(WebService);
 
             if (classpathValue != null) {
                 boolean classpathSet = false;
@@ -67,26 +64,6 @@ public class WsGen {
         }
 
         System.exit(new WsgenTool(System.out).run(args) ? 0 : 1);
-    }
-
-    private static String getJarFileOfClass(final Class<?> javaClass) {
-        ProtectionDomain protectionDomain = AccessController.doPrivileged(
-                                                                          new PrivilegedAction<ProtectionDomain>() {
-                                                                              @Override
-                                                                              public ProtectionDomain run() {
-                                                                                  return javaClass.getProtectionDomain();
-                                                                              }
-                                                                          });
-
-        return protectionDomain.getCodeSource().getLocation().getPath();
-
-    }
-
-    private static int getMajorJavaVersion() {
-        String version = System.getProperty("java.version");
-        String[] versionElements = version.split("\\D");
-        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
-        return Integer.valueOf(versionElements[i]);
     }
 
 }

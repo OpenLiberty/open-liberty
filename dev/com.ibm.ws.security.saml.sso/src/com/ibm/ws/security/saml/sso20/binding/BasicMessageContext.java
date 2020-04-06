@@ -63,9 +63,9 @@ import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 /**
  * Base implemention of {@link SAMLMessageContext}.
  *
- * @param <InboundMessageType> type of inbound SAML message
+ * @param <InboundMessageType>  type of inbound SAML message
  * @param <OutboundMessageType> type of outbound SAML message
- * @param <NameIdentifierType> type of name identifier used for subjects
+ * @param <NameIdentifierType>  type of name identifier used for subjects
  */
 public class BasicMessageContext<InboundMessageType extends SAMLObject, OutboundMessageType extends SAMLObject, NameIdentifierType extends SAMLObject> extends BasicSAMLMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> {
     // For debugging we may want to put back the DebugMessageContext

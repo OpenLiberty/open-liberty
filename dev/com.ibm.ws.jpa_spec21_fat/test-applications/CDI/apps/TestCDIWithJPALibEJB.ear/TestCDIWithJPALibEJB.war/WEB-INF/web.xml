@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app
+    version="3.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    
+    <!-- EJB References -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/JPACDIWithJPALibSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.cdi.jpalib.ejb.JPACDIWithJPALibSLLocal</local>
+        <ejb-link>JPACDIWithJPALibSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/JPACDIWithJPALibSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.cdi.jpalib.ejb.JPACDIWithJPALibSFLocal</local>
+        <ejb-link>JPACDIWithJPALibSFEJB</ejb-link>
+    </ejb-local-ref>
+</web-app>

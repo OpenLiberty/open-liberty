@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018 IBM Corporation and others.
+    Copyright (c) 2018,2019 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -76,7 +76,10 @@
     <javaPermission codeBase="${server.config.dir}derby/FATDriver.jar" className="java.security.AllPermission"/>
     
     <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
-    
+
+    <!-- so the test can can compare class loaders with instances returned by the unwrap operation -->
+    <javaPermission codeBase="${server.config.dir}apps/jdbcapp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
     <include location="../fatTestPorts.xml"/>
     
     <application location="jdbcapp.war" >

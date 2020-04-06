@@ -25,6 +25,10 @@ public class ResponseFullExpectation extends Expectation {
         super(testAction, Constants.RESPONSE_FULL, checkType, searchFor, failureMsg);
     }
 
+    public ResponseFullExpectation(String testAction, String searchLocation, String checkType, String searchKey, String searchFor, String failureMsg) {
+        super(testAction, searchLocation, checkType, searchKey, searchFor, failureMsg);
+    }
+
     @Override
     protected void validate(Object contentToValidate) throws Exception {
         try {
@@ -35,7 +39,7 @@ public class ResponseFullExpectation extends Expectation {
         }
     }
 
-    String getResponseTextFromContent(Object contentToValidate) throws Exception {
+    protected String getResponseTextFromContent(Object contentToValidate) throws Exception {
         if (contentToValidate instanceof String) {
             return (String) contentToValidate;
         }

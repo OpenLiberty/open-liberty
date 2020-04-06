@@ -11,8 +11,7 @@
 package com.ibm.ws.config.xml.internal;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,15 +29,15 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import com.ibm.websphere.metatype.MetaTypeFactory;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
-import com.ibm.wsspi.logging.IntrospectableService;
+import com.ibm.wsspi.logging.Introspector;
 
-@Component(service = { IntrospectableService.class },
+@Component(service = { Introspector.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
-                       Constants.SERVICE_VENDOR + "=" + "IBM"
+                        Constants.SERVICE_VENDOR + "=" + "IBM"
            })
-public class ConfigIntrospection implements IntrospectableService {
+public class ConfigIntrospection implements Introspector {
 
     private final static String NAME = "ConfigIntrospection";
     private final static String DESC = "Introspect internal configuration store";
@@ -74,32 +73,11 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.ibm.wsspi.logging.IntrospectableService#getName()
-     */
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.wsspi.logging.IntrospectableService#getDescription()
-     */
-    @Override
-    public String getDescription() {
-        return DESC;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.IntrospectableService#introspect(java.io.OutputStream)
      */
     @Override
-    public void introspect(OutputStream out) throws IOException {
-        PrintStream ps = new PrintStream(out);
+    public void introspect(PrintWriter ps) throws IOException {
 
         ServerConfiguration server = systemConfiguration.getServerConfiguration();
 
@@ -126,7 +104,7 @@ public class ConfigIntrospection implements IntrospectableService {
         }
     }
 
-    private void printNestedElementInformation(int indent, PrintStream ps, ConfigElement element, RegistryEntry re) {
+    private void printNestedElementInformation(int indent, PrintWriter ps, ConfigElement element, RegistryEntry re) {
         boolean hasMetatype = (re != null);
         print(indent, ps, "");
         print(indent, ps, "PID: " + (hasMetatype ? re.getPid() : element.getNodeDisplayName()));
@@ -137,7 +115,7 @@ public class ConfigIntrospection implements IntrospectableService {
 
     }
 
-    private void print(int indent, PrintStream ps, String text) {
+    private void print(int indent, PrintWriter ps, String text) {
         StringWriter writer = new StringWriter();
         writer.append('\t');
         for (int i = 0; i < indent; i++) {
@@ -150,7 +128,7 @@ public class ConfigIntrospection implements IntrospectableService {
     /**
      * @param element
      */
-    private void printNestedConfiguration(int indent, PrintStream ps, ConfigElement element) {
+    private void printNestedConfiguration(int indent, PrintWriter ps, ConfigElement element) {
         if (!element.hasNestedElements())
             return;
 
@@ -168,7 +146,7 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /**
      * Filter out password fields
-     * 
+     *
      * @param attributes
      * @return
      */
@@ -180,7 +158,7 @@ public class ConfigIntrospection implements IntrospectableService {
         Map<String, Object> retVal = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             ExtendedAttributeDefinition ad = attributeMap.get(entry.getKey());
-            if (isPasswordType(ad)) {
+            if (isObscured(ad)) {
                 retVal.put(entry.getKey(), "*******");
             } else {
                 retVal.put(entry.getKey(), entry.getValue());
@@ -195,14 +173,24 @@ public class ConfigIntrospection implements IntrospectableService {
      * @param ad
      * @return
      */
-    private boolean isPasswordType(ExtendedAttributeDefinition ad) {
+    private boolean isObscured(ExtendedAttributeDefinition ad) {
         if (ad == null)
             return false;
 
-        if (ad.getType() == MetaTypeFactory.PASSWORD_TYPE || ad.getType() == MetaTypeFactory.HASHED_PASSWORD_TYPE)
+        if (ad.isObscured() || ad.getType() == MetaTypeFactory.PASSWORD_TYPE || ad.getType() == MetaTypeFactory.HASHED_PASSWORD_TYPE)
             return true;
 
         return false;
+    }
+
+    @Override
+    public String getIntrospectorDescription() {
+        return DESC;
+    }
+
+    @Override
+    public String getIntrospectorName() {
+        return NAME;
     }
 
 }

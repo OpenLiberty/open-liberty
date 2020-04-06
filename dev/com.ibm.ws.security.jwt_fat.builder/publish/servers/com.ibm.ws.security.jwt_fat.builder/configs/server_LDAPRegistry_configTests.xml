@@ -1,0 +1,16 @@
+
+<server>
+
+	<include location="${shared.config.dir}/jwtBuilderFeatures.xml" />
+
+	<include location="${shared.config.dir}/jwtBuilderClientConfigTestsConfig.xml" />
+
+	<include location="${shared.config.dir}/LDAPRegistry_customClaims.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+	<include location="${shared.config.dir}/jwtBuilderClientApplication.xml" />
+
+	<include location="${shared.config.dir}/op_fatTestPorts.xml" />
+
+</server>

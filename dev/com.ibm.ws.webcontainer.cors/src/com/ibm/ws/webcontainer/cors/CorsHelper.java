@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ public class CorsHelper {
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
     /** Optional. Response to preFlight(OPTIONS). Indicates how long the results of a preFlight request can be cached. */
-    private static final String RESPONSE_HEADER_ACCESS_CONTROL_MAX_AGE = "Access-Control-Allow-Max-Age";
+    private static final String RESPONSE_HEADER_ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
 
     /** Response to preFlight(OPTIONS). Which methods can be used in the actual request. */
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";

@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: Nessuna transazione WS-AT attiva con id {0}.
+NO_WSAT_TRAN_CWLIB0201.explanation=Impossibile trovare una transazioneWS-AT attiva corrispondente all'id transazione globale richiesto.
+NO_WSAT_TRAN_CWLIB0201.useraction=Per dettagli sull'errore, consultare i log.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: Nessun partecipante con id {1} trovano per la transazione {0}.
+NO_WSAT_PART_CWLIB0202.explanation=Impossibile trovare un partecipante della transazione corrispondente all'ID richiesto come parte della transazione globale.
+NO_WSAT_PART_CWLIB0202.useraction=Per dettagli sull'errore, consultare i log.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: Il timeout della transazione \u00e8 scaduto. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=Il timeout della transazione  \u00e8 scaduto ed \u00e8 stato eseguito il roll-back della transazione.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=Per dettagli sull'errore, consultare i log.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: Impossibile richiamare il servizio web del protocollo. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=Si \u00e8 verificato un errore durante il richiamo dei servizi web di sistema.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=Per dettagli sull'errore, consultare i log.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: Errore di elaborazione della transazione.
+TRAN_MGR_ERROR_CWLIB0205.explanation=\u00c8 stato ricevuto un errore durante l'elaborazione della funzione della transazione.
+TRAN_MGR_ERROR_CWLIB0205.useraction=Per dettagli sull'errore, consultare i log.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: Abilita SSL {0} per WS-AT.
+WSAT_SECURITY_CWLIB0206.explanation=WS-AT utilizza una connessione SSL per assicurare la comunicazione interna.
+WSAT_SECURITY_CWLIB0206.useraction=Nessuna.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: Abilita externalURLPrefix {0} per WS-AT.
+WSAT_PROXY_CWLIB0207.explanation=WS-AT utilizza un proxy per la comunicazione interna.
+WSAT_PROXY_CWLIB0207.useraction=Nessuna.
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: Impossibile deserializzare la risorsa transazione
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=Si \u00e8 verificato un errore durante l'elaborazione di una risorsa gestore transazione.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=Per dettagli sull'errore, consultare i log.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: Impossibile ottenere l'endpoint del servizio del sistema.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=Si \u00e8 verificato un errore durante il tentativo di ottenere l'endpoint per i servizi web del sistema. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=Per dettagli sull'errore, consultare i log.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: externalURLPrefix {0} per WS-AT deve iniziare con http(s)://
+WSAT_PROXY_CWLIB0210.explanation=L'indirizzo proxy per WS-AT deve iniziare con http(s)://
+WSAT_PROXY_CWLIB0210.useraction=Modificare l'indirizzo externalURLPrefix in modo che inizi con http(s)://
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: externalURLPrefix {0} per WS-AT deve iniziare con https:// quando SSL \u00e8 abilitato.
+WSAT_PROXY_CWLIB0211.explanation=L'indirizzo proxy per WS-AT deve iniziare con https:// quando SSL \u00e8 abilitato.
+WSAT_PROXY_CWLIB0211.useraction=Modificare l'indirizzo externalURLPrefix in modo che inizi con https:// quando SSL \u00e8 abilitato.

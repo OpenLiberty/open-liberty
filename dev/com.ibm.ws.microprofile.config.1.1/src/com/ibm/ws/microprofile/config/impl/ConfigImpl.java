@@ -17,6 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.archaius.cache.ConfigCache;
 import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
@@ -36,16 +37,16 @@ public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
      */
     public ConfigImpl(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval) {
         super(conversionManager, sources);
-        composite = new CompositeConfig(conversionManager, sources, executor, refreshInterval);
+        this.composite = new CompositeConfig(conversionManager, sources, executor, refreshInterval);
         //a config cache does the job of applying the type conversions and then caching those converted values
-        this.cache = new ConfigCache(composite);
+        this.cache = new ConfigCache(this.composite);
     }
 
     /** {@inheritDoc} */
     @Override
     public void close() {
         super.close();
-        composite.close();
+        this.composite.close();
     }
 
     /** {@inheritDoc} */
@@ -58,13 +59,13 @@ public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
     @Override
     protected Set<String> getKeySet() {
         //TODO cache the keys
-        return composite.getKeySet();
+        return this.composite.getKeySet();
     }
 
     /** {@inheritDoc} */
     @Override
     @Trivial
     public String dump() {
-        return composite.dump();
+        return this.composite.dump();
     }
 }

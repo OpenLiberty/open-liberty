@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=\u8bf7\u589e\u52a0\u9694\u677f\u5bb9\u
 application.shutdown.CWMFT0002W=CWMFT0002W: {0} \u5f02\u6b65\u65b9\u6cd5\u65e0\u6cd5\u5b8c\u6210\uff0c\u56e0\u4e3a\u8c03\u7528\u5b83\u7684\u5e94\u7528\u7a0b\u5e8f\u6216\u7ec4\u4ef6\u5df2\u505c\u6b62\u3002
 application.shutdown.CWMFT0002W.explanation=\u5f02\u6b65\u65b9\u6cd5\u5728\u542f\u52a8\u5b83\u4eec\u7684\u7ec4\u4ef6\u7684\u4e0a\u4e0b\u6587\u4e2d\u8fd0\u884c\u3002\u8c03\u7528\u8be5\u5f02\u6b65\u65b9\u6cd5\u7684\u5e94\u7528\u7a0b\u5e8f\u6216\u7ec4\u4ef6\u5df2\u505c\u6b62\uff0c\u8fd9\u4f1a\u5bfc\u81f4\u8be5\u5f02\u6b65\u65b9\u6cd5\u65e0\u6cd5\u5b8c\u6210\u3002
 application.shutdown.CWMFT0002W.useraction= \u6b64\u8b66\u544a\u901a\u5e38\u5728\u5e94\u7528\u7a0b\u5e8f\u3001\u7ec4\u4ef6\u6216\u670d\u52a1\u5668\u5173\u95ed\u65f6\u51fa\u73b0\u3002\u5982\u679c\u6240\u6709\u6b63\u5728\u8fd0\u884c\u7684\u5f02\u6b65\u65b9\u6cd5\u5fc5\u987b\u5b8c\u6210\uff0c\u90a3\u4e48\u76f8\u5e94\u5e94\u7528\u7a0b\u5e8f\u6216\u7ec4\u4ef6\u5fc5\u987b\u7b49\u5f85\u4ea7\u751f\u7ed3\u679c\uff0c\u7136\u540e\u624d\u505c\u6b62\u3002
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: \u5f02\u6b65\u65b9\u6cd5 {0} \u8fd4\u56de\u7a7a\u503c\u3002
+asynchronous.returned.null.CWMFT0003W.explanation=\u4f7f\u7528 @Asynchronous \u6ce8\u91ca\u7684\u65b9\u6cd5\u4e0d\u80fd\u8fd4\u56de\u7a7a\u503c\u3002
+asynchronous.returned.null.CWMFT0003W.useraction=\u8bf7\u963b\u6b62\u8be5\u65b9\u6cd5\u8fd4\u56de\u7a7a\u503c\u3002
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u5f02\u5e38\u4e3a {0}\u3002

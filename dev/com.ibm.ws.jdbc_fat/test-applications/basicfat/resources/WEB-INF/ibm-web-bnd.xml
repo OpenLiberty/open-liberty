@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
+
+  <resource-ref name="jdbc/dsfat3" binding-name="jdbc/dsfat3">
+    <authentication-alias name="auth1"/>
+  </resource-ref>
+  
+  <resource-ref name="jdbc/dsfat5ref1" binding-name="jdbc/dsfat5">
+    <authentication-alias name="derbyAuth1"/>
+  </resource-ref>
+
+  <resource-ref name="jdbc/dsfat6ref1" binding-name="java:comp/env/jdbc/dsfat6">
+    <authentication-alias name="derbyAuth1"/>
+  </resource-ref>
+
+  <resource-ref name="jdbc/dsfat10ref2" binding-name="jdbc/dsfat10">
+    <authentication-alias name="derbyAuth2"/>
+  </resource-ref>
+  
+  <resource-ref name="jdbc/dsfatclcref" binding-name="jdbc/dsfatclc">
+    <custom-login-configuration name="myJAASLoginEntry">
+      <property name="property1" value="value1"/>
+    </custom-login-configuration>
+  </resource-ref>
+  
+   <resource-ref name="jdbc/dsfatgssref" binding-name="jdbc/dsfatgss">
+    <custom-login-configuration name="myJAASGSSLoginEntry"/>
+  </resource-ref>
+
+</web-bnd>

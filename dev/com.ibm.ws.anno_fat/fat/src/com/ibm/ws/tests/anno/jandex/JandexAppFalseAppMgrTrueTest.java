@@ -46,8 +46,8 @@ public class JandexAppFalseAppMgrTrueTest extends JandexAppTest {
     }
 
     @Test
-    public void falseTrue_testServletisRunning40() throws Exception {
-        super.testServletIsRunning40();
+    public void falseTrue_testServletisRunning31() throws Exception {
+        super.testServletIsRunning31();
     }
 
     @Test

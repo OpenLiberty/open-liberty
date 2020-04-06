@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Las caracter\u00edsticas siguientes no pu
 ERROR_UNINSTALL_FAILED_USR.explanation=Las caracter\u00edsticas especificadas son caracter\u00edsticas de usuario y no se puede desinstalar.
 ERROR_UNINSTALL_FAILED_USR.useraction=No desinstale caracter\u00edsticas de usuario.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: No se puede acceder a uno de los repositorios que se ha especificado en la configuraci\u00f3n. Verifique que el sistema tiene acceso a la red y que se han configurado los cortafuegos correctamente, a continuaci\u00f3n vuelva a intentar la acci\u00f3n. Si la conexi\u00f3n todav\u00eda falla, el servidor de repositorio podr\u00eda no estar disponible temporalmente.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=Se ha producido un error al conectar con un repositorio.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Aseg\u00farese de que el sistema puede acceder a Internet y al repositorio adecuado.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=Preparando activos para la instalaci\u00f3n. Este proceso
 STATE_INITIALIZING=Inicializando...
 STATE_CONTACTING_REPO=Contactando con IBM WebSphere Liberty Repository...
 STATE_DOWNLOAD_FILES_OK=\nTodos los activos se han descargado satisfactoriamente.
+STATE_CONTACTING_MAVEN_REPO=Estableciendo una conexi\u00f3n con el repositorio Maven configurado...\nEste proceso puede tardar varios minutos en completarse.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Conexi\u00f3n satisfactoria al repositorio configurado.
+STATE_READING_ENV_PROPS_FILE=Leyendo {0}/etc/featureUtility.env...
 PROGRESS_STEP=Paso {0} de {1}
 
 MSG_DOWNLOAD_SUCCESS=Se ha descargado satisfactoriamente la caracter\u00edstica {0}.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Buscando caracter\u00edsticas...
 MSG_SEARCHING_ADDONS=Buscando complementos...
 MSG_SEARCHING_SAMPLES=Buscando ejemplos...
 MSG_SEARCHING_OPENSOURCE=Buscando integraciones de c\u00f3digo abierto...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Descargando caracter\u00edsticas necesarias ...
 FEATURE_ASSET=caracter\u00edstica
 ADDON_ASSET=complemento
 SAMPLE_ASSET=ejemplo de producto
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=integraci\u00f3n de c\u00f3digo abierto
 GENERAL_ASSET=activo
 
 MSG_INVALID_FOR_OS=El recurso de la caracter\u00edstica {0} no es v\u00e1lido para el sistema operativo actual y no se instalar\u00e1.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=El servidor no requiere ninguna caracter\u00edstica adicional. No se ha instalado ninguna caracter\u00edstica.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=No se ha especificado el nombre de propiedad. Especifique un nombre de propiedad v\u00e1lido o comente la propiedad si no se utiliza.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Aseg\u00farese de que el archivo ESA individual p
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: No se puede crear un archivo JSON en {0} para el archivo ESA {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=La caracter\u00edstica del archivo ESA no se instalar\u00e1.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Aseg\u00farese de que el acceso de escritura est\u00e9 disponible para el directorio donde se crear\u00e1 el archivo JSON.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: No es posible acceder al repositorio Maven configurado. Verifique que el sistema tiene acceso a la red y que se han configurado los cortafuegos correctamente, a continuaci\u00f3n vuelva a intentar la acci\u00f3n. Si la conexi\u00f3n todav\u00eda falla, el servidor de repositorio podr\u00eda no estar disponible temporalmente.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=Se ha producido un error al conectar al repositorio Maven configurado.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Aseg\u00farese de que el sistema puede acceder a Internet y al repositorio adecuado.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Las sumas de comprobaci\u00f3n disponibles no se han podido validar para el archivo {0}.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=La suma de comprobaci\u00f3n del activo de descarga no es correcto. El contenido del activo descargado no es el mismo que el contenido del repositorio, de manera que el activo no puede instalarse.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Vuelva a ejecutar el mandato.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Se han proporcionado credenciales incorrectas para el repositorio {0}.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Las credenciales FEATURE_REPO_USER y FEATURE_REPO_PASSWORD no han podido autenticarse con el repositorio configurado.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Suministre las credenciales correctas para el repositorio configurado.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Los artefactos del repositorio configurado no se han podido descargar.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=El activo especificado no se ha descargado del repositorio especificado porque el repositorio no contiene una versi\u00f3n v\u00e1lida del activo.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Aseg\u00farese de que el repositorio contiene el activo y vuelva a ejecutar el mandato.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: La versi\u00f3n del tiempo de ejecuci\u00f3n de Liberty no se ha podido determinar.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=Puede que el archivo de propiedades {0} falte o est\u00e9 da\u00f1ado.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Aseg\u00farese de que el archivo de propiedades existe.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: La caracter\u00edstica con una coordenada Maven {0} no se puede instalar en una versi\u00f3n de tiempo de ejecuci\u00f3n de Liberty {1}.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=La caracter\u00edstica es incompatible con el tiempo de ejecuci\u00f3n de Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Especifique una versi\u00f3n v\u00e1lida para la caracter\u00edstica.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: El formato de empaquetado en la coordenada Maven de caracter\u00edstica {0} no es v\u00e1lido. El formato de empaquetado v\u00e1lido es ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=La caracter\u00edstica es incompatible con el tiempo de ejecuci\u00f3n de Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Especifique ESA para el empaquetado en la coordenada Maven..
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: La coordenada Maven {0} no es v\u00e1lida.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=La coordenada Maven que se ha proporcionado no tiene el formato correcto.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Especifique una coordenada Maven v\u00e1lida.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: El servidor {0} no existe. Especifique un nombre de servidor v\u00e1lido y repita la operaci\u00f3n.
+ERROR_SERVER_NOT_EXIST.explanation=El servidor no existe.
+ERROR_SERVER_NOT_EXIST.useraction=Cree el servidor y vuelva a ejecutar el mandato.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: El ID de grupo {0} no es v\u00e1lido. Aseg\u00farese de que el ID de grupo v\u00e1lido para la coordenada de caracter\u00edstica se proporcione o el sistema pueda acceder a Internet y al repositorio configurado.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=El archivo JSON de caracter\u00edsticas no se ha encontrado en el repositorio Maven.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Compruebe la conexi\u00f3n de red y aseg\u00farese de que el archivo JSON de caracter\u00edsticas est\u00e9 alojado en el repositorio Maven.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: El formato de la variable {0} http_proxy no es v\u00e1lido. Aseg\u00farese de que la variable http_proxy se encuentre en el formato http_proxy=http://<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=El formato de variable de entorno de proxy no es v\u00e1lido.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de entorno http_proxy para que se ajuste al formato http_proxy=http://<proxy-host>:<proxy-port>.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: El formato de la variable de entorno https_proxy {0} no es v\u00e1lido. Aseg\u00farese de que la variable https_proxy tenga el formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=El formato de variable de entorno de proxy no es v\u00e1lido.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de entorno https_proxy para que se ajuste al formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Las caracter\u00edsticas siguientes no se han obtenido: {0}. Aseg\u00farese de que las caracter\u00edsticas son v\u00e1lidas.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=La caracter\u00edstica no est\u00e1 soportada por Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Ejecute featureUtility con una caracter\u00edstica compatible.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Las caracter\u00edsticas de usuario siguientes se han especificado en server.xml y no se instalar\u00e1n: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Las caracter\u00edsticas {0} y {1} son incompatibles entre s\u00ed y no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Las caracter\u00edsticas no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Elimine una de las caracter\u00edsticas e int\u00e9ntelo de nuevo.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Las caracter\u00edsticas singleton {0} y {1} son incompatibles entre s\u00ed y no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Las caracter\u00edsticas no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Elimine una de las caracter\u00edsticas e int\u00e9ntelo de nuevo.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La caracter\u00edstica se ha descargado satisfactoriamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La caracter\u00edstica se ha descargado.

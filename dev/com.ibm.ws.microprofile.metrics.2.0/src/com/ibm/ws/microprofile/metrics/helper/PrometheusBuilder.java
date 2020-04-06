@@ -109,8 +109,8 @@ public class PrometheusBuilder {
         buildMetered(builder, name, meter, description, tags);
     }
 
-    private static void buildSampling(StringBuilder builder, String name, Sampling sampling, String description, Double conversionFactor, String tags,
-                                      String appendUnit) {
+    protected static void buildSampling(StringBuilder builder, String name, Sampling sampling, String description, Double conversionFactor, String tags,
+                                        String appendUnit) {
 
         double meanVal = sampling.getSnapshot().getMean();
         double maxVal = sampling.getSnapshot().getMax();
@@ -162,7 +162,7 @@ public class PrometheusBuilder {
         getPromValueLine(builder, name, percentile999th, tags, new Tag(QUANTILE, "0.999"), appendUnit);
     }
 
-    private static void buildCounting(StringBuilder builder, String name, Counting counting, String description, String tags) {
+    protected static void buildCounting(StringBuilder builder, String name, Counting counting, String description, String tags) {
         String lineName = name + "_total";
         getPromTypeLine(builder, lineName, "counter");
         getPromHelpLine(builder, lineName, description);
@@ -176,7 +176,7 @@ public class PrometheusBuilder {
      * @param name
      * @param metered
      */
-    private static void buildMetered(StringBuilder builder, String name, Metered metered, String description, String tags) {
+    protected static void buildMetered(StringBuilder builder, String name, Metered metered, String description, String tags) {
         String lineName = name + "_rate_" + MetricUnits.PER_SECOND.toString();
         getPromTypeLine(builder, lineName, "gauge");
         getPromValueLine(builder, lineName, metered.getMeanRate(), tags);
@@ -194,11 +194,11 @@ public class PrometheusBuilder {
         getPromValueLine(builder, lineName, metered.getFifteenMinuteRate(), tags);
     }
 
-    private static void getPromValueLine(StringBuilder builder, String name, Number value, String tags) {
+    protected static void getPromValueLine(StringBuilder builder, String name, Number value, String tags) {
         getPromValueLine(builder, name, value, tags, null);
     }
 
-    private static void getPromValueLine(StringBuilder builder, String name, Number value, String tags, Tag quantile, String appendUnit) {
+    protected static void getPromValueLine(StringBuilder builder, String name, Number value, String tags, Tag quantile, String appendUnit) {
 
         if (tags == null || tags.isEmpty()) {
             tags = quantile.getKey() + "=\"" + quantile.getValue() + "\"";
@@ -225,7 +225,7 @@ public class PrometheusBuilder {
         builder.append(" ").append(value).append('\n');
     }
 
-    private static void getPromHelpLine(StringBuilder builder, String name, String description) {
+    protected static void getPromHelpLine(StringBuilder builder, String name, String description) {
         getPromHelpLine(builder, name, description, null);
     }
 
@@ -241,7 +241,7 @@ public class PrometheusBuilder {
         }
     }
 
-    private static void getPromTypeLine(StringBuilder builder, String name, String type) {
+    protected static void getPromTypeLine(StringBuilder builder, String name, String type) {
         getPromTypeLine(builder, name, type, null);
     }
 
@@ -258,7 +258,7 @@ public class PrometheusBuilder {
     /*
      * Create the Prometheus metric name by sanitizing some characters
      */
-    private static String getPrometheusMetricName(String name) {
+    protected static String getPrometheusMetricName(String name) {
         String out = name;
 
         //Change other special characters to underscore
@@ -273,7 +273,7 @@ public class PrometheusBuilder {
         return out;
     }
 
-    private static String appendSuffixIfNeeded(String metricName, String suffix) {
+    protected static String appendSuffixIfNeeded(String metricName, String suffix) {
         return (!metricName.endsWith("_" + suffix)) ? metricName + "_" + suffix : metricName;
     }
 }

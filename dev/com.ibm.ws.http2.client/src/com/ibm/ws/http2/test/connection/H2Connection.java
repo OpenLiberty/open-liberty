@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,7 +146,11 @@ public class H2Connection {
 
     }
 
-    public long sendBytes(WsByteBuffer[] toSend) {
+    public synchronized long sendBytesSync(WsByteBuffer[] toSend) {
+        return (sendBytes(toSend));
+    }
+
+    private long sendBytes(WsByteBuffer[] toSend) {
         writeConn.setBuffers(toSend);
 
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -170,7 +174,11 @@ public class H2Connection {
         return bytesWritten;
     }
 
-    public long sendBytes(WsByteBuffer toSend) {
+    public synchronized long sendBytesSync(WsByteBuffer toSend) {
+        return (sendBytes(toSend));
+    }
+
+    private long sendBytes(WsByteBuffer toSend) {
         writeConn.setBuffer(toSend);
 
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -194,7 +202,11 @@ public class H2Connection {
         return bytesWritten;
     }
 
-    public long sendBytes(byte[] toSend) {
+    public synchronized long sendBytesSync(byte[] toSend) {
+        return (sendBytes(toSend));
+    }
+
+    private long sendBytes(byte[] toSend) {
         WsByteBuffer writeBuffer = bufferMgr.allocate(toSend.length);
         writeBuffer.put(toSend);
         writeBuffer.position(0);

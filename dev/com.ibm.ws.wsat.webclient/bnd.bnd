@@ -1,0 +1,50 @@
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: WebService AtomicTransaction Web Service Client
+Bundle-SymbolicName: com.ibm.ws.wsat.webclient
+Bundle-Description: WebService AtomicTransaction: Web Service Client bundle; version=${bVersion}
+
+WS-TraceGroup: \
+  wsATWebService
+  
+Import-Package: \
+ javax.xml.ws.*;version="[2.2,3)", \
+ org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+ com.ibm.ws.jaxws.wsat.components, \
+ com.ibm.ws.jaxws.security*, \
+ com.ibm.ws.jaxws.client, \
+ *
+
+Export-Package: \
+ com.ibm.ws.wsat.webservice.client, \
+ com.ibm.ws.wsat.webservice.client.wscoor, \
+ com.ibm.ws.wsat.webservice.client.soap, \
+ com.ibm.ws.wsat.webservice.client.wsat
+ 
+Include-Resource: \
+  @./resources!/META-INF/**
+
+javac.endorsedDirs: \
+	../com.ibm.websphere.javaee.jaxb.2.2/generated, \
+	../com.ibm.websphere.javaee.jaxws.2.2/generated
+
+-buildpath: \
+	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\
+	com.ibm.websphere.appserver.api.ssl;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.ssl;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.wsat;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

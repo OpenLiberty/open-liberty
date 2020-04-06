@@ -1,0 +1,16 @@
+<server>
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>wsAtomicTransaction-1.2</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>jaxrs-1.1</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+	
+	<wsAtomicTransaction sslEnabled="true" sslRef="nonexist"/>
+	
+	<keyStore password="{xor}Lz4sLCgwLTs="/>
+</server>

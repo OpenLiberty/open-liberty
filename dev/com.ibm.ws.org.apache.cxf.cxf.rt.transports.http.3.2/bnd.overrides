@@ -2,15 +2,12 @@
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2
-
-Bundle-Activator: com.ibm.ws.jaxrs21.transports.http.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Bundle-Activator: com.ibm.ws.cxf.transports.http.NoOpActivator
 
 exportVer=3.3.0
 
 Export-Package: \
-  com.ibm.ws.jaxrs21.transports.http,\
+  com.ibm.ws.cxf.transports.http,\
   org.apache.cxf.transport.http;version=${exportVer},\
   org.apache.cxf.transport.http.auth;version=${exportVer},\
   org.apache.cxf.transport.http.osgi;version=${exportVer},\
@@ -22,9 +19,7 @@ Export-Package: \
 Import-Package: \
   !org.apache.aries.*,\
   !org.springframework.*,\
-  !org.osgi.service.http.*,\
   !javax.wsdl.*,\
-  !org.apache.cxf.bus.blueprint,\
   !org.apache.cxf.ws.policy.*,\
   !org.apache.cxf.wsdl,\
   !org.osgi.service.blueprint.*,\

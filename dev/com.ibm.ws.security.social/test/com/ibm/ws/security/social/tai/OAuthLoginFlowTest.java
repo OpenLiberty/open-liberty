@@ -151,6 +151,10 @@ public class OAuthLoginFlowTest extends CommonTestClass {
         try {
             mockery.checking(new Expectations() {
                 {
+                    one(config).isAccessTokenRequired();
+                    will(returnValue(false));
+                    one(config).isAccessTokenSupported();
+                    will(returnValue(false));
                     one(socialWebUtils).getAndClearCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY);
                     will(returnValue(null));
                     one(mockInterface).handleRedirectToServer();
@@ -182,6 +186,10 @@ public class OAuthLoginFlowTest extends CommonTestClass {
         try {
             mockery.checking(new Expectations() {
                 {
+                    one(config).isAccessTokenRequired();
+                    will(returnValue(false));
+                    one(config).isAccessTokenSupported();
+                    will(returnValue(false));
                     one(socialWebUtils).getAndClearCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY);
                     will(returnValue(AUTHZ_CODE));
                     one(mockInterface).handleAuthorizationCode();

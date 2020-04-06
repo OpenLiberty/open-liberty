@@ -23,14 +23,11 @@ import javax.json.bind.annotation.JsonbTransient;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.leangen.graphql.annotations.Context;
-import io.leangen.graphql.annotations.Info;
 import io.leangen.graphql.metadata.strategy.InclusionStrategy;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Utils;
 
 import org.eclipse.microprofile.graphql.Ignore;
-import org.eclipse.microprofile.graphql.Source;
 
 public class MPDefaultInclusionStrategy implements InclusionStrategy {
 
@@ -51,10 +48,7 @@ public class MPDefaultInclusionStrategy implements InclusionStrategy {
 
     @Override
     public boolean includeArgument(Parameter parameter, AnnotatedType type) {
-        return !ClassUtils.hasAnnotation(parameter, Ignore.class)
-                && !parameter.isAnnotationPresent(Source.class)
-                && !parameter.isAnnotationPresent(Context.class)
-                && !parameter.isAnnotationPresent(Info.class);
+        return !ClassUtils.hasAnnotation(parameter, Ignore.class);
     }
 
     @Override

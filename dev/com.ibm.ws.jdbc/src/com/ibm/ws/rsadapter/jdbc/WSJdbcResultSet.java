@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2018 IBM Corporation and others.
+ * Copyright (c) 2001, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2253,7 +2253,6 @@ public class WSJdbcResultSet extends WSJdbcObject implements ResultSet {
             boolean moreRows = rsetImpl.next();            
             return moreRows;
         } catch (SQLException ex) {
-            FFDCFilter.processException(ex, "com.ibm.ws.rsadapter.jdbc.WSJdbcResultSet.next", "2624", this);
             throw WSJdbcUtil.mapException(this, ex);
         } catch (NullPointerException nullX) {
             // No FFDC code needed; we might be closed.

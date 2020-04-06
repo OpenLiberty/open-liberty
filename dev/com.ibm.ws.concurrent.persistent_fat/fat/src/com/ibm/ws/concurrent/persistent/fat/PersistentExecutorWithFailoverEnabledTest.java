@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.DerbyEmbeddedUtilities;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,7 +38,6 @@ import web.SchedulerFATServlet;
 public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient {
 
     private static final String APP_NAME = "schedtest";
-    private static final String DB_NAME = "${shared.resource.dir}/data/scheddb";
 
     private static ServerConfiguration originalConfig;
 
@@ -45,7 +46,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     public static LibertyServer server;
     
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     /**
      * Before running any tests, start the server
@@ -54,38 +55,29 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        // Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
+    	// Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/scheddb");
-        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/testdb");
-
-        originalConfig = server.getServerConfiguration();
-        ServerConfiguration config = originalConfig.clone();
-        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("3h"); // the test case does not expect polling, so set a large value that will never be reached
-        myScheduler.setExtraAttribute("missedTaskThreshold2", "1m"); // TODO rename to missedTaskThreshold and use normal setter if this approach is chosen
-        server.updateServerConfiguration(config);
-
-    	//Get type
-		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
-
-    	//Get driver info
-    	String driverName = dbContainerType.getDriverName();
-    	server.addEnvVar("DB_DRIVER", driverName);
+    	
+    	//Get driver type
+    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-    	
-		//Initialize database
-		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
 
 		//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
-
-        //Create Derby DB if using derby
-        if (dbContainerType == DatabaseContainerType.Derby)
-            DerbyEmbeddedUtilities.createDB(server, "TaskStoreDS", "userx", "passx");
+        
+    	//Edit original config to enable failover
+        originalConfig = server.getServerConfiguration();
+        ServerConfiguration config = originalConfig.clone();
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setInitialPollDelay("2s");
+        myScheduler.setPollInterval("2s500ms"); // a couple of tests require polling in order to perform retries
+        myScheduler.setMissedTaskThreshold("6s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+        server.updateServerConfiguration(config);
 
         server.startServer();
     }
@@ -103,14 +95,68 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
             if (server != null)
                 try {
                     if (server.isStarted())
-                    server.stopServer("CWWKC1500W", //Persistent Executor Rollback
-                                      "CWWKC1510W", //Persistent Executor Rollback and Failed
-                                      "DSRA0174W"); //Generic Datasource Helper
+                        server.stopServer("CWWKC1500W", //Task rolled back
+                                          "CWWKC1501W", //Task rolled back due to failure ...
+                                          "CWWKC1502W", //Task rolled back, retry time unspecified
+                                          "CWWKC1503W", //Task rolled back due to failure ..., retry time unspecified
+                                          "CWWKC1510W", //Task rolled back and aborted
+                                          "CWWKC1511W", //Task rolled back and aborted. Failure is ...
+                                          "DSRA0174W"); //Generic Datasource Helper
                 } finally {
                     if (originalConfig != null)
                         server.updateServerConfiguration(originalConfig);
                 }
         }
+    }
+
+    @Test
+    public void testBlockAfterCancelByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterCancelByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterFindByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterFindByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterRemoveByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterRemoveByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterScheduleFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockRunningTaskThatCancelsSelfFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockRunningTaskThatRemovesSelfFE() throws Exception {
+        runTest(server, APP_NAME, testName);
     }
 
     @Test

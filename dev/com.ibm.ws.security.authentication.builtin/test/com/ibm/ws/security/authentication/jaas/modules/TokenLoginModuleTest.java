@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import org.junit.BeforeClass;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
@@ -41,7 +42,6 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.credentials.wscred.WSCredentialImpl;
 import com.ibm.ws.security.jaas.common.JAASConfigurationFactory;
-import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.security.token.TokenManager;
@@ -62,6 +62,7 @@ public class TokenLoginModuleTest extends LoginModuleTester {
     private static final String ACCESS_ID = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER, TEST_REALM, USER_NAME);
     private static final WSCredential wsCredential = new WSCredentialImpl(TEST_REALM, USER_NAME, USER_NAME, "UNAUTHENTICATED", "primaryUniqueGroupAccessId", ACCESS_ID, null, null);
     private static final byte[] ssoTokenBytes = "These are the mock SSO token bytes".getBytes();
+    private final String[] removeAttrs = new String[] {};
     private static SharedOutputManager outputMgr;
 
     private final Mockery mock = new JUnit4Mockery() {
@@ -175,7 +176,7 @@ public class TokenLoginModuleTest extends LoginModuleTester {
                 will(returnValue("mock"));
                 allowing(userRegistry).getUserSecurityName(USER_NAME);
                 will(returnValue(USER_NAME));
-                allowing(tokenManager).recreateTokenFromBytes(with(ssoTokenBytes));
+                allowing(tokenManager).recreateTokenFromBytes(with(ssoTokenBytes), with(removeAttrs));
                 will(returnValue(token));
                 allowing(token).getAttributes("u");
                 will(returnValue(new String[] { ACCESS_ID }));

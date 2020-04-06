@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -524,6 +524,18 @@ l'attribut configur\u00e9 de la configuration.
 warning.supplied.config.not.valid.useraction=Mettez \u00e0 jour la \
 configuration du serveur pour retirer la valeur d'attribut incorrecte.
 
+variables.in.id.not.supported=CWWKG0104W: L''attribut ID dont la \
+valeur est {1} pour l''\u00e9l\u00e9ment de configuration {0} doit avoir une valeur fixe. Les \
+variables dans l''attribut ID ne sont pas remplac\u00e9es.
+variables.in.id.not.supported.explanation=Les valeurs de \
+variable ne sont pas admises dans les attributs ID. Toutes les variables dans les \
+attributs ID sont trait\u00e9es comme des cha\u00eenes litt\u00e9rales.  
+variables.in.id.not.supported.useraction=Retirez la variable de la \
+valeur de l'attribut ID.
+
+error.root.must.be.server=CWWKG0105E: Le document de configuration {0} doit commencer par l''\u00e9l\u00e9ment [{1}].
+error.root.must.be.server.explanation=La configuration doit se trouver dans un \u00e9l\u00e9ment server ou un \u00e9l\u00e9ment client. 
+error.root.must.be.server.useraction=Ajoutez un \u00e9l\u00e9ment server ou client \u00e0 la racine du fichier de configuration. 
 
 # Non-TR message
 error.invalidOCDRef=ERREUR : Le PID [{0}] du m\u00e9tatype sp\u00e9cifie un ID de d\u00e9finition de classe d''objets qui n''existe pas [{1}]

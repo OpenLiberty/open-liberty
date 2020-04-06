@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,29 +126,29 @@ public class JSF23GeneralTests {
     @Test
     public void testFacesServletExactMapping() throws Exception {
         String contextRoot = "FacesServletExactMapping";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "exactMapping");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "exactMapping");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The correct page was not invoked.", page.getElementById("form1:out1").getTextContent().equals("exactMapping.xhtml invoked"));
+            assertTrue("The correct page was not invoked.", page.getElementById("form1:out1").getTextContent().equals("exactMapping.xhtml invoked"));
 
-        url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "test/exactMapping");
+            url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "test/exactMapping");
 
-        page = (HtmlPage) webClient.getPage(url);
+            page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The correct page was not invoked.", page.getElementById("form1:out1").getTextContent().equals("test/exactMapping.xhtml invoked"));
-
+            assertTrue("The correct page was not invoked.", page.getElementById("form1:out1").getTextContent().equals("test/exactMapping.xhtml invoked"));
+        }
     }
 
     /**
@@ -159,37 +159,38 @@ public class JSF23GeneralTests {
     @Test
     public void testAPIConstants() throws Exception {
         String contextRoot = "JSF23GeneralTests";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23APIConstants.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23APIConstants.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Check the value of each API constant
-        String output = page.getElementById("out1").getTextContent();
-        assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME was incorrect: " + output,
-                   output.equals("jsf.js"));
+            // Check the value of each API constant
+            String output = page.getElementById("out1").getTextContent();
+            assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME was incorrect: " + output,
+                       output.equals("jsf.js"));
 
-        output = page.getElementById("out2").getTextContent();
-        assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME was incorrect: " + output,
-                   output.equals("javax.faces"));
+            output = page.getElementById("out2").getTextContent();
+            assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME was incorrect: " + output,
+                       output.equals("javax.faces"));
 
-        output = page.getElementById("out3").getTextContent();
-        assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME was incorrect: " + output,
-                   output.equals("javax.faces.source"));
+            output = page.getElementById("out3").getTextContent();
+            assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME was incorrect: " + output,
+                       output.equals("javax.faces.source"));
 
-        output = page.getElementById("out4").getTextContent();
-        assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME was incorrect: " + output,
-                   output.equals("javax.faces.behavior.event"));
+            output = page.getElementById("out4").getTextContent();
+            assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME was incorrect: " + output,
+                       output.equals("javax.faces.behavior.event"));
 
-        output = page.getElementById("out5").getTextContent();
-        assertTrue("The value of javax.faces.context.PartialViewContext.PARTIAL_EVENT_PARAM_NAME was incorrect: " + output,
-                   output.equals("javax.faces.partial.event"));
+            output = page.getElementById("out5").getTextContent();
+            assertTrue("The value of javax.faces.context.PartialViewContext.PARTIAL_EVENT_PARAM_NAME was incorrect: " + output,
+                       output.equals("javax.faces.partial.event"));
+        }
     }
 
     /**
@@ -225,22 +226,23 @@ public class JSF23GeneralTests {
     @Test
     public void testFacesEventGetFacesContextMethod() throws Exception {
         String contextRoot = "JSF23GeneralTests";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23FacesEvent.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23FacesEvent.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Now click the submit button
-        page.getElementById("button1").click();
+            // Now click the submit button
+            page.getElementById("button1").click();
 
-        List<String> result = jsf23Server.findStringsInLogs("TestActionListener processAction invoked!!");
-        assertTrue("The FacesEvent.getFacesContext() method did not work.", result.size() == 1);
+            List<String> result = jsf23Server.findStringsInLogs("TestActionListener processAction invoked!!");
+            assertTrue("The FacesEvent.getFacesContext() method did not work.", result.size() == 1);
+        }
     }
 
     /**
@@ -256,18 +258,19 @@ public class JSF23GeneralTests {
     @Test
     public void testPerViewPhaseListenerQueueExceptionEnabled() throws Exception {
         String contextRoot = "PerViewPhaseListenerQueueException";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The error page was not displayed.", page.asText().equals("ERROR PAGE"));
+            assertTrue("The error page was not displayed.", page.asText().equals("ERROR PAGE"));
+        }
     }
 
     /**
@@ -283,21 +286,21 @@ public class JSF23GeneralTests {
     @Test
     public void testPerViewPhaseListnerQueueExceptionDefault() throws Exception {
         String contextRoot = "PerViewPhaseListenerDoNotQueueException";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // The page should load successfully even though an exception was thrown in the
-        // PhaseListener.
-        assertTrue("The exception was not handled correctly.", page.asText().contains("Hello World"));
-
+            // The page should load successfully even though an exception was thrown in the
+            // PhaseListener.
+            assertTrue("The exception was not handled correctly.", page.asText().contains("Hello World"));
+        }
     }
 
     /**
@@ -309,18 +312,19 @@ public class JSF23GeneralTests {
     @Test
     public void testGlobalPhaseListenerException() throws Exception {
         String contextRoot = "GlobalPhaseListenerQueueException";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The error page was not displayed.", page.asText().equals("ERROR PAGE"));
+            assertTrue("The error page was not displayed.", page.asText().equals("ERROR PAGE"));
+        }
     }
 
     /**
@@ -334,21 +338,22 @@ public class JSF23GeneralTests {
     @Test
     public void testButtonDisabledAttriute() throws Exception {
         String contextRoot = "JSF23GeneralTests";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23ButtonDisabledAttribute.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23ButtonDisabledAttribute.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String pageXml = page.asXml();
+            String pageXml = page.asXml();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), pageXml);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), pageXml);
 
-        assertTrue("The disabled attributed did not work as expected, the html did not contain: disabled=\"disabled\": " + pageXml,
-                   pageXml.contains("disabled=\"disabled\""));
+            assertTrue("The disabled attributed did not work as expected, the html did not contain: disabled=\"disabled\": " + pageXml,
+                       pageXml.contains("disabled=\"disabled\""));
+        }
     }
 
     /**
@@ -370,32 +375,33 @@ public class JSF23GeneralTests {
     @Test
     public void testRepeated_ListenerFor_ResourceDependency_SpecIssue1430() throws Exception {
         String contextRoot = "JSF23Spec1430";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Now click the submit button
-        page = page.getElementById("button").click();
+            // Now click the submit button
+            page = page.getElementById("button").click();
 
-        // Log the page for debugging if necessary in the future
-        String pageXml = page.asXml();
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), pageXml);
+            // Log the page for debugging if necessary in the future
+            String pageXml = page.asXml();
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), pageXml);
 
-        // If both of the @ResourceDependencies were not resolved then these two checks would fail.
-        assertTrue("The page did not contain the test-style.css stylesheet.", pageXml.contains("test-style.css"));
-        assertTrue("The page did not contain the test-style2.css stylesheet.", pageXml.contains("test-style2.css"));
+            // If both of the @ResourceDependencies were not resolved then these two checks would fail.
+            assertTrue("The page did not contain the test-style.css stylesheet.", pageXml.contains("test-style.css"));
+            assertTrue("The page did not contain the test-style2.css stylesheet.", pageXml.contains("test-style2.css"));
 
-        // If both of the @ListenerFor were not resolved then these two checks would fail.
-        assertTrue("The page did not contain preValidateEvent.", pageXml.contains("preValidateEvent"));
-        assertTrue("The page did not contain postValidateEvent.", pageXml.contains("postValidateEvent"));
+            // If both of the @ListenerFor were not resolved then these two checks would fail.
+            assertTrue("The page did not contain preValidateEvent.", pageXml.contains("preValidateEvent"));
+            assertTrue("The page did not contain postValidateEvent.", pageXml.contains("postValidateEvent"));
+        }
     }
 
     /**
@@ -416,26 +422,27 @@ public class JSF23GeneralTests {
     @Test
     public void testSpecIssue1258() throws Exception {
         String contextRoot = "JSF23GeneralTests";
-        WebClient webClient = new WebClient();
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23SpecIssue1258.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23SpecIssue1258.xhtml");
 
-        WebRequest requestSettings = new WebRequest(url, HttpMethod.POST);
-        requestSettings.setRequestParameters(new ArrayList());
-        requestSettings.getRequestParameters().add(new NameValuePair("test", "<test>"));
+            WebRequest requestSettings = new WebRequest(url, HttpMethod.POST);
+            requestSettings.setRequestParameters(new ArrayList());
+            requestSettings.getRequestParameters().add(new NameValuePair("test", "<test>"));
 
-        HtmlPage page = (HtmlPage) webClient.getPage(requestSettings);
+            HtmlPage page = (HtmlPage) webClient.getPage(requestSettings);
 
-        String pageXml = page.asXml();
+            String pageXml = page.asXml();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), pageXml);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), pageXml);
 
-        assertTrue("The value within the script should be: Within Script: <test>", pageXml.contains("Within Script: <test>"));
-        assertTrue("The value outside the script should be: Outside Script: &lt;test&gt;", pageXml.contains("Outside Script: &lt;test&gt;"));
+            assertTrue("The value within the script should be: Within Script: <test>", pageXml.contains("Within Script: <test>"));
+            assertTrue("The value outside the script should be: Outside Script: &lt;test&gt;", pageXml.contains("Outside Script: &lt;test&gt;"));
+        }
     }
 
     /**
@@ -453,21 +460,22 @@ public class JSF23GeneralTests {
     @Test
     public void testSpecIssue1346() throws Exception {
         String contextRoot = "JSF23Spec1346";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String pageText = page.asText();
+            String pageText = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The CustomFaceletCacheFactory was not invoked.", pageText.contains("CustomFaceletCacheFactory: getFaceletCache Invoked!"));
-        assertTrue("The CustomFaceletCache was not invoked.", pageText.contains("CustomFaceletCache: getFacelet Invoked!"));
+            assertTrue("The CustomFaceletCacheFactory was not invoked.", pageText.contains("CustomFaceletCacheFactory: getFaceletCache Invoked!"));
+            assertTrue("The CustomFaceletCache was not invoked.", pageText.contains("CustomFaceletCache: getFacelet Invoked!"));
+        }
     }
 
     /**
@@ -485,38 +493,39 @@ public class JSF23GeneralTests {
     @Test
     public void testDisableFacesServletToXhtml() throws Exception {
         String contextRoot = "JSF23DisableFacesServletToXhtml";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "index.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "index.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String pageText = page.asText();
+            String pageText = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // If the .xhtml mapping was not added, which is the expected behavior in this instance
-        // since we have disabled the addition via the context parameter then the expression should
-        // not be evaluated.
-        assertTrue("The .xhtml mapping was added and it should not have been.", !pageText.contains("4"));
+            // If the .xhtml mapping was not added, which is the expected behavior in this instance
+            // since we have disabled the addition via the context parameter then the expression should
+            // not be evaluated.
+            assertTrue("The .xhtml mapping was added and it should not have been.", !pageText.contains("4"));
 
-        url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "index.jsf");
+            url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "index.jsf");
 
-        page = (HtmlPage) webClient.getPage(url);
+            page = (HtmlPage) webClient.getPage(url);
 
-        pageText = page.asText();
+            pageText = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // The .jsf mapping should have been added, which is expected. The expression should be
-        // evaluated in this case. If the expression was not evaluated then the mapping was not
-        // properly added.
-        assertTrue("The .jsf mapping should have been added but was not.", pageText.contains("4"));
+            // The .jsf mapping should have been added, which is expected. The expression should be
+            // evaluated in this case. If the expression was not evaluated then the mapping was not
+            // properly added.
+            assertTrue("The .jsf mapping should have been added but was not.", pageText.contains("4"));
+        }
     }
 
     /**
@@ -528,51 +537,52 @@ public class JSF23GeneralTests {
     @Test
     public void testViewActionFlowEntry() throws Exception {
         String contextRoot = "JSF23ViewActionFlowEntry";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23ViewActionFlow_index.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "JSF23ViewActionFlow_index.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String pageText = page.asText();
+            String pageText = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // The viewAction should have been called and the page redirected to the first page in the flow
-        assertTrue("The viewAction did not redirect to the flow", (pageText.contains("Flow Id: simple") && pageText.contains("In flow ? true")));
+            // The viewAction should have been called and the page redirected to the first page in the flow
+            assertTrue("The viewAction did not redirect to the flow", (pageText.contains("Flow Id: simple") && pageText.contains("In flow ? true")));
 
-        String queryString = page.getElementById("queryStringText").getTextContent();
-        //log the query string
-        Log.info(c, name.getMethodName(), "Query String: " + queryString);
+            String queryString = page.getElementById("queryStringText").getTextContent();
+            //log the query string
+            Log.info(c, name.getMethodName(), "Query String: " + queryString);
 
-        //Spec Issue 1403 ( https://github.com/javaee/javaserverfaces-spec/issues/1403 ) states that when entering a
-        //flow from a viewAction, the query string must contain "jffi" and "jftfdi".
-        assertTrue("The expected parameters (jffi and jftfdi) were not in the query string.", (queryString.contains("jffi") && queryString.contains("jftfdi")));
+            //Spec Issue 1403 ( https://github.com/javaee/javaserverfaces-spec/issues/1403 ) states that when entering a
+            //flow from a viewAction, the query string must contain "jffi" and "jftfdi".
+            assertTrue("The expected parameters (jffi and jftfdi) were not in the query string.", (queryString.contains("jffi") && queryString.contains("jftfdi")));
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form");
-        // Get the submit button and input text
-        HtmlSubmitInput submitButton = form.getInputByName("button1");
-        HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("inputValue");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form");
+            // Get the submit button and input text
+            HtmlSubmitInput submitButton = form.getInputByName("button1");
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("inputValue");
 
-        // Fill the input text
-        inputText.setValueAttribute("test");
+            // Fill the input text
+            inputText.setValueAttribute("test");
 
-        //click the button
-        page = submitButton.click();
+            //click the button
+            page = submitButton.click();
 
-        pageText = page.asText();
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            pageText = page.asText();
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //make sure we still have the value
-        assertTrue("The value entered was not saved between flow pages", pageText.contains("Current flowscope value: test"));
-        //make sure we are still in flow
-        assertTrue("Exited flow unexpectedly", pageText.contains("'Simple' flow page 2 In flow ? true"));
+            //make sure we still have the value
+            assertTrue("The value entered was not saved between flow pages", pageText.contains("Current flowscope value: test"));
+            //make sure we are still in flow
+            assertTrue("Exited flow unexpectedly", pageText.contains("'Simple' flow page 2 In flow ? true"));
+        }
     }
 
     /**
@@ -589,56 +599,56 @@ public class JSF23GeneralTests {
     @AllowedFFDC("java.security.PrivilegedActionException")
     public void testSpecIssue1113() throws Exception {
         String contextRoot = "JSF23Spec1113";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.xhtml
-        URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "faces/selectManyListboxSelectItems.xhtml");
+            // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.xhtml
+            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "faces/selectManyListboxSelectItems.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String pageXml = page.asXml();
+            String pageXml = page.asXml();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), pageXml);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), pageXml);
 
-        // Test that h:selectManyListbox does not render onselect attribute in a facelet with a select element
-        assertTrue("The onselect attribute was rendered in a facelet.", !pageXml.contains("onselect=\"jsFunction\""));
+            // Test that h:selectManyListbox does not render onselect attribute in a facelet with a select element
+            assertTrue("The onselect attribute was rendered in a facelet.", !pageXml.contains("onselect=\"jsFunction\""));
 
-        // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp
-        url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "faces/selectManyListboxSelectItems.jsp");
+            // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp
+            url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "faces/selectManyListboxSelectItems.jsp");
 
-        try {
-            Log.info(c, name.getMethodName(), "Invoking JSP page");
+            try {
+                Log.info(c, name.getMethodName(), "Invoking JSP page");
+                page = (HtmlPage) webClient.getPage(url);
+            } catch (FailingHttpStatusCodeException e) {
+                String response = e.getResponse().getContentAsString();
+                int statusCode = e.getStatusCode();
+
+                Log.info(c, name.getMethodName(), "Caught FailingHttpStatusCodeException");
+                Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException response: " + response);
+                Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException statusCode: " + statusCode);
+
+                /*
+                 * com.ibm.ws.jsp.translator.JspTranslationException:
+                 * JSPG0123E: Unable to locate tag attribute info for tag attribute onselect.<br>
+                 */
+                assertTrue("The JSP was rendered successfully and it should not have been.", response.contains("JSPG0123E") && statusCode == 500);
+            }
+
+            // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp
+            url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "faces/selectManyCheckboxSelectItems.xhtml");
+
             page = (HtmlPage) webClient.getPage(url);
-        } catch (FailingHttpStatusCodeException e) {
-            String response = e.getResponse().getContentAsString();
-            int statusCode = e.getStatusCode();
 
-            Log.info(c, name.getMethodName(), "Caught FailingHttpStatusCodeException");
-            Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException response: " + response);
-            Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException statusCode: " + statusCode);
+            pageXml = page.asXml();
 
-            /*
-             * com.ibm.ws.jsp.translator.JspTranslationException:
-             * JSPG0123E: Unable to locate tag attribute info for tag attribute onselect.<br>
-             */
-            assertTrue("The JSP was rendered successfully and it should not have been.", response.contains("JSPG0123E") && statusCode == 500);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), pageXml);
+
+            // Test that h:selectManyCheckbox does render onselect attribute in an input element
+            assertTrue("The onselect attribute was not rendered in an input element.", pageXml.contains("onselect=\"jsFunction\""));
         }
-
-        // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp
-        url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "faces/selectManyCheckboxSelectItems.xhtml");
-
-        page = (HtmlPage) webClient.getPage(url);
-
-        pageXml = page.asXml();
-
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), pageXml);
-
-        // Test that h:selectManyCheckbox does render onselect attribute in an input element
-        assertTrue("The onselect attribute was not rendered in an input element.", pageXml.contains("onselect=\"jsFunction\""));
     }
-
 }

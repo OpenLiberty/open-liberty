@@ -16,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 @Entity
 @DiscriminatorValue("T") // The base level is (P)artition, and (T)op-level extends this
 
@@ -52,6 +54,7 @@ public class TopLevelStepInstanceEntity extends StepThreadInstanceEntity {
 	
 	// Not a useful constructor from the "real" flow of creating a step execution for the first time,
 	// for which the other constructor below encapsulates important logic.
+    @Trivial
 	public TopLevelStepInstanceEntity() {}
 
 	public TopLevelStepInstanceEntity(JobInstanceEntity jobInstance, String stepName, boolean isPartitionedStep) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,11 +36,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
 import com.google.gson.JsonArray;
+import org.osgi.service.cm.Configuration;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientProvider;
@@ -102,7 +102,7 @@ public class LibertyOAuth20ProviderTest {
     private static final String[] claimsSupported = { "sub", "name", "preferred_username", "profile", "picture", "email", "locale", "groupIds" };
     private static final String[] responseModesSupported = { "query", "fragment" };
     private static final String[] grantTypesSupported = { "authorization_code", "implicit", "refresh_token", "client_credentials", "password",
-                                                          "urn:ietf:params:oauth:grant-type:jwt-bearer" };
+            "urn:ietf:params:oauth:grant-type:jwt-bearer" };
     private static final String[] tokenEndpointAuthMethodsSupported = { "client_secret_post", "client_secret_basic" };
     private static final String[] displayValuesSupported = { "page" };
     private static final String[] claimTypesSupported = { "normal" };
@@ -192,6 +192,7 @@ public class LibertyOAuth20ProviderTest {
             assertEquals("The appPasswordLifetime value must be set.", appPasswordLifetime, provider.getAppPasswordLifetime());
             assertEquals("The appTokenLifetime value must be set.", appTokenLifetime, provider.getAppTokenLifetime());
             assertEquals("The appPasswordLifetime value must be set.", appTokenOrPasswordLimit, provider.getAppTokenOrPasswordLimit());
+            assertFalse("The ropcPreferUserSecurityName value must be set", provider.isROPCPreferUserSecurityName());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable("default", t);
@@ -330,7 +331,7 @@ public class LibertyOAuth20ProviderTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
-        //TODO: add test logic
+        // TODO: add test logic
     }
 
     @Test
@@ -401,7 +402,7 @@ public class LibertyOAuth20ProviderTest {
 
             Collection<OidcBaseClient> clients = clientProvider.getAll();
 
-            //We only seeded it with one client
+            // We only seeded it with one client
             Collection<OidcBaseClient> oidcBaseClients = clientProvider.getAll();
             assertEquals(clients.size(), 1);
 
@@ -409,13 +410,13 @@ public class LibertyOAuth20ProviderTest {
 
             OidcBaseClient expectedOidcBaseClient = getSampleOidcBaseClientObject(getSampleOidcBaseClientProperties());
 
-            //Ensure object return matches object seeded
+            // Ensure object return matches object seeded
             AbstractOidcRegistrationBaseTest.assertEqualsOidcBaseClients(expectedOidcBaseClient, retrievedOidcBaseClient);
 
-            //Deactivation will invoke removeClients indirectly
-            providerForOidcBaseClientTests.deactivate(null, null); //Parameters do nothing in the method, anyways
+            // Deactivation will invoke removeClients indirectly
+            providerForOidcBaseClientTests.deactivate(null, null); // Parameters do nothing in the method, anyways
 
-            //Verify clients are removed from this instance
+            // Verify clients are removed from this instance
             assertEquals(clientProvider.getAll().size(), 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -453,7 +454,7 @@ public class LibertyOAuth20ProviderTest {
                     allowing(rcf).createResourceConfig(DataSource.class.getName());
                     will(returnValue(rc));
                     allowing(rc).setResAuthType(ResourceConfig.AUTH_CONTAINER);
-                    //allowing(rc).setSharingScope(ResourceConfig.SHARING_SCOPE_UNSHAREABLE);
+                    // allowing(rc).setSharingScope(ResourceConfig.SHARING_SCOPE_UNSHAREABLE);
                     allowing(rf).createResource(rc);
                     will(returnValue(ds));
                     allowing(dmd).getDriverName();
@@ -481,8 +482,8 @@ public class LibertyOAuth20ProviderTest {
                     allowing(conn).close();
                     allowing(execSvc).submit(with(any(Thread.class)));
 
-                    //allowing(sm.executeUpdate(with((String.class))));
-                    //will(returnValue(1));
+                    // allowing(sm.executeUpdate(with((String.class))));
+                    // will(returnValue(1));
                 }
             });
 
@@ -596,7 +597,7 @@ public class LibertyOAuth20ProviderTest {
 
         OidcBaseClient testOidcBaseClient = new OidcBaseClient((String) clientProps.get(LibertyOAuth20Provider.KEY_CLIENT_ID), (String) clientProps.get(LibertyOAuth20Provider.KEY_CLIENT_SECRET), redirectUris, (String) clientProps.get(LibertyOAuth20Provider.KEY_CLIENT_DISPLAYNAME), (String) clientProps.get(LibertyOAuth20Provider.KEY_PROVIDER_ID), (Boolean) clientProps.get(LibertyOAuth20Provider.KEY_CLIENT_ENABLED));
 
-        //Use modifiers to set remaining properties
+        // Use modifiers to set remaining properties
         testOidcBaseClient.setTokenEndpointAuthMethod((String) clientProps.get(LibertyOAuth20Provider.KEY_CLIENT_TOKEN_EP_AUTH_METHOD));
         testOidcBaseClient.setScope((String) clientProps.get(LibertyOAuth20Provider.KEY_CLIENT_SCOPE));
         testOidcBaseClient.setGrantTypes(grantTypes);
@@ -650,6 +651,8 @@ public class LibertyOAuth20ProviderTest {
         properties.put(LibertyOAuth20Provider.KEY_APP_TOKEN_LIFETIME, appTokenLifetime);
         properties.put(LibertyOAuth20Provider.KEY_APP_TOKEN_OR_PASSWORD_LIMIT, 100L);
         properties.put(LibertyOAuth20Provider.KEY_STORE_ACCESSTOKEN_ENCODING, "plain");
+        properties.put(LibertyOAuth20Provider.KEY_ROPC_PREFER_USERSECURITYNAME, Boolean.FALSE);
+        properties.put(LibertyOAuth20Provider.KEY_TRACK_OAUTH_CLIENTS, Boolean.FALSE);
 
         return properties;
     }

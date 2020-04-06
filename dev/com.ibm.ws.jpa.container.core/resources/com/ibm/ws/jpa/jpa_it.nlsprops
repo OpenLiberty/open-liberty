@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -301,6 +301,10 @@ JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Non sono richieste azioni.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: L''implementazione {0}, {1}, non \u00e8 conforme alla specifica JPA 2.1 e non pu\u00f2 essere utilizzata. Ottenere una nuova versione del provider di persistenza JPA che implementi JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Il provider di persistenza JPA non pu\u00f2 essere utilizzato perch\u00e9 manca di implementazione di metodi richiesti dalla specifica JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Ottenere una nuova versione del provider di persistenza JPA che sia conforme alla specifica JPA 2.1.
+
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Si \u00e8 verificato un errore durante il tentativo di trasformare la classe Java {0}.  Sono stati raccolti i seguenti dettagli sull''errore: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Si \u00e8 verificato un errore imprevisto durante la trasformazione della classe Java. Questo errore \u00e8 di solito causato da un bytecode Java non valido.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=La cache di classe potrebbe essere danneggiata o l'applicazione potrebbe essere compressa in modo errato. Innanzitutto, svuotare la cache di classe. Se tale azione non risolve il problema, esaminare se nell'archivio dell'applicazione ci sono errori di impacchettamento.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

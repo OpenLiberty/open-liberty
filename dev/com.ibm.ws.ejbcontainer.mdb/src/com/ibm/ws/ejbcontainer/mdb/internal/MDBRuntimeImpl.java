@@ -52,7 +52,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.injectionengine.osgi.util.JNDIHelper;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
-import com.ibm.ws.kernel.feature.ServerStarted;
+import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -79,8 +79,8 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     // id unique per activation spec configuration
     private static final String ACT_SPEC_CFG_ID = "id";
 
-    /** 
-     * Use the AtomicServiceReference class to the MessageEndpointCollaborator 
+    /**
+     * Use the AtomicServiceReference class to the MessageEndpointCollaborator
      */
     private final AtomicServiceReference<MessageEndpointCollaborator> messageEndpointCollaboratorRef = new AtomicServiceReference<MessageEndpointCollaborator>("messageEndpointCollaborator");
 
@@ -364,7 +364,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     protected void unsetMessageEndpointCollaborator(ServiceReference<MessageEndpointCollaborator> reference) {
         messageEndpointCollaboratorRef.unsetReference(reference);
     }
-    
+
     @Trivial
     public static MDBRuntimeImpl instance() {
         return instance;
@@ -381,7 +381,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Declarative Services method for setting the RRS XA resource factory service implementation reference.
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(name = "rRSXAResourceFactory", service = RRSXAResourceFactory.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
@@ -391,7 +391,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Declarative Services method for unsetting the RRS XA resource factory service implementation reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetRRSXAResourceFactory(ServiceReference<RRSXAResourceFactory> ref) {
@@ -400,7 +400,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Method to get the XAResource corresponding to an ActivationSpec from the RRSXAResourceFactory
-     * 
+     *
      * @param activationSpecId The id of the ActivationSpec
      * @param xid Transaction branch qualifier
      * @return the XAResource
@@ -418,7 +418,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * dynamic/optional/multiple. May be called at any time and in any order
-     * 
+     *
      * @param reference reference to AdminObjectService service
      */
     @Reference(name = REFERENCE_ADMIN_OBJECT_SERVICES,
@@ -439,9 +439,9 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Internal method for adding an AdminObjectService with an id.
-     * 
+     *
      * <p>Caller must hold a lock on this object.
-     * 
+     *
      * @param reference the service reference
      * @param id the id or jndiName
      * @param jndiName true if the id is the jndiName
@@ -469,7 +469,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     /**
      * Internal method for checking all known lookups and activating/deactivating
      * endpoints as needed in response to the results.
-     * 
+     *
      * @param activating true if new services have just come up, false if they are going down
      */
     private void updateSchemeJndiNames(boolean activating) {
@@ -501,9 +501,9 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Internal method for removing an AdminObjectService with an id.
-     * 
+     *
      * <p>Caller must hold a lock on this object.
-     * 
+     *
      * @param reference the service reference
      * @param id the id or jndiName
      * @param jndiName true if the id is the jndiName
@@ -544,15 +544,13 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     /**
      * Gets an existing NamedAdminObjectServiceInfo with the specified id, or
      * creates one and inserts it into {@link #adminObjectServices}.
-     * 
+     *
      * <p>Caller must hold a lock on this object.
      */
     private NamedAdminObjectServiceInfo createNamedAdminObjectServiceInfo(String id) {
         NamedAdminObjectServiceInfo aosInfo = adminObjectServices.get(id);
         if (aosInfo == null) {
-            aosInfo = new NamedAdminObjectServiceInfo(id,
-                            new ConcurrentServiceReferenceSet<AdminObjectService>(REFERENCE_ADMIN_OBJECT_SERVICES),
-                            new ConcurrentServiceReferenceSet<AdminObjectService>(REFERENCE_ADMIN_OBJECT_SERVICES));
+            aosInfo = new NamedAdminObjectServiceInfo(id, new ConcurrentServiceReferenceSet<AdminObjectService>(REFERENCE_ADMIN_OBJECT_SERVICES), new ConcurrentServiceReferenceSet<AdminObjectService>(REFERENCE_ADMIN_OBJECT_SERVICES));
             adminObjectServices.put(id, aosInfo);
         }
         return aosInfo;
@@ -561,7 +559,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     /**
      * Remove the NamedAdminObjectServiceInfo from {@link #adminObjectServices} if
      * it is no longer needed.
-     * 
+     *
      * <p>Caller must hold a lock on this object.
      */
     private void cleanupAdminObjectServiceInfo(NamedAdminObjectServiceInfo aosInfo) {
@@ -572,7 +570,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * dynamic/optional/multiple. May be called at any time and in any order
-     * 
+     *
      * @param reference reference to EndpointActivationService service
      */
     @Reference(name = REFERENCE_ENDPOINT_ACTIVATION_SERVICES,
@@ -628,7 +626,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     /**
      * Gets an existing EndpointActivationServiceInfo with the specified id, or
      * creates one and inserts it into {@link #endpointActivationServices}.
-     * 
+     *
      * <p>Caller must hold a lock on this object.
      */
     private EndpointActivationServiceInfo createEndpointActivationServiceInfo(String id) {
@@ -643,7 +641,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     /**
      * Remove the EndpointActivationServiceInfo from {@link #endpointActivationServices} if
      * it is no longer needed.
-     * 
+     *
      * <p>Caller must hold a lock on this object.
      */
     private void cleanupEndpointActivationServiceInfo(EndpointActivationServiceInfo easInfo) {
@@ -657,11 +655,12 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      * is available. Only after this method is invoked are the activation
      * specifications activated thereby ensuring that endpoints are activated
      * only after server startup.
-     * 
+     *
      * @param serverStarted The server started instance
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-    protected synchronized void setServerStarted(ServerStarted serverStarted) {
+    protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
+
         isServerStarted = true;
 
         // Now that the server has started, activate all of the message endpoints
@@ -674,10 +673,10 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Declarative services method for unsetting the ServerStarted service instance.
-     * 
+     *
      * @param serverStarted The Started service instance
      */
-    protected void unsetServerStarted(ServerStarted serverStarted) {
+    protected void unsetServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
         // No cleanup is needed since the server has stopped.
         isServerStarted = false;
     }
@@ -698,12 +697,10 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     @Override
     public BeanOFactory getBeanOFactory(BeanOFactoryType type) {
         BeanOFactory factory;
-        switch (type)
-        {
+        switch (type) {
             case CM_MESSAGEDRIVEN_BEANO_FACTORY:
                 factory = ivCMMessageDrivenBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new CMMessageDrivenBeanOFactory();
                     ivCMMessageDrivenBeanOFactory = factory;
                 }
@@ -711,8 +708,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
             case BM_MESSAGEDRIVEN_BEANO_FACTORY:
                 factory = ivBMMessageDrivenBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new BMMessageDrivenBeanOFactory();
                     ivBMMessageDrivenBeanOFactory = factory;
                 }
@@ -741,7 +737,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     public MessageEndpointCollaborator getMessageEndpointCollaborator() {
         return messageEndpointCollaboratorRef.getService();
     }
-    
+
     // declarative service
     @Reference(name = "metaDataSlotService", service = MetaDataSlotService.class)
     protected void setMetaDataSlotService(MetaDataSlotService slotService) {
@@ -762,14 +758,14 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      * <li> the corresponding endpoint activation service is available
      * <li> the server has reached the 'started' state
      * </ul>
-     * 
+     *
      * When this method is called before all of these have occurred, the
      * activation of this endpoint will be deferred until all of the
      * above have occurred. <p>
-     * 
+     *
      * This method also controls proper synchronization, to insure the necessary
      * state of all the required resources services.<p>
-     * 
+     *
      * @param mef message endpoint factory to activate
      * @throws ResourceException if a failure occurs activating the endpoint
      */
@@ -832,7 +828,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     /**
      * Attempt to activate a set of endpoints if all services are available and
      * they are not already activated.
-     * 
+     *
      * @see #activateEndpoint
      */
     private void activateDeferredEndpoints(Set<MessageEndpointFactoryImpl> mefs) {
@@ -862,7 +858,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Attempt to activate an endpoint if all its services are available.
-     * 
+     *
      * @param explicit true if {@link #activateEndpoint} was called
      * @see #activateEndpoint
      */
@@ -903,19 +899,18 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
         mef.activateEndpointInternal(eas,
                                      mef.endpointActivationServiceInfo.getMaxEndpoints(),
-                                     mef.adminObjectServiceInfo == null ? null :
-                                                     (AdminObjectService) context.locateService("adminObjectServices", mef.adminObjectServiceInfo.serviceRef)
-                        );
+                                     mef.adminObjectServiceInfo == null ? null : (AdminObjectService) context.locateService("adminObjectServices",
+                                                                                                                            mef.adminObjectServiceInfo.serviceRef));
         mef.runtimeActivated = true;
     }
 
     /**
      * Coordinates all of the resources necessary for removal and deactivation
      * of endpoints. <p>
-     * 
+     *
      * This method controls proper synchronization, to insure the necessary
      * state of all the required resources services. <p>
-     * 
+     *
      * @param mef message endpoint factory to activate
      * @throws ResourceException if a failure occurs deactivating the endpoint
      */
@@ -942,7 +937,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     /**
      * Deactivates a set of endpoints if they have been activated.
-     * 
+     *
      * @see #activateEndpoint
      */
     private void deactivateEndpoints(Set<MessageEndpointFactoryImpl> mefs) {

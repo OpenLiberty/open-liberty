@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,8 +42,7 @@ import com.ibm.ws.util.UUID;
  * for non-persistent EJB timers and contains information about a timer that
  * was created through the EJB Timer Service. <p>
  **/
-public final class TimerNpImpl implements Timer, PassivatorSerializable
-{
+public final class TimerNpImpl implements Timer, PassivatorSerializable {
     private static final TraceComponent tc = Tr.register(TimerNpImpl.class, "EJBContainer", "com.ibm.ejs.container.container");
 
     /**
@@ -150,13 +149,12 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * Initializes fields of the timer.
      *
      * @param container The container that hosts this timer.
-     * @param bmd The metadata for the timed object for the timer.
-     * @param beanId BeanId identifying the timed object for the timer.
-     * @param info Application information to be delivered along with the timer
-     *            expiration notification. This can be null.
+     * @param bmd       The metadata for the timed object for the timer.
+     * @param beanId    BeanId identifying the timed object for the timer.
+     * @param info      Application information to be delivered along with the timer
+     *                      expiration notification. This can be null.
      */
-    private TimerNpImpl(EJSContainer container, BeanMetaData bmd, BeanId beanId, Serializable info)
-    {
+    private TimerNpImpl(EJSContainer container, BeanMetaData bmd, BeanId beanId, Serializable info) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             String infoClassName = (info == null) ? null : info.getClass().getName();
             Tr.entry(tc, "TimerNpImpl : " + beanId + ", " + infoClassName);
@@ -174,16 +172,15 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      *
      * Assumption: caller does so only for a non-persistent timer. <p>
      *
-     * @param beanId BeanId identifying the timed object for the timer.
+     * @param beanId     BeanId identifying the timed object for the timer.
      * @param expiration The point in time at which the timer must (first) expire.
-     * @param info Application information to be delivered along with the timer
-     *            expiration notification. This can be null.
-     * @param interval The number of milliseconds that must elapse
-     *            between timer expiration notifications.
-     *            A negative value indicates this is a single-action timer.
+     * @param info       Application information to be delivered along with the timer
+     *                       expiration notification. This can be null.
+     * @param interval   The number of milliseconds that must elapse
+     *                       between timer expiration notifications.
+     *                       A negative value indicates this is a single-action timer.
      **/
-    public TimerNpImpl(BeanId beanId, Date expiration, long interval, Serializable info)
-    {
+    public TimerNpImpl(BeanId beanId, Date expiration, long interval, Serializable info) {
         this(((EJSHome) beanId.home).container, ((EJSHome) beanId.home).beanMetaData, beanId, info); // F743-7591, F743-506, d589357
 
         // Set the Timer instance variables.
@@ -201,8 +198,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * @param beanId identity of the EJB for the Timer callback
      * @param taskId unique identity of the Timer/task
      **/
-    private TimerNpImpl(BeanId beanId, String taskId) // F743-425.CodRev
-    {
+    private TimerNpImpl(BeanId beanId, String taskId) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "TimerNpImpl : " + beanId + ", " + taskId);
@@ -221,21 +217,20 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * Creates a calendar-based timer that expires based on the given parsed
      * schedule expression.
      *
-     * @param container The container that hosts this timer.
-     * @param bmd The metadata for the timed object for the timer.
-     * @param beanId BeanId identifying the timed object for the timer.
-     * @param methodId The method index for the timeout callback method
+     * @param container  The container that hosts this timer.
+     * @param bmd        The metadata for the timed object for the timer.
+     * @param beanId     BeanId identifying the timed object for the timer.
+     * @param methodId   The method index for the timeout callback method
      * @param parsedExpr The parsed schedule expression
-     * @param info Application information to be delivered along with the timer
-     *            expiration notification. This can be null.
+     * @param info       Application information to be delivered along with the timer
+     *                       expiration notification. This can be null.
      */
     public TimerNpImpl(EJSContainer container,
                        BeanMetaData bmd,
                        BeanId beanId,
                        int methodId,
                        ParsedScheduleExpression parsedExpr,
-                       Serializable info)
-    {
+                       Serializable info) {
         this(container, bmd, beanId, info);
 
         ivMethodId = methodId; // F743-506
@@ -252,31 +247,27 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * Creates a calendar-based timer that expires based on the given parsed
      * schedule expression.
      *
-     * @param beanId BeanId identifying the timed object for the timer.
+     * @param beanId     BeanId identifying the timed object for the timer.
      * @param parsedExpr The parsed schedule expression
-     * @param info Application information to be delivered along with the timer
-     *            expiration notification. This can be null.
+     * @param info       Application information to be delivered along with the timer
+     *                       expiration notification. This can be null.
      */
-    public TimerNpImpl(BeanId beanId, ParsedScheduleExpression parsedExpr, Serializable info)
-    {
+    public TimerNpImpl(BeanId beanId, ParsedScheduleExpression parsedExpr, Serializable info) {
         this(((EJSHome) beanId.home).container, ((EJSHome) beanId.home).beanMetaData, beanId, 0, parsedExpr, info); // F743-506, d589357
     }
 
-    String getTaskId()
-    {
+    String getTaskId() {
         return ivTaskId;
     }
 
     /** Safely increment the task sequence number **/
-    private static synchronized String incrementTaskSeqNo()
-    {
+    private static synchronized String incrementTaskSeqNo() {
         ivTaskSeqNo++;
         String taskId = ivTaskSeqNo + "_NP_" + new UUID(); // F743-3618.1
         return taskId;
     }
 
-    public BeanId getIvBeanId()
-    {
+    public BeanId getIvBeanId() {
         return ivBeanId;
     }
 
@@ -285,9 +276,12 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
     }
 
     /** @return ivDestroyed; not synchronized */
-    boolean isIvDestroyed()
-    {
+    boolean isIvDestroyed() {
         return ivDestroyed;
+    }
+
+    long getIvExpiration() {
+        return ivExpiration;
     }
 
     /**
@@ -313,8 +307,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * - Called by ContainerTx during afterCompletion for all cancelled
      * timers that are being rescheduled due to rollback.
      */
-    public void start()
-    {
+    public void start() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "start: " + this);
@@ -324,8 +317,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
 
         // Synchronization must insure a destroyed timer is not placed in the
         // active timers map.                                            RTC107334
-        synchronized (this)
-        {
+        synchronized (this) {
             // If the application is stopping/stopped, then the timer should neither
             // be active nor scheduled; move to destroyed.
             if (ejbAmd.isStopping()) {
@@ -339,15 +331,13 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
             // then return without creating another Alarm.  It's lifecycle is over.
             // F7437591.codRev - Alternatively, if this is a calendar-based timer
             // with no expirations, don't create the alarm.
-            if (ivDestroyed || ivExpiration == 0)
-            {
+            if (ivDestroyed || ivExpiration == 0) {
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "start: not started - destroyed = " + ivDestroyed + ", expiration = " + ivExpiration);
                 return;
             }
 
-            synchronized (svActiveTimers)
-            {
+            synchronized (svActiveTimers) {
                 svActiveTimers.put(ivTaskId, this);
             }
         }
@@ -379,13 +369,11 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * This method should only be called by EJBApplicationMetaData once
      * the application has fully started.
      */
-    public synchronized void schedule()
-    {
+    public synchronized void schedule() {
         // Avoid scheduling a timer that was destroyed on another thread and
         // avoid scheduling a timer twice, which might be attempted if two
         // threads concurrently attempt to cancel and then both rollback.
-        if (ivTaskHandler == null && !ivDestroyed)
-        {
+        if (ivTaskHandler == null && !ivDestroyed) {
             // Create the timer task handler (Runnable/Listener) and schedule the task
             ivTaskHandler = ivContainer.getEJBRuntime().createNonPersistentTimerTaskHandler(this);
 
@@ -393,9 +381,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
                 Tr.debug(tc, "schedule: scheduling timer for " + ivExpiration + " / " + new Date(ivExpiration));
 
             ivTaskHandler.schedule(ivExpiration);
-        }
-        else
-        {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "schedule: timer already scheduled or destroyed : destroyed=" + ivDestroyed);
         }
@@ -407,8 +393,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * @return the number of milliseconds until the next timeout, or 0 if the
      *         timer should not fire again
      */
-    synchronized long calculateNextExpiration()
-    {
+    synchronized long calculateNextExpiration() {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "calculateNextExpiration: " + this);
@@ -419,12 +404,10 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
             // F7437591.codRev - getNextTimeout returns -1 for "no more timeouts",
             // but this class uses ivExpiration=0.
             ivExpiration = Math.max(0, ivParsedScheduleExpression.getNextTimeout(ivExpiration));
-        }
-        else {
+        } else {
             if (ivInterval > 0) {
                 ivExpiration += ivInterval; // 597753
-            }
-            else {
+            } else {
                 ivExpiration = 0;
             }
         }
@@ -443,30 +426,22 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * {@link #calculateNextExpiration()} must be called prior to this method
      * or the timer will not be scheduled properly. <p>
      */
-    synchronized void scheduleNext()
-    {
+    synchronized void scheduleNext() {
         // Synchronized to insure a destroyed or cancelled (ivTaskHanler=null)
         // timer is not re-scheduled. If the timer is in the cancelled state
         // but not yet destroyed, then nothing should be done with it here
         // as the canceling thread will either destroy it or rollback and
         // and call schedule to re-create the task handler.              RTC107334
 
-        if (!ivDestroyed)
-        {
-            if (ivExpiration != 0)
-            {
-                if (ivTaskHandler != null)
-                {
+        if (!ivDestroyed) {
+            if (ivExpiration != 0) {
+                if (ivTaskHandler != null) {
                     ivTaskHandler.scheduleNext(ivExpiration);
-                }
-                else
-                {
+                } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "scheduleNext: not scheduled, timer in cancelled state : " + ivTaskId);
                 }
-            }
-            else
-            {
+            } else {
                 remove(true); // permanently remove the timer since it will never expire again
             }
         }
@@ -479,8 +454,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * {@link #calculateNextExpiration()} must be called prior to the first
      * call to this method or the timer will not be scheduled properly. <p>
      */
-    synchronized void scheduleRetry(long retryInterval)
-    {
+    synchronized void scheduleRetry(long retryInterval) {
         // Synchronized to insure a destroyed or cancelled (ivTaskHanler=null)
         // timer is not re-scheduled. If the timer is in the cancelled state
         // but not yet destroyed, then reset the expiration back to the last
@@ -489,14 +463,10 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
         // task handler. The only side effect of this is that the retry count
         // is reset; so the timer may experience more retries than configured. RTC107334
 
-        if (!ivDestroyed)
-        {
-            if (ivTaskHandler != null)
-            {
+        if (!ivDestroyed) {
+            if (ivTaskHandler != null) {
                 ivTaskHandler.scheduleRetry(retryInterval);
-            }
-            else
-            {
+            } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "scheduleRetry: not scheduled, timer in cancelled state : " + ivTaskId);
                 ivExpiration = ivLastExpiration;
@@ -526,10 +496,9 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * compliance. <p>
      *
      * @throws NoSuchObjectLocalException if this instance has been cancelled
-     *             relative to the current thread and transaction.
+     *                                        relative to the current thread and transaction.
      */
-    private void checkIfCancelled()
-    {
+    private void checkIfCancelled() {
         // If a cancel has been committed then the timer "does not exist",
         // unless the cancel occurred after the timer started running
         // and the current thread is for that running timeout method.
@@ -550,14 +519,25 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
                 Tr.debug(tc, "checkIfCancelled: NoSuchObjectLocalException : " + msg);
             throw new NoSuchObjectLocalException(msg);
         }
+
+        // Handle the rather odd scenario where a calendar Timer was created that has
+        // no expirations. If last expiration is non-zero, then timer is currently running,
+        // so still exists until method completes and ivDestroyed is set. The only way both
+        // expiration and last expiration can be 0 is if the timer was created with no
+        // expirations.
+        if (ivExpiration == 0 && ivLastExpiration == 0) {
+            String msg = "Timer with ID " + ivTaskId + " was created with no scheduled timeouts.";
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "checkIfCancelled: NoSuchObjectLocalException : no expirations : " + msg);
+            throw new NoSuchObjectLocalException(msg);
+        }
     }
 
     /**
      * Logs a warning if the current time is greater than the configured
      * lateTimerThreshold after the scheduled timer expiration.
      */
-    void checkLateTimerThreshold()
-    {
+    void checkLateTimerThreshold() {
         ivContainer.getEJBRuntime().checkLateTimerThreshold(new Date(ivLastExpiration), ivTaskId, ivBeanId.j2eeName);
     }
 
@@ -574,16 +554,15 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * Assumed to be called via a bean, hence checkTimerAccess() is used to
      * verify that the calling bean is in the proper state.
      *
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
+     * @exception IllegalStateException      If this method is invoked while the
+     *                                           instance is in a state that does not allow access to this method.
      * @exception NoSuchObjectLocalException If invoked on a timer that has
-     *                expired or has been canceled.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                           expired or has been canceled.
+     * @exception EJBException               If this method could not complete due to a
+     *                                           system-level failure.
      **/
     @Override
-    public void cancel() throws IllegalStateException, NoSuchObjectLocalException, EJBException
-    {
+    public void cancel() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "cancel: " + this);
@@ -643,8 +622,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
 
         ContainerTx tx = ivContainer.getCurrentContainerTx();
 
-        if (tx != null)
-        {
+        if (tx != null) {
             boolean queuedToStart = (tx.timersQueuedToStart != null) ? tx.timersQueuedToStart.remove(ivTaskId) != null : false;
             if (queuedToStart) {
                 // If this timer was also created in the same transaction, then it
@@ -662,9 +640,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
                 }
                 tx.timersCanceled.put(ivTaskId, this);
             }
-        }
-        else
-        {
+        } else {
             // Here for backward compatibility. Could only occur for EJB 1.1
             // module with BMT bean, which the customer has re-coded to
             // implement TimedObject.
@@ -692,19 +668,15 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * while within the timeout callback, and there are no future timeouts for
      * this calendar-based timer, a NoMoreTimeoutsException must be thrown.
      *
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
+     * @exception IllegalStateException      If this method is invoked while the
+     *                                           instance is in a state that does not allow access to this method.
      * @exception NoSuchObjectLocalException If invoked on a timer that has
-     *                expired or has been canceled.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                           expired or has been canceled.
+     * @exception EJBException               If this method could not complete due to a
+     *                                           system-level failure.
      **/
     @Override
-    public long getTimeRemaining()
-                    throws IllegalStateException,
-                    NoSuchObjectLocalException,
-                    EJBException
-    {
+    public long getTimeRemaining() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
         Date nextTime = getNextTimeout();
         long currentTime = System.currentTimeMillis();
         long remaining = nextTime.getTime() - currentTime;
@@ -724,19 +696,15 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * while within the timeout callback, and there are no future timeouts for
      * this calendar-based timer, a NoMoreTimeoutsException must be thrown.
      *
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
+     * @exception IllegalStateException      If this method is invoked while the
+     *                                           instance is in a state that does not allow access to this method.
      * @exception NoSuchObjectLocalException If invoked on a timer that has
-     *                expired or has been canceled.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                           expired or has been canceled.
+     * @exception EJBException               If this method could not complete due to a
+     *                                           system-level failure.
      **/
     @Override
-    public Date getNextTimeout()
-                    throws IllegalStateException,
-                    NoSuchObjectLocalException,
-                    EJBException, NoMoreTimeoutsException
-    {
+    public Date getNextTimeout() throws IllegalStateException, NoSuchObjectLocalException, EJBException, NoMoreTimeoutsException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -761,14 +729,6 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
                         Tr.exit(tc, "getNextTimeout: NoMoreTimeoutsException : " + msg);
                     throw new NoMoreTimeoutsException(msg);
                 }
-
-                // Handle the rather odd scenario where a Timer is created that has
-                // no expirations. It exists, but NoMoreTimeoutsException is for
-                // use when called from a timeout callback.
-                String msg = "Timer with ID " + ivTaskId + " was created with no scheduled timeouts.";
-                if (isTraceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "getNextTimeout: NoSuchObjectLocalException : no expirations : " + msg);
-                throw new NoSuchObjectLocalException(msg);
             }
 
             // If the expiration is 0 (and the timer hasn't been cancelled), then
@@ -809,16 +769,15 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * @return The Serializable object that was passed in at timer creation,
      *         or null if the info argument passed in at timer creation was null.
      *
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
+     * @exception IllegalStateException      If this method is invoked while the
+     *                                           instance is in a state that does not allow access to this method.
      * @exception NoSuchObjectLocalException If invoked on a timer that has
-     *                expired or has been canceled.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                           expired or has been canceled.
+     * @exception EJBException               If this method could not complete due to a
+     *                                           system-level failure.
      **/
     @Override
-    public Serializable getInfo() throws IllegalStateException, NoSuchObjectLocalException, EJBException
-    {
+    public Serializable getInfo() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -840,8 +799,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
     }
 
     @Override
-    public TimerHandle getHandle() throws IllegalStateException, NoSuchObjectLocalException, EJBException
-    {
+    public TimerHandle getHandle() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
         throw new IllegalStateException("getHandle method not allowed on non-persistent timers."); // F7437591.codRev
     }
 
@@ -850,18 +808,17 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      *
      * @return true if this timer is a calendar-based timer.
      *
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this
-     *                method. Also thrown if invoked on a timer that is not a
-     *                calendar-based timer.
+     * @exception IllegalStateException      If this method is invoked while the
+     *                                           instance is in a state that does not allow access to this
+     *                                           method. Also thrown if invoked on a timer that is not a
+     *                                           calendar-based timer.
      * @exception NoSuchObjectLocalException If invoked on a timer that has
-     *                expired or has been cancelled.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                           expired or has been cancelled.
+     * @exception EJBException               If this method could not complete due to a
+     *                                           system-level failure.
      */
     @Override
-    public boolean isCalendarTimer()
-    {
+    public boolean isCalendarTimer() {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "isCalendarTimer: " + this);
@@ -885,18 +842,17 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
     /**
      * Get the schedule expression corresponding to this timer.
      *
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this
-     *                method. Also thrown if invoked on a timer that is not a
-     *                calendar-based timer.
+     * @exception IllegalStateException      If this method is invoked while the
+     *                                           instance is in a state that does not allow access to this
+     *                                           method. Also thrown if invoked on a timer that is not a
+     *                                           calendar-based timer.
      * @exception NoSuchObjectLocalException If invoked on a timer that has
-     *                expired or has been cancelled.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                           expired or has been cancelled.
+     * @exception EJBException               If this method could not complete due to a
+     *                                           system-level failure.
      */
     @Override
-    public ScheduleExpression getSchedule()
-    {
+    public ScheduleExpression getSchedule() {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getSchedule: " + this);
@@ -927,8 +883,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * By definition, a TimerNpImpl instance is not persistent
      */
     @Override
-    public boolean isPersistent()
-    {
+    public boolean isPersistent() {
         // Determine if the calling bean is in a state that allows timer service
         // method access - throws IllegalStateException if not allowed.
         checkTimerAccess();
@@ -953,10 +908,9 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * to a transaction rollback. <p>
      *
      * @param destroy true indicates the timer should be permanently destroyed;
-     *            otherwise the timer may be restored after a rollback occurs.
+     *                    otherwise the timer may be restored after a rollback occurs.
      **/
-    protected void remove(boolean destroy)
-    {
+    protected void remove(boolean destroy) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "remove(destroy=" + destroy + ") : " + this);
@@ -964,26 +918,22 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
         // Synchronized on the timer to insure the remove from the active map
         // and the cancellation of the task occur together; without another
         // thread re-scheduling the timer at the same time.              RTC107334
-        synchronized (this)
-        {
+        synchronized (this) {
             // Regardless whether or not remove was called previously with
             // destroy=false, the timer must be removed from the active timer
             // map again in case another transaction also called to cancel the
             // timer but has since rolled back and rescheduled the timer.
-            synchronized (svActiveTimers)
-            {
+            synchronized (svActiveTimers) {
                 svActiveTimers.remove(ivTaskId);
             }
 
             // Destroy must be after remove from active timers map to insure
             // a destroyed timer is never in the active timers map.
-            if (destroy)
-            {
+            if (destroy) {
                 ivDestroyed = true;
             }
 
-            if (ivTaskHandler != null)
-            {
+            if (ivTaskHandler != null) {
                 ivTaskHandler.cancel();
                 ivTaskHandler = null;
             }
@@ -1001,8 +951,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      *
      * @return a collection of Timers associated with the specified bean Id.
      **/
-    public static Collection<Timer> findTimersByBeanId(BeanId beanId, ContainerTx tx) // F743-425.CodRev
-    {
+    public static Collection<Timer> findTimersByBeanId(BeanId beanId, ContainerTx tx) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "findTimersByBeanId: " + beanId);
@@ -1011,12 +960,9 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
         ArrayList<Timer> timers = new ArrayList<Timer>();
 
         // Search the active timers for all timer taskIDs associated with the given beanId.
-        synchronized (svActiveTimers) // F743-425.CodRev
-        {
-            for (TimerNpImpl npTimer : svActiveTimers.values())
-            {
-                if (npTimer.ivBeanId.equals(beanId))
-                {
+        synchronized (svActiveTimers) {
+            for (TimerNpImpl npTimer : svActiveTimers.values()) {
+                if (npTimer.ivBeanId.equals(beanId)) {
                     timers.add(npTimer);
                 }
             }
@@ -1068,8 +1014,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      *
      * @param j2eeName the name of the application or module
      */
-    public static void removeTimersByJ2EEName(J2EEName j2eeName)
-    {
+    public static void removeTimersByJ2EEName(J2EEName j2eeName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "removeTimersByJ2EEName: " + j2eeName);
@@ -1083,22 +1028,17 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
         // the lock on the active timers map as well, so the two step approach
         // avoids the possibility of deadlock.                           RTC107334
 
-        synchronized (svActiveTimers)
-        {
-            if (svActiveTimers.size() > 0)
-            {
+        synchronized (svActiveTimers) {
+            if (svActiveTimers.size() > 0) {
                 String appToRemove = j2eeName.getApplication();
                 String modToRemove = j2eeName.getModule();
 
-                for (TimerNpImpl timer : svActiveTimers.values())
-                {
+                for (TimerNpImpl timer : svActiveTimers.values()) {
                     J2EEName timerJ2EEName = timer.ivBeanId.j2eeName;
                     if (appToRemove.equals(timerJ2EEName.getApplication()) &&
-                        (modToRemove == null || modToRemove.equals(timerJ2EEName.getModule())))
-                    {
+                        (modToRemove == null || modToRemove.equals(timerJ2EEName.getModule()))) {
                         // save the timer to be removed outside the active timers map lock
-                        if (timersToRemove == null)
-                        {
+                        if (timersToRemove == null) {
                             timersToRemove = new ArrayList<TimerNpImpl>();
                         }
                         timersToRemove.add(timer);
@@ -1107,10 +1047,8 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
             }
         }
 
-        if (timersToRemove != null)
-        {
-            for (TimerNpImpl timer : timersToRemove)
-            {
+        if (timersToRemove != null) {
+            for (TimerNpImpl timer : timersToRemove) {
                 timer.remove(true); // permanently remove the timer; cannot be rolled back
             }
         }
@@ -1132,7 +1070,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * getTimerServcie() must provide its own checking. <p>
      *
      * @exception IllegalStateException If this instance is in a state that does
-     *                not allow timer service method operations.
+     *                                      not allow timer service method operations.
      **/
     protected void checkTimerAccess() throws IllegalStateException {
         BeanO beanO = EJSContainer.getCallbackBeanO();
@@ -1176,8 +1114,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * @return A serializable handle to the timer.
      **/
     @Override
-    public PassivatorSerializableHandle getSerializableObject()
-    {
+    public PassivatorSerializableHandle getSerializableObject() {
         TimerNpHandleImpl timerHandle;
 
         timerHandle = new TimerNpHandleImpl(ivBeanId, ivTaskId); // F743-425.CodRev
@@ -1201,8 +1138,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * @param taskId the TaskId from the requesting TimerHandle.
      * @return a reference to the Timer represented by the TaskId.
      **/
-    protected static Timer getDeserializedTimer(BeanId beanId, String taskId)
-    {
+    protected static Timer getDeserializedTimer(BeanId beanId, String taskId) {
         // Look first for existing timer (in all 3 places)
         // If not found, THEN new TimerNpImpl, but with new ctor to set
         // ivDestroyed=true, since this timer will never run
@@ -1228,12 +1164,10 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
 
         Timer timer;
 
-        synchronized (svActiveTimers)
-        {
+        synchronized (svActiveTimers) {
             timer = svActiveTimers.get(taskId);
 
-            if (timer != null)
-            {
+            if (timer != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "getDeserializedTimer: found in active timer map : " + timer);
                 return timer;
@@ -1243,26 +1177,21 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
         EJSHome home = (EJSHome) beanId.home;
         ContainerTx containerTx = home.container.getCurrentContainerTx();
 
-        if (containerTx != null)
-        {
-            if (containerTx.timersQueuedToStart != null)
-            {
+        if (containerTx != null) {
+            if (containerTx.timersQueuedToStart != null) {
                 timer = containerTx.timersQueuedToStart.get(taskId);
 
-                if (timer != null)
-                {
+                if (timer != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "getDeserializedTimer: found in timersQueuedToStart : " + timer);
                     return timer;
                 }
             }
 
-            if (containerTx.timersCanceled != null)
-            {
+            if (containerTx.timersCanceled != null) {
                 timer = containerTx.timersCanceled.get(taskId);
 
-                if (timer != null)
-                {
+                if (timer != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "getDeserializedTimer: found in timersCanceled : " + timer);
                     return timer;
@@ -1288,8 +1217,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * (or know) the parameter as the specific type. <p>
      **/
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         // Note : Keep in synch with TimerNpHandleImpl.equals().
         if (obj instanceof TimerNpImpl) {
             // Only the task id is needed to determine object equality.
@@ -1304,8 +1232,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * Overridden to provide state based hashcode.
      **/
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         // Note : Keep in synch with TimerNpHandleImpl.hashcode().
         return ivTaskId.hashCode();
     }
@@ -1314,8 +1241,7 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
      * Overridden to improve trace.
      **/
     @Override
-    public String toString()
-    {
+    public String toString() {
         return ("TimerNpImpl(" + ivTaskId + ", "
                 + ivBeanId + ", "
                 + ivExpiration + ", "

@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2019,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/recoveryClient/src,\
+  test-applications/recoveryServer/src
+
+fat.project: true
+
+tested.features: \
+	servlet-4.0
+
+-buildpath: \
+  com.ibm.tx.jta;version=latest,\
+  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.transaction.test.util;version=latest,\
+  com.ibm.ws.tx.embeddable;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations
+
+-testpath: \
+  com.ibm.tx.jta;version=latest,\
+  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.transaction.test.util;version=latest,\
+  com.ibm.ws.tx.embeddable;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations
+
+-sub: *.bnd

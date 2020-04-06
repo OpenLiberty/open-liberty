@@ -65,3 +65,4 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

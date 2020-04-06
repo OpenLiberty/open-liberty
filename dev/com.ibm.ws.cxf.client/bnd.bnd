@@ -22,6 +22,7 @@ Export-Package: \
   com.ibm.ws.cxf.client.component
 
 Import-Package: \
+   !com.ibm.ws.cxf.client.component, \
    *
 
  -dsannotations: com.ibm.ws.cxf.client.component.*

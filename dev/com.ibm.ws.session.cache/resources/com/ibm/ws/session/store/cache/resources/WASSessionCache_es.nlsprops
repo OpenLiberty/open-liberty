@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -56,6 +56,11 @@ ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Compruebe que la configuraci\u0
 ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: La biblioteca de la memoria cach\u00e9 de la sesi\u00f3n {0} est\u00e1 vac\u00eda. {1}
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=La caracter\u00edstica sessionCache no ha encontrado ning\u00fan proveedor JCache que cargar.
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=Compruebe que la biblioteca contenga un proveedor JCache y que todas las v\u00edas de acceso se hayan especificado correctamente.
+
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Configuraci\u00f3n Infinispan generada para la persistencia de sesi\u00f3n HTTP: {0}. Para alterar temporalmente, configure el atributo uri del elemento de configuraci\u00f3n httpSessionCache.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=Las memorias cach\u00e9 Infinispan que se utilizan para la persistencia de sesi\u00f3n HTTP requieren configuraci\u00f3n adicional para persistir sesiones entre servidores. Liberty genera esta configuraci\u00f3n cuando se la proporciona el usuario.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=No se precisa ninguna acci\u00f3n si est\u00e1 satisfecho con la configuraci\u00f3n generada. De lo contrario, la configuraci\u00f3n generada se puede utilizar como punto inicial.
 
 INTERNAL_SERVER_ERROR=Error interno del servidor
 

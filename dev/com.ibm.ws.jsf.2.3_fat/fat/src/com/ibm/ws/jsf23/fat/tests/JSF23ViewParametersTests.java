@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,18 +75,19 @@ public class JSF23ViewParametersTests {
     @Test
     public void testViewParamNotNull() throws Exception {
         String contextRoot = "JSF23ViewParameters";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=&textParam2=test2&textParam3=test3");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=&textParam2=test2&textParam3=test3");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The validation message was not displayed.", page.asText().contains("textParam1: must not be null"));
+            assertTrue("The validation message was not displayed.", page.asText().contains("textParam1: must not be null"));
+        }
     }
 
     /**
@@ -100,18 +101,19 @@ public class JSF23ViewParametersTests {
     @Test
     public void testViewParamRequiredAttribute() throws Exception {
         String contextRoot = "JSF23ViewParameters";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=&textParam3=test3");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=&textParam3=test3");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The validation message was not displayed.", page.asText().contains("textParam2: Validation Error: Value is required."));
+            assertTrue("The validation message was not displayed.", page.asText().contains("textParam2: Validation Error: Value is required."));
+        }
     }
 
     /**
@@ -125,18 +127,18 @@ public class JSF23ViewParametersTests {
     @Test
     public void testViewParamAllowNull() throws Exception {
         String contextRoot = "JSF23ViewParameters";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=test2&textParam3=");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=test2&textParam3=");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The textParam3 was not set to null", page.asText().contains("test1|test2|"));
+            assertTrue("The textParam3 was not set to null", page.asText().contains("test1|test2|"));
+        }
     }
-
 }

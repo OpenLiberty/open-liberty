@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate pid="com.ibm.ws.security.acme.config">
+  <Object ocdref="com.ibm.ws.security.acme.config.metatype"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.security.acme.config.metatype" ibm:alias="acmeCA" name="internal" description="internal use only">
+ 
+  <AD id="directoryURI"         name="internal" description="internal use only" type="String"  required="true" />
+
+  <!-- CSR related fields. -->
+  <AD id="domain"               name="internal" description="internal use only" type="String"  required="true"  cardinality="2147483647" />
+  <AD id="validFor"             name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" />
+  <AD id="country"              name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="locality"             name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="state"                name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="organization"         name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="organizationalUnit"   name="internal" description="internal use only" type="String"  required="false" />
+  
+  <!-- Challenge and order related fields. -->
+  <AD id="challengeRetries"     name="internal" description="internal use only" type="Integer" required="false" default="10" />
+  <AD id="challengeRetryWait"   name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="5s" />
+  <AD id="orderRetries"         name="internal" description="internal use only" type="Integer" required="false" default="10" />
+  <AD id="orderRetryWait"       name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="3s" />
+
+  <!-- ACME account related fields. -->
+  <AD id="accountKeyFile"       name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeAccountKey.pem" />
+  <AD id="accountContact"       name="internal" description="internal use only" type="String"  required="false" cardinality="2147483647" />
+  <AD id="acceptTermsOfService" name="internal" description="internal use only" type="Boolean" required="false" default="false" />
+  <AD id="domainKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeDomainKey.pem" />
+
+  <!-- Transport configuration. -->
+  <AD id="acmeTransportConfig"  name="internal" description="internal use only" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.transport" />
+
+ </OCD>
+  
+ <Designate factoryPid="com.ibm.ws.security.acme.transport">
+   <Object ocdref="com.ibm.ws.security.acme.transport.metatype" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.security.acme.transport.metatype" name="internal" description="internal use only" ibm:alias="acmeTransportConfig">
+   <AD id="protocol"             name="internal" description="internal use only" required="false" type="String" />
+   <AD id="trustStore"           name="internal" description="internal use only" required="false" type="String" />
+   <AD id="trustStorePassword"   name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
+   <AD id="trustStoreType"       name="internal" description="internal use only" required="false" type="String" />
+ </OCD>
+
+</metatype:MetaData>

@@ -10,3 +10,4 @@ Subsystem-Name: JavaScript Object Notation for Java 1.0
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.json_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

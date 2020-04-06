@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    version="3.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <servlet>
+        <servlet-name>TxSyncEJBTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>TxSyncEJBTestServlet</servlet-name>
+        <url-pattern>/TxSyncEJBTestServlet</url-pattern>
+    </servlet-mapping>
+    
+    <!-- EJB References -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncBMTSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.ejblocal.TxSyncBMTSLLocal</local>
+        <ejb-link>TxSyncBMTSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncBMTSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.ejblocal.TxSyncBMTSFLocal</local>
+        <ejb-link>TxSyncBMTSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncBMTSFEXSyncEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.ejblocal.TxSyncBMTSFEXSyncLocal</local>
+        <ejb-link>TxSyncBMTSFEXSyncEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/TxSyncBMTSFEXUnsyncEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.ejblocal.TxSyncBMTSFEXUnsyncLocal</local>
+        <ejb-link>TxSyncBMTSFEXUnsyncEJB</ejb-link>
+    </ejb-local-ref>
+    
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/BasicRunnerSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.txsync.ejblocal.BasicRunnerSLEJBLocal</local>
+        <ejb-link>BasicRunnerSLEJB</ejb-link>
+    </ejb-local-ref>
+</web-app>

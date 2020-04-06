@@ -21,6 +21,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
@@ -55,7 +56,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     public Iterable<ConfigSource> getConfigSources() {
         assertNotClosed();
-        return sources;
+        return this.sources;
     }
 
     /** {@inheritDoc} */
@@ -113,7 +114,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
         if (this.closed) {
             sb.append("CLOSED");
         } else {
-            sb.append(sources.size());
+            sb.append(this.sources.size());
             sb.append(" sources");
         }
         sb.append(")");
@@ -154,9 +155,9 @@ public abstract class AbstractConfig implements WebSphereConfig {
      * If the property is not found and optional is true then use the default string to create a value to return.
      * If the property is not found and optional is false then throw an exception.
      *
-     * @param propertyName  the property to get
-     * @param propertyType  the type to convert to
-     * @param optional      is the property optional
+     * @param propertyName the property to get
+     * @param propertyType the type to convert to
+     * @param optional is the property optional
      * @param defaultString the default string to use if the property was not found and optional is true
      * @return the converted value
      * @throws NoSuchElementException thrown if the property was not found and optional was false

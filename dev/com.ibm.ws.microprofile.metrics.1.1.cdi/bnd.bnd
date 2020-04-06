@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.metrics.1.1.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.1.1.cdi
@@ -30,7 +28,10 @@ Import-Package: \
 Export-Package: \
 	!com.ibm.ws.microprofile.metrics.cdi.resources,\
     io.astefanutti.metrics.cdi,\
+    com.ibm.ws.microprofile.metrics.cdi.decorator,\
+    com.ibm.ws.microprofile.metrics.cdi.binding,\
     com.ibm.ws.microprofile.metrics.cdi.producer,\
+    com.ibm.ws.microprofile.metrics.cdi.interceptors,\
     com.ibm.ws.microprofile.metrics11.cdi
 
 Private-Package: \
@@ -39,7 +40,8 @@ Private-Package: \
 Include-Resource: \
     META-INF=resources/META-INF
     
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+-cdiannotations:
 
 -dsannotations-inherit: true
 -dsannotations: io.astefanutti.metrics.cdi.MetricsExtension
@@ -57,5 +59,6 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.concurrent.1.0;version=latest
+    com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+    com.ibm.ws.microprofile.metrics.cdi.common;version=latest
  

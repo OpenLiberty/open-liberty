@@ -6,3 +6,4 @@ IBM-Process-Types: server, \
 -bundles=com.ibm.ws.javaee.persistence.2.1; location:=lib/
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

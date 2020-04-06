@@ -26,8 +26,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.fvt.jpa20.querylockmode.tests.ejb.TestQueryLockMode_EJB_SF_Servlet;
-import com.ibm.ws.jpa.fvt.jpa20.querylockmode.tests.ejb.TestQueryLockMode_EJB_SL_Servlet;
+import com.ibm.ws.jpa.fvt.jpa20.querylockmode.ejb.TestQueryLockMode_EJB_SFEx_Servlet;
+import com.ibm.ws.jpa.fvt.jpa20.querylockmode.ejb.TestQueryLockMode_EJB_SF_Servlet;
+import com.ibm.ws.jpa.fvt.jpa20.querylockmode.ejb.TestQueryLockMode_EJB_SL_Servlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -41,7 +42,11 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JPA20QueryLockMode_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "querylockmodeEjb";
     private final static String RESOURCE_ROOT = "test-applications/querylockmode/";
+    private final static String appFolder = "ejb";
+    private final static String appName = "querylockmodeEjb";
+    private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -55,21 +60,21 @@ public class JPA20QueryLockMode_EJB extends JPAFATServletClient {
 
     @Server("JPA20Server")
     @TestServlets({
-                    @TestServlet(servlet = TestQueryLockMode_EJB_SL_Servlet.class, path = "QueryLockModeEJB" + "/" + "TestQueryLockMode_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestQueryLockMode_EJB_SF_Servlet.class, path = "QueryLockModeEJB" + "/" + "TestQueryLockMode_EJB_SF_Servlet"),
-
+                    @TestServlet(servlet = TestQueryLockMode_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestQueryLockMode_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestQueryLockMode_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestQueryLockMode_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestQueryLockMode_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestQueryLockMode_EJB_SFEx_Servlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(JPA20QueryLockMode_EJB.class);
         timestart = System.currentTimeMillis();
 
-        server1.startServer();
+        server.startServer();
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
 
@@ -77,36 +82,35 @@ public class JPA20QueryLockMode_EJB extends JPAFATServletClient {
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
-        WebArchive webApp = ShrinkWrap.create(WebArchive.class, "querylockmodeejb.war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.tests.ejb");
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "ejb/querylockmodeejb.war");
-
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "querylockmode.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "suite.r80.base.common.datamodel.entities");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.testlogic");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.tests.ejb");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/querylockmode.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
+
+        WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.ejb");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
-        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, "QueryLockMode_EJB.ear");
+        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "ejb", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {
@@ -118,40 +122,53 @@ public class JPA20QueryLockMode_EJB extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
-        appRecord.setLocation("QueryLockMode_EJB.ear");
-        appRecord.setName("QueryLockMode_EJB");
+        appRecord.setLocation(appNameEar);
+        appRecord.setName(appName);
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
-        appNamesSet.add("QueryLockMode_EJB");
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        appNamesSet.add(appName);
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-//            server1.dumpServer("querylockmode_ejb");
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(JPA20QueryLockMode_EJB.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/QueryLockMode_EJB.ear");
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
 }

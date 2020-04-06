@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+
+	<jwtBuilder id="jwt1" />
+
+	<jwtBuilder
+		id="jwt_jtiTrue"
+		jti="true" />
+
+	<jwtBuilder
+		id="altJwt1"
+		expiry="1h"
+		audiences="Client02,Client03"
+		jti="true" />
+
+
+	<jwtBuilder
+		id="jwKEnabled"
+		jwkEnabled="true"/>
+
+</server>

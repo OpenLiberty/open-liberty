@@ -16,8 +16,11 @@ import java.util.List;
 
 import javax.xml.ws.handler.Handler;
 
+import org.apache.cxf.common.classloader.ClassLoaderUtils.ClassLoaderHolder;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean;
+import org.apache.cxf.common.classloader.ClassLoaderUtils;
+import org.apache.cxf.endpoint.Server;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -72,4 +75,5 @@ public class LibertyJaxWsServerFactoryBean extends JaxWsServerFactoryBean {
         }
         return HandlerChainInfoBuilder.sortHandlers(handlers);
     }
+
 }

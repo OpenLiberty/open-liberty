@@ -14,29 +14,14 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2
 
-Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.bindings.soap.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
-!com.ctc.wstx.*,\
-!org.codehaus.stax2.*,\
-!com.sun.msv.*,\
-!com.sun.xml.bind.marshaller,\
-!com.sun.xml.fastinfoset.stax.*,\
-!org.apache.log4j.*,\
-!net.sf.cglib.proxy.*,\
-!org.springframework.*,\
-!javax.validation.*, \
-!org.apache.aries.*,\
-!org.apache.cxf.transport.https,\
-!org.osgi.service.blueprint.*,\
-javax.xml.bind;version=!,\
-javax.xml.bind.annotation;version=!,\
-javax.xml.bind.annotation.adapters;version=!,\
-javax.xml.bind.attachment;version=!,\
-*
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  javax.xml.bind;version="[2,3)",\
+  javax.xml.bind.*;version="[2,3)",\
+  *
 
 Export-Package: \
-  com.ibm.ws.jaxws23.cxf.rt.bindings.soap,\
   org.apache.cxf.binding.soap.*;version=${cxfVersion}

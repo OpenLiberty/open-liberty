@@ -95,7 +95,7 @@ public class EndPointMgrImpl implements EndPointMgr {
      * Construct the endpoint MBean object name.
      *
      * @param name endpoint name
-     *                 WebSphere:feature=channelfw,type=endpoint,name=name
+     *            WebSphere:feature=channelfw,type=endpoint,name=name
      * @return the value used in jmx.objectname property
      */
     private String getMBeanObjectName(String name) {
@@ -111,7 +111,7 @@ public class EndPointMgrImpl implements EndPointMgr {
     }
 
     /**
-     * @param name     endpoint name of the mbean to be registered
+     * @param name endpoint name of the mbean to be registered
      * @param endpoint instance of an EndPointInfo containing the endpoint info
      */
     private ServiceRegistration<DynamicMBean> registerMBeanAsService(String name, EndPointInfoImpl endpoint) {

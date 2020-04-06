@@ -25,8 +25,8 @@ public class ServletContainerInitializer_2 implements ServletContainerInitialize
             String sciOrder = (String)(context.getAttribute("sciOrder"));
             context.setAttribute("sciOrder", (sciOrder == null ? "" : sciOrder)  + "2");
             
-            context.setRequestCharacterEncoding("KSC5601");
-            context.setResponseCharacterEncoding("KSC5601");
+            // context.setRequestCharacterEncoding("KSC5601");
+            // context.setResponseCharacterEncoding("KSC5601");
             context.setAttribute("SET_OF_SERVLETS_IN_APP", setOfClassesInterestedIn);
         } else {
             context.setAttribute("SET_OF_SERVLETS_IN_APP", "null");

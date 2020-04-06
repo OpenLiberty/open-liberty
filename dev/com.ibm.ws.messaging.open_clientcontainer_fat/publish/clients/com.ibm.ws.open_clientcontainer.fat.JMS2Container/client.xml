@@ -1,0 +1,21 @@
+<client description="asyncronous send JMS2 API">
+  <include location="../fatTestPorts.xml"/>
+  <featureManager>
+    <feature>javaeeClient-7.0</feature>
+  </featureManager>
+
+  <application id="JMS2AsyncSendClient" name="JMS2AsyncSend" type="ear" location="JMS2AsyncSend.ear"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr6" maxPoolSize="10"/>
+
+  <jmsQueue jndiName="jndi_QUEUE_ONE">
+    <properties.wasJms queueName="QUEUE_ONE"/>
+  </jmsQueue>
+
+  <jmsQueue jndiName="jndi_DEPTH_LIMITED_QUEUE">
+    <properties.wasJms queueName="DEPTH_LIMITED_QUEUE"/>
+  </jmsQueue>
+</client>

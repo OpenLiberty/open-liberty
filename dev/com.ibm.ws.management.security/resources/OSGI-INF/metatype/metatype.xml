@@ -31,7 +31,7 @@
     </Designate>
 
     <OCD id="com.ibm.ws.management.security.role.reader.metatype" name="%role.reader" description="%role.reader.desc"
-         ibm:alias="reader-role" ibm:objectClass="com.ibm.ws.management.security.ManagementRole" ibm:beta="true">
+         ibm:alias="reader-role" ibm:objectClass="com.ibm.ws.management.security.ManagementRole">
         <AD id="user" name="%role.user" description="%role.user.desc"
             required="false" type="String" cardinality="2147483647" />
         <AD id="user-access-id" name="%role.userAccessId" description="%role.userAccessId.desc"

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
+import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
@@ -60,13 +61,14 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
                 // the gradlew 'buildandrun' invocation.
                 // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
                 // I'm still determining if this is purely a local problem.
-//              WCPushBuilderSecurityTest.class,
+                //              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class,
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
                 WCServletContainerInitializerExceptionTest.class,
-                WCServletContainerInitializerFilterServletNameMappingTest.class
+                WCServletContainerInitializerFilterServletNameMappingTest.class,
+                WCSameSiteCookieAttributeTests.class
 })
 public class FATSuite {
 

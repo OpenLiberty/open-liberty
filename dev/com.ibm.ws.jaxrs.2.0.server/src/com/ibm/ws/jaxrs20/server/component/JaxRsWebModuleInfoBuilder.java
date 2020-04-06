@@ -87,9 +87,9 @@ public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
             Set<String> allProviderAndPathClassNames = new HashSet<String>();
 
             // Scan annotation for @Provider, @Path, @ApplicationPath
-            allProviderAndPathClassNames.addAll( annotationTargets.getAnnotatedClasses(Provider.class.getName()) );
-            allProviderAndPathClassNames.addAll( annotationTargets.getAnnotatedClasses(Path.class.getName()) );
-            allAppPathClassNames.addAll( annotationTargets.getAnnotatedClasses(ApplicationPath.class.getName()) );
+            allProviderAndPathClassNames.addAll(annotationTargets.getAnnotatedClasses(Provider.class.getName()));
+            allProviderAndPathClassNames.addAll(annotationTargets.getAnnotatedClasses(Path.class.getName()));
+            allAppPathClassNames.addAll(annotationTargets.getAnnotatedClasses(ApplicationPath.class.getName()));
 
             // Process web.xml file firstly.
             // This is because for subclasses of javax.ws.rs.core.Application we
@@ -333,9 +333,12 @@ public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
             throw new Exception("Both servlet mapping url and application path are null.");
         }
 
-        if (endpointInfoMap.containsKey(key)) {
+        EndpointInfo endpointInfo = new EndpointInfo(servletName, servletClassName, servletMappingUrl, appClassName, appPath, providerAndPathClassNames);
+        EndpointInfo existingInfo = endpointInfoMap.get(key);
+        if (existingInfo != null) {
             // Found duplicated servlet mapping url, throw exception to fail application starting.
-            throw new Exception("Found duplicated servlet mapping url, throw exception to fail application starting.");
+            throw new Exception("Found duplicated servlet mapping url, " + key + ", with endpoint infos " + existingInfo
+                                + " and " + endpointInfo + ", throw exception to fail application starting.");
         }
 
         if ((servletName == null) || (appClassName == null) || (providerAndPathClassNames == null)) {
@@ -343,7 +346,6 @@ public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
             throw new Exception("invalid values for servletName or appClassName or providerAndPathClassNames");
         }
 
-        EndpointInfo endpointInfo = new EndpointInfo(servletName, servletClassName, servletMappingUrl, appClassName, appPath, providerAndPathClassNames);
         endpointInfoMap.put(key, endpointInfo);
 
         // If the application path has encoded characters, we must also create an EndpointInfo for

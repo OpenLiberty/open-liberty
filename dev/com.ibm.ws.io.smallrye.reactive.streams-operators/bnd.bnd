@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#    IBM Corporation 
+# This wraps the external JAR.
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+
+
+Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.streams-operators; singleton:=true
+                     
+
+# We will whittle this down once it is working
+Export-Package: \
+  io.smallrye.reactive.streams; version="1.0.10", \
+  io.smallrye.reactive.streams.operators; version="1.0.10", \
+  io.smallrye.reactive.streams.spi; version="1.0.10", \
+  io.smallrye.reactive.streams.stages; version="1.0.10", \
+  io.smallrye.reactive.streams.utils; version="1.0.10", \
+  io.smallrye.reactive.streams.utils.recovery; version="1.0.10"
+
+WS-TraceGroup: REACTIVESTREAMS
+
+instrument.disabled: true
+
+-buildpath: \
+  com.ibm.ws.io.reactivex.rxjava.2.2;version=latest, \
+  io.smallrye.reactive:smallrye-reactive-streams-operators;version=1.0.10

@@ -1,6 +1,6 @@
 package com.ibm.ws.sib.msgstore.expiry;
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -362,7 +362,7 @@ public class CacheLoader implements AlarmListener, XmlConstants
      */
     private Alarm scheduleAlarm(long timeOut)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "scheduleAlarm timeOut=" + timeOut);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "scheduleAlarm", "timeOut=" + timeOut);
 
         Alarm alarm = AlarmManager.createNonDeferrable(timeOut, this);
 

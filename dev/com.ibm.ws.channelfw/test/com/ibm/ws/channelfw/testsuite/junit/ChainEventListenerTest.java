@@ -24,8 +24,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.ws.channelfw.internal.ChainDataImpl;
@@ -40,6 +38,8 @@ import com.ibm.wsspi.channelfw.exception.ChainGroupException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 import com.ibm.wsspi.channelfw.exception.RetryableChannelException;
+
+import test.common.SharedOutputManager;
 
 /**
  * Testcase for the chain lifecycle listener code.
@@ -150,7 +150,7 @@ public class ChainEventListenerTest {
     /**
      * Test addChainEventListener method.
      */
-    @Test
+    //SplitStartUp @Test
     public void testAddChainEventListener() {
         try {
             MyChainEventListener cel = new MyChainEventListener();

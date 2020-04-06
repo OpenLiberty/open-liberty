@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.olgh8294.testlogic.JPATestOLGH8294Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
@@ -27,7 +28,7 @@ public class TestOLGH8294_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {
-        testClassName = "com.ibm.ws.jpa.olgh8294.testlogic.JPATestOLGH8294Logic";
+        testClassName = JPATestOLGH8294Logic.class.getName();
         ejbJNDIName = "ejb/OLGH8294SFExEJB";
 
         jpaPctxMap.put("test-jpa-resource-cmex",

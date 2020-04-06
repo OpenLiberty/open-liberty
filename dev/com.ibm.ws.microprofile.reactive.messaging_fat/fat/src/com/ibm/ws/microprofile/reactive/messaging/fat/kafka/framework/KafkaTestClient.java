@@ -72,19 +72,19 @@ public class KafkaTestClient {
     }
 
     /**
-     * Obtain a SimpleKafkaReader for the given topic name
+     * Obtain a KafkaReader for the given topic name
      * <p>
      * The returned reader expects String messages and uses the {@value #TEST_GROUPID} consumer group
      *
      * @param topicName the topic to read from
      * @return the reader
      */
-    public SimpleKafkaReader<String> readerFor(String topicName) {
+    public KafkaReader<String, String> readerFor(String topicName) {
         return readerFor(Collections.emptyMap(), topicName);
     }
 
     /**
-     * Obtain a SimpleKafkaReader configured with the given consumer config
+     * Obtain a KafkaReader configured with the given consumer config
      * <p>
      * The following properties will be added with default values if they are not set in {@code config}
      * <ul>
@@ -99,7 +99,7 @@ public class KafkaTestClient {
      * @param topicName the topic to subscribe to
      * @return the reader
      */
-    public SimpleKafkaReader<String> readerFor(Map<String, Object> config, String topicName) {
+    public KafkaReader<String, String> readerFor(Map<String, Object> config, String topicName) {
         // Set up defaults
         HashMap<String, Object> localConfig = new HashMap<>(config);
         localConfig.putAll(connectionProperties);
@@ -112,25 +112,25 @@ public class KafkaTestClient {
         localConfig.putAll(config);
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(localConfig);
-        SimpleKafkaReader<String> reader = new SimpleKafkaReader<String>(kafkaConsumer, topicName);
+        KafkaReader<String, String> reader = new KafkaReader<String, String>(kafkaConsumer, topicName);
         openClients.add(reader);
         return reader;
     }
 
     /**
-     * Obtain a SimpleKafkaWriter for the given topic name
+     * Obtain a KafkaWriter for the given topic name
      * <p>
      * The returned writer writes String messages.
      *
      * @param topicName the topic to write to
      * @return the writer
      */
-    public SimpleKafkaWriter<String> writerFor(String topicName) {
+    public KafkaWriter<String, String> writerFor(String topicName) {
         return writerFor(Collections.emptyMap(), topicName);
     }
 
     /**
-     * Obtain a SimpleKafkaWriter configured with the given producer config
+     * Obtain a KafkaWriter configured with the given producer config
      * <p>
      * The following properties will be added with default values if they are not set in {@code config}
      * <ul>
@@ -145,7 +145,7 @@ public class KafkaTestClient {
      * @param topicName the topic to write to
      * @return the writer
      */
-    public <T> SimpleKafkaWriter<T> writerFor(Map<String, Object> config, String topicName) {
+    public <T> KafkaWriter<String, T> writerFor(Map<String, Object> config, String topicName) {
         Map<String, Object> localConfig = new HashMap<>();
         localConfig.putAll(connectionProperties);
         localConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -155,7 +155,7 @@ public class KafkaTestClient {
         localConfig.putAll(config);
 
         KafkaProducer<String, T> kafkaProducer = new KafkaProducer<>(localConfig);
-        SimpleKafkaWriter<T> writer = new SimpleKafkaWriter<T>(kafkaProducer, topicName);
+        KafkaWriter<String, T> writer = new KafkaWriter<String, T>(kafkaProducer, topicName);
         openClients.add(writer);
         return writer;
     }

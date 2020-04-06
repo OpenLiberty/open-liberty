@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: No active WS-AT transaction with id {0}.
+NO_WSAT_TRAN_CWLIB0201.explanation=An active WS-AT transaction matching the requested global transaction id cannot be found.
+NO_WSAT_TRAN_CWLIB0201.useraction=Refer to logs for error details.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: No participant with id {1} found for transaction {0}.
+NO_WSAT_PART_CWLIB0202.explanation=A transaction participant matching the requested id cannot be found as part of the global transaction.
+NO_WSAT_PART_CWLIB0202.useraction=Refer to logs for error details.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: The transaction timeout expired. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=The transaction timeout expired and the transaction was rolled-back.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=Refer to logs for error details.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: Unable to invoke the protocol web service. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=An error occurred when invoking the system web services.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=Refer to logs for error details.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: Transaction processing error.
+TRAN_MGR_ERROR_CWLIB0205.explanation=An error was received when processing the transaction function.
+TRAN_MGR_ERROR_CWLIB0205.useraction=Refer to logs for error details.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: Enable SSL {0} for WS-AT.
+WSAT_SECURITY_CWLIB0206.explanation=WS-AT uses an SSL connection to secure the internal communication.
+WSAT_SECURITY_CWLIB0206.useraction=none.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: Enable externalURLPrefix {0} for WS-AT.
+WSAT_PROXY_CWLIB0207.explanation=WS-AT uses a proxy for the internal communication.
+WSAT_PROXY_CWLIB0207.useraction=none.
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: Unable to deserialize transaction resource.
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=An error occurred when processing a transaction manager resource.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=Refer to logs for error details.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: Unable to obtain the system service endpoint.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=An error occurred when trying to obtain the endpoint for the system web services. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=Refer to logs for error details.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: externalURLPrefix {0} for WS-AT must start with http(s)://
+WSAT_PROXY_CWLIB0210.explanation=Proxy address for WS-AT must start with http(s)://
+WSAT_PROXY_CWLIB0210.useraction=Modify the externalURLPrefix address to start with http(s)://
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: externalURLPrefix {0} for WS-AT must start with https:// when SSL is enabled.
+WSAT_PROXY_CWLIB0211.explanation=Proxy address for WS-AT must start with https:// when SSL is enabled.
+WSAT_PROXY_CWLIB0211.useraction=Modify the externalURLPrefix address to start with https:// when SSL is enabled.

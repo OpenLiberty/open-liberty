@@ -13,14 +13,17 @@ package failovertimers.ejb.autotimer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.CompletionException;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
 import javax.ejb.Timer;
-import javax.naming.InitialContext;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.sql.DataSource;
 
 import failovertimers.web.FailoverTimersTestServlet;
@@ -32,6 +35,20 @@ public class AutoCountingSingletonTimer {
 
     @Resource
     private SessionContext sessionContext;
+
+    @PostConstruct
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void initTable() {
+        final String createTable = "CREATE TABLE TIMERLOG (TIMERNAME VARCHAR(254) NOT NULL PRIMARY KEY, COUNT INT NOT NULL, SERVERNAME VARCHAR(254) NOT NULL)";
+        boolean isTableCreated = false;
+        try (Connection con = ds.getConnection(); Statement s = con.createStatement()) {
+            s.execute(createTable);
+            isTableCreated = true;
+        } catch (SQLException x) {
+            System.out.println("Table might have already been created: " + x.getMessage());
+        }
+        System.out.println("Was TIMERLOG table created? " + isTableCreated);
+    }
 
     // Timer runs every other other second
     @Schedule(info = "AutomaticCountingSingletonTimer", hour = "*", minute = "*", second = "*/2")
@@ -57,7 +74,6 @@ public class AutoCountingSingletonTimer {
                 found = stmt.executeUpdate() == 1;
             } catch (SQLException x) {
                 found = false;
-                FailoverTimersTestServlet.createTables(ds);
             }
             if (!found) { // insert new entry
                 PreparedStatement stmt = con.prepareStatement("INSERT INTO TIMERLOG VALUES (?,?,?)");

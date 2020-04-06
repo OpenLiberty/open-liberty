@@ -48,6 +48,16 @@ property.not.found.CWMCG5004E=CWMCG5004E: La propriet\u00e0 di configurazione "{
 property.not.found.CWMCG5004E.explanation=La propriet\u00e0 indicata non \u00e8 stata trovata nelle origini configurate. 
 property.not.found.CWMCG5004E.useraction=Accertarsi che la propriet\u00e0 esista in una delle origini configurate.
 
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: La dipendenza InjectionPoint non \u00e8 stata risolta per il metodo Observer: {0}. Errore: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=Una propriet\u00e0 di configurazione inserita non \u00e8 stata risolta. La propriet\u00e0 indicata non \u00e8 stata trovata oppure non \u00e8 stato risolto un Converter per il tipo richiesto. 
+unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=Controllare il messaggio del server e i log FFDC per determinare la causa. Accertarsi che la propriet\u00e0 esista in una delle origini di configurazione e che i Converter richiesti siano stati configurati.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: La dipendenza InjectionPoint non \u00e8 stata elaborata per il bean Observer: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=Si \u00e8 verificato un errore sconosciuto. Non \u00e8 stato possibile elaborare correttamente un metodo Observer.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=Controllare il messaggio del server e i log FFDC per determinare la causa.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message

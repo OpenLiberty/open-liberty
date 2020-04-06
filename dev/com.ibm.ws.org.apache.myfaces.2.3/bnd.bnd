@@ -16,7 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.myfaces.2.3
 Bundle-Description: WAS JSF 2.3, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
-Implementation-Version: 2.3.4
+Implementation-Version: 2.3.6
 
 app-resources= \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
@@ -26,9 +26,6 @@ app-resources= \
   META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \
   META-INF/services/javax.faces.application.ApplicationFactory
 
-javac.source: 1.8
-javac.target: 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Service-Component: \
   com.ibm.ws.jsf_2_3; \
@@ -77,7 +74,7 @@ instrument.classesExcludes: \
   org/**/*.class
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;2.3.4;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core.impl;2.3.6;EXACT}!/META-INF/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -143,6 +140,7 @@ Export-Package: \
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: \
+  !com.ibm.ws.jsf.ee, \
   !com.google.inject, \
   !javax.ejb, \
   !javax.persistence, \

@@ -1766,7 +1766,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
             TargetsTableImpl[] newTables = createResultTables();
 
-            mergeInternalResults(newTables);
+            mergeInternalResults(newTables, !FORCE_SEED_RESULTS);
 
 //            int useWriteLimit = getWriteLimit();
 //            if ( logger.isLoggable(Level.FINER) ) {

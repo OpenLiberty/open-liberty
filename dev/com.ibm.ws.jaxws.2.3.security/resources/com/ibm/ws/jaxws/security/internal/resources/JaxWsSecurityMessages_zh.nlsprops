@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: \u672a\u80fd\u6839\u636e sslRef={0} \u83b7\u5f97 SSL \u914d\u7f6e\u3002
+err.when.get.ssl.config.explanation=ibm-ws-bnd.xml \u6587\u4ef6\u4e2d\u6307\u5b9a\u7684 sslRef \u5c5e\u6027\u65e0\u6cd5\u5f15\u7528 server.xml \u6587\u4ef6\u4e2d\u7684 ssl \u5143\u7d20\uff0c\u6216\u6240\u5f15\u7528 ssl \u5143\u7d20\u7684\u5185\u5bb9\u65e0\u6548\u3002
+err.when.get.ssl.config.useraction=\u8bf7\u786e\u4fdd sslRef \u5c5e\u6027\u7684\u503c\u4e0e server.xml \u6587\u4ef6\u4e2d ssl \u5143\u7d20\u7684\u6807\u8bc6\u5339\u914d\uff0c\u6216\u6240\u5f15\u7528 ssl \u5143\u7d20\u7684\u5185\u5bb9\u6b63\u786e\u3002
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: \u672a\u80fd\u6839\u636e sslRef={0} \u4e3a {1} \u83b7\u5f97 SSLSocketFactory\u3002
+err.when.get.ssl.socket.factory.explanation=server.xml \u6587\u4ef6\u4e2d\u5bc6\u94a5\u5e93\u6216\u4fe1\u4efb\u5e93\u5143\u7d20\u7684\u65e0\u6548\u914d\u7f6e\u53ef\u80fd\u5bfc\u81f4\u5f02\u5e38\uff0c\u56e0\u4e3a ibm-ws-bnd.xml \u6587\u4ef6\u4e2d\u6307\u5b9a\u7684 sslReffile \u5c5e\u6027\u5f15\u7528 server.xml \u6587\u4ef6\u4e2d\u7684 SSL \u914d\u7f6e\u3002
+err.when.get.ssl.socket.factory.useraction=\u8bf7\u786e\u4fdd\u5728 server.xml \u6587\u4ef6\u4e2d\u6b63\u786e\u6307\u5b9a\u5bc6\u94a5\u5e93\u6216\u4fe1\u4efb\u5e93\u5143\u7d20\u7684\u4f4d\u7f6e\u548c\u5bc6\u7801\uff0c\u5e76\u786e\u4fdd ibm-ws-bnd.xml \u6587\u4ef6\u4e2d\u7684\u8bc1\u4e66\u522b\u540d\u6709\u6548\u3002
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: \u7531\u4e8e\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u662f Web \u5e94\u7528\u7a0b\u5e8f\uff0c\u5c06\u5ffd\u7565 ibm-ws-bnd.xml \u6587\u4ef6\u4e2d\u5b9a\u4e49\u7684 login-config \u5143\u7d20\uff0c\u800c\u5e94\u5728 web.xml \u4e2d\u5b9a\u4e49\u8be5\u5143\u7d20\u3002
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=\u53ea\u80fd\u5728 Web \u5e94\u7528\u7a0b\u5e8f\u7684 web.xml \u6587\u4ef6\u4e2d\u914d\u7f6e login-config \u5143\u7d20\uff0c\u5e76\u5c06\u5ffd\u7565 ibm-ws-bnd.xml \u6587\u4ef6\u4e2d\u5b9a\u4e49\u7684 login-config \u5143\u7d20\u3002
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=\u8bf7\u786e\u4fdd\u4ec5\u5728\u60a8 Web \u5e94\u7528\u7a0b\u5e8f\u7684 web.xml \u6587\u4ef6\u4e2d\u914d\u7f6e login-config \u5143\u7d20\u3002
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: ibm-ws-bnd.xml \u6587\u4ef6\u4e2d\u4e0d\u652f\u6301 auth-method \u7c7b\u578b {0}\u3002
+ibm.ws.bnd.auth.method.not.support.explanation=ibm-ws-bnd.xml \u6587\u4ef6\u4ec5\u652f\u6301\u5c06 BASIC \u548c CLIENT_CERT \u4f5c\u4e3a auth-method \u7c7b\u578b\u3002
+ibm.ws.bnd.auth.method.not.support.useraction=\u8bf7\u786e\u4fdd ibm-ws-bnd.xml \u6587\u4ef6\u4e2d\u5b9a\u4e49\u7684 auth-method \u7c7b\u578b\u7684\u503c\u4e3a BASIC \u6216 CLIENT_CERT\u3002

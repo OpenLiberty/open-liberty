@@ -9,3 +9,4 @@ visibility=private
 -bundles=com.ibm.ws.clientcontainer.remote.common
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

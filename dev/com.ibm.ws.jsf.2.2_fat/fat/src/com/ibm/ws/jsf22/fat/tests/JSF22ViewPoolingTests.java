@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,17 +15,17 @@ import static org.junit.Assert.assertFalse;
 import java.net.URL;
 import java.util.List;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jsf22.fat.JSFUtils;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -69,29 +69,28 @@ public class JSF22ViewPoolingTests {
     /**
      * Check to make sure that no NullPointerException is thrown in ViewPoolProcessor.pushPartialView()
      * when View Pooling is enabled and oamEnableViewPool is set to false in a specific resource
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void JSF22ViewPooling_TestViewPoolingDisabled() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
-        WebClient webClient = new WebClient();
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "JSF22ViewPooling_Disabled.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "JSF22ViewPooling_Disabled.xhtml");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            if (page == null) {
+                Assert.fail("JSF22ViewPooling_Disabled.xhtml did not render properly.");
+            }
 
-        if (page == null) {
-            Assert.fail("JSF22ViewPooling_Disabled.xhtml did not render properly.");
+            String msgToSearchFor1 = "java.lang.NullPointerException";
+            String msgToSearchFor2 = "ViewPoolProcessor.pushPartialView";
+
+            List<String> msg1 = jsfTestServer2.findStringsInLogs(msgToSearchFor1);
+            List<String> msg2 = jsfTestServer2.findStringsInLogs(msgToSearchFor2);
+
+            assertFalse("NullPointerException and ViewPoolProcessor.pushPartialView found in logs", !msg1.isEmpty() && !msg2.isEmpty());
         }
-
-        String msgToSearchFor1 = "java.lang.NullPointerException";
-        String msgToSearchFor2 = "ViewPoolProcessor.pushPartialView";
-
-        List<String> msg1 = jsfTestServer2.findStringsInLogs(msgToSearchFor1);
-        List<String> msg2 = jsfTestServer2.findStringsInLogs(msgToSearchFor2);
-
-        assertFalse("NullPointerException and ViewPoolProcessor.pushPartialView found in logs", !msg1.isEmpty() && !msg2.isEmpty());
-
     }
 }

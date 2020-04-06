@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -162,9 +162,9 @@ public class ClientAuthentication {
             // For the basic auth case, a null password means a password was not included, not that the password was empty.
             password = "";
         }
-        // adding check to see whether the client config specifies that it is a public client 
+        // adding check to see whether the client config specifies that it is a public client
         boolean clientSpecifiesPublic = isPublicClient(clientProvider, data);
-        
+
         if (provider.isAllowPublicClients() || clientSpecifiesPublic) {
             isClientAuthenticationDataValid = isValidPublicClient(response, password, clientProvider, data, endpointType, grantType, authScheme);
         } else {
@@ -194,7 +194,7 @@ public class ClientAuthentication {
         try {
             client = clientProvider.get(data.getUserName());
         } catch (OidcServerException e) {
-            
+
         }
         if (client != null && client.isPublicClient()) {
             return true;
@@ -272,7 +272,7 @@ public class ClientAuthentication {
             if (provider.isPasswordGrantRequiresAppPassword()) {
                 isCredentialValid = validateResourceOwnerCredentialWithAppPassword(request, response, endpointType, provider, data);
             } else {
-                isCredentialValid = validateResourceOwnerCredential(request, response, endpointType);
+                isCredentialValid = validateResourceOwnerCredential(provider, request, response, endpointType);
             }
 
         } catch (OAuth20DuplicateParameterException e) {
@@ -411,7 +411,7 @@ public class ClientAuthentication {
      * @throws OAuth20DuplicateParameterException
      * @throws OAuth20MissingParameterException
      */
-    protected boolean validateResourceOwnerCredential(HttpServletRequest request, HttpServletResponse response, EndpointType type) throws OidcServerException, OAuth20DuplicateParameterException, OAuth20MissingParameterException {
+    protected boolean validateResourceOwnerCredential(OAuth20Provider provider, HttpServletRequest request, HttpServletResponse response, EndpointType type) throws OidcServerException, OAuth20DuplicateParameterException, OAuth20MissingParameterException {
         boolean valid = false;
         String userName = "";
 
@@ -433,8 +433,18 @@ public class ClientAuthentication {
             }
 
             if (reg.checkPassword(userName, passWord) != null) {
-
                 valid = true;
+            }
+
+            // switch the username if needed. Oauth20ComponentImpl.buildTokenAttributeList will pick this up.
+            if (valid && provider.isROPCPreferUserSecurityName()) {
+                String userSecName = reg.getUserSecurityName(userName);
+                if (!userSecName.equals(userName)) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "setting attribute to override user name to " + userSecName);
+                    }
+                    request.setAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME, userSecName);
+                }
             }
 
         } catch (OAuth20DuplicateParameterException e) {
@@ -493,7 +503,6 @@ public class ClientAuthentication {
             Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName);
             throw new OidcServerException("invalid_resource_owner_credential", OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_BAD_REQUEST, e1);
         }
-
         return valid;
 
     }

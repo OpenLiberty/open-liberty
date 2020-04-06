@@ -12,8 +12,10 @@ package com.ibm.ws.jndi.internal.literals;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+@Trivial
 enum StringParser {
     // These are the states of the parsing process
     UNSTARTED, UNESCAPED, ESCAPED, OCTAL2LEFT, OCTAL1LEFT, HEX4LEFT, HEX3LEFT, HEX2LEFT, HEX1LEFT, COMPLETE;

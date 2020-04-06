@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -56,6 +56,11 @@ ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Verifica\u0163i dac\u0103 confi
 ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: Biblioteca de cache de sesiune {0} este goal\u0103. {1}
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=Caracteristica sessionCache nu a putut g\u0103si un furnizor JCache pentru \u00eenc\u0103rcare.
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=Verifica\u0163i dac\u0103 biblioteca con\u0163ine un furnizor JCache \u015fi toate c\u0103ile sunt specificate corect.
+
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: A fost generat\u0103 configura\u0163ia Infinispan pentru persisten\u0163a sesiunii HTTP: {0}. Pentru a o \u00eenlocui, configura\u0163i atributul uri al elementului de configura\u0163ie httpSessionCache.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=Cache-urile Infinispan care sunt folosite pentru persisten\u0163a sesiunii HTTP necesit\u0103 configura\u0163ie suplimentar\u0103 pentru a persista sesiunile peste servere. Liberty genereaz\u0103 aceast\u0103 configura\u0163ie c\u00e2nd nu este furnizat\u0103 de utilizator.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 sunte\u0163i satisf\u0103cut cu configura\u0163ia generat\u0103. Altfel, genera\u0163ia configurat\u0103 poate fi folosit\u0103 ca punct de plecare.
 
 INTERNAL_SERVER_ERROR=Eroare intern\u0103 de server
 

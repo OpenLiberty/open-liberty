@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application-client
+  PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"
+         "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd"
+>
+<application-client id="Application-client_ID">
+  <display-name>ClientIDClient</display-name>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_JMS_BASE_QCF</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>jndi_JMS_BASE_CF</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_CF</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/eis/tcf</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>eis/tcf</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_TOPIC_ONE</res-ref-name>
+    <res-type>javax.jms.Topic</res-type>
+    <lookup-name>jndi_TOPIC_ONE</lookup-name>
+  </resource-ref>
+
+</application-client>

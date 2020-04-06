@@ -1,6 +1,5 @@
-package com.ibm.tx.jta.embeddable.impl;
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +8,7 @@ package com.ibm.tx.jta.embeddable.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.embeddable.impl;
 
 import javax.transaction.InvalidTransactionException;
 import javax.transaction.NotSupportedException;
@@ -33,7 +33,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "begin (SPI)");
+            Tr.entry(tc, "begin", "(SPI)");
 
         if (tx != null) {
             if (tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL) {
@@ -42,7 +42,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
 
                 FFDCFilter.processException(nse, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.begin", "63", this);
                 if (traceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "begin (SPI)", nse);
+                    Tr.exit(tc, "begin", new Object[] {"(SPI)", nse});
                 throw nse;
             } else {
                 if (tc.isDebugEnabled())
@@ -65,7 +65,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
         invokeEventListener(tx, UOWEventListener.POST_BEGIN, null);
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "begin (SPI)");
+            Tr.exit(tc, "begin", "(SPI)");
     }
 
     @Override
@@ -113,24 +113,27 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "synchronized resume", new Object[] { this, tx });
 
-        final EmbeddableTransactionImpl t = (EmbeddableTransactionImpl) tx;
+        // no-op if tx is null
+        if (tx instanceof EmbeddableTransactionImpl) {
+            final EmbeddableTransactionImpl t = (EmbeddableTransactionImpl) tx;
 
-        if (!t.isResumable()) {
-            final IllegalStateException ise;
-            if (t.getThread() != null) {
-                ise = new IllegalStateException("Transaction already active on thread " + String.format("%08X", t.getThread().getId()));
-            } else {
-                ise = new IllegalStateException("Transaction cannot be resumed on this thread");
+            if (!t.isResumable()) {
+                final IllegalStateException ise;
+                if (t.getThread() != null) {
+                    ise = new IllegalStateException("Transaction already active on thread " + String.format("%08X", t.getThread().getId()));
+                } else {
+                    ise = new IllegalStateException("Transaction cannot be resumed on this thread");
+                }
+
+                if (traceOn && tc.isEntryEnabled())
+                    Tr.exit(tc, "synchronized resume", ise);
+                throw ise;
             }
 
-            if (traceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "synchronized resume", ise);
-            throw ise;
+            super.resume(t);
+
+            t.setThread(Thread.currentThread());
         }
-
-        super.resume(t);
-
-        t.setThread(Thread.currentThread());
 
         if (traceOn && tc.isEntryEnabled())
             Tr.exit(tc, "synchronized resume");

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -148,8 +148,11 @@ sslCert.option-desc.keyType=\t\u53ef\u9009\u3002\u7f3a\u7701\u60c5\u51b5\u4e0b\u
 
 sslCert.option-key.ext=\ \ \ \ --extInfo=\u8bc1\u4e66\u6269\u5c55\u4fe1\u606f
 sslCert.option-desc.ext=\t\u8981\u6dfb\u52a0\u81f3\u8bc1\u4e66\u7684\u8bc1\u4e66\u6269\u5c55\u4fe1\u606f\u3002\n\
-\t\u7f3a\u7701\u6269\u5c55\u4e3a\u4f7f\u7528\u4e3b\u673a\u540d\u7684\u201c\u4e3b\u4f53\u96c6\u5907\u7528\u540d\u79f0\u201d\u3002\n\
-\t
+\t\u7f3a\u7701\u6269\u5c55\u662f\u4f7f\u7528\u4e3b\u673a\u540d\u7684\u201c\u4e3b\u4f53\u96c6\u5907\u7528\u540d\u79f0\u201d\u6761\u76ee\u3002\n\
+\t\u6b64\u6807\u5fd7\u4e0e Jave Keytool \u547d\u4ee4 -ext \u6807\u5fd7\u9075\u5faa\u76f8\u540c\u8bed\u6cd5\u3002\n\
+\u5728\u8be5\u547d\u4ee4\u4e2d\u53ef\u4ee5\u591a\u6b21\u4f7f\u7528\u6b64\u6807\u5fd7\n\
+\ 
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

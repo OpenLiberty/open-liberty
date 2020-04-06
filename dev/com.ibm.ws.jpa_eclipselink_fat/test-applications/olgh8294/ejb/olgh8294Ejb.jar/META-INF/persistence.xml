@@ -21,6 +21,10 @@
         <jta-data-source>jdbc/JPA_DS</jta-data-source>
         <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
         <properties>
+            <!-- Testing that with this property set, EclipseLink will 
+            force query parameters to be bound (?, ?)  -->
+            <property name="eclipselink.jdbc.force-bind-parameters" value="true"/>
+
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
 
@@ -31,6 +35,10 @@
     <persistence-unit name="OLGH8294_RL" transaction-type="RESOURCE_LOCAL">
         <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
         <properties>
+            <!-- Testing that with this property set, EclipseLink will 
+            force query parameters to be bound (?, ?)  -->
+            <property name="eclipselink.jdbc.force-bind-parameters" value="true"/>
+
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
 

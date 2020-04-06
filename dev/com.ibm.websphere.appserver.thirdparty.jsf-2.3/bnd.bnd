@@ -16,11 +16,8 @@ Fragment-Host: com.ibm.ws.org.apache.myfaces.2.3;bundle-version=1.0
 Bundle-Name: WebSphere JSF MyFaces Third Party API
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.jsf-2.3
 Bundle-Description: WebSphere JSF 2.3 MyFaces Third Party API
-Implementation-Version: 2.3.4
+Implementation-Version: 2.3.6
 
-javac.source: 1.8
-javac.target: 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the 
 # org.apache.myfaces.buildtools package is javax.j2ee.jsf-2.2/lib/myfaces-builder-annotations-1.0.9.jar

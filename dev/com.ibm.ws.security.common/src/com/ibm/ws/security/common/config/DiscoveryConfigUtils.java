@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.common.config;
 
 import java.util.ArrayList;
@@ -151,7 +161,6 @@ public class DiscoveryConfigUtils {
 
         if ("authMethod".equals(key) && values != null) {
             for (String value : values) {
-                //value = matchingRPValue(value);
                 if (rpSupportedTokenEndpointAuthMethods.contains(value)) {
                     return value;
                 }
@@ -176,22 +185,9 @@ public class DiscoveryConfigUtils {
     }
     
     /**
-     * @param value
-     * @return
-     */
-    private String matchingRPValue(String value) {
-        if ("client_secret_post".equals(value)) {
-            return "post";
-        } else if ("client_secret_basic".equals(value)) {
-            return "basic";
-        }
-        return value;
-    }
-    
-    /**
      * @param object
      */
-    private ArrayList<String> discoverOPConfig(Object obj) {
+    public ArrayList<String> discoverOPConfig(Object obj) {
         return jsonValue(obj);
     }
 
@@ -233,23 +229,6 @@ public class DiscoveryConfigUtils {
         return jsonString;
     }
 
-    
-    /**
-     * @param string
-     * @return
-     */
-    private boolean opHasRPDefault(String key, ArrayList<String> opconfig) {
-
-        if ("authMethod".equals(key)) {
-            return matches("client_secret_post", opconfig);
-        } else if ("alg".equals(key)) {
-            return matches("HS256", opconfig);
-        } else if ("scope".equals(key)) {
-            return matches("openid", opconfig) && matches("profile", opconfig);
-        }
-        return false;
-    }
-    
     private boolean opHasSocialRPDefault(String key, ArrayList<String> opconfig) {
 
         if ("authMethod".equals(key)) {
@@ -262,16 +241,22 @@ public class DiscoveryConfigUtils {
         return false;
     }
 
-    private boolean matches(String rpdefault, ArrayList<String> opconfig) {
+    public boolean matches(String rpdefault, ArrayList<String> opconfig) {
+        if (opconfig == null) {
+            return rpdefault == null;
+        }
         for (String str : opconfig) {
-            if (rpdefault.equals(str)) {
+            if (rpdefault != null && rpdefault.equals(str)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean matches(String rpdefault, String rpconfig) {
+    public boolean matches(String rpdefault, String rpconfig) {
+        if (rpconfig == null) {
+            return rpdefault == null;
+        }
         return rpconfig.equals(rpdefault);
     }
 
@@ -286,21 +271,6 @@ public class DiscoveryConfigUtils {
             }
         }
         return true;
-    }
-    
-    /**
-     * @param string
-     * @return
-     */
-    private boolean isRPUsingDefault(String key) {
-        if ("authMethod".equals(key)) {
-            return matches("post", this.tokenEndpointAuthMethod);
-        } else if ("alg".equals(key)) {
-            return matches("HS256", this.signatureAlgorithm);
-        } else if ("scope".equals(key)) {
-            return matches("openid profile", this.scope);
-        }
-        return false;
     }
     
     /**

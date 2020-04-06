@@ -24,6 +24,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientInvocationTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientSyncInvokerTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20WithClientFeatureEnabledTest;
+import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClient100ContinueTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientCallbackTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientLtpaTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLDefaultTest;
@@ -69,7 +70,8 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRSClientLtpaTest.class,
                 JAXRSClientCallbackTest.class,
                 ClientContextInjectionTest.class,
-                JAXRSClientSSLProxyAuthTest.class
+                JAXRSClientSSLProxyAuthTest.class,
+                JAXRSClient100ContinueTest.class
 })
 public class FATSuite {
     @ClassRule

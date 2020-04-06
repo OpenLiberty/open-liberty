@@ -78,6 +78,10 @@ OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: The OpenTracing exception mapp
 OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=The JAX-RS-based application experienced an exception that is not handled within the application. The OpenTracing code handles it by logging the exception stack trace and returning a 500 Internal Server Error response.
 OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=This behavior might be acceptable. To handle the exception differently, the application developer can add an ExceptionMapper interface that handles the exception and maps it to a different response.
 
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS requests run normally, but they are not tracked.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=See the documentation about how to enable and configure OpenTracing distributed tracing. This warning can be safely ignored if OpenTracing is not being used.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

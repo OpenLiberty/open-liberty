@@ -1,0 +1,67 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Utilizare:  {0}
+
+global.description=Descriere:
+global.actions=Ac\u0163iuni:
+global.options=Op\u0163iuni:
+global.options.lower=op\u0163iuni
+global.usage=Utilizare:
+global.options.statement=\tUtiliza\u0163i help [actionName] pentru informa\u0163ii detaliate despre op\u0163iuni pentru fiecare op\u0163iune.
+task.unknown=Ac\u0163iune necunoscut\u0103: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tTip\u0103ri\u0163i informa\u0163iile de ajutor pentru ac\u0163iunea specificat\u0103.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tInstala\u0163i o catracteristic\u0103 sau o list\u0103 de caracteristici separate prin virgul\u0103.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ nume ...
+installFeature.option-desc.name...=\tUna sau mai multe caracteristici care sunt separate de un spa\u0163iu. Pentru caracteristici,    \n\
+\tspecifica\u0163i numele scurt al caracteristicii sau coordonata Maven. Dac\u0103 specifica\u0163i    \n\
+\to coordonat\u0103 Maven, trebuie s\u0103 con\u0163in\u0103 cel pu\u0163in ID-ul de grup \u015fi                 \n\
+\tID-ul de artefact                                     \n\
+\t(de exemplu, io.openliberty.features:mpHealth-2.0).                 \n\
+\tVersiunea implicit\u0103 este versiunea runtime curent\u0103, iar         \n\
+\ttipul de \u00eempachetare implicit este ESA, dac\u0103 versiunea \u015fi \u00eempachetarea nu    \n\
+\tsunt specificate.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\tSpecifica\u0163i unde s\u0103 se instaleze caracteristica. Caracteristica poate fi instalat\u0103\n\
+\t\u00een orice loca\u0163ie extensie de produs configurat, sau drept caracteristic\u0103 de utilizator. Dac\u0103  \n\
+\taceast\u0103 op\u0163iune nu este specificat\u0103, caracteristica este instalat\u0103 ca o caracteristic\u0103 de   \n\
+\tutilizator.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\
+\tde artefacte Maven ca surs\u0103 pentru featureUtility pentru instalarea aseturilor.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tAfi\u015fa\u0163i informa\u0163ii de depanare suplimentare \u00een timp ce ruleaz\u0103 ac\u0163iunea.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\
+\t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tInstala\u0163i caracteristicile necesare pentru un server numit.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ nume ...
+installServerFeatures.option-desc.name...=\tNumele unui server existent din acela\u015fi mediu Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
+installServerFeatures.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\
+\tde artefacte Maven ca surs\u0103 pentru featureUtility pentru instalarea aseturilor.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tAfi\u015fa\u0163i informa\u0163ii de depanare suplimentare \u00een timp ce ruleaz\u0103 ac\u0163iunea.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\
+\t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.

@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMGQ
+#COMPONENTNAMEFOR CWMGQ MicroProfile GraphQL API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MP GraphQL Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ERROR_GENERATING_SCHEMA_CWMGQ0001E=CWMGQ0001E: {0} Web \u6a21\u7d44\u4e2d\u7684\u67d0\u500b\u932f\u8aa4\u9020\u6210 MicroProfile GraphQL \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\u3002
+ERROR_GENERATING_SCHEMA_CWMGQ0001E.explanation=\u5728\u8655\u7406\u6307\u5b9a\u6a21\u7d44\u4e2d\u7684 MP GraphQL \u61c9\u7528\u7a0b\u5f0f\u671f\u9593\uff0c\u5075\u6e2c\u5230\u91cd\u5927\u932f\u8aa4\u3002\u6b64\u932f\u8aa4\u9020\u6210\u8a72\u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u9806\u5229\u555f\u52d5\u3002
+ERROR_GENERATING_SCHEMA_CWMGQ0001E.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4f86\u5224\u5b9a GraphQL \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684\u932f\u8aa4\uff0c\u89e3\u6c7a\u9019\u4e9b\u932f\u8aa4\u4e26\u91cd\u65b0\u90e8\u7f72\u8a72\u61c9\u7528\u7a0b\u5f0f\u3002
+

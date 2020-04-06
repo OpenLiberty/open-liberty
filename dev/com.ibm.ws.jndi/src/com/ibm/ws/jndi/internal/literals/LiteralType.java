@@ -12,6 +12,7 @@ package com.ibm.ws.jndi.internal.literals;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 import java.math.BigInteger;
 import java.util.regex.Pattern;
@@ -25,6 +26,7 @@ import static java.math.BigInteger.ZERO;
  * appropriate wrapper type. String literals will be converted into String objects.
  * Any other string will be returned unmodified.
  */
+@Trivial
 enum LiteralType {
     BOOLEAN_TRUE("true") {
         @Override

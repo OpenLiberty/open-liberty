@@ -18,3 +18,4 @@ IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
  bin/ddlGen; ibm.file.encoding:=ebcdic
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

@@ -61,7 +61,7 @@ public class MappingTable {
         	{ "servlet.responseTime.total", "Total Response Time", "servlet.responseTime.total.description", GAUGE, MetricUnits.NANOSECONDS, "ResponseTimeDetails", "total", SERVLET_TAG_NAME }
         };
 		mappingTable.put("WebSphere:type=ServletStats,name=*", servletTable);
-
+		
 		String[][] connectionPoolTable = new String[][]{
 			{ "connectionpool.create.total", "Create Count", "connectionpool.create.total.description", COUNTER, MetricUnits.NONE, "CreateCount", null, CONNECTIONPOOL_TAG_NAME },
 			{ "connectionpool.destroy.total", "Destroy Count", "connectionpool.destroy.total.description", COUNTER, MetricUnits.NONE, "DestroyCount", null, CONNECTIONPOOL_TAG_NAME },

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2019 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -48,6 +48,15 @@
         <AD name="%transaction.log.directory" description="%transaction.log.directory.desc"
             id="transactionLogDirectory" required="false" type="String" default="${server.output.dir}/tranlog/" />
 
+        <AD name="internal" description="%lease.check.strategy.desc"
+            id="leaseCheckStrategy" required="false" type="String" default="round-robin" />            
+
+        <AD name="internal" description="%lease.check.interval.desc"
+            id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
+        <AD name="internal" description="%lease.length.desc"
+            id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
         <AD name="%transaction.log.size" description="%transaction.log.size.desc"
             id="transactionLogSize" required="false" type="Integer" default="1024" />
             
@@ -65,10 +74,19 @@
 
         <AD name="internal" description="internal use only"
             id="peerTimeBeforeStale" required="false" type="Integer" default="10" />
-            
+
         <AD name="internal" description="internal use only"
-            id="localTimeBeforeStale" required="false" type="Integer" default="10" />
-                                    
+            id="standardTransientErrorRetryTime" required="false" type="Integer" default="10" />
+
+        <AD name="internal" description="internal use only"
+            id="standardTransientErrorRetryAttempts" required="false" type="Integer" default="180" /> 
+                        
+        <AD name="internal" description="internal use only"
+            id="lightweightTransientErrorRetryTime" required="false" type="Integer" default="1" />
+
+        <AD name="internal" description="internal use only"
+            id="lightweightTransientErrorRetryAttempts" required="false" type="Integer" default="2" /> 
+                                               
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
         

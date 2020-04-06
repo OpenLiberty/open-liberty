@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.PreDestroy;
 import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -45,6 +46,7 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
@@ -67,6 +69,9 @@ public class FaultToleranceInterceptor {
     public FaultToleranceInterceptor(ExecutorCleanup executorCleanup) {
         executorCleanup.setPolicies(policyCache.values());
     }
+
+    @Inject
+    Instance<AsyncRequestContextController> rcInstance;
 
     @AroundInvoke
     public Object executeFT(InvocationContext context) throws Exception {
@@ -125,7 +130,7 @@ public class FaultToleranceInterceptor {
                     retry = new RetryConfig(targetClass, (Retry) annotation);
                     retry.validate();
                 } else if (annotation.annotationType().equals(CircuitBreaker.class)) {
-                    circuitBreaker = new CircuitBreakerConfig(targetClass, (CircuitBreaker) annotation);
+                    circuitBreaker = annotationConfigFactory.createCircuitBreakerConfig(targetClass, (CircuitBreaker) annotation);
                     circuitBreaker.validate();
                 } else if (annotation.annotationType().equals(Timeout.class)) {
                     timeout = new TimeoutConfig(targetClass, (Timeout) annotation);
@@ -153,7 +158,7 @@ public class FaultToleranceInterceptor {
                     retry = new RetryConfig(method, targetClass, (Retry) annotation);
                     retry.validate();
                 } else if (annotation.annotationType().equals(CircuitBreaker.class)) {
-                    circuitBreaker = new CircuitBreakerConfig(method, targetClass, (CircuitBreaker) annotation);
+                    circuitBreaker = annotationConfigFactory.createCircuitBreakerConfig(method, targetClass, (CircuitBreaker) annotation);
                     circuitBreaker.validate();
                 } else if (annotation.annotationType().equals(Timeout.class)) {
                     timeout = new TimeoutConfig(method, targetClass, (Timeout) annotation);
@@ -162,7 +167,7 @@ public class FaultToleranceInterceptor {
                     bulkhead = new BulkheadConfig(method, targetClass, (Bulkhead) annotation);
                     bulkhead.validate();
                 } else if (annotation.annotationType().equals(Fallback.class)) {
-                    fallback = new FallbackConfig(method, targetClass, (Fallback) annotation);
+                    fallback = annotationConfigFactory.createFallbackConfig(method, targetClass, (Fallback) annotation);
                     fallback.validate();
                 }
             }
@@ -214,6 +219,8 @@ public class FaultToleranceInterceptor {
         Object result = null;
         //if there is a set of FaultTolerance policies then run it, otherwise just call proceed
         if (aggregatedFTPolicy != null) {
+
+            aggregatedFTPolicy.setRequestContextInstance(rcInstance);
             Executor<Object> executor = aggregatedFTPolicy.getExecutor();
 
             Method method = invocationContext.getMethod();

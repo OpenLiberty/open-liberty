@@ -44,6 +44,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH8294_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh8294Ejb";
     private final static String RESOURCE_ROOT = "test-applications/olgh8294/";
     private final static String appFolder = "ejb";
     private final static String appName = "olgh8294Ejb";
@@ -61,11 +62,11 @@ public class TestOLGH8294_EJB extends JPAFATServletClient {
         populateSet.add("JPA_OLGH8294_POPULATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("EclipseLinkServer")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH8294_EJB_SL_Servlet.class, path = "olgh8294ejb" + "/" + "TestOLGH8294_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH8294_EJB_SF_Servlet.class, path = "olgh8294ejb" + "/" + "TestOLGH8294_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH8294_EJB_SFEx_Servlet.class, path = "olgh8294ejb" + "/" + "TestOLGH8294_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = TestOLGH8294_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8294_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestOLGH8294_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8294_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestOLGH8294_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8294_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 
@@ -115,13 +116,13 @@ public class TestOLGH8294_EJB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "olgh8294Ejb.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.query.sqlcapture");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.query.sqlcapture.eclipselink");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh8294.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh8294.model");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh8294.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/olgh8294Ejb.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh8294.ejb");

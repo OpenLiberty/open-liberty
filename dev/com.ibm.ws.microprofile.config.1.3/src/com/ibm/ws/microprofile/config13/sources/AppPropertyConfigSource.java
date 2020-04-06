@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,11 @@ import java.util.SortedSet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.sources.DynamicConfigSource;
 import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
 import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
@@ -57,6 +59,8 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
     private BundleContext bundleContext;
     private String applicationName;
     private final ConfigAction configAction;
+    private ConfigurationAdmin configurationAdmin;
+    private String applicationPID;
 
     public AppPropertyConfigSource() {
         super(Config13Constants.APP_PROPERTY_ORDINAL, Tr.formatMessage(tc, "server.xml.appproperties.config.source"));
@@ -108,6 +112,21 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
         return this.bundleContext;
     }
 
+    @FFDCIgnore(InvalidFrameworkStateException.class)
+    protected ConfigurationAdmin getConfigurationAdmin() {
+        if (this.configurationAdmin == null) {
+            BundleContext bundleContext = getBundleContext();
+            if (bundleContext != null) {
+                try {
+                    this.configurationAdmin = OSGiConfigUtils.getConfigurationAdmin(bundleContext);
+                } catch (InvalidFrameworkStateException e) {
+                    //OSGi framework is shutting down, ignore and return null;
+                }
+            }
+        }
+        return this.configurationAdmin;
+    }
+
     private String getApplicationName() {
         if (this.applicationName == null) {
             BundleContext bundleContext = getBundleContext();
@@ -116,6 +135,16 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
             }
         }
         return this.applicationName;
+    }
+
+    private String getApplicationPID() {
+        if (this.applicationPID == null) {
+            BundleContext bundleContext = getBundleContext();
+            if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
+                this.applicationPID = OSGiConfigUtils.getApplicationPID(bundleContext, applicationName);
+            }
+        }
+        return this.applicationPID;
     }
 
     private class ConfigAction implements PrivilegedAction<SortedSet<Configuration>> {
@@ -132,12 +161,20 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
         SortedSet<Configuration> osgiConfigs = null;
         BundleContext bundleContext = getBundleContext();
         if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-            String applicationName = getApplicationName();
 
-            //if the Config is being obtained outside the context of an application then the applicationName may be null
-            //in which case there are no applicable application configuration elements to return
-            if (applicationName != null) {
-                osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
+            ConfigurationAdmin configurationAdmin = getConfigurationAdmin();
+            if (configurationAdmin != null) {
+
+                String applicationName = getApplicationName();
+
+                //if the Config is being obtained outside the context of an application then the applicationName may be null
+                //in which case there are no applicable application configuration elements to return
+                if (applicationName != null) {
+                    String applicationPID = getApplicationPID();
+                    if (applicationPID != null) {
+                        osgiConfigs = OSGiConfigUtils.getConfigurations(configurationAdmin, applicationPID);
+                    }
+                }
             }
         }
         return osgiConfigs;

@@ -44,6 +44,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH9035_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh9035Ejb";
     private final static String RESOURCE_ROOT = "test-applications/olgh9035/";
     private final static String appFolder = "ejb";
     private final static String appName = "olgh9035Ejb";
@@ -59,11 +60,11 @@ public class TestOLGH9035_EJB extends JPAFATServletClient {
         createSet.add("JPA_OLGH9035_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("EclipseLinkServer")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH9035_EJB_SL_Servlet.class, path = "olgh9035ejb" + "/" + "TestOLGH9035_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH9035_EJB_SF_Servlet.class, path = "olgh9035ejb" + "/" + "TestOLGH9035_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH9035_EJB_SFEx_Servlet.class, path = "olgh9035ejb" + "/" + "TestOLGH9035_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = TestOLGH9035_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9035_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestOLGH9035_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9035_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestOLGH9035_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9035_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 
@@ -107,11 +108,11 @@ public class TestOLGH9035_EJB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "olgh9035Ejb.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh9035.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh9035.model");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh9035.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/olgh9035Ejb.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh9035.ejb");

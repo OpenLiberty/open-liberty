@@ -15,10 +15,7 @@ Bundle-Name: com.ibm.ws.cdi.interfaces
 Bundle-SymbolicName: com.ibm.ws.cdi.interfaces
 Bundle-Description:CDI Liberty Interfaces, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
-javac.source: 1.7
-javac.target: 1.7
 
 Service-Component: \
  com.ibm.ws.cdi.interfaces.deserializationClassProvider;\

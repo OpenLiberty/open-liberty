@@ -19,7 +19,7 @@ dependencies {
   johnzon 'org.apache.johnzon:johnzon-core:1.1.5',
     'org.apache.johnzon:johnzon-jsonb:1.1.5',
     'org.apache.johnzon:johnzon-mapper:1.1.5'
-  refImpls 'org.eclipse:yasson:1.0.5',
+  refImpls 'org.eclipse:yasson:1.0.6',
     'org.glassfish:javax.json:1.1.3'
 }
 

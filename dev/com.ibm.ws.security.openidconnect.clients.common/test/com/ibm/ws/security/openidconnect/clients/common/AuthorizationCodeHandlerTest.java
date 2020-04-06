@@ -11,6 +11,7 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -128,6 +129,25 @@ public class AuthorizationCodeHandlerTest {
     public void tearDown() {
         mock.assertIsSatisfied();
         outputMgr.resetStreams();
+    }
+
+    @Test
+    public void testAuthCodeReuse() {
+        boolean used = false;
+        boolean failure = false;
+        for (int i = 0; i < 25; i++) {
+            ach.addAuthCodeToUsedList("code_" + i);
+        }
+        // last 20 should list as used
+        for (int i = 5; i < 25; i++) {
+            used = ach.isAuthCodeReused("code_" + i);
+            if (used != true) {
+                failure = true;
+                break;
+            }
+        }
+        assertFalse("an authcode that should have been detected as previously used was not", failure);
+        assertFalse("a code that should have spilled off the list is still in the list", ach.isAuthCodeReused("code_0"));
     }
 
     //    private void createConstructorExpectations(final ConvergedClientConfig clientConfig) {

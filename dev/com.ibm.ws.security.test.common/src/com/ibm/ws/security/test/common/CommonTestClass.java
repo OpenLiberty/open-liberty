@@ -102,6 +102,14 @@ public class CommonTestClass {
         Matcher m = pattern.matcher(errorMsg);
         assertTrue("Exception message did not match expected expression. Expected: [" + errorMsgRegex + "]. Message was: [" + errorMsg + "]", m.find());
     }
+    
+    public void verifyExceptionString(String returnedError, String errorMsgRegex) {
+       
+        Pattern pattern = Pattern.compile(errorMsgRegex);
+        Matcher m = pattern.matcher(returnedError);
+        assertTrue("Exception message did not match expected expression. Expected: [" + errorMsgRegex + "]. Message was: [" + returnedError + "]", m.find());
+    }
+
 
     public void verifyExceptionWithInserts(Exception e, String msgKey, String... inserts) {
         String errorMsg = e.toString();

@@ -11,18 +11,18 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.target: 1.8
-javac.source: 1.8
 
 src: \
     fat/src,\
     test-applications/common/src,\
-    test-applications/helpers/DatabaseManagement/src,\
+    test-applications/example/src,\
+    test-applications/olgh8014/src,\
     test-applications/olgh8294/src,\
     test-applications/olgh8461/src,\
     test-applications/olgh8950/src,\
+    test-applications/olgh9018/src,\
     test-applications/olgh9035/src,\
-    test-applications/example/src,\
+    test-applications/helpers/DatabaseManagement/src,\
     test-framework/src
 
 fat.project: true
@@ -30,12 +30,12 @@ fat.project: true
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.jms.2.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+    com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest

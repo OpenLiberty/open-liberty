@@ -277,11 +277,17 @@ var clientInputDialog = (function() {
                     //         return;     // Only field we know we can get an error on
                     //     }
                     // } 
-                    // Something happended with the request.  Put up the generic error message.
+                    // Something happended with the request.  Put up error message.
                     var errTitle = messages.GENERIC_REGISTER_FAIL;
-                    // insert bidi text direction to the client name
-                    var errClientName = bidiUtils.getDOMSpanWithBidiTextDirection(utils.encodeData(client_name));
-                    var errDescription = utils.formatString(messages.GENERIC_REGISTER_FAIL_MSG, [errClientName]);
+                    var errDescription = "";
+                    if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                        errDescription = errResponse.responseJSON.error_description;
+                    } else {
+                        // Display a generic error message...
+                        // insert bidi text direction to the client name
+                        var errClientName = bidiUtils.getDOMSpanWithBidiTextDirection(utils.encodeData(client_name));
+                        errDescription = utils.formatString(messages.GENERIC_REGISTER_FAIL_MSG, [errClientName]);
+                    }
                     utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowAddEditDialog);
                 });                      
             });
@@ -353,9 +359,15 @@ var clientInputDialog = (function() {
                             return;
                         }
                     } 
-                    // Something else happended with the request.  Put up the generic error message.
+                    // Something else happened with the request.  Put up an error message...
                     var errTitle = messages.GENERIC_UPDATE_FAIL;
-                    var errDescription = utils.formatString(messages.GENERIC_UPDATE_FAIL_MSG, [msgClientName]);
+                    var errDescription = "";
+                    if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                        errDescription = errResponse.responseJSON.error_description;
+                    } else {
+                        // Display a generic error message...
+                        errDescription = utils.formatString(messages.GENERIC_UPDATE_FAIL_MSG, [msgClientName]);
+                    }
                     utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowAddEditDialog);
                 });              
             });
@@ -446,13 +458,15 @@ var clientInputDialog = (function() {
 
         var field =
             "<div class='tool_modal_body_field'>" +
-            "   <label class='tool_modal_body_field_label' for=" + fldId + ">" + fldName + "</label>" +
-            "   <div class='tool_modal_body_field_helper_text'>" + fldDescription + "</div>";
+            "   <label class='tool_modal_body_field_label' for=" + fldId + ">" + fldName +
+            "      <div class='tool_modal_body_field_helper_text'>" + fldDescription + "</div>";
         if (fldId === 'client_secret') {     // Special case for the UI to include instructional statement for client_secret
-            field += "   <div id='regen_client_secret_dir' class='tool_modal_body_field_helper_text hidden'>" + messages.REGENERATE_CLIENT_SECRET + "</div>";
+            field += "      <div id='regen_client_secret_dir' class='tool_modal_body_field_helper_text hidden'>" + messages.REGENERATE_CLIENT_SECRET + "</div>";
         }
-        field +=  "   <input id=" + fldId + " type='text' class='tool_modal_body_field_input'" + fldRequired + " value='" + fldDefaultVal + "'" + fldDefault + dirValue + "></div>";
+        field +=  "      <input id=" + fldId + " type='text' class='tool_modal_body_field_input'" + fldRequired + " value='" + fldDefaultVal + "'" + fldDefault + dirValue + ">";
+        field +=  "   </label></div>";
 
+        
         return field;
     };
 
@@ -531,7 +545,7 @@ var clientInputDialog = (function() {
             var optionId = 'rb_' + option.value.replace(/\s/g, '__');
             var defaultValue = option.value === fldDefault;
             field +=
-                "       <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + "></input>" +
+                "       <input id='" + optionId + "' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='" + option.value + "' data-default=" + defaultValue + ">" +
                 "       <label for='" + optionId + "' class='tool_modal_radio_button_label'>" +
                 "           <span class='tool_modal_radio_button_appearance'></span>" + 
                 "           " + option.value + 
@@ -580,15 +594,13 @@ var clientInputDialog = (function() {
             "       <div class='tool_modal_radio_button_horizontal_wrapper'>" +
             "           <input id='" + fldId + "-true' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='true'";
         field += fldDefault === 'true' ? " data-default='true'" : " data-default='false'";
-        field +=
-            "></input>" +
+        field += ">" +
             "           <label for='" + fldId + "-true' class='tool_modal_radio_button_label'>" +
             "               <span class='tool_modal_radio_button_appearance'></span>" + messages.TRUE + 
             "           </label>" +
             "           <input id='" + fldId + "-false' class='tool_modal_radio_button' type='radio' role='radio' aria-checked='false' name='" + fldId + "' value='false'";
         field += fldDefault === 'false' ? " data-default='true'" : " data-default='false'";
-        field += 
-            "></input>" +
+        field += ">" +
             "           <label for='" + fldId + "-false' class='tool_modal_radio_button_label'>" +
             "               <span class='tool_modal_radio_button_appearance'></span>" + messages.FALSE +
             "           </label>" +
@@ -621,7 +633,7 @@ var clientInputDialog = (function() {
             "           </tbody>" +
             "       </table>" + 
             "       <div class='tool_modal_array_button_div tool_modal_add_array_button_div'>" +
-            "           <button class='tool_modal_array_button tool_modal_array_add_ele' type='button'>" +
+            "           <button class='tool_modal_array_button tool_modal_array_add_ele' type='button'" + " aria-label='" + messages.ADD_VALUE + "'>" +
             "               <img src='../../WEB-CONTENT/common/images/addEntry.svg' alt='" + messages.ADD_VALUE + "' title='" +  messages.ADD_VALUE +"'>" +
             "           </button>" +
             "       </div>" +
@@ -641,7 +653,7 @@ var clientInputDialog = (function() {
         var arrayRow =
             "<tr>" +
             "   <td><input type='text' value='" + value + "' title='" + value + "' placeholder='" + messages.ENTER_PLACEHOLDER + "' " + dirValue + "></input></td>" +
-            "   <td><div class='tool_modal_array_button_div'><button class='tool_modal_array_button tool_modal_array_remove_ele' type='button'>" +
+            "   <td><div class='tool_modal_array_button_div'><button class='tool_modal_array_button tool_modal_array_remove_ele' type='button' aria-label='" + messages.REMOVE_VALUE + "'>" +
             "       <img src='../../WEB-CONTENT/common/images/removeEntry.svg' alt='" + messages.REMOVE_VALUE + "' title='" +  messages.REMOVE_VALUE +"'></button>" + 
             "   </div></td>" +
             "</tr>";

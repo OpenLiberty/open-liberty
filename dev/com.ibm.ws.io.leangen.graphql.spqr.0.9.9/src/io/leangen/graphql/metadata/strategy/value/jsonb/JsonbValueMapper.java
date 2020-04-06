@@ -13,6 +13,7 @@ package io.leangen.graphql.metadata.strategy.value.jsonb;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -41,6 +42,7 @@ import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.config.PropertyNamingStrategy;
 
+import io.leangen.geantyref.GenericTypeReflector;
 import io.leangen.graphql.metadata.InputField;
 import io.leangen.graphql.metadata.strategy.value.InputFieldBuilder;
 import io.leangen.graphql.metadata.strategy.value.InputFieldBuilderParams;
@@ -131,7 +133,8 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
 
         try {
             //NOTE: JSON-B does not currently have an introspection API, so for now, we're manually introspecting...
-            Class<?> declaringClass = (Class<?>) params.getType().getType();
+            AnnotatedType declaringClassType = params.getType();
+            Class<?> declaringClass = (Class<?>) declaringClassType.getType();
             BeanInfo beanInfo = Introspector.getBeanInfo(declaringClass);
             if (LOG.isLoggable(Level.FINEST)) {
                 LOG.log(Level.FINEST, "getInputFields introspecting " + declaringClass + " found " + beanInfo.getPropertyDescriptors().length + " properties");
@@ -143,8 +146,10 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                 if (field == null && setterMethod == null) {
                     continue;
                 }
-                
-                AnnotatedType fieldType = field != null ? field.getAnnotatedType() : setterMethod.getAnnotatedReturnType();
+
+                AnnotatedType fieldType = field != null ? GenericTypeReflector.getExactFieldType(field, declaringClassType) : 
+                                                          GenericTypeReflector.getExactParameterTypes(setterMethod, declaringClassType)[0];
+
                 // no need to proceed if the field or setter has an @Ignore annotation on it:
                 if ((field != null && !params.getEnvironment().inclusionStrategy.includeInputField(declaringClass, field, fieldType)) ||
                     (setterMethod != null && !params.getEnvironment().inclusionStrategy.includeInputField(declaringClass, setterMethod, fieldType))) {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -146,7 +146,9 @@ sslCert.option-desc.keyType=\tFacoltativo. Per impostazione predefinita, verr\u0
 sslCert.option-key.ext=\ \ \ \ --extInfo=informazioni estensione certificato
 sslCert.option-desc.ext=\tLe informazioni sull''estensione del certificato da aggiungere al certificato.\n\
 \tL''estensione predefinita \u00e8 una voce Nome alternativo soggetto che utilizza\n\
-\til nome host.
+\til nome host. \
+Questo indicatore segue la stessa sintassi dell''indicatore -ext \n del comando Jave Keytool. Questo indicatore pu\u00f2 essere utilizzato pi\u00f9 volte sul comando \n \ 
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Numai utilizare intern\u0103.
 ADD_ID.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
@@ -35,6 +35,99 @@ SELECTION_PAGE_USERNAME=Nume utilizator
 SELECTION_PAGE_PASSWORD=Parol\u0103
 
 SELECTION_PAGE_SUBMIT=Trimitere
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: Valoarea atributului de configura\u0163ie [{0}] din configura\u0163ia de logare social\u0103 [{1}] este gol. Este folosit\u0103 pentru atributul de configura\u0163ie valoarea implicit\u0103 [{2}].
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=Valoarea pentru acest atribut de configura\u0163ie nu trebuie s\u0103 fie goal\u0103.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea pentru acest atribut de configura\u0163ie nu este goal\u0103 sau \u00eenl\u0103tura\u0163i atributul de configura\u0163ie pentru a utiliza valoarea implicit\u0103.
+
+# 0=Exception message
+KUBERNETES_ERROR_GETTING_USER_INFO=CWWKS5371E: R\u0103spunsul de la API-ul de utilizator Kubernetes nu poate fi procesat: {0}
+KUBERNETES_ERROR_GETTING_USER_INFO.explanation=Informa\u0163iile despre utilizatorul autentificat nu pot fi ob\u0163inute deoarece a ap\u0103rut o alt\u0103 eroare.
+KUBERNETES_ERROR_GETTING_USER_INFO.useraction=Dac\u0103 mesajul con\u0163ine alt mesaj de eroare, verifica\u0163i ac\u0163iunea utilizatorului pentru acel mesaj. Altfel, verifica\u0163i istoricele serverului pentru mesaje de eroare suplimentare care v-ar putea indica unde au ap\u0103rut alte erori.
+
+KUBERNETES_ACCESS_TOKEN_MISSING=CWWKS5372E: Lipse\u015fte jetonul de acces care este utilizat pentru extragerea informa\u0163iilor de utilizator de la API-ul Kubernetes. Verifica\u0163i c\u0103 a fost returnat un jeton de acces de la punctul final de jetoane al furnizorului OAuth.
+KUBERNETES_ACCESS_TOKEN_MISSING.explanation=Un jeton de acces este necesar pentru extragerea informa\u0163iilor despre utilizatorul autentificat. Punctul final de jetoane al furnizorului OAuth trebuie s\u0103 returneze jetonul de acces.
+KUBERNETES_ACCESS_TOKEN_MISSING.useraction=verifica\u0163i c\u0103 punctul final de jetoane al furnizorului OAuth a returnat jetonul de acces.
+
+# 0=HTTP response code, 1=Response body
+KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: API-ul de utilizator Kubernetes a returnat un cod de r\u0103spuns nea\u015fteptat [{0}]. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile cerute \u015fi c\u0103 a fost creat jetonul contului de serviciu Kubernetes a fost creat cu permisiunile corecte. R\u0103spunsul de la API este [{1}].
+KUBERNETES_USER_API_BAD_STATUS.explanation=API-ul de utilizator Kubernetes nu a returnat un cod de stare a\u015fteptat.
+KUBERNETES_USER_API_BAD_STATUS.useraction=Pentru informa\u0163ii suplimentare, verifica\u0163i r\u0103spunsul API-ului care este \u00een mesajul de eroare. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile cerute. Asigura\u0163i-v\u0103 c\u0103 jetonul contului de serviciu Kubernetes a fost creat cu permisiunile corecte.
+
+# 0=JSON key string, 1=User API response string
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: R\u0103spunsului API-ului de utilizator Kubernetes \u00eei lipse\u015fte o cheie a\u015fteptat\u0103: [{0}]. R\u0103spunsul \u00eentreg este [{1}].
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.explanation=Cheia specificat\u0103 \u00een mesaj este a\u015fteptat\u0103 s\u0103 fie \u00een r\u0103spunsul API-ului. Cheia lipse\u015fte sau este \u00eentr-o pozi\u0163ie nea\u015fteptat\u0103.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.useraction=Verifica\u0163i r\u0103spunsul de la API pentru a determina dac\u0103 cheia lipse\u015fte din r\u0103spuns.
+
+# 0=Social login configuration ID
+ACCESS_TOKEN_MISSING_FROM_HEADERS=CWWKS5375E: Configura\u0163ia de logare social\u0103 [{0}] specific\u0103 c\u0103 este necesar \u00een cerere un jeton de acces, dar acesta lipse\u015fte.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.explanation=Configura\u0163ia de logare social\u0103 specificat\u0103 \u00een mesaj necesit\u0103 ca toate cererile de intrare s\u0103 con\u0163in\u0103 un jeton de acces.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.useraction=Dac\u0103 un nume de antet jeton de acces este configurat \u00een configura\u0163ia de logare social\u0103, verifica\u0163i c\u0103 antetul este inclus \u00een cerere. Altfel, verifica\u0163i dac\u0103 este inclus \u00een cerere un antet Authorization. Asigura\u0163i-v\u0103 c\u0103 valoarea antetului este conform\u0103 cu specifica\u0163ia de jeton bearer OAuth. Verifica\u0163i c\u0103 furnizorul OAuth este configurat s\u0103 transmit\u0103 un jeton de acces.
+
+# 0=Name of the configuration attribute that specifies the access token header name, 1=Social login configuration ID, 2=Custom access token header name
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING=CWWKS5376W: Valoarea atributului [{0}] din configura\u0163ia de logare social\u0103 [{1}] arat\u0103 c\u0103 se a\u015fteapt\u0103 \u00een antetul de cerere [{2}]. Dar, \u00een acel antet nu a fost un jeton.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.explanation=Antetul specificat \u00een mesaj ar putea lipsi din cerere sau valoarea antetului poate fi goal\u0103.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.useraction=verifica\u0163i c\u0103 antetul specificat este prezent \u00een cerere. Verifica\u0163i c\u0103 valoarea antetului este conform\u0103 cu specifica\u0163ia de jeton bearer OAuth.
+
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY=CWWKS5377E: R\u0103spunsul de la API-ul de utilizator Kubernetes este null sau gol.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.explanation=R\u0103spunsul de la API-ul de utilizator Kubernetes nu poate fi citit. Caracteristica de logare social\u0103 a \u00eent\u00e2lnit o eroare \u00een timpul \u00eencerc\u0103rii de comunicare cu API-ul de utilizator sau corpul r\u0103spunsului de la API-ul de utilizator este gol.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.useraction=Verifica\u0163i c\u0103 r\u0103spunsul de la API-ul de utilizator nu este gol \u015fi dac\u0103 conectarea la API-ul de utilizator a avut succes. Verifica\u0163i istoricele serverului pentru a determina unde a ap\u0103rut eroarea c\u00e2nd caracteristica de logare social\u0103 a \u00eencercat s\u0103 comunice cu API-ul de utilizator.
+
+# 0=User API response string, 1=Exception message
+KUBERNETES_USER_API_RESPONSE_NOT_JSON=CWWKS5378E: R\u0103spunsul de la API-ul de utilizator Kubernetes nu este un obiect JSON valid. R\u0103spunsul \u00eentreg este {0}. {1}
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.explanation=R\u0103spunsul de la API-ul de utilizator Kubernetes este a\u015fteptat s\u0103 fie un obiect JSON valid care con\u0163ine informa\u0163ii despre utilizatorul autentificat.
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=Verifica\u0163i c\u0103 valoarea de API utilizator din configura\u0163ia de logare social\u0103 este setat\u0103 la un URL de API de utilizator Kubernetes valid. Verifica\u0163i r\u0103spunsul de la API-ul de utilizator pentru a vedea ce alte informa\u0163ii sunt incluse.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=User API response string
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: Valoarea pentru cheia [{0}] din r\u0103spunsul API-ului de utilizator Kubernetes este a\u015fteptat\u0103 s\u0103 fie de tipul {1}, dar valoarea este de tipul {2}. R\u0103spunsul \u00eentreg al API-ului de utilizator este [{3}].
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=Valoarea pentru cheia specificat\u0103 nu are tipul corect. R\u0103spunsul de la API-ul de utilizator ar putea fi formatat gre\u015fit, sau API-ul de utilizator a returnat un r\u0103spuns \u00eentr-o structur\u0103 nea\u015fteptat\u0103.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Verifica\u0163i structura r\u0103spunsului de la API-ul de utilizator. Verifica\u0163i r\u0103spunsul de la API-ul de utilizator pentru a vedea dac\u0103 a ap\u0103rut o eroare.
+
+# 0=Error string from user API response
+KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: APi-ul de utilizator Kubernetes a \u00eent\u00e2lnit o eroare \u00een timp ce procesa jetonul de acces. Eroarea este [{0}]
+KUBERNETES_USER_API_RESPONSE_ERROR.explanation=R\u0103spunsul de la API-ul de utilizator Kubernetes con\u0163ine o eroare. Jetonul de acces s-ar putea s\u0103 nu fie valid, sau a ap\u0103rut o alt\u0103 eroare la procesarea jetonului.
+KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Verifica\u0163i eroarea care este indicat\u0103 \u00een mesaj. Asigura\u0163i-v\u0103 c\u0103 jetonul de acces este valid \u015fi nu este formatat gre\u015fit.
+
+# 0=Social login configuration ID, 1=Value of the userNameAttribute, 2=userNameAttribute, 3=Alternative key that will be used instead
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: Configura\u0163ia de logare social\u0103 [{0}] specific\u0103 [{1}] ca valoare pentru atributul [{2}], dar r\u0103spunsul API-ului de utilizator nu con\u0163ine o cheie [{1}]. Cheia [{3}], dac\u0103 este prezent\u0103 \u00een r\u0103spunsului API-ului de utilizator, este folosit\u0103 pentru a determina \u00een schimb numele de utilizator.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=R\u0103spunsul API-ului de utilizator con\u0163ine o cheie care corespunde valorii unui atribut de configura\u0163ie care este specificat \u00een mesaj. \u00cen schimb caracteristica de logare social\u0103 \u00eencearc\u0103 s\u0103 utilizeze o alt\u0103 cheie.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verifica\u0163i c\u0103 atributul de configura\u0163ie specificat \u00een mesaj este configurat corect. Asigura\u0163i-v\u0103 c\u0103 valoarea atributului corespunde cu intrarea din r\u0103spunsul API-ului de utilizator care trebuie s\u0103 fie folosit\u0103 ca nume de utilizator.
+
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: R\u0103spunsul urm\u0103tor de la API-ul de utilizator nu poate fi procesat: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Informa\u0163iile despre contul de serviciu nu pot fi ob\u0163inute deoarece a ap\u0103rut o alt\u0103 eroare.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Dac\u0103 mesajul con\u0163ine alt mesaj de eroare, verifica\u0163i ac\u0163iunea utilizatorului pentru acel mesaj. Altfel, verifica\u0163i istoricele serverului pentru mesaje de eroare suplimentare care v-ar putea indica unde au ap\u0103rut alte erori.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: API-ul de utilizator a returnat un cod de r\u0103spuns nea\u015fteptat [{0}]. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile necesare. R\u0103spunsul de la API este [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=API-ul de utilizator nu a returnat un cod de stare a\u015fteptat. Cererii ar putea s\u0103-i lipseasc\u0103 informa\u0163ii sau cererea ar putea s\u0103 nu fie autorizat\u0103.
+USER_API_RESPONSE_BAD_STATUS.useraction=Pentru informa\u0163ii suplimentare, verifica\u0163i r\u0103spunsul API-ului care este \u00een mesajul de eroare. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile necesare. Verifica\u0163i c\u0103 toate jetoanele care sunt incluse \u00een cerere sunt valide.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: Con\u0163inutul r\u0103spunsului nu este un obiect JSON valid. R\u0103spunsul \u00eentreg este {0}. {1}
+RESPONSE_NOT_JSON.explanation=R\u0103spunsul trebuie s\u0103 fie un obiect JSON valid.
+RESPONSE_NOT_JSON.useraction=Verifica\u0163i c\u0103 cererea a fost trimis\u0103 la \u0163inta a\u015fteptat\u0103. Asigura\u0163i-v\u0103 c\u0103 \u0163inta inten\u0163ionat\u0103 a cererii este capabil\u0103 s\u0103 returneze date JSON. Verifica\u0163i r\u0103spunsul de la API-ul de utilizator pentru a vedea ce alte informa\u0163ii sunt incluse.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: Obiectului JSON furnizat \u00eei lipse\u015fte o cheie a\u015fteptat\u0103: [{0}]. Obiectul JSON complet este [{1}].
+JSON_MISSING_KEY.explanation=Cheia care este specificat\u0103 \u00een mesaj trebuie s\u0103 fie \u00een cadrul datelor JSON. Cheia lipse\u015fte sau este \u00eentr-o pozi\u0163ie nea\u015fteptat\u0103.
+JSON_MISSING_KEY.useraction=Verifica\u0163i datele JSON pentru a determina dac\u0103 cheia lipse\u015fte.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Valoarea pentru cheia [{0}] din datele JSON trebuie s\u0103 fie de tipul {1}, dar valoarea este de tipul {2}. Datele JSON sunt [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=Valoarea pentru cheia specificat\u0103 nu are tipul corect. Datele JSON ar putea fi formate gre\u015fit sau ar putea avea o structur\u0103 nea\u015fteptat\u0103.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Verifica\u0163i structura datelor JSON. Verifica\u0163i datele JSON pentru a vedea dac\u0103 a ap\u0103rut o eroare.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: R\u0103spunsul de la API-ul de introspec\u0163ie jeton nu poate fi procesat: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Informa\u0163iile despre utilizatorul autentificat nu pot fi ob\u0163inute deoarece a ap\u0103rut o alt\u0103 eroare.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Dac\u0103 mesajul con\u0163ine alt mesaj de eroare, verifica\u0163i ac\u0163iunea utilizatorului pentru acel mesaj. Altfel, verifica\u0163i istoricele serverului pentru mesaje de eroare suplimentare care v-ar putea indica unde au ap\u0103rut alte erori.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: Cererea de introspec\u0163ie jeton a e\u015fuat deoarece jetonul care este inclus \u00een cerere nu este valid. R\u0103spunsul \u00eentreg este {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Serverul de autorizare nu a emis jetonul, proprietarul resursei a revocat jetonul, jetonul este expirat sau a ap\u0103rut o alt\u0103 eroare.
+INTROSPECT_USER_API_INACTIVE.useraction=Verifica\u0163i r\u0103spunsul care este inclus \u00een mesaj. Verifica\u0163i c\u0103 este utilizat punctul final de introspec\u0163ie jeton corect. Verifica\u0163i c\u0103 jetonul este valid \u015fi c\u0103 jetonul poate fi introspectat.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Configurarea de logare social\u0103 [{0}] a fost procesat\u0103 cu succes.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Configurarea indicat\u0103 de logare social\u0103 a fost procesat\u0103 cu succes.
@@ -433,8 +526,8 @@ RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: Nu poate fi g\u0103sit\u0103 starea
 RESPONSE_STATUS_MISSING_OR_ERROR.explanation=Cererea probabil a e\u015fuat deoarece a fost neautorizat\u0103 sau lipsesc informa\u0163ii cum ar fi un parametru sau antet necesar de cerere. Dac\u0103 starea r\u0103spunsului nu a fost null, motivul \u015fi codul de stare r\u0103spuns sunt incluse \u00een mesaj.
 RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Verifica\u0163i codul de stare r\u0103spuns din mesaj, dac\u0103 este prezent. Verifica\u0163i c\u0103 au fost inclu\u015fi to\u0163i parametrii \u015fi toate anteturile necesare \u00een cerere.
 
-# 0=URL to which the request was submitted, 1=Error message
-RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: A e\u015fuat cererea la punctul final [{0}]. Eroarea a fost: {1}
+# 0=URL to which the request was submitted, 1=HTTP response status (e.g. 404 Not Found), 2=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: A e\u015fuat cererea la punctul final [{0}]. Starea r\u0103spunsului este [{1}]. Eroarea este: {2}
 RESPONSE_STATUS_UNSUCCESSFUL.explanation=Cererea probabil a e\u015fuat deoarece a fost neautorizat\u0103 sau lipsesc informa\u0163ii cum ar fi un parametru sau antet necesar de cerere. E posibil ca cererea s\u0103 fi fost direc\u0163ionat\u0103 la un punct final gre\u015fit.
 RESPONSE_STATUS_UNSUCCESSFUL.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 la punctul final corect. Verifica\u0163i c\u0103 au fost inclu\u015fi to\u0163i parametrii \u015fi toate anteturile necesare \u00een cerere.
 

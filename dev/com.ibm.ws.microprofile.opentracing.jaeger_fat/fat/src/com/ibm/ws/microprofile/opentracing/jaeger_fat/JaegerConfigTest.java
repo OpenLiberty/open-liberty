@@ -52,7 +52,7 @@ public class JaegerConfigTest {
     @Server("jaegerServerImproper")
     private static LibertyServer server2;
     
-    @Server("jaegerServerNotEnabled")
+    @Server("jaegerServerLibInWar")
     private static LibertyServer server3;
     
     private static LibertyServer currentServer;
@@ -71,23 +71,27 @@ public class JaegerConfigTest {
         serviceWar.addPackages(true, "com.ibm.ws.testing.mpOpenTracing");
         serviceWar.addAsWebInfResource(
                                        new File("test-applications/mpOpenTracing/resources/beans.xml"));
-        ShrinkHelper.exportAppToServer(server1, serviceWar);
-        ShrinkHelper.exportAppToServer(server2, serviceWar);
-        ShrinkHelper.exportAppToServer(server3, serviceWar);
-        
+        WebArchive serviceWarWithLib = ShrinkWrap.create(WebArchive.class, "mpOpenTracing.war");
+        serviceWarWithLib.addPackages(true, "com.ibm.ws.testing.mpOpenTracing");
+        serviceWarWithLib.addAsWebInfResource(
+                                       new File("test-applications/mpOpenTracing/resources/beans.xml")); 
         File libsDir = new File("lib");
         File[] libs = libsDir.listFiles();
         for (File file : libs) {
             server1.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
             // We are not copying the library to server2 for improper config test
-            server3.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
+            // Adding library jars to war file for testLibraryInWar
+            serviceWarWithLib.addAsLibrary(file);
         }
+        ShrinkHelper.exportAppToServer(server1, serviceWar);
+        ShrinkHelper.exportAppToServer(server2, serviceWar);
+        ShrinkHelper.exportAppToServer(server3, serviceWarWithLib);
     }
 
     @After
     public void tearDown() throws Exception {
     	if (currentServer != null && currentServer.isStarted()) {
-        	currentServer.stopServer("CWMOT0008E", "CWMOT0009W");
+        	currentServer.stopServer("CWMOT0009W", "CWMOT0010W");
         }
     }
     
@@ -126,33 +130,29 @@ public class JaegerConfigTest {
         } catch (IOException e) {
         	// Error should be thrown when hitting endpoint
         }
-        String logMsg = server2.waitForStringInLog("CWMOT0008E");
+        String logMsg = server2.waitForStringInLog("CWMOT0010W");
+        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
+        Assert.assertNotNull(logMsg);
+    }
+    
+    /**
+     * Test Jaeger configuration with library in war file
+     * 
+     */
+    @Test
+    public void testLibraryInWar() throws Exception {
+        server3.startServer();
+        currentServer = server3;
+        String methodName = "testLibraryInWar";
+        List<String> actualResponseLines = executeWebService(server3, "helloWorld");;
+        
+        FATLogging.info(CLASS, methodName, "Actual Response", actualResponseLines);
+          
+        String logMsg = server3.waitForStringInLog("INFO io.jaegertracing");
         FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
         Assert.assertNotNull(logMsg);
     }
 
-    /**
-     * Ensure exception is thrown when Jaeger is not enabled in server env.
-     * 
-     * @throws Exception Errors executing the service.
-     */
-    
-    @Test
-    public void testJaegerNotEnabled() throws Exception {
-        server3.startServer();
-        currentServer = server3;
-        String methodName = "testJaegerNotEnabled";
-        try {
-            executeWebService(server3, "helloWorld");
-        } catch (IOException e) {
-            // Error should be thrown when hitting endpoint
-        }
-        String logMsg = server3.waitForStringInLog("CWMOT0008E");
-        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
-        Assert.assertNotNull(logMsg);
-    }
-    
-    
     protected List<String> executeWebService(LibertyServer server, String method) throws Exception {
         String requestUrl = "http://" +
                             server.getHostname() + ":" +

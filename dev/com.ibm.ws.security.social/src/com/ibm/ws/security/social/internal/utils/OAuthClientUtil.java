@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,8 +97,8 @@ public class OAuthClientUtil {
             SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification,
             String authMethod,
-            String resources, 
-            boolean useJvmProps ) throws SocialLoginException {
+            String resources,
+            boolean useJvmProps) throws SocialLoginException {
 
         if (tokenEndpoint == null || tokenEndpoint.isEmpty()) {
             throw new SocialLoginException("TOKEN_ENDPOINT_NULL_OR_EMPTY", null, new Object[0]);
@@ -179,7 +179,7 @@ public class OAuthClientUtil {
             boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         boolean isLinkedIn = userApi != null && userApi.contains("https://api.linkedin.com");
-        if (accessToken != null && !isLinkedIn) {  //linkedin v2 api won't tolerate this param.
+        if (accessToken != null && !isLinkedIn) { //linkedin v2 api won't tolerate this param.
             params.add(new BasicNameValuePair("access_token", accessToken));
         }
 
@@ -233,15 +233,8 @@ public class OAuthClientUtil {
         return jresponse;
     }
 
-    /**
-     * @param response
-     * @param userApi
-     * @throws SocialLoginException
-     */
     void handleError(HttpResponse response, String userApi) throws SocialLoginException {
-        // Auto-generated method stub
         String jresponse = null;
-        Map<String, Object> errorjsonmap;
         Object err = null;
         String err_desc = null;
         int status_code;
@@ -266,11 +259,13 @@ public class OAuthClientUtil {
             }
             HttpEntity entity = response.getEntity();
             jresponse = EntityUtils.toString(entity);
-            if (jresponse != null) {
+            if (jresponse == null || jresponse.isEmpty()) {
+                err_desc = getErrorDescriptionFromAuthenticateHeader(response);
+            } else {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "error response from the user api ep: ", jresponse);
                 }
-                errorjsonmap = JsonUtil.parseJson(jresponse);
+                Map<String, Object> errorjsonmap = JsonUtil.parseJson(jresponse);
                 err = errorjsonmap.get(ERROR);
                 err_desc = (String) errorjsonmap.get(ERROR_DESCRIPTION);
                 //240842 - some social media don't use the prescribed fields. If we got something unprescribed,
@@ -278,21 +273,22 @@ public class OAuthClientUtil {
                 if (err == null && err_desc == null && jresponse != null) {
                     err = jresponse;
                 }
-
-            } else {
-                // WWW-Authenticate: Bearer error=invalid_token,
-                // error_description=CWWKS1617E: A userinfo request was made
-                // with an access token that was not recognized. The request
-                // URI was /oidc/endpoint/OidcConfigSample/userinfo.
-                Header header = response.getFirstHeader("WWW-Authenticate");
-                jresponse = header == null ? null : header.getValue();
-                err_desc = extractErrorDescription(jresponse);
             }
 
         } catch (Exception e) {
             throw new SocialLoginException("USERAPI_ERROR_RESPONSE", e, new Object[] { userApi, e.getLocalizedMessage() });
         }
         throw new SocialLoginException("USERAPI_RESP_INVALID_STATUS", null, new Object[] { userApi, status_code, err, err_desc });
+    }
+
+    String getErrorDescriptionFromAuthenticateHeader(HttpResponse response) {
+        // WWW-Authenticate: Bearer error=invalid_token,
+        // error_description=CWWKS1617E: A userinfo request was made
+        // with an access token that was not recognized. The request
+        // URI was /oidc/endpoint/OidcConfigSample/userinfo.
+        Header header = response.getFirstHeader("WWW-Authenticate");
+        String jresponse = header == null ? null : header.getValue();
+        return extractErrorDescription(jresponse);
     }
 
     protected String extractErrorDescription(String response) {

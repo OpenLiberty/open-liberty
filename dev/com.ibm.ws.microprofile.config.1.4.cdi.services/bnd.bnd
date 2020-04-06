@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.config.1.4.cdi.services
 Bundle-SymbolicName: com.ibm.ws.microprofile.config.1.4.cdi.services
@@ -20,8 +18,8 @@ Bundle-Description: Microprofile Config 1.4 CDI Services
 
 Import-Package: \
         javax.enterprise.*; version="[1.1,3)", \
-        org.eclipse.microprofile.config;version="[1.4,2)", \
-        org.eclipse.microprofile.config.inject;version="[1.4,2)", \
+        org.eclipse.microprofile.config;version="[1.0.1,2)", \
+        org.eclipse.microprofile.config.inject;version="[1.1.0,2)", \
         org.eclipse.microprofile.config.spi;version="[1.4,2)", \
         *
 
@@ -33,10 +31,11 @@ WS-TraceGroup: APPCONFIG
 Include-Resource: \
     META-INF=resources/META-INF
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.config14.cdi.services.Config14CDIExtensionComponent
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
         com.ibm.ws.logging;version=latest,\

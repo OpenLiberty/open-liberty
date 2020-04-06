@@ -1,0 +1,67 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=U\u017cycie: {0}
+
+global.description=Opis:
+global.actions=Dzia\u0142ania:
+global.options=Opcje:
+global.options.lower=opcje
+global.usage=Sk\u0142adnia:
+global.options.statement=\tU\u017cyj komendy help [nazwa_akcji] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach danej akcji.
+task.unknown=Nieznane dzia\u0142anie: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tWy\u015bwietl informacje pomocy dla okre\u015blonego dzia\u0142ania.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tZainstaluj jeden sk\u0142adnik lub wymienione na li\u015bcie sk\u0142adniki rozdzielone spacjami.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ nazwa...
+installFeature.option-desc.name...=\tJeden lub wi\u0119cej sk\u0142adnik\u00f3w rozdzielonych spacjami. W przypadku sk\u0142adnik\u00f3w \n\
+\tpodaj nazw\u0119 skr\u00f3con\u0105 lub wsp\u00f3\u0142rz\u0119dn\u0105 Maven. Je\u015bli  \n\
+\tpodajesz wsp\u00f3\u0142rz\u0119dn\u0105 Maven, musi ona zawiera\u0107 co najmniej  \n\
+\tID grupy i ID artefaktu   \n\
+\t(na przyk\u0142ad io.openliberty.features:mpHealth-2.0).                 \n\
+\tWarto\u015bci\u0105 domy\u015bln\u0105 wersji jest bie\u017c\u0105ca wersja \u015brodowiska wykonawczego,  \n\
+\ttypem pakowania jest domy\u015blnie ESA, je\u015bli wersja i pakowanie \n\
+\tnie zosta\u0142y okre\u015blone.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\tOkre\u015bl po\u0142o\u017cenie dla instalacji sk\u0142adnika. Sk\u0142adnik mo\u017ce zosta\u0107 zainstalowany\n\
+\tw dowolnym skonfigurowanym po\u0142o\u017ceniu rozszerzenia produktu lub jako sk\u0142adnik u\u017cytkownika. Je\u015bli \n\
+\tta opcja nie b\u0119dzie okre\u015blona, sk\u0142adnik zostanie zainstalowany jako sk\u0142adnik \n\
+\tu\u017cytkownika.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
+installFeature.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\
+\trepozytorium artefakt\u00f3w Maven jako \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda featureUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tWy\u015bwietl dodatkowe informacje dotycz\u0105ce debugowania podczas wykonywania dzia\u0142ania.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tSk\u0142adniki zainstalowane z repozytorium zdalnego \n\
+\t(na przyk\u0142ad Maven Central) nie s\u0105 buforowane lokalnie.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tZainstaluj sk\u0142adniki wymagane dla serwera o podanej nazwie.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ nazwa...
+installServerFeatures.option-desc.name...=\tNazwa istniej\u0105cego serwera w tym samym \u015brodowisku Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
+installServerFeatures.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\
+\trepozytorium artefakt\u00f3w Maven jako \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda featureUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tWy\u015bwietl dodatkowe informacje dotycz\u0105ce debugowania podczas wykonywania dzia\u0142ania.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tSk\u0142adniki zainstalowane z repozytorium zdalnego \n\
+\t(na przyk\u0142ad Maven Central) nie s\u0105 buforowane lokalnie.

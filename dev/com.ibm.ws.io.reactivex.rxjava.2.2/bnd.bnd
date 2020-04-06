@@ -8,11 +8,9 @@
 # Contributors:
 #  IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.ws.io.reactivex.rxjava.2.2; singleton:=true
 
@@ -21,15 +19,14 @@ Import-Package: \
   *
 
 Export-Package: \
-  io.reactivex; version=2.2.4, \
-  io.reactivex.*; version=2.2.4, \
+  io.reactivex; version=2.2.13, \
+  io.reactivex.*; version=2.2.13, \
   !io.reactivex.internal.*
-  
-Include-Resource: \
-  @${repo;io.reactivex.rxjava2:rxjava;2.2.4;EXACT}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
+
+-buildpath: \
+  io.reactivex.rxjava2:rxjava;version=2.2.13

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -147,8 +147,11 @@ sslCert.option-desc.keyType=\tOpcional. De forma predeterminada se generar\u00e1
 
 sslCert.option-key.ext=\ \ \ \ --extInfo=informaci\u00f3n de extensi\u00f3n de certificado
 sslCert.option-desc.ext=\tInformaci\u00f3n de extensi\u00f3n de certificado para a\u00f1adir al certificado.\n\
-\tLa extensi\u00f3n predeterminada es una entrada de nombre alternativo de asunto\n\
-\tque utiliza el nombre de host.
+\tLa extensi\u00f3n predeterminada es una entrada de nombre alternativo de asunto \n\
+\tque utiliza el nombre de host. Este distintivo sigue la misma sintaxis que el distintivo -ext del mandato\n\
+Jave Keytool. Este distintivo se puede utilizar varias veces en el mandato\n\
+\ 
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

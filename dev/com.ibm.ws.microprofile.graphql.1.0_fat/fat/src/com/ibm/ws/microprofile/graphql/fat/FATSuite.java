@@ -27,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 InputFieldsTest.class,
                 MetricsTest.class,
                 OutputFieldsTest.class,
-                TypesTest.class
+                TypesTest.class,
+                VoidQueryTest.class
 })
 public class FATSuite {}

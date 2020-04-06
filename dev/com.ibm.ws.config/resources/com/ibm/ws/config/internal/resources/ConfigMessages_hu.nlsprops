@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -469,6 +469,13 @@ warning.supplied.config.not.valid=CWWKG0103W: A(z) {0} nev\u0171, {1} \u00e9rt\u
 warning.supplied.config.not.valid.explanation= ibm:final \u00e9s alap\u00e9rtelmezett jel\u00f6l\u00e9ssel a konfigur\u00e1ci\u00f3s attrib\u00fatum nem \u00e9rv\u00e9nyes. T\u00e1vol\u00edtsa el a be\u00e1ll\u00edtott attrib\u00fatumot a konfigur\u00e1ci\u00f3b\u00f3l.
 warning.supplied.config.not.valid.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t a helytelen attrib\u00fatum\u00e9rt\u00e9k elt\u00e1vol\u00edt\u00e1s\u00e1val.
 
+variables.in.id.not.supported=CWWKG0104W: A(z) {0} konfigur\u00e1ci\u00f3s elem {1} \u00e9rt\u00e9k\u0171 ID attrib\u00fatum\u00e1nak egy fix \u00e9rt\u00e9ket kell tartalmaznia. Az ID attrib\u00fatumban l\u00e9v\u0151 v\u00e1ltoz\u00f3k nem lesznek lecser\u00e9lve.
+variables.in.id.not.supported.explanation=Az ID attrib\u00fatumokban nem enged\u00e9lyezettek v\u00e1ltoz\u00f3 \u00e9rt\u00e9kek. Az ID attrib\u00fatumokban l\u00e9v\u0151 \u00f6sszes v\u00e1ltoz\u00f3 liter\u00e1l karaktersorozatk\u00e9nt lesz kezelve.  
+variables.in.id.not.supported.useraction=T\u00e1vol\u00edtsa el a v\u00e1ltoz\u00f3t az ID attrib\u00fatum \u00e9rt\u00e9k\u00e9b\u0151l.
+
+error.root.must.be.server=CWWKG0105E: A(z) {0} konfigur\u00e1ci\u00f3s dokumentumnak a(z) [{1}] elemmel kell kezd\u0151dnie.
+error.root.must.be.server.explanation=A konfigur\u00e1ci\u00f3t vagy egy kiszolg\u00e1l\u00f3elemnek, vagy egy \u00fcgyf\u00e9lelemnek kell tartalmaznia. 
+error.root.must.be.server.useraction=Adjon hozz\u00e1 egy kiszolg\u00e1l\u00f3- vagy \u00fcgyf\u00e9lelemet a konfigur\u00e1ci\u00f3s f\u00e1jl gy\u00f6kerek\u00e9nt. 
 
 # Non-TR message
 error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.

@@ -1,0 +1,73 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.security
+Bundle-Name: JAX-WS Security
+Bundle-Description: JAX-WS Transport Level and Endpoints Security 
+
+
+
+Import-Package: \
+   com.ibm.ws.jaxws23.webcontainer, \
+   com.ibm.ws.jaxws.metadata.builder, \
+   org.apache.cxf.*;version="[3.2,4)", \
+   com.ibm.ws.webcontainer.security.metadata, \
+   com.ibm.wsspi.webcontainer.metadata, \
+   com.ibm.wsspi.webcontainer.webapp, \
+   *
+
+-dsannotations: com.ibm.ws.jaxws.security.internal.JaxWsSecurityConfigurationServiceImpl
+
+Service-Component: \
+  com.ibm.ws.jaxws.security.internal.JaxWsModuleInfoSecurityBuilder; \
+    implementation:=com.ibm.ws.jaxws.security.internal.SecurityJaxWsModuleInfoBuilderExtension; \
+    provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension'; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
+     implementation:=com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
+     provide:='com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator'; \
+     properties:="service.vendor=IBM"
+
+Private-Package: com.ibm.ws.jaxws.security.internal, \
+ com.ibm.ws.jaxws.security.internal.resources
+
+instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
+	com.ibm.websphere.appserver.api.ssl;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.appserver.spi.ssl,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.ddmodel;version=latest,\
+	com.ibm.ws.javaee.ddmodel.wsbnd;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.webcontainer;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

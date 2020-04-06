@@ -14,8 +14,6 @@ bVersion=1.0
 src: \
 	fat/src
 
-javac.source: 1.8
-javac.target: 1.8
 
 tested.features: mpReactiveMessaging-1.0
 
@@ -25,7 +23,9 @@ fat.project: true
 	com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
 	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
 	org.apache.kafka:kafka-clients;version=2.3.0,\
 	org.testcontainers:testcontainers;version=1.12.3,\
@@ -35,7 +35,7 @@ fat.project: true
 	org.testng:testng;version=6.14.3,\
 	org.reactivestreams:reactive-streams-tck;version=1.0.2,\
 	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
-	com.ibm.ws.io.smallrye.reactive.streams.operators.1.0;version=latest,\
+	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest,\
 	com.ibm.ws.microprofile.reactive.messaging.kafka;version=latest,\
 	com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest

@@ -300,6 +300,8 @@ public class DelayExecutionFATTest {
             if (activation == null || activation.isEmpty()) {
                 String activated = server.waitForStringInLog(SERVICE_ACTIVATION);
                 if (activated == null) {
+                	// Generate a server dump for debug if the service does not activate
+                	server.dumpServer("testRescheduleUnderConfigUpdateRun");
                     fail("The TestService did not activate.");
                 }
             }

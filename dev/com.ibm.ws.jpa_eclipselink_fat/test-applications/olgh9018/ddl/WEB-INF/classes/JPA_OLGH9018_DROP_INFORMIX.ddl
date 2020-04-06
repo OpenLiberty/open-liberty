@@ -1,0 +1,1 @@
+DROP TABLE ${schemaname}.SimpleEntityOLGH9018;

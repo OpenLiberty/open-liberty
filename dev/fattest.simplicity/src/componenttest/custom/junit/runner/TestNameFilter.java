@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,13 @@
  *******************************************************************************/
 package componenttest.custom.junit.runner;
 
+import java.util.regex.Pattern;
+
 import org.junit.runner.Description;
 import org.junit.runner.manipulation.Filter;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-/**
- *
- */
 public class TestNameFilter extends Filter {
 
     private static final String FAT_TEST_QNAME;
@@ -55,13 +54,33 @@ public class TestNameFilter extends Filter {
 
     @Override
     public boolean shouldRun(Description arg0) {
-        if (FAT_TEST_CLASS != null && !arg0.getClassName().equals(FAT_TEST_CLASS)) {
+        if (FAT_TEST_CLASS != null && !match(FAT_TEST_CLASS, arg0.getClassName())) {
             return false;
         }
-        if (FAT_TEST_METHOD != null && !arg0.getMethodName().equals(FAT_TEST_METHOD)) {
+        if (FAT_TEST_METHOD != null && !match(FAT_TEST_METHOD, arg0.getMethodName())) {
             return false;
         }
         return true;
     }
 
+    private boolean match(String list, String arg) {
+        for (String s : list.split(",")) {
+            if (s.contains(".") && wildcardMatch(s, arg)) {
+                return true;
+            } else {
+                int indx = arg.lastIndexOf(".");
+                String tmp = arg.substring(indx + 1);
+
+                if (wildcardMatch(s, tmp)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // normal compare when no '*'
+    private boolean wildcardMatch(String glob, String arg) {
+        return Pattern.matches(glob.replace("*", ".*"), arg);
+    }
 }

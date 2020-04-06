@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ public class OAuth20BadParameterException extends OAuth20Exception {
     // TODO deal with OAuth20ExceptionUtil
     public OAuth20BadParameterException(String msgKey, Object[] params) {
         super(INVALID_REQUEST, Tr.formatMessage(tc, msgKey, params), null);
+        _objs = params;
         _msgKey = msgKey;
         _paramName = (String) params[0];
         _paramValue = (String) params[1];

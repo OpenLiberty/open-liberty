@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import javax.batch.runtime.BatchStatus;
 
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
+import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.services.IJPAQueryHelper;
 
 /**
@@ -103,7 +104,7 @@ public interface WSJobRepository {
      *
      * @param jobInstanceId
      * @param jobParameters
-     * @param create time
+     * @param create        time
      * @return jobExecution
      */
     public abstract WSJobExecution createJobExecution(long jobInstanceId, Properties jobParameters);
@@ -168,8 +169,9 @@ public interface WSJobRepository {
      * Update the instanceState to JMS_CONSUMED if it's a valid status transition
      *
      * @param instanceId
+     * @throws JobInstanceNotQueuedException
      */
-    public abstract WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException;
+    public abstract WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException;
 
     /**
      * Update the instanceState to JMS_QUEUED if it's a valid status transition
@@ -261,35 +263,28 @@ public interface WSJobRepository {
     /**
      * Creates an entry for this remote partition in the RemotablePartition table
      *
-     * @param jobExecutionId the id for the top level job execution that this partition is associated with
-     * @param stepName the name of the step
-     * @param internalState the state of the partition that is being dispatched
+     * @param remotablePartitionKey
      * @return
      */
-    public abstract WSRemotablePartitionExecution createRemotablePartition(long jobExecutionId,
-                                                                           String stepName, int partitionNumber, RemotablePartitionState internalState);
+    public abstract WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey);
 
     /**
-     * Updates an entry for this remote partition in the RemotablePartition table with the given internalStatus
-     * If the remotable partition is not found, then it just returns
+     * Gets the internal status of a remotable partition, does nothing if RemotablePartition table does not exist
      *
-     * @param jobExecutionId the id for the top level job execution that this partition is associated with
-     * @param stepName the name of the step
-     * @param internalState the state of the partition that is being dispatched
+     * @param remotablePartitionKey
      * @return
      */
-    public abstract WSRemotablePartitionExecution updateRemotablePartitionInternalState(long jobExecutionId,
-                                                                                        String stepName, int partitionNumber, RemotablePartitionState internalState);
+    public abstract WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
 
     /**
      * Check the version of the job execution table in the job repository.
      */
-    int getJobExecutionTableVersion() throws Exception;
+    int getJobExecutionEntityVersion() throws Exception;
 
     /**
      * Check the version of the job instance table in the job repository.
      */
-    int getJobInstanceTableVersion() throws Exception;
+    int getJobInstanceEntityVersion() throws Exception;
 
     public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames);
 

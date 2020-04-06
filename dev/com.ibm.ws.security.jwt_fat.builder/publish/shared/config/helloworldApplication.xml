@@ -1,0 +1,27 @@
+<server>
+
+	<application
+		type="war"
+		id="jaxrsclient"
+		name="helloworld"
+		location="${server.config.dir}/test-apps/helloworld.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	<javaPermission className="javax.security.auth.AuthPermission" actions="wssecurity.getRunAsSubject" name="*"/>
+	<javaPermission className="javax.security.auth.AuthPermission" actions="wssecurity.getCallerSubject" name="*"/>
+	<javaPermission className="javax.security.auth.PrivateCredentialPermission" actions="read" name='* * "*"'/>
+
+</server>    

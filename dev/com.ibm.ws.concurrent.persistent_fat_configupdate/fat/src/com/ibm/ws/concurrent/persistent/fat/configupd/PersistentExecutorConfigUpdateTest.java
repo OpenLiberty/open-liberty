@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -117,14 +117,17 @@ public class PersistentExecutorConfigUpdateTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-        	server.stopServer("CWNEN1000E");
+            server.stopServer(
+                    "CWNEN1000E",
+                    "CWWKC1556W" // Execution of tasks deferred during config update
+                    );
         }
     }
 
     /**
      * Schedule a repeating task. Switch to enableTaskExecution=false, then back to enableTaskExecution=true. Verify the task runs.
      */
-    //@Test
+    @Test
     public void testDisableAndEnableTaskExecution() throws Exception {
         StringBuilder output = runInServlet(
                                             "test=testScheduleRepeatingTask&jndiName=concurrent/MyExecutor&initialDelay=0&interval=1000&invokedBy=testDisableAndEnableTaskExecution");
@@ -162,7 +165,7 @@ public class PersistentExecutorConfigUpdateTest {
     /**
      * Starting with unlimited retries, schedule a task that always fails. Update config with 0 retries and make sure the task ends with failure.
      */
-    //@Test
+    @Test
     public void testDisableRetries() throws Exception {
         try {
             // Disable propagation of jeeMetaDataContext
@@ -202,7 +205,7 @@ public class PersistentExecutorConfigUpdateTest {
      * Re-enable task execution with initialPollDelay=-1 (no polling), pollInterval=-1.
      * Update config with initialPollDelay=0 (immediate). Verify the task runs.
      */
-    //@Test
+    @Test
     public void testEnablePolling() throws Exception {
         try {
             // Disable execution of tasks
@@ -266,11 +269,52 @@ public class PersistentExecutorConfigUpdateTest {
     }
 
     /**
+     * Schedule a task. Disable the MicroProfile Context Propagation feature. Verify that the task keeps running.
+     */
+    @Test
+    public void testMPContextPropagationDisabled() throws Exception {
+        try {
+            // Enable MicroProfile Context Propagation
+            ServerConfiguration config = originalConfig.clone();
+            config.getFeatureManager().getFeatures().add("mpContextPropagation-1.0");
+            config.getFeatureManager().getFeatures().add("servlet-4.0"); // EE 8 or higher is required for the above
+            config.getFeatureManager().getFeatures().remove("servlet-3.1");
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
+
+            // Schedule a task
+            StringBuilder output = runInServlet(
+                    "test=testScheduleRepeatingTask&jndiName=concurrent/MyExecutor&initialDelay=0&interval=1300&invokedBy=testMPContextPropagationDisabled");
+            int start = output.indexOf(TASK_ID_SEARCH_TEXT);
+            if (start < 0)
+                throw new Exception("Task id of scheduled task not found in servlet output: " + output);
+            String taskId = output.substring(start += TASK_ID_SEARCH_TEXT.length(), output.indexOf(".", start));
+
+            // Disable MicroProfile Context Propagation
+            config.getFeatureManager().getFeatures().remove("mpContextPropagation-1.0");
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
+
+            // Verify that the task still executes
+            runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
+
+            runInServlet("test=testRemoveTask&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
+        } finally {
+            // restore original configuration
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(originalConfig);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
+        }
+    }
+
+    /**
      * With task execution disabled, schedule a task.
      * Re-enable task execution with initialPollDelay=10 days, pollInterval=3 days.
      * Update config with initialPollDelay=100ms. Verify the task runs.
      */
-    //@Test
+    @Test
     public void testReduceTheInitialPollDelay() throws Exception {
         try {
             // Disable execution of tasks
@@ -317,7 +361,7 @@ public class PersistentExecutorConfigUpdateTest {
     /**
      * Starting with retry limit 10, retrying every 2 seconds, schedule a task that always fails. Update config with 10ms retry interval and make sure the task ends with failure.
      */
-    //@ExpectedFFDC("javax.naming.NamingException") TODO this is currently failing even though the expected FFDC is indeed logged.
+    @AllowedFFDC("javax.naming.NamingException")
     @Test
     public void testReduceTheRetryInterval() throws Exception {
         try {
@@ -360,7 +404,7 @@ public class PersistentExecutorConfigUpdateTest {
      * Verify the task runs successfully, then cancel it.
      * Schedule a task that does a java:comp lookup. Verify it fails.
      */
-    //@ExpectedFFDC("javax.naming.NamingException") TODO this is currently failing even though the expected FFDC is indeed logged.
+    @AllowedFFDC("javax.naming.NamingException")
     @Test
     public void testReplaceTheContextService() throws Exception {
         StringBuilder output = runInServlet(

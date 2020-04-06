@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2018, 2019 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,6 +31,10 @@
 no.such.element.CWMCG0300E=CWMCG0300E: The {0} property was not found in the configuration.
 no.such.element.CWMCG0300E.explanation=The requested property did not exist in any of the configured Config Sources.
 no.such.element.CWMCG0300E.useraction=Add the property to one of the existing Config Sources, or add a Config Source that contains the property.
+
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: The MicroProfile Config cache invalidation cannot be scheduled. The exception is {0}
+failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Changes in MicroProfile Config may not be reflected in the application.
+failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Review the server message.log and FFDC logs to identify the problem.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.4 error message

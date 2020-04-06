@@ -1,0 +1,50 @@
+<server description="Security disabled server">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsServer-1.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" location="server.jks" password="{xor}Lz4sLCgwLTs="/>
+
+  <!-- Overriding the values of the properties used for wasJmsEndpoint port configuration in fatTestPorts.xml -->
+  <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}"/>
+  <variable name="bvt.prop.jms.ssl"  value="${bvt.prop.jms.1.ssl}"/>
+  <!-- wasJmsPort and wasJmsSSLPort settings in wasJmsEndpoint must match those set in fatTestPorts.xml,
+       to avoid configuration conflict warnings.
+  -->
+  <wasJmsEndpoint id="InboundJmsCommsEndpoint" host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}"/>
+
+  <!-- Overriding the values of the properties used for httpEndpoint port configuration in fatTestPorts.xml -->
+  <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
+  <variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}"/>
+
+  <basicRegistry id="basic" realm="SampleBasicRealm">
+    <user name="user1" password="password123"/>
+    <user name="user2" password="password123"/>
+    <group name="users">
+      <member name="user1"/>
+      <member name="user2"/>
+    </group>
+  </basicRegistry>
+
+  <messagingEngine id="newME">
+    <queue id="QUEUE_ONE"/>
+
+    <messagingSecurity>
+      <role name="CREATEAUTH">
+        <queuePermission queueRef="QUEUE_ONE">
+          <action>SEND</action>
+          <action>RECEIVE</action>
+          <action>BROWSE</action>
+        </queuePermission>
+        <group name="users"/>
+      </role>
+    </messagingSecurity>
+  </messagingEngine>
+
+</server>

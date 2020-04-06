@@ -7,7 +7,6 @@ Bundle-Description: Apache CXF Runtime JAX-WS Frontend, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2
 Bundle-Activator: com.ibm.ws.cxf.rt.frontend.jaxws.NoOpActivator
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 DynamicImport-Package: \
   com.ibm.ws.jaxws.client

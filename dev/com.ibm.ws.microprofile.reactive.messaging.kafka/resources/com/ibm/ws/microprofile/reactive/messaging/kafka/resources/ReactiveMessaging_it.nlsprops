@@ -46,14 +46,19 @@ kafka.send.error.CWMRX1003E.explanation=Si \u00e8 verificato un errore in Kafka 
 kafka.send.error.CWMRX1003E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
 
 # The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
-kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Il Kafka Outgoing Connector Reactive Messaging ha ricevuto un errore. Errore: {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Reactive Messaging Kafka Outgoing Connector ha ricevuto un errore. Errore: {0}.
 kafka.output.error.signal.CWMRX1004E.explanation=Kafka Outgoing Connector ha ricevuto un segnale di errore che impedisce le normali operazioni di Reactive Messaging.
 kafka.output.error.signal.CWMRX1004E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
 
 # The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
-kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: La propriet\u00e0 group.id non \u00e8 stata impostata nella configurazione per questo canale. Impostare la propriet\u00e0 {0} in una delle origini di configurazione del microprofilo per questa applicazione.
-kafka.groupid.not.set.CWMRX1005E.explanation=L'ID del gruppo di consumer Kafka deve essere impostata in modo da consentire il corretto funzionamento di Reactive Messaging.
-kafka.groupid.not.set.CWMRX1005E.useraction=Impostare la propriet\u00e0 in una delle ubicazioni dell'origine di configurazione del microprofilo per questa applicazione, ad esempio il file microprofile-config.properties.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: La propriet\u00e0 group.id non \u00e8 stata impostata nella configurazione per questo canale. Impostare la propriet\u00e0\u00a0{0} in una delle origini di configurazione microprofilo per questa applicazione.
+kafka.groupid.not.set.CWMRX1005E.explanation=L'ID gruppo consumer Kafka deve essere impostato per consentire il corretto funzionamento di Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Impostare la propriet\u00e0\u00a0in una delle origini di configurazione microprofilo per questa applicazione, ad esempio il file microprofile-config.properties.
+
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Impossibile caricare le classi dal file JAR kafka-clients. Assicurarsi che il file JAR kafka-clients e le sue dipendenze siano disponibili come librerie per l'applicazione.
+kafka.library.not.present.CWMRX1006E.explanation=Le applicazioni che utilizzano Reactive Messaging Kafka Client devono fornire il file JAR kafka-clients e le sue dipendenze. Possono fornire questo file e le dipendenze impacchettandolo come una libreria nell'applicazione o fornendolo come una libreria condivisa.
+kafka.library.not.present.CWMRX1006E.useraction=Impacchettare il file JAR kafka-clients e le sue dipendenze come librerie nell'applicazione o come libreria condivisa. Il file JAR kafka-clients pu\u00f2 essere scaricato dal sito Web Apache Kafka o da Maven Central.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

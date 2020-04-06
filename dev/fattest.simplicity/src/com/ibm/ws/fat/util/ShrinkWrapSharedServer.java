@@ -20,8 +20,10 @@ package com.ibm.ws.fat.util;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
@@ -31,25 +33,27 @@ import com.ibm.websphere.simplicity.log.Log;
 
 public class ShrinkWrapSharedServer extends SharedServer {
 
-    private final boolean shutdownAfterTest = true;
-    private final Map<Archive, List<String>> archivesAndPaths;
     private static Class<?> c = ShrinkWrapSharedServer.class;
+
+    private final boolean shutdownAfterTest = true;
+    private final Map<Archive, List<String>> archivesAndPaths = new HashMap<Archive, List<String>>();;
+    private final Set<String> unvalidatedApps = new HashSet<String>();
 
     /**
      * Creates a {@link SharedServer} then runs any methods in testClass annotated with
      * {@link BuildShrinkWrap} and copies the returned Archives to the servers
      * <p>
-     * Methods must be static, have no parameters, return: {@code Archive}, {@codeArchive[]}, {@code List<Archive>} or {@code Map<Archive,String>}.
+     * Methods must be static, have no parameters, return: {@code Archive}, {@codeArchive[]}, {@code List<Archive>}, {@code Map<Archive,String>}.
+     * or {@code Map<Archive,List<String>>}.
      * If {@code Archive}, {@code}List<Archive> or Archive[] is returned the returned values will be placed to the server's
-     * dropins folders. If a map is returned each archive will be placed wherever the
-     * string points too.
+     * dropins folders. If a map is returned each archive will be placed wherever the string points too. If the map contains a list of strings 
+     * a copy will be placed in each listed path.
      * <p>
      * If the method returns the wrong type an exception will be logged and the test will proceed
      * without that application.
      */
     public ShrinkWrapSharedServer(String serverName, Class testClass) {
         super(serverName);
-        archivesAndPaths = new HashMap<Archive, List<String>>();
         getArchivesViaAnnotation(serverName, testClass);
     }
 
@@ -59,16 +63,18 @@ public class ShrinkWrapSharedServer extends SharedServer {
         for (Method method : testClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(BuildShrinkWrap.class)) {
                 try {
+                    BuildShrinkWrap annotation = method.getAnnotation(BuildShrinkWrap.class);
+                    boolean validateApp = annotation.validateApp();
                     Object archive = method.invoke(null);
                     if (archive == null) {
                         //do nothing
                     } else if (archive instanceof Archive) {
-                        archivesAndPaths.put((Archive) archive, Arrays.asList(dropinsPath));
+                        registerArchive((Archive) archive, Arrays.asList(dropinsPath), validateApp);
                     } else if (archive instanceof Archive[]) {
                         Archive[] archives = (Archive[]) archive;
                         for (Archive a : archives) {
                             if (a != null) {
-                                archivesAndPaths.put(a, Arrays.asList(dropinsPath));
+                                registerArchive(a, Arrays.asList(dropinsPath), validateApp);
                             }
                         }
                     } else if (archive instanceof List<?>) {
@@ -78,7 +84,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
                                 throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a List, but an entry was not an Archive");
                             }
                             if (a != null) {
-                                archivesAndPaths.put((Archive) a, Arrays.asList(dropinsPath));
+                                registerArchive((Archive) a, Arrays.asList(dropinsPath), validateApp);
                             }
                         }
                     } else if (archive instanceof Map<?, ?>) {
@@ -92,9 +98,9 @@ public class ShrinkWrapSharedServer extends SharedServer {
                                 throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a map, but the key was not a String or a List of Strings with at least one element");
                             }
                             if (value instanceof String) {
-                                archivesAndPaths.put((Archive) key, Arrays.asList((String) value));
+                                registerArchive((Archive) key, Arrays.asList((String) value), validateApp);
                             } else {
-                                archivesAndPaths.put((Archive) key, (List) value);
+                                registerArchive((Archive) key, (List) value, validateApp);
                             }
                         }
                     } else {
@@ -121,7 +127,6 @@ public class ShrinkWrapSharedServer extends SharedServer {
     public ShrinkWrapSharedServer(String serverName) {
         super(serverName);
         Log.info(c, "<init>", "buildingServer: " + serverName);
-        archivesAndPaths = new HashMap<Archive, List<String>>();
         try {
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             int i = 0;
@@ -154,17 +159,16 @@ public class ShrinkWrapSharedServer extends SharedServer {
      * make sure all exceptions are handled if you invoke this constructor from a
      * static context.
      *
+     * This constructor will validate every application.
+     *
      * @param shirnkWrapArchives ShrinkWrap archives with will be installed to the server's
      *            dropins folder.
      */
     public ShrinkWrapSharedServer(String serverName, Archive... shirnkWrapArchives) {
         super(serverName);
-
-        archivesAndPaths = new HashMap<Archive, List<String>>();
-        String dropinsPath = "/dropins";
-
+        List<String> dropinsPath = Arrays.asList("/dropins");
         for (Archive archive : shirnkWrapArchives) {
-            archivesAndPaths.put(archive, Arrays.asList(dropinsPath));
+            registerArchive(archive, dropinsPath, true);
         }
     }
 
@@ -177,11 +181,17 @@ public class ShrinkWrapSharedServer extends SharedServer {
      * make sure all exceptions are handled if you invoke this constructor from a
      * static context.
      *
+     * This constructor will validate every application.
+     *
      * @param archivesAndPaths a map of ShrinkWrap archives and their install paths.
      */
     public ShrinkWrapSharedServer(String serverName, Map<Archive, List<String>> archivesAndPaths) {
         super(serverName);
-        this.archivesAndPaths = archivesAndPaths;
+        for (Archive archive : archivesAndPaths.keySet()) {
+            for (String path : archivesAndPaths.get(archive)) {
+                registerArchive(archive, Arrays.asList(path), true);
+            }
+        }
     }
 
     //I'm putting this here because it keeps all the boilerplate needed for ShrinkWrap in a single class.
@@ -212,6 +222,20 @@ public class ShrinkWrapSharedServer extends SharedServer {
             } catch (Exception e) {
                 throw new RuntimeException(e); //TODO something better here.
             }
+        }
+    }
+
+    private String getAppName(Archive archive) {
+        return archive.getName().substring(0, archive.getName().length() - 4); //remove the file type suffix
+    }
+
+    private void registerArchive(Archive archive, List<String> path, boolean validateApp) {
+        archivesAndPaths.put(archive, path);
+        if (validateApp) {
+            Log.info(c,"registerArchive",  "Application {0} will be installed at {1}. The application will be validated", new Object[] {archive.getName(), path});
+            getLibertyServer().addInstalledAppForValidation(getAppName(archive));
+        } else {
+            Log.info(c,"registerArchive",  "Application {0} will be installed at {1}. The application will not be validated", new Object[] {archive.getName(), path});
         }
     }
 

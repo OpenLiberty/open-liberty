@@ -29,6 +29,7 @@ import com.ibm.ws.jaxrs20.fat.client.ClientTest;
 import com.ibm.ws.jaxrs20.fat.context.ContextTest;
 import com.ibm.ws.jaxrs20.fat.contextresolver.DepartmentTest;
 import com.ibm.ws.jaxrs20.fat.exceptionmappers.ExceptionMappersTest;
+import com.ibm.ws.jaxrs20.fat.exceptionmappingWithOT.ExceptionMappingWithOTTest;
 import com.ibm.ws.jaxrs20.fat.extraproviders.ExtraProvidersTest;
 import com.ibm.ws.jaxrs20.fat.getClasses_getSingletons.SameClassInGetClassesAndGetSingletonsTest;
 import com.ibm.ws.jaxrs20.fat.helloworld.HelloWorldTest;
@@ -46,6 +47,7 @@ import com.ibm.ws.jaxrs20.fat.providercache.ProviderCacheTest;
 import com.ibm.ws.jaxrs20.fat.readerwriterprovider.ReaderWriterProvidersTest;
 import com.ibm.ws.jaxrs20.fat.resourcealgorithm.SearchPolicyTest;
 import com.ibm.ws.jaxrs20.fat.response.ResponseAPITest;
+import com.ibm.ws.jaxrs20.fat.restmetrics.RestMetricsTest;
 import com.ibm.ws.jaxrs20.fat.security.annotations.SecurityAnnotationsTest;
 import com.ibm.ws.jaxrs20.fat.security.ssl.SecuritySSLTest;
 import com.ibm.ws.jaxrs20.fat.securitycontext.SecurityContextTest;
@@ -54,6 +56,7 @@ import com.ibm.ws.jaxrs20.fat.servletcoexist.JAXRSServletCoexistTest;
 import com.ibm.ws.jaxrs20.fat.standard.StandardProvidersTest;
 import com.ibm.ws.jaxrs20.fat.subresource.ExceptionsSubresourcesTest;
 import com.ibm.ws.jaxrs20.fat.thirdpartyjersey.JerseyTest;
+import com.ibm.ws.jaxrs20.fat.thirdpartyjerseywithinjection.JerseyInjectionTest;
 import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
@@ -72,6 +75,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ContextTest.class,
                 DepartmentTest.class,
                 ExceptionMappersTest.class,
+                ExceptionMappingWithOTTest.class,
                 ExceptionsSubresourcesTest.class,
                 ExtraProvidersTest.class,
                 HelloWorldTest.class,
@@ -89,6 +93,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRSValidationDisabledTest.class,
                 JAXRSWebContainerTest.class,
                 JerseyTest.class,
+                JerseyInjectionTest.class,
                 LinkHeaderTest.class,
                 ManagedBeansTest.class,
                 ParamConverterTest.class,
@@ -96,6 +101,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ProviderCacheTest.class,
                 ReaderWriterProvidersTest.class,
                 ResponseAPITest.class,
+                RestMetricsTest.class,
                 SameClassAsProviderAndResourceTest.class,
                 SameClassInGetClassesAndGetSingletonsTest.class,
                 SearchPolicyTest.class,
@@ -103,6 +109,7 @@ import componenttest.rules.repeater.RepeatTests;
                 SecurityContextTest.class,
                 SecuritySSLTest.class,
                 ServiceScopeTest.class,
+                SimpleJsonTest.class,
                 StandardProvidersTest.class,
                 UriInfoTest.class,
                 UTF8Test.class,

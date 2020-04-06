@@ -65,19 +65,10 @@ public class JaegerTracerFactory {
     
     private static boolean isErrorPrinted = false;
     
-    // This is used to guard the Jaeger to show up in GA builds until it is ready 
-    public static final String ENV_JAEGER_ENABLEMENT= "JAEGER_ENABLEMENT";
-    private static boolean isJaegerEnabled = isBeta() || isEnabledByUser();
-    private static final String EARLY_ACCESS = "EARLY_ACCESS";
-        
     @FFDCIgnore({JaegerAdapterException.class, IllegalArgumentException.class})
     public static Tracer createJaegerTracer(String appName) {
 
         Tracer tracer = null;
-        
-        if (!isJaegerEnabled) {
-            return tracer;
-        }
         
         AdapterFactoryImpl factory = new AdapterFactoryImpl();
 
@@ -336,30 +327,5 @@ public class JaegerTracerFactory {
             }
         }
         return value;
-    }
-
-    private static boolean isBeta() {
-        try {
-            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
-
-            for (ProductInfo info : productInfos.values()) {
-                if (EARLY_ACCESS.equals(info.getEdition())) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            Tr.debug(tc, "Exception getting InstalledProductInfo: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
-    private static boolean isEnabledByUser() {
-        Boolean isEnabled  = getBooleanProperty(ENV_JAEGER_ENABLEMENT);
-        if (isEnabled == null) {
-            return false;
-        } else {
-            return isEnabled;
-        }
     }
 }

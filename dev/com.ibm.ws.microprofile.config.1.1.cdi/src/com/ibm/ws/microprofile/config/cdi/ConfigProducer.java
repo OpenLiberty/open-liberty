@@ -34,12 +34,16 @@ public class ConfigProducer {
     private static final TraceComponent tc = Tr.register(ConfigProducer.class);
 
     public static Object newValue(Config config, InjectionPoint injectionPoint, Type type, boolean optional) {
-        WebSphereConfig wConfig = (WebSphereConfig) config;
         ConfigProperty qualifier = getConfigPropertyAnnotation(injectionPoint);
         String defaultValue = qualifier.defaultValue();
         String propertyName = getPropertyName(injectionPoint, qualifier);
-        Object value = null;
+        Object value = newValue(config, propertyName, defaultValue, type, optional);
+        return value;
+    }
 
+    public static Object newValue(Config config, String propertyName, String defaultValue, Type type, boolean optional) {
+        Object value = null;
+        WebSphereConfig wConfig = (WebSphereConfig) config;
         if (ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
             value = wConfig.getValue(propertyName, type, optional);
         } else {

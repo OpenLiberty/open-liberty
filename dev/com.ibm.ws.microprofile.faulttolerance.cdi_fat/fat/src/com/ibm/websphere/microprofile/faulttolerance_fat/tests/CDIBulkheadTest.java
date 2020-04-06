@@ -11,6 +11,7 @@
 package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.ExecutorService;
@@ -24,7 +25,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.AsyncBulkheadServlet;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.SyncBulkheadServlet;
 
@@ -34,6 +35,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -99,6 +101,13 @@ public class CDIBulkheadTest extends FATServletClient {
 
         // Third task should fail with a Bulkhead exception
         assertThat("Task Three", future3.get(TIMEOUT + FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("BulkheadException"));
+
+        if (RepeatFaultTolerance.MP20_FEATURES_ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+            // Check for the correct message for FT 1.x
+            assertThat("Task Three message should have correct code", future3.get(), containsString("CWMFT0001E"));
+            // Ensure that the message substitution has happened
+            assertThat("Task Three message should be substituted", future3.get(), not(containsString("bulkhead.no.threads.CWMFT0001E")));
+        }
     }
 
 }

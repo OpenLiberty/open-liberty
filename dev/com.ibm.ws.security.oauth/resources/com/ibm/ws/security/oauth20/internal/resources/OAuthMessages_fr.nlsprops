@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -452,6 +452,11 @@ JAVA8_REQUIRED.useraction=Installez la version Java 8 ou une version ult\u00e9ri
 JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: L''attribut de configuration {1} du fournisseur OpenID Connect {0} est d\u00e9fini pour utiliser l''algorithme {2}, ce qui requiert Java 8 ou ult\u00e9rieur. Le fournisseur OpenID Connect sp\u00e9cifi\u00e9 ignore le param\u00e8tre {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=La version Java utilis\u00e9e ne correspond pas \u00e0 la version 8 ou une version ult\u00e9rieure.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installez la version Java 8 ou une version ult\u00e9rieure pour utiliser l'option de configuration mentionn\u00e9e.
+
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Le jeton dont le type d''octroi est [{0}] n''est pas admis. Les types d''octroi autoris\u00e9s sont : {1}.
+WRONG_TOKEN_GRANTTYPE.explanation=Le jeton n'est pas valide car son type d'octroi n'est pas admis.
+WRONG_TOKEN_GRANTTYPE.useraction=Utilisez un jeton dont le type d'octroi est admis.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=D\u00e9connexion

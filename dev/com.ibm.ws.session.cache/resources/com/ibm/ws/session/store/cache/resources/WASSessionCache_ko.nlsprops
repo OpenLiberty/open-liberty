@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -56,6 +56,11 @@ ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0
 ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: {0} \uc138\uc158 \uce90\uc2dc \ub77c\uc774\ube0c\ub7ec\ub9ac\uac00 \ube44\uc5b4 \uc788\uc2b5\ub2c8\ub2e4. {1}
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=sessionCache \uae30\ub2a5\uc5d0\uc11c \ub85c\ub4dc\ud560 JCache \uc81c\uacf5\uc790\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=\ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0 JCache \uc81c\uacf5\uc790\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc73c\uba70 \ubaa8\ub4e0 \uacbd\ub85c\uac00 \uc62c\ubc14\ub974\uac8c \uc9c0\uc815\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: HTTP \uc138\uc158 \uc9c0\uc18d\uc131\uc5d0 \ub300\ud574 Infinispan \uad6c\uc131\uc774 \uc0dd\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {0}. \ub300\uccb4\ud558\ub824\uba74 httpSessionCache \uad6c\uc131 \uc694\uc18c\uc758 URI \uc18d\uc131\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=HTTP \uc138\uc158 \uc9c0\uc18d\uc131\uc5d0 \uc0ac\uc6a9\ub418\ub294 Infinispan \uce90\uc2dc\uc5d0\uc11c\ub294 \uc11c\ubc84 \uc0ac\uc774\uc5d0\uc11c \uc138\uc158\uc744 \uc720\uc9c0\ud558\uae30 \uc704\ud574 \ucd94\uac00 \uad6c\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. Liberty\ub294 \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud558\uc9c0 \uc54a\ub294 \uacbd\uc6b0 \uc774 \uad6c\uc131\uc744 \uc0dd\uc131\ud569\ub2c8\ub2e4.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=\uc0dd\uc131\ub41c \uad6c\uc131\uc5d0 \ub9cc\uc871\ud558\uba74 \ucd94\uac00 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub9cc\uc871\ud558\uc9c0 \uc54a\uc73c\uba74 \uc0dd\uc131\ub41c \uad6c\uc131\uc744 \uc2dc\uc791\uc810\uc73c\ub85c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
 
 INTERNAL_SERVER_ERROR=\ub0b4\ubd80 \uc11c\ubc84 \uc624\ub958
 

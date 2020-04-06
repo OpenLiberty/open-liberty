@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-<classpathentry kind="src" path="fat/src"/>
-<classpathentry kind="src" path="test-applications/CDIConfigByACP.jar/src"/>
-<classpathentry kind="src" path="test-applications/CDIConfigByACP.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22Miscellaneous.jar/src"/>
-<classpathentry kind="src" path="test-applications/JSF22Miscellaneous.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22ActionListener.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22LocalizationTester.war/src"/>
-<classpathentry kind="src" path="test-applications/TestJSFEL.war/src"/>
-<classpathentry kind="src" path="test-applications/TestJSF2.2.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22StatelessView.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22ClientWindow.war/src"/>
-<classpathentry kind="src" path="test-applications/TestResourceContractsFromJar.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22ComponentTester.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22ComponentRenderer.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22TestResources.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22AppConfigPop.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22AppConfigPop.jar/src"/>
-<classpathentry kind="src" path="test-applications/PI30335.jar/src"/>
-<classpathentry kind="src" path="test-applications/TestJSF22ViewAction.war/src"/>
-<classpathentry kind="src" path="test-applications/CDITests.war/src"/>
-<classpathentry kind="src" path="test-applications/BeanValidationTests.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22FlashEvents.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22FaceletsResourceResolverAnnotation.war/src"/>
-<classpathentry kind="src" path="test-applications/TestJSF22Ajax.war/src"/>
-<classpathentry kind="src" path="test-applications/PI47600.war/src"/>
-<classpathentry kind="src" path="test-applications/PI50108.war/src"/>
-<classpathentry kind="src" path="test-applications/CDIFacesFlows.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22FacesFlows.war/src"/>
-<classpathentry kind="src" path="test-applications/PI46218Flow1.war/src"/>
-<classpathentry kind="src" path="test-applications/PI46218Flow2.war/src"/>
-<classpathentry kind="src" path="test-applications/PI57255CDI.war/src"/>
-<classpathentry kind="src" path="test-applications/PI59422.war/src"/>
-<classpathentry kind="src" path="test-applications/PI63135.war/src"/>
-<classpathentry kind="src" path="test-applications/ViewScopedCDIBean.war/src"/>
-<classpathentry kind="src" path="test-applications/ViewScopedJSFBean.war/src"/>
-<classpathentry kind="src" path="test-applications/PI64718.war/src"/>
-<classpathentry kind="src" path="test-applications/PI64714.war/src"/>
-<classpathentry kind="src" path="test-applications/PI67525.war/src"/>
-<classpathentry kind="src" path="test-applications/PI85492.war/src"/>
-<classpathentry kind="src" path="test-applications/PI90507.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22BackwardCompatibilityTests.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22HTML5.war/src"/>
-<classpathentry kind="src" path="test-applications/JSF22SimpleHTML.war/src"/>
-<classpathentry kind="src" path="test-applications/CDICommon/src"/>
-<classpathentry kind="src" path="test-applications/JSF22InputFile.war/src"/>
-<classpathentry kind="src" path="test-applications/PH01566.war/src"/>
-<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22ThirdPartyApi.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDIConfigByACP.jar/src"/>
+	<classpathentry kind="src" path="test-applications/CDIConfigByACP.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22Miscellaneous.jar/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22Miscellaneous.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22ActionListener.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22LocalizationTester.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestJSFEL.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestJSF2.2.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22StatelessView.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22ClientWindow.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestResourceContractsFromJar.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22ComponentTester.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22ComponentRenderer.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22TestResources.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22AppConfigPop.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22AppConfigPop.jar/src"/>
+	<classpathentry kind="src" path="test-applications/PI30335.jar/src"/>
+	<classpathentry kind="src" path="test-applications/TestJSF22ViewAction.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDITests.war/src"/>
+	<classpathentry kind="src" path="test-applications/BeanValidationTests.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22FlashEvents.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22FaceletsResourceResolverAnnotation.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestJSF22Ajax.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI47600.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI50108.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDIFacesFlows.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22FacesFlows.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI46218Flow1.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI46218Flow2.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI57255CDI.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI59422.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI63135.war/src"/>
+	<classpathentry kind="src" path="test-applications/ViewScopedCDIBean.war/src"/>
+	<classpathentry kind="src" path="test-applications/ViewScopedJSFBean.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI64718.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI64714.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI67525.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI85492.war/src"/>
+	<classpathentry kind="src" path="test-applications/PI90507.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22BackwardCompatibilityTests.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22HTML5.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22SimpleHTML.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDICommon/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22InputFile.war/src"/>
+	<classpathentry kind="src" path="test-applications/PH01566.war/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

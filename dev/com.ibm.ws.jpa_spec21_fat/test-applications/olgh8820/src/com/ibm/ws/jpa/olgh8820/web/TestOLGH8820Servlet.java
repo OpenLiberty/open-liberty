@@ -55,24 +55,24 @@ public class TestOLGH8820Servlet extends JPATestServlet {
 
     //Indexed Parameters
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMJTA_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMJTA_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMJTA_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMJTA_Web";
         final String testMethod = "testStoredProcedureOrderWithIndexParameter";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMRL_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMRL_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMRL_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_AMRL_Web";
         final String testMethod = "testStoredProcedureOrderWithIndexParameter";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_CMTS_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_CMTS_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithIndexParameter_CMTS_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_CMTS_Web";
         final String testMethod = "testStoredProcedureOrderWithIndexParameter";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -80,24 +80,24 @@ public class TestOLGH8820Servlet extends JPATestServlet {
 
     //Named Parameters
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMJTA_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMJTA_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMJTA_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMJTA_Web";
         final String testMethod = "testStoredProcedureOrderWithNamedParameter";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMRL_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMRL_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMRL_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_AMRL_Web";
         final String testMethod = "testStoredProcedureOrderWithNamedParameter";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_CMTS_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_CMTS_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithNamedParameter_CMTS_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_CMTS_Web";
         final String testMethod = "testStoredProcedureOrderWithNamedParameter";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

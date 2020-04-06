@@ -12,8 +12,6 @@
 bVersion=1.0
 
 #jdbc-4.2 feature is only 1.8 and above
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\

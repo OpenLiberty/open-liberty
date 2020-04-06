@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,17 +31,17 @@ public class GzipOutputHandler implements CompressionHandler {
 
     /** Gzip header information */
     private final static byte[] GZIP_Header = { (byte) 0x1f, // ID1
-                                               (byte) 0x8b, // ID2
-                                               Deflater.DEFLATED, // Compression
-                                                                  // method (CM)
-                                               0, // FLaGs
-                                               0, // MTIME (Modification TIME)
-                                               0, // Modification time MTIME (int)
-                                               0, // Modification time MTIME (int)
-                                               0, // Modification time MTIME (int)
-                                               0, // Extra flags (XFLG)
-                                               0 // Unknown OS, java writes like
-                                                 // MSDOS
+                                                (byte) 0x8b, // ID2
+                                                Deflater.DEFLATED, // Compression
+                                                // method (CM)
+                                                0, // FLaGs
+                                                0, // MTIME (Modification TIME)
+                                                0, // Modification time MTIME (int)
+                                                0, // Modification time MTIME (int)
+                                                0, // Modification time MTIME (int)
+                                                0, // Extra flags (XFLG)
+                                                0 // Unknown OS, java writes like
+                                                  // MSDOS
     };
 
     /** Deflater used by this handler */
@@ -51,13 +51,13 @@ public class GzipOutputHandler implements CompressionHandler {
     /** Flag on whether this is the specialized x-gzip type */
     private boolean bIsXGzip = false;
     /** Checksum utility for this stream */
-    private CRC32 checksum = new CRC32();
+    private final CRC32 checksum = new CRC32();
     /** Output buffer used during the compression stage */
-    private byte[] buf = new byte[32768];
+    private final byte[] buf = new byte[32768];
 
     /**
      * Create a gzip compression method output handler.
-     * 
+     *
      * @param isXGzip
      *            - boolean flag on whether this is an x-gzip handler
      */
@@ -71,7 +71,7 @@ public class GzipOutputHandler implements CompressionHandler {
 
     /**
      * Write the gzip header onto the output list.
-     * 
+     *
      * @param list
      * @return List<WsByteBuffer>
      */
@@ -92,6 +92,7 @@ public class GzipOutputHandler implements CompressionHandler {
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#compress(com.
      * ibm.wsspi.bytebuffer.WsByteBuffer)
      */
+    @Override
     public List<WsByteBuffer> compress(WsByteBuffer buffer) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "compress, input=" + buffer);
@@ -112,6 +113,7 @@ public class GzipOutputHandler implements CompressionHandler {
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#compress(com.
      * ibm.wsspi.bytebuffer.WsByteBuffer[])
      */
+    @Override
     public List<WsByteBuffer> compress(WsByteBuffer[] buffers) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "compress, input=" + buffers);
@@ -133,16 +135,14 @@ public class GzipOutputHandler implements CompressionHandler {
 
     /**
      * Compress the given input buffer onto the output list.
-     * 
+     *
      * @param list
      * @param buffer
      * @return List<WsByteBuffer>
      */
     protected List<WsByteBuffer> compress(List<WsByteBuffer> list, WsByteBuffer buffer) {
-        if (null == buffer) {
-            return list;
-        }
-        int dataSize = buffer.remaining();
+        int dataSize = (null != buffer) ? buffer.remaining() : 0;
+
         if (0 == dataSize) {
             return list;
         }
@@ -184,7 +184,7 @@ public class GzipOutputHandler implements CompressionHandler {
 
     /**
      * Create the output bytebuffer based on the output compressed storage.
-     * 
+     *
      * @param len
      * @return WsByteBuffer
      */
@@ -200,6 +200,7 @@ public class GzipOutputHandler implements CompressionHandler {
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#getContentEncoding
      * ()
      */
+    @Override
     public ContentEncodingValues getContentEncoding() {
         if (this.bIsXGzip) {
             return ContentEncodingValues.XGZIP;
@@ -210,6 +211,7 @@ public class GzipOutputHandler implements CompressionHandler {
     /*
      * @see com.ibm.wsspi.http.channel.compression.CompressionHandler#finish()
      */
+    @Override
     public List<WsByteBuffer> finish() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "finish");
@@ -257,6 +259,7 @@ public class GzipOutputHandler implements CompressionHandler {
     /*
      * @see com.ibm.wsspi.http.channel.compression.CompressionHandler#isFinished()
      */
+    @Override
     public boolean isFinished() {
         return this.deflater.finished();
     }
@@ -265,6 +268,7 @@ public class GzipOutputHandler implements CompressionHandler {
      * @see
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#getBytesRead()
      */
+    @Override
     public long getBytesRead() {
         return this.deflater.getBytesRead();
     }
@@ -273,13 +277,14 @@ public class GzipOutputHandler implements CompressionHandler {
      * @see
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#getBytesWritten()
      */
+    @Override
     public long getBytesWritten() {
         return this.deflater.getBytesWritten();
     }
 
     /**
      * Write an integer into the output space, starting at the input offset.
-     * 
+     *
      * @param value
      * @param data
      * @param offset

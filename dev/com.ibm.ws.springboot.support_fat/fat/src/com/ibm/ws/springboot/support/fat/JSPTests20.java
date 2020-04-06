@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,7 +26,18 @@ public class JSPTests20 extends AbstractSpringTests {
 
     @Test
     public void testJSP() throws Exception {
-        HttpUtils.findStringInUrl(server, "", "resources/text.txt");
+        HttpUtils.findStringInUrl(server, "/test", "resources/text.txt");
+    }
+
+    @Test
+    public void testWelcomePage() throws Exception {
+        HttpUtils.findStringInUrl(server, "", "Welcome Page!!");
+    }
+
+    @Test
+    public void testWelcomePageOnDefaultHost() throws Exception {
+        server.setHttpDefaultPort(DEFAULT_HTTP_PORT);
+        HttpUtils.findStringInUrl(server, "", "Welcome Page!!");
     }
 
     @Override
@@ -36,6 +48,19 @@ public class JSPTests20 extends AbstractSpringTests {
     @Override
     public String getApplication() {
         return SPRING_BOOT_20_APP_WAR;
+    }
+
+    @Override
+    public boolean useDefaultVirtualHost() {
+        if (testName.getMethodName().contains("DefaultHost")) {
+            return true;
+        }
+        return false;
+    }
+
+    @After
+    public void stopTestServer() throws Exception {
+        super.stopServer();
     }
 
 }

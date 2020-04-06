@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Les fonctions suivantes ne peuvent pas \u
 ERROR_UNINSTALL_FAILED_USR.explanation=Les fonctions sp\u00e9cifi\u00e9es sont des fonctions utilisateur et ne peuvent pas \u00eatre d\u00e9sinstall\u00e9es.
 ERROR_UNINSTALL_FAILED_USR.useraction=Ne d\u00e9sinstallez pas les fonctions utilisateur.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Impossible d'atteindre un des r\u00e9f\u00e9rentiels sp\u00e9cifi\u00e9s dans la configuration. V\u00e9rifiez que votre ordinateur dispose d'un acc\u00e8s r\u00e9seau et que les pare-feux sont correctement configur\u00e9s puis tentez \u00e0 nouveau l'op\u00e9ration. Si la connexion n'aboutit toujours pas, il est possible que le serveur de r\u00e9f\u00e9rentiel soit temporairement indisponible.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=Une erreur s'est produite lors de la connexion \u00e0 un r\u00e9f\u00e9rentiel.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et au r\u00e9f\u00e9rentiel appropri\u00e9.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=Pr\u00e9paration des actifs pour l'installation. Ce proce
 STATE_INITIALIZING=Initialisation en cours ...
 STATE_CONTACTING_REPO=Contact du r\u00e9f\u00e9rentiel IBM WebSphere Liberty...
 STATE_DOWNLOAD_FILES_OK=\nTous les actifs ont \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9s.
+STATE_CONTACTING_MAVEN_REPO=Etablissement d'une connexion au r\u00e9f\u00e9rentiel Maven configur\u00e9...\nCe processus peut prendre quelques minutes.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Connexion r\u00e9ussie au r\u00e9f\u00e9rentiel configur\u00e9.
+STATE_READING_ENV_PROPS_FILE=Lecture de {0}/etc/featureUtility.env...
 PROGRESS_STEP=Etape {0} sur {1}
 
 MSG_DOWNLOAD_SUCCESS=Le t\u00e9l\u00e9chargement de la fonction {0} a abouti.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Recherche de fonctions...
 MSG_SEARCHING_ADDONS=Recherche d'additifs...
 MSG_SEARCHING_SAMPLES=Recherche d'exemples...
 MSG_SEARCHING_OPENSOURCE=Recherche d'int\u00e9grations \u00e0 source ouverte...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=T\u00e9l\u00e9chargement des fonctions requises...
 FEATURE_ASSET=fonction
 ADDON_ASSET=additif
 SAMPLE_ASSET=\u00e9chantillon du produit
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=int\u00e9gration open source
 GENERAL_ASSET=actif
 
 MSG_INVALID_FOR_OS=La ressource de fonction {0} n''est pas valid\u00e9 pour le syst\u00e8me d''exploitation en cours et ne sera pas install\u00e9e.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Aucune fonction suppl\u00e9mentaire n'est requise pour le serveur. Aucune fonction n'est install\u00e9e.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=Le nom de propri\u00e9t\u00e9 n'est pas sp\u00e9cifi\u00e9. Indiquez un nom de propri\u00e9t\u00e9 valide ou mettez la propri\u00e9t\u00e9 en commentaire si elle est inutilis\u00e9e.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Assurez-vous que le fichier ESA fourni est valide
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Impossible de cr\u00e9er un fichier JSON sur {0} pour le fichier ESA {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=La fonction dans le fichier ESA ne sera pas install\u00e9e.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Assurez-vous de disposer d'un acc\u00e8s en \u00e9criture au r\u00e9pertoire dans lequel le fichier JSON sera cr\u00e9\u00e9.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: Le r\u00e9f\u00e9rentiel Maven configur\u00e9 est inaccessible. V\u00e9rifiez que votre ordinateur dispose d'un acc\u00e8s r\u00e9seau et que les pare-feux sont correctement configur\u00e9s puis tentez \u00e0 nouveau l'op\u00e9ration. Si la connexion n'aboutit toujours pas, il est possible que le serveur de r\u00e9f\u00e9rentiel soit temporairement indisponible.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=Une erreur est survenue lors de la connexion au r\u00e9f\u00e9rentiel Maven configur\u00e9.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et au r\u00e9f\u00e9rentiel appropri\u00e9.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Les totaux de contr\u00f4le disponibles n''ont pas pu \u00eatre valid\u00e9s pour le fichier {0}.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=Le total de contr\u00f4le des actifs t\u00e9l\u00e9charg\u00e9s n'est pas correct. Le contenu de l'actif t\u00e9l\u00e9charg\u00e9 n'est pas identique au contenu du r\u00e9f\u00e9rentiel ; par cons\u00e9quent, l'actif ne peut pas \u00eatre install\u00e9.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Ex\u00e9cutez \u00e0 nouveau la commande.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Des donn\u00e9es d''identification incorrects ont \u00e9t\u00e9 fournies pour le r\u00e9f\u00e9rentiel {0}.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Les donn\u00e9es d'identification FEATURE_REPO_USER et FEATURE_REPO_PASSWORD n'ont pas pu permettre l'authentification aupr\u00e8s du r\u00e9f\u00e9rentiel configur\u00e9.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Fournissez les donn\u00e9es d'identification correctes pour le r\u00e9f\u00e9rentiel configur\u00e9.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Les artefacts du r\u00e9f\u00e9rentiel configur\u00e9 n'ont pas pu \u00eatre t\u00e9l\u00e9charg\u00e9s.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=L'actif sp\u00e9cifi\u00e9 n'a pas \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9 depuis le r\u00e9f\u00e9rentiel sp\u00e9cifi\u00e9 car celui-ci ne contient pas de version valide de l'actif.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=V\u00e9rifiez que le r\u00e9f\u00e9rentiel contient l'actif puis r\u00e9-ex\u00e9cutez la commande.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: La version de l'environnement d'ex\u00e9cution Liberty n'a pas pu \u00eatre d\u00e9termin\u00e9e.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=Il se peut que le fichier de propri\u00e9t\u00e9s {0} manque ou soit endommag\u00e9.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Assurez-vous que le fichier de propri\u00e9t\u00e9s existe.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: La fonction identifi\u00e9e par une coordonn\u00e9e Maven {0} ne peut pas \u00eatre install\u00e9e sur une version d''environnement d''ex\u00e9cution Liberty {1}.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=La fonction n'est pas compatible avec l'environnement d'ex\u00e9cution Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Sp\u00e9cifiez une version valide pour la fonction.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: Le format de conditionnement dans la coordonn\u00e9e Maven de fonction {0} n''est pas valide. Le format de conditionnement valide est ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=La fonction n'est pas compatible avec l'environnement d'ex\u00e9cution Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Sp\u00e9cifiez ESA pour le conditionnement dans la coordonn\u00e9e Maven.
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: La coordonn\u00e9e Maven {0} n''est pas valide.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=Le format de la coordonn\u00e9e Maven fournie n'est pas correct.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Entrez une coordonn\u00e9e Maven valide.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: Le serveur {0} n''existe pas. Entrez un nom de serveur valide, puis r\u00e9essayez.
+ERROR_SERVER_NOT_EXIST.explanation=Le serveur n'existe pas.
+ERROR_SERVER_NOT_EXIST.useraction=Cr\u00e9ez le serveur et r\u00e9ex\u00e9cutez la commande.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: L''ID groupe {0} n''est pas valide. Assurez-vous que l''ID groupe valide pour la coordonn\u00e9e de fonction est fourni ou que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et au r\u00e9f\u00e9rentiel configur\u00e9.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=Le fichier JSON de fonctions est introuvable dans le r\u00e9f\u00e9rentiel Maven.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=V\u00e9rifiez votre connexion r\u00e9seau et assurez-vous que le fichier JSON des fonctions est h\u00e9berg\u00e9 dans le r\u00e9f\u00e9rentiel Maven.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: Le format de la variable d''environnement http_proxy {0} n''est pas valide. Assurez-vous que la variable http_proxy est au format http://<h\u00f4te-proxy>:<port-proxy>.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=Le format de la variable d'environnement du proxy n'est pas valide.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Reformatez la variable d'environnement http_proxy pour qu'elle respecte le format http_proxy=http://<h\u00f4te-proxy>:<port-proxy>.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: Le format de la variable d''environnement https_proxy {0} n''est pas valide. Assurez-vous que la variable https_proxy est au format https://<utilisateur>:<mot-de-passe>@<h\u00f4te-proxy>:<port-proxy>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=Le format de la variable d'environnement du proxy n'est pas valide.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Reformatez la variable d'environnement https_proxy pour qu'elle respecte le format https_proxy=https://<utilisateur>:<mot-de-passe>@<h\u00f4te-proxy>:<port-proxy>.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Les fonctions suivantes n''ont pas \u00e9t\u00e9 obtenues : {0}. V\u00e9rifiez que les fonctions sont valides.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=La fonction n'est pas prise en charge par Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Ex\u00e9cutez featureUtility avec une fonction compatible.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Les fonctions utilisateur suivantes sont sp\u00e9cifi\u00e9es dans le fichier server.xml et ne seront pas install\u00e9es : {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Les fonctions {0} et {1} sont incompatibles et ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Les fonctions ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Retirez l'une des fonctions et r\u00e9essayez.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Les fonctions de singleton {0} et {1} sont incompatibles et ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Les fonctions ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Retirez l'une des fonctions et r\u00e9essayez.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Le t\u00e9l\u00e9chargement de la fonction a abouti.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La fonction a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e.

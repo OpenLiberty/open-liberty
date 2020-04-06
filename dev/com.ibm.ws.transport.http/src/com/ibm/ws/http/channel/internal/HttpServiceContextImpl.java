@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
 
 import com.ibm.websphere.ras.Tr;
@@ -247,6 +256,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private CompressionHandler compressHandler = null;
     /** Decompression handler used for the inbound body */
     private DecompressionHandler decompressHandler = null;
+    /** Decompression tolerance counter */
+    private int cyclesAboveDecompressionRatio = 0;
+
+    protected Map<String, Float> acceptableEncodings = new HashMap<String, Float>();
+    protected Set<String> unacceptedEncodings = new HashSet<String>();
+    protected boolean bStarEncodingParsed = false;
+    protected String preferredEncoding = null;
 
     /** Record the end time of the request if access logging is enabled */
     private long responseStartTime = 0;
@@ -915,7 +931,19 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 setLocalAddr(getTSC().getLocalAddress());
                 setRemoteAddr(getTSC().getRemoteAddress());
             } catch (Throwable t) {
-                FFDCFilter.processException(t, getClass().getName() + ".init", "1", this);
+                // check if we're on an HTTP2 connection in the closed state
+                HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
+                H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+                boolean h2Closing = false;
+                if (link instanceof H2HttpInboundLinkWrap) {
+                    H2HttpInboundLinkWrap h2link = (H2HttpInboundLinkWrap) context.getLink();
+                    if (h2link.muxLink.checkIfGoAwaySendingOrClosing()) {
+                        h2Closing = true;
+                    }
+                }
+                if (!h2Closing) {
+                    FFDCFilter.processException(t, getClass().getName() + ".init", "1", this);
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Received exception from JDK socket calls; " + t);
                 }
@@ -979,6 +1007,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (null != this.buffChunkTrailer) {
             this.buffChunkTrailer.release();
             this.buffChunkTrailer = null;
+        }
+        if (null != this.acceptableEncodings) {
+            this.acceptableEncodings.clear();
+            this.acceptableEncodings = null;
+        }
+
+        if (null != this.unacceptedEncodings) {
+            this.unacceptedEncodings.clear();
+            this.unacceptedEncodings = null;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1056,6 +1093,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.reqVersion = null;
         this.chunkLengthParseState = GenericConstants.PARSING_NOTHING;
         this.bParsingTrailers = false;
+        this.cyclesAboveDecompressionRatio = 0;
         if (null != this.decompressHandler) {
             this.decompressHandler.close();
             this.decompressHandler = null;
@@ -1067,6 +1105,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             this.compressHandler = null;
         }
+
+        if (this.acceptableEncodings != null) {
+            this.acceptableEncodings.clear();
+
+        }
+        if (this.unacceptedEncodings != null) {
+            this.unacceptedEncodings.clear();
+        }
+        this.bStarEncodingParsed = false;
+        this.preferredEncoding = null;
+
         this.isFinalWrite = false;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1134,9 +1183,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * Input time is expected to be in milliseconds.
      *
      * @param time
-     *                 (must not be less than HttpChannelConfig.MIN_TIMEOUT)
+     *            (must not be less than HttpChannelConfig.MIN_TIMEOUT)
      * @throws IllegalArgumentException
-     *                                      (if too low)
+     *             (if too low)
      */
     @Override
     public void setReadTimeout(int time) throws IllegalArgumentException {
@@ -1156,9 +1205,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * Input time is expected to be in milliseconds.
      *
      * @param time
-     *                 (must not be less than HttpChannelConfig.MIN_TIMEOUT)
+     *            (must not be less than HttpChannelConfig.MIN_TIMEOUT)
      * @throws IllegalArgumentException
-     *                                      (if too low)
+     *             (if too low)
      */
     @Override
     public void setWriteTimeout(int time) throws IllegalArgumentException {
@@ -2170,6 +2219,264 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         return true;
     }
 
+    protected void parseAcceptEncodingHeader() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "parseAcceptEncodingHeader");
+        }
+
+        String headerValue = getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString();
+        if (headerValue == null) {
+            return;
+        }
+        //Strip header of all spaces
+        headerValue = headerValue.replaceAll("\\s+", "");
+        headerValue = headerValue.toLowerCase();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "parseAcceptEncodingHeader: parsing [" + headerValue + "]");
+        }
+
+        String[] codingParts = null;
+        String encodingName = null;
+        String qualityValueString = null;
+        float qualityValue = 1f;
+        int indexOfQValue = -1;
+
+        //As defined by section 14.3 Accept-Encoding, the header's possible
+        //values constructed as a comma delimited list:
+        // 1#( codings[ ";" "q" "=" qvalue ])
+        // = ( content-coding | "*" )
+        //Therefore, parse this header value by all defined codings
+
+        for (String coding : headerValue.split(",")) {
+
+            if (coding.endsWith(";")) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Encoding token was malformed with semicolon delimiter but no quality value. Skipping [" + coding + "]");
+                }
+                continue;
+            }
+
+            //If this coding contains a qvalue, it will be delimited by a semicolon
+            codingParts = coding.split(";");
+
+            if (codingParts.length < 1 || codingParts.length > 2) {
+                //If the codingParts contain less than 1 part or more than 2, it is a
+                //malformed coding.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Encoding token was malformed with multiple semicolon delimeters. Skipping [" + coding + "]");
+                }
+                continue;
+            }
+
+            if (codingParts.length == 2) {
+                indexOfQValue = codingParts[1].indexOf("q=");
+                if (indexOfQValue != 0) {
+                    //coding section was delimited by semicolon but had no quality value
+                    //or did not start with the quality value identifier.
+                    //Malformed section, ignoring and continue parsing
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Encoding token was malformed with a bad quality value location. Skipping [" + coding + "]");
+                    }
+                    continue;
+                }
+
+                //skip past "q=" to obtain the quality value and try to parse
+                //first evaluate the value against the rules defined by section 5.3.1 on quality values
+                //'The weight is normalized to a real number in the range 0 through 1.
+                //' ... A sender of qvalue MUST NOT generate more than three digits after the decimal
+                // point'.
+                qualityValueString = codingParts[1].substring(indexOfQValue + 2);
+                Matcher matcher = getHttpConfig().getCompressionQValueRegex().matcher(qualityValueString);
+
+                if (!matcher.matches()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Encoding token was malformed with a bad quality value. Must be normalized between 0 and 1 with no more than three digits. Skipping ["
+                                     + coding + "]");
+                    }
+                    continue;
+                }
+
+                try {
+
+                    qualityValue = Float.parseFloat(qualityValueString);
+                    if (qualityValue < 0) {
+                        //Quality values should never be negative, but if a malformed negative
+                        //value is parsed, set it as 0 (disallowed)
+                        qualityValue = 0;
+                    }
+                } catch (NumberFormatException e) {
+                    //Malformed quality value, ignore this coding and continue parsing
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Encoding token was malformed with a malformed quality value number. Skipping [" + coding + "]");
+                    }
+                    continue;
+                }
+
+            } else {
+                //Following the convention for section 14.1 Accept, qvalue scale ranges from 0 to 1 with
+                //the default value being q=1;
+                qualityValue = 1f;
+            }
+
+            encodingName = codingParts[0];
+
+            if (qualityValue == 0) {
+                this.unacceptedEncodings.add(encodingName);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Parsed a non accepted content-encoding: [" + encodingName + "]");
+                }
+            }
+
+            else if ("*".equals(encodingName)) {
+                this.bStarEncodingParsed = (qualityValue > 0f);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Parsed Wildcard - * with value: " + bStarEncodingParsed);
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Parsed Encoding - name: [" + encodingName + "] value: [" + qualityValue + "]");
+                }
+                //Save to key-value pair accept-encoding map
+                acceptableEncodings.put(encodingName, qualityValue);
+            }
+
+        }
+        //Sort map in decreasing order
+        acceptableEncodings = sortAcceptableEncodings(acceptableEncodings);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "parseAcceptEncodingHeader");
+        }
+
+    }
+
+    /**
+     * Method used to sort the accept-encoding parsed encodings in descending order
+     * of their quality values (qv)
+     */
+    private Map<String, Float> sortAcceptableEncodings(Map<String, Float> encodings) {
+        //List of map elements
+        List<Map.Entry<String, Float>> list = new LinkedList<Map.Entry<String, Float>>(encodings.entrySet());
+
+        Collections.sort(list, new Comparator<Map.Entry<String, Float>>() {
+            @Override
+            public int compare(Map.Entry<String, Float> e1, Map.Entry<String, Float> e2) {
+                return -(Float.compare(e1.getValue(), e2.getValue()));
+            }
+        });
+
+        //put sorted list to a linkedHashMap
+        Map<String, Float> result = new LinkedHashMap<String, Float>();
+        for (Map.Entry<String, Float> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
+
+    /**
+     * Used to determine if the chosen encoding is supported by the product
+     */
+    private boolean isSupportedEncoding() {
+        boolean result = true;
+
+        switch (preferredEncoding.toLowerCase()) {
+            case ("gzip"):
+                break;
+            case ("x-gzip"):
+                break;
+            case ("zlib"):
+                break;
+            case ("deflate"):
+                break;
+            case ("identity"):
+                break;
+
+            default:
+                result = false;
+        }
+        return result;
+    }
+
+    /**
+     * Set preferred compression flag so that the appropriate compression handler is started
+     */
+    private void setCompressionFlags() {
+
+        if ("gzip".equalsIgnoreCase(preferredEncoding)) {
+            setGZipEncoded(true);
+        } else if ("x-gzip".equalsIgnoreCase(preferredEncoding)) {
+            setXGZipEncoded(true);
+        } else if ("zlib".equalsIgnoreCase(preferredEncoding) || "deflate".equalsIgnoreCase(preferredEncoding)) {
+            // zlib is our keyword, but deflate is the actual compression
+            // algorithm so allow both inputs
+            setZlibEncoded(true);
+        } else if ("identity".equalsIgnoreCase(preferredEncoding)) {
+            setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+
+        } else {
+            // invalid compression, disable further attempts
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Invalid compression: " + preferredEncoding);
+            }
+            setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+        }
+    }
+
+    private boolean isCompressionCompliant() {
+
+        boolean isCompliant = true;
+        String responseMimeType = getResponse().getMIMEType();
+        //Mime Types are composed of Type and SubType, for instance application/xml
+        //Grab just the Type and add wildcard
+        String responseMimeTypeWildCard = null;
+        if (responseMimeType != null) {
+            responseMimeTypeWildCard = responseMimeType.split("/")[0] + "/*";
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.debug(tc, "isCompressionCompliant", "Response MimeType wildcard set as: " + responseMimeTypeWildCard);
+            }
+        }
+
+        //Don't compress if less than 2048 bytes
+        long contentLength = getResponse().getContentLength();
+        if (contentLength != HeaderStorage.NOTSET && contentLength < 2048) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.debug(tc, "isCompressionCompliant", "Response body CL is less than 2048 bytes, do not attempt to compress.");
+            }
+            isCompliant = false;
+        }
+
+        else if (responseMimeType == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.debug(tc, "isCompressionCompliant", "No content type defined for this response, do not attempt to compress.");
+            }
+            isCompliant = false;
+        }
+
+        //Don't compress if the content-type of this response is explicitly configured not to be
+        //compressed.
+        else if (this.getHttpConfig().getExcludedCompressionContentTypes().contains(responseMimeType) ||
+                 this.getHttpConfig().getExcludedCompressionContentTypes().contains(responseMimeTypeWildCard)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.debug(tc, "isCompressionCompliant", "The Content-Type: " + responseMimeType + " is configured to be excluded from compression.");
+            }
+            isCompliant = false;
+        }
+
+        //Don't compress if the content-type of this response message is not configured to be
+        //compressed. Check for wildcard too. By default, this is text-only content-types
+        else if (!this.getHttpConfig().getCompressionContentTypes().contains(responseMimeType) &&
+                 !this.getHttpConfig().getCompressionContentTypes().contains(responseMimeTypeWildCard)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.debug(tc, "isCompressionCompliant", "The Content-Type: " + getResponse().getMIMEType() + " is not configured as a compressable content type");
+            }
+            isCompliant = false;
+        }
+
+        return isCompliant;
+    }
+
     /**
      * Method to check on whether autocompression is requested for this outgoing
      * message.
@@ -2178,44 +2485,161 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return boolean
      */
     private boolean isAutoCompression(HttpBaseMessageImpl msg) {
-        boolean rc = isOutgoingMsgEncoded();
-        if (!rc) {
-            // check compression header
-            String val = msg.getHeader(HttpHeaderKeys.HDR_$WSZIP).asString();
-            if (null != val) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Header requests compression: [" + val + "]");
+
+        if (this.getHttpConfig().useAutoCompression()) {
+            //set the Vary header
+            if (msg.containsHeader(HttpHeaderKeys.HDR_VARY) && !msg.getHeader(HttpHeaderKeys.HDR_VARY).asString().isEmpty()) {
+                String varyHeader = msg.getHeader(HttpHeaderKeys.HDR_VARY).asString().toLowerCase();
+                //if the vary header already contains Accept-Encoding, don't add it again
+                if (!varyHeader.contains(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName().toLowerCase())) {
+                    String updatedVaryValue = new StringBuilder().append(msg.getHeader(HttpHeaderKeys.HDR_VARY).asString()).append(", ").append(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName()).toString();
+
+                    msg.setHeader(HttpHeaderKeys.HDR_VARY, updatedVaryValue);
                 }
-                if ("gzip".equalsIgnoreCase(val)) {
-                    setGZipEncoded(true);
-                    rc = true;
-                } else if ("x-gzip".equalsIgnoreCase(val)) {
-                    setXGZipEncoded(true);
-                    rc = true;
-                } else if ("zlib".equalsIgnoreCase(val) || "deflate".equalsIgnoreCase(val)) {
-                    // zlib is our keyword, but deflate is the actual compression
-                    // algorithm so allow both inputs
-                    setZlibEncoded(true);
-                    rc = true;
-                } else {
-                    // invalid compression, disable further attempts
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Invalid WSZIP compression: " + val);
-                    }
-                    setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
-                }
-                msg.removeSpecialHeader(HttpHeaderKeys.HDR_$WSZIP);
+
+            } else {
+                msg.appendHeader(HttpHeaderKeys.HDR_VARY, HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
             }
         }
-        // now that we know what is wanted, we must check if this particular SC
-        // is going to allow the compression. For example, an inbound request
-        // may not allow compression in the returning response.
-        if (rc) {
-            rc = isCompressionAllowed();
-            if (!rc) {
-                // compression not allowed, disable further attempts
-                setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+
+        //check and set highest priority compression encoding if set
+        //on the Accept-Encoding header
+        parseAcceptEncodingHeader();
+        boolean rc = isOutgoingMsgEncoded();
+
+        //Check if the message has the appropriate type and size before attempting compression
+        if (this.getHttpConfig().useAutoCompression() && !this.isCompressionCompliant()) {
+            rc = false;
+        }
+
+        else if (msg.containsHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING) && !"identity".equalsIgnoreCase(msg.getHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING).asString())) {
+            //Body has already been marked as compressed above the channel, do not attempt to compress
+            rc = false;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Response already contains Content-Encoding: [" + msg.getHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING).asString() + "]");
             }
+
+        }
+
+        else if (rc) {
+            preferredEncoding = outgoingMsgEncoding.getName();
+            if (!this.isSupportedEncoding() || !isCompressionAllowed()) {
+
+                rc = false;
+            }
+        }
+
+        else {
+
+            // check private compression header
+            preferredEncoding = msg.getHeader(HttpHeaderKeys.HDR_$WSZIP).asString();
+            if (null != preferredEncoding) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Header requests compression: [" + preferredEncoding + "]");
+                }
+
+                msg.removeSpecialHeader(HttpHeaderKeys.HDR_$WSZIP);
+
+                if (this.isSupportedEncoding() && isCompressionAllowed() && !this.unacceptedEncodings.contains(preferredEncoding)) {
+                    rc = true;
+                    setCompressionFlags();
+
+                }
+
+            }
+
+            //if the private header didn't provide a valid compression
+            //target, use the encodings from the accept-encoding header
+            if (this.getHttpConfig().useAutoCompression() && !rc) {
+
+                String serverPreferredEncoding = getHttpConfig().getPreferredCompressionAlgorithm().toLowerCase(Locale.ENGLISH);
+
+                //if the compression element has a configured preferred compression
+                //algorithm, check that the client accepts it and the server supports it.
+                //If so, set this to be the compression algorithm.
+                if (!"none".equalsIgnoreCase(serverPreferredEncoding) &&
+                    (acceptableEncodings.containsKey(serverPreferredEncoding) || (bStarEncodingParsed && !this.unacceptedEncodings.contains(serverPreferredEncoding)))) {
+
+                    this.preferredEncoding = serverPreferredEncoding;
+                    if (this.isSupportedEncoding() && isCompressionAllowed()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Setting server preferred encoding");
+                        }
+                        rc = true;
+                        setCompressionFlags();
+                    }
+
+                }
+
+                //At this point, find the compression algorithm by finding the first
+                //algorithm that is both supported by the client and server by iterating
+                //through the sorted list of compression algorithms specified by the
+                //Accept-Encoding header. This returns the first match or gzip in the case
+                //that gzip is tied with other algorithms for the highest quality value.
+                if (!rc) {
+
+                    float gZipQV = 0F;
+                    boolean checkedGZipCompliance = false;
+
+                    //check if GZIP (preferred encoding) was provided
+                    if (acceptableEncodings.containsKey(ContentEncodingValues.GZIP.getName())) {
+                        gZipQV = acceptableEncodings.get(ContentEncodingValues.GZIP.getName());
+                    } else {
+                        checkedGZipCompliance = true;
+                    }
+
+                    for (String encoding : acceptableEncodings.keySet()) {
+                        //if gzip has the same qv and we have yet to evaluate gzip,
+                        //prioritize gzip over any other encoding.
+                        if (acceptableEncodings.get(encoding) == gZipQV && !checkedGZipCompliance) {
+                            preferredEncoding = ContentEncodingValues.GZIP.getName();
+                            checkedGZipCompliance = true;
+                            if (this.isSupportedEncoding() && isCompressionAllowed()) {
+                                rc = true;
+                                setCompressionFlags();
+                                break;
+                            }
+                        }
+
+                        preferredEncoding = encoding;
+                        if (this.isSupportedEncoding() && isCompressionAllowed()) {
+                            rc = true;
+                            setCompressionFlags();
+                            break;
+                        }
+                    }
+                    //If there aren't any explicit matches of acceptable encodings,
+                    //check if the '*' character was set as acceptable. If so, default
+                    //to gzip encoding. If not allowed, try deflate. If neither are allowed,
+                    //disable further attempts.
+                    if (bStarEncodingParsed) {
+                        if (!this.unacceptedEncodings.contains(ContentEncodingValues.GZIP.getName())) {
+                            preferredEncoding = ContentEncodingValues.GZIP.getName();
+                            rc = true;
+                            setCompressionFlags();
+                        } else if (!this.unacceptedEncodings.contains(ContentEncodingValues.DEFLATE.getName())) {
+
+                            preferredEncoding = ContentEncodingValues.DEFLATE.getName();
+                            rc = true;
+                            setCompressionFlags();
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        if (!rc) {
+            //compression not allowed, disable further attempts
+            this.setGZipEncoded(false);
+            this.setXGZipEncoded(false);
+            this.setZlibEncoded(false);
+            setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "Outgoing Encoding: [" + this.outgoingMsgEncoding + "]");
         }
 
         return rc;
@@ -2245,10 +2669,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         // check whether we need to pass data through the compression handler
         if (null != this.compressHandler) {
+
             List<WsByteBuffer> list = this.compressHandler.compress(buffers);
             if (this.isFinalWrite) {
                 list.addAll(this.compressHandler.finish());
             }
+
             // put any created buffers onto the release list
             if (0 < list.size()) {
                 buffers = new WsByteBuffer[list.size()];
@@ -3205,7 +3631,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      * @param excess
      * @throws IllegalHttpBodyException
-     *                                      (if the CRLF is invalid or missing)
+     *             (if the CRLF is invalid or missing)
      */
     private void parseChunkCRLF(int excess) throws IllegalHttpBodyException {
         if (0 == excess) {
@@ -3247,9 +3673,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return boolean (true means async read in progress)
      * @throws BodyCompleteException
      * @throws IllegalHttpBodyException
-     *                                      -- invalid body lengths
+     *             -- invalid body lengths
      * @throws IOException
-     *                                      -- error reading data to determine lengths
+     *             -- error reading data to determine lengths
      */
     private boolean findBodyLength(HttpBaseMessageImpl msg, boolean async) throws BodyCompleteException, IllegalHttpBodyException, IOException {
 
@@ -3427,7 +3853,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @throws BodyCompleteException
      * @throws IllegalHttpBodyException
      * @throws IOException
-     *                                      -- error reading data
+     *             -- error reading data
      */
     private boolean readRawChunk(HttpBaseMessageImpl msg, boolean async) throws BodyCompleteException, IllegalHttpBodyException, IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -3570,7 +3996,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @throws BodyCompleteException
      * @throws IllegalHttpBodyException
      * @throws IOException
-     *                                      -- error reading data
+     *             -- error reading data
      */
     private boolean readSingleBlock(HttpBaseMessageImpl msg, boolean async) throws BodyCompleteException, IllegalHttpBodyException, IOException {
         // check if tempBuffer is already set, unless we're reading the entire
@@ -3687,7 +4113,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @throws IllegalHttpBodyException
      * @throws BodyCompleteException
      * @throws IOException
-     *                                      -- error reading data
+     *             -- error reading data
      */
     final protected boolean readBodyBuffer(HttpBaseMessageImpl msg, boolean async) throws IllegalHttpBodyException, BodyCompleteException, IOException {
         boolean bAsyncInProgress = false;
@@ -3759,7 +4185,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @throws IllegalHttpBodyException
      * @throws BodyCompleteException
      * @throws IOException
-     *                                      -- error reading data
+     *             -- error reading data
      */
     final protected boolean readBodyBuffers(HttpBaseMessageImpl msg, boolean async) throws IllegalHttpBodyException, BodyCompleteException, IOException {
 
@@ -3846,7 +4272,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      * @return boolean - is there output to return to app channels?
      * @throws IllegalHttpBodyException
-     *                                      if decryption fails
+     *             if decryption fails
      */
     private boolean moveBuffers() throws IllegalHttpBodyException {
         if (this.tempBuffers.isEmpty()) {
@@ -3863,6 +4289,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     try {
                         List<WsByteBuffer> list = this.decompressHandler.decompress(buffer);
                         if (!list.isEmpty()) {
+                            if (this.decompressHandler.getBytesRead() > 0
+                                && (this.decompressHandler.getBytesWritten() / this.decompressHandler.getBytesRead()) > getHttpConfig().getDecompressionRatioLimit()) {
+                                this.cyclesAboveDecompressionRatio++;
+                                if (this.cyclesAboveDecompressionRatio > getHttpConfig().getDecompressionTolerance()) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "Decompression ratio tolerance reached. Number of cycles above configured ratio: " + this.cyclesAboveDecompressionRatio);
+                                    }
+                                    String s = Tr.formatMessage(tc, "decompression.tolerance.reached");
+                                    throw new DataFormatException(s);
+                                }
+
+                            }
                             this.storage.addAll(list);
                             rc = true;
                         }
@@ -3921,7 +4359,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @throws BodyCompleteException
      * @throws IllegalHttpBodyException
      * @throws IOException
-     *                                      -- error reading data
+     *             -- error reading data
      */
     private boolean readFullCL(HttpBaseMessageImpl msg, boolean async) throws BodyCompleteException, IllegalHttpBodyException, IOException {
         boolean bAsyncInProgress = false;
@@ -3983,7 +4421,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @throws BodyCompleteException
      * @throws IllegalHttpBodyException
      * @throws IOException
-     *                                      -- error reading data
+     *             -- error reading data
      */
     private boolean readFullChunk(HttpBaseMessageImpl msg, boolean async) throws BodyCompleteException, IllegalHttpBodyException, IOException {
         boolean bAsyncInProgress = false;
@@ -4292,8 +4730,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @param amount
      * @param async
      * @param throwException
-     *                           - if an IOException hits, should it be swallowed
-     *                           quietly or thrown back to the caller
+     *            - if an IOException hits, should it be swallowed
+     *            quietly or thrown back to the caller
      * @return boolean -- true means that an async read is in progress,
      *         false means that there is new data in the currentReadBB to use
      */

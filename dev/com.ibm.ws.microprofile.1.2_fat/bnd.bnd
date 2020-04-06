@@ -14,12 +14,10 @@ bVersion=1.0
 src: \
 	fat/src
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 
-tested.features: microProfile-1.2, microProfile-1.3, microProfile-1.4, microProfile-2.0, microProfile-2.1, microProfile-2.2, microProfile-3.0, microProfile-3.2
+tested.features: microProfile-1.2, microProfile-1.3, microProfile-1.4, microProfile-2.0, microProfile-2.1, microProfile-2.2, microProfile-3.0, microProfile-3.2, microProfile-3.3
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\

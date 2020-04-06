@@ -118,7 +118,11 @@ public class BroadcasterTestServlet extends FATServlet {
         } finally {
             target.request().delete();
             for (ClientListener clientListener : clients) {
-                clientListener.close();
+                try {
+                    clientListener.close();
+                } catch (IllegalStateException e) {
+                    //Ignore already closed message
+                }                
             }
             while (latch.getCount() > 0) {
                 latch.countDown();
@@ -184,7 +188,11 @@ public class BroadcasterTestServlet extends FATServlet {
         } finally {
             target.request().delete();
             for (ClientListener clientListener : clients) {
-                clientListener.close();
+                try {
+                    clientListener.close();
+                } catch (IllegalStateException e) {
+                    //Ignore already closed message
+                }                
             }
             while (latch.getCount() > 0) {
                 latch.countDown();

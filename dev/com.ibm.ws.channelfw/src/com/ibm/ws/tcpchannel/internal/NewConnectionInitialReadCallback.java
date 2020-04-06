@@ -31,13 +31,13 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
  */
 public class NewConnectionInitialReadCallback implements TCPReadCompletedCallback {
 
-    private TCPChannel tcpChannel;
+    private final TCPChannel tcpChannel;
 
     private static final TraceComponent tc = Tr.register(NewConnectionInitialReadCallback.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
     /**
      * Constructor.
-     * 
+     *
      * @param _tcpChannel
      */
     public NewConnectionInitialReadCallback(TCPChannel _tcpChannel) {
@@ -46,7 +46,7 @@ public class NewConnectionInitialReadCallback implements TCPReadCompletedCallbac
 
     /**
      * Tests if the request has space in its buffer(s) or not.
-     * 
+     *
      * @param req
      * @return boolean
      */
@@ -66,6 +66,7 @@ public class NewConnectionInitialReadCallback implements TCPReadCompletedCallbac
      * .channelfw.VirtualConnection,
      * com.ibm.wsspi.tcpchannel.TCPReadRequestContext)
      */
+    @Override
     public void complete(VirtualConnection vc, TCPReadRequestContext req) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "complete");
@@ -84,6 +85,7 @@ public class NewConnectionInitialReadCallback implements TCPReadCompletedCallbac
      * .VirtualConnection, com.ibm.wsspi.tcpchannel.TCPReadRequestContext,
      * java.io.IOException)
      */
+    @Override
     public void error(VirtualConnection vc, TCPReadRequestContext req, IOException ioe) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "error: " + vc);
@@ -123,7 +125,7 @@ public class NewConnectionInitialReadCallback implements TCPReadCompletedCallbac
 
     /**
      * invoke discrimination process.
-     * 
+     *
      * @param inVC
      * @param req
      * @param errorOnRead

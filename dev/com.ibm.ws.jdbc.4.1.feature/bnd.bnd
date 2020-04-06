@@ -17,7 +17,6 @@ Bundle-Description: Database connectivity infrastructure, version ${bVersion}
 
 WS-TraceGroup: RRA
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Private-Package: \
     com.ibm.ws.jdbc.osgi.v41
@@ -25,8 +24,6 @@ Private-Package: \
 -dsannotations: com.ibm.ws.jdbc.osgi.v41.JDBC41Runtime
 
 instrument.disabled: true
-
--buildpath.bootclasspath: ${javac.bootclasspath.1.7}
 
 -buildpath: \
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\

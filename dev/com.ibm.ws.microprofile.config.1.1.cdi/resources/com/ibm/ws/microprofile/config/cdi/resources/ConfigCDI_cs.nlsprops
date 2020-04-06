@@ -48,6 +48,16 @@ property.not.found.CWMCG5004E=CWMCG5004E: Konfigura\u010dn\u00ed vlastnost "{0}"
 property.not.found.CWMCG5004E.explanation=Pojmenovan\u00e1 vlastnost nebyla v \u017e\u00e1dn\u00e9m z konfigurovan\u00fdch zdroj\u016f nalezena. 
 property.not.found.CWMCG5004E.useraction=Ov\u011b\u0159te existenci vlastnosti v jednom ze zdroje konfigurace.
 
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: Z\u00e1vislost InjectionPoint nebyla rozli\u0161ena pro metodu Observer: {0}. Chyba: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=Vlo\u017een\u00e1 vlastnost ConfigProperty nebyla vy\u0159e\u0161ena. Bu\u010f nebyla pojmenovan\u00e1 vlastnost nalezena, nebo p\u0159evodn\u00edk pro po\u017eadovan\u00fd typ nebyl vy\u0159e\u0161en. 
+unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=Zkontrolujte zpr\u00e1vu serveru a protokoly FFDC a ur\u010dete p\u0159\u00ed\u010dinu. Ujist\u011bte se, \u017ee vlastnost existuje v jednom ze zdroj\u016f konfigurace a \u017ee po\u017eadovan\u00e9 p\u0159evodn\u00edky byly konfigurov\u00e1ny.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: Z\u00e1vislost InjectionPoint nebyla zpracov\u00e1na pro objekt typu bean pozorovatele: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=Do\u0161lo k nezn\u00e1m\u00e9 chyb\u011b. Metodu pozorovatele nebylo mo\u017en\u00e9 \u0159\u00e1dn\u011b zpracovat.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=Zkontrolujte zpr\u00e1vu serveru a protokoly FFDC a ur\u010dete p\u0159\u00ed\u010dinu.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message

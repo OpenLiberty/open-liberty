@@ -23,6 +23,11 @@ DynamicImport-Package: *
 Export-Package: com.ibm.ws.recoverylog.spi,\
  com.ibm.ws.recoverylog.utils
 
+Import-Package: \
+  !com.ibm.ws390.recoverylog.spi, \
+  !com.ibm.ws.recoverylog.spi, \
+  *
+
 Service-Component: \
   RecoveryLogManager; \
     implementation:=com.ibm.ws.recoverylog.spi.RecLogServiceImpl; \

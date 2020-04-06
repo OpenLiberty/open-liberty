@@ -1202,10 +1202,8 @@ public class InstallUtils {
     }
 
     
-    protected static void setIsServerXmlInstall(Set<String> allServerFeatures) {
+    public static void setServerXmlInstallTrue() {
         isServerXmlInstallation = true;
-        serverFeatures = allServerFeatures;
-
     }
 
     /**
@@ -1213,19 +1211,11 @@ public class InstallUtils {
      *
      * @return
      */
-    protected static boolean getIsServerXmlInstall() {
+    public static boolean isServerXmlInstall() {
         return isServerXmlInstallation;
     }
 
-    /**
-     * Get the set of all features from a server.xml, including the ones that have been already been installed. Note that this set remains empty
-     * until it is triggered by a method that verifies a server.xml install.
-     *
-     * @return
-     */
-    protected static Set<String> getAllServerFeatures() {
-        return serverFeatures;
-    }
+
 
 
 }

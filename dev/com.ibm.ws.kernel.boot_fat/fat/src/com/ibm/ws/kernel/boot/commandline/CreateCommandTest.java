@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 
 import componenttest.common.apiservices.Bootstrap;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
@@ -82,8 +81,7 @@ public class CreateCommandTest {
 
         String serverEnvContents = FileUtils.readFile(serverEnvPath);
         assertTrue("Expected server.env to contain generated keystore password at " + serverEnvPath, serverEnvContents.contains("keystore_password="));
-        if (JavaInfo.JAVA_VERSION >= 8)
-            assertTrue("Expected server.env to contain WLP_SKIP_MAXPERMSIZE=true at: " + serverEnvPath, serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE=true"));
+        assertTrue("Expected server.env to NOT contain WLP_SKIP_MAXPERMSIZE at: " + serverEnvPath, !serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE"));
     }
 
     @Test
@@ -102,7 +100,7 @@ public class CreateCommandTest {
         assertTrue("Expected server.env file to exist at " + serverEnvPath + ", but does not", LibertyFileManager.libertyFileExists(machine, serverEnvPath));
         String serverEnvContents = FileUtils.readFile(serverEnvPath);
         assertFalse("Expected server.env to NOT contain generated keystore password at " + serverEnvPath, serverEnvContents.contains("keystore_password="));
-        assertTrue("Expected server.env to " + (JavaInfo.JAVA_VERSION == 7 ? "not " : " ") + "contain WLP_SKIP_MAXPERMSIZE=true at: " + serverEnvPath,
-                   JavaInfo.JAVA_VERSION == 7 ? !serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE=true") : serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE=true"));
+        assertTrue("Expected server.env to NOT contain WLP_SKIP_MAXPERMSIZE at: " + serverEnvPath,
+                   !serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE"));
     }
 }

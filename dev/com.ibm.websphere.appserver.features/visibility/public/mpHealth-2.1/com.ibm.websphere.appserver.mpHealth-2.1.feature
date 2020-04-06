@@ -23,5 +23,6 @@ Subsystem-Name: MicroProfile Health 2.1
  com.ibm.ws.classloader.context, \
  com.ibm.ws.microprofile.health.2.0; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2
-kind=beta
+kind=ga
 edition=core
+WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,7 @@ public class ConsoleFormatTest {
 
     /*
      * check for no json being sent to console
-     * <logging traceFileName="stdout" traceFormat="BASIC" messageFormat="basic" consoleFormat="basic" traceSpecification="com.ibm.logs.LogstashServlet=finest" />
+     * <logging traceFileName="stdout" traceFormat="BASIC" messageFormat="simple" consoleFormat="dev" traceSpecification="com.ibm.logs.LogstashServlet=finest" />
      */
     @Test
     public void testBasicConsoleTraceFileNameStdout() throws Exception {
@@ -110,14 +110,14 @@ public class ConsoleFormatTest {
     }
 
     /*
-     * Test switching between JSON and BASIC formatting modes for stdout
+     * Test switching between JSON and DEV formatting modes for stdout
      */
     @Test
     public void testBasicConsoleSwitchToJSONConsoleTraceFileNameStdout() throws Exception {
         setUpClass(server2);
         /*
          * first set config as basic stdout
-         * <logging traceFileName="stdout" traceFormat="BASIC" messageFormat="basic" consoleFormat="basic" traceSpecification="com.ibm.logs.LogstashServlet=finest" />
+         * <logging traceFileName="stdout" traceFormat="BASIC" messageFormat="simple" consoleFormat="dev" traceSpecification="com.ibm.logs.LogstashServlet=finest" />
          */
         RemoteFile consoleLogFile = server2.getConsoleLogFile();
         line = setConfig(SERVER_XML_BASIC_STDOUT, consoleLogFile, server2);

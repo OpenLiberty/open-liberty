@@ -1,0 +1,6 @@
+org.apache.cxf.ws.addressing.policy.AddressingAssertionBuilder::true:true
+org.apache.cxf.ws.addressing.policy.UsingAddressingAssertionBuilder::true:true
+org.apache.cxf.ws.addressing.policy.AddressingPolicyInterceptorProvider::true:true
+org.apache.cxf.ws.addressing.impl.AddressingWSDLExtensionLoader::true:true
+org.apache.cxf.ws.addressing.impl.AddressingFeatureApplier:org.apache.cxf.ws.addressing.WSAddressingFeature$WSAddressingFeatureApplier:true:true
+org.apache.cxf.ws.addressing.impl.MAPAggregatorImplLoader:org.apache.cxf.ws.addressing.MAPAggregator$MAPAggregatorLoader:true:true

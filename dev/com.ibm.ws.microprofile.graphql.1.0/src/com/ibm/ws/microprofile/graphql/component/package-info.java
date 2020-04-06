@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "GraphQL")
+@TraceOptions(traceGroup = "GraphQL", messageBundle = "com.ibm.ws.microprofile.graphql.resources.MPGraphQL")
 package com.ibm.ws.microprofile.graphql.component;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

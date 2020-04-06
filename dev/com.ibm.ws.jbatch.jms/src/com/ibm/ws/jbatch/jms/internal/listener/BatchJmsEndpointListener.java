@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,15 +42,17 @@ import com.ibm.jbatch.container.exception.BatchContainerRuntimeException;
 import com.ibm.jbatch.container.exception.BatchIllegalIDPersistedException;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.PersistenceException;
+import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.ws.BatchInternalDispatcher;
 import com.ibm.jbatch.container.ws.BatchStatusValidator;
 import com.ibm.jbatch.container.ws.BatchSubmitInvalidParametersException;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.JobStoppedOnStartException;
 import com.ibm.jbatch.container.ws.PartitionPlanConfig;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg.PartitionReplyMsgType;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobOperator;
@@ -100,7 +102,6 @@ public class BatchJmsEndpointListener implements MessageListener {
      */
     private ConnectionFactory connectionFactory ;
     private BatchOperationGroup batchOperationGroup;
-    private WSJobRepository jobRepository;
    
     /*
      * @param ConnectionFactory configured to use the partition queue
@@ -109,7 +110,6 @@ public class BatchJmsEndpointListener implements MessageListener {
         
         // track the batch operation group name(s)
         this.batchOperationGroup = batchOpGrp;
-        this.jobRepository = jobRepo;
         this.connectionFactory = cf;
     }
     
@@ -376,10 +376,23 @@ public class BatchJmsEndpointListener implements MessageListener {
                 return;
             }
 
-            // The RemotablePartitionState is essentially just for monitoring.  We don't have logic conditionally depending on the state.  So there's not really
-            // a need to worry about locking to guard against inconsistencies for now.
-            jobRepositoryProxy.updateRemotablePartitionInternalState(jobExecutionId, config.getStepName(), config.getPartitionNumber(), RemotablePartitionState.CONSUMED);
-             
+            RemotablePartitionKey rpKey = new RemotablePartitionKey(jobExecutionId, config.getStepName(), config.getPartitionNumber());
+            WSRemotablePartitionState rpState = jobRepositoryProxy.getRemotablePartitionInternalState(rpKey);
+            if (rpState == null) {
+                if(tc.isDebugEnabled()) {
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Ignore, RP table maybe not created");
+                }
+            } else if (!rpState.equals(WSRemotablePartitionState.QUEUED)) {
+                // It might seem like we should have more locking around the state transition.  However even if we were to let two
+                // threads through, the DB constraint would only allow one to create the partition-level STEPTHREADEXECUTION entry.
+                // So there would be some noise and possible failure even, but not the double execution of this partition.   So we do
+                // this simple check.
+                if(tc.isDebugEnabled()) {
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since WSRemotablePartitionState = " + rpState);
+                }
+                return;
+            }
+
             // UPDATE: 2019-09-24 - I'm sure this comment below isn't 100% correct or up-to-date, but I'm leaving it
             // because it enumerates a bunch of considerations that we should keep in mind.
             //
@@ -451,6 +464,7 @@ public class BatchJmsEndpointListener implements MessageListener {
      * @param jobParameters
      * 
      */
+    @FFDCIgnore( JobInstanceNotQueuedException.class )
     private void handleRestartRequest(long jobInstanceId, long executionId, byte[] securityContext, Properties restartParameters) {
     
         WSJobRepository jobRepository = getWSJobRepositoryInstance();
@@ -478,19 +492,25 @@ public class BatchJmsEndpointListener implements MessageListener {
                 return;
             }
 
-            WSJobInstance jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
-            if (jobInstance.getInstanceState() != InstanceState.JMS_CONSUMED) {
+            WSJobInstance jobInstance = null; 
+
+            try {
+            	jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
+            } catch (JobInstanceNotQueuedException exc) {
+            	// trace and swallow this 
                 if(tc.isDebugEnabled()) {
-                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_CONSUMED, instead is: " + jobInstance.getInstanceState());
+                	// Might be misleading to trace the non-JMS_QUEUED `state we found without locking it down
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_QUEUED");
                 }
                 return;
             }
+            
             publishEvent(jobInstance, BatchEventsPublisher.TOPIC_INSTANCE_JMS_CONSUMED, correlationId);
 
             // get the op group names and create a mapping to each for the job instance id
             if (batchOperationGroup != null) {
-                int instanceTableVersion = jobRepositoryProxy.getJobInstanceTableVersion();
-                if (instanceTableVersion >= 3) {
+                int instanceEntityVersion = jobRepositoryProxy.getJobInstanceEntityVersion();
+                if (instanceEntityVersion >= 3) {
                     if (jobInstance.getGroupNames() == null || jobInstance.getGroupNames().size() == 0) {
                         if(tc.isDebugEnabled()) {
                             Tr.debug(BatchJmsEndpointListener.this, tc, "On restart, null/empty operation group mapping. Give it another chance.");
@@ -503,7 +523,7 @@ public class BatchJmsEndpointListener implements MessageListener {
                     }
                 } else {
                     if(tc.isDebugEnabled()) {
-                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceTableVersion); 
+                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceEntityVersion); 
                     }
                 }
             }
@@ -540,7 +560,7 @@ public class BatchJmsEndpointListener implements MessageListener {
      * @param securityContext
      * @param jobParameters
      */
-    @FFDCIgnore( JobStoppedOnStartException.class )
+    @FFDCIgnore( {JobStoppedOnStartException.class, JobInstanceNotQueuedException.class} )
     private void handleStartRequest(long instanceId, long executionId, byte[] securityContext, Properties jobParameters) {
         Exception savedException = null;
         WSJobRepository jobRepository = getWSJobRepositoryInstance();
@@ -557,10 +577,15 @@ public class BatchJmsEndpointListener implements MessageListener {
                 return;
             }
             
-            WSJobInstance jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
-            if (jobInstance.getInstanceState() != InstanceState.JMS_CONSUMED) {
+            WSJobInstance jobInstance = null; 
+
+            try {
+            	jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
+            } catch (JobInstanceNotQueuedException exc) {
+            	// trace and swallow this 
                 if(tc.isDebugEnabled()) {
-                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_CONSUMED, instead is: " + jobInstance.getInstanceState());
+                	// Might be misleading to trace the non-JMS_QUEUED `state we found without locking it down
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_QUEUED");
                 }
                 return;
             }
@@ -568,12 +593,12 @@ public class BatchJmsEndpointListener implements MessageListener {
 
             // get the op group names and create a mapping to each for the job instance id
             if (batchOperationGroup != null) {
-                int instanceTableVersion = jobRepositoryProxy.getJobInstanceTableVersion();
-                if (instanceTableVersion >= 3) {
+                int instanceEntityVersion = jobRepositoryProxy.getJobInstanceEntityVersion();
+                if (instanceEntityVersion >= 3) {
                     jobRepositoryProxy.updateJobInstanceWithGroupNames(instanceId, batchOperationGroup.getGroupNames());
                 } else {
                     if(tc.isDebugEnabled()) {
-                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceTableVersion); 
+                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceEntityVersion); 
                     }
                 }
             }

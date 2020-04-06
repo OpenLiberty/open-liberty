@@ -68,6 +68,7 @@
                 <persistence-unit-name>Cleanup</persistence-unit-name>
             </persistence-unit-ref>
         </session>
+
         <!-- Stateful Session Bean, PC: CM-ES -->
         <session>
             <ejb-name>OLGH8820SFExEJB</ejb-name>

@@ -17,6 +17,10 @@ public interface TypeInfoGenerator {
 
     String generateTypeDescription(AnnotatedType type, MessageBundle messageBundle);
 
+    String generateInterfaceName(AnnotatedType type, MessageBundle messageBundle);
+
+    String generateEnumName(AnnotatedType type, MessageBundle messageBundle);
+
     String[] getFieldOrder(AnnotatedType type, MessageBundle messageBundle);
 
     default String generateInputTypeName(AnnotatedType type, MessageBundle messageBundle) {

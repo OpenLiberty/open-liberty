@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2019 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ import static org.objectweb.asm.Opcodes.NEW;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_2;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -1339,28 +1340,51 @@ public final class EJBWrapper
         // RemoteException), then we need a special catch block for RemoteException so
         // that it is not treated as an application exception. Legacy behavior did
         // not add this catch if RemotException is on the throws clause, so maintaining
-        // that behavior for compatibility.
+        // that behavior for compatibility. Throwing a subclass of RemoteException was
+        // previously not allowed, so that scenario has no compatibility concerns and
+        // will treat the RemoteException subclass as a system exception.
+        // Also, legacy behavior did not add the catch of RemoteException if only
+        // IOException was present; maintaining that behavior.
+        // For 2.x local interfaces, catch block is added if either Exception or
+        // IOException are present.
         boolean catchRemoteException = false;
-        if (isRmiRemote && !DeclaredRemoteAreApplicationExceptions) {
+        boolean throwsIOException = false;
+        if ((isRmiRemote && !DeclaredRemoteAreApplicationExceptions) ||
+            (wrapperType == EJBWrapperType.REMOTE || wrapperType == EJBWrapperType.REMOTE_HOME ||
+             wrapperType == EJBWrapperType.LOCAL || wrapperType == EJBWrapperType.LOCAL_HOME)) {
             for (Class<?> checkedException : checkedExceptions) {
                 catchRemoteException |= checkedException == Exception.class;
+                throwsIOException |= checkedException == IOException.class;
             }
-            if (catchRemoteException) {
-                for (Class<?> methodException : methodExceptions) {
-                    if (methodException == RemoteException.class) {
-                        catchRemoteException = false;
-                        break;
+            if (isRmiRemote) {
+                if (catchRemoteException) {
+                    for (Class<?> methodException : methodExceptions) {
+                        if (methodException == RemoteException.class) {
+                            catchRemoteException = false;
+                        } else if (RemoteException.class.isAssignableFrom(methodException)) {
+                            catchRemoteException = true;
+                            break;
+                        }
+                    }
+                } else if (throwsIOException) {
+                    for (Class<?> methodException : methodExceptions) {
+                        if (RemoteException.class.isAssignableFrom(methodException)) {
+                            catchRemoteException = true;
+                            break;
+                        }
                     }
                 }
-
+            } else {
+                catchRemoteException |= throwsIOException;
             }
         }
+
         Label main_catch_remote_exception = null;
         if (catchRemoteException) {
             // -----------------------------------------------------------------------
-            // catch (RemoteException th)
+            // catch (RemoteException ex)
             // {
-            //   s.setUncheckedException(th);
+            //   s.setUncheckedException(ex);   or   s.setUncheckedLocalException(ex);
             // }
             // -----------------------------------------------------------------------
             main_catch_remote_exception = new Label();

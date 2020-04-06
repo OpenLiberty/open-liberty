@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -467,6 +467,13 @@ warning.supplied.config.not.valid=CWWKG0103W: \u5ffd\u7565\u503c\u70ba {1} \u768
 warning.supplied.config.not.valid.explanation= \u914d\u7f6e\u5c6c\u6027\u6a19\u793a\u70ba ibm:final \u4e14\u9810\u8a2d\u503c\u7121\u6548\u3002\u8acb\u5f9e\u914d\u7f6e\u4e2d\u79fb\u9664\u5df2\u914d\u7f6e\u7684\u5c6c\u6027\u3002
 warning.supplied.config.not.valid.useraction=\u8acb\u66f4\u65b0\u4f3a\u670d\u5668\u914d\u7f6e\uff0c\u4ee5\u79fb\u9664\u4e0d\u6b63\u78ba\u7684\u5c6c\u6027\u503c\u3002
 
+variables.in.id.not.supported=CWWKG0104W: \u5c0d\u65bc\u914d\u7f6e\u5143\u7d20 {0} \u7684\u503c {1}\uff0cID \u5c6c\u6027\u5fc5\u9808\u5177\u6709\u56fa\u5b9a\u503c\u3002\u5c07\u4e0d\u53d6\u4ee3 ID \u5c6c\u6027\u4e2d\u7684\u8b8a\u6578\u3002
+variables.in.id.not.supported.explanation=ID \u5c6c\u6027\u4e2d\u4e0d\u63a5\u53d7\u8b8a\u6578\u503c\u3002\u6703\u5c07 ID \u5c6c\u6027\u4e2d\u7684\u6240\u6709\u8b8a\u6578\u8996\u70ba\u6587\u5b57\u5b57\u4e32\u3002
+variables.in.id.not.supported.useraction=\u8acb\u5f9e ID \u5c6c\u6027\u7684\u503c\u4e2d\u79fb\u9664\u8b8a\u6578\u3002
+
+error.root.must.be.server=CWWKG0105E: {0} \u914d\u7f6e\u6587\u4ef6\u5fc5\u9808\u4ee5 [{1}] \u5143\u7d20\u958b\u982d\u3002
+error.root.must.be.server.explanation=\u914d\u7f6e\u5fc5\u9808\u5305\u542b\u5728\u4f3a\u670d\u5668\u5143\u7d20\u6216\u7528\u6236\u7aef\u5143\u7d20\u4e2d\u3002
+error.root.must.be.server.useraction=\u8acb\u65b0\u589e\u4e00\u500b\u4f3a\u670d\u5668\u6216\u7528\u6236\u7aef\u5143\u7d20\uff0c\u4f5c\u70ba\u914d\u7f6e\u6a94\u7684\u6839\u3002
 
 # Non-TR message
 error.invalidOCDRef=ERROR: metatype PID [{0}] \u6307\u5b9a\u4e86\u4e0d\u5b58\u5728\u7684\u7269\u4ef6\u985e\u5225\u5b9a\u7fa9 ID [{1}]

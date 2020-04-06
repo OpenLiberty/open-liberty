@@ -39,6 +39,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.TraceConstants;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.exception.OAuthDataException;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientDBModel;
@@ -907,8 +908,7 @@ public class CachedDBOidcClientProvider extends OAuthJDBCImpl implements OidcOAu
 
         // Use an empty string as the last insert to avoid an unused insert (e.g. "{2}") showing up in the exception message
         updatedMsgArgs = appendStringMessageToArgs("", msgArgs);
-        String exceptionMsg = Tr.formatMessage(tc, msgKey, updatedMsgArgs);
-        throw new OidcServerException(exceptionMsg, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, msgKey, updatedMsgArgs), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
     }
 
     /**
@@ -925,8 +925,7 @@ public class CachedDBOidcClientProvider extends OAuthJDBCImpl implements OidcOAu
 
         // Use an empty string as the last insert to avoid an unused insert (e.g. "{2}") showing up in the exception message
         updatedMsgArgs = appendStringMessageToArgs("", msgArgs);
-        String exceptionMsg = Tr.formatMessage(tc, msgKey, updatedMsgArgs);
-        throw new OidcServerException(exceptionMsg, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, msgKey, updatedMsgArgs), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
     }
 
     Object[] appendStringMessageToArgs(String additionalInsert, Object... msgArgs) {

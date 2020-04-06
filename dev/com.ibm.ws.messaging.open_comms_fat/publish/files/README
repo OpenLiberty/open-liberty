@@ -1,0 +1,21 @@
+
+The certificate store files (*.jks) found in publish/servers/*/resources/security have the password "password".
+
+Each pair (client-server,WJOClient-WJOServer) contains both certificates (though not strictly necessary).
+
+Use:
+
+  wlp/bin/securityUtility createSSLCertificate --passwordEncoding=xor --server=<server> --password=password --keyType=JKS
+
+to generate and:
+
+  keytool -exportcert -keystore <file1>.jks -alias default -file <1>.cert
+  keytool -importcert -keystore <file2>.jks -storepass password -file <1>.cert
+  keytool -list -keystore <file2>.jks -storepass password
+
+to export, import and list - though only necessary if/when server names change etc.
+
+
+The files client.xml and server.xml should match the publish/servers/com.ibm.ws.messaging.open_comms.client and
+com.ibm.ws.messaging.open_comms.server server.xml files respectively.
+

@@ -19,8 +19,8 @@ table
 
                     &:first-of-type
                     {
-                        width: 174px;
-                        padding: 0 0 0 2em;
+                        width: 100px;
+                        padding: 0;
                     }
                 }
             }
@@ -52,8 +52,7 @@ table
 
                 &:first-of-type
                 {
-                    max-width: 20%;
-                    min-width: 6em;
+                    width: 20%;
                     padding: 10px 0;
                 }
             }
@@ -74,7 +73,7 @@ table
 
                 text-align: left;
 
-                border-bottom: 1px solid rgba($table-thead-td-border-bottom-color, .2);
+                border-bottom: 1px solid rgba(#3b4151, .2);
 
                 @include text_body();
             }
@@ -84,14 +83,19 @@ table
 
 .parameters-col_description
 {
+    p
+    {
+        font-size: 14px;
+
+        margin: 0;
+
+        @include text_body();
+    }
+
     input[type=text]
     {
         width: 100%;
         max-width: 340px;
-    }
-
-    select {
-        border-width: 1px;
     }
 }
 
@@ -117,18 +121,17 @@ table
 
             content: 'required';
 
-            color: rgba($table-parameter-name-required-font-color, .6);
+            color: rgba(#c00, .6);
         }
     }
 }
 
-.parameter__in,
-.parameter__extension
+.parameter__in
 {
     font-size: 12px;
     font-style: italic;
 
-    @include text_code($table-parameter-in-font-color);
+    @include text_code(#666);
 }
 
 .parameter__deprecated
@@ -136,8 +139,9 @@ table
     font-size: 12px;
     font-style: italic;
 
-    @include text_code($table-parameter-deprecated-font-color);
+    @include text_code(#f00);
 }
+
 
 
 .table-container

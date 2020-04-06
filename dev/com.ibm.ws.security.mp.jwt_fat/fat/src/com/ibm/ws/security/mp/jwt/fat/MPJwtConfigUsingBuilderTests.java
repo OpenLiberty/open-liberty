@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,6 +45,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -91,6 +93,9 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @Server("com.ibm.ws.security.mp.jwt.fat.builder")
     public static LibertyServer jwtBuilderServer;
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
+
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     /**
@@ -98,7 +103,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * Set flag to tell the code that runs between tests NOT to restore the server config between tests
      * (very few of the tests use the config that the server starts with - this setting will save run time)
      * Build the list of app urls and class names that each test will use
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -131,7 +136,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * Starts the server using the provided configuration file
      * Saves the port info for this server (allows tests with multiple servers to know what ports each server uses)
      * Allow some failure messages that occur during startup (they're ok and doing this prevents the test framework from failing)
-     * 
+     *
      * @param server
      *            - the server to process
      * @param configFile
@@ -150,6 +155,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
             bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
             bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         }
+        bootstrapUtils.writeBootstrapProperty(server, "mpJwt_authHeaderPrefix", MpJwtFatConstants.TOKEN_TYPE_BEARER + " ");
         deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
@@ -159,7 +165,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
     /**
      * Initialize the list of test application urls and their associated classNames
-     * 
+     *
      * @throws Exception
      */
     protected List<List<String>> getTestAppArray() throws Exception {
@@ -181,7 +187,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * token, the config they use in the resource server
      * and then whether they expect a failure (mainly due to a mis-match between the token and the servers config).
      * We'll put the common steps in this method so we're not duplicating steps/code over and over.
-     * 
+     *
      * @param builtToken
      *            - the token built to reflect the goal of the calling test
      * @param expectations
@@ -197,7 +203,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
 
         WebClient webClient = actions.createWebClient();
-        // If we're setting good expectations, they have to be unique for each app that we're testing with 
+        // If we're setting good expectations, they have to be unique for each app that we're testing with
         boolean setGoodExpectations = false;
         if (expectations == null) {
             setGoodExpectations = true;
@@ -237,7 +243,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that an unrecognized issuer will not be accepted
      * (test uses a mis-match between the builder and the configured mpjwt config to test this)
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -255,7 +261,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
     /**
      * Don't specify an issuer - config won't load, all we can do is check for the message
-     * 
+     *
      * @throws Exception
      */
     //    @Test
@@ -276,7 +282,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
     /**
      * Test that mpJwt is used for an app that matches the authFilter that the mpJwt config specifies.
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -292,7 +298,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
     /**
      * Test that we get the login page for an app that does NOT match the authFilter that the mpJwt config specifies.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -315,7 +321,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses a builder that puts the aud claim in the JWT Token. The resource server specifies
      * the audiences config attribute with the same values that are in the token. Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -331,7 +337,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses a builder that puts the aud claim in the JWT Token. The resource server does not
      * specify the audiences config attribute. Expect a 401 and appropriate error messages in the server side log.
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
@@ -353,7 +359,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses a builder that does not put the aud claim in the JWT Token. The resource server does
      * specify the audiences config attribute. Expect a 401 and appropriate error messages in the server side log.
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
@@ -376,7 +382,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * Test that uses a builder that puts the aud claim in the JWT Token. The resource server specifies
      * the audiences config attribute with different values than those that are in the token. Expect a 401
      * and appropriate error messages in the server side log
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -399,7 +405,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses a builder that puts the aud claim in the JWT Token. The resource server specifies
      * the audiences config attribute with a superset of the values that are in the token. Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -415,7 +421,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses a builder that puts the aud claim in the JWT Token. The resource server specifies
      * the audiences config attribute with a subset of the values that are in the token. Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -437,7 +443,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * builder issues token with JWK, mpJwt specifies a valid jwksUri
      * Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -454,7 +460,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * builder issues token with JWK, mpJwt omits the jwksUri, but, specifies a valid keyName
      * Expect failure
-     * 
+     *
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
@@ -479,7 +485,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * builder issues token with x509, mpJwt specifies a valid jwksUri
      * Expect expect failure
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.websphere.security.jwt.InvalidClaimException" })
@@ -503,7 +509,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * builder issues token with x509, mpJwt omits the jwksUri, but, specifies a valid keyName
      * Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -522,7 +528,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Tests that uses builder "JWKEnabled2" to generate a JWT Token and has a resource server that
      * specifies the jwksUri that points to JWKEnabled (not JWKEnabled2). Expect a 401 and appropriate error messages.
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
@@ -549,7 +555,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses builder that does NOT use JWK to generate a JWT Token and has a resource server that
      * specifies the some other key name. Expect a 401 and appropriate error messages.
-     * 
+     *
      * @throws Exception
      */
     @ExpectedFFDC({ "java.security.cert.CertificateException", "com.ibm.websphere.security.jwt.KeyException" })
@@ -633,7 +639,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses builder that does NOT use JWK to generate a JWT Token and has a resource server that
      * specifies the a valid SSLRef. Expect success.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -650,7 +656,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses builder that does NOT use JWK to generate a JWT Token and has a resource server that
      * specifies the an in-valid SSLRef. Expect a 401 and the appropriate error messages.
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
@@ -687,7 +693,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * The test uses a builder that includes jti in the JWT token. The resource server specifies the
      * tokenReuse config attribute set to true. Use the token a second time and expect success
-     * 
+     *
      * @throws Exception
      */
     //   This is the default case...
@@ -710,7 +716,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * (test uses steps similar to genericConfigTest, but doesn't use genericConfigTest because it invokes multiple apps (the
      * first
      * app would work, and 2 & 3 would fail)
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException" })
@@ -754,7 +760,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses the generic builder (requesting that it adds the sub claim) The resource server specifies
      * the userNameAttribute set to sub. Expect success
-     * 
+     *
      */
     @Test
     public void MPJwtConfigUsingBuilderTests_userNameAttribute_Exists_standardClaim() throws Exception {
@@ -773,7 +779,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * Test that uses the generic builder to generate a JWT. The resource server specifies the usernNameAttribute set
      * to "other" "other" is not a claim added by the builder, so, expect a 401 and the appropriate error messages
      * in the server log
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException" })
@@ -802,7 +808,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * The test shows that the "other" value of "someuser" is used in the subject/credentials.
      * (side note: mapToUserRegistry is not set in the RS config, therefore, it takes the default value of "false" and
      * the value "someuser" will NOT be checked against the list of users in the registry)
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -831,7 +837,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * The test shows that the "other" value of "someuser" is used in the subject/credentials (not the value in upn)
      * (side note: mapToUserRegistry is not set in the RS config, therefore, it takes the default value of "false" and
      * the value "someuser" will NOT be checked against the list of users in the registry)
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -857,7 +863,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * The resource server includes the userNameAttribute set to "other".
      * Expect a 401 and the appropriate error messages in the server log
      * (claim other doesn't exist, runtime won't try to use upn value)
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException" })
@@ -886,7 +892,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * The resource server includes the userNameAttribute set to "other".
      * The resource server also include mapToUserRegistry=true. The user "someuser" is NOT
      * a valid entry in the registry. Expect a 401 and the appropriate error messages in the server log
-     * 
+     *
      * @throws Exception
      */
     @ExpectedFFDC({ "com.ibm.ws.security.registry.EntryNotFoundException" })
@@ -931,7 +937,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * the future.
      * The resource server specifies a clockSkew of 3 minutes. The test creates a token, and sleeps for 15 seconds. The expiration
      * time has passed, but new current time is not beyond expiration time plus clockSkew. Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -943,8 +949,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         extraClaims.add(new NameValuePair("upn", defaultUser));
         long currentTime = System.currentTimeMillis() / 1000;
         long expTime = currentTime + 5;
-        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT_TIME_IN_SECS, String.valueOf(currentTime)));
-        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME_IN_SECS, String.valueOf(expTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT, String.valueOf(currentTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME, String.valueOf(expTime)));
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "subject_claim_included", extraClaims);
 
@@ -960,7 +966,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * The resource server specifies a clockSkew of 5 seconds. The test creates a token, and sleeps for 20 seconds. The expiration
      * time has passed, and the new current time is beyond expiration time plus clockSkew. Expect a 401 and the appropriate error
      * messages in the server log
-     * 
+     *
      * @throws Exception
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
@@ -973,8 +979,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         extraClaims.add(new NameValuePair("upn", defaultUser));
         long currentTime = System.currentTimeMillis() / 1000;
         long expTime = currentTime + 5;
-        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT_TIME_IN_SECS, String.valueOf(currentTime)));
-        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME_IN_SECS, String.valueOf(expTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT, String.valueOf(currentTime)));
+        extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME, String.valueOf(expTime)));
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "subject_claim_included", extraClaims);
 
@@ -1003,7 +1009,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * The test uses a builder that creates a token with the upn set to a user in the resource servers
      * registry.
      * The resource server specifies a mapToUserRegistry=false. Do not specify userNameAttribute. Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1021,7 +1027,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * The test uses a builder that creates a token with the upn set to a user in the resource servers
      * registry.
      * The resource server specifies a mapToUserRegistry=true. Do not specify userNameAttribute. Expect success
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1040,7 +1046,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * registry.
      * The resource server specifies a mapToUserRegistry=true. Do not specify userNameAttribute. Expect 401 and
      * the appropriate error messages in the server log.
-     * 
+     *
      * @throws Exception
      */
     @ExpectedFFDC({ "com.ibm.ws.security.registry.EntryNotFoundException" })

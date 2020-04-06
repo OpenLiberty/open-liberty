@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1597,3 +1597,20 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=V\u00e9rifiez le c
 exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: Le ServletContainerInitializer [{0}], situ\u00e9 dans l''application suivante [{2}], a g\u00e9n\u00e9r\u00e9 l''erreur suivante lors de l''appel de la m\u00e9thode onStartup : [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=Une exception a \u00e9t\u00e9 \u00e9mise \u00e0 partir d'un ServletContainerInitializer lors de l'appel de la m\u00e9thode onStartup.
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Consultez l'exception pour d\u00e9terminer la cause de l'erreur.
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: Aucune d\u00e9finition de servlet n''a \u00e9t\u00e9 trouv\u00e9e pour le nom de servlet {0} dans le mappage de filtre {1}.
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=Le nom de servlet est utilis\u00e9 dans le mappage de filtre, mais sa d\u00e9finition n'a pas \u00e9t\u00e9 configur\u00e9e.
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=D\u00e9finissez le servlet qui est utilis\u00e9 dans le mappage de filtre de nom de servlet.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: Un nom de cookie {0} associ\u00e9 \u00e0 la valeur d''attribut SameSite existante {1} est configur\u00e9 avec la nouvelle valeur {2}. Aucun attribut SameSite n''est ajout\u00e9 pour ce cookie.
+duplicate.samesite.attribute.for.cookie.name.explanation=Un nom de cookie ne peut pas \u00eatre configur\u00e9 pour plusieurs valeurs d'attribut SameSite. L'attribut n'est pas ajout\u00e9 pour le cookie.
+duplicate.samesite.attribute.for.cookie.name.useraction=V\u00e9rifiez la configuration du descripteur de d\u00e9ploiement pour vous assurer que le nom de cookie est configur\u00e9 pour l'une des valeurs d'attribut SameSite suivantes seulement : 'SameSiteCookies_Lax', 'SameSiteCookies_None' ou 'SameSiteCookies_Strict'. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Un nom de cookie {0} qui est configur\u00e9 pour la valeur d''attribut SameSite {1} a \u00e9t\u00e9 pr\u00e9c\u00e9demment identifi\u00e9 en tant que doublon. Aucun attribut SameSite n''est ajout\u00e9 pour ce cookie.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=Un nom de cookie ne peut pas \u00eatre configur\u00e9 pour plusieurs valeurs d'attribut SameSite. Ce nom de cookie a d\u00e9j\u00e0 \u00e9t\u00e9 identifi\u00e9 en tant que doublon.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=V\u00e9rifiez la configuration du descripteur de d\u00e9ploiement pour vous assurer que le nom de cookie est configur\u00e9 pour l'une des valeurs d'attribut SameSite suivantes seulement : 'SameSiteCookies_Lax', 'SameSiteCookies_None' ou 'SameSiteCookies_Strict'. 

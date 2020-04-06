@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -165,6 +165,9 @@ public class H2StreamResult {
     public void addExpectedResponse(FrameTypes type) {
         this.onlyCheckFrameTypes = true;
         this.expectedResponseTypes.add(type);
+        if (type.equals(FrameTypes.GOAWAY)) {
+            this.goawayExpected = true;
+        }
     }
 
     /**
@@ -247,11 +250,17 @@ public class H2StreamResult {
         List<Exception> exceptionsOfStream = new ArrayList<Exception>();
 
         if (this.onlyCheckFrameTypes) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "Comparing frame types of streamId: " + streamId);
             // we're only checking received frame types on this stream: verify that the expected types were received, then return
             for (FrameTypes type : expectedResponseTypes) {
                 if (!actualResponseTypes.contains(type)) {
                     exceptionsOfStream.add(new MissingExpectedFramesException("Expected Frame Type(s) not found: \n" + type.toString()));
                 }
+            }
+            if (0 == exceptionsOfStream.size()) {
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "All frame types present for streamId: " + streamId);
             }
             return exceptionsOfStream;
         }
@@ -332,8 +341,15 @@ public class H2StreamResult {
 
     public boolean isExpectedFrameType(Frame frame) {
         FrameTypes x = frame.getFrameType();
+        // check the expected frame array
         for (int i = 0; i < expectedResponse.size(); i++) {
             if (x == expectedResponse.get(i).getFrameType()) {
+                return true;
+            }
+        }
+        // Also check the expected frame type array
+        for (int i = 0; i < expectedResponseTypes.size(); i++) {
+            if (x == expectedResponseTypes.get(i)) {
                 return true;
             }
         }

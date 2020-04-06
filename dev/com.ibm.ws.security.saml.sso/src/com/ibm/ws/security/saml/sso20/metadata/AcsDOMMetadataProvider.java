@@ -1,9 +1,9 @@
 /*
- * Licensed to the University Corporation for Advanced Internet Development, 
- * Inc. (UCAID) under one or more contributor license agreements.  See the 
+ * Licensed to the University Corporation for Advanced Internet Development,
+ * Inc. (UCAID) under one or more contributor license agreements.  See the
  * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache 
- * License, Version 2.0 (the "License"); you may not use this file except in 
+ * copyright ownership. The UCAID licenses this file to You under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
@@ -30,7 +30,7 @@ import com.ibm.ws.security.saml.sso20.internal.utils.FileInfo;
 /**
  * A <code>MetadataProvider</code> implementation that retrieves metadata from a DOM <code>Element</code> as
  * supplied by the user.
- * 
+ *
  * It is the responsibility of the caller to re-initialize, via {@link #initialize()}, if any properties of this
  * provider are changed.
  */
@@ -43,7 +43,7 @@ public class AcsDOMMetadataProvider extends DOMMetadataProvider {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mdElement the metadata element
      * @throws SamlException
      */

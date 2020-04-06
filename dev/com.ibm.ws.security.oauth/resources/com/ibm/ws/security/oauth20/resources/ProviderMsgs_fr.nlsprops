@@ -317,7 +317,8 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: Le param\u00e8tre de demand
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=La valeur indiqu\u00e9e du param\u00e8tre fourni dans la demande OAuth n'est pas valide. Les valeurs valides sont list\u00e9es dans l'attribut indiqu\u00e9 de la configuration du serveur.
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Assurez-vous que les valeurs fournies pour le param\u00e8tre de demande sont valides.
 
-security.oauth20.front.end.error=CWOAU0073E: Une erreur est survenue lors de l'authentification d'un utilisateur. Essayez \u00e0 nouveau de l'authentifier ou contactez l'administrateur du site si le probl\u00e8me persiste.
+# this message is also emitted by the oidc client via the PublicErrorFacingServlet
+security.oauth20.front.end.error=CWOAU0073E: Une erreur d'authentification s'est produite. Fermez le navigateur Web et proc\u00e9dez \u00e0 nouveau \u00e0 l'authentification ou contactez l'administrateur du site si le probl\u00e8me persiste.
 security.oauth20.front.end.error.explanation=Il se peut que des informations manquent dans la demande, que le serveur ait rencontr\u00e9 une erreur interne, ou qu'une autre erreur ait emp\u00each\u00e9 le serveur d'authentifier l'utilisateur.
 security.oauth20.front.end.error.useraction=Contactez l'administrateur syst\u00e8me afin de r\u00e9soudre le probl\u00e8me.
 

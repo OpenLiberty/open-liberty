@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -391,6 +391,7 @@ public class SessionCacheTestServlet extends FATServlet {
      */
     public void testSerialization_complete(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         HttpSession session = request.getSession(false);
+        assertNotNull("Value from session is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", session);
         @SuppressWarnings("unchecked")
         Map<String, Object> sessionMap = (Map<String, Object>) session.getAttribute("map");
         System.out.println("Session is: " + session.getId());
@@ -576,7 +577,15 @@ public class SessionCacheTestServlet extends FATServlet {
         List<String> expected = expectedAttributes == null ? Collections.emptyList() : Arrays.asList(expectedAttributes.split(","));
 
         Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+        assertNotNull("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cache);
+
         ArrayList<?> values = cache.get(sessionId);
+
+        //catching test case errors due to test infrastructure
+        if (values == null) {
+            System.out.println("Value from cache is unexpectedly NULL, most likely due to test infrastructure; skipping rest of test method testSessionInfoCache. Check logs for more information.");
+        }
+
         @SuppressWarnings("unchecked")
         TreeSet<String> attributeNames = (TreeSet<String>) values.get(values.size() - 1); // last entry is the session attribute names
 
@@ -602,6 +611,9 @@ public class SessionCacheTestServlet extends FATServlet {
         }
 
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
+
+        assertNotNull("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cache);
+
         byte[] bytes = cache.get(key);
 
         String strValue = bytes == null ? null : Arrays.toString(bytes);
@@ -794,6 +806,8 @@ public class SessionCacheTestServlet extends FATServlet {
         for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500));
 
         Cache<String, byte[]> cacheAttr = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
+
+        assertNotNull("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cacheAttr);
         byte[] result = cacheAttr.get(key);
         assertEquals(expected, result == null ? null : Arrays.toString(result));
     }

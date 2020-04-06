@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,13 +78,15 @@ import com.ibm.jbatch.container.util.WSStepThreadExecutionAggregateImpl;
 import com.ibm.jbatch.container.validation.IdentifierValidator;
 import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.InstanceState;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 //import com.ibm.jbatch.container.ws.WSSearchObject;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.container.ws.impl.WSStartupRecoveryServiceImpl;
 import com.ibm.jbatch.spi.services.IBatchConfig;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
@@ -278,41 +280,45 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     /**
-     * Creates a PersistenceServiceUnit using the specified entity versions.
-     */
-    private PersistenceServiceUnit createPsu(int jobInstanceVersion, int jobExecutionVersion, int partitionVersion) throws Exception {
-        List<String> entityClasses = new ArrayList<String>(Arrays.asList(JobExecutionEntity.class.getName(),
-                                                                         JobInstanceEntity.class.getName(),
-                                                                         StepThreadExecutionEntity.class.getName(),
-                                                                         StepThreadInstanceEntity.class.getName(),
-                                                                         TopLevelStepExecutionEntity.class.getName(),
-                                                                         TopLevelStepInstanceEntity.class.getName()));
-
-        if (jobExecutionVersion >= 2)
-            entityClasses.add(JobExecutionEntityV2.class.getName());
-        if (jobExecutionVersion >= 3)
-            entityClasses.add(JobExecutionEntityV3.class.getName());
-
-        if (jobInstanceVersion >= 2)
-            entityClasses.add(JobInstanceEntityV2.class.getName());
-        if (jobInstanceVersion >= 3)
-            entityClasses.add(JobInstanceEntityV3.class.getName());
-
-        if (partitionVersion >= 2)
-            entityClasses.add(StepThreadExecutionEntityV2.class.getName());
-
-        if (partitionVersion >= 2)
-            entityClasses.add(RemotablePartitionEntity.class.getName());
-
-        return databaseStore.createPersistenceServiceUnit(JobInstanceEntity.class.getClassLoader(),
-                                                          entityClasses.toArray(new String[0]));
-    }
-
-    /**
      * Creates a PersistenceServiceUnit using the most recent entities.
      */
     private PersistenceServiceUnit createLatestPsu() throws Exception {
         return createPsu(MAX_INSTANCE_VERSION, MAX_EXECUTION_VERSION, MAX_PARTITION_VERSION);
+    }
+
+    /**
+     * Creates a PersistenceServiceUnit using the specified entity versions.
+     */
+    private PersistenceServiceUnit createPsu(int jobInstanceVersion, int jobExecutionVersion, int partitionVersion) throws Exception {
+        List<String> entityClasses = new ArrayList<String>(Arrays.asList(
+                                                                         StepThreadInstanceEntity.class.getName(),
+                                                                         TopLevelStepExecutionEntity.class.getName(),
+                                                                         TopLevelStepInstanceEntity.class.getName()));
+        if (jobExecutionVersion <= 1) {
+            entityClasses.add(JobExecutionEntity.class.getName());
+        } else if (jobExecutionVersion == 2) {
+            entityClasses.add(JobExecutionEntityV2.class.getName());
+        } else if (jobExecutionVersion >= 3) {
+            entityClasses.add(JobExecutionEntityV3.class.getName());
+        }
+
+        if (jobInstanceVersion <= 1) {
+            JobInstanceEntity.class.getName();
+        } else if (jobInstanceVersion == 2) {
+            entityClasses.add(JobInstanceEntityV2.class.getName());
+        } else if (jobInstanceVersion >= 3) {
+            entityClasses.add(JobInstanceEntityV3.class.getName());
+        }
+
+        if (partitionVersion <= 1) {
+            entityClasses.add(StepThreadExecutionEntity.class.getName());
+        } else if (partitionVersion >= 2) {
+            entityClasses.add(StepThreadExecutionEntityV2.class.getName());
+            entityClasses.add(RemotablePartitionEntity.class.getName());
+        }
+
+        return databaseStore.createPersistenceServiceUnit(JobInstanceEntity.class.getClassLoader(),
+                                                          entityClasses.toArray(new String[0]));
     }
 
     /**
@@ -332,21 +338,21 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         partitionVersion = MAX_PARTITION_VERSION;
 
         // If any tables are not up to the current code level, re-load the PSU with backleveled entities.
-        setPartitionTableVersion(retMe);
+        setPartitionEntityVersion(retMe);
         if (partitionVersion < 2) {
             logger.fine("The REMOTABLEPARTITION table could not be found. The persistence service unit will exclude the remotable partition entity.");
             retMe.close();
             retMe = createPsu(instanceVersion, executionVersion, partitionVersion);
         }
 
-        setJobInstanceTableVersion(retMe);
+        setJobInstanceEntityVersion(retMe);
         if (instanceVersion < 3) {
             logger.fine("The GROUPNAMES column could not be found. The persistence service unit will exclude the V3 instance entity.");
             retMe.close();
             retMe = createPsu(instanceVersion, executionVersion, partitionVersion);
         }
 
-        setJobExecutionTableVersion(retMe);
+        setJobExecutionEntityVersion(retMe);
         if (executionVersion < 2) {
             logger.fine("The JOBPARAMETERS table could not be found. The persistence service unit will exclude the V2 execution entity.");
             retMe.close();
@@ -807,7 +813,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public JobInstanceEntity updateJobInstanceStateOnConsumed(final long jobInstanceId) {
+    public JobInstanceEntity updateJobInstanceStateOnConsumed(final long jobInstanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException {
         EntityManager em = getPsu().createEntityManager();
         String BASE_UPDATE = "UPDATE JobInstanceEntity x SET x.instanceState = com.ibm.jbatch.container.ws.InstanceState.JMS_CONSUMED";
         if (instanceVersion >= 2) {
@@ -825,16 +831,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         try {
             return new TranRequest<JobInstanceEntity>(em) {
                 @Override
-                public JobInstanceEntity call() {
+                public JobInstanceEntity call() throws JobInstanceNotQueuedException {
                     JobInstanceEntity instance = entityMgr.find(JobInstanceEntity.class, jobInstanceId);/* , LockModeType.PESSIMISTIC_WRITE); */
                     if (instance == null) {
                         throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
-                    }
-
-                    try {
-                        verifyStateTransitionIsValid(instance, InstanceState.JMS_CONSUMED);
-                    } catch (BatchIllegalJobStatusTransitionException e) {
-                        throw new PersistenceException(e);
                     }
 
                     Query jpaQuery = entityMgr.createQuery(FINAL_UPDATE);
@@ -849,6 +849,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         entityMgr.refresh(instance);
                     } else {
                         logger.finer("No match on updateJobInstanceStateOnConsumed query for instance =  " + jobInstanceId);
+                        throw new JobInstanceNotQueuedException();
                     }
                     return instance;
                 }
@@ -1386,6 +1387,37 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public List<Integer> getRemotablePartitionsRecoveredForStepExecution(final long topLevelStepExecutionId) {
+        final EntityManager em = psu.createEntityManager();
+
+        // Just ignore if we don't have the remotable partition table
+        if (partitionVersion < 2) {
+            return new ArrayList<Integer>();
+        }
+
+        try {
+            List<Integer> exec = new TranRequest<List<Integer>>(em) {
+                @Override
+                public List<Integer> call() throws Exception {
+                    TypedQuery<Integer> query = em.createNamedQuery(RemotablePartitionEntity.GET_RECOVERED_REMOTABLE_PARTITIONS,
+                                                                    Integer.class);
+                    query.setParameter("topLevelStepExecutionId", topLevelStepExecutionId);
+                    List<Integer> result = query.getResultList();
+                    if (result == null) {
+                        return new ArrayList<Integer>();
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+        } finally {
+            em.close();
+        }
+    }
+
     /**
      * This method is called during recovery processing.
      *
@@ -1393,7 +1425,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      *
      * @return List<RemotablePartitionEntity> of partitions with a "running" status and this server's serverId
      */
-    public List<RemotablePartitionEntity> getPartitionsRunningLocalToServer(PersistenceServiceUnit psu) {
+    public List<RemotablePartitionEntity> getRemotablePartitionsRunningLocalToServer(PersistenceServiceUnit psu) {
 
         final EntityManager em = psu.createEntityManager();
 
@@ -1572,40 +1604,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public RemotablePartitionEntity updateRemotablePartitionInternalState(final long jobExecId, final String stepName, final int partitionNum,
-                                                                          final RemotablePartitionState internalStatus) {
-        // Just ignore if we don't have the remotable partition table
-        if (partitionVersion < 2) {
-            return null;
-        }
-
-        EntityManager em = getPsu().createEntityManager();
-        try {
-            return new TranRequest<RemotablePartitionEntity>(em) {
-                @Override
-                public RemotablePartitionEntity call() {
-
-                    RemotablePartitionKey partitionKey = new RemotablePartitionKey(jobExecId, stepName, partitionNum);
-                    RemotablePartitionEntity partition = entityMgr.find(RemotablePartitionEntity.class, partitionKey);
-
-                    //For backward compatibility, this can be null
-                    if (partition != null) {
-                        //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
-                        partition.setRestUrl(batchLocationService.getBatchRestUrl());
-                        partition.setServerId(batchLocationService.getServerId());
-                        partition.setInternalStatus(internalStatus);
-                        partition.setLastUpdated(new Date());
-                    }
-                    return partition;
-                }
-            }.runInNewOrExistingGlobalTran();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public RemotablePartitionEntity createRemotablePartition(final long jobExecId, final String stepName, final int partitionNum, final RemotablePartitionState partitionState) {
+    public RemotablePartitionEntity createRemotablePartition(final RemotablePartitionKey remotablePartitionKey) {
 
         // Simply ignore if we don't have the remotable partition table
         if (partitionVersion < 2) {
@@ -1620,14 +1619,14 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 @Override
                 public RemotablePartitionEntity call() {
 
-                    final JobExecutionEntity jobExecution = entityMgr.find(JobExecutionEntity.class, jobExecId);
+                    final JobExecutionEntity jobExecution = entityMgr.find(JobExecutionEntity.class, remotablePartitionKey.getJobExec());
                     if (jobExecution == null) {
-                        throw new IllegalStateException("Didn't find JobExecutionEntity associated with value: " + jobExecId);
+                        throw new IllegalArgumentException("Didn't find JobExecutionEntity associated with value: " + remotablePartitionKey.getJobExec());
                     }
 
                     // 2. Construct and initialize new entity instances
-                    final RemotablePartitionEntity remotablePartition = new RemotablePartitionEntity(jobExecution, stepName, partitionNum);
-                    remotablePartition.setInternalStatus(partitionState);
+                    final RemotablePartitionEntity remotablePartition = new RemotablePartitionEntity(jobExecution, remotablePartitionKey);
+                    remotablePartition.setInternalStatus(WSRemotablePartitionState.QUEUED);
                     remotablePartition.setLastUpdated(new Date());
                     entityMgr.persist(remotablePartition);
                     return remotablePartition;
@@ -1699,6 +1698,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
                         if (remotablePartition != null) {
                             remotablePartition.setStepExecution(stepExecution);
+                            remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
+                            remotablePartition.setServerId(batchLocationService.getServerId());
+                            remotablePartition.setInternalStatus(WSRemotablePartitionState.CONSUMED);
+                            remotablePartition.setLastUpdated(new Date());
                         }
                     }
 
@@ -1837,6 +1840,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
                         if (remotablePartition != null) {
                             remotablePartition.setStepExecution(newStepExecution);
+                            remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
+                            remotablePartition.setServerId(batchLocationService.getServerId());
+                            remotablePartition.setInternalStatus(WSRemotablePartitionState.CONSUMED);
+                            remotablePartition.setLastUpdated(new Date());
                         }
                     }
 
@@ -2203,10 +2210,13 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * This method is called during recovery
      *
      * Set the lastUpdated for the given RemotablePartitionEntity
+     *
+     * There should be no need for locking since this happens as the PSU is initialized on component activation
+     * (which is already locked within the JVM), and since the target partition is already known to be
+     * associated with this very server, (from the query we performed to get the list of partitions to recover).
      */
     public RemotablePartitionEntity updateRemotablePartitionOnRecovery(PersistenceServiceUnit psu,
                                                                        final RemotablePartitionEntity partition) {
-        // TODO Auto-generated method stub
         EntityManager em = psu.createEntityManager();
         try {
             return new TranRequest<RemotablePartitionEntity>(em) {
@@ -2214,6 +2224,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 public RemotablePartitionEntity call() {
                     RemotablePartitionKey key = new RemotablePartitionKey(partition);
                     RemotablePartitionEntity remotablePartition = entityMgr.find(RemotablePartitionEntity.class, key);
+                    remotablePartition.setInternalStatus(WSRemotablePartitionState.RECOVERED);
                     remotablePartition.setLastUpdated(new Date());
                     return remotablePartition;
                 }
@@ -2842,6 +2853,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             throw new PersistenceException(caughtThrowable);
         }
 
+        @Trivial
         protected void resumeAnyExistingLTC() {
             logger.fine("Will resume any LTC");
             if (suspendedLTC != null) {
@@ -2875,7 +2887,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public Integer getJobExecutionTableVersionField() {
+    public Integer getJobExecutionEntityVersionField() {
         return executionVersion;
     }
 
@@ -2885,15 +2897,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public int getJobExecutionTableVersion() throws Exception {
+    public int getJobExecutionEntityVersion() throws Exception {
         if (executionVersion != null) {
-            setJobExecutionTableVersion(getPsu());
+            setJobExecutionEntityVersion(getPsu());
         }
         return executionVersion;
     }
 
     @FFDCIgnore(PersistenceException.class)
-    private void setJobExecutionTableVersion(PersistenceServiceUnit psu) throws Exception {
+    private void setJobExecutionEntityVersion(PersistenceServiceUnit psu) throws Exception {
 
         // If we have the RemotablePartition table, we're up to date and need the V3 execution entity
         if (partitionVersion == 2) {
@@ -2911,7 +2923,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     String queryString = "SELECT COUNT(e.jobParameterElements) FROM JobExecutionEntityV2 e";
                     TypedQuery<Long> query = em.createQuery(queryString, Long.class);
                     query.getSingleResult();
-                    logger.fine("The JOBPARAMETER table exists, job execution table version = 2");
+                    logger.fine("The JOBPARAMETER table exists, job execution entity version = 2");
                     executionVersion = 2;
                     return executionVersion;
                 }
@@ -2926,15 +2938,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 logger.fine("Next chained JobExecutionEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                 if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                     causeMsg != null &&
-                    causeMsg.contains("JOBPARAMETER")) {
+                    (causeMsg.contains("JOBPARAMETER") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.
-                    logger.fine("The JOBPARAMETER table does not exist, job execution table version = 1");
+                    logger.fine("The JOBPARAMETER table does not exist, job execution entity version = 1");
                     executionVersion = 1;
                     return;
                 }
                 cause = cause.getCause();
             }
-            logger.fine("Unexpected exception while checking for JobExecutionEntityV2 table version, re-throwing");
+            logger.fine("Unexpected exception while checking for JobExecutionEntityV2 entity version, re-throwing");
             throw e;
         } finally {
             em.close();
@@ -2947,7 +2959,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public Integer getJobInstanceTableVersionField() {
+    public Integer getJobInstanceEntityVersionField() {
         return instanceVersion;
     }
 
@@ -2957,15 +2969,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public int getJobInstanceTableVersion() throws Exception {
+    public int getJobInstanceEntityVersion() throws Exception {
         if (instanceVersion == null) {
-            setJobInstanceTableVersion(getPsu());
+            setJobInstanceEntityVersion(getPsu());
         }
         return instanceVersion;
     }
 
     @FFDCIgnore(PersistenceException.class)
-    private void setJobInstanceTableVersion(PersistenceServiceUnit psu) throws Exception {
+    private void setJobInstanceEntityVersion(PersistenceServiceUnit psu) throws Exception {
 
         final EntityManager em = psu.createEntityManager();
 
@@ -2979,7 +2991,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         String queryString = "SELECT COUNT(x.lastUpdatedTime) FROM JobInstanceEntityV2 x";
                         TypedQuery<Long> query = em.createQuery(queryString, Long.class);
                         query.getSingleResult();
-                        logger.fine("The UPDATETIME column exists, job instance table version = 2");
+                        logger.fine("The UPDATETIME column exists, job instance entity version = 2");
                         instanceVersion = 2;
                         return instanceVersion;
                     }
@@ -2993,9 +3005,9 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     logger.fine("Next chained JobInstanceEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                     if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                         causeMsg != null &&
-                        causeMsg.contains("UPDATETIME")) {
+                        (causeMsg.contains("UPDATETIME") || causeMsg.contains("ORA-00942"))) {
                         // The UPDATETIME column isn't there.
-                        logger.fine("The UPDATETIME column does not exist, job instance table version = 1");
+                        logger.fine("The UPDATETIME column does not exist, job instance entity version = 1");
                         instanceVersion = 1;
                         return;
                     }
@@ -3004,7 +3016,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
                 if (instanceVersion == null) {
                     // We did not determine an instance version
-                    logger.fine("Unexpected exception while checking for JobInstanceEntityV2 table version, re-throwing");
+                    logger.fine("Unexpected exception while checking for JobInstanceEntityV2 entity version, re-throwing");
                     throw pe;
                 }
             }
@@ -3018,7 +3030,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         String queryString = "SELECT COUNT(x.groupNames) FROM JobInstanceEntityV3 x";
                         TypedQuery<Long> query = em.createQuery(queryString, Long.class);
                         query.getSingleResult();
-                        logger.fine("The GROUPASSOCIATION table exists, job instance table version = 3");
+                        logger.fine("The GROUPASSOCIATION table exists, job instance entity version = 3");
                         instanceVersion = 3;
                         return instanceVersion;
                     }
@@ -3033,20 +3045,20 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     logger.fine("Next chained JobInstanceEntityV3 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                     if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                         causeMsg != null &&
-                        causeMsg.contains("GROUPASSOCIATION") || causeMsg.contains("GROUPNAMES")) {
+                        (causeMsg.contains("GROUPASSOCIATION") || causeMsg.contains("GROUPNAMES") || causeMsg.contains("ORA-00942"))) {
                         // The GROUPASSOCIATION support isn't there.
-                        logger.fine("The GROUPASSOCIATION table does not exist, job instance table version = 2");
+                        logger.fine("The GROUPASSOCIATION table does not exist, job instance entity version = 2");
                         instanceVersion = 2;
                         return;
                     }
                     cause = cause.getCause();
                 }
 
-                logger.fine("Unexpected exception while checking for JobInstanceEntityV3 table version, re-throwing");
+                logger.fine("Unexpected exception while checking for JobInstanceEntityV3 entity version, re-throwing");
                 throw pe;
             }
         } finally {
-            logger.fine("determined the job instance table version: " + instanceVersion);
+            logger.fine("determined the job instance entity version: " + instanceVersion);
             em.close();
         }
     }
@@ -3079,7 +3091,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @FFDCIgnore(PersistenceException.class)
-    private void setPartitionTableVersion(PersistenceServiceUnit psu) throws Exception {
+    private void setPartitionEntityVersion(PersistenceServiceUnit psu) throws Exception {
 
         final EntityManager em = psu.createEntityManager();
         try {
@@ -3091,7 +3103,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     String queryString = "SELECT COUNT(e) FROM RemotablePartitionEntity e";
                     TypedQuery<Long> query = em.createQuery(queryString, Long.class);
                     query.getSingleResult();
-                    logger.fine("The REMOTABLEPARTITION table exists, partition table version = 2");
+                    logger.fine("The REMOTABLEPARTITION table exists, partition entity version = 2");
                     partitionVersion = 2;
                     return partitionVersion;
                 }
@@ -3106,9 +3118,9 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 logger.fine("Next chained RemotablePartition persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                 if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                     causeMsg != null &&
-                    causeMsg.contains("REMOTABLEPARTITION")) {
+                    (causeMsg.contains("REMOTABLEPARTITION") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.
-                    logger.fine("The REMOTABLEPARTITION table does not exist, partition table version = 1");
+                    logger.fine("The REMOTABLEPARTITION table does not exist, partition entity version = 1");
                     partitionVersion = 1;
                     // We need to set this here otherwise we'll try to load execution V3 without remotable partition and blow up
                     executionVersion = 2;
@@ -3116,7 +3128,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
                 cause = cause.getCause();
             }
-            logger.fine("Unexpected exception while checking for RemotablePartition table version, re-throwing");
+            logger.fine("Unexpected exception while checking for RemotablePartition entity version, re-throwing");
             throw e;
         } finally {
             em.close();
@@ -3125,8 +3137,40 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
     // Step thread exec version is tied to partition version with RemotablePartition update, may have to decouple in the future
     @Override
-    public Integer getStepThreadExecutionTableVersionField() {
+    public Integer getStepThreadExecutionEntityVersionField() {
         return partitionVersion;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public WSRemotablePartitionState getRemotablePartitionInternalState(final RemotablePartitionKey remotablePartitionKey) {
+
+        // Simply ignore if we don't have the remotable partition table
+        if (partitionVersion < 2) {
+            return null;
+        }
+
+        final EntityManager em = getPsu().createEntityManager();
+        try {
+            RemotablePartitionEntity rp = new TranRequest<RemotablePartitionEntity>(em) {
+                @Override
+                public RemotablePartitionEntity call() throws Exception {
+                    RemotablePartitionEntity rp = em.find(RemotablePartitionEntity.class, remotablePartitionKey);
+                    if (rp == null) {
+                        logger.finer("No RemotablePartition found for key = " + remotablePartitionKey
+                                     + ", maybe because it was dispatched from a JVM configured to use the older table/entity versions.");
+                        // This can be null because if the partition dispatcher uses an older version, and so never created the remotable partition
+                        return null;
+                    }
+                    return rp;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return rp != null ? rp.getInternalStatus() : null;
+
+        } finally {
+            em.close();
+        }
     }
 
 }

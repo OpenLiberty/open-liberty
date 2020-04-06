@@ -29,7 +29,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 /**
  * Perform recovery of jobs that were running when a previous instance of this server
  * shutdown abruptly and left them in an "in-flight" state in the DB.
- * 
+ *
  */
 public class WSStartupRecoveryServiceImpl {
 
@@ -53,7 +53,7 @@ public class WSStartupRecoveryServiceImpl {
 
     /**
      * inject
-     * 
+     *
      * @return this
      */
     public WSStartupRecoveryServiceImpl setIPersistenceManagerService(JPAPersistenceManagerImpl pms) {
@@ -63,7 +63,7 @@ public class WSStartupRecoveryServiceImpl {
 
     /**
      * injection
-     * 
+     *
      * @return this
      */
     public WSStartupRecoveryServiceImpl setPersistenceServiceUnit(PersistenceServiceUnit psu) {
@@ -81,7 +81,7 @@ public class WSStartupRecoveryServiceImpl {
         String methodName = "recoverLocalPartitionsInInflightStates";
 
         try {
-            List<RemotablePartitionEntity> remotablePartitions = persistenceManagerService.getPartitionsRunningLocalToServer(psu);
+            List<RemotablePartitionEntity> remotablePartitions = persistenceManagerService.getRemotablePartitionsRunningLocalToServer(psu);
 
             for (RemotablePartitionEntity partition : remotablePartitions) {
 

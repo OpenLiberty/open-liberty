@@ -37,12 +37,6 @@ javax.xml.bind.util
  
 Command-Class: com.ibm.ws.jaxrs20.tools.WADL2JavaTool
 
-Include-Resource:\
- com/ibm/ws/kernel/boot/cmdline/UtilityMain.class=build/classes/com/ibm/ws/kernel/boot/cmdline/UtilityMain.class, \
- com/ibm/ws/kernel/boot/cmdline/UtilityMain$1.class=build/classes/com/ibm/ws/kernel/boot/cmdline/UtilityMain$1.class, \
- com/ibm/ws/kernel/boot/cmdline/Main.class=build/classes/com/ibm/ws/kernel/boot/cmdline/Main.class, \
- com/ibm/ws/jaxrs20/tools/internal/resources=build/classes/com/ibm/ws/jaxrs20/tools/internal/resources
-
 -outputmask: wadl2java.jar
 
 instrument.disabled: true

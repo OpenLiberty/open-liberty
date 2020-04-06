@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2005, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.security.PrivilegedExceptionAction;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -237,10 +238,8 @@ public class WSKeyStore extends Properties {
 
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
-        boolean storeFileExists = defaultFileExists(this.location);
-
         if (this.fileBased) {
-            if (this.isDefault) {
+            if (this.isDefault && !defaultFileExists(this.location, this.type, this.password)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "keystore is default");
                 }
@@ -311,19 +310,43 @@ public class WSKeyStore extends Properties {
     }
 
     /**
-     * @param location2
-     * @return
+     * Return true if the keystore file exists and loads successfully, false otherwise.
      */
-    private boolean defaultFileExists(String ksFile) {
+    private boolean defaultFileExists(String ksFile, String type, SerializableProtectedString ksPass) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "defaultFileExists", new Object[] { ksFile, type });
+        }
 
         boolean exists = false;
         // check if the file from the configuration exists.
-        if (ksFile != null) {
+        if (ksFile != null && type != null) {
             File f = new File(ksFile);
 
             if (f.exists()) {
-                exists = true;
+                //File exists lets try to load it
+                KeyStore tmpKs;
+                try {
+                    tmpKs = KeyStore.getInstance(type);
+                    InputStream is = new URL("file:" + f.getCanonicalPath()).openStream();
+
+                    if (ksPass != null && !ksPass.isEmpty()) {
+                        String pass = new String(ksPass.getChars());
+                        pass = decodePassword(pass);
+                        tmpKs.load(is, pass.toString().toCharArray());
+                    } else {
+                        tmpKs.load(is, null);
+                    }
+                    exists = true;
+
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exception while trying to find out of the keystore file exists " + e.getMessage());
+                    }
+                }
             }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "defaultFileExists", exists);
         }
         return exists;
     }
@@ -824,6 +847,19 @@ public class WSKeyStore extends Properties {
                             }
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(tc, "do_getKeyStore (initialized)");
+
+                            /*
+                             * Update the default certificate if necessary.
+                             */
+                            if (create || name.endsWith(LibertyConstants.DEFAULT_KEY_STORE_FILE)) {
+                                try {
+                                    DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator().updateDefaultSSLCertificate(ks1, kFile, password);
+                                } catch (CertificateException e) {
+                                    Tr.error(tc, "ssl.update.certificate.error", keyStoreLocation);
+                                    throw e;
+                                }
+                            }
+
                             return ks1;
                         } // end-storefile-exists
 
@@ -836,7 +872,7 @@ public class WSKeyStore extends Properties {
                             if (parentFile == null || parentFile.isDirectory() || parentFile.mkdirs()) {
                                 try {
                                     String serverName = cfgSvc.getServerName();
-                                    String san = null;
+                                    List<String> san = null;
                                     if (genKeyHostName != null) {
                                         san = createCertSANInfo(genKeyHostName);
                                     }
@@ -1261,16 +1297,16 @@ public class WSKeyStore extends Properties {
             } catch (IOException e) {
                 // Note: debug + ffdc in store() itself
 
-                // on z/OS we have an issue where the certificate may be stored but the
-                // alias
-                // already exists in RACF so the keystore API will through an
-                // IOException
-                // we need to catch this condition on z/OS and if the certs is in the
-                // keystore
-                // prior after adding the certificate then we know the cert was actually
-                // added and its not
-                // a true failure. If the cert was not added then we need to rethrow the
-                // exception.
+                /*
+                 * On z/OS we have an issue where the certificate may be stored but the
+                 * alias already exists in RACF so the keystore API will throw an
+                 * IOException.
+                 *
+                 * We need to catch this condition on z/OS and if the certs is in the
+                 * keystore prior after adding the certificate then we know the cert was
+                 * actually added and its not a true failure. If the cert was not added
+                 * then we need to rethrow the exception.
+                 */
                 final String ksType = getProperty(Constants.SSLPROP_KEY_STORE_TYPE);
                 if ((ksType.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ksType.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
                      || ksType.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
@@ -1302,6 +1338,70 @@ public class WSKeyStore extends Properties {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "setCertificateEntry");
+        }
+    }
+
+    /**
+     * Set a new key entry into the keystore and save the updated store.
+     *
+     * @param alias
+     * @param key
+     * @param password
+     * @param chain
+     * @throws KeyStoreException
+     *             - if the store is read only or not found
+     * @throws KeyException
+     *             - if an error happens updating the store with the cert
+     */
+    @Sensitive
+    public void setKeyEntry(String alias, Key key, Certificate[] chain) throws KeyStoreException, KeyException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "setKeyEntry", new Object[] { alias, chain });
+        }
+        if (Boolean.parseBoolean(getProperty(Constants.SSLPROP_KEY_STORE_READ_ONLY))) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Unable to update readonly store");
+            }
+            throw new KeyStoreException("Unable to add to read-only store");
+        }
+        final KeyStoreManager mgr = KeyStoreManager.getInstance();
+
+        try {
+            KeyStore jKeyStore = getKeyStore(false, false);
+            if (null == jKeyStore) {
+                final String keyStoreLocation = getProperty(Constants.SSLPROP_KEY_STORE);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Cannot load the Java keystore at location \"" + keyStoreLocation + "\"");
+                }
+                throw new KeyStoreException("Cannot load the Java keystore at location \"" + keyStoreLocation + "\"");
+            }
+
+            SerializableProtectedString keyPWD = getKeyPassword(alias);
+            if (keyPWD == null) {
+                keyPWD = this.password;
+            }
+
+            // The password may be encoded (especially if loaded from the config)
+            String decodedPassword = decodePassword(new String(keyPWD.getChars()));
+
+            // store the key... errors are thrown if conflicts or errors occur
+            jKeyStore.setKeyEntry(alias, key, decodedPassword.toCharArray(), chain);
+            store();
+        } catch (KeyStoreException kse) {
+            throw kse;
+        } catch (KeyException ke) {
+            throw ke;
+        } catch (Exception e) {
+            throw new KeyException(e.getMessage(), e);
+        }
+
+        // after adding the key entry, clear the keystore and SSL caches so it
+        // reloads it.
+        AbstractJSSEProvider.clearSSLContextCache();
+        mgr.clearJavaKeyStoresFromKeyStoreMap();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "setKeyEntry");
         }
     }
 
@@ -1489,20 +1589,20 @@ public class WSKeyStore extends Properties {
         return cannonicalLocation;
     }
 
-    private String createCertSANInfo(String hostname) {
+    private List<String> createCertSANInfo(String hostname) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "createCertSANInfo: " + hostname);
-        String ext = null;
+        ArrayList<String> ext = new ArrayList<String>();
 
         InetAddress addr;
         try {
             addr = InetAddress.getByName(hostname);
             if (addr != null && addr.toString().startsWith("/"))
-                ext = "SAN=ip:" + hostname;
+                ext.add("SAN=ip:" + hostname);
             else {
                 // If the hostname start with a digit keytool will not create a SAN with the value
                 if (!Character.isDigit(hostname.charAt(0)))
-                    ext = "SAN=dns:" + hostname;
+                    ext.add("SAN=dns:" + hostname);
             }
         } catch (UnknownHostException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1512,7 +1612,7 @@ public class WSKeyStore extends Properties {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createCertSANInfo: " + ext);
-        return ext;
+        return (ext);
     }
 
 }

@@ -99,7 +99,7 @@ cpu.systemLoadAverage.description=Displays the system load average for the last 
 cpu.processCpuLoad.description=Displays the 'recent cpu usage' for the Java Virtual Machine process.
 
 #Cpu processCpuTime message
-#cpu.processCpuTime.description=Displays the CPU time used by the process on which the Java Virtual Machine is running.
+cpu.processCpuTime.description=Displays the CPU time used by the process on which the Java virtual machine is running.
 
 #Garbage collection count message
 garbageCollectionCount.description=Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.

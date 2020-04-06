@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.security.mp.jwt.fat.sharedTests;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +36,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -65,6 +67,9 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
 
     @Server("com.ibm.ws.security.mp.jwt.fat.builder")
     public static LibertyServer jwtBuilderServer;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
 
     private final MpJwtFatActions actions = new MpJwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
@@ -117,7 +122,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
 
     /**
      * Deploy the Propagation app (runs on the RS server and invokes the apps on the rs client)
-     * 
+     *
      * @param server - server to install the propagation app on
      * @throws Exception
      */
@@ -129,7 +134,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
      * The method that runs the steps of propagation tests.
      * Get a goken, invoke the propagation client app which will pass the token to the final app.
      * A parm passed to the propagation app will tell the app how/where to pass the token
-     * 
+     *
      * @param where - where/how to pass the JWT token in the request from propagation client to test app
      * @param expectedSuccessOrFailure - Do we expect a successful or failed invocation of test app
      * @throws Exception
@@ -159,7 +164,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
 
     /**
      * Use the token endpoint to generate a JWT
-     * 
+     *
      * @return - returns the built JWT
      * @throws Exception
      */
@@ -171,7 +176,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
 
     /**
      * Build the propagation app url
-     * 
+     *
      * @return - returns the built propagation app url
      * @throws Exception
      */

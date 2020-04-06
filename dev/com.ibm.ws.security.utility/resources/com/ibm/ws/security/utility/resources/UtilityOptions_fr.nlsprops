@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -149,7 +149,11 @@ sslCert.option-desc.keyType=\tFacultatif. Par d\u00e9faut, un magasin de cl\u00e
 sslCert.option-key.ext=\ \ \ \ --extInfo=informations d''extension de certificat
 sslCert.option-desc.ext=\tInformations d''extension de certificat \u00e0 ajouter au certificat.\n\
 \tL''extension par d\u00e9faut est une entr\u00e9e Subject Alternative Name (SAN) qui utilise\n\
-\tle nom d''h\u00f4te.
+\tle nom d''h\u00f4te. \
+Cet indicateur respecte la m\u00eame syntaxe que l''indicateur -ext de la commande\n\
+Java Keytool. Il peut \u00eatre utilis\u00e9 plusieurs fois sur la ligne de\n\
+\ \
+commande.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

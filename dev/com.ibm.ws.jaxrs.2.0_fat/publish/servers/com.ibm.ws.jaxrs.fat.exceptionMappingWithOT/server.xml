@@ -1,0 +1,9 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>javaee-7.0</feature>
+        <feature>microprofile-1.3</feature>
+    </featureManager>
+
+  	<include location="../fatTestPorts.xml"/>
+</server>

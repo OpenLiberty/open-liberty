@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.security.oauth20.web;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -193,7 +195,7 @@ public class OAuth20EndpointServices {
             ServletContext servletContext) throws ServletException, IOException {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Checking if OAuth20 Provider should process the request.");
-            Tr.debug(tc, "Inbound request "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request,"client_secret"));
+            Tr.debug(tc, "Inbound request " + com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
         }
         OAuth20Request oauth20Request = getAuth20Request(request, response);
         OAuth20Provider oauth20Provider = null;
@@ -204,7 +206,7 @@ public class OAuth20EndpointServices {
                 AttributeList optionalParams = new AttributeList();
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "OAUTH20 _SSO OP PROCESS IS STARTING.");
-                    Tr.debug(tc, "OAUTH20 _SSO OP inbound URL "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request,"client_secret"));
+                    Tr.debug(tc, "OAUTH20 _SSO OP inbound URL " + com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
                 }
                 handleEndpointRequest(request, response, servletContext, oauth20Provider, endpointType, optionalParams);
             }
@@ -236,7 +238,7 @@ public class OAuth20EndpointServices {
         boolean isBrowserWithBasicAuth = false;
         UIAccessTokenBuilder uitb = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "endpointType["+endpointType+"]");
+            Tr.debug(tc, "endpointType[" + endpointType + "]");
         }
         try {
             switch (endpointType) {
@@ -266,7 +268,7 @@ public class OAuth20EndpointServices {
                     revoke(oauth20Provider, request, response);
                 }
                 break;
-            case coverage_map:
+            case coverage_map: // non-spec extension
                 coverageMapServices.handleEndpointRequest(oauth20Provider, request, response);
                 break;
             case registration:
@@ -338,11 +340,14 @@ public class OAuth20EndpointServices {
                 // we don't want routine browser auth challenges producing ffdc's.
                 // (but if a login is invalid in that case, we will still get a CWIML4537E from base sec.)
                 // however for non-browsers we want ffdc's like we had before, so generate manually
-                com.ibm.ws.ffdc.FFDCFilter.processException(e,
-                        "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
+
+                if (!e.getErrorDescription().contains("CWWKS1424E")) { // no ffdc for nonexistent clients
+                    com.ibm.ws.ffdc.FFDCFilter.processException(e,
+                            "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
+                }
             }
             boolean suppressBasicAuthChallenge = isBrowserWithBasicAuth; // ui must NOT log in using basic auth, so logout function will work.
-            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(), suppressBasicAuthChallenge);
+            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(request.getLocales()), suppressBasicAuthChallenge);
         }
 
     }
@@ -390,6 +395,7 @@ public class OAuth20EndpointServices {
             throw new OidcServerException("403", OIDCConstants.ERROR_ACCESS_DENIED, HttpServletResponse.SC_FORBIDDEN);
         }
         return true;
+
     }
 
     void serveClientMetatypeRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -457,10 +463,11 @@ public class OAuth20EndpointServices {
         String logoutRedirectURL = provider.getLogoutRedirectURL();
         try {
             if (logoutRedirectURL != null) {
+                String encodedURL = URLEncodeParams(logoutRedirectURL);
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL +"]");
+                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL + "], url encoded to [" + encodedURL + "]");
                 }
-                response.sendRedirect(logoutRedirectURL);
+                response.sendRedirect(encodedURL);
                 return;
             } else {
                 // send default logout page
@@ -474,6 +481,27 @@ public class OAuth20EndpointServices {
         }
     }
 
+    String URLEncodeParams(String UrlStr) {
+        String sep = "?";
+        String encodedURL = UrlStr;
+        int index = UrlStr.indexOf(sep);
+        // if encoded url in server.xml, don't encode it again.
+        boolean alreadyEncoded = UrlStr.contains("%");
+        if (index > -1 && !alreadyEncoded) {
+            index++; // don't encode ?
+            String prefix = UrlStr.substring(0, index);
+            String suffix = UrlStr.substring(index);
+            try {
+                encodedURL = prefix + java.net.URLEncoder.encode(suffix, StandardCharsets.UTF_8.toString());
+                // shouldn't encode = in queries, so flip those back
+                encodedURL = encodedURL.replace("%3D", "=");
+            } catch (UnsupportedEncodingException e) {
+                // ffdc
+            }
+        }
+        return encodedURL;
+    }
+
     public OAuthResult processAuthorizationRequest(OAuth20Provider provider, HttpServletRequest request, HttpServletResponse response,
             ServletContext servletContext, AttributeList options)
             throws ServletException, IOException, OidcServerException {
@@ -485,11 +513,11 @@ public class OAuth20EndpointServices {
         String reqConsentNonce = getReqConsentNonce(request);
         boolean afterLogin = isAfterLogin(request); // we've been to login.jsp or it's replacement.
 
-        if (reqConsentNonce == null) { // validate request for initial authorization request only 
+        if (reqConsentNonce == null) { // validate request for initial authorization request only
             oauthResult = clientAuthorization.validateAuthorization(provider, request, response);
             if (oauthResult.getStatus() != OAuthResult.STATUS_OK) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc,"Status is OK, returning result");
+                    Tr.debug(tc, "Status is OK, returning result");
                 }
                 return oauthResult;
             }
@@ -739,6 +767,11 @@ public class OAuth20EndpointServices {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
         }
 
+        if (provider.isTrackOAuthClients()) {
+            OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
+            clientTracker.trackOAuthClient(clientId);
+        }
+
         consent.handleConsent(provider, request, prompt, clientId);
         getExternalClaimsFromWSSubject(request, options);
         oauthResult = provider.processAuthorization(request, response, options);
@@ -778,11 +811,6 @@ public class OAuth20EndpointServices {
             // checking resource
             OidcBaseClient client = OAuth20ProviderUtils.getOidcOAuth20Client(provider, clientId);
             if (client == null || !client.isEnabled()) {
-                // String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
-                // MSG_RESOURCE_BUNDLE,
-                // "security.oauth20.error.invalid.client",
-                // new Object[] { clientId },
-                // "CWOAU0023E: The OAuth service provider could not find the client " + clientId + ".");
                 throw new OidcServerException("security.oauth20.error.invalid.client", OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
             }
             OAuth20ProviderUtils.validateResource(request, null, client);
@@ -795,6 +823,7 @@ public class OAuth20EndpointServices {
         OAuthResult result = clientAuthorization.validateAndHandle2LegsScope(provider, request, response, clientId);
         if (result.getStatus() == OAuthResult.STATUS_OK) {
             result = provider.processTokenRequest(clientId, request, response);
+
         }
         if (result.getStatus() != OAuthResult.STATUS_OK) {
             OAuth20TokenRequestExceptionHandler handler = new OAuth20TokenRequestExceptionHandler();

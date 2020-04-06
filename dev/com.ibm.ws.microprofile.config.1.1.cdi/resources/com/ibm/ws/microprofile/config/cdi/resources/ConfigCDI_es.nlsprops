@@ -48,6 +48,16 @@ property.not.found.CWMCG5004E=CWMCG5004E: No se ha encontrado la propiedad de co
 property.not.found.CWMCG5004E.explanation=No se ha encontrado la propiedad especificada en ninguno de los or\u00edgenes configurados. 
 property.not.found.CWMCG5004E.useraction=Aseg\u00farese de que la propiedad exista en uno de los or\u00edgenes configurados.
 
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: La dependencia InjectionPoint no se ha resuelto para el m\u00e9todo Observer: {0}. Error: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=ConfigProperty inyectada no se ha resuelto. La propiedad indicada no se ha podido encontrar o no se ha resuelto un convertidor para el tipo necesario. 
+unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=Compruebe el mensaje del servidor y los registros FFDC para determinar la causa. Aseg\u00farese de que la propiedad existe en uno de los ConfigSources y de que los convertidores necesarios se han configurado.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: La dependencia InjectionPoint no se ha procesado para el bean Observer: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=Se ha producido un error desconocido. No ha sido posible procesar correctamente un m\u00e9todo Observer.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=Compruebe el mensaje del servidor y los registros FFDC para determinar la causa.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message

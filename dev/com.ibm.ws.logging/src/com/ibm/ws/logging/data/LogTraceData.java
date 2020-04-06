@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.NameAliases.ExtensionAliases;
 import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
@@ -54,7 +55,8 @@ public class LogTraceData extends GenericData {
                                               LogFieldConstants.OBJECT_ID,
                                               LogFieldConstants.HOST,
                                               LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.TYPE
     };
 
     private final static String[] NAMES = {
@@ -105,7 +107,8 @@ public class LogTraceData extends GenericData {
                                                 LogFieldConstants.OBJECT_ID,
                                                 LogFieldConstants.HOST,
                                                 LogFieldConstants.IBM_USERDIR,
-                                                LogFieldConstants.IBM_SERVERNAME
+                                                LogFieldConstants.IBM_SERVERNAME,
+                                                LogFieldConstants.TYPE
     };
 
     public static String[] TRACE_NAMES1_1 = {
@@ -132,19 +135,27 @@ public class LogTraceData extends GenericData {
                                               LogFieldConstants.OBJECT_ID,
                                               LogFieldConstants.HOST,
                                               LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.TYPE
     };
 
     private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
+    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
 
     public static void newJsonLoggingNameAliasesMessage(Map<String, String> newAliases) {
         jsonLoggingNameAliasesMessages.newAliases(newAliases);
     }
 
-    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
-
     public static void newJsonLoggingNameAliasesTrace(Map<String, String> newAliases) {
         jsonLoggingNameAliasesTrace.newAliases(newAliases);
+    }
+
+    public static void resetJsonLoggingNameAliasesMessage() {
+        jsonLoggingNameAliasesMessages.resetAliases();
+    }
+
+    public static void resetJsonLoggingNameAliasesTrace() {
+        jsonLoggingNameAliasesTrace.resetAliases();
     }
 
     public LogTraceData() {
@@ -419,6 +430,7 @@ public class LogTraceData extends GenericData {
         return NAMES1_1[20];
     }
 
+    //name aliases
     public static String getDatetimeKeyJSON(boolean isMessageEvent) {
         return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[0] : jsonLoggingNameAliasesTrace.aliases[0];
     }
@@ -515,24 +527,18 @@ public class LogTraceData extends GenericData {
         return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[23] : jsonLoggingNameAliasesTrace.aliases[23];
     }
 
+    public static String getTypeKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[24] : jsonLoggingNameAliasesTrace.aliases[24];
+    }
+
     public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
-        ArrayList<String> tempExt = null;
-        ArrayList<String> aliasesExt = null;
+        ExtensionAliases tempExt = null;
         if (isMessageEvent) {
-            tempExt = jsonLoggingNameAliasesMessages.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesMessages.aliasesExtensions;
-
+            tempExt = jsonLoggingNameAliasesMessages.extensionAliases;
         } else {
-            tempExt = jsonLoggingNameAliasesTrace.originalExtensions;
-            aliasesExt = jsonLoggingNameAliasesTrace.aliasesExtensions;
-
+            tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
         }
-        for (int i = 0; i < tempExt.size(); i++) {
-            if (tempExt.get(i).equals(extKey)) {
-                return aliasesExt.get(i);
-            }
-        }
-        return extKey;
+        return tempExt.getAlias(extKey);
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,18 +17,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
-/*
- import org.eclipse.core.runtime.Platform;
- import org.eclipse.core.runtime.IConfigurationElement;
- import org.eclipse.core.runtime.IExtension;
- import org.eclipse.core.runtime.IExtensionPoint;
- import org.eclipse.core.runtime.IExtensionRegistry;
- */
 
 //------------------------------------------------------------------------------
 //Class: RecoveryDirectorImpl
@@ -83,6 +75,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * A reference to the singleton instance of the RecoveryDirectorImpl class.
      */
     private static RecoveryDirectorImpl _instance;
+    private static RecoveryLogFactory theRecoveryLogFactory;
 
     /**
      * The registered RecoveryAgent objects, keyed from sequence value. RecoveryAgent
@@ -228,77 +221,13 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         // built to simplify the callback logic.
         _eventListeners = RegisteredRecoveryEventListeners.instance(); /* @MD19638A */
 
-/*
- * For now do this in derived class ... else CCX release will have lots of WCCM dependencies for prereq.osgi.fw
- * // Feature 818/defect 642260: look for recoverylog extensions
- * try
- * {
- * IExtensionRegistry registry = Platform.getExtensionRegistry();
- *
- *
- * // Look for the extension point in the default plugin in bundle
- * String epid = "com.ibm.rls"
- * + ".recoverylog-implementation";
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: searching for extensions", epid);
- *
- * IExtensionPoint extensionPoint = registry.getExtensionPoint(epid);
- * if(extensionPoint != null)
- * {
- * IExtension[] extensions = extensionPoint.getExtensions();
- * for (int i = 0; i < extensions.length; i++)
- * {
- * IExtension extension = extensions[i];
- * String extensionId = extension.getUniqueIdentifier();
- *
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: processing extension", extension.getUniqueIdentifier());
- *
- * IConfigurationElement[] elements = extension.getConfigurationElements();
- * for (int j = 0; j < elements.length; j++)
- * {
- * String elementName = elements[j].getName();
- * try
- * {
- * Object factory = elements[j].createExecutableExtension("class");
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: found CustomLogFactory", factory);
- *
- * if (factory instanceof RecoveryLogFactory)
- * {
- * if (_customLogFactories.containsKey(extensionId))
- * {
- * // error
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: Duplicate CustomLogFactory found", extensionId);
- * // may want to issue message here?
- * }
- * else
- * {
- * _customLogFactories.put(extensionId, (RecoveryLogFactory)factory);
- * }
- * }
- * else
- * {
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: CustomLogFactory does not implement RecoveryLogFactory");
- * // may want to issue message here?
- * }
- * }
- * catch (Throwable t)
- * {
- * FFDCFilter.processException(t, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.<init>", "210", this);
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl", t);
- * // swallow exception and try next element
- * }
- *
- * }
- * }
- * }
- * else
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: Extension id is null");
- * }
- * catch (Throwable t)
- * {
- * FFDCFilter.processException(t, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.<init>", "220", this);
- * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl", t);
- * }
- */
+        if (theRecoveryLogFactory != null) {
+            String className = theRecoveryLogFactory.getClass().getName();
+            _customLogFactories.put(className, theRecoveryLogFactory);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "RecoveryDirectorImpl: setting RecoveryLogFactory, " + theRecoveryLogFactory + "for classname, " + className);
+        } else if (tc.isDebugEnabled())
+            Tr.debug(tc, "RecoveryDirectorImpl: the RecoveryLogFactory is null");
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "RecoveryDirectorImpl", this);
@@ -361,22 +290,22 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent Client service identification and callback object.
-     * @param sequence Client service sequence value.
+     * @param sequence      Client service sequence value.
      *
      * @return A RecoveryLogManager object that the client service can use to
      *         control recovery logging.
      *
      * @exception ConflictingCredentialsException Thrown if the RecoveryAgent identity or
-     *                name clashes with a client service that
-     *                is already registered
-     * @exception InvalidStateException Thrown if the registration occurs after
-     *                the first recovery process has been
-     *                started.
+     *                                                name clashes with a client service that
+     *                                                is already registered
+     * @exception InvalidStateException           Thrown if the registration occurs after
+     *                                                the first recovery process has been
+     *                                                started.
      */
     @Override
     public RecoveryLogManager registerService(RecoveryAgent recoveryAgent, int sequence) throws ConflictingCredentialsException, InvalidStateException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "registerService", new Object[] { recoveryAgent, new Integer(sequence), this });
+            Tr.entry(tc, "registerService", new Object[] { recoveryAgent, sequence, this });
 
         RecoveryLogManager clientRLM = null;
 
@@ -499,11 +428,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     @Override
     public void serialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -542,11 +471,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScopeException The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                             outstanding unit of recovery for the client
+     *                                             service.
      */
     @Override
     public void terminationComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -688,21 +617,20 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     //
                     // HADB Peer Locking is enabled through a server.xml enableHADBPeerLocking attribute in the transaction element.
                     boolean shouldBeRecovered = true;
-                    boolean enableHADBPeerLocking = recoveryAgent.enableHADBPeerLocking();
+                    boolean enableHADBPeerLocking = recoveryAgent.isDBTXLogPeerLocking();
                     if (enableHADBPeerLocking) {
-                        RecoveryLog customRecLog = recoveryAgent.getCustomPartnerLog(failureScope);
-                        if (customRecLog != null) {
+                        // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
+                        // or peer server. In each case we get a reference to the appropriate Recovery Log.
+                        HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
+
+                        if (heartbeatLog != null) {
                             if (currentFailureScope.equals(failureScope)) {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
-                                shouldBeRecovered = recoveryAgent.claimLocalHADBLogs(customRecLog);
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "LOCAL RECOVERY, so start heartbeat");
-                                if (shouldBeRecovered) {
-                                    recoveryAgent.startHADBLogAvailabilityHeartbeat(customRecLog);
-                                } else {
+                                shouldBeRecovered = heartbeatLog.claimLocalRecoveryLogs();
+                                if (!shouldBeRecovered) {
                                     // Cannot recover the home server, throw exception
-                                    RecoveryFailedException rfex = new RecoveryFailedException(new Exception("HADB Peer locking, local recovery failed"));
+                                    RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
 
                                     throw rfex;
                                 }
@@ -710,11 +638,10 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                             } else {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
-                                shouldBeRecovered = recoveryAgent.claimPeerHADBLogs(customRecLog);
+                                shouldBeRecovered = heartbeatLog.claimPeerRecoveryLogs();
                                 if (!shouldBeRecovered) {
                                     // Cannot recover peer server, throw exception
-                                    RecoveryFailedException rfex = new RecoveryFailedException(new Exception("HADB Peer locking, peer recovery failed"));
-
+                                    RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, peer recovery failed");
                                     throw rfex;
                                 }
                             }
@@ -726,7 +653,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     if (shouldBeRecovered)
                         recoveryAgent.initiateRecovery(failureScope);
                 } catch (RecoveryFailedException exc) {
-
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directInitialization", exc);
                     throw exc;
@@ -874,8 +800,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to process
-     *            recovery of a FailureScope.
-     * @param failureScope The FailureScope.
+     *                          recovery of a FailureScope.
+     * @param failureScope  The FailureScope.
      */
     private void addInitializationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
@@ -919,8 +845,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to terminate
-     *            recovery of a FailureScope.
-     * @param failureScope The FailureScope.
+     *                          recovery of a FailureScope.
+     * @param failureScope  The FailureScope.
      */
     private void addTerminationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
@@ -973,9 +899,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that has completed the serial recovery
-     *            processing phase.
-     * @param failureScope The FailureScope that defined the scope of this recovery
-     *            processing.
+     *                          processing phase.
+     * @param failureScope  The FailureScope that defined the scope of this recovery
+     *                          processing.
      *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
@@ -1025,7 +951,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope
+     * @param failureScope  The FailureScope
      *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
@@ -1086,7 +1012,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope.
+     * @param failureScope  The FailureScope.
      *
      * @return boolean true if there is an oustanding recovery request, otherwise false.
      */
@@ -1120,7 +1046,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * the supplied RecoveryAgent and FailureScope.
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope.
+     * @param failureScope  The FailureScope.
      *
      * @return boolean true if there is an oustanding termination request, otherwise false.
      */
@@ -1209,8 +1135,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to process
-     *            recovery of a FailureScope.
-     * @param failureScope The FailureScope.
+     *                          recovery of a FailureScope.
+     * @param failureScope  The FailureScope.
      */
     private void addRecoveryRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
@@ -1257,9 +1183,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that has completed the initial recovery
-     *            processing phase.
-     * @param failureScope The FailureScope that defined the scope of this recovery
-     *            processing.
+     *                          processing phase.
+     * @param failureScope  The FailureScope that defined the scope of this recovery
+     *                          processing.
      *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
@@ -1309,7 +1235,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope.
+     * @param failureScope  The FailureScope.
      *
      * @return boolean true if there is an oustanding recovery request, otherwise false.
      */
@@ -1369,11 +1295,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     @Override
     public void initialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -1460,11 +1386,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is failed.
+     * @param failureScope  The unit of recovery that is failed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     @Override
     public void initialRecoveryFailed(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -1588,7 +1514,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      *
-     * @param stage The required callback stage.
+     * @param stage        The required callback stage.
      * @param failureScope The failure scope for which the event is taking place.
      */
     private void driveCallBacks(int stage, FailureScope failureScope) {
@@ -1663,7 +1589,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param failureScope The failure scope for which the recovery log configuration is
-     *            required.
+     *                         required.
      * @return Object The associated configuration
      */
     @Override
@@ -1745,14 +1671,115 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         _instance = null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.RecoveryDirector#setRecoveryLogFactory(com.ibm.ws.recoverylog.spi.RecoveryLogFactory)
-     */
+    public void drivePeerRecovery() throws RecoveryFailedException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "drivePeerRecovery", this);
+        RecoveryAgent libertyRecoveryAgent = null;
+
+        // Get peers from the table
+
+        // Use configuration to determine if recovery is local (for z/OS).
+        final FailureScope localFailureScope = Configuration.localFailureScope(); /* @LI1578-22A */
+        Tr.audit(tc, "WTRN0108I: " +
+                     localFailureScope.serverName() + " checking to see if any peers need recovering");
+        ArrayList<String> peersToRecover = null;
+
+        // Extract the 'values' collection from the _registeredRecoveryAgents map and create an iterator
+        // from it. This iterator will return ArrayList objects each containing a set of RecoveryAgent
+        // objects. Each ArrayList corrisponds to a different sequence priority value.
+        final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "work with RA values: " + registeredRecoveryAgentsValues + ", collection size: " + registeredRecoveryAgentsValues.size(), this);
+        Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
+        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
+            // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
+            // objects that are registered at the same sequence priority value.
+            final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "work with Agents array: " + registeredRecoveryAgentsArray + ", of size: " + registeredRecoveryAgentsArray.size(), this);
+            final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
+
+            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
+                // Extract the next RecoveryAgent object
+                final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
+
+                //TODO: This is a bit hokey. Can we safely assume that there is just the one RecoveryAgent in a Liberty environment?
+                libertyRecoveryAgent = recoveryAgent;
+
+                String recoveryGroup = libertyRecoveryAgent.getRecoveryGroup();
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "work with Agent: " + recoveryAgent + " and recoveryGroup " + recoveryGroup, this);
+                peersToRecover = recoveryAgent.processLeasesForPeers(localFailureScope.serverName(), recoveryGroup);
+            }
+        }
+
+        if (peersToRecover != null && !peersToRecover.isEmpty() && libertyRecoveryAgent != null)
+            peerRecoverServers(libertyRecoveryAgent, localFailureScope.serverName(), peersToRecover);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "drivePeerRecovery");
+    }
+
+    @FFDCIgnore({ RecoveryFailedException.class })
+    public synchronized void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
+
+        for (String peerRecoveryIdentity : peersToRecover) {
+
+            try {
+                //Read lease check if it is still expired. If so, then update lease and proceed to peer recover
+                // if not still expired (someone else has grabbed it) then bypass peer recover.
+                LeaseInfo leaseInfo = new LeaseInfo();
+                if (recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo)) {
+
+                    // drive directInitialization(**retrieved scope**);
+                    Tr.audit(tc, "WTRN0108I: " +
+                                 "PEER RECOVER server with recovery identity " + peerRecoveryIdentity);
+                    //String peerServerName = "Cell\\Node\\cloud002";
+                    FileFailureScope peerFFS = new FileFailureScope(peerRecoveryIdentity, leaseInfo);
+
+                    directInitialization(peerFFS);
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Failed to claim lease for peer", this);
+                }
+            } catch (RecoveryFailedException rfexc) {
+                Tr.audit(tc, "WTRN0108I: " +
+                             "HADB Peer locking failed for server with recovery identity " + peerRecoveryIdentity);
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "peerRecoverServers", rfexc);
+                throw rfexc;
+            } catch (Exception exc) {
+                Tr.audit(tc, "WTRN0108I: " +
+                             "HADB Peer locking failed for server with recovery identity " + peerRecoveryIdentity + " with exception " + exc);
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "peerRecoverServers", exc);
+                throw new RecoveryFailedException(exc);
+            }
+
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "peerRecoverServers");
+    }
+
     @Override
     public void setRecoveryLogFactory(RecoveryLogFactory fac) {
-        // TODO Auto-generated method stub
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setRecoveryLogFactory, factory: " + fac, this);
+        theRecoveryLogFactory = fac;
+
+        if (theRecoveryLogFactory != null) {
+            String className = theRecoveryLogFactory.getClass().getName();
+            _customLogFactories.put(className, theRecoveryLogFactory);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "RecoveryDirectorImpl: setting RecoveryLogFactory, " + theRecoveryLogFactory + "for classname, " + className);
+        } else if (tc.isDebugEnabled())
+            Tr.debug(tc, "RecoveryDirectorImpl: the RecoveryLogFactory is null");
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "RecoveryDirectorImpl", this);
 
     }
 }

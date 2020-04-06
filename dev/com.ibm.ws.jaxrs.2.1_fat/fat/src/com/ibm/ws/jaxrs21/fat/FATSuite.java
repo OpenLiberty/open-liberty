@@ -18,6 +18,7 @@ import com.ibm.ws.jaxrs21.fat.security.annotations.JAXRS21SecurityAnnotationsTes
 import com.ibm.ws.jaxrs21.fat.security.annotations.JAXRS21SecurityAnnotationsTestRolesAsGroups;
 import com.ibm.ws.jaxrs21.fat.security.ssl.JAXRS21SecuritySSLTest;
 import com.ibm.ws.jaxrs21.fat.securitycontext.JAXRS21SecurityContextTest;
+import com.ibm.ws.jaxrs21.fat.uriInfo.UriInfoTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
@@ -27,6 +28,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 JAXRS21SecurityAnnotationsTest.class,
                 JAXRS21SecurityAnnotationsTestRolesAsGroups.class,
                 JAXRS21SecurityContextTest.class,
-                JAXRS21SecuritySSLTest.class
+                JAXRS21SecuritySSLTest.class,
+                UriInfoTest.class
 })
 public class FATSuite {}

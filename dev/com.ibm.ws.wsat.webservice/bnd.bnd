@@ -1,0 +1,76 @@
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: WebService AtomicTransaction Web Service
+Bundle-SymbolicName: com.ibm.ws.wsat.webservice
+Bundle-Description: WebService AtomicTransaction: Web Service bundle; version=${bVersion}
+
+Web-ContextPath: /ibm/wsatservice
+
+WS-TraceGroup: \
+  wsATWebService
+  
+Import-Package: \
+ !com.ibm.ws.wsat.interceptor, \
+ javax.xml.ws.*;version="[2.2,3)", \
+ javax.xml.bind.*;version="[2.2,3)", \
+ org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+ com.ibm.ws.wsat.webservice.client.soap, \
+ com.ibm.ws.wsat.webservice.client.wscoor, \
+ com.ibm.ws.wsat.service, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ com.ibm.ws.webcontainer.extension, \
+ com.ibm.ws.webcontainer.osgi, \
+ *
+
+Export-Package:  \
+	com.ibm.ws.wsat.interceptor,\
+	com.ibm.ws.wsat.webservice,\
+	com.ibm.ws.wsat.utils
+
+Private-Package: \
+  com.ibm.ws.wsat.interceptor
+ 
+Include-Resource: \
+  @./resources!/META-INF/**, \
+  index.jsp=resources/WEB-CONTENT/index.jsp
+  
+-dsannotations: com.ibm.ws.wsat.utils.CommonService
+
+Service-Component: \
+ com.ibm.ws.wsat.interceptor.WSATInterceptorService; \
+     immediate:=true; \
+     activate:=activate; \
+     deactivate:=deactivate; \
+     implementation:=com.ibm.ws.wsat.interceptor.WSATInterceptorServiceImpl; \
+     provide:='com.ibm.ws.jaxws.wsat.components.WSATInterceptorService'; \
+     featureProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
+     configuration-policy:=ignore; \
+     properties:="service.vendor=IBM"
+
+-buildpath: \
+	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.wsat;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.wsat.common;version=latest,\
+	com.ibm.ws.wsat.webclient;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

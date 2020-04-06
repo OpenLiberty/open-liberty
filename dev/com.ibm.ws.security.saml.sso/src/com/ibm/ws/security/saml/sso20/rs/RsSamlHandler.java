@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class RsSamlHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.saml.SamlHandler#getSamlVersion()
      */
     public Constants.SamlSsoVersion getSamlVersion() {
@@ -63,7 +63,7 @@ public class RsSamlHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.saml.SamlHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map)
      */
     public Map<String, Object> handleRequest() throws SamlException {
@@ -77,11 +77,7 @@ public class RsSamlHandler {
                                     " response:" + response +
                                     " ssoSamlService:" + ssoSamlService);
             }
-            SsoRequest samlRequest = new SsoRequest(ssoSamlService.getProviderId(),
-                            Constants.EndpointType.ACS,
-                            request,
-                            Constants.SamlSsoVersion.SAMLSSO20,
-                            ssoSamlService);
+            SsoRequest samlRequest = new SsoRequest(ssoSamlService.getProviderId(), Constants.EndpointType.ACS, request, Constants.SamlSsoVersion.SAMLSSO20, ssoSamlService);
             request.setAttribute(Constants.ATTRIBUTE_SAML20_REQUEST, samlRequest);
             return handleRequest(request, response, samlRequest);
         } catch (SamlException e) {
@@ -114,13 +110,12 @@ public class RsSamlHandler {
         if (headerContent == null || headerContent.isEmpty()) {
             throw new SamlException("RS_EMPTY_SAML_ASSERTION",
                             //RS_EMPTY_SAML_ASSERTION=CWWKS5013E: The header named as [{0}] does not exist in the HTTP request or is set to an empty string.
-                            null,
-                            new Object[] { strHeaderName });
+                            null, new Object[] { strHeaderName });
         }
 
-        //5. unzip SAML if compressed 
-        // Base64 handles it 
-        //6. Base64 decode SAML 
+        //5. unzip SAML if compressed
+        // Base64 handles it
+        //6. Base64 decode SAML
         //7. Convert SAML String to SAML DOM Element
         //8. Validate SAML (signature and all time stamps, and audiences if configured), similar to jax-ws
         RsSamlConsumer rsSamlConsumer = RsSamlConsumer.getInstance();
@@ -156,7 +151,7 @@ public class RsSamlHandler {
         String headerContent = getHdrNameContent(request, headerNames);
         //d) If no saml-token-content was found in step c, then look into the header named as "Authorization"
         //    In its content, we check its prefix. The prefix has to be, in the above example, "saml_token1", "saml_token2" or "saml_token3"
-        //    The content can be in three formats, for example: 
+        //    The content can be in three formats, for example:
         //     i)   saml_token1=<saml-token-content>
         //     ii)  saml_token1="<saml-token-content>"
         //     iii) saml_token1 <saml-token-content>
@@ -173,7 +168,7 @@ public class RsSamlHandler {
      * i) saml_token1=<saml-token-content>
      * ii) saml_token1="<saml-token-content>"
      * iii) saml_token1 <saml-token-content>
-     * 
+     *
      * @param request
      * @param headerNames
      * @return
@@ -219,7 +214,7 @@ public class RsSamlHandler {
     /**
      * c) In the above example, find the content of saml-token-content from the headers of the http request in this sequence:
      * saml_token1, saml_token2, saml_token3.
-     * 
+     *
      * @param request
      * @param headerNames
      * @return

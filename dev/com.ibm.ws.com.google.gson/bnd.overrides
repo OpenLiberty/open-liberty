@@ -13,3 +13,5 @@ Export-Package: \
   com.google.gson.reflect;version="2.2.4", \
   com.google.gson.stream;version="2.2.4"
 
+Import-Package: \
+  com.google.gson.annotations

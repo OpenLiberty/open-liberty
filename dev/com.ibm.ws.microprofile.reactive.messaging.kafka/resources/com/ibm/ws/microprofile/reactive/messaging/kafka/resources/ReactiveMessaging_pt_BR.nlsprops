@@ -54,6 +54,12 @@ kafka.output.error.signal.CWMRX1004E.useraction=Revise o arquivo message.log do 
 kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: A propriedade group.id n\u00e3o foi definida na configura\u00e7\u00e3o para este canal. Configure a propriedade {0} em uma das Origens de Configura\u00e7\u00e3o do MicroProfile para este aplicativo.
 kafka.groupid.not.set.CWMRX1005E.explanation=O ID do grupo do consumidor Kafka deve ser configurado para permitir que o Sistema de Mensagens Reativo funcione corretamente.
 kafka.groupid.not.set.CWMRX1005E.useraction=Configure a propriedade em um dos locais do MicroProfile ConfigSource para este aplicativo, por exemplo, o arquivo microprofile-config.properties.
+
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: As classes do arquivo JAR kafka-clients n\u00e3o puderam ser carregadas. Certifique-se de que o arquivo JAR kafka-clients e suas depend\u00eancias estejam dispon\u00edveis como bibliotecas para seu aplicativo.
+kafka.library.not.present.CWMRX1006E.explanation=Os aplicativos que usam o Reactive Messaging Kafka Client devem fornecer o arquivo JAR kafka-clients e suas depend\u00eancias. Eles podem fornecer este arquivo e suas depend\u00eancias empacotando-o como uma biblioteca no aplicativo ou fornecendo-o como uma biblioteca compartilhada.
+kafka.library.not.present.CWMRX1006E.useraction=Empacote o arquivo JAR kafka-clients e suas depend\u00eancias como bibliotecas em seu aplicativo ou como uma biblioteca compartilhada. O arquivo JAR kafka-clients pode ser transferido por download do website do Apache Kafka ou do Maven Central.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

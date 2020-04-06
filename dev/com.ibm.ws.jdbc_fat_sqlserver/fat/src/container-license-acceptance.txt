@@ -1,1 +1,1 @@
-mcr.microsoft.com/mssql/server:2019-CTP3.1-ubuntu
+mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04

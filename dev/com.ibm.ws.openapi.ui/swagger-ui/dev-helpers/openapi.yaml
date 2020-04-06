@@ -1,192 +1,677 @@
-openapi: 3.0.0-rc2
+openapi: 3.0.0
+
+servers:
+  - url: "https://dev.api.world.treasured.ca/v1/"
+  - url: "http://localhost:8081/v1/"
+
 info:
- title: "OpenAPI REST APIs"
- description: "Discover REST APIs"
- version: "1.0.0"
+  title: Treasured API
+  version: 0.0.1
+  license:
+    name: Apache 2.0
+    url: 'http://google.com'
+  contact:
+    name: Google
+    email: email@google.com
+  description: 'Hello world'
+  termsOfService: 'http://google.com'
+
+security:
+  - token: []
+  - oidc:
+     - openid
+
 paths:
-  /:
+  /users/me:
     get:
-      summary: Retrieve all available airlines
-      operationId: getAirlines
+      summary: Get current user info
+      tags:
+        - users
       responses:
-        default:
+        200:
+          description: Returns Currently logged in User Root Capsule and previews of contents
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Airline'
-  /availability:
+                $ref: "#/components/schemas/User"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      summary: Update user info
+      tags:
+        - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"  
+      responses:
+        200:
+          description: Returns User Root Capsule and previews of contents by User ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/Forbidden'        
+  /users/{id}:
     get:
-      description: Retrieve all available flights
-      operationId: getFlights
+      summary: Get user info
+      tags:
+        - users
       parameters:
-      - name: departureDate
-        in: query
-        schema:
-          type: string
-      - name: airportFrom
-        in: query
-        schema:
-          type: string
-      - name: returningDate
-        in: query
-        schema:
-          type: string
-      - name: airportTo
-        in: query
-        schema:
-          type: string
-      - name: numberOfAdults
-        in: query
-        schema:
-          type: integer
-          format: int32
-      - name: numberOfChildren
-        in: query
-        schema:
-          type: integer
-          format: int32
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
       responses:
         200:
+          description: Returns User Root Capsule and previews of contents by User ID
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Flight'
-  /bookings:
+                $ref: "#/components/schemas/Capsule"
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/Forbidden'  
+  /capsules/{id}:
     get:
-      description: Retrieve all bookings for current user
-      operationId: getBookings
+      summary: Get specific capsule
+      tags:
+        - capsules
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
       responses:
         200:
+          description: Returns capsule and previews of contents
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Capsule"
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      summary: Update specific capsule
+      tags:
+        - capsules
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Capsule"      
+      responses:
+        200:
+          description: Successfully modified capsule
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Capsule"
+        400:
+          $ref: '#/components/responses/BadRequest'                
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      summary: Delete specific capsule
+      tags:
+        - capsules
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        204:
+          description: Successfully deleted capsule ( and all it's contents ??? )
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /capsules/{id}/subcapsules:
+    get:
+      summary: Returns capsule's children
+      tags:
+        - capsules
+      parameters:
+        - name: id
+          in: path
+          required: true  
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of chidlren of the capsule
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Booking'
+                  $ref: "#/components/schemas/Capsule"
+        404:
+          $ref: '#/components/responses/NotFound'                  
+        401:
+          $ref: '#/components/responses/Unauthorized'                  
+        403:
+          $ref: '#/components/responses/Forbidden'
     post:
-      description: Create a booking
-      operationId: createBooking
-      responses:
-        default:
-          description: no description
-  /bookings/{id}:
-    get:
-      description: Get a booking with ID
-      operationId: getBooking
+      summary: Create a new capsule
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int32
+        - name: id
+          in: path
+          required: true  
+          schema:
+            type: string      
+      tags:
+        - capsules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Capsule"
       responses:
-        200:
-          description: Booking retrieved MUST  BE ARRAY !!!!
+        201:
+          description: Successfully created capsule
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Booking'
+                $ref: "#/components/schemas/Capsule"
+        400:
+          $ref: '#/components/responses/BadRequest'        
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'           
+  /capsules/{id}/posts:
+    get:
+      summary: Get posts for a capsule
+      tags:
+        - posts
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
         404:
-          description: Booking not found
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    post:
+      summary: Add a new post to a capsule
+      tags:
+        - posts
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Post"
+      responses:
+        201:
+          description: Successfully Created a Post and added the post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        400:
+          $ref: '#/components/responses/BadRequest'                
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /posts/{id}:
+    get:
+      summary: Get specific post
+      tags:
+        - posts
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        401:
+          $ref: '#/components/responses/Unauthorized'
     put:
-      description: Update a booking with ID
-      operationId: updateBooking
+      summary: Update specific post
+      tags:
+        - posts
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int32
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Post"      
       responses:
         200:
-          description: Booking updated
+          description: Successfully modified post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        400:
+          $ref: '#/components/responses/BadRequest'                
         404:
-          description: Booking not found
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
     delete:
-      description: Delete a booking with ID
-      operationId: deleteBooking
+      summary: Delete specific post
+      tags:
+        - posts
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int32
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        204:
+          description: Successfully deleted capsule ( and all it's contents ??? )
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /posts/{id}/comments:
+    get:
+      summary: Get comments on a post
+      tags:
+        - comments
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
       responses:
         200:
-          description: Booking deleted
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
         404:
-          description: Booking not found
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create a new comment
+      tags:
+        - comments
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Comment"
+      responses:
+        201:
+          description: Successfully Created a Comment and added it to the post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        400:
+          $ref: '#/components/responses/BadRequest'                
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /comments/{id}:
+    put:
+      summary: Update specific comment
+      tags:
+        - comments
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Comment"      
+      responses:
+        200:
+          description: Successfully modified post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        400:
+          $ref: '#/components/responses/BadRequest'                
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      summary: Delete specific comment
+      tags:
+        - comments
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        204:
+          description: Successfully deleted capsule ( and all it's contents ??? )
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /media:
+    get:
+      summary: "Get user's media"
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      tags:
+        - media
+      responses:
+        200:
+          description: Search Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Media"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Upload new media
+      tags:
+        - media
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Media"
+      responses:
+        201:
+          description: Successfully created media
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Media"
+        400:
+          $ref: '#/components/responses/BadRequest'                
+        401:
+          $ref: '#/components/responses/Unauthorized'
+  /media/{id}:
+    put:
+      summary: Update media
+      tags:
+        - media
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Media"            
+      responses:
+        200:
+          description: Successfully modified post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Media"
+        400:
+          $ref: '#/components/responses/BadRequest'                
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      summary: Delete media
+      tags:
+        - media
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        204:
+          description: Successfully deleted capsule ( and all it's contents ??? )
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
 components:
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      openIdConnectUrl: "https://accounts.treasured.ca/auth/realms/treasured/.well-known/openid-configuration"
+      description: Treasured Accounts Service
+    token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Treasured Accounts JWT token
+  responses:
+    BadRequest:
+      description: Client has sent bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: User is not logged in
+    Forbidden:
+      description: User doesn't have correct permission
+    NotFound:
+      description: Failed to find the resource
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
   schemas:
-    Airline:
-      required:
-      - contactPhone
-      - name
+    User:
       type: object
       properties:
-        name:
+        id:
           type: string
-        contactPhone:
+          readOnly: true
+        firstName:
           type: string
-    Flight:
-      required:
-      - airportFrom
-      - airportTo
-      - dateTime
-      - number
-      - price
-      - status
+        lastName:
+          type: string
+        rootCapsuleId:
+          type: string
+          format: uuid  
+          readOnly: true
+        
+    Capsule:
       type: object
       properties:
-        airline:
-          $ref: '#/components/schemas/Airline'
-        dateTime:
+        id:
           type: string
-        number:
+          format: uuid
+          readOnly: true
+        ownerId:
           type: string
-        status:
+          format: uuid
+          readOnly: true 
+        parentId:
           type: string
-        airportFrom:
+          format: uuid
+          readOnly: true  
+        title:
           type: string
-        airportTo:
+          example: My capsule
+        createdAt:
           type: string
-        price:
+          format: date-time
+          readOnly: true          
+        updatedAt:
           type: string
-    Booking:
-      required:
-      - airMiles
-      - seatPreference
+          format: date-time
+          readOnly: true
+          
+    Post:
       type: object
       properties:
-        departtureFlight:
-          $ref: '#/components/schemas/Flight'
-        returningFlight:
-          $ref: '#/components/schemas/Flight'
-        creditCard:
-          $ref: '#/components/schemas/CreditCard'
-        airMiles:
+        id:
           type: string
-        seatPreference:
+          format: uuid
+          readOnly: true
+        title:
           type: string
-    CreditCard:
-      required:
-      - cardNumber
-      - cardholderName
-      - cvv
-      - expiryDate
-      - issuer
+        ownerId:
+          type: string
+          format: uuid
+          readOnly: true
+        editorContent:
+          type: string
+          format: byte
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true          
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    Comment:
       type: object
       properties:
-        issuer:
+        id:
           type: string
-        cardholderName:
+          readOnly: true
+        text:
           type: string
-        cardNumber:
+        ownerId:
           type: string
-        cvv:
+          format: uuid
+          readOnly: true
+        createdAt:
           type: string
-        expiryDate:
+          format: date-time
+          readOnly: true          
+        updatedAt:
           type: string
+          format: date-time
+          readOnly: true
+    Media:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        type:
+          type: string
+          enum:
+            - image
+            - audio
+            - prefab
+        url:
+          type: string
+          format: url
+        owner:
+          type: string
+          readOnly: true
+        lastUpdateDateTime:
+          type: string
+          readOnly: true
+    Error:
+      type: object     
+      properties:
+        statusCode:
+          type: integer   
+        message:
+          type: string
+
+        

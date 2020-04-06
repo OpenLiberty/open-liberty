@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: Health Check
 Bundle-SymbolicName: com.ibm.ws.microprofile.health
@@ -33,6 +31,7 @@ WS-TraceGroup: HEALTH
   com.ibm.ws.microprofile.health.spi.impl.HealthCheckResponseProviderImpl
 
 Import-Package: \
+  !com.ibm.ws.microprofile.health.spi.impl, \
   javax.enterprise.context.spi; version="[1.1,3)",\
   javax.enterprise.inject.spi; version="[1.1,3)",\
   javax.enterprise.util; version="[1.1,3)",\
@@ -55,7 +54,6 @@ Include-Resource: \
     META-INF/services=resources/META-INF/services, \
     WEB-INF=resources/WEB-INF
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src,resources
 testsrc: test/src

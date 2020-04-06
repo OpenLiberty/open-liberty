@@ -41,7 +41,6 @@ public class OASISCatalogApplicationBusListener implements LibertyApplicationBus
         if (bus == null) {
             return;
         }
-
         LibertyApplicationBus.Type busType = bus.getExtension(LibertyApplicationBus.Type.class);
         if (busType == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

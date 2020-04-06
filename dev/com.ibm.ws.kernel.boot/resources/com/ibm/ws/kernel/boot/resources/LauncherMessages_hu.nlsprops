@@ -439,7 +439,7 @@ error.create.unknownJavaLevel.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la,
 
 error.create.java8serverenv=CWWKE0103E: A server.env f\u00e1jl nem hozhat\u00f3 l\u00e9tre a k\u00f6vetkez\u0151 helyen: {0}
 error.create.java8serverenv.explanation=A folyamat, amely megpr\u00f3b\u00e1lja l\u00e9trehozni a kiszolg\u00e1l\u00f3t, nem tudta el\u0151\u00e1ll\u00edtani a server.env f\u00e1jlt a megadott helyen.  Ez a f\u00e1jl adja meg a sz\u00fcks\u00e9ges JVM argumentumokat a kiszolg\u00e1l\u00f3hoz a megfelel\u0151 m\u0171k\u00f6d\u00e9s \u00e9rdekben.
-error.create.java8serverenv.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van \u00edr\u00e1si hozz\u00e1f\u00e9r\u00e9se a kiszolg\u00e1l\u00f3k\u00f6nyvt\u00e1rhoz \u00e9s van elegend\u0151 lemezter\u00fclet.  Ezen k\u00edv\u00fcl k\u00e9zzel hozza l\u00e9tre a server.env f\u00e1jlt a k\u00f6vetkez\u0151 \u00e9rt\u00e9kkel: WLP_SKIP_MAXPERMSIZE=true.  Gondoskodjon r\u00f3la, hogy a kiszolg\u00e1l\u00f3folyamatnak legyen olvas\u00e1si hozz\u00e1f\u00e9r\u00e9se a f\u00e1jlhoz.
+error.create.java8serverenv.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van \u00edr\u00e1si hozz\u00e1f\u00e9r\u00e9se a kiszolg\u00e1l\u00f3k\u00f6nyvt\u00e1rhoz \u00e9s van elegend\u0151 lemezter\u00fclet. Gondoskodjon r\u00f3la, hogy a kiszolg\u00e1l\u00f3folyamatnak legyen olvas\u00e1si hozz\u00e1f\u00e9r\u00e9se a f\u00e1jlhoz.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Ez a term\u00e9k b\u00e9ta v\u00e1ltozat \u00e9s nem haszn\u00e1lhat\u00f3 \u00e9les k\u00f6rnyezetben. A teljes licencfelt\u00e9telek itt tekinthet\u0151k meg: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Ez a term\u00e9k b\u00e9ta v\u00e1ltozat \u00e9s a b\u00e9ta licenc felt\u00e9teleinek megfelel\u0151en kell haszn\u00e1lni.
@@ -690,10 +690,6 @@ warning.package.root.invalid.useraction=Nincs teend\u0151.
 warning.package.root.invalid.runnable=CWWKE0948W: A --server-root param\u00e9ter kombin\u00e1l\u00e1sa az  --include=runnable param\u00e9terrel nem megengedett. Az alap\u00e9rtelmezett wlp argumentum ker\u00fcl alkalmaz\u00e1sra a kiszolg\u00e1l\u00f3gy\u00f6k\u00e9rhez.
 warning.package.root.invalid.runnable.explanation=A felhaszn\u00e1l\u00f3 csomag k\u00e9r\u00e9st hajtott v\u00e9gre --server-root \u00e9s --include=runnable param\u00e9terrel, ami nem megengedett kombin\u00e1ci\u00f3. A wlp alap\u00e9rtelmezett kiszolg\u00e1l\u00f3gy\u00f6kere ker\u00fcl alkalmaz\u00e1sra.
 warning.package.root.invalid.runnable.useraction=Nincs teend\u0151.
-
-error.no.serialfilteragent=CWWKE0949E: A megadott {0} soros\u00edt\u00e1si sz\u0171r\u0151 \u00fcgyn\u00f6k jar f\u00e1jl nem l\u00e9tezik.
-error.no.serialfilteragent.explanation=A megadott soros\u00edt\u00e1si sz\u0171r\u0151 \u00fcgyn\u00f6k jar f\u00e1jl nem l\u00e9tezik vagy nem olvashat\u00f3.
-error.no.serialfilteragent.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl l\u00e9tezik \u00e9s az aktu\u00e1lis felhaszn\u00e1l\u00f3 \u00e1ltal olvashat\u00f3.
 
 error.package.extension=CWWKE0950E: Az arch\u00edv f\u00e1jln\u00e9vnek a runnable param\u00e9ter haszn\u00e1lata eset\u00e9n .jar kiterjeszt\u00e9sre kell v\u00e9gz\u0151dnie.
 error.package.extension.explanation=Az --archive param\u00e9ternek az --include=runnable param\u00e9ter megad\u00e1sa eset\u00e9n .jar v\u00e9g\u0171 f\u00e1jlkiterjeszt\u00e9st kell tartalmaznia.

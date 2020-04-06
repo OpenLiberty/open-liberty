@@ -1,0 +1,7 @@
+#OSGI debug options to resolve weird case where the bundle metatype is not found
+org.eclipse.osgi/debug=true
+org.eclipse.osgi/debug/bundleFile=true
+org.eclipse.osgi/debug/cachedmanifest=true
+
+
+

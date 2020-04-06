@@ -14,9 +14,9 @@ override_dh_auto_install:
 	#Unpacking the tar
 	mkdir -p ${BUILDROOT}/opt/ol
 	tar -zxf ${TOPDIR}/${NAME}-${VERSION}.tar.gz -C ${BUILDROOT}/opt/ol .
-	#Create the user share folder and copy the .zip there
+	#Create the user share folder and copy the .tar there
 	mkdir -p ${BUILDROOT}/usr/share/${NAME}
-	cp ${TOPDIR}/defaultServer.zip ${BUILDROOT}/usr/share/${NAME}
+	cp ${TOPDIR}/defaultServer.tar ${BUILDROOT}/usr/share/${NAME}
 	#Creating the scripts
 	mkdir -p ${BUILDROOT}/etc/init.d
 	cp ${TOPDIR}/scripts/openliberty ${BUILDROOT}/etc/init.d

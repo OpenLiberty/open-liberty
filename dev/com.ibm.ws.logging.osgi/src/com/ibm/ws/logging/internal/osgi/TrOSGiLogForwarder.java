@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.equinox.log.ExtendedLogEntry;
+import org.eclipse.equinox.log.LogFilter;
 import org.eclipse.equinox.log.SynchronousLogListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
@@ -32,7 +33,7 @@ import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 
-public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener {
+public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener, LogFilter {
     private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class,OsgiLogConstants.TRACE_GROUP, OsgiLogConstants.MESSAGE_BUNDLE);
 
     final static class OSGiTraceComponent extends TraceComponent {
@@ -261,5 +262,48 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean isLoggable(Bundle b, String loggerName, int level) {
+        if (b == null) {
+            // This is possible in rare conditions;
+            // For example log entries for service events when the service is unregistered
+            // before we could get the bundle
+            return false;
+        }
+        boolean isAnyTraceEnabled = TraceComponent.isAnyTracingEnabled();
+
+        // Do error first because we don't do the check below for errors
+        if (level == LogLevel.ERROR.ordinal()) {
+            return getTraceComponent(b).isErrorEnabled();
+        }
+
+        // check for events specifically to log them with Tr.event
+        if (loggerName != null && loggerName.startsWith(LOGGER_EVENTS_PREFIX))  {
+            return isAnyTraceEnabled && getTraceComponent(b).isEventEnabled();
+        }
+
+        if (level == LogLevel.AUDIT.ordinal()) {
+            return getTraceComponent(b).isAuditEnabled();
+        }
+
+        if (level == LogLevel.INFO.ordinal()) {
+            return getTraceComponent(b).isInfoEnabled();
+        }
+
+        if (level == LogLevel.WARN.ordinal()) {
+            return getTraceComponent(b).isWarningEnabled();
+        }
+
+        if (level == LogLevel.DEBUG.ordinal()) {
+            return isAnyTraceEnabled && getTraceComponent(b).isDebugEnabled();
+        }
+
+        if (level == LogLevel.TRACE.ordinal()) {
+            return isAnyTraceEnabled && getTraceComponent(b).isDumpEnabled();
+        }
+
+        return false;
     }
 }

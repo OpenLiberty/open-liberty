@@ -1,0 +1,65 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: gRPC Client 1.0.
+Bundle-SymbolicName: com.ibm.ws.grpc.client.1.0
+Bundle-Description: gRPC Client, version 1.0
+
+Import-Package: !sun.*,\
+  !com.google.code.gson,\
+  !org.checkerframework,\
+  !com.google.protobuf.nano,\
+  !com.jcraft.jzlib,\
+  !com.ning.*,\
+  !com.oracle.svm.core.annotate,\
+  !lzma.*,\
+  !net.jpountz.*,\
+  !org.apache.log4j.*,\
+  !org.apache.logging.*,\
+  !org.bouncycastle.*,\
+  !org.conscrypt,\
+  !org.eclipse.jetty.*,\
+  !org.jboss.*,\
+  *
+
+Export-Package: io.grpc.netty.shaded.io.*
+
+javac.args.release: current
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+# include the service providers
+Include-Resource: \
+  @${repo;io.grpc:grpc-netty-shaded}!/META-INF/**
+
+# expose the service providers to be consumed by grpc-common bundle
+Service-Component: \
+  com.ibm.ws.grpc.client.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+    
+app-resources= \
+  META-INF/services/io.grpc.ManagedChannelProvider | \
+  META-INF/services/io.grpc.ServerProvider
+    
+Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ServerProvider,\
+  osgi.serviceloader;osgi.serviceloader=io.grpc.ManagedChannelProvider
+  
+instrument.disabled: true
+
+-buildpath: \
+  io.grpc:grpc-netty-shaded;version=1.27.0
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

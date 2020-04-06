@@ -210,6 +210,7 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Le seguenti funzioni non possono essere d
 ERROR_UNINSTALL_FAILED_USR.explanation=Le funzioni specificate sono funzioni utente e non \u00e8 possibile disinstallarle.
 ERROR_UNINSTALL_FAILED_USR.useraction=Non disinstallare le funzioni utente.
 
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Uno dei repository che viene specificato nel file di configurazione non pu\u00f2 essere raggiunto. Verificare che il computer abbia accesso alla rete e i firewall siano configurati correttamente, quindi tentare nuovamente l'azione. Se la connessione non riesce ancora, il server del repository potrebbe essere temporaneamente non disponibile.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=Si \u00e8 verificato un errore durante la connessione a un repository.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Verificare che il sistema possa accedere a Internet e al repository appropriato.
@@ -560,6 +561,9 @@ STATE_PREPARING_ASSETS=Preparazione degli asset per l'installazione. Il completa
 STATE_INITIALIZING=Inizializzazione...
 STATE_CONTACTING_REPO=Si sta contattando IBM WebSphere Liberty Repository...
 STATE_DOWNLOAD_FILES_OK=\nTutti gli asset sono stati scaricati correttamente.
+STATE_CONTACTING_MAVEN_REPO=Viene stabilita una connessione al repository Maven configurato...\nIl completamento di questo processo potrebbe richiedere alcuni minuti.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Connessione al repository configurato stabilita correttamente.
+STATE_READING_ENV_PROPS_FILE=Lettura di {0}/etc/featureUtility.env...
 PROGRESS_STEP=Passo {0} di {1}
 
 MSG_DOWNLOAD_SUCCESS=La funzione {0} \u00e8 stata scaricata.
@@ -572,7 +576,7 @@ MSG_SEARCHING_FEATURES=Ricerca funzioni...
 MSG_SEARCHING_ADDONS=Ricerca addon...
 MSG_SEARCHING_SAMPLES=Ricerca esempi...
 MSG_SEARCHING_OPENSOURCE=Ricerca delle integrazioni open source in corso...
-
+MSG_BEGINNING_DOWNLOAD_FEATURES=Scaricamento delle funzioni richieste...
 FEATURE_ASSET=funzione
 ADDON_ASSET=addon
 SAMPLE_ASSET=esempio prodotto
@@ -580,6 +584,8 @@ OPENSOURCE_ASSET=integrazione open source
 GENERAL_ASSET=asset
 
 MSG_INVALID_FOR_OS=La risorsa funzione {0} non \u00e8 valida per il sistema operativo corrente e non sar\u00e0 installata.
+
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Il server non richiede alcuna funzione aggiuntiva. Non \u00e8 stata installata alcuna funzione.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=Il nome propriet\u00e0 non \u00e8 stato specificato. Specificare un nome propriet\u00e0 valido o escludere la propriet\u00e0 se \u00e8 inutilizzata.
@@ -778,6 +784,68 @@ ERROR_ESA_NOT_FOUND.useraction=Verificare che il file ESA fornito sia valido e c
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Impossibile creare un file JSON in {0} per il file ESA {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=La funzione nel file ESA non verr\u00e0 installata.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Assicurarsi che l'accesso in scrittura sia disponibile per la directory in cui verr\u00e0 creato il file JSON.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: Il repository Maven configurato non pu\u00f2 essere raggiunto. Verificare che il computer abbia accesso alla rete e i firewall siano configurati correttamente, quindi tentare nuovamente l'azione. Se la connessione non riesce ancora, il server del repository potrebbe essere temporaneamente non disponibile.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=Si \u00e8 verificato un errore durante la connessione al repository Maven configurato.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Verificare che il sistema possa accedere a Internet e al repository appropriato.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: I checksum disponibili non sono stati convalidati per il file {0}.
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=Il checksum dell'asset scaricato non \u00e8 corretto. Il contenuto dell'asset scaricato non \u00e8 uguale a quello proveniente dal repository, quindi l'asset non pu\u00f2 essere installato.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Eseguire nuovamente il comando.
+
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Sono state fornite credenziali non corrette per il repository {0}.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=L'autenticazione con le credenziali FEATURE_REPO_USER e FEATURE_REPO_PASSWORD non \u00e8 riuscita con il repository configurato.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Fornire le credenziali corrette per il repository configurato.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Le risorse utente dal repository configurato non sono state scaricate.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=L'asset specificato non \u00e8 stato scaricato dal repository specificato perch\u00e9 il repository non contiene una versione valida dell'asset.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Verificare che il repository contenga l'asset, quindi, rieseguire il comando.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: Non \u00e8 stato possibile determinare la versione di runtime Liberty.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=Il file delle propriet\u00e0 {0} potrebbe essere mancante o danneggiato.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Assicurarsi che il file delle propriet\u00e0 esista.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: La funzione con una coordinata Maven {0} non pu\u00f2 essere installata su una versione di runtime Liberty {1}.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=La funzione \u00e8 incompatibile con il runtime Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specificare una versione valida per la funzione.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: Il formato del pacchetto nella coordinata Maven della funzione {0} non \u00e8 valido. Il formato pacchetto valido \u00e8 ESA.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=La funzione \u00e8 incompatibile con il runtime Liberty.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specificare ESA come formato di pacchetto nella coordinata Maven.
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: La coordinata Maven {0} non \u00e8 valida.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=La coordinata Maven fornita non \u00e8 nel formato corretto.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Immettere una coordinata Maven valida.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: Il server {0} non esiste. Immettere un nome server valido e riprovare.
+ERROR_SERVER_NOT_EXIST.explanation=Il server non esiste.
+ERROR_SERVER_NOT_EXIST.useraction=Creare il server e eseguire nuovamente il comando.
+
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: L''ID gruppo {0} non \u00e8 valido. Assicurarsi che sia fornito l''ID gruppo valido per la coordinata funzione o che il sistema possa accedere a internet e al repository configurato.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=Il file JSON delle funzioni non \u00e8 stato trovato sul repository Maven.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Controllare la connessione di rete e assicurarsi che il file JSON delle funzioni sia ospitato sul repository Maven.
+
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: Il formato della variabile di ambiente http_proxy {0} non \u00e8 valido. Assicurarsi che la variabile http_proxy sia nel formato http_proxy=http://<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=Il formato della variabile di ambiente proxy non \u00e8 valido.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Riformare la variabile di ambiente http_proxy in modo da corrispondere al formato http_proxy=http://<proxy-host>:<proxy-port>.
+
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: Il formato della variabile di ambiente https_proxy {0} non \u00e8 valido. Assicurarsi che la variabile https_proxy sia nel formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=Il formato della variabile di ambiente proxy non \u00e8 valido.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Riformare la variabile di ambiente https_proxy in modo da corrispondere al formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Le seguenti funzioni non sono state ottenute: {0}. Assicurarsi che le funzioni specificate siano valide.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=La funzione non \u00e8 supportata da Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Eseguire featureUtility con una funzione compatibile.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Le seguenti funzioni utente sono specificate nel file server.xml e non verranno installate: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Le funzioni {0} e {1} sono incompatibili tra loro e non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Le funzioni non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Rimuovere una delle funzioni e riprovare.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Le funzioni singleton {0} e {1} sono incompatibili tra loro e non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Le funzioni non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Rimuovere una delle funzioni e riprovare.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La funzione \u00e8 stata scaricata correttamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La funzione \u00e8 stata scaricata.

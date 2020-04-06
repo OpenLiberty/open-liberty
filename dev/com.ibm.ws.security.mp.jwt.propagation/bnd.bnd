@@ -22,7 +22,9 @@ WS-TraceGroup: \
 Export-Package: \
   com.ibm.ws.security.mp.jwt.propagation
 
-Import-Package: !*.internal.*, *
+Import-Package: \
+  !com.ibm.ws.security.mp.jwt.propagation, \
+  !*.internal.*, *
    
 -dsannotations: \
   com.ibm.ws.security.mp.jwt.propagation.MpJwtPropagationImpl

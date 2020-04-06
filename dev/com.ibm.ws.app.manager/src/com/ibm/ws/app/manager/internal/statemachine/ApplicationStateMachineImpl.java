@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         final ApplicationDependency appDep = createDependency("resolves when app " + getAppName() + " finishes starting");
         _notifyAppStarted.add(appDep);
         completeExplicitStartFuture();
+        // We ignore startAfter when starting manually
+        completeStartAfterFutures();
         attemptStateChange(StateChangeAction.START);
         return appDep.getFuture();
     }
@@ -137,10 +139,6 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             // an NPE because the app handler no longer exists.
             cleanupActions();
 
-            // Clear interruptible flag
-            if (!isInterruptible())
-                setInterruptible();
-
             ApplicationDependency appHandlerFuture = createDependency("resolves when the app handler for app " + getAppName() + " arrives");
             appHandlerFuture = waitingForAppHandlerFuture.getAndSet(appHandlerFuture);
             if (appHandlerFuture != null) {
@@ -157,6 +155,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     @Override
     public void configure(ApplicationConfig appConfig,
                           Collection<ApplicationDependency> appStartingFutures,
+                          Collection<ApplicationDependency> startAfterFutures,
                           ApplicationDependency notifyAppStopped,
                           ApplicationDependency notifyAppStarting,
                           ApplicationDependency notifyAppInstallCalled,
@@ -170,6 +169,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         final boolean checkForUnprocessedConfigChange = _nextAppConfig.getAndSet(appConfig) != null;
         addAppStartingFutures(appStartingFutures);
+        addStartAfterFutures(startAfterFutures);
         if (notifyAppStopped != null) {
             _notifyAppStopped.add(notifyAppStopped);
         }
@@ -646,7 +646,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
     private volatile Throwable _failedThrowable;
 
-    private final Object _interruptibleLock = new Object() {};
+    private final Object _interruptibleLock = new Object() {
+    };
     private volatile boolean _interruptible;
     private volatile boolean _performingQueuedActions;
     private final ConcurrentLinkedQueue<QueuedStateChangeAction> _queuedActions = new ConcurrentLinkedQueue<QueuedStateChangeAction>();
@@ -655,6 +656,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private final Set<ApplicationDependency> blockAppStartingFutures = Collections.newSetFromMap(new ConcurrentHashMap<ApplicationDependency, Boolean>());
     private final AtomicReference<ApplicationDependency> waitingForAppHandlerFuture = new AtomicReference<ApplicationDependency>();
     private final AtomicReference<ApplicationDependency> waitingForExplicitStartFuture = new AtomicReference<ApplicationDependency>();
+    private final Set<ApplicationDependency> startAfterFutures = Collections.newSetFromMap(new ConcurrentHashMap<ApplicationDependency, Boolean>());
     private final AtomicReference<CancelableCompletionListenerWrapper<Boolean>> completionListener = new AtomicReference<CancelableCompletionListenerWrapper<Boolean>>();
 
     private final ConcurrentLinkedQueue<ApplicationDependency> _notifyAppStopped = new ConcurrentLinkedQueue<ApplicationDependency>();
@@ -663,7 +665,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private final ConcurrentLinkedQueue<ApplicationDependency> _notifyAppStarted = new ConcurrentLinkedQueue<ApplicationDependency>();
     private final ConcurrentLinkedQueue<ApplicationDependency> _notifyAppRemoved = new ConcurrentLinkedQueue<ApplicationDependency>();
 
-    private final Object _stateLock = new Object() {};
+    private final Object _stateLock = new Object() {
+    };
     private final AtomicReference<InternalState> _internalState = new AtomicReference<InternalState>();
     private final AtomicReference<Action> _currentAction = new AtomicReference<Action>();
     private final AtomicReference<ResolveFileAction> _rfa = new AtomicReference<ResolveFileAction>();
@@ -997,6 +1000,14 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         blockAppStartingFutures.addAll(appStartingFutures);
     }
 
+    private void addStartAfterFutures(Collection<ApplicationDependency> startAfters) {
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, asmLabel() + "addSTartAfterFutures: interruptible=" + isInterruptible());
+        }
+        startAfterFutures.addAll(startAfters);
+        blockAppStartingFutures.addAll(startAfters);
+    }
+
     private void addAppHandlerFuture() {
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, asmLabel() + "addAppHandlerFuture: interruptible=" + isInterruptible());
@@ -1027,6 +1038,15 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         final ApplicationDependency explicitStartFuture = waitingForExplicitStartFuture.getAndSet(null);
         if (explicitStartFuture != null) {
             resolveDependency(explicitStartFuture);
+        }
+    }
+
+    private void completeStartAfterFutures() {
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, asmLabel() + "completeStartAfterFutures: interruptible=" + isInterruptible());
+        }
+        for (ApplicationDependency ad : startAfterFutures) {
+            resolveDependency(ad);
         }
     }
 
@@ -1356,4 +1376,5 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         return false;
     }
+
 }

@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2019,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.acme/resources/com/ibm/ws/security/acme/resources/AcmeMessages.nlsprops
+#COMPONENTPREFIX CWPKI
+#COMPONENTNAMEFOR WebSphere ACME
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWPKI2000 - CWPKI2299
+#-----  ACME messages
+
+# The ACME referred to in these messages stands for Automatic Certificate Management Environment.
+# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
+
+CWPKI2001E=CWPKI2001E: Die ACME-Zertifizierungsstelle unter dem URI {0} hat geantwortet, dass die Berechtigungsabfrage f\u00fcr die Dom\u00e4ne {1} fehlgeschlagen ist. Der Abfragestatus ist {2}. Der Fehler ist {3}.
+CWPKI2001E.explanation=Der Abfragestatus gibt an, dass die Berechtigungsabfrageanforderung fehlgeschlagen ist und das Zertifikat nicht erstellt werden kann.
+CWPKI2001E.useraction=Suchen Sie in der Status- und Fehlernachricht nach Details zum Fehler.
+
+CWPKI2002E=CWPKI2002E: Die Abfrage des ACME-Service hat das Zeitlimit erreicht, als gepr\u00fcft wurde, ob die Berechtigungsabfrage f\u00fcr die Dom\u00e4ne {0} von der ACME-Zertifizierungsstelle unter dem URI {1} erfolgreich war. Der Status ist {2}. Das konfigurierte Zeitlimit ist {3}.
+CWPKI2002E.explanation=Die Abfrageanforderung der Zertifizierungsstelle wurde nicht in der konfigurierten Zeit validiert. Ein Zertifikat konnte daher nicht erstellt werden.
+CWPKI2002E.useraction=Pr\u00fcfen Sie den URI der konfigurierten Zertifizierungsstelle. Vergewissern Sie sich, dass der anrufende Server erfolgreich auf den URI zugreifen kann. Stellen Sie sicher, dass der anrufende Server eine Antwort von der Zertifizierungsstelle empfangen kann. \u00dcberpr\u00fcfen Sie den Statuscode. Einige Zertifizierungsstellen ben\u00f6tigen m\u00f6glicherweise einen h\u00f6heren Zeitlimitwert.
+
+CWPKI2003E=CWPKI2003E: Die ACME-Zertifizierungsstelle unter dem URI {0} hat geantwortet, dass die Zertifikatsanforderung f\u00fcr die {1}-Dom\u00e4nen fehlgeschlagen ist. Der Anforderungsstatus ist {2}. Der Fehler ist {3}.
+CWPKI2003E.explanation=Der Anforderungsstatus gibt an, dass die Anforderung fehlgeschlagen ist und das Zertifikat nicht erstellt werden kann.
+CWPKI2003E.useraction=Suchen Sie in der Status- und Fehlernachricht nach Details zum Fehler.
+
+CWPKI2004E=CWPKI2004E: Die Abfrage des ACME-Service hat das Zeitlimit erreicht, als gepr\u00fcft wurde, ob die Anforderung f\u00fcr die Dom\u00e4ne {0} von der ACME-Zertifizierungsstelle unter dem URI {1} erfolgreich war. Der Status ist {2}. Das konfigurierte Zeitlimit ist {3}.
+CWPKI2004E.explanation=Die Anforderung der Zertifizierungsstelle f\u00fcr das Dom\u00e4nenzertifikat wurde nicht in der konfigurierten Zeit abgeschlossen. Ein Zertifikat konnte daher nicht erstellt werden.
+CWPKI2004E.useraction=Pr\u00fcfen Sie den URI der konfigurierten Zertifizierungsstelle. Vergewissern Sie sich, dass der anrufende Server erfolgreich auf den URI zugreifen kann. Stellen Sie sicher, dass der anrufende Server eine Antwort von der Zertifizierungsstelle empfangen kann. \u00dcberpr\u00fcfen Sie den Statuscode. Einige Zertifizierungsstellen ben\u00f6tigen m\u00f6glicherweise einen h\u00f6heren Zeitlimitwert.
+
+CWPKI2005E=CWPKI2005E: Die von der ACME-Zertifizierungsstelle zur\u00fcckgegebene Berechtigung unter dem URI {0} enthielt keinen g\u00fcltigen Abfragetyp. Zu den unterst\u00fctzten Abfragetypen geh\u00f6ren {1}.
+CWPKI2005E.explanation=Die Zertifizierungsstelle hat einen Abfragetyp zur\u00fcckgegeben, der momentan nicht unterst\u00fctzt wird. Vergewissern Sie sich, dass die Zertifizierungsstelle einen Typ in der Unterst\u00fctzungsliste verwendet.
+CWPKI2005E.useraction=W\u00e4hlen Sie eine Zertifizierungsstelle aus, die einen unterst\u00fctzten Challengetyp bereitstellt.
+
+CWPKI2006I=CWPKI2006I: Die ACME-Zertifizierungsstelle unter dem URI {0} hat die folgenden Nutzungsbedingungen bereitgestellt: {1}
+CWPKI2006I.explanation=Die Zertifizierungsstelle stellt Nutzungsbedingungen bereit.
+CWPKI2006I.useraction= Pr\u00fcfen Sie die bereitgestellten Nutzungsbedingungen.
+
+CWPKI2007I=CWPKI2007I: Der ACME-Service hat ein Zertifikat installiert, das von der ACME-Zertifizierungsstelle unter dem URI {0} signiert ist. Das Ablaufdatum ist {1}.
+CWPKI2007I.explanation=Der ACME-Service hat ein Zertifikat erfolgreich von der konfigurierten Zertifizierungstelle abgerufen und installiert.
+CWPKI2007I.useraction=Es ist keine Aktion erforderlich. 
+CWPKI2008E=CWPKI2008E: Das URI-Verzeichnis der ACME-Zertifizierungsstelle muss ein g\u00fcltiger URI sein. Der empfangene URI war null oder leer. Der empfangene URI war '{0}'.
+CWPKI2008E.explanation=Das URI-Verzeichnis der Zertifizierungsstelle wurde nicht ordnungsgem\u00e4\u00df konfiguriert.
+CWPKI2008E.useraction=Geben Sie ein g\u00fcltiges URI-Verzeichnis f\u00fcr eine ACME-Zertifizierungsstelle in der Konfiguration ein.
+
+CWPKI2009E=CWPKI2009E: Die Abfrageanforderung an die ACME-Zertifizierungsstelle unter dem URI {0} ist fehlgeschlagen. Der Fehler ist {1}.
+CWPKI2009E.explanation=Die Abfrageanforderung ist fehlgeschlagen. Ein Zertifikat konnte nicht erstellt werden.
+CWPKI2009E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2010E=CWPKI2010E: Die Aktualisierung der Abfrage an die ACME-Zertifizierungsstelle unter dem URI {0} ist fehlgeschlagen. Der Fehler ist {1}.
+CWPKI2010E.explanation=Die Aktualisierung der Abfrage ist fehlgeschlagen. Ein Zertifikat konnte nicht aktualisiert werden.
+CWPKI2010E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2011E=CWPKI2011E: Der ACME-Service konnte die Zertifikatsanforderung f\u00fcr die ACME-Zertifikzierungsstelle unter dem URI {0} nicht erstellen. Der Fehler ist {1}.
+CWPKI2011E.explanation=Die Erstellung der Zertifikatsanforderung ist fehlgeschlagen. Ein signiertes Zertifikat konnte nicht angefordert werden.
+CWPKI2011E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2012E=CWPKI2012E: Der ACME-Service konnte die Zertifikatssignieranforderung f\u00fcr die ACME-Zertifizierungsstelle unter dem URI {0} nicht signieren. Der Fehler ist {1}.
+CWPKI2012E.explanation=Die Zertifikatsanforderung wurde erstellt. Die Signierung der Anforderung ist jedoch fehlgeschlagen und ein signiertes Zertifikat konnte nicht angefordert werden.
+CWPKI2012E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2013E=CWPKI2013E: Die Zertifikatssignieranforderung an die ACME-Zertifizierungsstelle unter dem URI {0} ist fehlgeschlagen. Der Fehler ist {1}.
+CWPKI2013E.explanation=Die Zertifikatsanforderung wurde erstellt und signiert, die Anforderung des Zertifikats von der Zertifizierungsstelle ist jedoch fehlgeschlagen.
+CWPKI2013E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2014E=CWPKI2014E: Die Zertifikatssignieranforderung f\u00fcr die ACME-Zertifizierungsstelle unter dem URI {0} wurde erstellt und signiert, die Anforderung konnte jedoch nicht verschl\u00fcsselt werden. Der Fehler ist {1}.
+CWPKI2014E.explanation=Die Verschl\u00fcsselung der Zertifikatssignieranforderung ist fehlgeschlagen. Ein signiertes Zertifikat konnte nicht erstellt werden.
+CWPKI2014E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2015E=CWPKI2015E: Die vom ACME-Service bei der ACME-Zertifizierungsstelle unter dem URI {0} angeforderte Statusanforderung f\u00fcr ein Zertifikat ist fehlgeschlagen. Der Fehler ist {1}.
+CWPKI2015E.explanation=Eine Anforderung wurde asynchron von der Zertifizierungsstelle ausgef\u00fchrt. Der ACME-Service hat einen Fehler empfangen, w\u00e4hrend er den Status der Anforderung \u00fcberpr\u00fcft hat. Ein signiertes Zertifikat kann nicht angefordert werden.
+CWPKI2015E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2016E=CWPKI2016E: Die Anforderung des ACME-Service zu einem vorhandenen Konto von der ACME-Zertifizierungsstelle unter dem URI {0} ist fehlgeschlagen. Der Fehler ist {1}.
+CWPKI2016E.explanation=Ein vorhandenes Konto wurde nicht gefunden oder es ist ein anderer Fehler aufgetreten. Es k\u00f6nnen keine \u00c4nderungen am Konto oder Zertifikat vorgenommen werden.
+CWPKI2016E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass der anrufende Server erfolgreich auf den URI zugreifen kann. Stellen Sie sicher, dass der anrufende Server eine Antwort von der Zertifizierungsstelle empfangen kann. 
+CWPKI2017E=CWPKI2017E: Die ACME-Anforderung der Nutzungsbedingungen von der ACME-Zertifizierungsstelle unter dem URI {0} sind fehlgeschlagen. Der Fehler ist {1}.
+CWPKI2017E.explanation=Die Nutzungsbedingungen f\u00fcr die ACME-Zertifizierungsstelle kann nicht protokolliert werden. 
+CWPKI2017E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Rufen Sie die Website der ACME-Zertifizierungsstelle auf, um die Nutzungsbedingungen anzuzeigen.
+
+CWPKI2018E=CWPKI2018E: Das Benutzerkonto konnte nicht bei der ACME-Zertifizierungsstelle unter dem URI {0} erstellt werden. Der Fehler ist {1}.
+CWPKI2018E.explanation=Die Anforderung zum Erstellen des Benutzerkontos ist fehlgeschlagen.
+CWPKI2018E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2019I=CWPKI2019I: Die Konto-URL, die von der ACME-Zertifizierungsstelle unter dem URI {0} ist {1}.
+CWPKI2019I.explanation=Das Konto wurde erfolgreich erstellt.
+CWPKI2019I.useraction=Es ist keine Aktion erforderlich. 
+CWPKI2020E=CWPKI2020E: Der ACME-Service konnte die Dom\u00e4nenschl\u00fcsseldatei f\u00fcr das Konto der ACME-Zertifizierungsstelle unter dem URI {0} nicht lesen. Die Dateiposition ist {1}. Der Fehler ist {2}.
+CWPKI2020E.explanation=Die Dom\u00e4nenschl\u00fcsseldatei f\u00fcr das Konto der Zertifizierungsstelle konnte nicht ge\u00f6ffnet werden. Dies kann auftreten, wenn Dateiberechtigungen falsch sind oder die Datei nicht vorhanden ist.
+CWPKI2020E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass die Dateiposition richtig ist und der Server Leseberechtigung hat.
+
+CWPKI2021E=CWPKI2021E: Der ACME-Service konnte die Kontoschl\u00fcsseldatei f\u00fcr das Konto der ACME-Zertifizierungsstelle unter dem URI {0} nicht lesen. Die Dateiposition ist {1}. Der Fehler ist {2}.
+CWPKI2021E.explanation=Die Kontoschl\u00fcsseldatei f\u00fcr das Konto der Zertifizierungsstelle konnte nicht ge\u00f6ffnet werden. Dies kann auftreten, wenn Dateiberechtigungen falsch sind oder die Datei nicht vorhanden ist.
+CWPKI2021E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass die Dateiposition richtig ist und der Server Leseberechtigung hat.
+
+CWPKI2022E=CWPKI2022E: Der ACME-Service konnte nicht in die Dom\u00e4nenschl\u00fcsseldatei f\u00fcr das Konto der ACME-Zertifizierungsstelle unter dem URI {0} schreiben. Die Dateiposition ist {1}. Der Fehler ist {2}.
+CWPKI2022E.explanation=Die Dom\u00e4nenschl\u00fcssel konnten nicht in der Dom\u00e4nenschl\u00fcsseldatei gespeichert werden. Dies kann auftreten, wenn die Dateiberechtigungen falsch sind oder die Datei nicht vorhanden ist.
+CWPKI2022E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass die Dateiposition richtig ist und der Server Schreibberechtigung hat.
+
+CWPKI2023E=CWPKI2023E: Die Kontoschl\u00fcsseldatei f\u00fcr das Konto der ACME-Zertifizierungsstelle unter dem URI {0} konnte nicht geschrieben werden. Die Dateiposition ist {1}. Der Fehler ist {2}.
+CWPKI2023E.explanation=Die Kontoschl\u00fcssel konnten nicht in der Kontoschl\u00fcsseldatei gespeichert werden. Dies kann auftreten, wenn die Dateiberechtigungen falsch sind oder die Datei nicht vorhanden ist.
+CWPKI2023E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass die Dateiposition richtig ist und der Server Schreibberechtigung hat.
+
+CWPKI2024E=CWPKI2024E: Der ACME-Service konnte das angeforderte Zertifikat f\u00fcr die ACME-Zertifizierungsstelle unter dem URI {0} nicht widerrufen. Das Zertifikat hat die Seriennummer {1}. Der Fehler ist {2}.
+CWPKI2024E.explanation=Die Anforderung zum Widerrufen eines Zertifikat ist fehlgeschlagen. Das Zertifikat wird m\u00f6glicherweise nicht widerrufen und wird m\u00f6glicherweise noch verwendet.
+CWPKI2024E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2025W=CWPKI2025W: Der ACME-Service hat eine Anforderung zum Widerrufen eines Zertifikats empfangen, aber das Kontoschl\u00fcsselpaar f\u00fcr die ACME-Zertifizierungsstelle unter dem URI {0} konnte nicht geladen werden.
+CWPKI2025W.explanation=Die Anforderung zum Widerrufen eines Zertifikats ist fehlgeschlagen, weil das Kontoschl\u00fcsselpaar nicht geladen werden konnte.
+CWPKI2025W.useraction=Suchen Sie im Protokoll nach fr\u00fcheren Fehlern, um Details zum Fehler zu erhalten. Pr\u00fcfen Sie die Keystore-Datei, um sicherzustellen, dass das Zertifikat vorhanden ist.
+
+CWPKI2026W=CWPKI2026W: Der ACME-Service hat eine Anforderung zum Widerrufen eines Zertifikats empfangen, aber das Konto wurde bei der ACME-Zertifizierungsstelle unter dem URI {0} nicht gefunden.
+CWPKI2026W.explanation=Die Anforderung zum Widerrufen des Zertifikats ist fehlgeschlagen, weil das Konto nicht gefunden wurde.
+CWPKI2026W.useraction=Pr\u00fcfen Sie den URI der Zertifizierungsstelle. Pr\u00fcfen Sie die Keystore-Datei, um sicherzustellen, dass das Zertifikat vorhanden ist.
+
+CWPKI2027E=CWPKI2027E: Der Dateipfad {0} f\u00fcr den ACME-Service ist null oder leer. Der angegebene Pfad ist '{1}'.
+CWPKI2027E.explanation=Der Dateipfad war null oder leer und kann nicht f\u00fcr die Dom\u00e4nen und Kontoschl\u00fcssel verwendet werden.
+CWPKI2027E.useraction=Geben Sie einen g\u00fcltigen Dateipfad in der Konfiguration an.

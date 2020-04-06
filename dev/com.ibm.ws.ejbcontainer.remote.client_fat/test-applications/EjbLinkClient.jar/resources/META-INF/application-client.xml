@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application-client PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"  "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd">
+   <application-client id="Application-client_ID">
+      <display-name>EjbLinkClient</display-name>
+     
+   </application-client>

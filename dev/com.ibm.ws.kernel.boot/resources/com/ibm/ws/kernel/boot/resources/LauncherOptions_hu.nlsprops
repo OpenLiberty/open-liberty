@@ -119,7 +119,7 @@ action-desc.resume=\tMinden v\u00e1rakoztatott \u00f6sszetev\u0151 folytat\u00e1
 \t--c\u00e9lbe\u00e1ll\u00edt\u00e1s megad\u00e1s\u00e1val konkr\u00e9t v\u00e1rakoztatott \u00f6sszetev\u0151k folytat\u00e1s\u00e1t is meghat\u00e1rozhatja.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tT\u00f6rli a kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny \u00f6sszes gyors\u00edt\u00f3t\u00e1razott inform\u00e1ci\u00f3it.
+option-desc.start.clean=\tT\u00f6rli a kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny \u00f6sszes gyors\u00edt\u00f3t\u00e1razott inform\u00e1ci\u00f3it.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="a c\u00e9l arch\u00edvumf\u00e1jl \u00fatvonala"
 option-desc.dump.archive=\tAdja meg a ki\u00edrat\u00e1si m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum c\u00e9lt. \
@@ -183,3 +183,15 @@ option-desc.no-password=\tAlap\u00e9rtelmezett kulcst\u00e1rol\u00f3 jelsz\u00f3
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa az arch\u00edvumban"
 option-desc.package.server-root=\tA gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa nev\u00e9t hat\u00e1rozza meg az arch\u00edv f\u00e1jlban.  \n
+#------------------------------\n\
+\ at 72 chars -- leading tab-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tKihagyja a t\u00e9tlens\u00e9gi szakaszt, miel\u0151tt a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sra ker\u00fcl. A norm\u00e1l kiszolg\u00e1l\u00f3 \n\
+\tle\u00e1ll\u00edt\u00e1s tartalmaz egy t\u00e9tlens\u00e9gi szakaszt, miel\u0151tt a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sra ker\u00fcl. A    \n\
+\t30 m\u00e1sodperces t\u00e9tlens\u00e9gi szakasz lehet\u0151v\u00e9 teszi, hogy a szolg\u00e1ltat\u00e1sok egy el\u0151le\u00e1ll\u00edt\u00e1st hajtsanak\n\
+\tv\u00e9gre; p\u00e9ld\u00e1ul a bej\u00f6v\u0151 figyel\u0151k le\u00e1ll\u00edt\u00e1sra ker\u00fclnek, de a megl\u00e9v\u0151\n\
+\tk\u00e9r\u00e9sek v\u00e9grehajt\u00e1sa m\u00e9g megengedett. A --force param\u00e9ternek nincs \n\
+\that\u00e1sa, ha a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa m\u00e1r megh\u00edv\u00e1sra ker\u00fclt. A --force \n\
+\tparam\u00e9ter haszn\u00e1lata eset\u00e9n v\u00e1ratlan kiv\u00e9telek jelenhetnek meg a messages.log f\u00e1jlban, \n\
+\tmiut\u00e1n a kiszolg\u00e1l\u00f3 megkapta a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa parancsot. 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 import org.apache.commons.io.FileUtils;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -86,6 +87,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
+import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
@@ -146,6 +148,7 @@ public class PluginGenerator {
 
     private final PluginConfigData pcd;
     private final BundleContext context;
+    private final Bundle bundle;
 
     // distinguish between implicit generation (when endpoints change) and explicit generation (user mbean request)
     private boolean utilityRequest = true;
@@ -157,6 +160,8 @@ public class PluginGenerator {
     private File cachedFile;
 
     private static final boolean CHANGE_TRANSFORMER;
+    
+    private static Long defaultPersistTimeoutReduction = Long.valueOf(2);
 
     static {
         if (!JavaInfo.vendor().equals(Vendor.IBM)) {
@@ -190,7 +195,9 @@ public class PluginGenerator {
         pcd = newPcd;
         appServerName = locSvc.getServerName();
 
-        cachedFile = context.getBundle().getDataFile("cached-PluginCfg.xml");
+        bundle = context.getBundle();
+        cachedFile = bundle.getDataFile("cached-PluginCfg.xml");
+
         if (cachedFile.exists()) {
             try {
                 
@@ -207,6 +214,10 @@ public class PluginGenerator {
         return FrameworkUtil.getBundle(PluginGenerator.class).getBundleContext();
     }
 
+    private boolean isBundleUninstalled() {
+        return bundle.getState() == Bundle.UNINSTALLED;
+    }
+
     /**
      * Generate the XML configuration with the current container information.
      *
@@ -214,6 +225,7 @@ public class PluginGenerator {
      * @param root      install location of plugin; overrides configured values for root install and log path
      * @param name
      */
+    @FFDCIgnore(IOException.class)
     protected synchronized void generateXML(String rootLoc, String serverName,
                                             WebContainer container,
                                             SessionManager smgr,
@@ -235,6 +247,14 @@ public class PluginGenerator {
             // add error message in next update
             return;
         }
+
+        if(getBundleContext() == null){
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "generateXML", "Error creating plugin config xml: BundleContext is null");
+            }
+            return; 
+        }
+
         utilityRequest = utilityReq;
         boolean writeFile = true;
 
@@ -508,11 +528,31 @@ public class PluginGenerator {
                     sgElem.appendChild(serverElem);
 
                     if (sd.transports != null) {
+                        // first link to httpOption to get persistTimeout
+                        ServiceReference<?> serviceRef = null;
+                        Long persistTimeout = null;
+                        Object pid = httpEndpointInfo.getProperty("httpOptionsRef");  
+                        if (pid != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "httpOptions (service.pid=" + pid + ")");
+                            }
+                            serviceRef = httpEndpointInfo.getService(context, "(service.pid=" + pid + ")");
+                        }
+                        if (serviceRef != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "httpOptions (serviceRef=" + serviceRef + ")");
+                            }
+                            persistTimeout = (Long)serviceRef.getProperty(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT);
+                        }
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "httpOptions persistTimeout = " + persistTimeout);
+                        }                       
+                        
                         // define its transports
                         for (TransportData currentTransport : sd.transports) {
                             Element tElem = output.createElement("Transport");
                             String hostname = currentTransport.host;
-
+                            
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Adding the Transport definition " + hostname);
                             }
@@ -521,7 +561,10 @@ public class PluginGenerator {
                             tElem.setAttribute("Hostname", hostname);
                             String transportPort = Integer.toString(currentTransport.port);
                             tElem.setAttribute("Port", transportPort);
-
+                            Long connectionTtl = (persistTimeout - pcd.persistTimeoutReduction > 0)?
+                                                  persistTimeout - pcd.persistTimeoutReduction :
+                                                  persistTimeout - defaultPersistTimeoutReduction; 
+                            tElem.setAttribute("ConnectionTTL", connectionTtl.toString());
                             if (currentTransport.isSslEnabled) {
                                 tElem.setAttribute("Protocol", "https");
 
@@ -765,6 +808,7 @@ public class PluginGenerator {
 
             // Only write out to file if we have new or changed configuration information, or if this is an explicit request
             if (writeFile || !utilityRequest || !fileExists) {
+                // The bundle must not be uninstalled in order to write the file
                 // If writeFile is true write to the cachedFile and copy from there
                 // If writeFile is false and the cachedFile doesn't exist write to the cache file and copy from there
                 // If writeFile is false and cachedFile exists copy from there
@@ -789,6 +833,11 @@ public class PluginGenerator {
                         serializer.setOutputProperties(oprops);
                         serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
                     }
+                } catch(IOException e){
+                    //path to the cachedFile is broken when bundle was uninstalled 
+                    if(!this.isBundleUninstalled()){ 
+                        throw e; // Missing for some other reason 
+                    }
                 } finally {
                     if (pluginCfgWriter != null) {
                         pluginCfgWriter.flush();
@@ -796,7 +845,14 @@ public class PluginGenerator {
                         fOutputStream.getFD().sync();
                         pluginCfgWriter.close();
                     }
-                    copyFile(cachedFile, outFile.asFile());
+                    try {
+                        copyFile(cachedFile, outFile.asFile());
+                    } catch (IOException e){
+                        //cachedFile no longer exists if the bundle was uninstalled 
+                        if(!this.isBundleUninstalled()){
+                            throw e; // Missing for some other reason 
+                        }
+                    }    
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -841,6 +897,7 @@ public class PluginGenerator {
         }
     }
     
+    @FFDCIgnore(IOException.class)
     public static void copyFile(File in, File out) 
                     throws IOException
                 {
@@ -1789,6 +1846,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected Hashtable<String, String> extraConfigProperties = new Hashtable<String, String>();
         protected Integer loadBalanceWeight = null;
         protected Role roleKind = null;
+        protected Long persistTimeoutReduction = defaultPersistTimeoutReduction; 
 
         protected PluginConfigData() {
             // nothing
@@ -1811,6 +1869,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             IPv6Preferred = (Boolean) config.get("ipv6Preferred");
             httpEndpointPid = (String) config.get("httpEndpointRef");
             serverIOTimeout = (Long) config.get("serverIOTimeout");
+            persistTimeoutReduction = (Long)config.get("persistTimeoutReduction");
             wsServerIOTimeout = (Long) config.get("wsServerIOTimeout");
             wsServerIdleTimeout = (Long) config.get("wsServerIdleTimeout");
             connectTimeout = (Long) config.get("connectTimeout");
@@ -1835,6 +1894,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             if (config.get("ESIEnableToPassCookies") != null) {
                 ESIEnableToPassCookies = (Boolean) config.get("ESIEnableToPassCookies");
             } // PI76699 End
+                
             TrustedProxyEnable = (Boolean) config.get("trustedProxyEnable");
             String proxyList = (String) config.get("trustedProxyGroup");
             if (proxyList != null) {
@@ -1921,6 +1981,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                 Tr.debug(trace, "   StashfileLocation       : " + StashfileLocation);
                 Tr.debug(trace, "   TrustedProxyEnable      : " + TrustedProxyEnable);
                 Tr.debug(trace, "   TrustedProxyGroup       : " + traceList(TrustedProxyGroup));
+                Tr.debug(trace, "   persistTimeoutReduction: " + persistTimeoutReduction); 
                 if (!extraConfigProperties.isEmpty())
                     Tr.debug(trace, "   AdditionalConfigProps   : " + extraConfigProperties.toString());
             }

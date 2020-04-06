@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -127,6 +128,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             return false;
         }
         if (newContext.containsKey(clazz)) {
+            return true;
+        }
+        if (cdiService.isWeldProxy(clazz)) {
             return true;
         }
         return false;
@@ -246,9 +250,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         //end temp fix
         Map<Class<?>, ManagedObject<?>> newContext = (Map<Class<?>, ManagedObject<?>>) (context);
 
-        ManagedObject<?> newServiceObject = null;
-
-        newServiceObject = getClassFromManagedObject(clazz);
+        ManagedObject<T> newServiceObject = (ManagedObject<T>) getClassFromServiceObject(clazz, serviceObject);
         if (newServiceObject != null) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -271,6 +273,34 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             Tr.debug(tc, "Get instance from CDI is null , use from rs for " + clazz.getName());
         }
         return serviceObject;
+    }
+
+    /**
+     * @param clazz
+     * @return
+     */
+    @FFDCIgnore(value = { Exception.class })
+    private <T> ManagedObject<T> getClassFromServiceObject(Class<T> clazz, Object serviceObject) {
+
+        if (! clazz.equals(serviceObject.getClass())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + "because the serviceObject and class had different types");
+            }
+            return null;
+        }
+
+        ManagedObjectFactory<T> managedObjectFactory = (ManagedObjectFactory<T>) getManagedObjectFactory(clazz);
+
+        ManagedObject<T> bean = null;
+        try {
+            bean = managedObjectFactory.createManagedObject((T) serviceObject, null);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + ", but ignore the FFDC: ", e);
+            }
+        }
+
+        return bean;
     }
 
     /**
@@ -499,7 +529,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             }
 
         }
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Map of Managed Objects " + resourcesManagedbyCDI);
+        }
         context.setContextObject(resourcesManagedbyCDI);
 
     }
@@ -528,7 +560,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         if (!hasValidConstructor(clazz, singleton)) {
             return false;
         }
-        return hasInjectAnnotation(clazz);
+        return hasInjectOrResourceAnnotation(clazz);
 
     }
 
@@ -582,39 +614,39 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
      * @param clazz
      * @return
      */
-    private boolean hasInjectAnnotation(final Class<?> clazz) {
+    private boolean hasInjectOrResourceAnnotation(final Class<?> clazz) {
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
             @Override
             public Boolean run() {
-                if (clazz.isAnnotationPresent(Inject.class)) {
+                if (clazz.isAnnotationPresent(Inject.class) || clazz.isAnnotationPresent(Resource.class)) {
                     return true;
                 }
 
                 Field[] fields = clazz.getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
-                    if (fields[i].isAnnotationPresent(Inject.class)) {
+                    if (fields[i].isAnnotationPresent(Inject.class) || fields[i].isAnnotationPresent(Resource.class)) {
                         return true;
                     }
                 }
 
                 Method[] methods = clazz.getDeclaredMethods();
                 for (int i = 0; i < methods.length; i++) {
-                    if (methods[i].isAnnotationPresent(Inject.class)) {
+                    if (methods[i].isAnnotationPresent(Inject.class) || methods[i].isAnnotationPresent(Resource.class)) {
                         return true;
                     }
                 }
 
                 Constructor<?>[] c = clazz.getConstructors();
                 for (int i = 0; i < c.length; i++) {
-                    if (c[i].isAnnotationPresent(Inject.class)) {
+                    if (c[i].isAnnotationPresent(Inject.class) || c[i].isAnnotationPresent(Resource.class)) {
                         return true;
                     }
                 }
 
                 Class<?> cls = clazz.getSuperclass();
                 if (cls != null) {
-                    return hasInjectAnnotation(cls);
+                    return hasInjectOrResourceAnnotation(cls);
                 }
                 return false;
 
@@ -827,11 +859,6 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
     @Trivial
     private void logProviderMismatch(Class<?> clazz, String scopeName, String lifecycleMgr) {
-        if (platformVersion.getMajor() > 7) {
-            Tr.debug(tc, "CWWKW1002W: The CDI scope of JAXRS-2.0 Provider " + clazz.getSimpleName() + " is " +
-                         scopeName + ". Liberty gets the provider instance from " + lifecycleMgr + ".");
-        } else {
-            Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
-        }
+        Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
     }
 }

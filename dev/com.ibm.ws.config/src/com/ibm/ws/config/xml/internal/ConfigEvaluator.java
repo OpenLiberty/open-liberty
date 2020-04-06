@@ -116,6 +116,15 @@ class ConfigEvaluator {
         context.setConfigElement(config);
         context.setProperties(map);
 
+        // Warn if the ID attribute contains a variable
+        if (registryEntry != null &&
+            config.getId() != null &&
+            XMLConfigConstants.VAR_PATTERN.matcher(config.getId()).matches() &&
+            !ignoreWarnings) {
+            String nodeName = getNodeNameForMessage(registryEntry, config);
+            Tr.warning(tc, "variables.in.id.not.supported", nodeName, config.getId());
+        }
+
         // process attributes based on metatype info
         if (attributeMap != null) {
             context.setAttributeDefinitionMap(attributeMap);
@@ -131,13 +140,7 @@ class ConfigEvaluator {
                         //                    requiredAttributes.contains(attributeDef.getDelegate()) &&
                         !context.hasUnresolvedAttribute(attributeDef) &&
                         !ignoreWarnings) {
-                        String nodeName = registryEntry.getAlias();
-                        if (nodeName == null) {
-                            nodeName = registryEntry.getChildAlias();
-                        }
-                        if (nodeName == null) {
-                            nodeName = config.getNodeName();
-                        }
+                        String nodeName = getNodeNameForMessage(registryEntry, config);
 
                         if (config.getId() == null) {
                             Tr.error(tc, "error.missing.required.attribute.singleton", nodeName, attributeName);
@@ -217,6 +220,23 @@ class ConfigEvaluator {
     }
 
     /**
+     * Returns the node name to use in error/warning messages based on the metatype and config
+     */
+    private String getNodeNameForMessage(RegistryEntry registryEntry, ConfigElement config) {
+        if (registryEntry == null)
+            return config == null ? null : config.getNodeName();
+
+        String nodeName = registryEntry.getAlias();
+        if (nodeName == null) {
+            nodeName = registryEntry.getChildAlias();
+        }
+        if (nodeName == null) {
+            nodeName = config.getNodeName();
+        }
+        return nodeName;
+    }
+
+    /**
      * @param id
      * @param requiredAttributes
      * @return
@@ -273,10 +293,10 @@ class ConfigEvaluator {
     /**
      * Find everything in the context related to the AD and evaluate it.
      *
-     * @param attributeName name used in context for this AD: may differ from ad.getId() due to renames.(???)
-     * @param context evaluation context for ocd
-     * @param attributeDef AD
-     * @param flatPrefix prefix from nested flattening
+     * @param attributeName  name used in context for this AD: may differ from ad.getId() due to renames.(???)
+     * @param context        evaluation context for ocd
+     * @param attributeDef   AD
+     * @param flatPrefix     prefix from nested flattening
      * @param ignoreWarnings
      * @return
      * @throws ConfigEvaluatorException
@@ -960,7 +980,7 @@ class ConfigEvaluator {
             return MetatypeUtils.evaluateDuration(strVal, TimeUnit.MINUTES);
         } else if (type == MetaTypeFactory.DURATION_H_TYPE) {
             return MetatypeUtils.evaluateDuration(strVal, TimeUnit.HOURS);
-        } else if (type == MetaTypeFactory.PASSWORD_TYPE || type == MetaTypeFactory.HASHED_PASSWORD_TYPE) {
+        } else if (type == MetaTypeFactory.PASSWORD_TYPE || type == MetaTypeFactory.HASHED_PASSWORD_TYPE || attrDef.isObscured()) {
             return new SerializableProtectedString(strVal.toCharArray());
         } else if (type == MetaTypeFactory.ON_ERROR_TYPE) {
             return Enum.valueOf(OnError.class, strVal.trim().toUpperCase());
@@ -1261,6 +1281,7 @@ class ConfigEvaluator {
      */
     @FFDCIgnore(URISyntaxException.class)
     private String processString(String value, ExtendedAttributeDefinition attrDef, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
+
         if (attrDef == null) {
             return context.resolveString(value, ignoreWarnings);
         }
@@ -1345,7 +1366,7 @@ class ConfigEvaluator {
      *
      * This method will resolve any variables in the ref attribute and return a new ConfigElement.Reference if anything changed.
      *
-     * @param reference The ConfigElement reference. Contains the element name and the ref attribute value
+     * @param reference      The ConfigElement reference. Contains the element name and the ref attribute value
      * @param context
      * @param ignoreWarnings
      * @return
@@ -1433,10 +1454,10 @@ class ConfigEvaluator {
      * element. If this service pid has not been seen yet in this context, the pid value will be returned. Otherwise,
      * the method returns null.
      *
-     * @param childElement The nested element
+     * @param childElement    The nested element
      * @param parentAttribute The AttributeDefinition on the parent that points to the nested element. Null for child-first
-     * @param context The current context
-     * @param index the attribute index
+     * @param context         The current context
+     * @param index           the attribute index
      * @return the pid, or null if the element should be ignored
      * @throws ConfigEvaluatorException
      */
@@ -1970,7 +1991,8 @@ class ConfigEvaluator {
         }
 
         @Override
-        public void reportError() {}
+        public void reportError() {
+        }
 
         /*
          * (non-Javadoc)
@@ -2036,7 +2058,8 @@ class ConfigEvaluator {
         }
 
         @Override
-        public void reportError() {}
+        public void reportError() {
+        }
 
         /*
          * (non-Javadoc)

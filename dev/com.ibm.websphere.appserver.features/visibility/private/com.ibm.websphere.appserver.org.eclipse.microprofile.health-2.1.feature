@@ -2,5 +2,6 @@
 symbolicName=com.ibm.websphere.appserver.org.eclipse.microprofile.health-2.1
 singleton=true
 -bundles=com.ibm.websphere.org.eclipse.microprofile.health.2.1; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.health:microprofile-health-api:2.1"
-kind=beta
+kind=ga
 edition=core
+WLP-Activation-Type: parallel

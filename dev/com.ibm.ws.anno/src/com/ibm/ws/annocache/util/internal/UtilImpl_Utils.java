@@ -327,6 +327,13 @@ public class UtilImpl_Utils {
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(SIMPLE_DATE_FORMAT_TEXT);
 
     public static String getDateAndTime() {
-        return SIMPLE_DATE_FORMAT.format( new Date() );
+        Date currentDate = new Date();
+
+        // Per: https://stackoverflow.com/questions/18383251/strange-arrayindexoutofboundsexception-for-java-simpledateformat
+        // SimpleDateFormat is not thread safe.
+
+        synchronized ( SIMPLE_DATE_FORMAT ) {
+            return SIMPLE_DATE_FORMAT.format(currentDate);
+        }
     }
 }

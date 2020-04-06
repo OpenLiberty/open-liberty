@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,9 @@ package com.ibm.ws.cdi.liberty;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -106,6 +108,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private boolean isClientProcess;
     private RuntimeFactory runtimeFactory;
     private ProxyServicesImpl proxyServices;
+    private final Map<String, ClassLoader> appTccls = new ConcurrentHashMap<>();
 
     public void activate(ComponentContext cc) {
         containerConfigRef.activate(cc);
@@ -421,9 +424,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                 this.runtimeFactory.removeApplication(appInfo);
                 return;
             }
-            newCL = getRealAppClassLoader(application);
 
-            if (newCL != null) {
+            ClassLoader appCL = getRealAppClassLoader(application);
+            if (appCL != null) {
+                newCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
+                appTccls.put(appInfo.getName(), newCL);
                 oldCl = CDIUtils.getAndSetLoader(newCL);
             }
 
@@ -486,6 +491,14 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                 }
             } catch (CDIException e) {
                 //FFDC and carry on
+            } finally {
+                // Clean up the application TCCL created for startup
+                // Must do this at shutdown since it's possible for the app to hold onto it and use it after startup
+                ClassLoader tccl = appTccls.get(appInfo.getName());
+                if (tccl != null) {
+                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(tccl);
+                    appTccls.remove(appInfo.getName());
+                }
             }
         }
     }
@@ -598,6 +611,14 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         } catch (CDIException e) {
             return null;
         }
+    }
+
+    public boolean isWeldProxy(Class clazz){
+        return CDIUtils.isWeldProxy(clazz);
+    }
+
+    public boolean isWeldProxy(Object obj){
+        return CDIUtils.isWeldProxy(obj);
     }
 
 }

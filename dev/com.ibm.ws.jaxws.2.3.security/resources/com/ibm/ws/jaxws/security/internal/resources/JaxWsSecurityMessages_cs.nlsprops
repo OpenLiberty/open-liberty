@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: Nezda\u0159ilo se z\u00edsk\u00e1n\u00ed konfigurace SSL prost\u0159ednictv\u00edm atributu sslRef={0}.
+err.when.get.ssl.config.explanation=Atribut sslRef zadan\u00fd v souboru ibm-ws-bnd.xml neodkazuje na prvek ssl v souboru server.xml nebo je obsah odkazovan\u00e9ho prvku ssl neplatn\u00fd.
+err.when.get.ssl.config.useraction=Zajist\u011bte, aby hodnota atributu sslRef odpov\u00eddala ID prvku ssl v souboru server.xml a aby obsah odkazovan\u00e9ho prvku ssl byl spr\u00e1vn\u00fd.
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: Nezda\u0159ilo se z\u00edsk\u00e1n\u00ed tov\u00e1rny SSLSocketFactory prost\u0159ednictv\u00edm atributu sslRef={0} pro {1}.
+err.when.get.ssl.socket.factory.explanation=Neplatn\u00e1 konfigurace prvku \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nebo \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti v souboru server.xml m\u016f\u017ee zp\u016fsobit v\u00fdjimku, proto\u017ee atribut sslRef zadan\u00fd v souboru ibm-ws-bnd.xml odkazuje na konfigurace SSL v souboru server.xml.
+err.when.get.ssl.socket.factory.useraction=Zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed um\u00edst\u011bn\u00ed a hesla v prvku \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nebo \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti v souboru server.xml a platnost aliasu certifik\u00e1tu v souboru ibm-ws-bnd.xml. 
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: Prvek login-config definovan\u00fd v souboru ibm-ws-bnd.xml je ignorov\u00e1n, nebo\u0165 va\u0161e aplikace je webovou aplikac\u00ed a mus\u00ed b\u00fdt definov\u00e1na v souboru web.xml.
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=Prvek login-config m\u016f\u017ee b\u00fdt nakonfigurov\u00e1n pouze v souboru web.xml webov\u00e9 aplikace a prvek login-config v souboru ibm-ws-bnd.xml je ignorov\u00e1n.
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=Zajist\u011bte konfiguraci prvku login-config pouze v souboru web.xml va\u0161\u00ed webov\u00e9 aplikace. 
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: Typ auth-method {0} nen\u00ed podporov\u00e1n v souboru ibm-ws-bnd.xml.
+ibm.ws.bnd.auth.method.not.support.explanation=Soubor ibm-ws-bnd.xml podporuje jako typ metody ov\u011b\u0159ov\u00e1n\u00ed pouze hodnoty BASIC a CLIENT_CERT.
+ibm.ws.bnd.auth.method.not.support.useraction=Zajist\u011bte, aby hodnota typu metody ov\u011b\u0159ov\u00e1n\u00ed v souboru ibm-ws-bnd.xml byla pouze BASIC nebo CLIENT_CERT.

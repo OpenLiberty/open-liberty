@@ -26,9 +26,11 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -37,6 +39,8 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
+
+import java.nio.file.Paths;
 
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
@@ -221,7 +225,13 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
                 }
 
-                cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+                
+                // Catch incorrectly formatted httpSessionCache uri values from server.xml file
+                try {
+                    cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+                } catch (NullPointerException e) {
+                    throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
+                }
 
                 return null;
             });
@@ -339,18 +349,25 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             tempConfigFile = File.createTempFile("infinispan", ".xml");
             tempConfigFile.setReadable(true);
             tempConfigFile.setWritable(true);
-            // TODO determine the best config to generate based on where/how this is running?
-            try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)))) {
-                out.println("<infinispan>");
-                out.println(" <jgroups>");
-                out.println("  <stack-file name=\"jgroups-udp\" path=\"/default-configs/default-jgroups-udp.xml\"/>");
-                out.println(" </jgroups>");
-                out.println(" <cache-container>");
-                out.println("  <transport stack=\"jgroups-udp\"/>");
-                out.println("  <replicated-cache-configuration name=\"com.ibm.ws.session.*\"/>");
-                out.println(" </cache-container>");
-                out.println("</infinispan>");
+            StringWriter sw = new StringWriter();
+            try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)));
+                            PrintWriter pw = new PrintWriter(sw)) {
+                final List<String> lines = Arrays.asList("<infinispan>",
+                                                         " <jgroups>",
+                                                         "  <stack-file name=\"jgroups-udp\" path=\"/default-configs/default-jgroups-udp.xml\"/>",
+                                                         " </jgroups>",
+                                                         " <cache-container>",
+                                                         "  <transport stack=\"jgroups-udp\"/>",
+                                                         "  <replicated-cache-configuration name=\"com.ibm.ws.session.*\"/>",
+                                                         " </cache-container>",
+                                                         "</infinispan>");
+                pw.println();
+                for (String line : lines) {
+                    out.println(line);
+                    pw.println(line);
+                }
             }
+            Tr.info(tc, "SESN0310_GEN_INFINISPAN_CONFIG", sw.toString());
             return tempConfigFile.toURI();
         }
 
@@ -397,7 +414,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
             // A cache name matching com.ibm.ws.session.* was not found in the provided configuration. Add it to cache-container.
             for (Node cacheContainer : cacheContainers) {
-                // TODO determine the best config to generate based on where/how this is running?
                 Element replicatedCacheConfig = doc.createElement("replicated-cache-configuration");
                 Attr nameAttribute = doc.createAttribute("name");
                 nameAttribute.setNodeValue("com.ibm.ws.session.*");
@@ -423,7 +439,23 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             transformer.transform(source, uriResult);
 
             if (trace && tc.isDebugEnabled()) {
-                // TODO: will likely need to stop tracing this due to concern about passwords or other sensitive information being logged
+                // Avoid tracing passwords:
+                NodeList allElements = doc.getElementsByTagName("*");
+                for (int i = allElements.getLength() - 1; i >= 0; i--) {
+                    Node element = allElements.item(i);
+                    String elementName = element.getNodeName();
+                    if (!"jgroups".equals(elementName) && !"stack".equals(elementName) && !"stack-file".equals(elementName) && !"transport".equals(elementName)
+                                    && !elementName.endsWith("-cache") && !elementName.endsWith("-cache-configuration")) {
+                        NamedNodeMap attrs = element.getAttributes();
+                        if (attrs != null) {
+                            for (int j = attrs.getLength() - 1; j >= 0; j--) {
+                                Node attr = attrs.item(j);
+                                attr.setNodeValue("***");
+                            }
+                        }
+                    }
+                }
+
                 StringWriter sw = new StringWriter();
                 StreamResult loggableResult = new StreamResult(sw);
                 transformer.transform(source, loggableResult);

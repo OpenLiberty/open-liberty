@@ -1,0 +1,132 @@
+###############################################################################
+# Copyright (c) 2019,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.acme/resources/com/ibm/ws/security/acme/resources/AcmeMessages.nlsprops
+#COMPONENTPREFIX CWPKI
+#COMPONENTNAMEFOR WebSphere ACME
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWPKI2000 - CWPKI2299
+#-----  ACME messages
+
+# The ACME referred to in these messages stands for Automatic Certificate Management Environment.
+# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
+
+CWPKI2001E=CWPKI2001E: O\u015brodek certyfikacji ACME pod identyfikatorem URI {0} poinformowa\u0142, \u017ce wezwanie do autoryzacji nie powiod\u0142o si\u0119 w przypadku domeny {1}. Status wezwania to {2}.  B\u0142\u0105d: {3}.
+CWPKI2001E.explanation=Status wezwania wskazywa\u0142, \u017ce \u017c\u0105danie wezwania do autoryzacji nie powiod\u0142o si\u0119, a utworzenie certyfikatu nie jest mo\u017cliwe.
+CWPKI2001E.useraction=Zapoznaj si\u0119 z komunikatem o statusie i b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2002E=CWPKI2002E: Przekroczono limit czasu odpytywania us\u0142ugi ACME podczas sprawdzania, czy powiod\u0142o si\u0119 wezwanie do autoryzacji dla domeny {0} skierowane przez o\u015brodek certyfikacji ACME pod identyfikatorem URI {1}. Status to {2}. Skonfigurowany limit czasu to {3}.
+CWPKI2002E.explanation=Wys\u0142ane przez o\u015brodek certyfikacji \u017c\u0105danie wezwania nie zosta\u0142o sprawdzone w skonfigurowanym czasie i utworzenie certyfikatu nie jest mo\u017cliwe.
+CWPKI2002E.useraction=Sprawd\u017a skonfigurowany identyfikator URI o\u015brodka certyfikacji. Upewnij si\u0119, \u017ce identyfikator URI jest dost\u0119pny dla serwera wywo\u0142uj\u0105cego. Upewnij si\u0119, \u017ce serwer wywo\u0142uj\u0105cy mo\u017ce odebra\u0107 odpowied\u017a z o\u015brodka certyfikacji. Odczytaj kod statusu. Niekt\u00f3re o\u015brodki certyfikacji mog\u0105 potrzebowa\u0107 d\u0142u\u017cszego limitu czasu.
+
+CWPKI2003E=CWPKI2003E: O\u015brodek certyfikacji ACME pod identyfikatorem URI {0} poinformowa\u0142, \u017ce zam\u00f3wienie na certyfikat nie powiod\u0142o si\u0119 dla {1} domen. Status zam\u00f3wienia to {2}. B\u0142\u0105d: {3}.
+CWPKI2003E.explanation=Status zam\u00f3wienia wskazywa\u0142, \u017ce \u017c\u0105danie zam\u00f3wienia dotycz\u0105ce autoryzacji nie powiod\u0142o si\u0119, a utworzenie certyfikatu nie jest mo\u017cliwe.
+CWPKI2003E.useraction=Zapoznaj si\u0119 z komunikatem o statusie i b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2004E=CWPKI2004E: Przekroczono limit czasu odpytywania us\u0142ugi ACME podczas sprawdzania, czy powiod\u0142o si\u0119 zam\u00f3wienie dla domeny {0} od o\u015brodka certyfikacji ACME pod identyfikatorem URI {1}. Status to {2}. Skonfigurowany limit czasu to {3}.
+CWPKI2004E.explanation=\u017b\u0105danie zam\u00f3wienia certyfikatu domeny o\u015brodka certyfikacji nie zosta\u0142o zrealizowane w skonfigurowanym czasie i utworzenie certyfikatu nie jest mo\u017cliwe.
+CWPKI2004E.useraction=Sprawd\u017a skonfigurowany identyfikator URI o\u015brodka certyfikacji. Upewnij si\u0119, \u017ce identyfikator URI jest dost\u0119pny dla serwera wywo\u0142uj\u0105cego. Upewnij si\u0119, \u017ce serwer wywo\u0142uj\u0105cy mo\u017ce odebra\u0107 odpowied\u017a z o\u015brodka certyfikacji. Odczytaj kod statusu. Niekt\u00f3re o\u015brodki certyfikacji mog\u0105 potrzebowa\u0107 d\u0142u\u017cszego limitu czasu.
+
+CWPKI2005E=CWPKI2005E: Autoryzacja zwr\u00f3cona z o\u015brodka certyfikacji ACME pod identyfikatorem {0} nie zawiera\u0142a poprawnego typu wezwania. Obs\u0142ugiwane typy wezwa\u0144 to {1}.
+CWPKI2005E.explanation=O\u015brodek certyfikacji zwr\u00f3ci\u0142 typ wyzwania, kt\u00f3ry jest obecnie nieobs\u0142ugiwany. Upewnij si\u0119, \u017ce o\u015brodek certyfikacji u\u017cywa typu z listy obs\u0142ugiwanych.
+CWPKI2005E.useraction=Wybierz o\u015brodek certyfikacji, kt\u00f3ry generuje obs\u0142ugiwane typy wezwa\u0144.
+
+CWPKI2006I=CWPKI2006I: O\u015brodek certyfikacji ACME pod identyfikatorem URI {0} poinformowa\u0142, \u017ce zam\u00f3wienie na certyfikat nie powiod\u0142o si\u0119 dla {1} domen.
+CWPKI2006I.explanation=O\u015brodek certyfikacji udost\u0119pnia warunki us\u0142ugi.
+CWPKI2006I.useraction= Zapoznaj si\u0119 z udost\u0119pnionymi warunkami us\u0142ugi.
+
+CWPKI2007I=CWPKI2007I: Us\u0142uga ACME zainstalowa\u0142a certyfikat podpisany przez o\u015brodek certyfikacji ACME pod identyfikatorem URI {0}. Data wa\u017cno\u015bci to {1}.
+CWPKI2007I.explanation=Us\u0142uga ACME pomy\u015blnie odebra\u0142a i zainstalowa\u0142a certyfikat ze skonfigurowanego o\u015brodka certyfikacji.
+CWPKI2007I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWPKI2008E=CWPKI2008E: Identyfikator URI katalogu o\u015brodka certyfikacji ACME musi by\u0107 poprawnym identyfikatorem URI. Odebrany identyfikator URI by\u0142 r\u00f3wny null lub pusty. Odebrany identyfikator URI to '{0}'.
+CWPKI2008E.explanation=Identyfikator URI katalogu o\u015brodka certyfikacji nie by\u0142 skonfigurowany prawid\u0142owo.
+CWPKI2008E.useraction=Wprowad\u017a w konfiguracji poprawny identyfikator URI o\u015brodka certyfikacji ACME.
+
+CWPKI2009E=CWPKI2009E: \u017b\u0105danie wezwania skierowane do o\u015brodka certyfikacji ACME pod identyfikatorem URI {0} nie powiod\u0142o si\u0119. B\u0142\u0105d: {1}.
+CWPKI2009E.explanation=\u017b\u0105danie wezwania nie powiod\u0142o si\u0119, a utworzenie certyfikatu nie jest mo\u017cliwe.
+CWPKI2009E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2010E=CWPKI2010E: Aktualizacja wezwania skierowana do o\u015brodka certyfikacji ACME pod identyfikatorem URI {0} nie powiod\u0142a si\u0119. B\u0142\u0105d to {1}.
+CWPKI2010E.explanation=Aktualizacja wezwania nie powiod\u0142a si\u0119, a utworzenie certyfikatu nie jest mo\u017cliwe.
+CWPKI2010E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2011E=CWPKI2011E: Us\u0142uga ACME nie mog\u0142a utworzy\u0107 zam\u00f3wienia na certyfikat dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. B\u0142\u0105d: {1}.
+CWPKI2011E.explanation=Zam\u00f3wienie na utworzenie certyfikatu nie powiod\u0142o si\u0119 i nie mo\u017cna za\u017c\u0105da\u0107 podpisanego certyfikatu.
+CWPKI2011E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2012E=CWPKI2012E: Us\u0142uga ACME nie mog\u0142a podpisa\u0107 \u017c\u0105dania podpisania certyfikatu dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. B\u0142\u0105d: {1}.
+CWPKI2012E.explanation=Zam\u00f3wienie na certyfikat zosta\u0142o utworzone, ale podpisanie \u017c\u0105dania nie powiod\u0142o si\u0119 i nie mo\u017cna za\u017c\u0105da\u0107 podpisanego certyfikatu.
+CWPKI2012E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2013E=CWPKI2013E: \u017b\u0105danie podpisania certyfikatu zosta\u0142o utworzone i podpisane, ale \u017c\u0105danie zam\u00f3wienia skierowane do o\u015brodka certyfikacji ACME pod identyfikatorem URI {0} nie powiod\u0142o si\u0119. B\u0142\u0105d: {1}.
+CWPKI2013E.explanation=Zam\u00f3wienie na certyfikat zosta\u0142o utworzone i podpisane, ale zam\u00f3wienie certyfikatu w o\u015brodku certyfikacji nie powiod\u0142o si\u0119.
+CWPKI2013E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2014E=CWPKI2014E: \u017b\u0105danie podpisania certyfikatu dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {0} zosta\u0142o utworzone i podpisane, ale kodowanie \u017c\u0105dania nie powiod\u0142o si\u0119. B\u0142\u0105d: {1}.
+CWPKI2014E.explanation=Kodowanie \u017c\u0105dania podpisania certyfikatu nie powiod\u0142o si\u0119 i nie mo\u017cna utworzy\u0107 podpisanego certyfikatu.
+CWPKI2014E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2015E=CWPKI2015E: \u017b\u0105danie statusu zam\u00f3wienia na certyfikat us\u0142ugi ACME z o\u015brodka certyfikacji ACME pod identyfikatorem {0} URI nie powiod\u0142o si\u0119. B\u0142\u0105d: {1}.
+CWPKI2015E.explanation=Zam\u00f3wienie jest realizowane asynchronicznie przez o\u015brodek certyfikacji. Us\u0142uga ACME odebra\u0142a informacj\u0119 o b\u0142\u0119dzie podczas sprawdzania statusu zam\u00f3wienia. Nie mo\u017cna za\u017c\u0105da\u0107 podpisanego certyfikatu.
+CWPKI2015E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2016E=CWPKI2016E: \u017b\u0105danie us\u0142ugi ACME dotycz\u0105ce istniej\u0105cego konta skierowane do o\u015brodka certyfikacji ACME pod identyfikatorem URI {0} nie powiod\u0142o si\u0119. B\u0142\u0105d: {1}.
+CWPKI2016E.explanation=Istniej\u0105ce konto nie zosta\u0142o znalezione lub wyst\u0105pi\u0142 inny b\u0142\u0105d. Nie mo\u017cna dokona\u0107 zmian dotycz\u0105cych konta lub certyfikatu.
+CWPKI2016E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce identyfikator URI jest dost\u0119pny dla serwera wywo\u0142uj\u0105cego. Upewnij si\u0119, \u017ce serwer wywo\u0142uj\u0105cy mo\u017ce odebra\u0107 odpowied\u017a z o\u015brodka certyfikacji.
+
+CWPKI2017E=CWPKI2017E: \u017b\u0105danie us\u0142ugi ACME dotycz\u0105ce warunk\u00f3w us\u0142ugi skierowane do o\u015brodka certyfikacji ACME pod identyfikatorem URI {0} nie powiod\u0142o si\u0119. B\u0142\u0105d: {1}.
+CWPKI2017E.explanation=Nie mo\u017cna zarejestrowa\u0107 warunk\u00f3w us\u0142ugi o\u015brodka certyfikacji ACME. 
+CWPKI2017E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Odwied\u017a serwis WWW o\u015brodka certyfikacji ACME, aby zapozna\u0107 si\u0119 z warunkami us\u0142ugi.
+
+CWPKI2018E=CWPKI2018E: Nie powiod\u0142o si\u0119 utworzenie konta u\u017cytkownika w o\u015brodku certyfikacji ACME pod identyfikatorem URI {0}. B\u0142\u0105d: {1}.
+CWPKI2018E.explanation=\u017b\u0105danie utworzenia konta u\u017cytkownika nie powiod\u0142o si\u0119.
+CWPKI2018E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2019I=CWPKI2019I: Adres URL konta podany przez o\u015brodek certyfikacji ACME pod identyfikatorem URI {0} to {1}.
+CWPKI2019I.explanation=Konto zosta\u0142o pomy\u015blnie utworzone.
+CWPKI2019I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWPKI2020E=CWPKI2020E: Us\u0142uga ACME nie mog\u0142a odczyta\u0107 pliku kluczy domeny dla konta o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. Po\u0142o\u017cenie pliku: {1} B\u0142\u0105d: {2}.
+CWPKI2020E.explanation=Otwarcie pliku kluczy domeny dla konta o\u015brodka certyfikacji nie by\u0142o mo\u017cliwe. Taka sytuacja mo\u017ce wyst\u0105pi\u0107, je\u015bli uprawnienia do pliku s\u0105 nieprawid\u0142owe lub je\u015bli plik nie istnieje.
+CWPKI2020E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku jest prawid\u0142owe, a serwer ma uprawnienia do odczytu pliku.
+
+CWPKI2021E=CWPKI2021E: Us\u0142uga ACME nie mog\u0142a odczyta\u0107 pliku kluczy konta o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. Po\u0142o\u017cenie pliku: {1} B\u0142\u0105d: {2}.
+CWPKI2021E.explanation=Otwarcie pliku kluczy konta o\u015brodka certyfikacji nie by\u0142o mo\u017cliwe. Taka sytuacja mo\u017ce wyst\u0105pi\u0107, je\u015bli uprawnienia do pliku s\u0105 nieprawid\u0142owe lub je\u015bli plik nie istnieje.
+CWPKI2021E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku jest prawid\u0142owe, a serwer ma uprawnienia do odczytu pliku.
+
+CWPKI2022E=CWPKI2022E: Us\u0142uga ACME nie mog\u0142a zapisa\u0107 pliku kluczy domeny dla konta o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. Po\u0142o\u017cenie pliku: {1} B\u0142\u0105d: {2}.
+CWPKI2022E.explanation=Zapisanie kluczy domeny w pliku kluczy domeny nie powiod\u0142o si\u0119. Taka sytuacja mo\u017ce wyst\u0105pi\u0107, je\u015bli uprawnienia do pliku s\u0105 nieprawid\u0142owe lub je\u015bli plik nie istnieje.
+CWPKI2022E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku jest prawid\u0142owe, a serwer ma uprawnienia do zapisu w pliku.
+
+CWPKI2023E=CWPKI2023E: Nie powiod\u0142o si\u0119 zapisanie w pliku kluczy konta o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. Po\u0142o\u017cenie pliku: {1} B\u0142\u0105d: {2}.
+CWPKI2023E.explanation=Zapisanie kluczy konta w pliku kluczy konta nie powiod\u0142o si\u0119. Taka sytuacja mo\u017ce wyst\u0105pi\u0107, je\u015bli uprawnienia do pliku s\u0105 nieprawid\u0142owe lub je\u015bli plik nie istnieje.
+CWPKI2023E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku jest prawid\u0142owe, a serwer ma uprawnienia do zapisu w pliku.
+
+CWPKI2024E=CWPKI2024E: Us\u0142uga ACME nie mog\u0142a uniewa\u017cni\u0107 \u017c\u0105danego certyfikatu dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. Numer seryjny certyfikatu: {1}. B\u0142\u0105d: {2}.
+CWPKI2024E.explanation=\u017b\u0105danie uniewa\u017cnienia certyfikatu nie powiod\u0142o si\u0119. Mo\u017cliwe, \u017ce uniewa\u017cnienie certyfikatu nie by\u0142o mo\u017cliwe i \u017ce nadal mo\u017cna go u\u017cywa\u0107.
+CWPKI2024E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2025W=CWPKI2025W: Us\u0142uga ACME odebra\u0142a \u017c\u0105danie uniewa\u017cnienia certyfikatu, ale za\u0142adowanie pary kluczy konta dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {0} nie by\u0142o mo\u017cliwe.
+CWPKI2025W.explanation=\u017b\u0105danie uniewa\u017cnienia certyfikatu nie powiod\u0142o si\u0119, poniewa\u017c nie by\u0142o mo\u017cliwe za\u0142adowanie pary kluczy konta.
+CWPKI2025W.useraction=Sprawd\u017a, czy w dzienniku nie odnotowano wcze\u015bniejszych b\u0142\u0119d\u00f3w zwi\u0105zanych z tym niepowodzeniem. Sprawd\u017a w pliku magazynu kluczy, czy istnieje certyfikat.
+
+CWPKI2026W=CWPKI2026W: Us\u0142uga ACME odebra\u0142a \u017c\u0105danie uniewa\u017cnienia certyfikatu, ale konto nie zosta\u0142o znalezione w o\u015brodku certyfikacji ACME pod identyfikatorem URI {0}.
+CWPKI2026W.explanation=\u017b\u0105danie uniewa\u017cnienia certyfikatu nie powiod\u0142o si\u0119, poniewa\u017c konto nie zosta\u0142o znalezione.
+CWPKI2026W.useraction=Sprawd\u017a identyfikatora URI o\u015brodka certyfikacji. Sprawd\u017a w pliku magazynu kluczy, czy istnieje certyfikat.
+
+CWPKI2027E=CWPKI2027E: \u015acie\u017cka pliku {0} dla us\u0142ugi ACME jest r\u00f3wna null lub pusta. Podana \u015bcie\u017cka to '{1}'.
+CWPKI2027E.explanation=\u015acie\u017cka do pliku by\u0142a r\u00f3wna null lub pusta i nie mo\u017cna jej u\u017cy\u0107 dla kluczy domeny i konta.
+CWPKI2027E.useraction=Podaj w konfiguracji poprawn\u0105 \u015bcie\u017ck\u0119 do pliku.

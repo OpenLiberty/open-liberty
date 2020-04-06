@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -38,6 +38,10 @@ application.shutdown.CWMFT0002W=CWMFT0002W: Nie mo\u017cna wykona\u0107 metody a
 application.shutdown.CWMFT0002W.explanation=Metody asynchroniczne s\u0105 uruchamiane w kontek\u015bcie komponentu, kt\u00f3ry je uruchomi\u0142. Aplikacja lub komponent, kt\u00f3ry wywo\u0142a\u0142 t\u0119 metod\u0119 asynchroniczn\u0105, zosta\u0142 zatrzymany, co uniemo\u017cliwi\u0142o wykonanie tej metody asynchronicznej.
 application.shutdown.CWMFT0002W.useraction= To ostrze\u017cenie zazwyczaj wyst\u0119puje, gdy aplikacja, komponent lub serwer jest zamykany. Je\u015bli wszystkie dzia\u0142aj\u0105ce metody asynchroniczne musz\u0105 zosta\u0107 wykonane, w\u00f3wczas aplikacja lub komponent musi czeka\u0107 na wyniki, zanim zostanie zatrzymany.
 
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: Metoda asynchroniczna {0} zwr\u00f3ci\u0142a warto\u015b\u0107 null. 
+asynchronous.returned.null.CWMFT0003W.explanation=Metody z adnotacj\u0105 @Asynchronous nie mog\u0105 zwraca\u0107 warto\u015bci null.
+asynchronous.returned.null.CWMFT0003W.useraction=Spowoduj, aby metoda nie zwraca\u0142a warto\u015bci null.
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyj\u0105tek: {0}.
 internal.error.CWMFT4998E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import com.ibm.wsspi.http.HttpCookie;
 
 /**
  * This class is extended by the individual Cookie Attribute classes.
- * 
+ *
  */
 public abstract class CookieData extends GenericKeys {
 
@@ -53,10 +53,12 @@ public abstract class CookieData extends GenericKeys {
     public static final CookieData cookieCommentURL = new CookieCommentURL();
     /** MS created HttpOnly attribute */
     public static final CookieData cookieHttpOnly = new CookieHttpOnly();
+    /** SameSite attribute */
+    public static final CookieData cookieSameSite = new CookieSameSiteData();
 
     /**
      * Constructor for a generic cookie data object.
-     * 
+     *
      * @param name
      */
     public CookieData(String name) {
@@ -67,7 +69,7 @@ public abstract class CookieData extends GenericKeys {
 
     /**
      * Get the next ordinal value.
-     * 
+     *
      * @return int
      */
     private static synchronized int nextOrdinal() {
@@ -76,7 +78,7 @@ public abstract class CookieData extends GenericKeys {
 
     /**
      * Allow access to the list containing all of the enumerated values.
-     * 
+     *
      * @return List<CookieData>
      */
     public static List<CookieData> getAllKeys() {
@@ -87,7 +89,7 @@ public abstract class CookieData extends GenericKeys {
      * Find the enumerated object that matchs the input name using the given
      * offset and length into that name. If none exist, then a null value is
      * returned.
-     * 
+     *
      * @param name
      * @param offset
      *            - starting point in that name
@@ -105,7 +107,7 @@ public abstract class CookieData extends GenericKeys {
      * Find the enumerated object that matchs the input name using the given
      * offset and length into that name. If none exist, then a null value is
      * returned.
-     * 
+     *
      * @param name
      * @param offset
      *            - starting point in that name
@@ -124,7 +126,7 @@ public abstract class CookieData extends GenericKeys {
      * classes that implement their own set method. For instance the
      * CookieVersionData class will implement the set method to set the
      * version on the cookie.
-     * 
+     *
      * @param cookie
      *            The cookie object that will be used to set the value on
      * @param data
@@ -136,7 +138,7 @@ public abstract class CookieData extends GenericKeys {
     /**
      * Query whether this particular cookie token is a valid attribute of the
      * input header.
-     * 
+     *
      * @param hdr
      * @param includesDollar
      *            (whether the value starts with a dollar symbol)

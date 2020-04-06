@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -488,6 +488,13 @@ warning.supplied.config.not.valid=CWWKG0103W: O nome do atributo {0} com o valor
 warning.supplied.config.not.valid.explanation= Um atributo de configura\u00e7\u00e3o marcado como ibm:final e como padr\u00e3o n\u00e3o \u00e9 v\u00e1lido. Remova o atributo configurado da configura\u00e7\u00e3o.
 warning.supplied.config.not.valid.useraction=Atualize a configura\u00e7\u00e3o do servidor para remover o valor de atributo incorreto.
 
+variables.in.id.not.supported=CWWKG0104W: O atributo de ID com valor {1} do elemento de configura\u00e7\u00e3o {0} deve ter um valor fixo. As vari\u00e1veis no atributo de ID n\u00e3o ser\u00e3o substitu\u00eddas.
+variables.in.id.not.supported.explanation=Os valores de vari\u00e1veis n\u00e3o s\u00e3o permitidos nos atributos de ID. Todas as vari\u00e1veis nos atributos de ID ser\u00e3o tratadas como sequ\u00eancias de caracteres literais.  
+variables.in.id.not.supported.useraction=Remova a vari\u00e1vel do valor do atributo de ID.
+
+error.root.must.be.server=CWWKG0105E: O documento de configura\u00e7\u00e3o {0} deve come\u00e7ar com o elemento [{1}].
+error.root.must.be.server.explanation=A configura\u00e7\u00e3o deve estar contida em um elemento do servidor ou em um elemento do cliente. 
+error.root.must.be.server.useraction=Inclua um elemento do servidor ou do cliente como a raiz do arquivo de configura\u00e7\u00e3o. 
 
 # Non-TR message
 error.invalidOCDRef=ERRO: A PID de metatipo [{0}] especifica o ID de defini\u00e7\u00e3o de classe de objeto n\u00e3o existente [{1}]

@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.config.1.4.services
 Bundle-SymbolicName: com.ibm.ws.microprofile.config.1.4.services
@@ -26,14 +24,13 @@ Private-Package: \
     com.ibm.ws.microprofile.config14.services
 
 Import-Package: \
-        org.eclipse.microprofile.config;version="[1.4,2)", \
-        org.eclipse.microprofile.config.inject;version="[1.4,2)", \
+        org.eclipse.microprofile.config;version="[1.0.1,2)", \
+        org.eclipse.microprofile.config.inject;version="[1.1.0,2)", \
         org.eclipse.microprofile.config.spi;version="[1.4,2)", \
         *
 
 WS-TraceGroup: APPCONFIG
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -452,6 +452,11 @@ JAVA8_REQUIRED.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed.
 JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Poskytovatel OpenID Connect {0} m\u00e1 nastaven atribut konfigurace {1} pro pou\u017eit\u00ed algoritmu {2} a vy\u017eaduje verzi Java 8 nebo vy\u0161\u0161\u00ed. Ur\u010den\u00fd poskytovatel OpenID Connect ignoruje nastaven\u00ed {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Pou\u017e\u00edvan\u00e1 verze Java nen\u00ed verze 8 nebo vy\u0161\u0161\u00ed.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed pro pou\u017eit\u00ed zm\u00edn\u011bn\u00e9 volby konfigurace.
+
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Token s typem ud\u011blen\u00ed [{0}] nen\u00ed povolen. Povolen\u00e9 typy ud\u011blen\u00ed jsou {1}.
+WRONG_TOKEN_GRANTTYPE.explanation=Token nen\u00ed platn\u00fd, proto\u017ee jeho typ ud\u011blen\u00ed nen\u00ed povolen.
+WRONG_TOKEN_GRANTTYPE.useraction=Pou\u017eijte token s typem ud\u011blen\u00ed, kter\u00fd je povolen.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Odhl\u00e1sit

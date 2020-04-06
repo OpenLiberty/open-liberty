@@ -22,4 +22,8 @@ public class Servlet_B_Listener implements ServletContextListener {
 
         System.out.println("! ------------ LISTENER " + listenerName + " EXITED -----------");
     }
+
+    public void contextDestroyed(ServletContextEvent sce) {
+        // Ignore
+    }
 }

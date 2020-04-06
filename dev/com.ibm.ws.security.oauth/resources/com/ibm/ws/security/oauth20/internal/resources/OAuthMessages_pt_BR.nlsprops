@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -452,6 +452,11 @@ JAVA8_REQUIRED.useraction=Instale o Java vers\u00e3o 8 ou superior.
 JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: O provedor {0} OpenID Connect tem o atributo de configura\u00e7\u00e3o {1} definido para usar o algoritmo {2} e isso requer o Java 8 ou superior. O provedor OpenID Connect especificado ignora a configura\u00e7\u00e3o {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=A vers\u00e3o de Java em uso n\u00e3o \u00e9 a 8 ou superior.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Instale o Java vers\u00e3o 8 ou superior para usar a op\u00e7\u00e3o de configura\u00e7\u00e3o mencionada.
+
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: O token com tipo de concess\u00e3o [{0}] n\u00e3o \u00e9 permitido. Os tipos de concess\u00e3o permitidos s\u00e3o {1}.
+WRONG_TOKEN_GRANTTYPE.explanation=O token n\u00e3o \u00e9 v\u00e1lido porque seu tipo de concess\u00e3o n\u00e3o \u00e9 permitido.
+WRONG_TOKEN_GRANTTYPE.useraction=Use um token com um tipo de concess\u00e3o permitido.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Logout

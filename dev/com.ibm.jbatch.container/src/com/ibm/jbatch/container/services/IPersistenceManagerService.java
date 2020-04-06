@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 International Business Machines Corp.
+ * Copyright 2012, 2020 International Business Machines Corp.
  *
  * See the NOTICE file distributed with this work for additional information
  * regarding copyright ownership. Licensed under the Apache License,
@@ -31,7 +31,6 @@ import javax.batch.runtime.StepExecution;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.exception.JobStoppedException;
-import com.ibm.jbatch.container.execution.impl.RuntimePartitionExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeSplitFlowExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
 import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity;
@@ -47,7 +46,9 @@ import com.ibm.jbatch.container.persistence.jpa.TopLevelStepExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceKey;
 import com.ibm.jbatch.container.ws.InstanceState;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.spi.services.IBatchServiceBase;
 
@@ -191,7 +192,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
 
     public JobInstance updateJobInstanceOnRestart(long jobInstanceId, Date date);
 
-    public JobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException;
+    public JobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException;
 
     public JobInstance updateJobInstanceStateOnQueued(long instanceId) throws BatchIllegalJobStatusTransitionException;
 
@@ -490,18 +491,6 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
     public RemotableSplitFlowEntity updateSplitFlowExecutionLogDir(RemotableSplitFlowKey key, String logDirPath);
 
     /**
-     * @param partitionKey
-     * @return
-     */
-    public RemotablePartitionEntity createPartitionExecution(RemotablePartitionKey partitionKey, Date createTime);
-
-    /**
-     * @param runtimePartitionExecution
-     * @param date
-     */
-    public RemotablePartitionEntity updatePartitionExecution(RuntimePartitionExecution runtimePartitionExecution, BatchStatus newBatchStatus, Date date);
-
-    /**
      * @param key
      * @param logDirPath
      */
@@ -524,20 +513,6 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      *
      */
     public List<JobInstanceEntity> getJobInstances(IJPAQueryHelper queryHelper, int page, int pageSize);
-
-    /**
-     * Creates an entry for this remote partition in the RemotablePartition table
-     */
-    RemotablePartitionEntity createRemotablePartition(long jobExecId,
-                                                      String stepName, int partitionNum,
-                                                      RemotablePartitionState partitionState);
-
-    /**
-     * updates an entry for this remote partition in the RemotablePartition table with given internalStatus
-     */
-    RemotablePartitionEntity updateRemotablePartitionInternalState(
-                                                                   long jobExecId, String stepName, int partitionNum,
-                                                                   RemotablePartitionState internalStatus);
 
     /**
      * @return
@@ -567,7 +542,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return job executions table version number
      * @throws Exception
      */
-    int getJobExecutionTableVersion() throws Exception;
+    int getJobExecutionEntityVersion() throws Exception;
 
     /**
      * Get the job repository table version number. This will initialize the persistent store (database)
@@ -576,20 +551,38 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return job instances table version number
      * @throws Exception
      */
-    int getJobInstanceTableVersion() throws Exception;
+    int getJobInstanceEntityVersion() throws Exception;
 
     /**
      * @return the job execution version field, initialized or not (may return 'null')
      */
-    Integer getJobExecutionTableVersionField();
+    Integer getJobExecutionEntityVersionField();
 
     /**
      * @return the job instance version field, initialized or not, (may return 'null')
      */
-    Integer getJobInstanceTableVersionField();
+    Integer getJobInstanceEntityVersionField();
 
     /**
      * @return the step thread execution version field, initialized or not (may return 'null')
      */
-    Integer getStepThreadExecutionTableVersionField();
+    Integer getStepThreadExecutionEntityVersionField();
+
+    /**
+     * @param topLevelStepExecutionId
+     * @return List of partition numbers, sorted low partition number to high, of related partitions in the recovery state.
+     */
+    public List<Integer> getRemotablePartitionsRecoveredForStepExecution(long topLevelStepExecutionId);
+
+    /**
+     * @param remotablePartitionKey
+     * @return
+     */
+    public WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey);
+
+    /**
+     * @param remotablePartitionKey
+     * @return
+     */
+    public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
 }

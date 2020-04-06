@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,13 +27,14 @@ import componenttest.rules.repeater.FeatureReplacementAction;
                 HandleResponsesTest.class,
                 HeaderPropagationTest.class,
                 HeaderPropagation12Test.class,
+                HostnameVerifierTest.class,
                 JsonbContextTest.class,
                 MultiClientCdiTest.class,
                 ProduceConsumeTest.class,
                 PropsTest.class
 })
 public class FATSuite {
-    private static final String[] ALL_VERSIONS = {"1.0", "1.1", "1.2", "1.3"};
+    private static final String[] ALL_VERSIONS = {"1.0", "1.1", "1.2", "1.3", "1.4"};
 
     static FeatureReplacementAction MP_REST_CLIENT(String version, String serverName) {
         return MP_REST_CLIENT(new FeatureReplacementAction(), version, serverName);
@@ -54,9 +55,14 @@ public class FATSuite {
                         .withID("mpRestClient-" + version)
                         .forServers(serverName);
         if ("1.0".equals(version) || "1.1".equals(version)) {
-            return use(action, "mpConfig", "1.1", "1.3");
+            return use(action, "mpConfig", "1.1", "1.3", "1.4");
         }
-        return use(action, "mpConfig", "1.3", "1.1");
+        else if ("1.2".equals(version) || "1.3".equals(version)) {
+            return use(action, "mpConfig", "1.3", "1.1", "1.4");
+        }
+        else {
+            return use(action, "mpConfig", "1.4", "1.1", "1.3");
+        }
     }
 
     private static FeatureReplacementAction use(FeatureReplacementAction action, String featureName, String version) {

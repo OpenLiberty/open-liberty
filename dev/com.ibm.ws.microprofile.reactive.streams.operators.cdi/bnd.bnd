@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.streams.operators.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.streams.operators.cdi
@@ -22,6 +20,7 @@ Export-Package: \
   com.ibm.ws.microprofile.reactive.streams.cdi*
     
 Import-Package: \
+  !com.ibm.ws.microprofile.reactive.streams.cdi, \
   javax.enterprise.*; version="[1.1,3)",\
   com.ibm.ws.microprofile.reactive.streams.operators.spi.impl; version="[1.0,1.1)",\
   org.eclipse.microprofile.reactive.streams.operators.spi; version="[1.0,1.1)",\
@@ -38,10 +37,11 @@ Include-Resource: \
 
 WS-TraceGroup: REACTIVESTREAMS
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.reactive.streams.cdi.ReactiveStreamsEngineInjectionExtension
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 testsrc: test/src
@@ -53,7 +53,7 @@ testsrc: test/src
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.ws.io.smallrye.reactive.streams.operators.1.0;version=latest, \
+	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest, \
 	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

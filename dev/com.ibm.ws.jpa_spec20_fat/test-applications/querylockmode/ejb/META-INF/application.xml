@@ -12,18 +12,18 @@
  *******************************************************************************/
 -->
 <application xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
-	id="Application_ID">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
+    id="Application_ID">
 
-	<display-name>QueryLockMode_EJB</display-name>
-	<module id="EjbModule_1"> 
-		<ejb>querylockmode.jar</ejb>
-	</module>
-	<module id="WebModule_1">
+    <display-name>QueryLockMode_EJB</display-name>
+    <module id="EjbModule_1"> 
+        <ejb>querylockmodeEjb.jar</ejb>
+    </module>
+    <module id="WebModule_1">
         <web>
-            <web-uri>querylockmodeejb.war</web-uri>
-            <context-root>QueryLockModeEJB</context-root>
+            <web-uri>querylockmodeEjb.war</web-uri>
+            <context-root>querylockmodeEjb</context-root>
         </web>
     </module>
 </application>

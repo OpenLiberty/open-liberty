@@ -25,7 +25,4 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.cdi.resources.MetricsCDI")
 package io.astefanutti.metrics.cdi;
-
-import com.ibm.websphere.ras.annotation.TraceOptions;

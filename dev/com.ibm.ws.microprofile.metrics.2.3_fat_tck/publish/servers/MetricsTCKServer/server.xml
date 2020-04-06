@@ -1,0 +1,32 @@
+<server>
+    <featureManager>
+    	<feature>mpMetrics-2.3</feature>
+	    <feature>monitor-1.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>webProfile-8.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>cdi-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>appSecurity-3.0</feature>
+        <feature>arquillian-support-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <quickStartSecurity userName="theUser" userPassword="thePassword"/>
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}" />
+
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+    <applicationMonitor updateTrigger="mbean"/>
+
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,35 +135,36 @@ public class JSF23CDIGeneralTests {
     @Test
     public void testPostRenderViewEvent() throws Exception {
         String contextRoot = "PostRenderViewEvent";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Ensure the messages are output in the correct order to verify the events are fired
-        // in the correct order.
-        String beforeRenderResponse = "Before Render Response Phase";
-        String afterRenderResponse = "After Render Response Phase";
-        String preRenderView = "Processing PreRenderViewEvent";
-        String postRenderView = "Processing PostRenderViewEvent";
+            // Ensure the messages are output in the correct order to verify the events are fired
+            // in the correct order.
+            String beforeRenderResponse = "Before Render Response Phase";
+            String afterRenderResponse = "After Render Response Phase";
+            String preRenderView = "Processing PreRenderViewEvent";
+            String postRenderView = "Processing PostRenderViewEvent";
 
-        assertNotNull("The following String was not found in the trace log: " + beforeRenderResponse,
-                      jsf23CDIServer.waitForStringInTraceUsingLastOffset(beforeRenderResponse));
+            assertNotNull("The following String was not found in the trace log: " + beforeRenderResponse,
+                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(beforeRenderResponse));
 
-        assertNotNull("The following String was not found in the trace log: " + preRenderView,
-                      jsf23CDIServer.waitForStringInTraceUsingLastOffset(preRenderView));
+            assertNotNull("The following String was not found in the trace log: " + preRenderView,
+                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(preRenderView));
 
-        assertNotNull("The following String was not found in the trace log: " + postRenderView,
-                      jsf23CDIServer.waitForStringInTraceUsingLastOffset(postRenderView));
+            assertNotNull("The following String was not found in the trace log: " + postRenderView,
+                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(postRenderView));
 
-        assertNotNull("The following String was not found in the trace log: " + afterRenderResponse,
-                      jsf23CDIServer.waitForStringInTraceUsingLastOffset(afterRenderResponse));
+            assertNotNull("The following String was not found in the trace log: " + afterRenderResponse,
+                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(afterRenderResponse));
+        }
 
     }
 
@@ -210,109 +211,122 @@ public class JSF23CDIGeneralTests {
     @Test
     public void testCDIManagedProperty() throws Exception {
         String contextRoot = "CDIManagedProperty";
-        WebClient webClient = new WebClient();
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-        String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
-                             + "listManagedProperty = zero stringArrayManagedProperty = "
-                             + "zero bean = com.ibm.ws.jsf23.fat.cdi.managedproperty.TestBean";
+            String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
+                                 + "listManagedProperty = zero stringArrayManagedProperty = "
+                                 + "zero bean = com.ibm.ws.jsf23.fat.cdi.managedproperty.TestBean";
 
-        String finalValue = "numberManagedProperty = 1 textManagedProperty = 2 "
-                            + "listManagedProperty = 3 stringArrayManagedProperty = 4 bean = "
-                            + "com.ibm.ws.jsf23.fat.cdi.managedproperty.TestBean";
+            String finalValue = "numberManagedProperty = 1 textManagedProperty = 2 "
+                                + "listManagedProperty = 3 stringArrayManagedProperty = 4 bean = "
+                                + "com.ibm.ws.jsf23.fat.cdi.managedproperty.TestBean";
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlTextInput input1 = (HtmlTextInput) page.getElementById("in1");
-        HtmlTextInput input2 = (HtmlTextInput) page.getElementById("in2");
-        HtmlTextInput input3 = (HtmlTextInput) page.getElementById("in3");
-        HtmlTextInput input4 = (HtmlTextInput) page.getElementById("in4");
+            HtmlTextInput input1 = (HtmlTextInput) page.getElementById("in1");
+            HtmlTextInput input2 = (HtmlTextInput) page.getElementById("in2");
+            HtmlTextInput input3 = (HtmlTextInput) page.getElementById("in3");
+            HtmlTextInput input4 = (HtmlTextInput) page.getElementById("in4");
 
-        String output = page.getElementById("out1").asText();
+            String output = page.getElementById("out1").asText();
 
-        // Assert the initial values of out1.
-        assertTrue("The initial values were not correct. One or more of the @ManagedProperty injections failed.",
-                   output.substring(0, output.indexOf("@")).equals(initalValue));
+            // Assert the initial values of out1.
+            assertTrue("The initial values were not correct. One or more of the @ManagedProperty injections failed.",
+                       output.substring(0, output.indexOf("@")).equals(initalValue));
 
-        // Now fill in the new values into the input fields
-        input1.setValueAttribute("1");
-        input2.setValueAttribute("2");
-        input3.setValueAttribute("3");
-        input4.setValueAttribute("4");
+            // Now fill in the new values into the input fields
+            input1.setValueAttribute("1");
+            input2.setValueAttribute("2");
+            input3.setValueAttribute("3");
+            input4.setValueAttribute("4");
 
-        // Now click the submit button
-        page = page.getElementById("button1").click();
+            // Now click the submit button
+            page = page.getElementById("button1").click();
 
-        Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asText());
 
-        output = page.getElementById("out1").asText();
+            output = page.getElementById("out1").asText();
 
-        // Assert the updated values of out1
-        assertTrue("The updated values were not correct. One or more of the @ManagedProperty injections failed.",
-                   output.substring(0, output.indexOf("@")).equals(finalValue));
+            // Assert the updated values of out1
+            assertTrue("The updated values were not correct. One or more of the @ManagedProperty injections failed.",
+                       output.substring(0, output.indexOf("@")).equals(finalValue));
+        }
     }
 
     /**
      * Test to ensure that the EL implicit objects can be injected through CDI.
      *
+     * Additionally, test that this application can be restarted without a LinkageError:
+     * see https://github.com/OpenLiberty/open-liberty/issues/10816
+     *
      * @throws Exception
      */
     @Test
     public void testInjectableELImplicitObjects() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
+            checkInjectableELImplicitObjects(webClient);
+            // restart the app and test again
+            jsf23CDIServer.restartDropinsApplication("ELImplicitObjectsViaCDI.war");
+            checkInjectableELImplicitObjects(webClient);
+        }
+    }
 
-        // Add a message to the header map
-        webClient.addRequestHeader("headerMessage", "This is a test");
+    private void checkInjectableELImplicitObjects(WebClient webClient) throws Exception {
 
-        // Construct the URL for the test
-        String contextRoot = "ELImplicitObjectsViaCDI";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            // Add a message to the header map
+            webClient.addRequestHeader("headerMessage", "This is a test");
 
-        HtmlPage testInjectableImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
+            // Construct the URL for the test
+            String contextRoot = "ELImplicitObjectsViaCDI";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
 
-        // Verify that the page contains the expected messages.
-        assertTrue(testInjectableImplicitObjectsPage.asText().contains("JSF 2.3 EL implicit objects using CDI"));
+            HtmlPage testInjectableImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
 
-        // Get the form that we are dealing with
-        HtmlForm form = testInjectableImplicitObjectsPage.getFormByName("form1");
+            // Verify that the page contains the expected messages.
+            assertTrue(testInjectableImplicitObjectsPage.asText().contains("JSF 2.3 EL implicit objects using CDI"));
 
-        // Get the button to click
-        HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
+            // Get the form that we are dealing with
+            HtmlForm form = testInjectableImplicitObjectsPage.getFormByName("form1");
 
-        // Now click the button and get the resulting page.
-        HtmlPage resultPage = submitButton.click();
+            // Get the button to click
+            HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultPage.asText());
-        Log.info(c, name.getMethodName(), resultPage.asXml());
+            // Now click the button and get the resulting page.
+            HtmlPage resultPage = submitButton.click();
 
-        // Verify that the page contains the expected messages.
-        assertTrue(resultPage.asText().contains("FacesContext project stage: Production"));
-        assertTrue(resultPage.asText().contains("ServletContext context path: /ELImplicitObjectsViaCDI"));
-        assertTrue(resultPage.asText().contains("ExternalContext app context path: /ELImplicitObjectsViaCDI"));
-        assertTrue(resultPage.asText().contains("UIViewRoot viewId: /index.xhtml"));
-        assertTrue(resultPage.asText().contains("Flash isRedirect: false"));
-        assertTrue(resultPage.asText().contains("HttpSession isNew: false"));
-        assertTrue(resultPage.asText().contains("Application name from ApplicationMap: ELImplicitObjectsViaCDI"));
-        assertTrue(resultPage.asText().contains("Char set from SessionMap: UTF-8"));
-        assertTrue(resultPage.asText().contains("ViewMap isEmpty: true"));
-        assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
-        assertTrue(resultPage.asText().contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                                + "for scope type javax.faces.flow.FlowScoped")); // Expected exception
-        assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-        assertTrue(resultPage.asText().contains("Cookie object from CookieMap: javax.servlet.http.Cookie"));
-        assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
-        assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
-        assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
-        assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
-        assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultPage.asText());
+            Log.info(c, name.getMethodName(), resultPage.asXml());
+
+            // Verify that the page contains the expected messages.
+            assertTrue(resultPage.asText().contains("FacesContext project stage: Production"));
+            assertTrue(resultPage.asText().contains("ServletContext context path: /ELImplicitObjectsViaCDI"));
+            assertTrue(resultPage.asText().contains("ExternalContext app context path: /ELImplicitObjectsViaCDI"));
+            assertTrue(resultPage.asText().contains("UIViewRoot viewId: /index.xhtml"));
+            assertTrue(resultPage.asText().contains("Flash isRedirect: false"));
+            assertTrue(resultPage.asText().contains("HttpSession isNew: false"));
+            assertTrue(resultPage.asText().contains("Application name from ApplicationMap: ELImplicitObjectsViaCDI"));
+            assertTrue(resultPage.asText().contains("Char set from SessionMap: UTF-8"));
+            assertTrue(resultPage.asText().contains("ViewMap isEmpty: true"));
+            assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
+            assertTrue(resultPage.asText()
+                            .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
+                                      + "for scope type javax.faces.flow.FlowScoped")); // Expected exception
+            assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: javax.servlet.http.Cookie"));
+            assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
+            assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
+            assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
+            assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
     }
 
     /**
@@ -323,38 +337,39 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testELResolutionImplicitObjects() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Add a message to the header map
-        webClient.addRequestHeader("headerMessage", "This is a test");
+            // Add a message to the header map
+            webClient.addRequestHeader("headerMessage", "This is a test");
 
-        // Construct the URL for the test
-        String contextRoot = "ELImplicitObjectsViaCDI";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "implicit_objects.xhtml?message=Hello World");
+            // Construct the URL for the test
+            String contextRoot = "ELImplicitObjectsViaCDI";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "implicit_objects.xhtml?message=Hello World");
 
-        HtmlPage testELResolutionImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testELResolutionImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), testELResolutionImplicitObjectsPage.asText());
-        Log.info(c, name.getMethodName(), testELResolutionImplicitObjectsPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), testELResolutionImplicitObjectsPage.asText());
+            Log.info(c, name.getMethodName(), testELResolutionImplicitObjectsPage.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("JSF 2.3 EL resolution of implicit objects using CDI"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Bean: com.ibm.ws.jsf23.fat.elimplicit.cdi.beans.ELImplicitObjectBean"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Application project stage: Production"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ApplicationScope application name: ELImplicitObjectsViaCDI "));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Component getStyle: font-weight:bold"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("CompositeComponent label: Hello World"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("FacesContext project stage: Production"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Flash isRedirect: false"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Header: This is a test"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("HeaderValues: This is a test"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("InitParam: ELImplicitObjectsViaCDI"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Param: Hello World"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ParamValues: Hello World"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Session isNew: true"));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("View viewId: /implicit_objects.xhtml "));
-        assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ViewScope isEmpty: true"));
+            // Verify that the page contains the expected messages.
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("JSF 2.3 EL resolution of implicit objects using CDI"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Bean: com.ibm.ws.jsf23.fat.elimplicit.cdi.beans.ELImplicitObjectBean"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Application project stage: Production"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ApplicationScope application name: ELImplicitObjectsViaCDI "));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Component getStyle: font-weight:bold"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("CompositeComponent label: Hello World"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("FacesContext project stage: Production"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Flash isRedirect: false"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Header: This is a test"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("HeaderValues: This is a test"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("InitParam: ELImplicitObjectsViaCDI"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Param: Hello World"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ParamValues: Hello World"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Session isNew: true"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("View viewId: /implicit_objects.xhtml "));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ViewScope isEmpty: true"));
+        }
     }
 
     /**
@@ -364,33 +379,34 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testELResolutionOfFlowScope() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "ELImplicitObjectsViaCDI";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "flow_index.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "ELImplicitObjectsViaCDI";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "flow_index.xhtml");
 
-        HtmlPage testELResolutionOfFlowScopePage = (HtmlPage) webClient.getPage(url);
+            HtmlPage testELResolutionOfFlowScopePage = (HtmlPage) webClient.getPage(url);
 
-        // Verify that the page contains the expected messages.
-        assertTrue(testELResolutionOfFlowScopePage.asText().contains("This flow tests a basic configuration with a @FlowScoped bean. The flow is defined via simple-flow.xml"));
+            // Verify that the page contains the expected messages.
+            assertTrue(testELResolutionOfFlowScopePage.asText().contains("This flow tests a basic configuration with a @FlowScoped bean. The flow is defined via simple-flow.xml"));
 
-        // Get the form that we are dealing with
-        HtmlForm form = testELResolutionOfFlowScopePage.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = testELResolutionOfFlowScopePage.getFormByName("form1");
 
-        // Get the submit button to click
-        HtmlSubmitInput submitButton = form.getInputByName("form1:simpleBean");
+            // Get the submit button to click
+            HtmlSubmitInput submitButton = form.getInputByName("form1:simpleBean");
 
-        // Now click the button and get the resulting page.
-        HtmlPage resultPage = submitButton.click();
+            // Now click the button and get the resulting page.
+            HtmlPage resultPage = submitButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultPage.asText());
-        Log.info(c, name.getMethodName(), resultPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultPage.asText());
+            Log.info(c, name.getMethodName(), resultPage.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(resultPage.asText().contains("FlowScope isEmpty: true"));
-        assertTrue(resultPage.asText().contains("Flow map isEmpty: true"));
+            // Verify that the page contains the expected messages.
+            assertTrue(resultPage.asText().contains("FlowScope isEmpty: true"));
+            assertTrue(resultPage.asText().contains("Flow map isEmpty: true"));
+        }
     }
 
     /**
@@ -451,36 +467,37 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testFacesConverterBeanInjection() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Verify that the page contains the expected messages.
-        assertTrue(page.asText().contains("JSF 2.3 support for injection into JSF Managed Objects"));
+            // Verify that the page contains the expected messages.
+            assertTrue(page.asText().contains("JSF 2.3 support for injection into JSF Managed Objects"));
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the input text and submit button
-        HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:textId");
-        HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
+            // Get the input text and submit button
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:textId");
+            HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
 
-        // Fill the input text
-        inputText.setValueAttribute("Hello World");
+            // Fill the input text
+            inputText.setValueAttribute("Hello World");
 
-        // Now click the button and get the resulting page.
-        HtmlPage resultPage = submitButton.click();
+            // Now click the button and get the resulting page.
+            HtmlPage resultPage = submitButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultPage.asText());
-        Log.info(c, name.getMethodName(), resultPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultPage.asText());
+            Log.info(c, name.getMethodName(), resultPage.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(resultPage.asText().contains("Hello Earth"));
+            // Verify that the page contains the expected messages.
+            assertTrue(resultPage.asText().contains("Hello Earth"));
+        }
     }
 
     /**
@@ -490,36 +507,37 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testFacesValidatorBeanInjection() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Verify that the page contains the expected messages.
-        assertTrue(page.asText().contains("JSF 2.3 support for injection into JSF Managed Objects"));
+            // Verify that the page contains the expected messages.
+            assertTrue(page.asText().contains("JSF 2.3 support for injection into JSF Managed Objects"));
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the input text and submit button
-        HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:textId");
-        HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
+            // Get the input text and submit button
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:textId");
+            HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
 
-        // Fill the input text
-        inputText.setValueAttribute("1234");
+            // Fill the input text
+            inputText.setValueAttribute("1234");
 
-        // Now click the button and get the resulting page.
-        HtmlPage resultPage = submitButton.click();
+            // Now click the button and get the resulting page.
+            HtmlPage resultPage = submitButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultPage.asText());
-        Log.info(c, name.getMethodName(), resultPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultPage.asText());
+            Log.info(c, name.getMethodName(), resultPage.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(resultPage.asText().contains("Text validation failed. Text does not contain 'World' or 'Earth'."));
+            // Verify that the page contains the expected messages.
+            assertTrue(resultPage.asText().contains("Text validation failed. Text does not contain 'World' or 'Earth'."));
+        }
     }
 
     /**
@@ -529,38 +547,39 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testFacesBehaviorBeanInjection() throws Exception {
-        WebClient webClient = new WebClient();
-        CollectingAlertHandler alertHandler = new CollectingAlertHandler();
-        webClient.setAlertHandler(alertHandler);
+        try (WebClient webClient = new WebClient()) {
+            CollectingAlertHandler alertHandler = new CollectingAlertHandler();
+            webClient.setAlertHandler(alertHandler);
 
-        // Construct the URL for the test
-        String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Verify that the page contains the expected messages.
-        assertTrue(page.asText().contains("JSF 2.3 support for injection into JSF Managed Objects"));
+            // Verify that the page contains the expected messages.
+            assertTrue(page.asText().contains("JSF 2.3 support for injection into JSF Managed Objects"));
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the submit button
-        HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
+            // Get the submit button
+            HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
 
-        // Now click the button and get the resulting page.
-        HtmlPage resultPage = submitButton.click();
+            // Now click the button and get the resulting page.
+            HtmlPage resultPage = submitButton.click();
 
-        // Get the alert message
-        List<String> alertmsgs = new ArrayList<String>();
-        alertmsgs = alertHandler.getCollectedAlerts();
+            // Get the alert message
+            List<String> alertmsgs = new ArrayList<String>();
+            alertmsgs = alertHandler.getCollectedAlerts();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultPage.asText());
-        Log.info(c, name.getMethodName(), resultPage.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultPage.asText());
+            Log.info(c, name.getMethodName(), resultPage.asXml());
 
-        // Verify that the alert contains the expected message
-        assertTrue(alertmsgs.contains("Hello World"));
+            // Verify that the alert contains the expected message
+            assertTrue(alertmsgs.contains("Hello World"));
+        }
     }
 
     /**
@@ -570,25 +589,26 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testConverterValidatorBehaviorObjectInjection() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSFArtifactsInjection.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSFArtifactsInjection.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Verify that the page contains the expected response.
-        // TestConverter, TestValidator and TestBehavior objects should have been injected
-        assertTrue(page.asText().contains("JSF 2.3 support injection of JSF Managed Objects: FacesConverter, FacesValidator, FacesBehavior"));
-        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestConverter"));
+            // Verify that the page contains the expected response.
+            // TestConverter, TestValidator and TestBehavior objects should have been injected
+            assertTrue(page.asText().contains("JSF 2.3 support injection of JSF Managed Objects: FacesConverter, FacesValidator, FacesBehavior"));
+            assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestConverter"));
 
-        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestValidator"));
-        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestBehavior"));
+            assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestValidator"));
+            assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestBehavior"));
+        }
     }
 
     /**
@@ -603,64 +623,64 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testJavaTimeSupport() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "ConvertDateTime";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "ConvertDateTime";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String pageText = page.asText();
+            String pageText = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Verify that the page contains the expected messages.
-        assertTrue(pageText.contains("JSF 2.3 Java Time Support - f:convertDateTime"));
+            // Verify that the page contains the expected messages.
+            assertTrue(pageText.contains("JSF 2.3 Java Time Support - f:convertDateTime"));
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the input text
-        HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:input1");
+            // Get the input text
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:input1");
 
-        // Verify that the response contains the expected messages with the correct date/time
-        assertTrue("Unexpected value in the input field",
-                   inputText.getValueAttribute().equals("2017-06-01 10:30:45"));
-        assertTrue(pageText.contains("Type date, dateStyle short: 6/1/17"));
-        assertTrue(pageText.contains("Type date, dateStyle medium: Jun 1, 2017"));
-        assertTrue(pageText.contains("Type date, dateStyle long: June 1, 2017"));
-        assertTrue(pageText.contains("Type date, dateStyle full: Thursday, June 1, 2017"));
-        assertTrue(pageText.contains("Type date, pattern MM-dd-yyyy: 06-01-2017"));
-        assertTrue(pageText.contains("Type time, timeStyle short: 10:30 AM"));
-        assertTrue(pageText.contains("Type time, timeStyle medium: 10:30:45 AM"));
-        assertTrue(pageText.contains("Type time, timeStyle long: 10:30:45 AM GMT"));
-        assertTrue(pageText.contains("Type time, timeStyle full: 10:30:45 AM GMT") ||
-                   pageText.contains("Type time, timeStyle full: 10:30:45 AM Greenwich Mean Time"));
-        assertTrue(pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017 10:30:45 AM") ||
-                   pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017, 10:30:45 AM"));
-        assertTrue(pageText.contains("Type localDate, dateStyle short: 6/1/17"));
-        assertTrue(pageText.contains("Type localDate, dateStyle medium: Jun 1, 2017"));
-        assertTrue(pageText.contains("Type localDate, dateStyle long: June 1, 2017"));
-        assertTrue(pageText.contains("Type localDate, dateStyle full: Thursday, June 1, 2017"));
-        assertTrue(pageText.contains("Type localDate, pattern MM-dd-yyyy: 06-01-2017"));
-        assertTrue(pageText.contains("Type localTime, timeStyle short: 10:35 AM"));
-        assertTrue(pageText.contains("Type localTime, timeStyle medium: 10:35:45 AM"));
-        assertTrue(pageText.contains("Type localTime, pattern HH:mm:ss: 10:35:45"));
-        assertTrue(pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17 10:30 AM") ||
-                   pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17, 10:30 AM"));
-        assertTrue(pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017 10:30:45 AM") ||
-                   pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017, 10:30:45 AM"));
-        assertTrue(pageText.contains("Type localDateTime, pattern MM-dd-yyyy HH:mm:ss: 06-01-2017 10:30:45"));
-        assertTrue(pageText.contains("Type offsetTime: 10:30:45.5-07:00"));
-        assertTrue(pageText.contains("Type offsetTime, pattern HH:mm:ss:SSS ZZZZ: 10:30:45:500 GMT-07:00"));
-        assertTrue(pageText.contains("Type offsetDateTime: 2017-06-01T10:30:45.5-07:00"));
-        assertTrue(pageText.contains("Type offsetDateTime, pattern MM-dd-yyyy HH:mm:ss:SSS ZZZZ: 06-01-2017 10:30:45:500 GMT-07:00"));
-        assertTrue(pageText.contains("Type zonedDateTime: 2017-06-01T10:30:45.5-07:00[America/Los_Angeles] "));
-        assertTrue(pageText.contains("Type zonedDateTime, pattern MM-dd-yyyy HH:mm:ss ZZZZ z: 06-01-2017 10:30:45:500 GMT-07:00 PDT"));
-
+            // Verify that the response contains the expected messages with the correct date/time
+            assertTrue("Unexpected value in the input field",
+                       inputText.getValueAttribute().equals("2017-06-01 10:30:45"));
+            assertTrue(pageText.contains("Type date, dateStyle short: 6/1/17"));
+            assertTrue(pageText.contains("Type date, dateStyle medium: Jun 1, 2017"));
+            assertTrue(pageText.contains("Type date, dateStyle long: June 1, 2017"));
+            assertTrue(pageText.contains("Type date, dateStyle full: Thursday, June 1, 2017"));
+            assertTrue(pageText.contains("Type date, pattern MM-dd-yyyy: 06-01-2017"));
+            assertTrue(pageText.contains("Type time, timeStyle short: 10:30 AM"));
+            assertTrue(pageText.contains("Type time, timeStyle medium: 10:30:45 AM"));
+            assertTrue(pageText.contains("Type time, timeStyle long: 10:30:45 AM GMT"));
+            assertTrue(pageText.contains("Type time, timeStyle full: 10:30:45 AM GMT") ||
+                       pageText.contains("Type time, timeStyle full: 10:30:45 AM Greenwich Mean Time"));
+            assertTrue(pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017 10:30:45 AM") ||
+                       pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017, 10:30:45 AM"));
+            assertTrue(pageText.contains("Type localDate, dateStyle short: 6/1/17"));
+            assertTrue(pageText.contains("Type localDate, dateStyle medium: Jun 1, 2017"));
+            assertTrue(pageText.contains("Type localDate, dateStyle long: June 1, 2017"));
+            assertTrue(pageText.contains("Type localDate, dateStyle full: Thursday, June 1, 2017"));
+            assertTrue(pageText.contains("Type localDate, pattern MM-dd-yyyy: 06-01-2017"));
+            assertTrue(pageText.contains("Type localTime, timeStyle short: 10:35 AM"));
+            assertTrue(pageText.contains("Type localTime, timeStyle medium: 10:35:45 AM"));
+            assertTrue(pageText.contains("Type localTime, pattern HH:mm:ss: 10:35:45"));
+            assertTrue(pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17 10:30 AM") ||
+                       pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17, 10:30 AM"));
+            assertTrue(pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017 10:30:45 AM") ||
+                       pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017, 10:30:45 AM"));
+            assertTrue(pageText.contains("Type localDateTime, pattern MM-dd-yyyy HH:mm:ss: 06-01-2017 10:30:45"));
+            assertTrue(pageText.contains("Type offsetTime: 10:30:45.5-07:00"));
+            assertTrue(pageText.contains("Type offsetTime, pattern HH:mm:ss:SSS ZZZZ: 10:30:45:500 GMT-07:00"));
+            assertTrue(pageText.contains("Type offsetDateTime: 2017-06-01T10:30:45.5-07:00"));
+            assertTrue(pageText.contains("Type offsetDateTime, pattern MM-dd-yyyy HH:mm:ss:SSS ZZZZ: 06-01-2017 10:30:45:500 GMT-07:00"));
+            assertTrue(pageText.contains("Type zonedDateTime: 2017-06-01T10:30:45.5-07:00[America/Los_Angeles] "));
+            assertTrue(pageText.contains("Type zonedDateTime, pattern MM-dd-yyyy HH:mm:ss ZZZZ z: 06-01-2017 10:30:45:500 GMT-07:00 PDT"));
+        }
     }
 
     /**
@@ -692,28 +712,29 @@ public class JSF23CDIGeneralTests {
     @Mode(TestMode.FULL)
     @Test
     public void testSpecIssue1300_MyFaces_4158() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec1300";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec1300";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Ensure the page loaded correctly
-        String pageText = "JSF 2.3 Spec Issue 1300";
-        assertTrue("The page did not contain the following text: " + pageText, page.asText().contains(pageText));
+            // Ensure the page loaded correctly
+            String pageText = "JSF 2.3 Spec Issue 1300";
+            assertTrue("The page did not contain the following text: " + pageText, page.asText().contains(pageText));
 
-        // No look at the logs to ensure that the PostConstructViewMapEventListener was invoked
-        String listenerString = "PostConstructViewMapEventListener processEvent invoked for PostConstructViewMapEvent!!";
-        String listenerInvoked = jsf23CDIServer.waitForStringInLog(listenerString);
+            // No look at the logs to ensure that the PostConstructViewMapEventListener was invoked
+            String listenerString = "PostConstructViewMapEventListener processEvent invoked for PostConstructViewMapEvent!!";
+            String listenerInvoked = jsf23CDIServer.waitForStringInLog(listenerString);
 
-        // Ensure the string was found, otherwise the test should fail.
-        assertNotNull("The following string was not found in the logs: " + listenerString, listenerInvoked);
+            // Ensure the string was found, otherwise the test should fail.
+            assertNotNull("The following string was not found in the logs: " + listenerString, listenerInvoked);
+        }
     }
 
     /**
@@ -737,48 +758,49 @@ public class JSF23CDIGeneralTests {
     @Mode(TestMode.FULL)
     @Test
     public void testSpecIssue217() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec217";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec217";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // First make sure that the h:dataTable rowClass attribute works correctly
-        HtmlTable table = (HtmlTable) page.getElementById("table");
-        String evenClass = "testStyleRowEven";
-        String oddClass = "testStyleRowOdd";
+            // First make sure that the h:dataTable rowClass attribute works correctly
+            HtmlTable table = (HtmlTable) page.getElementById("table");
+            String evenClass = "testStyleRowEven";
+            String oddClass = "testStyleRowOdd";
 
-        // Need to look at the second and third row as the first row (0) is the header.
-        HtmlTableRow row1 = table.getRow(1);
-        HtmlTableRow row2 = table.getRow(2);
-        Log.info(c, name.getMethodName(), row1.toString());
-        Log.info(c, name.getMethodName(), row2.toString());
-        String row1Class = row1.getAttribute("class");
-        String row2Class = row2.getAttribute("class");
+            // Need to look at the second and third row as the first row (0) is the header.
+            HtmlTableRow row1 = table.getRow(1);
+            HtmlTableRow row2 = table.getRow(2);
+            Log.info(c, name.getMethodName(), row1.toString());
+            Log.info(c, name.getMethodName(), row2.toString());
+            String row1Class = row1.getAttribute("class");
+            String row2Class = row2.getAttribute("class");
 
-        assertTrue("The class attribute for row 1 should have been: " + evenClass + " but was: " + row1Class, row1Class.equals(evenClass));
-        assertTrue("The class attribute for row 2 should have been: " + oddClass + " but was: " + row2Class, row2Class.equals(oddClass));
+            assertTrue("The class attribute for row 1 should have been: " + evenClass + " but was: " + row1Class, row1Class.equals(evenClass));
+            assertTrue("The class attribute for row 2 should have been: " + oddClass + " but was: " + row2Class, row2Class.equals(oddClass));
 
-        // Second make sure that the h:column styleClass attribute works correctly
-        String columnClassExpected = "testStyleCol";
-        String columnClass;
-        List<HtmlTableRow> rows = table.getRows();
-        HtmlTableCell cell;
+            // Second make sure that the h:column styleClass attribute works correctly
+            String columnClassExpected = "testStyleCol";
+            String columnClass;
+            List<HtmlTableRow> rows = table.getRows();
+            HtmlTableCell cell;
 
-        // Skip row 0 since that is the header
-        for (int i = 1; i < rows.size(); i++) {
-            cell = rows.get(i).getCell(0);
-            columnClass = cell.getAttribute("class");
-            Log.info(c, name.getMethodName(), cell.asXml());
-            Log.info(c, name.getMethodName(), columnClass);
-            assertTrue("The cell had an incorrect column style class. It was expected to be: " + columnClassExpected +
-                       " but was: " + columnClass, columnClass.equals(columnClassExpected));
+            // Skip row 0 since that is the header
+            for (int i = 1; i < rows.size(); i++) {
+                cell = rows.get(i).getCell(0);
+                columnClass = cell.getAttribute("class");
+                Log.info(c, name.getMethodName(), cell.asXml());
+                Log.info(c, name.getMethodName(), columnClass);
+                assertTrue("The cell had an incorrect column style class. It was expected to be: " + columnClassExpected +
+                           " but was: " + columnClass, columnClass.equals(columnClassExpected));
+            }
         }
     }
 
@@ -794,31 +816,32 @@ public class JSF23CDIGeneralTests {
     @Test
     public void testSpecIssue1241AndClientWindowFactoryInjection() throws Exception {
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23CDITests";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "FactoryInfo.jsf");
+            // Construct the URL for the test
+            String contextRoot = "JSF23CDITests";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "FactoryInfo.jsf");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Format:  Class | Method | Method injected class: Field injected class : <option> constructor injected class
-        String expectedText = "CustomClientWindowFactory|getClientWindow|FactoryDepBean:FactoryAppBean:PostConstructCalled";
-        assertTrue("Did not find " + expectedText + " in response", page.asText().contains(expectedText));
+            // Format:  Class | Method | Method injected class: Field injected class : <option> constructor injected class
+            String expectedText = "CustomClientWindowFactory|getClientWindow|FactoryDepBean:FactoryAppBean:PostConstructCalled";
+            assertTrue("Did not find " + expectedText + " in response", page.asText().contains(expectedText));
 
-        // Stop the server but don't archive the logs (this should shutdown the app and trigger preDestroy)
-        jsf23CDIServer.stopServer(false);
+            // Stop the server but don't archive the logs (this should shutdown the app and trigger preDestroy)
+            jsf23CDIServer.stopServer(false);
 
-        // Verify that PreDestroy is being called
-        assertTrue("PreDestroy was not called",
-                   jsf23CDIServer.findStringsInLogs("CustomClientWindowFactory preDestroy called").size() == 1);
+            // Verify that PreDestroy is being called
+            assertTrue("PreDestroy was not called",
+                       jsf23CDIServer.findStringsInLogs("CustomClientWindowFactory preDestroy called").size() == 1);
 
-        // Archive the logs
-        jsf23CDIServer.postStopServerArchive();
+            // Archive the logs
+            jsf23CDIServer.postStopServerArchive();
+        }
     }
 
     /**
@@ -843,52 +866,52 @@ public class JSF23CDIGeneralTests {
     @Mode(TestMode.FULL)
     @Test
     public void testSpecIssue790Test1() throws Exception {
-        WebClient webClient = new WebClient();
-        // Use a synchronizing ajax controller to allow proper ajax updating
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        try (WebClient webClient = new WebClient()) {
+            // Use a synchronizing ajax controller to allow proper ajax updating
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec790";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "test1.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec790";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "test1.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Get the input text of the first form and set a value
-        HtmlTextInput textInput1 = (HtmlTextInput) page.getElementById("a:input1");
-        textInput1.setValueAttribute("test");
+            // Get the input text of the first form and set a value
+            HtmlTextInput textInput1 = (HtmlTextInput) page.getElementById("a:input1");
+            textInput1.setValueAttribute("test");
 
-        // Get the button to click from the first form
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("a:submitButton1");
-        page = submitButton.click();
+            // Get the button to click from the first form
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("a:submitButton1");
+            page = submitButton.click();
 
-        String resultingPage = page.asText();
+            String resultingPage = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Verify that the input text from the second form contains the same value as the input text of the first form.
-        assertTrue("Input text of the second form does not contain '" + textInput1.getValueAttribute() + "'",
-                   resultingPage.contains("Enter a new value for input2: test"));
+            // Verify that the input text from the second form contains the same value as the input text of the first form.
+            assertTrue("Input text of the second form does not contain '" + textInput1.getValueAttribute() + "'",
+                       resultingPage.contains("Enter a new value for input2: test"));
 
-        // Get the input text for the second form and set a value
-        HtmlTextInput textInput2 = (HtmlTextInput) page.getElementById("b:input2");
-        textInput2.setValueAttribute("testagain");
+            // Get the input text for the second form and set a value
+            HtmlTextInput textInput2 = (HtmlTextInput) page.getElementById("b:input2");
+            textInput2.setValueAttribute("testagain");
 
-        // Get the commandLink to click from the second form
-        HtmlAnchor commandLink1 = (HtmlAnchor) page.getElementById("b:commandLink1");
-        page = commandLink1.click();
+            // Get the commandLink to click from the second form
+            HtmlAnchor commandLink1 = (HtmlAnchor) page.getElementById("b:commandLink1");
+            page = commandLink1.click();
 
-        resultingPage = page.asText();
+            resultingPage = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Verify that the input text from the first form contains the same value as the input text of the second form.
-        assertTrue("Input text of the first form does not contain '" + textInput2.getValueAttribute() + "'",
-                   resultingPage.contains("Enter a new value for input1: testagain"));
-
+            // Verify that the input text from the first form contains the same value as the input text of the second form.
+            assertTrue("Input text of the first form does not contain '" + textInput2.getValueAttribute() + "'",
+                       resultingPage.contains("Enter a new value for input1: testagain"));
+        }
     }
 
     /**
@@ -908,34 +931,34 @@ public class JSF23CDIGeneralTests {
     @Mode(TestMode.FULL)
     @Test
     public void testSpecIssue790Test2() throws Exception {
-        WebClient webClient = new WebClient();
-        // Use a synchronizing ajax controller to allow proper ajax updating
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        try (WebClient webClient = new WebClient()) {
+            // Use a synchronizing ajax controller to allow proper ajax updating
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec790";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "test2.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec790";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "test2.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Get the input text of the first form and set a value
-        HtmlTextInput textInput1 = (HtmlTextInput) page.getElementById("a:input1");
-        textInput1.setValueAttribute("test");
+            // Get the input text of the first form and set a value
+            HtmlTextInput textInput1 = (HtmlTextInput) page.getElementById("a:input1");
+            textInput1.setValueAttribute("test");
 
-        // Get the button to click from the first form
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("a:submitButton1");
-        page = submitButton.click();
+            // Get the button to click from the first form
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("a:submitButton1");
+            page = submitButton.click();
 
-        String resultingPage = page.asText();
+            String resultingPage = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), resultingPage);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), resultingPage);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Verify that the input text from the second form contains the same value as the input text of the first form.
-        assertTrue("Input text of the second form is not '" + textInput1.getValueAttribute() + "'",
-                   resultingPage.contains("This is the value from outputText of form 'b': test"));
-
+            // Verify that the input text from the second form contains the same value as the input text of the first form.
+            assertTrue("Input text of the second form is not '" + textInput1.getValueAttribute() + "'",
+                       resultingPage.contains("This is the value from outputText of form 'b': test"));
+        }
     }
 
     /**
@@ -956,33 +979,34 @@ public class JSF23CDIGeneralTests {
     @Test
     @Mode(TestMode.FULL)
     public void testSpecIssue1433_PerformValidationRequiredTrueEnabled_EmptySubmit() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec1433True";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec1433True";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlInput input1 = (HtmlInput) page.getElementById("input1");
-        input1.setAttribute("name", "");
+            HtmlInput input1 = (HtmlInput) page.getElementById("input1");
+            input1.setAttribute("name", "");
 
-        page = page.getElementById("button1").click();
+            page = page.getElementById("button1").click();
 
-        String pageText = page.asText();
-        String expectedText1 = "Value one is required please enter value one!";
-        String expectedText2 = "Value two is required please enter value two!";
+            String pageText = page.asText();
+            String expectedText1 = "Value one is required please enter value one!";
+            String expectedText2 = "Value two is required please enter value two!";
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The page did not contain: " + expectedText1, pageText.contains(expectedText1));
-        assertTrue("The page did not contain: " + expectedText2, pageText.contains(expectedText2));
+            assertTrue("The page did not contain: " + expectedText1, pageText.contains(expectedText1));
+            assertTrue("The page did not contain: " + expectedText2, pageText.contains(expectedText2));
+        }
     }
 
     /**
@@ -1004,38 +1028,38 @@ public class JSF23CDIGeneralTests {
     @Test
     @Mode(TestMode.FULL)
     public void testSpecIssue1433_PerformValidationRequiredTrueEnabled_ValueSubmit() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec1433True";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec1433True";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlInput input1 = (HtmlInput) page.getElementById("input1");
-        input1.setAttribute("name", "");
-        input1.setValueAttribute("test");
+            HtmlInput input1 = (HtmlInput) page.getElementById("input1");
+            input1.setAttribute("name", "");
+            input1.setValueAttribute("test");
 
-        HtmlInput input2 = (HtmlInput) page.getElementById("input2");
-        input2.setValueAttribute("test");
+            HtmlInput input2 = (HtmlInput) page.getElementById("input2");
+            input2.setValueAttribute("test");
 
-        page = page.getElementById("button1").click();
+            page = page.getElementById("button1").click();
 
-        String pageText = page.asText();
-        String expectedText = "Value one is required please enter value one!";
-        String unexpectedText = "Value two is required please enter value two!";
+            String pageText = page.asText();
+            String expectedText = "Value one is required please enter value one!";
+            String unexpectedText = "Value two is required please enter value two!";
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The page did not contain: " + expectedText, pageText.contains(expectedText));
-        assertTrue("The page contains unexpected text: " + unexpectedText, !pageText.contains(unexpectedText));
-
+            assertTrue("The page did not contain: " + expectedText, pageText.contains(expectedText));
+            assertTrue("The page contains unexpected text: " + unexpectedText, !pageText.contains(unexpectedText));
+        }
     }
 
     /**
@@ -1057,34 +1081,34 @@ public class JSF23CDIGeneralTests {
     @Test
     @Mode(TestMode.FULL)
     public void testSpecIssue1433_PerformValidationRequiredTrueDisabled_EmptySubmit() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec1433False";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec1433False";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlInput input1 = (HtmlInput) page.getElementById("input1");
-        input1.setAttribute("name", "");
+            HtmlInput input1 = (HtmlInput) page.getElementById("input1");
+            input1.setAttribute("name", "");
 
-        page = page.getElementById("button1").click();
+            page = page.getElementById("button1").click();
 
-        String pageText = page.asText();
-        String expectedText = "Value two is required please enter value two!";
-        String unexpectedText = "Value one is required please enter value one!";
+            String pageText = page.asText();
+            String expectedText = "Value two is required please enter value two!";
+            String unexpectedText = "Value one is required please enter value one!";
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("The page did not contain: " + expectedText, pageText.contains(expectedText));
-        assertTrue("The page contains unexpected text: " + unexpectedText, !pageText.contains(unexpectedText));
-
+            assertTrue("The page did not contain: " + expectedText, pageText.contains(expectedText));
+            assertTrue("The page contains unexpected text: " + unexpectedText, !pageText.contains(unexpectedText));
+        }
     }
 
     /**
@@ -1106,37 +1130,38 @@ public class JSF23CDIGeneralTests {
     @Test
     @Mode(TestMode.FULL)
     public void testSpecIssue1433_PerformValidationRequiredTrueDisabled_ValueSubmit() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "JSF23Spec1433False";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "JSF23Spec1433False";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlInput input1 = (HtmlInput) page.getElementById("input1");
-        input1.setValueAttribute("test");
+            HtmlInput input1 = (HtmlInput) page.getElementById("input1");
+            input1.setValueAttribute("test");
 
-        HtmlInput input2 = (HtmlInput) page.getElementById("input2");
-        input2.setValueAttribute("test");
+            HtmlInput input2 = (HtmlInput) page.getElementById("input2");
+            input2.setValueAttribute("test");
 
-        page = page.getElementById("button1").click();
+            page = page.getElementById("button1").click();
 
-        String pageText = page.asText();
-        String unexpectedText1 = "Value one is required please enter value one!";
-        String unexpectedText2 = "Value two is required please enter value two!";
+            String pageText = page.asText();
+            String unexpectedText1 = "Value one is required please enter value one!";
+            String unexpectedText2 = "Value two is required please enter value two!";
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Ensure that we don't see any validation messages in this case
-        assertTrue("Page contains unexpected text: " + unexpectedText1, !pageText.contains(unexpectedText1));
-        assertTrue("Page contains unexpected text: " + unexpectedText2, !pageText.contains(unexpectedText2));
+            // Ensure that we don't see any validation messages in this case
+            assertTrue("Page contains unexpected text: " + unexpectedText1, !pageText.contains(unexpectedText1));
+            assertTrue("Page contains unexpected text: " + unexpectedText2, !pageText.contains(unexpectedText2));
+        }
     }
 
     /**
@@ -1153,40 +1178,41 @@ public class JSF23CDIGeneralTests {
     @Test
     @Mode(TestMode.FULL)
     public void testSpecIssue1404And1423_JSF23NewAPIMethods() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "ResourceRendering";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            // Construct the URL for the test
+            String contextRoot = "ResourceRendering";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("form1:submitButton");
-        page = submitButton.click();
+            HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("form1:submitButton");
+            page = submitButton.click();
 
-        String pageText = page.asText();
-        String expectedText1 = "Message from CustomComponent: isResourceRendered library=css name=test-style.css --> false";
-        String expectedText2 = "Message from CustomComponent: isResourceRendered library=css name=test-style.css --> true";
-        String expectedText3 = "Message from CustomComponent: getComponentResources List size --> 2";
-        String expectedText4 = "Message from MyBean: isResourceRendered library=css name=test-style.css --> true";
-        String expectedText5 = "Message from MyBean: isResourceRendered library=css name=another.css --> false";
-        String expectedText6 = "Message from MyBean: isResourceRendered library=another name=test-style.css --> false";
+            String pageText = page.asText();
+            String expectedText1 = "Message from CustomComponent: isResourceRendered library=css name=test-style.css --> false";
+            String expectedText2 = "Message from CustomComponent: isResourceRendered library=css name=test-style.css --> true";
+            String expectedText3 = "Message from CustomComponent: getComponentResources List size --> 2";
+            String expectedText4 = "Message from MyBean: isResourceRendered library=css name=test-style.css --> true";
+            String expectedText5 = "Message from MyBean: isResourceRendered library=css name=another.css --> false";
+            String expectedText6 = "Message from MyBean: isResourceRendered library=another name=test-style.css --> false";
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), pageText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), pageText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        // Ensure that we don't see any validation messages in this case
-        assertTrue("Page does not contain expected text: " + expectedText1, pageText.contains(expectedText1));
-        assertTrue("Page does not contain expected text: " + expectedText2, pageText.contains(expectedText2));
-        assertTrue("Page does not contain expected text: " + expectedText3, pageText.contains(expectedText3));
-        assertTrue("Page does not contain expected text: " + expectedText4, pageText.contains(expectedText4));
-        assertTrue("Page does not contain expected text: " + expectedText5, pageText.contains(expectedText5));
-        assertTrue("Page does not contain expected text: " + expectedText6, pageText.contains(expectedText6));
+            // Ensure that we don't see any validation messages in this case
+            assertTrue("Page does not contain expected text: " + expectedText1, pageText.contains(expectedText1));
+            assertTrue("Page does not contain expected text: " + expectedText2, pageText.contains(expectedText2));
+            assertTrue("Page does not contain expected text: " + expectedText3, pageText.contains(expectedText3));
+            assertTrue("Page does not contain expected text: " + expectedText4, pageText.contains(expectedText4));
+            assertTrue("Page does not contain expected text: " + expectedText5, pageText.contains(expectedText5));
+            assertTrue("Page does not contain expected text: " + expectedText6, pageText.contains(expectedText6));
+        }
     }
 
     /**
@@ -1203,33 +1229,33 @@ public class JSF23CDIGeneralTests {
     @Test
     @Mode(TestMode.FULL)
     public void testCDIIntegration() throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        String contextRoot = "CDIIntegrationTest";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            // Construct the URL for the test
+            String contextRoot = "CDIIntegrationTest";
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String responseText = page.asText();
+            String responseText = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), responseText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), responseText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("Page does not contain expected response.", responseText.contains("CDI Integration Test"));
+            assertTrue("Page does not contain expected response.", responseText.contains("CDI Integration Test"));
 
-        assertTrue("The Custom ApplicationFactory was not invoked.",
-                   !jsf23CDIServer.findStringsInTrace("CustomApplicationFactory was invoked!").isEmpty());
+            assertTrue("The Custom ApplicationFactory was not invoked.",
+                       !jsf23CDIServer.findStringsInTrace("CustomApplicationFactory was invoked!").isEmpty());
 
-        assertTrue("The Custom Application was not invoked.",
-                   !jsf23CDIServer.findStringsInTrace("CustomApplication was invoked!").isEmpty());
+            assertTrue("The Custom Application was not invoked.",
+                       !jsf23CDIServer.findStringsInTrace("CustomApplication was invoked!").isEmpty());
 
-        assertTrue("The Custom ViewHandler was not invoked.",
-                   !jsf23CDIServer.findStringsInTrace("CustomViewHandler was invoked!").isEmpty());
+            assertTrue("The Custom ViewHandler was not invoked.",
+                       !jsf23CDIServer.findStringsInTrace("CustomViewHandler was invoked!").isEmpty());
 
-        assertTrue("The IBMViewHandler was not used.",
-                   !jsf23CDIServer.findStringsInTrace("set ViewHandler =.*IBMViewHandler").isEmpty());
+            assertTrue("The IBMViewHandler was not used.",
+                       !jsf23CDIServer.findStringsInTrace("set ViewHandler =.*IBMViewHandler").isEmpty());
+        }
     }
-
 }

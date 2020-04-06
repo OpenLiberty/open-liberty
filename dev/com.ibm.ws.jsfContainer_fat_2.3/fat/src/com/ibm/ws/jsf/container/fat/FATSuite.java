@@ -42,8 +42,8 @@ import com.ibm.ws.jsf.container.fat.tests.JSFContainerTest;
 
 public class FATSuite {
     public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.3.jar";
-    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.4.jar";
-    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.4.jar";
+    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.6.jar";
+    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.6.jar";
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
         return app.addAsLibraries(new File("publish/files/mojarra/").listFiles());

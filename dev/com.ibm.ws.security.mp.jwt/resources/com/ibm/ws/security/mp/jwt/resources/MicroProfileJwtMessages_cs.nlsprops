@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: Funkce MicroProfile JWT nem\u016f\u017ee pr
 JWT_NOT_FOUND_IN_REQUEST.explanation=Chcete-li prov\u00e9st ov\u011b\u0159en\u00ed, mus\u00ed b\u00fdt MicroProfile JWT zahrnut do z\u00e1hlav\u00ed autorizace pomoc\u00ed sch\u00e9matu autorizace Bearer nebo jako parametr POST. Z\u00e1hlav\u00ed autorizace chyb\u00ed, sch\u00e9ma autorizace z\u00e1hlav\u00ed autorizace nen\u00ed nastaveno na Bearer, po\u017eadavek nen\u00ed po\u017eadavkem POST nebo MicroProfile JWT nen\u00ed obsa\u017een jako parametr.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Ujist\u011bte se, \u017ee je zahrnut MicroProfile JWT do z\u00e1hlav\u00ed autorizace nebo jako parametr POST po\u017eadavku.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Funkce MicroProfile JWT nem\u016f\u017ee ov\u011b\u0159it po\u017eadavek, proto\u017ee platn\u00e9 JWT nelze vytvo\u0159it z tokenu zahrnut\u00e9m v po\u017eadavku. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Funkce MicroProfile JWT nem\u016f\u017ee ov\u011b\u0159it po\u017eadavek, proto\u017ee token, kter\u00fd je zahrnut\u00fd v po\u017eadavku, nelze ov\u011b\u0159it. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=Funkce MicroProfile JWT zjistila chybu p\u0159i vytv\u00e1\u0159en\u00ed JWT z poskytnut\u00e9ho \u0159et\u011bzce tokenu. Bu\u010f spot\u0159ebitele JWT nelze vytvo\u0159it, nebo spot\u0159ebitel JWT zjistil chybu p\u0159i anal\u00fdze a ov\u011b\u0159ov\u00e1n\u00ed \u0159et\u011bzce tokenu.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
 

@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: Nenhuma transa\u00e7\u00e3o WS-AT ativa com ID {0}.
+NO_WSAT_TRAN_CWLIB0201.explanation=Uma transa\u00e7\u00e3o WS-AT ativa correspondente ao ID de transa\u00e7\u00e3o global solicitado n\u00e3o pode ser localizada.
+NO_WSAT_TRAN_CWLIB0201.useraction=Consulte os logs em busca de detalhes do erro.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: Nenhum participante com ID {1} localizado para a transa\u00e7\u00e3o {0}.
+NO_WSAT_PART_CWLIB0202.explanation=Um participante de transa\u00e7\u00e3o correspondente ao ID solicitado n\u00e3o pode ser localizado como parte da transa\u00e7\u00e3o global.
+NO_WSAT_PART_CWLIB0202.useraction=Consulte os logs em busca de detalhes do erro.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: O tempo limite de transa\u00e7\u00e3o expirou. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=O tempo limite de transa\u00e7\u00e3o expirou e a transa\u00e7\u00e3o foi retrocedida.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=Consulte os logs em busca de detalhes do erro.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: N\u00e3o \u00e9 poss\u00edvel chamar o servi\u00e7o da web do protocolo. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=Ocorreu um erro ao chamar os servi\u00e7os da web do sistema.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=Consulte os logs em busca de detalhes do erro.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: Erro no processamento de transa\u00e7\u00f5es.
+TRAN_MGR_ERROR_CWLIB0205.explanation=Um erro foi recebido ao processar a fun\u00e7\u00e3o da transa\u00e7\u00e3o.
+TRAN_MGR_ERROR_CWLIB0205.useraction=Consulte os logs em busca de detalhes do erro.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: Ative o SSL {0} para WS-AT.
+WSAT_SECURITY_CWLIB0206.explanation=O WS-AT usa uma conex\u00e3o SSL para assegurar a comunica\u00e7\u00e3o interna.
+WSAT_SECURITY_CWLIB0206.useraction=Nenhum.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: Ative o externalURLPrefix {0} para WS-AT.
+WSAT_PROXY_CWLIB0207.explanation=O WS-AT usa um proxy para a comunica\u00e7\u00e3o interna.
+WSAT_PROXY_CWLIB0207.useraction=Nenhum(a).
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: N\u00e3o \u00e9 poss\u00edvel desserializar o recurso de transa\u00e7\u00e3o.
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=Ocorreu um erro ao processar um recurso do gerenciador de transa\u00e7\u00f5es.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=Consulte os logs em busca de detalhes do erro.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: N\u00e3o \u00e9 poss\u00edvel obter o terminal em servi\u00e7o do sistema.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=Ocorreu um erro ao tentar obter o terminal dos servi\u00e7os da web do sistema. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=Consulte os logs em busca de detalhes do erro.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: externalURLPrefix {0} para WS-AT deve iniciar com http(s)://
+WSAT_PROXY_CWLIB0210.explanation=O endere\u00e7o proxy para WS-AT deve iniciar com http(s)://
+WSAT_PROXY_CWLIB0210.useraction=Modifique o endere\u00e7o externalURLPrefix para iniciar com http(s)://
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: externalURLPrefix {0} para WS-AT deve iniciar com https:// quando SSL estiver ativado.
+WSAT_PROXY_CWLIB0211.explanation=O endere\u00e7o proxy para WS-AT deve iniciar com https:// quando SSL estiver ativado.
+WSAT_PROXY_CWLIB0211.useraction=Modifique o endere\u00e7o externalURLPrefix para iniciar com https:// quando SSL estiver ativado.

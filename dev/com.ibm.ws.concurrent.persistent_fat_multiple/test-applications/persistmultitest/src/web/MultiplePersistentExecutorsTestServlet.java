@@ -13,7 +13,6 @@ package web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +34,6 @@ import javax.transaction.UserTransaction;
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskState;
 import com.ibm.websphere.concurrent.persistent.TaskStatus;
-import com.ibm.websphere.concurrent.persistent.mbean.PersistentExecutorMBean;
 
 import componenttest.app.FATServlet;
 
@@ -189,32 +187,33 @@ public class MultiplePersistentExecutorsTestServlet extends FATServlet {
     }
 
     /**
-     * Run the code example in PersistentExecutorMBean to ensure it works if customers copy from it.
+     * Run the code similar to the example in PersistentExecutorMBean.
      */
+    @SuppressWarnings("deprecation")
     public void testMBeanCodeExample(HttpServletRequest request, HttpServletResponse response) throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        // TODO why are neither of the following working?
         ObjectName name = new ObjectName("WebSphere:type=PersistentExecutorMBean,id=executor3,*");
         Set<ObjectInstance> s = mbs.queryMBeans(name, null);
         if (s.size() != 1)
             throw new Exception("Unexpected count of mbeans " + s);
         ObjectName fullName = s.iterator().next().getObjectName();
 
-        PersistentExecutorMBean proxy = JMX.newMXBeanProxy(mbs, fullName, PersistentExecutorMBean.class);
+        com.ibm.websphere.concurrent.persistent.mbean.PersistentExecutorMBean proxy =
+                JMX.newMXBeanProxy(mbs, fullName, com.ibm.websphere.concurrent.persistent.mbean.PersistentExecutorMBean.class);
 
-        String[][] records = proxy.findPartitionInfo("hostA.rchland.ibm.com", null, "myServer1", "defaultEJBPersistentTimerExecutor");
+        String[][] records = proxy.findPartitionInfo(null, null, "com.ibm.ws.concurrent.persistent.fat.multiple", "executor2");
         long oldPartition = Long.valueOf(records[0][0]);
 
         Long[] taskIds = proxy.findTaskIds(oldPartition, "ENDED", false, null, 100);
         if (taskIds.length != 1)
-            throw new Exception("Unexpected number of tasks: " + taskIds);
+            throw new Exception("Unexpected number of tasks: " + Arrays.toString(taskIds));
 
         int numTransferred = proxy.transfer(null, oldPartition);
 
         if (numTransferred < 1)
             throw new Exception("Unexpected transfer count: " + numTransferred);
 
-        int count = proxy.removePartitionInfo("hostA.rchland.ibm.com", null, "myServer1", "defaultEJBPersistentTimerExecutor");
+        int count = proxy.removePartitionInfo(null, null, "com.ibm.ws.concurrent.persistent.fat.multiple", "executor2");
 
         if (count != 1)
             throw new Exception("Unexpected removal count " + count);
@@ -368,38 +367,6 @@ public class MultiplePersistentExecutorsTestServlet extends FATServlet {
             throw new Exception("Unexpected executor identifier in " + deepToString(oldPartitions));
 
         mbs.invoke(bean.getObjectName(), "transfer", new Object[] { maxTaskId, oldPartitionId }, new String[] { "java.lang.Long", "long" });
-    }
-
-    /**
-     * Updates a partition entry.
-     */
-    public void testUpdatePartitions(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        int expectedUpdateCount = Integer.parseInt(request.getParameter("expectedUpdateCount"));
-
-        String executorName = request.getParameter("executorId");
-        String hostName = request.getParameter("hostName");
-        String libertyServer = request.getParameter("libertyServer");
-        String userDir = request.getParameter("userDir");
-
-        String newExecutorName = request.getParameter("newExecutorId");
-        String newHostName = request.getParameter("newHostName");
-        String newLibertyServer = request.getParameter("newLibertyServer");
-        String newUserDir = request.getParameter("newUserDir");
-
-        String jndiName = request.getParameter("jndiName");
-
-        // TODO in the future we should use the mbean to do the update
-        PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
-        Method updatePartitionInfo = executor.getClass().getDeclaredMethod("updatePartitionInfo",
-                                                                           String.class, String.class, String.class, String.class,
-                                                                           String.class, String.class, String.class, String.class);
-        updatePartitionInfo.setAccessible(true);
-
-        int updateCount = (Integer) updatePartitionInfo.invoke(executor, hostName, userDir, libertyServer, executorName,
-                                                               newHostName, newUserDir, newLibertyServer, newExecutorName);
-
-        if (updateCount != expectedUpdateCount)
-            throw new Exception("Expected " + expectedUpdateCount + " partition entries updated, not " + updateCount);
     }
 
     /**

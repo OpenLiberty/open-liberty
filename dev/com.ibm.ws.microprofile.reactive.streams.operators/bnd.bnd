@@ -14,8 +14,6 @@
 bSymbolicName=com.ibm.ws.microprofile.reactive.streams.operators
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.streams.operators
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.streams.operators
@@ -28,10 +26,11 @@ WS-TraceGroup: REACTIVESTREAMS
 -dsannotations: com.ibm.ws.microprofile.reactive.streams.operators.spi.impl.WASReactiveStreamsEngineImpl
 
 Import-Package: \
-  org.eclipse.microprofile.reactive.streams.operators.core; version="[1.0,1.1)",\
-  org.eclipse.microprofile.reactive.streams.operators.spi; version="[1.0,1.1)",\
-  org.eclipse.microprofile.reactive.streams.operators; version="[1.0,1.1)",\
-  io.smallrye.reactive.streams; version="[1.0,1.1)",\
+  !com.ibm.ws.microprofile.reactive.streams.operators.spi.impl, \
+  org.eclipse.microprofile.reactive.streams.operators.core; version="[1.0,1.1)", \
+  org.eclipse.microprofile.reactive.streams.operators.spi; version="[1.0,1.1)", \
+  org.eclipse.microprofile.reactive.streams.operators; version="[1.0,1.1)", \
+  io.smallrye.reactive.streams; version="[1.0,1.1)", \
   *
 
 # See the app-resources.bnd included above
@@ -44,7 +43,6 @@ Export-Package: \
 Include-Resource: \
   META-INF=resources/META-INF
     
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 testsrc: test/src
@@ -63,7 +61,7 @@ testsrc: test/src
   com.ibm.ws.context;version=latest, \
   com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.io.smallrye.reactive.streams.operators.1.0;version=latest, \
+  com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest, \
   com.ibm.ws.io.reactivex.rxjava.2.2;version=latest, \
   com.ibm.websphere.security;version=latest, \
   com.ibm.websphere.javaee.annotation.1.2;version=latest, \

@@ -97,7 +97,7 @@ error.service.ref.class.level.annotation.wrong.value.explanation=A @WebServiceRe
 error.service.ref.class.level.annotation.wrong.value.useraction=A javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t adja meg a value attrib\u00fatumban.
 
 error.service.ref.class.level.annotation.value.and.type.not.same=CWWKW0017E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban, de a type \u00e9s a value attrib\u00fatum nem ugyanazt az oszt\u00e1lyt adja meg.
-error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Ha a @WebServiceRef annot\u00e1ci\u00f3 egy szolg\u00e1ltat\u00e1s t\u00edpus\u00fa besz\u00far\u00e1st jel\u00f6l, \u00e9s a 'value' attrib\u00fatum nem a javax.xml.ws.Service oszt\u00e1lyt adja meg, akkor a type \u00e9s a value attrib\u00fatum \u00e1ltal megadott oszt\u00e1lyoknak egyezni\u00fck kell.
+error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Ha a @WebServiceRef annot\u00e1ci\u00f3 egy szolg\u00e1ltat\u00e1s t\u00edpus\u00fa besz\u00far\u00e1st jel\u00f6l, \u00e9s a value attrib\u00fatum nem a javax.xml.ws.Service oszt\u00e1lyt adja meg, akkor a type \u00e9s a value attrib\u00fatum \u00e1ltal megadott oszt\u00e1lyoknak egyezni\u00fck kell.
 error.service.ref.class.level.annotation.value.and.type.not.same.useraction=Ugyanazt az oszt\u00e1lyt adja meg a value \u00e9s a type attrib\u00fatumban.
 
 error.service.ref.member.level.annotation.wrong.method.name=CWWKW0018E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} met\u00f3dus\u00e1ban, de a met\u00f3dus neve nem k\u00f6veti a szabv\u00e1ny JavaBean meg\u00e1llapod\u00e1sokat.

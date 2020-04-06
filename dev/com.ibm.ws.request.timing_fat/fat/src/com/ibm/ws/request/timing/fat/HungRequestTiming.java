@@ -75,6 +75,10 @@ public class HungRequestTiming {
         if (server != null && !server.isStarted()) {
             server.startServer();
         }
+        // Need to ensure the configuration is finished updating before starting a test
+        server.setServerConfigurationFile("server_original.xml");
+        server.waitForStringInLog("CWWKG0017I", 90000);
+        server.setMarkToEndOfLog();
     }
 
     @After

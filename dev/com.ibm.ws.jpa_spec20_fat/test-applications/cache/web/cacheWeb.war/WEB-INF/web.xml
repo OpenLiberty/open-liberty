@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd" id="WebApp_ID">
+    
+    <persistence-unit-ref>  
+        <persistence-unit-ref-name>jpa/TaskEMF</persistence-unit-ref-name>
+        <persistence-unit-name>CACHE_JEE_DC_FALSE_REFRESH_TEST_COPY</persistence-unit-name>
+    </persistence-unit-ref>
+    
+    <resource-ref>
+        <res-ref-name>jdbc/JPA_DS</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+    </resource-ref>
+    
+</web-app>

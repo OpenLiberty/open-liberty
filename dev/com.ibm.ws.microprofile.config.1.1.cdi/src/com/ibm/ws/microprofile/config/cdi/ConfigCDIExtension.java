@@ -14,9 +14,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,10 +46,12 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
     protected Set<Type> validInjectionTypes = new HashSet<Type>();
     protected Set<Type> badInjectionTypes = new HashSet<Type>();
 
-    Map<ClassLoader, Config> configs = new HashMap<>();
-
     public ConfigCDIExtension() {
         validInjectionTypes.addAll(getDefaultConverterTypes());
+    }
+
+    protected void addBadInjectionType(Type type) {
+        badInjectionTypes.add(type);
     }
 
     protected Collection<? extends Type> getDefaultConverterTypes() {
@@ -66,18 +66,33 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
             ConfigProperty configProperty = ConfigProducer.getConfigPropertyAnnotation(injectionPoint);
             if (configProperty != null) {
                 Type type = injectionPoint.getType();
+                ConfigProperty qualifier = ConfigProducer.getConfigPropertyAnnotation(injectionPoint);
+                String defaultValue = qualifier.defaultValue();
+                String propertyName = null;
                 Throwable configException = null;
-                if (type instanceof ParameterizedType) {
-                    ParameterizedType pType = (ParameterizedType) type;
-                    configException = processParameterizedType(injectionPoint, pType, classLoader);
-                } else {
-                    configException = processConversionType(injectionPoint, type, classLoader, false);
+                try {
+                    propertyName = ConfigProducer.getPropertyName(injectionPoint, qualifier);
+                    configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
+                } catch (IllegalArgumentException e) {
+                    configException = e;
                 }
+
                 if (configException != null) {
                     Tr.error(tc, "unable.to.resolve.injection.point.CWMCG5003E", injectionPoint, configException);
                 }
             }
         }
+    }
+
+    protected Throwable validateConfigProperty(Type type, String propertyName, String defaultValue, ClassLoader classLoader) {
+        Throwable configException = null;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            configException = processParameterizedType(propertyName, defaultValue, pType, classLoader);
+        } else {
+            configException = processConversionType(propertyName, defaultValue, type, classLoader, false);
+        }
+        return configException;
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
@@ -103,9 +118,10 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
         }
     }
 
-    protected Throwable processParameterizedType(InjectionPoint injectionPoint, ParameterizedType pType, ClassLoader classLoader) {
+    protected Throwable processParameterizedType(String propertyName, String defaultValue, ParameterizedType pType, ClassLoader classLoader) {
         Throwable configException = null;
         Type rType = pType.getRawType();
+
         if (Provider.class.isAssignableFrom((Class<?>) rType)) {
             Type[] aTypes = pType.getActualTypeArguments();
             //instance must have exactly one type arg
@@ -114,33 +130,33 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
             if (type instanceof ParameterizedType) {
                 ParameterizedType maybeOptionalType = (ParameterizedType) type;
                 if (Optional.class.isAssignableFrom((Class<?>) maybeOptionalType.getRawType())) {
-                    configException = processConversionType(injectionPoint, type, classLoader, true);
+                    configException = processConversionType(propertyName, defaultValue, type, classLoader, true);
                 } else {
-                    configException = processConversionType(injectionPoint, type, classLoader, false);
+                    configException = processConversionType(propertyName, defaultValue, type, classLoader, false);
                 }
             } else {
-                configException = processConversionType(injectionPoint, type, classLoader, false);
+                configException = processConversionType(propertyName, defaultValue, type, classLoader, false);
             }
         } else if (Optional.class.isAssignableFrom((Class<?>) rType)) {
             //property is optional
-            configException = processConversionType(injectionPoint, pType, classLoader, true);
+            configException = processConversionType(propertyName, defaultValue, pType, classLoader, true);
         } else {
-            configException = processConversionType(injectionPoint, pType, classLoader, false);
+            configException = processConversionType(propertyName, defaultValue, pType, classLoader, false);
         }
         return configException;
     }
 
-    protected Throwable processConversionType(InjectionPoint injectionPoint, Type injectionType, ClassLoader classLoader,
+    protected Throwable processConversionType(String propertyName, String defaultValue, Type injectionType, ClassLoader classLoader,
                                               boolean optional) {
         Throwable configException = null;
 
         Config config = ConfigProvider.getConfig(classLoader);
         try {
-            ConfigProducer.newValue(config, injectionPoint, injectionType, optional);
+            ConfigProducer.newValue(config, propertyName, defaultValue, injectionType, optional);
             validInjectionTypes.add(injectionType);
         } catch (Throwable e) {
             configException = e;
-            badInjectionTypes.add(injectionType);
+            addBadInjectionType(injectionType);
         }
 
         return configException;

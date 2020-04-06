@@ -48,6 +48,16 @@ property.not.found.CWMCG5004E=CWMCG5004E: "{0}" \uad6c\uc131 \ud2b9\uc131\uc744 
 property.not.found.CWMCG5004E.explanation=\uad6c\uc131\ub41c \uc18c\uc2a4\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ud2b9\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
 property.not.found.CWMCG5004E.useraction=\ud2b9\uc131\uc774 \uad6c\uc131 \uc18c\uc2a4 \uc911 \ud558\ub098\uc5d0 \uc874\uc7ac\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: \uad00\ucc30\uc790 \uba54\uc18c\ub4dc {0}\uc5d0 \ub300\ud55c InjectionPoint \uc885\uc18d\uc131\uc744 \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc624\ub958: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=\uc0bd\uc785\ub41c ConfigProperty\ub97c \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774\ub984 \uc9c0\uc815\ub41c \ud2b9\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uac70\ub098 \ud544\uc218 \uc720\ud615\uc758 \ubcc0\ud658\uae30\ub97c \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=\uc11c\ubc84 \uba54\uc2dc\uc9c0 \ubc0f FFDC \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc5ec \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624. ConfigSources \uc911 \ud558\ub098\uc5d0 \ud2b9\uc131\uc774 \uc788\ub294\uc9c0 \uadf8\ub9ac\uace0 \ud544\uc218 \ubcc0\ud658\uae30\uac00 \uad6c\uc131\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: \uad00\ucc30\uc790 bean {0}\uc5d0 \ub300\ud55c InjectionPoint \uc885\uc18d\uc131\uc744 \ucc98\ub9ac\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=\uc54c \uc218 \uc5c6\ub294 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uad00\ucc30\uc790 \uba54\uc18c\ub4dc\ub97c \uc801\uc808\ud788 \ucc98\ub9ac\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=\uc11c\ubc84 \uba54\uc2dc\uc9c0 \ubc0f FFDC \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc5ec \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message

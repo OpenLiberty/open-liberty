@@ -58,7 +58,7 @@ public class DefaultBindingsServlet extends FATServlet {
     /**
      * lookup and call local business interface using short name.
      */
-    //@Test
+    @Test
     public void testLocalBIShort() throws Exception {
         LocalBusiness bean = Helper.lookupShortLocal(LocalBusiness.class);
         assertNotNull("1 ---> LocalBusiness short default lookup did not succeed.", bean);
@@ -69,7 +69,7 @@ public class DefaultBindingsServlet extends FATServlet {
     /**
      * lookup and call remote business interface using short name.
      */
-    //@Test
+    @Test
     public void testRemoteBIShort() throws Exception {
         RemoteBusiness bean = Helper.lookupShortRemote(RemoteBusiness.class);
         assertNotNull("1 ---> RemoteBusiness short default lookup did not succeed.", bean);
@@ -80,7 +80,7 @@ public class DefaultBindingsServlet extends FATServlet {
     /**
      * lookup and call local component view interface using short name.
      */
-    //@Test
+    @Test
     public void testLocalCIShort() throws Exception {
         TestLocalHome homeBean = Helper.lookupShortLocal(TestLocalHome.class);
         assertNotNull("1 ---> LocalHome short default lookup did not succeed.", homeBean);
@@ -95,7 +95,7 @@ public class DefaultBindingsServlet extends FATServlet {
     /**
      * lookup and call remote component view interface using short name.
      */
-    //@Test
+    @Test
     public void testRemoteCIShort() throws Exception {
         TestRemoteHome homeBean = Helper.lookupShortRemote(TestRemoteHome.class);
         assertNotNull("1 ---> RemoteHome short default lookup did not succeed.", homeBean);
@@ -121,7 +121,7 @@ public class DefaultBindingsServlet extends FATServlet {
     /**
      * lookup and call remote business interface using component name.
      */
-    //@Test
+    @Test
     public void testRemoteBI() throws Exception {
         RemoteBusiness bean = Helper.lookupDefaultRemote(RemoteBusiness.class, "TestBean");
         assertNotNull("1 ---> RemoteBusiness standard default lookup did not succeed.", bean);
@@ -147,7 +147,7 @@ public class DefaultBindingsServlet extends FATServlet {
     /**
      * lookup and call remote component view interface using component name.
      */
-    //@Test
+    @Test
     public void testRemoteCI() throws Exception {
         TestRemoteHome homeBean = Helper.lookupDefaultRemote(TestRemoteHome.class, "TestBean");
         assertNotNull("1 ---> RemoteHome standard default lookup did not succeed.", homeBean);

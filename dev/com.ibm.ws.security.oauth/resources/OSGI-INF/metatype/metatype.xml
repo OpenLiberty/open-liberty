@@ -257,6 +257,9 @@
 	        <Option label="%clientSecretEncoding.xor" value="xor" />
 		 	<Option label="%clientSecretEncoding.PBKDF2WithHmacSHA512" value="PBKDF2WithHmacSHA512" />	        
         </AD>
+        <!--  this is fixing a corner bug and has to be behind a property to protect existing users.  -->
+        <AD id="ropcPreferUserSecurityName" name="%ropcPreferUserSecurityName" description="%ropcPreferUserSecurityName.desc" required="false" type="Boolean"  default="false"/>
+        <AD id="trackOAuthClients" name="%trackOAuthClients" description="%trackOAuthClients.desc" ibm:beta="true" required="false" type="Boolean" default="false" />
     </OCD>
    <!--   
     <Designate factoryPid="com.ibm.ws.security.oauth20.provider.config">
@@ -368,8 +371,11 @@
            <AD id="introspectTokens" name="%introspectTokens" description="%introspectTokens.desc" required="false" type="Boolean" default="false"/>
            
            <AD id="allowRegexpRedirects" name="%allowRegexpRedirects" description="%allowRegexpRedirects.desc" required="false" type="Boolean" default="false"/>
-             
-           <AD id="trustedUriPrefixes" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647"/>
+            
+           <!--  non spec extension.  info is returned by CoverageMapEndpointServices.
+                 For a given client,  used to check which downstream uri's can be trusted to propagate a token to. 
+           --> 
+           <AD id="trustedUriPrefixes" name="%trustedUriPrefixes" description="%trustedUriPrefixes.desc" required="false" type="String" cardinality="2147483647"/>
            
            <AD id="resourceIds" name="%resourceIds" description="%resourceIds.desc" required="false" type="String" cardinality="2147483647"/>
            

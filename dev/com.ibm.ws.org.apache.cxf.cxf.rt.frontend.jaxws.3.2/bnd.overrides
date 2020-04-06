@@ -14,7 +14,6 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
 com.ibm.wsspi.classloading, \
@@ -31,7 +30,7 @@ org.apache.cxf.bindings.soap.*,\
 !org.apache.aries.*,\
 !org.apache.cxf.transport.https,\
 !org.osgi.service.blueprint.*,\
-javax.xml.bind.*;version="[2.3,3)",\
+javax.xml.bind.*;version=!,\
 javax.xml.ws.*;version="[2.3,3)", \
 *
 
@@ -47,9 +46,9 @@ app-resources= \
 # the Service-Component in app-resources.bnd uses "${Bundle-SymbolicName}_${bVersion}.ResourceProvider"
 # however this bundle symbolic name is com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2, and this ds config need
 # the name not contains "-".
-#Service-Component: \
-#  com.ibm.ws.org.apache.cxf.rt.frontend.jaxws_3_2.ResourceProvider; \
-#    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-#    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-#    configuration-policy:=optional; \
-#    properties:="resources=${app-resources}"
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws_3_2.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache;
 
+import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,21 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         try {
             CacheObject cacheObject = new CacheObject(subject);
             CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject, userid, password);
+            commonInsert(cacheContext, cacheObject);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "There was a problem caching the subject.", e);
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @FFDCIgnore(Exception.class)
+    @Override
+    public void insert(Subject subject, X509Certificate[] certChain) {
+        try {
+            CacheObject cacheObject = new CacheObject(subject);
+            CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject, certChain);
             commonInsert(cacheContext, cacheObject);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

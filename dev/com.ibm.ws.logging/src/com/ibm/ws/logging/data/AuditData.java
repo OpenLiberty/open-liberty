@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,8 @@ public class AuditData extends GenericData {
                                               LogFieldConstants.IBM_THREADID,
                                               LogFieldConstants.HOST,
                                               LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.TYPE
     };
 
     private final static String[] NAMES = {
@@ -40,6 +41,10 @@ public class AuditData extends GenericData {
 
     public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
         jsonLoggingNameAliases.newAliases(newAliases);
+    }
+
+    public static void resetJsonLoggingNameAliases() {
+        jsonLoggingNameAliases.resetAliases();
     }
 
     public AuditData() {
@@ -94,6 +99,7 @@ public class AuditData extends GenericData {
         return NAMES1_1[5];
     }
 
+    //name aliases
     public static String getDatetimeKeyJSON() {
         return jsonLoggingNameAliases.aliases[0];
     }
@@ -116,6 +122,10 @@ public class AuditData extends GenericData {
 
     public static String getServerNameKeyJSON() {
         return jsonLoggingNameAliases.aliases[5];
+    }
+
+    public static String getTypeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[6];
     }
 
 }

@@ -1,0 +1,132 @@
+###############################################################################
+# Copyright (c) 2019,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.acme/resources/com/ibm/ws/security/acme/resources/AcmeMessages.nlsprops
+#COMPONENTPREFIX CWPKI
+#COMPONENTNAMEFOR WebSphere ACME
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWPKI2000 - CWPKI2299
+#-----  ACME messages
+
+# The ACME referred to in these messages stands for Automatic Certificate Management Environment.
+# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
+
+CWPKI2001E=CWPKI2001E: A autoridade de certifica\u00e7\u00e3o ACME no URI {0} respondeu que o desafio de autoriza\u00e7\u00e3o falhou para o dom\u00ednio {1}. O status do desafio \u00e9 {2}.  O erro \u00e9 {3}.
+CWPKI2001E.explanation=O status do desafio indicou que a solicita\u00e7\u00e3o de desafio de autoriza\u00e7\u00e3o falhou e n\u00e3o \u00e9 poss\u00edvel criar um certificado.
+CWPKI2001E.useraction=Revise a mensagem de status e erro para obter detalhes sobre a falha.
+
+CWPKI2002E=CWPKI2002E: A pesquisa de servi\u00e7o ACME atingiu o tempo limite ao verificar um desafio de autoriza\u00e7\u00e3o bem-sucedido para o dom\u00ednio {0} da autoridade de certifica\u00e7\u00e3o ACME no URI {1}. O status \u00e9 {2}. O tempo limite configurado \u00e9 {3}.
+CWPKI2002E.explanation=A solicita\u00e7\u00e3o de desafio da autoridade de certifica\u00e7\u00e3o n\u00e3o foi validada no tempo configurado e n\u00e3o \u00e9 poss\u00edvel criar um certificado.
+CWPKI2002E.useraction=Revise o URI da autoridade de certifica\u00e7\u00e3o configurado. Verifique se o URI pode ser acessado com sucesso pelo servidor de chamada. Verifique se o servidor de chamada pode receber uma resposta da autoridade de certifica\u00e7\u00e3o. Revise o c\u00f3digo de status. Algumas autoridades de certifica\u00e7\u00e3o podem precisar de um tempo limite maior.
+
+CWPKI2003E=CWPKI2003E: A autoridade de certifica\u00e7\u00e3o ACME no URI {0} respondeu que o pedido de certificado falhou para os dom\u00ednios {1}. O status do pedido \u00e9 {2}. O erro \u00e9 {3}.
+CWPKI2003E.explanation=O status do pedido indicou que a solicita\u00e7\u00e3o do pedido de autoriza\u00e7\u00e3o falhou e n\u00e3o \u00e9 poss\u00edvel criar um certificado.
+CWPKI2003E.useraction=Revise a mensagem de status e erro para obter detalhes sobre a falha.
+
+CWPKI2004E=CWPKI2004E: A pesquisa de servi\u00e7o ACME atingiu o tempo limite ao verificar um pedido bem-sucedido para o dom\u00ednio {0} da autoridade de certifica\u00e7\u00e3o ACME no URI {1}. O status \u00e9 {2}.  O tempo limite configurado \u00e9 {3}.
+CWPKI2004E.explanation=A solicita\u00e7\u00e3o de pedido de certificado de dom\u00ednio da autoridade de certifica\u00e7\u00e3o n\u00e3o foi conclu\u00edda no tempo configurado e n\u00e3o \u00e9 poss\u00edvel criar um certificado.
+CWPKI2004E.useraction=Revise o URI da autoridade de certifica\u00e7\u00e3o configurado. Verifique se o URI pode ser acessado com sucesso pelo servidor de chamada. Verifique se o servidor de chamada pode receber uma resposta da autoridade de certifica\u00e7\u00e3o. Revise o c\u00f3digo de status. Algumas autoridades de certifica\u00e7\u00e3o podem precisar de um tempo limite maior.
+
+CWPKI2005E=CWPKI2005E: A autoriza\u00e7\u00e3o retornada da autoridade de certifica\u00e7\u00e3o ACME no URI {0} n\u00e3o incluiu um tipo de desafio v\u00e1lido. Os tipos de desafio suportados incluem {1}.
+CWPKI2005E.explanation=A autoridade de certifica\u00e7\u00e3o retornou um tipo de desafio que atualmente n\u00e3o \u00e9 suportado. Verifique se a autoridade de certifica\u00e7\u00e3o usa um tipo na lista suportada.
+CWPKI2005E.useraction=Selecione uma autoridade de certifica\u00e7\u00e3o que forne\u00e7a um tipo de desafio suportado.
+
+CWPKI2006I=CWPKI2006I: A autoridade de certifica\u00e7\u00e3o ACME no URI {0} forneceu os seguintes termos de servi\u00e7o: {1}
+CWPKI2006I.explanation=A autoridade de certifica\u00e7\u00e3o fornece termos de servi\u00e7o.
+CWPKI2006I.useraction= Revise os termos de servi\u00e7o fornecidos .
+
+CWPKI2007I=CWPKI2007I: O servi\u00e7o ACME instalou um certificado que \u00e9 assinado pela autoridade de certifica\u00e7\u00e3o ACME no URI {0}. A data de expira\u00e7\u00e3o \u00e9 {1}.
+CWPKI2007I.explanation=O servi\u00e7o ACME recuperou e instalou com sucesso um certificado da autoridade de certifica\u00e7\u00e3o configurada.
+CWPKI2007I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+CWPKI2008E=CWPKI2008E: O URI do diret\u00f3rio da autoridade de certifica\u00e7\u00e3o ACME deve ser um URI v\u00e1lido. O URI recebido estava nulo ou vazio. O URI recebido era '{0}'.
+CWPKI2008E.explanation=O URI do diret\u00f3rio da autoridade de certifica\u00e7\u00e3o n\u00e3o foi configurado corretamente.
+CWPKI2008E.useraction=Insira um URI de diret\u00f3rio da autoridade de certifica\u00e7\u00e3o ACME v\u00e1lido na configura\u00e7\u00e3o.
+
+CWPKI2009E=CWPKI2009E: A solicita\u00e7\u00e3o de desafio para a autoridade de certifica\u00e7\u00e3o ACME no URI {0} falhou. O erro \u00e9 {1}.
+CWPKI2009E.explanation=A solicita\u00e7\u00e3o de desafio falhou e n\u00e3o \u00e9 poss\u00edvel criar um certificado.
+CWPKI2009E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2010E=CWPKI2010E: A atualiza\u00e7\u00e3o de desafio para a autoridade de certifica\u00e7\u00e3o ACME na URI {0} falhou. O erro \u00e9 {1}.
+CWPKI2010E.explanation=A atualiza\u00e7\u00e3o de desafio falhou e n\u00e3o \u00e9 poss\u00edvel criar um certificado.
+CWPKI2010E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2011E=CWPKI2011E: O servi\u00e7o ACME falhou ao criar o pedido de certificado para a autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O erro \u00e9 {1}.
+CWPKI2011E.explanation=A cria\u00e7\u00e3o do pedido de certificado falhou e um certificado assinado n\u00e3o pode ser solicitado.
+CWPKI2011E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2012E=CWPKI2012E: O servi\u00e7o ACME falhou ao assinar a solicita\u00e7\u00e3o de assinatura de certificado para a autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O erro \u00e9 {1}.
+CWPKI2012E.explanation=O pedido de certificado foi criado, mas a assinatura da solicita\u00e7\u00e3o falhou e um certificado assinado n\u00e3o pode ser solicitado.
+CWPKI2012E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2013E=CWPKI2013E: A solicita\u00e7\u00e3o de assinatura de certificado foi criada e assinada, mas a solicita\u00e7\u00e3o de pedido para a autoridade de certifica\u00e7\u00e3o ACME no URI {0} falhou. O erro \u00e9 {1}.
+CWPKI2013E.explanation=O pedido de certificado foi criado e assinado, mas o pedido do certificado da autoridade de certifica\u00e7\u00e3o falhou.
+CWPKI2013E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2014E=CWPKI2014E: A solicita\u00e7\u00e3o de assinatura de certificado para a autoridade de certifica\u00e7\u00e3o ACME no URI {0} foi criada e assinada, mas a codifica\u00e7\u00e3o da solicita\u00e7\u00e3o falhou. O erro \u00e9 {1}.
+CWPKI2014E.explanation=A codifica\u00e7\u00e3o da solicita\u00e7\u00e3o de assinatura de certificado falhou e um certificado assinado n\u00e3o pode ser criado.
+CWPKI2014E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2015E=CWPKI2015E: A solicita\u00e7\u00e3o de status do pedido de certificado de servi\u00e7o ACME da autoridade de certifica\u00e7\u00e3o ACME no URI {0} falhou. O erro \u00e9 {1}.
+CWPKI2015E.explanation=Um pedido foi conclu\u00eddo de forma ass\u00edncrona pela autoridade de certifica\u00e7\u00e3o. O servi\u00e7o ACME recebeu um erro ao verificar o status do pedido. Um certificado assinado n\u00e3o pode ser solicitado.
+CWPKI2015E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2016E=CWPKI2016E: A solicita\u00e7\u00e3o de servi\u00e7o ACME para uma conta existente da autoridade de certifica\u00e7\u00e3o ACME no URI {0} falhou. O erro \u00e9 {1}.
+CWPKI2016E.explanation=Uma conta existente n\u00e3o foi localizada ou ocorreu outro erro. As mudan\u00e7as n\u00e3o podem ser feitas na conta ou no certificado.
+CWPKI2016E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Verifique se o URI pode ser acessado com sucesso pelo servidor de chamada. Verifique se o servidor de chamada pode receber uma resposta da autoridade de certifica\u00e7\u00e3o.
+
+CWPKI2017E=CWPKI2017E: A solicita\u00e7\u00e3o ACME para os termos de servi\u00e7o da autoridade de certifica\u00e7\u00e3o ACME no URI {0} falhou. O erro \u00e9 {1}.
+CWPKI2017E.explanation=Os termos de servi\u00e7o para a autoridade de certifica\u00e7\u00e3o ACME n\u00e3o podem ser registrados. 
+CWPKI2017E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Visite o website da autoridade de certifica\u00e7\u00e3o ACME para revisar os termos de servi\u00e7o.
+
+CWPKI2018E=CWPKI2018E: A conta do usu\u00e1rio n\u00e3o p\u00f4de ser criada na autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O erro \u00e9 {1}.
+CWPKI2018E.explanation=A solicita\u00e7\u00e3o de cria\u00e7\u00e3o da conta do usu\u00e1rio falhou.
+CWPKI2018E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2019I=CWPKI2019I: A URL da conta fornecida pela autoridade de certifica\u00e7\u00e3o ACME no URI {0} \u00e9 {1}.
+CWPKI2019I.explanation=A conta foi criada com \u00eaxito.
+CWPKI2019I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+CWPKI2020E=CWPKI2020E: O servi\u00e7o ACME n\u00e3o p\u00f4de ler o arquivo de chaves de dom\u00ednio para a conta de autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O local do arquivo \u00e9 {1}. O erro \u00e9 {2}.
+CWPKI2020E.explanation=O arquivo de chaves de dom\u00ednio para a conta de autoridade de certifica\u00e7\u00e3o n\u00e3o p\u00f4de ser aberto. Isso pode ocorrer se as permiss\u00f5es de arquivo estiverem incorretas ou se o arquivo n\u00e3o existir.
+CWPKI2020E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Verifique se o local do arquivo est\u00e1 correto e se o servidor tem permiss\u00f5es de leitura de arquivo.
+
+CWPKI2021E=CWPKI2021E: O servi\u00e7o ACME n\u00e3o p\u00f4de ler o arquivo de chaves de conta para a conta de autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O local do arquivo \u00e9 {1}. O erro \u00e9 {2}.
+CWPKI2021E.explanation=O arquivo de chaves de conta para a conta de autoridade de certifica\u00e7\u00e3o n\u00e3o p\u00f4de ser aberto. Isso pode ocorrer se as permiss\u00f5es de arquivo estiverem incorretas ou se o arquivo n\u00e3o existir.
+CWPKI2021E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Verifique se o local do arquivo est\u00e1 correto e se o servidor tem permiss\u00f5es de leitura de arquivo.
+
+CWPKI2022E=CWPKI2022E: O servi\u00e7o ACME n\u00e3o p\u00f4de gravar no arquivo de chaves de dom\u00ednio para a conta de autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O local do arquivo \u00e9 {1}. O erro \u00e9 {2}.
+CWPKI2022E.explanation=As chaves de dom\u00ednio n\u00e3o puderam ser armazenadas no arquivo de chaves de dom\u00ednio. Isso pode ocorrer se as permiss\u00f5es de arquivo estiverem incorretas ou se o arquivo n\u00e3o existir.
+CWPKI2022E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Verifique se o local do arquivo est\u00e1 correto e se o servidor tem permiss\u00f5es de grava\u00e7\u00e3o de arquivo.
+
+CWPKI2023E=CWPKI2023E: Falha ao gravar o arquivo de chaves de conta para a conta de autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O local do arquivo \u00e9 {1}. O erro \u00e9 {2}.
+CWPKI2023E.explanation=As chaves de conta n\u00e3o puderam ser armazenadas no arquivo de chaves de conta. Isso pode ocorrer se as permiss\u00f5es de arquivo estiverem incorretas ou se o arquivo n\u00e3o existir.
+CWPKI2023E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Verifique se o local do arquivo est\u00e1 correto e se o servidor tem permiss\u00f5es de grava\u00e7\u00e3o de arquivo.
+
+CWPKI2024E=CWPKI2024E: O servi\u00e7o ACME falhou ao revogar o certificado solicitado para a autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O certificado \u00e9 o n\u00famero de s\u00e9rie {1}. O erro \u00e9 {2}.
+CWPKI2024E.explanation=Uma solicita\u00e7\u00e3o de revoga\u00e7\u00e3o de certificado falhou. O certificado n\u00e3o pode ser revogado e ainda pode estar em uso.
+CWPKI2024E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2025W=CWPKI2025W: O servi\u00e7o ACME recebeu uma solicita\u00e7\u00e3o de revoga\u00e7\u00e3o de certificado, mas o par de chaves da conta para a autoridade de certifica\u00e7\u00e3o ACME no URI {0} n\u00e3o p\u00f4de ser carregado.
+CWPKI2025W.explanation=A solicita\u00e7\u00e3o de revoga\u00e7\u00e3o de certificado falhou porque o par de chaves da conta n\u00e3o p\u00f4de ser carregado.
+CWPKI2025W.useraction=Revise o log em busca de erros anteriores para obter detalhes sobre a falha. Revise o arquivo keystore para verificar se o certificado existe.
+
+CWPKI2026W=CWPKI2026W: O servi\u00e7o ACME recebeu uma solicita\u00e7\u00e3o de revoga\u00e7\u00e3o de certificado, mas a conta n\u00e3o foi localizada na autoridade de certifica\u00e7\u00e3o ACME no URI {0}.
+CWPKI2026W.explanation=A solicita\u00e7\u00e3o de revoga\u00e7\u00e3o de certificado falhou porque a conta n\u00e3o foi localizada.
+CWPKI2026W.useraction=Revise o URI da autoridade de certifica\u00e7\u00e3o. Revise o arquivo keystore para verificar se o certificado existe.
+
+CWPKI2027E=CWPKI2027E: O caminho de arquivo {0} para o servi\u00e7o ACME est\u00e1 nulo ou vazio. O caminho fornecido \u00e9 '{1}'.
+CWPKI2027E.explanation=O caminho de arquivo estava nulo ou vazio e n\u00e3o pode ser usado para as chaves de dom\u00ednio e de conta.
+CWPKI2027E.useraction=Forne\u00e7a um caminho de arquivo v\u00e1lido na configura\u00e7\u00e3o.

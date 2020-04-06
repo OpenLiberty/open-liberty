@@ -12,10 +12,7 @@
 bVersion=1.0
 
 # Compile at Java 6 in order for this to run in WebSphere Migration Tools and Transformation Advisor.
-javac.source: 1.7
-javac.target: 1.7
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Bundle-Name: Liberty Feature Resolver
 Bundle-SymbolicName: com.ibm.ws.kernel.feature.resolver

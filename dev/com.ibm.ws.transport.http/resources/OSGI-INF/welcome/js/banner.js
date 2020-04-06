@@ -25,11 +25,12 @@ function updateBannerTabOrder(media) {
 	}
 }
 
-function createCloseButton(section) {
+function createCloseButton(section, messages) {
 	var button = document.createElement("button");
 	button.setAttribute("class", "x-close");
 	button.setAttribute("onclick", "closeUpdateBanner()");
 	button.setAttribute("aria-label", messages.UPDATE_BANNER_CLOSE_BUTTON);
+	button.setAttribute("title", messages.UPDATE_BANNER_CLOSE_BUTTON);
 
 	var right = document.createElement("div");
 	right.setAttribute("class", "x-close-right-tilt");
@@ -42,7 +43,7 @@ function createCloseButton(section) {
 	button.appendChild(left);
 }
 
-function createDownloadLink(section) {
+function createDownloadLink(section, messages) {
 	var article = document.createElement("article");
 	article.setAttribute("id", "banner-container");
 	article.setAttribute("aria-label", messages.UPDATE_BANNER_SECTION);
@@ -59,7 +60,7 @@ function createDownloadLink(section) {
 	article.appendChild(h3);
 	h3.appendChild(span);
 
-    var hrefLink = "<a href='" + latestReleasedVersion.availableFrom  + "'>" + 
+    var hrefLink = "<a href='" + latestReleasedVersion.availableFrom + "' target='_blank' rel='noopener'>" + 
 		               latestReleasedVersion.productName + 
                    "</a>";
     var msgDownloadLink = formatString(messages.HEADER_DOWNLOAD_LINK, [hrefLink]);
@@ -76,18 +77,18 @@ function formatString(value, args) {
 	return value;
 }
 
-function buildUpdateBanner() {
+function buildUpdateBanner(messages) {
 	if(isLibertyUpdateAvailable) {		
 		var section = document.createElement("section");
 		section.setAttribute("id", "update-banner");
 
 		var media = window.matchMedia("(max-width : 850px)");
 		if (media.matches) {
-			createCloseButton(section);
-			createDownloadLink(section);
+			createCloseButton(section, messages);
+			createDownloadLink(section, messages);
 		} else {
-			createDownloadLink(section);
-			createCloseButton(section);
+			createDownloadLink(section, messages);
+			createCloseButton(section, messages);
 		}
 		media.addListener(updateBannerTabOrder);
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -56,6 +56,11 @@ ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Ellen\u0151rizze, hogy a kiszol
 ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: A(z) {0} munkamenet gyors\u00edt\u00f3t\u00e1r k\u00f6nyvt\u00e1r \u00fcres. {1}
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=A sessionCache szolg\u00e1ltat\u00e1s nem tal\u00e1lt bet\u00f6ltend\u0151 JCache szolg\u00e1ltat\u00f3t.
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=Ellen\u0151rizze, hogy a k\u00f6nyvt\u00e1r tartalmaz-e JCache szolg\u00e1ltat\u00f3t, \u00e9s hogy az \u00f6sszes \u00fatvonal helyesen van-e meghat\u00e1rozva.
+
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Infinispan konfigur\u00e1ci\u00f3 el\u0151\u00e1ll\u00edtva HTTP munkamenet perzisztenci\u00e1hoz: {0}. A fel\u00fclb\u00edr\u00e1l\u00e1shoz konfigur\u00e1lja a httpSessionCache konfigur\u00e1ci\u00f3s elem uri attrib\u00fatum\u00e1t.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=A HTTP munkamenet perzisztenci\u00e1hoz haszn\u00e1lt Infinispan gyors\u00edt\u00f3t\u00e1rak tov\u00e1bbi konfigur\u00e1ci\u00f3t ig\u00e9nyelnek a munkamenetek t\u00e1rol\u00e1s\u00e1hoz kiszolg\u00e1l\u00f3k k\u00f6z\u00f6tt. A Liberty el\u0151\u00e1ll\u00edtja ezt a konfigur\u00e1ci\u00f3t, ha a felhaszn\u00e1l\u00f3 nem biztos\u00edtja.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Ha el\u00e9gedett az el\u0151\u00e1ll\u00edtott konfigur\u00e1ci\u00f3val, akkor nincs teend\u0151je. M\u00e1sk\u00fcl\u00f6nben az el\u0151\u00e1ll\u00edtott konfigur\u00e1ci\u00f3 kiindul\u00e1si pontk\u00e9nt haszn\u00e1lhat\u00f3.
 
 INTERNAL_SERVER_ERROR=Bels\u0151 kiszolg\u00e1l\u00f3hiba
 

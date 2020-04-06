@@ -10,6 +10,6 @@ IBM-Provision-Capability: \
  com.ibm.ws.microprofile.config.1.2.cdi, \
  com.ibm.ws.microprofile.config.1.4.cdi.services
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=ga
+edition=core
 WLP-Activation-Type: parallel

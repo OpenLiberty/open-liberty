@@ -16,7 +16,7 @@
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
-    <httpSessionCache libraryRef="InfinispanLib" writeContents="ALL_SESSION_ATTRIBUTES" uri="file:${shared.resource.dir}/infinispan/infinispan-config-lacking-http-session-cache-name.xml"
+    <httpSessionCache libraryRef="InfinispanLib" writeContents="ALL_SESSION_ATTRIBUTES" uri="file:///${shared.resource.dir}/infinispan/infinispan-config-lacking-http-session-cache-name.xml"
     enableBetaSupportForInfinispan="true"/> <!-- TODO remove beta config once ready for GA -->
 
     <application location="sessionCacheApp.war">

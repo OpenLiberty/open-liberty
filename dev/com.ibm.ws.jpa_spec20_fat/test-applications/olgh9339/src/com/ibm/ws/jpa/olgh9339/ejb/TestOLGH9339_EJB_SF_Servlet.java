@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.olgh9339.testlogic.JPATestOLGH9339Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
@@ -27,7 +28,7 @@ public class TestOLGH9339_EJB_SF_Servlet extends EJBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {
-        testClassName = "com.ibm.ws.jpa.olgh9339.testlogic.JPATestOLGH9339Logic";
+        testClassName = JPATestOLGH9339Logic.class.getName();
         ejbJNDIName = "ejb/OLGH9339SFEJB";
 
         jpaPctxMap.put("test-jpa-resource-amjta",
@@ -39,24 +40,24 @@ public class TestOLGH9339_EJB_SF_Servlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMJTA_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMJTA_Web";
+    public void jpa_spec20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMJTA_Web() throws Exception {
+        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMJTA_Web";
         final String testMethod = "testCoalesceJPQLQueryWithNullParameterValue";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMRL_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMRL_Web";
+    public void jpa_spec20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMRL_Web() throws Exception {
+        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_AMRL_Web";
         final String testMethod = "testCoalesceJPQLQueryWithNullParameterValue";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_CMTS_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_CMTS_Web";
+    public void jpa_spec20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_CMTS_Web() throws Exception {
+        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SF_CMTS_Web";
         final String testMethod = "testCoalesceJPQLQueryWithNullParameterValue";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

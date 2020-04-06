@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -166,6 +166,81 @@ public class AsyncBulkheadServlet extends FATServlet {
             SyntheticTask<Void> task3 = syntheticTaskManager.newTask();
             bean4.runTask(task3);
             task3.assertNotStarting();
+        });
+    }
+
+    @Test
+    public void testAsyncRetryAroundBulkhead() throws Exception {
+        // This test uses sleeps because FT 1.x blocks while retrying around a bulkhead exception
+        // which means we can't easily complete one of running tasks while the retry for
+        // the last task is taking place.
+
+        // First two tasks should run
+        Future<Void> future1 = bean1.runTaskWithSlowRetries(this::sleep);
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+        Future<Void> future2 = bean1.runTaskWithSlowRetries(this::sleep);
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        // Second two tasks should queue
+        Future<Void> future3 = bean1.runTaskWithSlowRetries(this::sleep);
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+        Future<Void> future4 = bean1.runTaskWithSlowRetries(this::sleep);
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        // Fifth task should be rejected by the bulkhead but retry until it can run
+        Future<Void> future5 = bean1.runTaskWithSlowRetries(this::sleep);
+
+        assertFutureHasResult(future1, null);
+        assertFutureHasResult(future2, null);
+        assertFutureHasResult(future3, null);
+        assertFutureHasResult(future4, null);
+        assertFutureHasResult(future5, null);
+    }
+
+    private Void sleep() throws Exception {
+        Thread.sleep(1000);
+        return null;
+    }
+
+    @Test
+    public void testAsyncRetryAroundBulkheadFail() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            // First two tasks should start
+            SyntheticTask<Void> task1 = syntheticTaskManager.newTask();
+            SyntheticTask<Void> task2 = syntheticTaskManager.newTask();
+            Future<Void> future1 = bean1.runTaskWithFastRetries(task1);
+            Future<Void> future2 = bean1.runTaskWithFastRetries(task2);
+            task1.assertStarts();
+            task2.assertStarts();
+
+            // Next two tasks should queue
+            SyntheticTask<Void> task3 = syntheticTaskManager.newTask();
+            SyntheticTask<Void> task4 = syntheticTaskManager.newTask();
+            Future<Void> future3 = bean1.runTaskWithFastRetries(task3);
+            Future<Void> future4 = bean1.runTaskWithFastRetries(task4);
+            SyntheticTask.assertAllNotStarting(task3, task4);
+
+            // Next task should retry but still be rejected since none of the running tasks finish
+            try {
+                SyntheticTask<Void> task5 = syntheticTaskManager.newTask();
+                Future<Void> future5 = bean1.runTaskWithFastRetries(task5);
+                future5.get(TEST_TIMEOUT, MILLISECONDS);
+                fail("BulkheadException not thrown when bulkhead is full");
+            } catch (BulkheadException e) {
+                // Expected for 1.0
+            } catch (ExecutionException e) {
+                // Expected for 2.0
+                assertThat(e.getCause(), instanceOf(BulkheadException.class));
+            }
+
+            task1.complete();
+            task2.complete();
+            task3.complete();
+            task4.complete();
+            assertFutureHasResult(future1, null);
+            assertFutureHasResult(future2, null);
+            assertFutureHasResult(future3, null);
+            assertFutureHasResult(future4, null);
         });
     }
 

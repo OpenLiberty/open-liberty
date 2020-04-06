@@ -111,6 +111,8 @@ public class MetatypeAd extends MetatypeBase {
     private final List<MetatypeAdOption> options = new LinkedList<MetatypeAdOption>();
     @XmlAttribute(name = "beta", namespace = IBM_NAMESPACE)
     private boolean beta;
+    @XmlAttribute(name = "obscure", namespace = IBM_NAMESPACE)
+    private boolean obscure;
 
     private MetatypeOcd parent;
     boolean isTypeValid = false;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,8 @@ public @interface SkipIfSysProp {
     public static final String DB_Derby = "fat.bucket.db.type=Derby";
     public static final String DB_Informix = "fat.bucket.db.type=Informix";
     public static final String DB_Oracle = "fat.bucket.db.type=Oracle";
+    public static final String DB_Postgres = "fat.bucket.db.type=Postgres";
+    public static final String DB_SQLServer = "fat.bucket.db.type=SQLServer";
     public static final String DB_Sybase = "fat.bucket.db.type=Sybase";
 
     String[] value();

@@ -1,17 +1,30 @@
+<!--
+    Copyright (c) 2018,2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <server>
     <featureManager>
+      <feature>appSecurity-3.0</feature>
       <feature>componenttest-1.0</feature>
+      <feature>ejbLite-3.2</feature>
+      <feature>jca-1.7</feature>
       <feature>jdbc-4.2</feature>
       <feature>jndi-1.0</feature>
-      <feature>servlet-3.1</feature>
+      <feature>servlet-4.0</feature>
     </featureManager>
     
 
     <include location="../fatTestPorts.xml"/>
 
-    <application location="derbyApp.war"/>
+    <application id="derbyApp" location="derbyApp.war"/>
 
-    <application location="otherApp.war"/>
+    <application id="otherApp" location="otherApp.ear"/>
 
     <dataSource id="DefaultDataSource" ibm.internal.nonship.function="true">
       <jdbcDriver javax.sql.DataSource="jdbc.driver.proxy.ProxyDataSource" libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
@@ -21,6 +34,16 @@
     <dataSource id="DerbyDataSource" jndiName="jdbc/derby" ibm.internal.nonship.function="true">
       <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO eventually remove jdbcDriver completely -->
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="sharedLibDataSource" jndiName="jdbc/sharedLibDataSource">
+      <!-- loads its JDBC driver from a shared library, NOT from the app like the other data sources in this server -->
+      <jdbcDriver>
+        <library>
+          <file name="${shared.resource.dir}/derby/derby.jar"/>
+        </library>
+      </jdbcDriver>
+      <properties.derby.embedded databaseName="memory:sharedLibDB" createDatabase="create"/>
     </dataSource>
 
     <dataSource id="MiniDataSource" jndiName="jdbc/miniDataSource" ibm.internal.nonship.function="true">
@@ -35,19 +58,87 @@
 
     <library id="ibm.internal.simulate.no.library.do.not.ship"/>
 
-    <!-- permissions for Derby -->
+    <jaasLoginContextEntry id="app1loginEntry" name="app1login">
+      <loginModule className="loginmod.LoadFromAppLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="webapploginEntry" name="webapplogin">
+      <loginModule className="web.derby.LoadFromWebAppLoginModule" classProviderRef="derbyApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="web1loginEntry" name="web1login">
+      <loginModule className="web.other.LoadFromWebModLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="notFoundInEarLoginEntry" name="notFoundInEarLogin">
+      <!-- otherApp does not contain this class; it is in the derbyApp and should not be found -->
+      <loginModule className="web.derby.LoadFromWebAppLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="notFoundInWebAppLoginEntry" name="notFoundInWebAppLogin">
+      <!-- derbyApp does not contain this class; it is in the otherApp and should not be found -->
+      <loginModule className="loginmod.LoadFromAppLoginModule" classProviderRef="derbyApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="ejb1loginEntry" name="ejb1login">
+      <loginModule className="ejb.first.FirstEJBModLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="ejb2loginEntry" name="ejb2login">
+      <loginModule className="ejb.second.SecondEJBModLoginModule" classProviderRef="otherApp"/>
+    </jaasLoginContextEntry>
+
+    <jaasLoginContextEntry id="system.WEB_INBOUND" name="system.WEB_INBOUND" loginModuleRef="webInboundLoginModule, hashtable"/>
+    <jaasLoginModule id="webInboundLoginModule" controlFlag="REQUIRED" className="loginmod.WebInboundLoginModule" classProviderRef="otherApp">
+      <options city="Rochester" state="MN" zip="55901"/>
+    </jaasLoginModule>
+
+    <!-- permissions for Derby in the app -->
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.properties" actions="read"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.util.PropertyPermission" name="*" actions="read"/>
-    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanPermission" name="*" actions="registerMBean"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanTrustPermission" name="register"/>
 
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="javax.management.MBeanTrustPermission" name="register"/>
+
+    <!-- permissions for Derby in the shared library -->
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
+
     <!-- permissions for Mini driver to utilize dynamic proxy -->
-    <javaPermission codeBase="${server.config.dir}apps/otherApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <!-- permissions for login modules -->
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
+
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
 
     <variable name="onError" value="FAIL"/>
 </server>

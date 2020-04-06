@@ -7,3 +7,4 @@ singleton=true
   com.ibm.websphere.appserver.javax.cdi-2.0
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

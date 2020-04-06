@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+#TODO once we upgrade fattest.simplicty to java 8 this package could be moved there.
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: FAT Database infrastructure
+Bundle-SymbolicName: fattest.databases
+Bundle-Description: FAT infrastructure; version=${bVersion}
+
+Export-Package: \
+	componenttest.topology.database.container;version=1.0.16
+
+Include-Resource: \
+  resources=resources
+
+test.project: true
+
+-buildpath: \
+	com.ibm.ws.componenttest:public.api;version=1.0.0,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	org.testcontainers:database-commons;version=1.12.3,\
+	org.testcontainers:jdbc;version=1.12.3,\
+	org.testcontainers:testcontainers;version=1.12.3,\
+	fattest.simplicity;version=latest,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+	org.slf4j:slf4j-api;version=1.7.7

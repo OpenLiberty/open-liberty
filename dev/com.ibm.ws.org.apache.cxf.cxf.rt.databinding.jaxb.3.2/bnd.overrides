@@ -14,11 +14,9 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2
 
-Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.databinding.jaxb.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
+!org.apache.cxf.ws.addressing.wsdl, \
 !com.ctc.wstx.*,\
 !org.codehaus.stax2.*,\
 !com.sun.msv.*,\
@@ -38,5 +36,4 @@ javax.xml.bind.attachment;version=!,\
 *
 
 Export-Package: \
-  com.ibm.ws.jaxws23.cxf.rt.databinding.jaxb,\
   org.apache.cxf.jaxb.*;version=${cxfVersion}

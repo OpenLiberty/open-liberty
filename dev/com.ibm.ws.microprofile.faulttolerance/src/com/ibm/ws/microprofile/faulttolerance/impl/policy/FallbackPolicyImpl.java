@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,16 +12,33 @@ package com.ibm.ws.microprofile.faulttolerance.impl.policy;
 
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.eclipse.microprofile.faulttolerance.FallbackHandler;
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackHandlerFactory;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceFunction;
 
 public class FallbackPolicyImpl implements FallbackPolicy {
 
+    private static final TraceComponent tc = Tr.register(BulkheadPolicyImpl.class);
+
     private FaultToleranceFunction<ExecutionContext, ?> fallbackFunction;
     private Class<? extends FallbackHandler<?>> fallbackHandlerClass;
     private FallbackHandlerFactory fallbackHandlerFactory;
+    private Class<? extends Throwable>[] applyOn;
+    private Class<? extends Throwable>[] skipOn;
+
+    @SuppressWarnings("unchecked")
+    public FallbackPolicyImpl() {
+        try {
+            applyOn = new Class[] { Throwable.class };
+            skipOn = new Class[0];
+        } catch (SecurityException e) {
+            throw new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", e), e);
+        }
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -60,6 +77,32 @@ public class FallbackPolicyImpl implements FallbackPolicy {
     @Override
     public FallbackHandlerFactory getFallbackHandlerFactory() {
         return this.fallbackHandlerFactory;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Class<? extends Throwable>[] getApplyOn() {
+        return applyOn;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setApplyOn(Class<? extends Throwable>... applyOn) {
+        this.applyOn = applyOn;
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Class<? extends Throwable>[] getSkipOn() {
+        return skipOn;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSkipOn(Class<? extends Throwable>... skipOn) {
+        this.skipOn = skipOn;
+
     }
 
 }

@@ -439,7 +439,7 @@ error.create.unknownJavaLevel.useraction=Assicurarsi che si stia utilizzando un 
 
 error.create.java8serverenv=CWWKE0103E: Impossibile creare un file server.env nella seguente ubicazione: {0}
 error.create.java8serverenv.explanation=Il processo che sta tentando di creare il server non \u00e8 stato in grado di generare un file server.env nell'ubicazione specificata.  Questo file fornisce gli argomenti JVM necessari perch\u00e9 il server funzioni correttamente.
-error.create.java8serverenv.useraction=Accertarsi che si abbia accesso in scrittura alla directory del server e che lo spazio su disco sia sufficiente.  Inoltre, \u00e8 possibile creare manualmente il file server.env con il seguente valore: WLP_SKIP_MAXPERMSIZE=true.  \u00c8 necessario verificare che il processo server disponga dell'accesso in lettura a questo file.
+error.create.java8serverenv.useraction=Accertarsi che si abbia accesso in scrittura alla directory del server e che lo spazio su disco sia sufficiente. \u00c8 necessario verificare che il processo server disponga dell'accesso in lettura a questo file.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Questo prodotto \u00e8 una versione beta e non pu\u00f2 essere utilizzata in produzione. \u00c8 possibile visualizzare i termini di licenza completi qui: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Questo prodotto \u00e8 una versione beta e deve essere utilizzato in base ai termini della licenza beta.
@@ -689,10 +689,6 @@ warning.package.root.invalid.useraction=Non \u00e8 richiesta alcuna azione.
 warning.package.root.invalid.runnable=CWWKE0948W: Una opzione --server-root con --include=runnable non \u00e8 una combinazione consentita. Per la root del server viene utilizzato l'argomento predefinito di wlp.
 warning.package.root.invalid.runnable.explanation=L'utente ha effettuato una richiesta di package con un'opzione --server-root e --include=runnable, che non \u00e8 una combinazione consentita. Viene utilizzata la root server predefinita wlp.
 warning.package.root.invalid.runnable.useraction=Non sono richieste azioni.
-
-error.no.serialfilteragent=CWWKE0949E: Il file jar dell''agent del filtro seriale specificato {0} non esiste.
-error.no.serialfilteragent.explanation=Il file jar dell'agent del filtro seriale specificato non esiste o non pu\u00f2 essere letto.
-error.no.serialfilteragent.useraction= Verificare che il file esista e che possa essere letto dall'utente corrente.
 
 error.package.extension=CWWKE0950E: Il nome file di archivio deve terminare con .jar quando viene utilizzata l'opzione runnable.
 error.package.extension.explanation=L'opzione --archive deve includere un'estensione file che termina con .jar quando si specifica --include=runnable.

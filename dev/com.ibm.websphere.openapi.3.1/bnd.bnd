@@ -11,10 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Bundle-Name: OpenAPI v3 SPIs
 Bundle-SymbolicName: com.ibm.websphere.openapi.3.1

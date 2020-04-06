@@ -272,5 +272,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Messaggio informativo. Non \
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: L''attributo di configurazione [ {0} ] richiesto \u00e8 mancante o vuoto e non \u00e8 stato fornito un valore predefinito. Verificare che l''attributo sia configurato o rilevato dal provider, che non sia vuoto e non sia costituito da soli spazi.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=L'attributo di configurazione specificato potrebbe mancare dalla configurazione del server. Se \u00e8 specificato un valore, lo spazio all'inizio e alla fine del valore viene rimosso quando il valore viene elaborato, pertanto il valore nella configurazione potrebbe essere vuoto o essere costituito da soli spazi. Se \u00e8 specificato che l'endpoint di rilevamento ottenga questo valore attributo dal provider, il rilevamento potrebbe avere un problema.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Verificare che l'attributo di configurazione specificato sia configurato, non sia vuoto e non sia costituito da soli spazi. Se l'endpoint di rilevamento \u00e8 configurato per ottenere queste informazioni, assicurarsi che non ci siano errori con la richiesta di rilevamento.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Pi\u00f9 di una configurazione del client OpenID Connect specifica lo stesso filtro di autenticazione [{0}]. Ci\u00f2 pu\u00f2 causare funzionamenti imprevisti.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Pi\u00f9 di una configurazione del client OpenID Connect contiene un attributo authFilterRef che fa riferimento allo stesso filtro. Uno qualsiasi di questi client potrebbe elaborare una richiesta corrispondente al filtro, comportando funzionamenti imprevisti.  
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Rivedere il file server.xml e correggere la configurazione.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Pi\u00f9 di un filtro di autenticazione del client OpenID Connect corrisponde a una richiesta all''URL [{0}]. I filtri corrispondenti sono [{1}]. Ci\u00f2 pu\u00f2 causare funzionamenti imprevisti.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=Pi\u00f9 di un filtro di autenticazione corrisponde a una richiesta in entrata. Qualsiasi client che utilizzi uno di questi filtri potrebbe elaborare la richiesta, comportando funzionamenti imprevisti.  
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Rivedere il file server.xml e correggere la configurazione.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,8 @@ public class DelayedServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().append("Served at: ").append(request.getContextPath()).append("\n");
         response.getWriter().println("Testing Delayed Servlet initialization.");
     }

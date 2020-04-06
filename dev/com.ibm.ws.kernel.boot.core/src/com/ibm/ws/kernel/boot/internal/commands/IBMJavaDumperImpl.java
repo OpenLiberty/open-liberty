@@ -16,35 +16,47 @@ import java.lang.reflect.Method;
 class IBMJavaDumperImpl extends JavaDumper {
     private final Method javaDumpToFileMethod;
     private final Method heapDumpToFileMethod;
-    private final Method systemDumpToFileMethod;
+    private final Method triggerDumpMethod;
 
-    IBMJavaDumperImpl(Method javaDumpToFileMethod, Method heapDumpToFileMethod, Method systemDumpToFileMethod) {
+    IBMJavaDumperImpl(Method javaDumpToFileMethod, Method heapDumpToFileMethod, Method triggerDumpMethod) {
         this.javaDumpToFileMethod = javaDumpToFileMethod;
         this.heapDumpToFileMethod = heapDumpToFileMethod;
-        this.systemDumpToFileMethod = systemDumpToFileMethod;
+        this.triggerDumpMethod = triggerDumpMethod;
     }
 
     @Override
     public File dump(JavaDumpAction action, File outputDir) {
-        Method method;
-
         switch (action) {
             case HEAP:
-                method = heapDumpToFileMethod;
-                break;
+                return processReturnedPath(action, invokeToFileMethod(heapDumpToFileMethod));
 
             case SYSTEM:
-                method = systemDumpToFileMethod;
-                break;
+                // "if you intend to use the system dump file for Java heap memory analysis, use the
+                // following option to request exclusive access when the dump is taken:
+                // -Xdump:system:defaults:request=exclusive+compact+prepwalk"
+                // https://www.ibm.com/support/knowledgecenter/SSYKE2_8.0.0/openj9/xdump/index.html#requestrequests
+
+                // We don't want to use compact because there are times when it's interesting
+                // to look at the trash in older regions. By default, the Memory Analyzer Tool
+                // performs a GC when loading a core dump and doesn't show such trash. Avoiding
+                // compact also avoids some GC overhead and moving that to the analysis machine.
+
+                try {
+                    String resultPath = (String) triggerDumpMethod.invoke(null, new Object[] { "system:request=exclusive+serial+prepwalk" });
+                    return processReturnedPath(action, resultPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
             case THREAD:
-                method = javaDumpToFileMethod;
-                break;
+                return processReturnedPath(action, invokeToFileMethod(javaDumpToFileMethod));
 
             default:
                 return null;
         }
+    }
 
+    private String invokeToFileMethod(Method method) {
         String resultPath;
         try {
             // Passing a null file name will cause the JVM to write the dump to
@@ -55,7 +67,10 @@ class IBMJavaDumperImpl extends JavaDumper {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return resultPath;
+    }
 
+    private File processReturnedPath(JavaDumpAction action, String resultPath) {
         // After Java 8 JDK updates on z/OS, the Legacy path is no longer used in JavaDumper.
         // Updating this path to return null for z/OS so that the correct audit message is
         // returned to the user.

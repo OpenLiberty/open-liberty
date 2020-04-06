@@ -42,6 +42,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH9339_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh9339Ejb";
     private final static String RESOURCE_ROOT = "test-applications/olgh9339/";
     private final static String appFolder = "ejb";
     private final static String appName = "olgh9339Ejb";
@@ -61,22 +62,21 @@ public class TestOLGH9339_EJB extends JPAFATServletClient {
 
     @Server("JPA20Server")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH9339_EJB_SL_Servlet.class, path = "olgh9339ejb" + "/" + "TestOLGH9339_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH9339_EJB_SF_Servlet.class, path = "olgh9339ejb" + "/" + "TestOLGH9339_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH9339_EJB_SFEx_Servlet.class, path = "olgh9339ejb" + "/" + "TestOLGH9339_EJB_SFEx_Servlet")
-
+                    @TestServlet(servlet = TestOLGH9339_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9339_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestOLGH9339_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9339_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestOLGH9339_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9339_EJB_SFEx_Servlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(TestOLGH9339_EJB.class);
         timestart = System.currentTimeMillis();
 
-        server1.startServer();
+        server.startServer();
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
 
@@ -84,29 +84,29 @@ public class TestOLGH9339_EJB extends JPAFATServletClient {
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         ddlSet.clear();
         for (String ddlName : populateSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "olgh9339Ejb.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.model");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/olgh9339Ejb.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.ejb");
@@ -130,40 +130,53 @@ public class TestOLGH9339_EJB extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
         appNamesSet.add(appName);
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-//            server1.dumpServer("olgh9339_ejb");
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(TestOLGH9339_EJB.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/OLGH9339_EJB.ear");
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
 }

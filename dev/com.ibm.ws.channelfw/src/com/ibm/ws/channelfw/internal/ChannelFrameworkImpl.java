@@ -2829,14 +2829,34 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
                 InvalidRuntimeStateException e = new InvalidRuntimeStateException("Cannot start chain " + chainData.getName());
                 throw e;
             }
+
+        } catch (RetryableChannelException e) {
+            // Don't ffdc or log error messages in cases where a try will take place
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught RetryableException" + e.getMessage());
+            }
+            // Handle partially created chain. Undo any starts that have been done
+            // thus far.
+            for (int i = 0; i < chainsDone.size(); i++) {
+                try {
+                    // Note, the former channel state may have been quiesced. Stopping
+                    // anyhow.
+                    stopChannel(chainsDone.get(i));
+                } catch (Exception e1) {
+                    FFDCFilter.processException(e, getClass().getName() + ".startChainInternal", "2855", this, new Object[] { chainsDone.get(i) });
+                }
+            }
+            // Throw the exception up to the caller.
+            throw e;
+
         } catch (ChannelException e) {
             // Don't ffdc or log error messages in cases where a try will take place
-            if (!(e instanceof RetryableChannelException) || (startMode != ChainStartMode.RETRY_EACH_ON_FAIL)) {
+            if (startMode != ChainStartMode.RETRY_EACH_ON_FAIL) {
                 FFDCFilter.processException(e, getClass().getName() + ".startChainInternal", "2577", this, new Object[] { chainData });
                 ((ChainDataImpl) chainData).chainStartFailed(1, 0);
                 Tr.error(tc, "chain.start.error", new Object[] { chain.getName(), e.toString() });
             } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught RetryableException");
+                Tr.debug(tc, "(no ffdc) Caught ChannelException: " + e);
             }
             // Handle partially created chain. Undo any starts that have been done
             // thus far.
@@ -2851,6 +2871,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
             }
             // Throw the exception up to the caller.
             throw e;
+
         } catch (ChainException e) {
             FFDCFilter.processException(e, getClass().getName() + ".startChainInternal", "2595", this, new Object[] { chainData });
             Tr.error(tc, "chain.start.error", new Object[] { chain.getName(), e.toString() });
@@ -4548,7 +4569,8 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
 
         // now that we have a new factory type, tell ChannelUtils to process
         // any delayed config that might be waiting for it
-        ChannelUtils.loadConfig(null);
+        ChannelUtils.loadConfigDelay();
+
     }
 
     /**
@@ -4577,7 +4599,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
 
         // now that we have a new factory type, tell ChannelUtils to process
         // any delayed config that might be waiting for it
-        ChannelUtils.loadConfig(null);
+        ChannelUtils.loadConfigDelay();
     }
 
     /**

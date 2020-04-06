@@ -127,6 +127,7 @@ Export-Package: \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+  !org.apache.myfaces.ee6, \
   !com.google.inject, \
   !javax.ejb, \
   !javax.persistence, \
@@ -142,7 +143,6 @@ Include-Resource: \
     
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 

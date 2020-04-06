@@ -1,0 +1,67 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Pou\u017eit\u00ed: {0}
+
+global.description=Popis:
+global.actions=Akce:
+global.options=Volby:
+global.options.lower=volby
+global.usage=Pou\u017eit\u00ed:
+global.options.statement=\tPomoc\u00ed p\u0159\u00edkazu help [n\u00e1zev_akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
+task.unknown=Nezn\u00e1m\u00e1 akce: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tVytisknout informace n\u00e1pov\u011bdy pro ur\u010denou akci.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tNainstalujte jednu funkci nebo seznam funkc\u00ed odd\u011blen\u00fdch mezerou.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ name ...
+installFeature.option-desc.name...=\tJedna nebo v\u00edce funkc\u00ed, kter\u00e9 jsou odd\u011bleny mezerou. Pro funkce \n\
+\tur\u010dete kr\u00e1tk\u00fd n\u00e1zev funkce nebo sou\u0159adnice Maven. Pokud         \n\
+\tur\u010d\u00edte sou\u0159adnice Maven, mus\u00ed obsahovat alespo\u0148                \n\
+\ttID skupiny a ID artefaktu                                     \n\
+\t(nap\u0159. io.openliberty.features:mpHealth-2.0).                 \n\
+\tVerze standardn\u011b zobrazuje aktu\u00e1ln\u00ed verzi b\u011bhov\u00e9ho prost\u0159ed\u00ed a          \n\
+\ttyp balen\u00ed standardn\u011b zobrazuje ESA, pokud nejsou verze a balen\u00ed        \n\
+\tur\u010deny.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\tUr\u010dete, kam m\u00e1 b\u00fdt funkce nainstalov\u00e1na. Funkci lze nainstalovat do libovoln\u00e9ho\n\
+\tum\u00edst\u011bn\u00ed roz\u0161\u00ed\u0159en\u00ed konfigurovan\u00e9ho produktu nebo jako u\u017eivatelskou funkci. Pokud \n\
+\tnen\u00ed tato volba ur\u010dena, je funkce nainstalov\u00e1na jako     \n\
+\tu\u017eivatelsk\u00e1 funkce.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\
+\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\
+\t(nap\u0159. Maven Central) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tNainstalujte po\u017eadovan\u00e9 funkce pro pojmenovan\u00fd server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ name ...
+installServerFeatures.option-desc.name...=\tN\u00e1zev existuj\u00edc\u00edho serveru ve stejn\u00e9m prost\u0159ed\u00ed Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
+installServerFeatures.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\
+\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\
+\t(nap\u0159. Maven Central) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jndi.internal.literals;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 final class Patterns {
     private static final String DIGIT_TAIL = "(?:_*\\d)*";
     private static final String DIGITS = "\\d" + DIGIT_TAIL;

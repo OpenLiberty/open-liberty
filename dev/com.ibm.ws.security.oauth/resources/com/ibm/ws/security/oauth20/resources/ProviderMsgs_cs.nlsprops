@@ -317,7 +317,8 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: Parametr po\u017eadavku [{0
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Ozna\u010den\u00e1 hodnota ur\u010den\u00e9ho parametru v po\u017eadavku OAuth nen\u00ed platn\u00e1. Platn\u00e9 hodnoty jsou uvedeny v ozna\u010den\u00e9m atributu konfigurace serveru.
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Ujist\u011bte se, \u017ee hodnoty v parametru po\u017eadavku jsou platn\u00e9.
 
-security.oauth20.front.end.error=CWOAU0073E: Do\u0161lo k chyb\u011b p\u0159i ov\u011b\u0159ov\u00e1n\u00ed u\u017eivatele. Zopakujte pokus o ov\u011b\u0159en\u00ed, nebo se obra\u0165te na administr\u00e1tora webu, pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1.
+# this message is also emitted by the oidc client via the PublicErrorFacingServlet
+security.oauth20.front.end.error=CWOAU0073E: Vyskytla se chyba p\u0159i ov\u011b\u0159en\u00ed. Zopakujte pokus o zav\u0159en\u00ed webov\u00e9ho prohl\u00ed\u017een\u00ed nebo pokus o ov\u011b\u0159en\u00ed, nebo se obra\u0165te na administr\u00e1tora webu, pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1.
 security.oauth20.front.end.error.explanation=V po\u017eadavku mohou chyb\u011bt informace, server mo\u017en\u00e1 rozpoznal intern\u00ed chybu nebo mohlo doj\u00edt k jin\u00e9 chyb\u011b, kter\u00e1 zabr\u00e1nila serveru v \u00fasp\u011b\u0161n\u00e9 autentizaci u\u017eivatele.
 security.oauth20.front.end.error.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
 

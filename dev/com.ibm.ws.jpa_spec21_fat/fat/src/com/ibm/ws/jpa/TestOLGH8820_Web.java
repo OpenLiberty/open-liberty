@@ -40,6 +40,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH8820_Web extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh8820Web";
     private final static String RESOURCE_ROOT = "test-applications/olgh8820/";
     private final static String appFolder = "web";
     private final static String appName = "olgh8820Web";
@@ -55,10 +56,9 @@ public class TestOLGH8820_Web extends JPAFATServletClient {
         createSet.add("JPA_OLGH8820_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("JPA21Server")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH8820Servlet.class, path = "olgh8820" + "/" + "TestOLGH8820Servlet"),
-
+                    @TestServlet(servlet = TestOLGH8820Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8820Servlet")
     })
     public static LibertyServer server;
 
@@ -105,7 +105,6 @@ public class TestOLGH8820_Web extends JPAFATServletClient {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh8820.testlogic");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh8820.web");
-
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
@@ -130,11 +129,6 @@ public class TestOLGH8820_Web extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-//        ClassloaderElement loader = new ClassloaderElement();
-//        loader.setApiTypeVisibility("+third-party");
-////        loader.getCommonLibraryRefs().add("HibernateLib");
-//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();

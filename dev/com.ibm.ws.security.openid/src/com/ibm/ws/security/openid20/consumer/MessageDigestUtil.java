@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,12 @@ import com.ibm.websphere.ras.TraceComponent;
 
 public class MessageDigestUtil {
 
-    private static final TraceComponent tc =
-                    Tr.register(MessageDigestUtil.class);
+    private static final TraceComponent tc = Tr.register(MessageDigestUtil.class);
 
     private static Object locker = new Object(); // @GK1
     private static MessageDigest md = null;
     private static final char[] map = new char[] {
-                                                  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+                                                   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     };
     private static final SecureRandom srandom = new SecureRandom();
     static {
@@ -41,7 +40,7 @@ public class MessageDigestUtil {
     /**
      * Calculate the message digest of the given String and convert
      * it to a hexadecimal String
-     * 
+     *
      * @param value input String
      * @return message digest hexadecimal String
      */
@@ -68,7 +67,7 @@ public class MessageDigestUtil {
 
     /**
      * Convert a byte array to a String of hex characters
-     * 
+     *
      * @param bytes
      * @return Hexadecimal String
      */

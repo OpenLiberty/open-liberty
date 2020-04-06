@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2817,7 +2817,11 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     private String getPrincipalNameFilter(String principalName) {
         List<String> loginAttrs = iLdapConfigMgr.getLoginAttributes();
+        principalName = principalName.replace("\"\"", "\""); // Unescape escaped XPath quotation marks
+        principalName = principalName.replace("''", "'"); // Unescape escaped XPath apostrophes
         principalName = Rdn.escapeValue(principalName);
+        principalName = principalName.replace("(", "\\("); // Escape paren for LDAP filter.
+        principalName = principalName.replace(")", "\\)"); // Escape paren for LDAP filter.
         StringBuffer filter = new StringBuffer();
         if (loginAttrs != null) {
             if (loginAttrs.size() > 1) {

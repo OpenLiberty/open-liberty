@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultBindingsServlet;
+import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultComponentBindingsServlet;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultJavaColonBindingsServlet;
 
 import componenttest.annotation.Server;
@@ -37,14 +38,9 @@ public class DefaultBindingsTest extends FATServletClient {
 
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
     @TestServlets({ @TestServlet(servlet = DefaultJavaColonBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
-                    @TestServlet(servlet = DefaultBindingsServlet.class, contextRoot = "EJB3DefBndWeb") })
+                    @TestServlet(servlet = DefaultBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
+                    @TestServlet(servlet = DefaultComponentBindingsServlet.class, contextRoot = "EJB3DefBndWeb") })
     public static LibertyServer server;
-
-//    @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
-//    @TestServlets({ @TestServlet(servlet = DefaultJavaColonBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
-//                    @TestServlet(servlet = DefaultBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
-//                    @TestServlet(servlet = DefaultComponentBindingsServlet.class, contextRoot = "EJB3DefBndWeb") })
-//    public static LibertyServer server;
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -297,6 +297,10 @@ JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: {0} \u5be6\u4f5c {1} \u4e0d\u7b26\u5408 JPA 2.1 \u898f\u683c\uff0c\u4e14\u7121\u6cd5\u4f7f\u7528\u3002\u8acb\u53d6\u5f97\u5be6\u4f5c JPA 2.1 \u7684 JPA \u6301\u7e8c\u6027\u63d0\u4f9b\u8005\u65b0\u7248\u672c\u3002
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=\u7121\u6cd5\u4f7f\u7528 JPA \u6301\u7e8c\u6027\u63d0\u4f9b\u8005\uff0c\u56e0\u70ba\u5b83\u7f3a\u5c11 JPA 2.1 \u898f\u683c\u6240\u8981\u6c42\u7684\u65b9\u6cd5\u5be6\u4f5c\u3002
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=\u8acb\u53d6\u5f97\u7b26\u5408 JPA 2.1 \u898f\u683c\u7684 JPA \u6301\u7e8c\u6027\u63d0\u4f9b\u8005\u65b0\u7248\u672c\u3002
+
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: \u5617\u8a66\u8f49\u63db {0} Java \u985e\u5225\u6642\u767c\u751f\u932f\u8aa4\u3002\u5df2\u6536\u96c6\u4e0b\u5217\u5931\u6557\u8a73\u7d30\u8cc7\u6599\uff1a{1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=\u8f49\u63db Java \u985e\u5225\u6642\u767c\u751f\u975e\u9810\u671f\u7684\u932f\u8aa4\u3002\u5c0e\u81f4\u6b64\u932f\u8aa4\u7684\u539f\u56e0\u901a\u5e38\u662f\u56e0\u70ba Java \u4f4d\u5143\u7d44\u78bc\u7121\u6548\u3002
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=\u985e\u5225\u5feb\u53d6\u53ef\u80fd\u5df2\u6bc0\u640d\uff0c\u6216\u8005\u61c9\u7528\u7a0b\u5f0f\u53ef\u80fd\u672a\u6b63\u78ba\u5305\u88dd\u3002\u9996\u5148\uff0c\u8acb\u6e05\u9664\u985e\u5225\u5feb\u53d6\u3002\u5982\u679c\u8a72\u52d5\u4f5c\u672a\u80fd\u89e3\u6c7a\u554f\u984c\uff0c\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\u4fdd\u5b58\u6a94\u4e2d\u662f\u5426\u5b58\u5728\u5305\u88dd\u932f\u8aa4\u3002
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

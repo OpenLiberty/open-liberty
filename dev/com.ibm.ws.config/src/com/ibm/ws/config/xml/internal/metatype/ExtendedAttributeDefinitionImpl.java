@@ -47,6 +47,7 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
     private boolean resolveVariables = true;
     private List<String> uiReference;
     private boolean beta;
+    private boolean obscure;
 
     public ExtendedAttributeDefinitionImpl(AttributeDefinition ad) {
         delegate = ad;
@@ -82,6 +83,7 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
             uniqueCategory = extensions.get(UNIQUE_ATTR_NAME);
             variable = extensions.get(VARIABLE_ATTR_NAME);
             beta = "true".equals(extensions.get(BETA_NAME));
+            obscure = extensions.get(OBSCURE_NAME) != null;
 
             String variableResolution = extensions.get(VARIABLE_SUBSTITUTION_NAME);
             if (variableResolution != null && FALSE.equalsIgnoreCase(variableResolution))
@@ -166,9 +168,14 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
         return beta;
     }
 
+    @Override
+    public boolean isObscured() {
+        return obscure;
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.config.WSAttributeDefinition#getCopyOf()
      */
     @Override
@@ -220,7 +227,7 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.config.internal.services.ExtendedAttributeDefinition#isFlat()
      */
     @Override
@@ -254,7 +261,7 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.config.internal.services.ExtendedAttributeDefinition#getDelegate()
      */
     @Override
@@ -282,7 +289,7 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.config.internal.services.ExtendedAttributeDefinition#getAttributeName()
      */
     @Override
@@ -310,7 +317,7 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition#resolveVariables()
      */
     @Override
@@ -320,7 +327,7 @@ public class ExtendedAttributeDefinitionImpl implements ExtendedAttributeDefinit
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition#getUIReference()
      */
     @Override

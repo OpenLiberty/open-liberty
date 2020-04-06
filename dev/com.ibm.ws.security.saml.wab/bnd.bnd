@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,25 @@ Service-Component: \
 	com.ibm.ws.security.saml.sso.2.0;version=latest
 
 instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlWab20Messages*.class
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest, \
+    org.jmock:jmock-legacy;version=2.5.0, \
+    cglib:cglib-nodep;version=3.3.0, \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+    org.jmock:jmock;strategy=exact;version=2.5.1, \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+    fattest.simplicity;version=latest, \
+    com.ibm.ws.webcontainer;version=latest, \
+    com.ibm.ws.security.sso.common;version=latest, \
+    com.ibm.ws.security.common;version=latest, \
+    com.ibm.ws.webcontainer.security;version=latest, \
+    com.ibm.ws.security.authentication.filter;version=latest, \
+    com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest, \
+    com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest, \
+    com.ibm.ws.org.opensaml.openws.1.5.6;version=latest, \
+    com.ibm.websphere.org.osgi.service.cm;version=latest, \
+    com.ibm.ws.kernel.boot;version=latest, \
+    com.ibm.ws.logging;version=latest

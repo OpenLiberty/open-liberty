@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.olgh8820.testlogic.JPATestOLGH8820Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
@@ -27,7 +28,7 @@ public class TestOLGH8820_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {
-        testClassName = "com.ibm.ws.jpa.olgh8820.testlogic.JPATestOLGH8820Logic";
+        testClassName = JPATestOLGH8820Logic.class.getName();
         ejbJNDIName = "ejb/OLGH8820SFExEJB";
 
         jpaPctxMap.put("test-jpa-resource-cmex",
@@ -36,8 +37,8 @@ public class TestOLGH8820_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
 
     //Indexed Parameters
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_EJB_SFEx_CMTS_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithIndexParameter_EJB_SFEx_CMTS_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithIndexParameter_EJB_SFEx_CMTS_Web";
         final String testMethod = "testStoredProcedureOrderWithIndexParameter";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -45,8 +46,8 @@ public class TestOLGH8820_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
 
     //Named Parameters
     @Test
-    public void jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_EJB_SFEx_CMTS_Web";
+    public void jpa_spec21_olgh8820_testStoredProcedureOrderWithNamedParameter_EJB_SFEx_CMTS_Web() throws Exception {
+        final String testName = "jpa21_olgh8820_testStoredProcedureOrderWithNamedParameter_EJB_SFEx_CMTS_Web";
         final String testMethod = "testStoredProcedureOrderWithNamedParameter";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

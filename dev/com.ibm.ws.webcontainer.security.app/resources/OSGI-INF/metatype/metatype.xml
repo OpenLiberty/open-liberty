@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2018 IBM Corporation and others.
+    Copyright (c) 2011, 2018, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -127,6 +127,15 @@
 
         <AD id="basicAuthenticationMechanismRealmName" name="%basicAuthenticationMechanismRealmName" description="%basicAuthenticationMechanismRealmName.desc"
             required="false" type="String" default="defaultRealm" />
+        
+        <AD id="sameSiteCookie" name="%sameSiteCookie" description="%sameSiteCookie.desc"
+     		required="false" type="String" default="Disabled">
+     			<Option label="%sameSiteCookieDisabled" value="Disabled"/>
+     			<Option label="%sameSiteCookieLax" value="Lax"/>
+     			<Option label="%sameSiteCookieNone" value="None"/>
+     			<Option label="%sameSiteCookieStrict" value="Strict"/>
+ </AD>    
+            
     </OCD>
     <Designate pid="com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl">
         <Object ocdref="com.ibm.ws.webcontainer.security.metatype"/>

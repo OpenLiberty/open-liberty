@@ -10,15 +10,12 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-javac.source: 1.8
-javac.target: 1.8
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: \
     fat/src,\
     test-applications/mpOpenTracing/src,\
-    test-applications/inventory/src,\
-    test-applications/system/src
+    test-applications/inventory/src/java,\
+    test-applications/system/src/java
     
 -sub: *.bnd
 

@@ -29,6 +29,7 @@ task publishWLPJars(type: Copy) {
         // referenced in a tool script's classpath...
         if (((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty))
                 || (project.name.equals("com.ibm.ws.kernel.boot"))
+                || (project.name.equals("com.ibm.ws.kernel.boot.archive"))
                 || (project.name.equals("com.ibm.ws.appclient.boot"))
                 || (project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
             rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"

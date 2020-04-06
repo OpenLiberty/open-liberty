@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
         this.cleanupBatchSize = cleanupBatchSize;
         this.limitRefreshTokens = limitRefreshTokens;
     }
-    
+
     public CachedDBOidcTokenStore(String componentId,
             ExecutorService executorsvc,
             DataSource dataSource,
@@ -259,7 +259,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                         Tr.debug(tc, "getByHash , columnAdded is true");
                     }
                 }
-                
+
                 closeResultSet(queryResults);
                 closeConnection(conn, error);
             }
@@ -375,7 +375,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                     Tr.debug(tc, "removeByHash , columnAdded is true");
                 }
             }
-            
+
             closeConnection(conn, error);
         }
     }
@@ -434,7 +434,6 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
             // make sure local and db caches has same data
             cache.put(cacheKey, new CacheEntry(entry, lifetime));
         }
-        
 
         long expires = 0;
         if (entry.getLifetimeSeconds() > 0) {
@@ -481,7 +480,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                     Tr.debug(tc, "add , columnAdded is true");
                 }
             }
-           
+
             closeConnection(conn, error);
             if (tc.isDebugEnabled()) {
                 if (error != true) {
@@ -535,14 +534,13 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
         String tokenString = entry.getTokenString();
         CacheUtil cacheUtil = new CacheUtil(this);
         if (!alreadyHashed) {
-            if(shouldHash) {
+            if (shouldHash) {
                 tokenId = cacheUtil.computeHash(tokenId, this.accessTokenEncoding);
                 tokenString = cacheUtil.computeHash(tokenString, this.accessTokenEncoding);
             } else {
                 tokenString = PasswordUtil.passwordEncode(tokenString);
             }
         }
-        
 
         PreparedStatement st = null;
         try {
@@ -585,7 +583,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                 }
             }
             if (!alreadyHashed) {
-                if(shouldHash) {
+                if (shouldHash) {
                     OAuth20Token localToken = new OAuth20TokenImpl(tokenId, componentId, entry.getType(), entry.getSubType(),
                             entry.getCreatedAt(), entry.getLifetimeSeconds(), tokenString, entry.getClientId(), entry.getUsername(),
                             entry.getScope(), entry.getRedirectUri(), entry.getStateId(), entry.getExtensionProperties(), entry.getGrantType());
@@ -617,7 +615,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
             closeStatement(st);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore(java.sql.SQLSyntaxErrorException.class)
@@ -698,7 +696,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                     Tr.debug(tc, "  extensionProperties: " + entry.getExtensionProperties());
                 }
             }
-        }           
+        }
     }
 
     /**
@@ -745,7 +743,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                     Tr.debug(tc, "getAll , columnAdded is true");
                 }
             }
-            
+
             closeResultSet(queryResults);
             closeConnection(conn, error);
         }
@@ -859,12 +857,12 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
         } else {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Internal error ceating token :" + "The OAuth20Token is expired already");
-//            try {
-//                throw new Exception("The OAuth20Token is expired already");
-//            } catch (Exception e) {
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Internal error ceating token :" + e.getMessage(), e);
-//            }
+            // try {
+            // throw new Exception("The OAuth20Token is expired already");
+            // } catch (Exception e) {
+            // if (tc.isDebugEnabled())
+            // Tr.debug(tc, "Internal error ceating token :" + e.getMessage(), e);
+            // }
         }
         if (result != null) {
             result.setLastAccess();
@@ -1138,9 +1136,9 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                 columnAdded = true; // only attempt once
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "getNumTokens , columnAdded is true");
-                } 
+                }
             }
-            
+
             closeResultSet(queryResults);
             if (st != null) {
                 try {
@@ -1240,7 +1238,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                     Tr.debug(tc, "getAllUserTokens , columnAdded is true");
                 }
             }
-            
+
             closeResultSet(queryResults);
             closeConnection(conn, error);
         }
@@ -1280,7 +1278,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
             closeStatement(st);
         }
     }
-    
+
     /**
      * Get all tokens in the DB cache for the given username and client and stateId
      *
@@ -1303,7 +1301,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
             String query = "SELECT * FROM " + tableName + " WHERE "
                     + TableConstants.COL_OC2_COMPONENTID + " =? AND "
                     + TableConstants.COL_OC2_CLIENTID + " =? AND "
-                    + TableConstants.COL_OC2_USERNAME + " =? AND "          
+                    + TableConstants.COL_OC2_USERNAME + " =? AND "
                     + TableConstants.COL_OC2_STATEID + " =? ";
             st = conn.prepareStatement(query);
             st.setString(1, componentId);
@@ -1322,7 +1320,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
             closeStatement(st);
         }
     }
-    
+
     /**
      * Get all tokens in the DB cache for the given username and client
      *
@@ -1343,13 +1341,13 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
             String query = "SELECT * FROM " + tableName + " WHERE "
                     + TableConstants.COL_OC2_COMPONENTID + " =? AND "
                     + TableConstants.COL_OC2_CLIENTID + " =? AND "
-                    + TableConstants.COL_OC2_USERNAME + " =? ";          
-                    
+                    + TableConstants.COL_OC2_USERNAME + " =? ";
+
             st = conn.prepareStatement(query);
             st.setString(1, componentId);
             st.setString(2, clientId);
             st.setString(3, username);
-            
+
             queryResults = st.executeQuery();
             while (queryResults != null && queryResults.next()) {
                 OAuth20Token result = createToken(queryResults);
@@ -1381,7 +1379,6 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                 hash = MessageDigestUtil.getDigest(lookupKey);
             }
         }
-
 
         return getByHash(hash);
     }
@@ -1435,7 +1432,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                 getMatchingTokens(conn, username, client, tokenType, queryResults, results);
             } else {
                 getMatchingTokens(conn, username, client, queryResults, results);
-            }        
+            }
             error = false;
         } catch (SQLException sqle) {
             isSqlException = true;
@@ -1451,7 +1448,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                         getMatchingTokens(conn, username, client, tokenType, queryResults, results);
                     } else {
                         getMatchingTokens(conn, username, client, queryResults, results);
-                    }  
+                    }
                     error = false;
                 } catch (Exception e) {
                     Tr.error(tc, "Internal error while getting all matching tokens: " + e.getMessage(), e);
@@ -1470,11 +1467,11 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
                     Tr.debug(tc, "getMatchingTokens , columnAdded is true");
                 }
             }
-            
+
             closeResultSet(queryResults);
             closeConnection(conn, error);
         }
-        
+
         return results;
 
     }
@@ -1482,7 +1479,7 @@ public class CachedDBOidcTokenStore extends OAuthJDBCImpl
     /** {@inheritDoc} */
     @Override
     public Collection<OAuth20Token> getUserAndClientTokens(String username, String client) {
-        
+
         return getMatchingTokens(username, client, null);
 
     }

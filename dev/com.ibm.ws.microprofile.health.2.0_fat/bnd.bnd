@@ -17,9 +17,6 @@ src: \
 	test-applications/DelayedHealthCheckApp/src, \
 	test-applications/DifferentAppNameHealthCheckApp/src
 
-javac.source: 1.8
-javac.target: 1.8
-	
 fat.project: true
 
 -buildpath: \

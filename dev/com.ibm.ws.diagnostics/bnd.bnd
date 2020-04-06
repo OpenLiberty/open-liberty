@@ -30,6 +30,7 @@ DynamicImport-Package: \
 -dsannotations=com.ibm.ws.diagnostics.osgi.BlueprintIntrospector,\
   com.ibm.ws.diagnostics.osgi.ComponentInfoIntrospection,\
   com.ibm.ws.diagnostics.osgi.ConfigVariableIntrospection,\
+  com.ibm.ws.diagnostics.osgi.LoggingIntrospector,\
   com.ibm.ws.diagnostics.osgi.RegionIntrospection
 
 Service-Component: \
@@ -85,7 +86,7 @@ Service-Component: \
 	com.ibm.websphere.org.osgi.service.blueprint;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
+	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
 	com.ibm.ws.config;version=latest

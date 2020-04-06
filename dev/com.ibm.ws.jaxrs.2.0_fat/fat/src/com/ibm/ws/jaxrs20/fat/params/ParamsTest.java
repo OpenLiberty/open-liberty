@@ -1613,4 +1613,34 @@ public class ParamsTest {
         assertEquals(200, resp.getStatusLine().getStatusCode());
         assertEquals("id3_0001", asString(resp));
     }
+
+    @Test
+    public void testHttpServletResponseGetParamsWithCharset() throws Exception {
+        String uri = getBaseTestUri(paramwar, PARAM_URL_PATTERN, "form/httpServletRequestGetParam");
+
+        HttpPost httpMethod = new HttpPost(uri);
+        StringEntity entity = new StringEntity("id=213456", "UTF-8");
+        entity.setContentType("application/x-www-form-urlencoded; charset=UTF-8");
+        httpMethod.setEntity(entity);
+
+        HttpResponse resp = client.execute(httpMethod);
+        String responseBody = asString(resp);
+        assertEquals(200, resp.getStatusLine().getStatusCode());
+        assertEquals("id=213456", responseBody);
+    }
+
+    @Test
+    public void testHttpServletResponseGetParamsNoCharset() throws Exception {
+        String uri = getBaseTestUri(paramwar, PARAM_URL_PATTERN, "form/httpServletRequestGetParam");
+
+        HttpPost httpMethod = new HttpPost(uri);
+        StringEntity entity = new StringEntity("id=213456", "UTF-8");
+        entity.setContentType("application/x-www-form-urlencoded");
+        httpMethod.setEntity(entity);
+
+        HttpResponse resp = client.execute(httpMethod);
+        String responseBody = asString(resp);
+        assertEquals(200, resp.getStatusLine().getStatusCode());
+        assertEquals("id=213456", responseBody);
+    }
 }

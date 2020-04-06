@@ -62,7 +62,7 @@ class Validator {
         }
         mappedTypes.putIfAbsent(graphQLType.getName(), resolvedType);
         AnnotatedType knownType = mappedTypes.get(graphQLType.getName());
-        if (isMappingAllowed(resolvedType, knownType)) {
+        if (isMappingAllowed(resolvedType, knownType) || resolvedType.getType().getTypeName().startsWith("java.lang")) {
             return ValidationResult.valid();
         }
         return ValidationResult.invalid(String.format("Potential type name collision detected: '%s' bound to multiple types:" +

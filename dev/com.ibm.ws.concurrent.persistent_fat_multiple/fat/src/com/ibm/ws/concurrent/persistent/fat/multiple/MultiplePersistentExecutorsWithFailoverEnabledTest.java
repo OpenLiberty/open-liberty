@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,19 +15,18 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyFileManager;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -37,11 +36,9 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServletClient {
 	private static final String APP_NAME = "persistmultitest";
-	private static final String DB_NAME = "persistmultidb";
     private static final Set<String> appNames = Collections.singleton(APP_NAME);
     
-	@ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
     
     private static ServerConfiguration originalConfig, failoverEnabledConfig;
     
@@ -51,33 +48,23 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
     
     @BeforeClass
     public static void setUp() throws Exception {
-        // Delete the Derby-only database that is used by the persistent scheduled executor
-        Machine machine = server.getMachine();
-        String installRoot = server.getInstallRoot();
-        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persistmultidb");
-
-    	//Get type
-		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
-		
-    	//Get driver info
-    	String driverName = dbContainerType.getDriverName();
-    	server.addEnvVar("DB_DRIVER", driverName);
+    	//Get driver type
+    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 		
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-    	
-		//Initialize database
-		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
         
     	//Add application to server
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
     	
-    	//Set original config
+    	//Edit original config to enable failover
     	originalConfig = server.getServerConfiguration();
         failoverEnabledConfig = originalConfig.clone();
         ConfigElementList<PersistentExecutor> executors = failoverEnabledConfig.getPersistentExecutors();
-        executors.getById("executor1").setExtraAttribute("missedTaskThreshold2", "15s");
-        executors.getById("executor2").setExtraAttribute("missedTaskThreshold2", "16s");
+        executors.getById("executor1").setMissedTaskThreshold("15s");
+        executors.getById("executor2").setMissedTaskThreshold("16s");
+        executors.getById("executor1").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+        executors.getById("executor2").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(failoverEnabledConfig);
 
     	//Start server

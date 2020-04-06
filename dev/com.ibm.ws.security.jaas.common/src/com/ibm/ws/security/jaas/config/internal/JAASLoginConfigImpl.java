@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -189,7 +189,7 @@ public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig
 
         for (AppConfigurationEntry appConfigurationEntry : appConfigurationEntries) {
             Map<String, Object> options = (Map<String, Object>) appConfigurationEntry.getOptions();
-            options = JAASLoginModuleConfigImpl.processDelegateOptions(options, appConfigurationEntry.getLoginModuleName(), classLoadingService, sharedLibrary, true);
+            options = JAASLoginModuleConfigImpl.processDelegateOptions(options, appConfigurationEntry.getLoginModuleName(), null, classLoadingService, sharedLibrary, true);
             LoginModuleControlFlag controlFlag = appConfigurationEntry.getControlFlag();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "loginModuleClassName: " + JAASLoginModuleConfig.LOGIN_MODULE_PROXY + " options: " + options.toString() + " controlFlag: " + controlFlag.toString());

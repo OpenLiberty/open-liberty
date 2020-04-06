@@ -26,6 +26,7 @@ Private-Package: com.ibm.ws.config.xml.internal.nester, \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+    !com.ibm.ws.kernel, \
     org.omg.*;version=2.4, \
     javax.rmi.CORBA;version=!,\
     *

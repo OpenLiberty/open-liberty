@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -56,6 +56,11 @@ ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=\u8bf7\u9a8c\u8bc1\u670d\u52a1\
 ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: {0} \u4f1a\u8bdd\u9ad8\u901f\u7f13\u5b58\u5e93\u4e3a\u7a7a\u3002{1}
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=sessionCache \u529f\u80fd\u90e8\u4ef6\u627e\u4e0d\u5230\u8981\u88c5\u5165\u7684 JCache \u63d0\u4f9b\u8005\u3002
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=\u8bf7\u9a8c\u8bc1\u5e93\u4e2d\u662f\u5426\u5305\u542b JCache \u63d0\u4f9b\u8005\u4ee5\u53ca\u662f\u5426\u6b63\u786e\u6307\u5b9a\u4e86\u6240\u6709\u8def\u5f84\u3002
+
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: \u4e3a HTTP \u4f1a\u8bdd\u6301\u4e45\u6027\u6240\u751f\u6210\u7684 Infinispan \u914d\u7f6e\uff1a{0}\u3002\u8981\u8986\u76d6\uff0c\u8bf7\u914d\u7f6e httpSessionCache \u914d\u7f6e\u5143\u7d20\u7684 URI \u5c5e\u6027\u3002
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=\u7528\u4e8e HTTP \u4f1a\u8bdd\u6301\u4e45\u6027\u7684 Infinispan \u9ad8\u901f\u7f13\u5b58\u9700\u8981\u5176\u4ed6\u914d\u7f6e\u6765\u6301\u4e45\u5b58\u50a8\u670d\u52a1\u5668\u4e4b\u95f4\u7684\u4f1a\u8bdd\u3002\u5f53\u7528\u6237\u672a\u63d0\u4f9b\u6b64\u914d\u7f6e\u65f6\uff0cLiberty \u5c06\u751f\u6210\u6b64\u914d\u7f6e\u3002
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=\u5982\u679c\u60a8\u5bf9\u6240\u751f\u6210\u7684\u914d\u7f6e\u6ee1\u610f\uff0c\u90a3\u4e48\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u5426\u5219\uff0c\u53ef\u4ee5\u5c06\u6240\u751f\u6210\u7684\u914d\u7f6e\u7528\u4f5c\u8d77\u59cb\u70b9\u3002
 
 INTERNAL_SERVER_ERROR=\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef
 

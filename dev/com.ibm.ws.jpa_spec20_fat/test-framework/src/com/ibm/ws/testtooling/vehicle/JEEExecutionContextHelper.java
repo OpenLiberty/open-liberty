@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.testtooling.vehicle;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -60,21 +61,21 @@ public class JEEExecutionContextHelper {
         sb.append("  Test Session Sig: ").append(testExecCtx.getTestSessionSig()).append("\n");
 
         sb.append("  Test Properties:\n");
-        HashMap props = testExecCtx.getProperties();
+        HashMap<String, Serializable> props = testExecCtx.getProperties();
         int propCount = 1;
         for (Object key : props.keySet()) {
             sb.append("     ").append(propCount++).append(") ").append(key).append(": ").append(props.get(key)).append("\n");
         }
 
         sb.append("  JPA Resources:\n");
-        HashMap jpaRes = testExecCtx.getJpaPCInfoMap();
+        HashMap<String, JPAPersistenceContext> jpaRes = testExecCtx.getJpaPCInfoMap();
         int jpaResCount = 1;
         for (Object key : jpaRes.keySet()) {
             sb.append("     ").append(jpaResCount++).append(") ").append(key).append(": ").append(jpaRes.get(key)).append("\n");
         }
 
         sb.append("  Messenger Resources:\n");
-        HashMap msgRes = testExecCtx.getMsgClientMap();
+        HashMap<String, MessagingClientContext> msgRes = testExecCtx.getMsgClientMap();
         int msgResCount = 1;
         for (Object key : msgRes.keySet()) {
             sb.append("     ").append(msgResCount++).append(") ").append(key).append(": ").append(msgRes.get(key)).append("\n");

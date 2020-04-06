@@ -73,7 +73,7 @@ public class FormLoginAuthenticatorTest {
 
     /**
      * Tests redirect to the login page
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -128,6 +128,9 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getOverrideHttpAuthMethod();
                 will(returnValue(null));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
+
             }
         });
 
@@ -138,7 +141,7 @@ public class FormLoginAuthenticatorTest {
 
     /**
      * Tests successful authentication case where user is authorized
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -172,7 +175,7 @@ public class FormLoginAuthenticatorTest {
 
     /**
      * Tests redirection to the login page does not happen for unprotected resource when persist cred is enabled.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -312,6 +315,8 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
 
@@ -417,6 +422,8 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
                 will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
 
@@ -553,7 +560,7 @@ public class FormLoginAuthenticatorTest {
 
     /**
      * Utility method that mimics part of what savePostParamsToCookie() does.
-     * 
+     *
      * @param params
      * @param sbReqURL
      * @return byte array
@@ -579,7 +586,7 @@ public class FormLoginAuthenticatorTest {
      * matches the Cookie that is instantiated in
      * PostParameterHelper.restorePostParamsFromCookie(), based
      * on name, value, age, and path.
-     * 
+     *
      * @param cookie
      * @return boolean if the cookie's properties match
      */

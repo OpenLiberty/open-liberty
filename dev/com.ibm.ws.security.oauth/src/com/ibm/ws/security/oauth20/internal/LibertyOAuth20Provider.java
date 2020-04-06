@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationListener;
@@ -189,6 +189,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     protected static final String KEY_logoutRedirectURL = "logoutRedirectURL";
     protected static final String KEY_CACHE_ACCESSTOKEN = "accessTokenCacheEnabled";
     protected static final String KEY_REVOKE_ACCESSTOK_W_REFRESHTOK = "revokeAccessTokensWithRefreshTokens";
+    public static final String KEY_TRACK_OAUTH_CLIENTS = "trackOAuthClients";
 
     // TODO: Rational Jazz props. Determine if these can be move to OIDC config.
     protected static final String KEY_COVERAGE_MAP_SESSION_MAX_AGE = "coverageMapSessionMaxAge";
@@ -229,9 +230,11 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public static final String KEY_CLIENT_APP_PASSWORD_ALLOWED = "appPasswordAllowed";
     public static final String KEY_CLIENT_APP_TOKEN_ALLOWED = "appTokenAllowed";
     public static final String KEY_CLIENT_SECRET_ENCODING = "clientSecretEncoding";
-    
+
     public static final String KEY_CLIENT_PROOF_KEY_FOR_CODE_EXCHANGE = "proofKeyForCodeExchange";
     public static final String KEY_CLIENT_PUBLIC_CLIENT = "publicClient";
+
+    public static final String KEY_ROPC_PREFER_USERSECURITYNAME = "ropcPreferUserSecurityName";
 
     private volatile SecurityService securityService;
 
@@ -343,6 +346,8 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     private boolean mpJwt = false; // micropfile format Jwt token
     private String tokenFormat;
     private boolean revokeAccessTokensWithRefreshTokens = true;
+    private boolean ropcPreferUserSecurityName = false;
+    private boolean trackOAuthClients = false;
 
     // DS related methods
 
@@ -464,6 +469,8 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         appTokenLifetime = (Long) properties.get(KEY_APP_TOKEN_LIFETIME);
         appTokenOrPasswordLimit = (Long) properties.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT);
         clientSecretEncoding = getClientSecretEncodingFromConfig();
+        ropcPreferUserSecurityName = (Boolean) properties.get(KEY_ROPC_PREFER_USERSECURITYNAME);
+        trackOAuthClients = (Boolean) properties.get(KEY_TRACK_OAUTH_CLIENTS);
 
         setUpInternalClient();
         // tolerate old jwtAccessToken attrib but if tokenFormat attrib is specified,
@@ -2412,4 +2419,15 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public String getAccessTokenEncoding() {
         return this.accessTokenEncoding;
     }
+
+    @Override
+    public boolean isROPCPreferUserSecurityName() {
+        return this.ropcPreferUserSecurityName;
+    }
+
+    @Override
+    public boolean isTrackOAuthClients() {
+        return trackOAuthClients;
+    }
+
 }

@@ -42,6 +42,23 @@ Import-Package: \
   org.omg.CORBA.portable;version=!,\
   org.omg.CORBA_2_3.portable;version=!,\
   org.omg.PortableServer;version=!,\
+  com.ibm.ejs.j2c,\
+  com.ibm.ejs.util,\
+  com.ibm.ejs.util.dopriv,\
+  com.ibm.ws.container.service.*,\
+  com.ibm.ws.exception,\
+  com.ibm.ws.runtime.metadata,\
+  com.ibm.ws.threadContext,\
+  com.ibm.ws.util,\
+  com.ibm.ws.util.dopriv,\
+  com.ibm.ws.container.service.annocache, \
+  com.ibm.ws.container.service.annotations, \
+  com.ibm.ws.container.service.app.deploy, \
+  com.ibm.ws.container.service.app.deploy.extended, \
+  com.ibm.ws.container.service.metadata, \
+  com.ibm.ws.container.service.metadata.extended, \
+  com.ibm.ws.container.service.naming, \
+  com.ibm.ws.container.service.state, \
   *
 
 DynamicImport-Package: \
@@ -103,7 +120,8 @@ Include-Resource: \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.TimerServiceJavaColonNamingHelper, \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper, \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBLocalNamingHelperImpl, \
-  com.ibm.ws.ejbcontainer.osgi.internal.naming.LocalColonEJBNamingHelperImpl
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.LocalColonEJBNamingHelperImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBRemoteBeanFactory
 
 Service-Component: \
   com.ibm.ws.ejb.injection.processor.EJBProcessorProvider;\

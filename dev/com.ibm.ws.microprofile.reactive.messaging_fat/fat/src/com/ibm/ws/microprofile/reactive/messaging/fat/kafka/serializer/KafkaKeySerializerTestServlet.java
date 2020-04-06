@@ -27,8 +27,8 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 /**
  * Test that the kafka connector correctly passes on the configured custom serializers and deserializers
@@ -48,14 +48,14 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
     @Test
     public void testMyDataKey() throws Exception {
 
-        ExtendedKafkaReader<MyData, MyData> reader = extReaderFor(MyDataMessagingBean2.OUT_CHANNEL);
-        ExtendedKafkaWriter<MyData, MyData> writer = extWriterFor(MyDataMessagingBean2.IN_CHANNEL);
+        KafkaReader<MyData, MyData> reader = extReaderFor(MyDataMessagingBean2.OUT_CHANNEL);
+        KafkaWriter<MyData, MyData> writer = extWriterFor(MyDataMessagingBean2.IN_CHANNEL);
 
         try {
             writer.sendMessage(KEY1, VALUE1);
             writer.sendMessage(KEY2, VALUE2);
 
-            List<ConsumerRecord<MyData, MyData>> records = reader.waitForRecords(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+            List<ConsumerRecord<MyData, MyData>> records = reader.assertReadRecords(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
             //since MP Reactive Messaging does not handle keys, they will get passed through as null but to prove
             //that the key serializer and deserializer is properly configured, they have special case code for null
             ConsumerRecord<MyData, MyData> r1 = records.get(0);
@@ -94,14 +94,14 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
      * @param topicName the topic to read from
      * @return the reader
      */
-    public ExtendedKafkaReader<MyData, MyData> extReaderFor(String topicName) {
+    public KafkaReader<MyData, MyData> extReaderFor(String topicName) {
         Map<String, Object> consumerConfig = new HashMap<>();
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBootstrap());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         KafkaConsumer<MyData, MyData> kafkaConsumer = new KafkaConsumer<>(consumerConfig, new MyDataDeserializer(), new MyDataDeserializer());
-        ExtendedKafkaReader<MyData, MyData> reader = new ExtendedKafkaReader<MyData, MyData>(kafkaConsumer, topicName);
+        KafkaReader<MyData, MyData> reader = new KafkaReader<MyData, MyData>(kafkaConsumer, topicName);
         return reader;
     }
 
@@ -113,12 +113,12 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
      * @param topicName the topic to write to
      * @return the writer
      */
-    public ExtendedKafkaWriter<MyData, MyData> extWriterFor(String topicName) {
+    public KafkaWriter<MyData, MyData> extWriterFor(String topicName) {
         Map<String, Object> producerConfig = new HashMap<>();
         producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBootstrap());
 
         KafkaProducer<MyData, MyData> kafkaProducer = new KafkaProducer<>(producerConfig, new MyDataSerializer(), new MyDataSerializer());
-        ExtendedKafkaWriter<MyData, MyData> writer = new ExtendedKafkaWriter<MyData, MyData>(kafkaProducer, topicName);
+        KafkaWriter<MyData, MyData> writer = new KafkaWriter<MyData, MyData>(kafkaProducer, topicName);
         return writer;
     }
 

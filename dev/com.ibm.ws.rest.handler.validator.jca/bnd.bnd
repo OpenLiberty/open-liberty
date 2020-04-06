@@ -11,14 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: JCA validator
 Bundle-SymbolicName: com.ibm.ws.rest.handler.validator.jca
 Bundle-Description: Validator for JCA connection factories; version=${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: rest.validation
 
@@ -41,7 +38,7 @@ DynamicImport-Package:\
   com.ibm.tx.jta;version=latest,\
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.appserver.spi.logging,\
-  com.ibm.websphere.javaee.connector.1.7;version=latest,\
+  com.ibm.websphere.javaee.connector.1.6;version=latest,\
   com.ibm.websphere.javaee.jms.2.0;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.cm,\

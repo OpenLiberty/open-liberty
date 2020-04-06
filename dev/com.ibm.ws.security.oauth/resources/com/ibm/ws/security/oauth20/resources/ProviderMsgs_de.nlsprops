@@ -317,7 +317,8 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: Der Anforderungsparameter [
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Der angegebene Wert des angegebenen Parameters in der OAuth-Anforderung ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind im angegebenen Attribut der Serverkonfiguration aufgelistet.
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Stellen Sie sicher, dass die Werte im Anforderungsparameter g\u00fcltig sind.
 
-security.oauth20.front.end.error=CWOAU0073E: Es ist ein Fehler bei der Authentifizierung eines Benutzers aufgetreten. Wiederholen Sie die Authentifizierung oder wenden Sie sich an den Siteadministrator, wenn das Problem weiterhin auftritt.
+# this message is also emitted by the oidc client via the PublicErrorFacingServlet
+security.oauth20.front.end.error=CWOAU0073E: Es ist ein Authentifizierungsfehler aufgetreten. Versuchen Sie, den Web-Browser zu schlie\u00dfen, und wiederholen Sie die Authentifizierung oder wenden Sie sich an den Siteadministrator, wenn das Problem weiterhin auftritt.
 security.oauth20.front.end.error.explanation=Es ist m\u00f6glich, dass in der Anforderung Informationen fehlen, dass ein interner Fehler im Server aufgetreten ist oder dass ein anderer Fehler die erfolgreiche Authentifizierung des Benutzers verhindert.
 security.oauth20.front.end.error.useraction=Bitten Sie Ihren Systemadministrator, das Problem zu beheben.
 

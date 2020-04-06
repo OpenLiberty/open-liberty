@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mpRestClient10.basicCdi;
 
+import java.sql.Date;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -50,4 +51,11 @@ public interface BasicServiceClient {
     @Path("/{name}")
     Widget removeWidget(@PathParam("name") String name) throws UnknownWidgetException;
 
+    @GET
+    @Path("/date")
+    Date getCurrentDate();
+
+    @POST
+    @Path("/date")
+    Date echoDate(Date d);
 }

@@ -55,6 +55,11 @@ kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: La propri\u00e9t\u00e9 group.id n'a
 kafka.groupid.not.set.CWMRX1005E.explanation=L'ID de groupe de consommateurs Kafka doit \u00eatre d\u00e9fini pour que Reactive Messaging puisse fonctionner correctement.
 kafka.groupid.not.set.CWMRX1005E.useraction=D\u00e9finissez la propri\u00e9t\u00e9 dans l'un des emplacements de source de configuration de MicroProfile pour cette application, par exemple dans le fichier microprofile-config.properties.
 
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Les classes du fichier JAR kafka-clients n'ont pas pu \u00eatre charg\u00e9es. Assurez-vous que le fichier JAR kafka-clients et ses d\u00e9pendances sont disponibles en tant que biblioth\u00e8ques pour votre application.
+kafka.library.not.present.CWMRX1006E.explanation=Les applications qui utilisent le client Kakfa de Reactive Messaging doivent fournir le fichier JAR kafka-clients et ses d\u00e9pendances. Elles peuvent fournir ce fichier et ses d\u00e9pendances en les conditionnant sous forme de biblioth\u00e8que dans l'application ou en les fournissant en tant que biblioth\u00e8que partag\u00e9e.
+kafka.library.not.present.CWMRX1006E.useraction=Conditionnez le fichier JAR kafka-clients et ses d\u00e9pendances en tant que biblioth\u00e8ques dans votre application ou en tant que biblioth\u00e8que partag\u00e9e. Le fichier JAR kafka-clients peut \u00eatre t\u00e9l\u00e9charg\u00e9 depuis le site Web Apache Kafka ou depuis Maven Central.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

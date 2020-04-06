@@ -1443,7 +1443,11 @@ public class LdapConnection {
                             }
 
                             while (neu.hasMoreElements()) {
-                                allNeu.add(neu.nextElement());
+                                SearchResult sr = neu.nextElement();
+                                if (iAttrRangeStep > 0) { // Should only enable this on ActiveDirectory, not supported on other Ldaps, added for OLGH 10144
+                                    supportRangeAttributes(sr.getAttributes(), name, ctx);
+                                }
+                                allNeu.add(sr);
                                 count++;
                             }
 
@@ -2002,7 +2006,7 @@ public class LdapConnection {
                 String attrId = attrName.substring(0, pos);
                 Attribute newAttr = new BasicAttribute(attrId);
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, METHODNAME + " Range attriute retrieved: " + attrName);
+                    Tr.debug(tc, METHODNAME + " Range attribute retrieved: " + attrName);
                 }
 
                 for (NamingEnumeration<?> neu2 = attr.getAll(); neu2.hasMoreElements();) {

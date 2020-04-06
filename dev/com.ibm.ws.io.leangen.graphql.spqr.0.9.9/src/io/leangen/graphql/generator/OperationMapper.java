@@ -2,6 +2,8 @@ package io.leangen.graphql.generator;
 
 import graphql.execution.batched.BatchedDataFetcher;
 import graphql.relay.Relay;
+import graphql.schema.Coercing;
+import graphql.schema.CoercingSerializeException;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLArgument;
@@ -14,6 +16,7 @@ import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLUnionType;
 import graphql.schema.PropertyDataFetcher;
@@ -33,14 +36,19 @@ import io.leangen.graphql.metadata.TypedElement;
 import io.leangen.graphql.metadata.exceptions.MappingException;
 import io.leangen.graphql.metadata.strategy.query.DirectiveBuilderParams;
 import io.leangen.graphql.metadata.strategy.value.ValueMapper;
+import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Directives;
 import io.leangen.graphql.util.GraphQLUtils;
 import io.leangen.graphql.util.Urls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.eclipse.microprofile.graphql.Id;
+
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,6 +83,21 @@ public class OperationMapper {
     private List<GraphQLDirective> directives; //The list of all added mapped directives
 
     private static final Logger log = LoggerFactory.getLogger(OperationMapper.class);
+
+    private static GraphQLScalarType ID_TYPE = new GraphQLScalarType("ID", "Built-in scalar for ID types", new Coercing<String, String>() {
+        @Override
+        public String serialize(Object dataFetcherResult) throws CoercingSerializeException {
+            return dataFetcherResult == null ? null : dataFetcherResult.toString();
+        }
+        @Override
+        public String parseValue(Object input) throws CoercingSerializeException {
+            return input == null ? null : input.toString();
+        }
+        @Override
+        public String parseLiteral(Object input) throws CoercingSerializeException {
+            return input == null ? null : input.toString();
+        }
+    });
 
     /**
      *
@@ -152,7 +175,13 @@ public class OperationMapper {
      * @return GraphQL output field representing the given operation
      */
     public GraphQLFieldDefinition toGraphQLField(Operation operation, BuildContext buildContext) {
-        GraphQLOutputType type = toGraphQLType(operation.getJavaType(), buildContext);
+        
+        GraphQLOutputType type;
+        if (isAnnotatedWithID(operation)) {
+            type = ID_TYPE;
+        } else {
+            type = toGraphQLType(operation.getJavaType(), buildContext);
+        }
         GraphQLFieldDefinition.Builder fieldBuilder = newFieldDefinition()
                 .name(operation.getName())
                 .description(operation.getDescription())
@@ -177,6 +206,29 @@ public class OperationMapper {
         fieldBuilder.dataFetcher(createResolver(operation, valueMapper, buildContext.globalEnvironment, buildContext.interceptorFactory));
 
         return buildContext.transformers.transform(fieldBuilder.build(), operation, this, buildContext);
+    }
+
+    private boolean isAnnotatedWithID(Operation operation) {
+        try {
+            AnnotatedElement element = operation.getTypedElement().getElement();
+            if (ClassUtils.hasAnnotation(element, Id.class)) {
+                return true;
+            }
+            if (element instanceof Method) {
+                Method m = (Method) element;
+                Field f = ClassUtils.findFieldBySetter(m).orElse(ClassUtils.findFieldByGetter(m).orElse(null));
+                return f != null && ClassUtils.hasAnnotation(f, Id.class);
+            }
+            if (element instanceof Field) {
+                Field f = (Field) element;
+                Method setter = ClassUtils.findSetter(f.getDeclaringClass(), f.getName(), f.getType()).orElse(null);
+                return setter != null && ClassUtils.hasAnnotation(setter, Id.class);
+            }
+        } catch (IllegalStateException ise) {
+            //occurs if there are multiple typed elements - I don't think this should happen...
+            ise.printStackTrace();
+        }
+        return false;
     }
 
     public GraphQLOutputType toGraphQLType(AnnotatedType javaType, BuildContext buildContext) {

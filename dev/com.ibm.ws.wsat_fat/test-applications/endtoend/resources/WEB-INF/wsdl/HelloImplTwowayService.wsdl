@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	name="HelloImplTwowayService" targetNamespace="http://server.endtoend.wsat.ws.ibm.com/"
+	xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://server.endtoend.wsat.ws.ibm.com/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+	xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<wsp:Policy wsu:Id="TransactedPolicy">
+		<wsat:ATAssertion/>
+	</wsp:Policy>
+<wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server.endtoend.wsat.ws.ibm.com/" elementFormDefault="unqualified" targetNamespace="http://server.endtoend.wsat.ws.ibm.com/" version="1.0">
+<xs:element name="callAnother" type="tns:callAnother"/>
+<xs:element name="callAnotherResponse" type="tns:callAnotherResponse"/>
+<xs:element name="sayHello" type="tns:sayHello"/>
+<xs:element name="sayHelloResponse" type="tns:sayHelloResponse"/>
+<xs:complexType name="callAnother">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element name="arg3" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="callAnotherResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="sayHello">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element name="arg1" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="sayHelloResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>  </wsdl:types>
+  <wsdl:message name="sayHello">
+    <wsdl:part element="tns:sayHello" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sayHelloResponse">
+    <wsdl:part element="tns:sayHelloResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="callAnotherResponse">
+    <wsdl:part element="tns:callAnotherResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="callAnother">
+    <wsdl:part element="tns:callAnother" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="HelloImplTwoway">
+    <wsdl:operation name="callAnother">
+      <wsdl:input message="tns:callAnother" name="callAnother">
+    </wsdl:input>
+      <wsdl:output message="tns:callAnotherResponse" name="callAnotherResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sayHello">
+      <wsdl:input message="tns:sayHello" name="sayHello">
+    </wsdl:input>
+      <wsdl:output message="tns:sayHelloResponse" name="sayHelloResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HelloImplTwowayServiceSoapBinding" type="tns:HelloImplTwoway">
+  <wsp:PolicyReference URI="#TransactedPolicy"
+				wsdl:required="true" />
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="callAnother">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="callAnother">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="callAnotherResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sayHello">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sayHello">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="sayHelloResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HelloImplTwowayService">
+    <wsdl:port binding="tns:HelloImplTwowayServiceSoapBinding" name="HelloImplTwowayPort">
+      <soap:address location="http://localhost:9888/endtoend/HelloImplTwowayService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

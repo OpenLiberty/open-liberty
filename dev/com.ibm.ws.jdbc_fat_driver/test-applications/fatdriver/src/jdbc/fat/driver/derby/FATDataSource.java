@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 
-public class FATDataSource implements DataSource {
+public class FATDataSource implements DataSource, FATJDBCSpecialOps {
     protected final CommonDataSource derbyds;
 
     public FATDataSource() throws Exception {
@@ -28,6 +28,11 @@ public class FATDataSource implements DataSource {
 
     protected FATDataSource(CommonDataSource derbyds) {
         this.derbyds = derbyds;
+    }
+
+    @Override
+    public FATVendorSpecificSomething createSomething(int someValue) {
+        return new FATVendorSpecificSomething(someValue);
     }
 
     public boolean getAutoCreate() throws Exception {
@@ -102,16 +107,24 @@ public class FATDataSource implements DataSource {
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (CharSequence.class.equals(iface)) // hacky way of allowing the application to identify which data source is selected
-            return iface.cast(getClass().getName());
-        else if (isWrapperFor(iface))
+        if (isWrapperFor(iface))
             return iface.cast(this);
         else
             throw new SQLException(this + " does not wrap " + iface);
     }
 
     @Override
+    public int useAnything(Object anything) {
+        return ((FATVendorSpecificSomething) anything).increment();
+    }
+
+    @Override
+    public int useSomething(FATVendorSpecificSomething something) {
+        return something.increment();
+    }
+
+    @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return CharSequence.class.equals(iface) || iface.isInterface() && iface.isAssignableFrom(getClass());
+        return iface.isInterface() && iface.isAssignableFrom(getClass());
     }
 }

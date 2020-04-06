@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal.utils;
 
@@ -34,6 +34,7 @@ import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
+import com.ibm.ws.security.social.internal.OkdServiceLoginImpl;
 
 /**
  * Collection of utility methods for String to byte[] conversion.
@@ -240,28 +241,18 @@ public class SocialUtil {
             throw new SocialLoginException("EXCEPTION_INITIALIZING_URL", null, new Object[] { endpointUrl, "" });
         }
     }
-    
-    public static boolean isOpenShiftConfig(SocialLoginConfig clientConfig) {
-        boolean isOpenShiftConfig = false;
-        if (clientConfig instanceof Oauth2LoginConfigImpl) {
-            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
-            String userApiType = config.getUserApiType();
-            return (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType));
-        }
-        return isOpenShiftConfig;
+
+    public static boolean isKubeConfig(SocialLoginConfig clientConfig) {
+        String userApiType = clientConfig.getUserApiType();
+        return (userApiType != null && Oauth2LoginConfigImpl.USER_API_TYPE_KUBE.equals(userApiType));
     }
-   
+
+    public static boolean isOkdConfig(SocialLoginConfig config) {
+        return config.getClass().getName().equals(OkdServiceLoginImpl.class.getName());
+    }
+
     public static boolean useAccessTokenFromRequest(SocialLoginConfig clientConfig) {
-        
-        if (clientConfig instanceof Oauth2LoginConfigImpl) {
-            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
-            if (config.isAccessTokenRequired() || config.isAccessTokenSupported()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
+        return (clientConfig.isAccessTokenRequired() || clientConfig.isAccessTokenSupported());
     }
 
 }

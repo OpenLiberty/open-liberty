@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,7 @@ public class FeatureList {
             addJVM(possibleJavaVersions, "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
-            addJVM(possibleJavaVersions, "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
+            addJVM(possibleJavaVersions, "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
 
             List<GenericMetadata> mostGeneralRange = ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.7))\"");
 
@@ -100,7 +100,7 @@ public class FeatureList {
             eeToCapability.put("JavaSE-1.7", mostGeneralRange);
             eeToCapability.put("JavaSE-1.8", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.8))\""));
             eeToCapability.put("JavaSE-11", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=11))\""));
-            eeToCapability.put("JavaSE-12", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=12))\""));
+            eeToCapability.put("JavaSE-13", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=13))\""));
         }
 
         gaBuild = isGABuild();

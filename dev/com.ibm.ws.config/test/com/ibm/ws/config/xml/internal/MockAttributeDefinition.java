@@ -122,6 +122,10 @@ public class MockAttributeDefinition extends BaseDefinition implements EquinoxAt
         setExtensionAttribute(XMLConfigConstants.METATYPE_EXTENSION_URI, ExtendedAttributeDefinition.VARIABLE_ATTR_NAME, variableName);
     }
 
+    public void setObscured(String value) {
+        setExtensionAttribute(XMLConfigConstants.METATYPE_EXTENSION_URI, ExtendedAttributeDefinition.OBSCURE_NAME, value);
+    }
+
     public void setMax(String max) {
         this.max = max;
     }

@@ -48,6 +48,16 @@ property.not.found.CWMCG5004E=CWMCG5004E: A(z) "{0}" konfigur\u00e1ci\u00f3s tul
 property.not.found.CWMCG5004E.explanation=A megnevezett tulajdons\u00e1g nem tal\u00e1lhat\u00f3 egyik konfigur\u00e1lt forr\u00e1sban sem. 
 property.not.found.CWMCG5004E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g l\u00e9tezik valamelyik konfigur\u00e1ci\u00f3s forr\u00e1sban.
 
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: Az InjectionPoint f\u00fcgg\u0151s\u00e9g nem ker\u00fclt felold\u00e1sra az Observer met\u00f3dushoz: {0}. Hiba: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=A besz\u00fart ConfigProperty nem ker\u00fclt felold\u00e1sra. A megnevezett tulajdons\u00e1g nem volt megtal\u00e1lhat\u00f3, vagy nem volt feloldhat\u00f3 egy \u00e1talak\u00edt\u00f3 a sz\u00fcks\u00e9ges t\u00edpushoz. 
+unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=A kiszolg\u00e1l\u00f3 \u00fczenet \u00e9s FFDC napl\u00f3i alapj\u00e1n \u00e1llap\u00edtsa meg az okot. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g l\u00e9tezik valamelyik konfigur\u00e1ci\u00f3s forr\u00e1sban \u00e9s a sz\u00fcks\u00e9ges \u00e1talak\u00edt\u00f3k be lettek \u00e1ll\u00edtva.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: Az InjectionPoint f\u00fcgg\u0151s\u00e9g nem ker\u00fclt feldolgoz\u00e1sra az Observer komponenshez: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=Ismeretlen hiba t\u00f6rt\u00e9nt. Nem lehetett megfelel\u0151en feldolgozni az Observer met\u00f3dust.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=A kiszolg\u00e1l\u00f3 \u00fczenet \u00e9s FFDC napl\u00f3i alapj\u00e1n \u00e1llap\u00edtsa meg az okot.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message

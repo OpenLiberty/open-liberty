@@ -439,7 +439,7 @@ error.create.unknownJavaLevel.useraction=Asigura\u0163i-v\u0103 c\u0103 utiliza\
 
 error.create.java8serverenv=CWWKE0103E: Nu se poate crea un fi\u015fier server.env file \u00een urm\u0103toarea loca\u0163ie: {0}
 error.create.java8serverenv.explanation=Procesul care \u00eencearc\u0103 s\u0103 creeze serverul nu a putut genera un fi\u015fier server.env file \u00een loca\u0163ia specificat\u0103.  Acest fi\u015fier furnizeaz\u0103 argumentele JVM necesare pentru ca serverul s\u0103 func\u0163ioneze corespunz\u0103tor.
-error.create.java8serverenv.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere la directorul de server \u015fi c\u0103 ave\u0163i suficient spa\u0163iu pe disc.  \u00cen plus, pute\u0163i crea manual fi\u015fierul server.env cu urm\u0103toarea valoare:  WLP_SKIP_MAXPERMSIZE=true.  Trebuie s\u0103 v\u0103 asigura\u0163i c\u0103 procesul de server are acces de citire pe acest fi\u015fier.
+error.create.java8serverenv.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere la directorul de server \u015fi c\u0103 ave\u0163i suficient spa\u0163iu pe disc. Trebuie s\u0103 v\u0103 asigura\u0163i c\u0103 procesul de server are acces de citire pe acest fi\u015fier.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Acest produs este un produs beta \u015fi nu poate fi utilizat \u00een produc\u0163ie. Termenii de licen\u0163\u0103 pot fi vizualiza\u0163i aici: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Acest produs este un produs beta \u015fi trebuie s\u0103 fie folosit \u00een conformitate cu termenii din acordul de licen\u0163\u0103 beta.
@@ -689,10 +689,6 @@ warning.package.root.invalid.useraction=Nu este necesar\u0103 nici o ac\u0163iun
 warning.package.root.invalid.runnable=CWWKE0948W: O op\u0163iune --server-root cu --include=runnable nu este o combina\u0163ie permis\u0103. Argumentul implicit wlp este folosit pentru serverul r\u0103d\u0103cin\u0103.
 warning.package.root.invalid.runnable.explanation=Utilizatorul a realizat o cerere de pachet cu o op\u0163iune --server-root \u015fi --include=runnable, care nu este o combina\u0163ie permis\u0103. Va fi folosit serverul r\u0103d\u0103cin\u0103 implicit wlp.
 warning.package.root.invalid.runnable.useraction=Nicio ac\u0163iune nu este necesar\u0103.
-
-error.no.serialfilteragent=CWWKE0949E: Fi\u015fierul jar al agentului de filtru serial specificat, {0}, nu exist\u0103.
-error.no.serialfilteragent.explanation=Fi\u015fierul jar al agentului de filtru serial specificat nu exist\u0103 sau nu poate fi citit.
-error.no.serialfilteragent.useraction= Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 poate fi citit de utilizatorul curent.
 
 error.package.extension=CWWKE0950E: Numele de fi\u015fier al arhivei trebuie s\u0103 se termine cu .jar atunci c\u00e2nd este utilizat\u0103 op\u0163iunea runnable.
 error.package.extension.explanation=Op\u0163iunea --archive trebuie s\u0103 includ\u0103 o extensie de fi\u015fier care se termin\u0103 cu .jar atunci c\u00e2nd se specific\u0103 --include=runnable.

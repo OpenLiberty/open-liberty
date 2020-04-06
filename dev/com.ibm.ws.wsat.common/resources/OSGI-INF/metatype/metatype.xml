@@ -1,0 +1,22 @@
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	               xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+	               localization="OSGI-INF/l10n/metatype">
+
+	<OCD id="com.ibm.ws.wsat" name="%wsat.name" description="%wsat.name.description"
+		ibm:alias="wsAtomicTransaction">
+		<AD id="sslEnabled" name="%sslenabled.name" description="%sslenabled.description"
+			type="Boolean" default="false" required="false" />
+		<AD id="sslRef" name="%sslref.name" description="%sslref.description"
+			type="String" default="defaultSSLConfig" required="false" ibmui:uiReference="com.ibm.ws.ssl.repertoire"  />
+		<AD id="clientAuth" name="%clientAuth.name" description="%clientAuth.description"
+			type="Boolean" default="false" required="false" />
+		<AD id="externalURLPrefix" name="%proxy.name" description="%proxy.description"
+			type="String" default="" required="false" />
+	</OCD>
+
+	<Designate pid="com.ibm.ws.wsat.service.wsatconfigservice">
+		<Object ocdref="com.ibm.ws.wsat" />
+	</Designate>
+
+</metatype:MetaData>

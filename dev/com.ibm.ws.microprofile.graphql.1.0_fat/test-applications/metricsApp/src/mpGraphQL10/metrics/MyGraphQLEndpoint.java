@@ -37,7 +37,8 @@ public class MyGraphQLEndpoint {
     public List<Widget> getTimeWidget() {
         long startTime = System.nanoTime();
         try {
-            Thread.sleep(500);
+            Thread.sleep(600); // really should only sleep 500 ms, but some JVMs end up sleeping under
+                               // that (or nanoTime() reports it is under)
         } catch (InterruptedException iex) {
             iex.printStackTrace();
         }

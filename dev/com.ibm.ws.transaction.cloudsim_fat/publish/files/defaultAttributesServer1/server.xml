@@ -18,13 +18,15 @@
              includes="derby.jar" />
     
     <transaction
-        dataSourceRef="tranlogDataSource"
-        recoverOnStartup="true"
-        waitForRecovery="false"
-        heuristicRetryInterval="10"
-        recoveryIdentity="cloud001"
-        recoveryGroup="defaultGroup"
-        enableHADBPeerLocking="true"
+      dataSourceRef="tranlogDataSource"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="10"
+      recoveryIdentity="cloud001"
+      recoveryGroup="defaultGroup"
+      enableHADBPeerLocking="true"
+      leaseLength="20"
+      leaseCheckInterval="25"
     />
     
     <application location="transaction.war"/>

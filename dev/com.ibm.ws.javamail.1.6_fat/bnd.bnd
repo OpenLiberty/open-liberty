@@ -16,8 +16,6 @@ src: \
   test-applications/fvtweb/src, \
   test-applications/TestingApp/src
   
-javac.source: 1.8
-javac.target: 1.8
 
 fat.project: true
 

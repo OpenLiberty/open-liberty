@@ -60,7 +60,6 @@ export default class HttpAuth extends React.Component {
 
     if(scheme === "basic") {
       let username = value ? value.get("username") : null
-      let inputId = name || schema.get("name")
       return <div>
         <h4>
           <code>{ name || schema.get("name") }</code>&nbsp;
@@ -72,10 +71,10 @@ export default class HttpAuth extends React.Component {
           <Markdown source={ schema.get("description") } />
         </Row>
         <Row>
-          <label htmlFor={inputId + "u"}>Username:</label>
+          <label>Username:</label>
           {
             username ? <code> { username } </code>
-                     : <Col aria-label={inputId + "_ual"}><Input type="text" required="required" name="username" id={inputId + "u"} onChange={ this.onChange }/></Col>
+                     : <Col><Input type="text" required="required" name="username" onChange={ this.onChange }/></Col>
           }
         </Row>
         <Row>

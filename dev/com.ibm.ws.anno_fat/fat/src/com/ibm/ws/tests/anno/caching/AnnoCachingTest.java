@@ -284,6 +284,22 @@ public abstract class AnnoCachingTest extends LoggingTest {
         return elapsed;
     }
 
+    protected static long waitForConsole(String message) throws Exception {
+        LOG.info("waitForConsole: ENTER [ " + message + " ]");
+
+        LibertyServer libertyServer = getLibertyServer();
+        RemoteFile consoleLog = libertyServer.getConsoleLogFile();
+
+        long lStartTime = System.nanoTime();
+        libertyServer.waitForStringInLog(message, consoleLog);
+        long lEndTime = System.nanoTime();
+        long elapsed = lEndTime - lStartTime;
+        LOG.info("waitForConsole: Elapsed (ms): " + elapsed / 1000000);
+
+        LOG.info("waitForConsole: RETURN");
+        return elapsed;
+    }
+
     //
 
     public static void deleteApplication() throws Exception {

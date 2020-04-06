@@ -1,0 +1,66 @@
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: WebService AtomicTransaction Common
+Bundle-SymbolicName: com.ibm.ws.wsat.common
+Bundle-Description: WebService AtomicTransaction Common bundle; version=${bVersion}
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+WS-TraceGroup: wsat
+
+Import-Package: \
+  javax.xml.ws.*;version=!,\
+  *
+
+Export-Package: \
+  com.ibm.ws.wsat.service, \
+  com.ibm.wsspi.webservices.wsat;provide=true
+ 
+Private-Package: \
+  com.ibm.ws.wsat.resources, \
+  com.ibm.ws.wsat.common.impl, \
+  com.ibm.ws.wsat.service.impl, \
+  com.ibm.ws.wsat.tm.impl
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF, \
+  META-INF=resources/META-INF
+  
+-dsannotations: \
+  com.ibm.ws.wsat.service.impl.HandlerService, \
+  com.ibm.ws.wsat.service.impl.ProtocolService, \
+  com.ibm.ws.wsat.service.impl.WSATConfigServiceImpl, \
+  com.ibm.ws.wsat.service.impl.WSATServiceImpl, \
+  com.ibm.ws.wsat.tm.impl.ParticipantFactoryService, \
+  com.ibm.ws.wsat.tm.impl.CoordinatorFactoryService
+
+instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.jaxws.wsat;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.wsat.webclient;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

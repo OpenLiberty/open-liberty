@@ -205,7 +205,7 @@ public class BasicSseResource extends Application {
             } else {
                 System.out.print("BasicSseResource.sendPlainEventsFromRX: sleeping....waiting for completableFuture to complete");
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                 }
                 if (!(completableFuture.isDone())) {

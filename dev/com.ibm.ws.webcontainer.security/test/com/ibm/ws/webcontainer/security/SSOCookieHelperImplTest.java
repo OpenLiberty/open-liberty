@@ -173,6 +173,8 @@ public class SSOCookieHelperImplTest {
                 allowing(config).getSSOUseDomainFromURL();
                 allowing(req).getRequestURL();
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                allowing(config).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         Subject subject = new Subject();
@@ -196,6 +198,8 @@ public class SSOCookieHelperImplTest {
                 one(config).getSSOUseDomainFromURL();
                 one(req).getRequestURL();
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                allowing(config).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue);
@@ -220,6 +224,8 @@ public class SSOCookieHelperImplTest {
                 one(config).getSSOUseDomainFromURL();
                 one(req).getRequestURL();
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                allowing(config).getSameSiteCookie();
+                will(returnValue("Disabled"));
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue);

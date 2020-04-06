@@ -9,50 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-configurations {
-  //Transitive dependencies in Oracle Maven pom are not necessary when just using
-  //the base JDBC driver.  Excluding these dependencies will speed up test time and reduce clutter.
-  jdbcDrivers {
-    transitive = false
-  }
-}
-
-dependencies {
-  //Test container libraries
-  requiredLibs 'org.testcontainers:testcontainers:1.12.3',
-               'org.testcontainers:database-commons:1.12.3',
-               'org.testcontainers:jdbc:1.12.3',
-               'org.testcontainers:oracle-xe:1.12.3',
-               'org.testcontainers:mssqlserver:1.12.3',
-               'org.testcontainers:postgresql:1.12.3',
-               'org.testcontainers:db2:1.12.3',
-               'org.apache.commons:commons-compress:1.18',
-               'org.rnorth.duct-tape:duct-tape:1.0.7',
-               'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-               'org.rnorth:tcp-unix-socket-proxy:1.0.2',
-               'net.java.dev.jna:jna:5.2.0',
-               'org.slf4j:slf4j-api:1.7.7',
-               'org.slf4j:slf4j-jdk14:1.7.7'
-
-  //JDBC Drivers
-  jdbcDrivers 	'com.ibm.db2:jcc:11.1.4.4',
-  				'org.postgresql:postgresql:42.2.5',
-  				'com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8',
-  				'org.apache.derby:derby:10.11.1.1',
-  				'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
-}
-
-task addJdbcDrivers(type: Copy) {
-  shouldRunAfter jar
-  from configurations.jdbcDrivers
-  into new File(autoFvtDir, 'publish/shared/resources/jdbc')
-  rename 'derby.*.jar', 'derby.jar'
-  rename 'jcc.*.jar', 'db2jcc.jar'
-  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
-  rename 'postgresql.*.jar', 'postgresql.jar'
-  rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
-}
-
 addRequiredLibraries {
-	dependsOn addJdbcDrivers
+	dependsOn copyJdbcDrivers
+	dependsOn copyDatabaseRotationDrivers
+	dependsOn copyFattestDatabases
 }

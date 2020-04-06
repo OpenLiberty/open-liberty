@@ -21,17 +21,25 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                componenttest.custom.junit.runner.AlwaysPassesTest.class,
                 TestExample_EJB.class,
                 TestExample_Web.class,
                 TestOLGH8820_EJB.class,
-                TestOLGH8820_Web.class
+                TestOLGH8820_Web.class,
+                TestOLGH10240_EJB.class,
+                TestOLGH10240_Web.class,
+                TestTXSynchronization.class,
+                TestTXDDSynchronization.class,
+                TestCDI_WEB.class,
+                TestCDI_EJB.class,
+                componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES());
+    public static String repeatPhase = "";
 }

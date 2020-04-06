@@ -13,7 +13,8 @@ package com.ibm.ws.jndi.internal.literals;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class LiteralParser {
+public enum LiteralParser {
+    ;
     private static final TraceComponent tc = Tr.register(LiteralParser.class);
 
     public static Object parse(String s) {
@@ -24,6 +25,4 @@ public class LiteralParser {
             Tr.debug(tc, "String did not match any known types", s);
         return s;
     }
-
-    private LiteralParser() {} // no instances, please!
 }

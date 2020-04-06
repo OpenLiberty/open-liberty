@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -301,6 +301,10 @@ JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Nincs teend\u0151.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: A(z) {0} megval\u00f3s\u00edt\u00e1s ({1}) nem felel meg a JPA 2.1 specifik\u00e1ci\u00f3nak, ez\u00e9rt nem haszn\u00e1lhat\u00f3. Szerezze be a JPA perzisztencia szolg\u00e1ltat\u00f3 \u00fajabb v\u00e1ltozat\u00e1t, amely a JPA 2.1 specifik\u00e1ci\u00f3t val\u00f3s\u00edtja meg.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=A JPA perzisztencia szolg\u00e1ltat\u00f3 nem haszn\u00e1lhat\u00f3, mert hi\u00e1nyoznak bel\u0151le a JPA 2.1 specifik\u00e1ci\u00f3 \u00e1ltal megk\u00f6vetelt met\u00f3dusok megval\u00f3s\u00edt\u00e1sai.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Szerezze be a JPA perzisztencia szolg\u00e1ltat\u00f3 \u00fajabb v\u00e1ltozat\u00e1t, amely megfelel a JPA 2.1 specifik\u00e1ci\u00f3nak.
+
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Hiba t\u00f6rt\u00e9nt a(z) {0} Java oszt\u00e1ly \u00e1talak\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. A hiba \u00f6sszegy\u0171jt\u00f6tt r\u00e9szletei a k\u00f6vetkez\u0151k: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt a Java oszt\u00e1ly \u00e1talak\u00edt\u00e1sakor. Ezt a hib\u00e1t \u00e1ltal\u00e1ban \u00e9rv\u00e9nytelen Java byte-k\u00f3d okozza.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Lehets\u00e9ges, hogy az oszt\u00e1ly gyors\u00edt\u00f3t\u00e1r megs\u00e9r\u00fclt vagy az alkalmaz\u00e1s helytelen\u00fcl van csomagolva. El\u0151sz\u00f6r \u00fcr\u00edtse ki az oszt\u00e1ly gyors\u00edt\u00f3t\u00e1rat. Ha a m\u0171velet nem oldja meg a probl\u00e9m\u00e1t, akkor tekintse \u00e1t az alkalmaz\u00e1s arch\u00edvumot \u00e9s keressen csomagol\u00e1si hib\u00e1kat.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

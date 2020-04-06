@@ -239,7 +239,6 @@ public abstract class AbstractTestLogic {
         return prefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length());
     }
 
-    @SuppressWarnings("unused")
     protected void beginTx(JPAResource jpaRW) {
         System.out.println("Begin a Tx");
         jpaRW.getTj().beginTransaction();
@@ -249,13 +248,11 @@ public abstract class AbstractTestLogic {
         }
     }
 
-    @SuppressWarnings("unused")
     protected void commitTx(JPAResource jpaRW) {
         System.out.println("Commit current Tx");
         jpaRW.getTj().commitTransaction();
     }
 
-    @SuppressWarnings("unused")
     protected void rollbackTx(JPAResource jpaRW) {
         System.out.println("Rollback current Tx");
         jpaRW.getTj().rollbackTransaction();

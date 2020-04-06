@@ -16,14 +16,14 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
     id="Application_ID">
 
-    <display-name>OLGH8461EJB</display-name>
+    <display-name>OLGH8461_EJB</display-name>
     <module id="EjbModule_1"> 
         <ejb>olgh8461Ejb.jar</ejb>
     </module>
     <module id="WebModule_1">
         <web>
             <web-uri>olgh8461Ejb.war</web-uri>
-            <context-root>olgh8461ejb</context-root>
+            <context-root>olgh8461Ejb</context-root>
         </web>
     </module>
 </application>

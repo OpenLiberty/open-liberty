@@ -1,6 +1,6 @@
 package com.ibm.ws.sib.msgstore.expiry;
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -634,7 +634,7 @@ public class Expirer implements AlarmListener,  XmlConstants
      */
     private void scheduleAlarm(long timeOut)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "scheduleAlarm timeOut=" + timeOut);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "scheduleAlarm", "timeOut=" + timeOut);
         
         // NB PM27294 implementation now means you cannot decrease the the timeOut if an alarm is already scheduled.
         // This is OK for the expirer as the timeout does not change once Expirer is started.

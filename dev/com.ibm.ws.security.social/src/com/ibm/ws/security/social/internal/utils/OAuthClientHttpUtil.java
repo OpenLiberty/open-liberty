@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal.utils;
 
@@ -138,7 +138,7 @@ public class OAuthClientHttpUtil {
                 }
             }
         }
-        throw new SocialLoginException("RESPONSE_STATUS_UNSUCCESSFUL", null, new Object[] { url, errorMsg });
+        throw new SocialLoginException("RESPONSE_STATUS_UNSUCCESSFUL", null, new Object[] { url, statusInsert, errorMsg });
     }
 
     public Map<String, Object> postToEndpoint(String url,
@@ -207,7 +207,7 @@ public class OAuthClientHttpUtil {
         return commonEndpointInvocation(postMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod, useJvmProps);
     }
 
-    HttpPost setPostParameters(HttpPost postMethod, List<NameValuePair> params) {
+    HttpPost setPostParameters(HttpPost postMethod, @Sensitive List<NameValuePair> params) {
         try {
             if (params != null) {
                 postMethod.setEntity(new UrlEncodedFormEntity(params));
@@ -348,9 +348,9 @@ public class OAuthClientHttpUtil {
 
         return client;
     }
-    
-    private HttpClientBuilder getBuilder(boolean useJvmProps){
-         return useJvmProps ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+
+    private HttpClientBuilder getBuilder(boolean useJvmProps) {
+        return useJvmProps ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
 
     public static OAuthClientHttpUtil getInstance() {

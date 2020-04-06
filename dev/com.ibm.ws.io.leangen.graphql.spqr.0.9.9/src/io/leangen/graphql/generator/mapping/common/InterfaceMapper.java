@@ -7,10 +7,14 @@ import graphql.schema.GraphQLObjectType;
 import io.leangen.graphql.generator.BuildContext;
 import io.leangen.graphql.generator.OperationMapper;
 import io.leangen.graphql.generator.mapping.strategy.InterfaceMappingStrategy;
+import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.util.Directives;
 import io.leangen.graphql.util.Utils;
 
+import org.eclipse.microprofile.graphql.Input;
 import org.eclipse.microprofile.graphql.Interface;
+import org.eclipse.microprofile.graphql.Name;
+import org.eclipse.microprofile.graphql.Type;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.List;
@@ -63,9 +67,10 @@ public class InterfaceMapper extends CachingMapper<GraphQLInterfaceType, GraphQL
 
     private void registerImplementations(AnnotatedType javaType, GraphQLInterfaceType type, OperationMapper operationMapper, BuildContext buildContext) {
 
-        buildContext.implDiscoveryStrategy.findImplementations(javaType, getScanPackages(javaType), buildContext).forEach(impl ->
-            getImplementingType(impl, operationMapper, buildContext)
-                .ifPresent(implType -> buildContext.typeRegistry.registerDiscoveredCovariantType(type.getName(), impl, implType)));
+        buildContext.implDiscoveryStrategy.findImplementations(javaType, getScanPackages(javaType), buildContext).forEach(impl -> {
+            getImplementingType(impl, operationMapper, buildContext).ifPresent(implType -> 
+                buildContext.typeRegistry.registerDiscoveredCovariantType(type.getName(), impl, implType));
+        });
 
     }
 
@@ -82,8 +87,13 @@ public class InterfaceMapper extends CachingMapper<GraphQLInterfaceType, GraphQL
     private Optional<GraphQLObjectType> getImplementingType(AnnotatedType implType, OperationMapper operationMapper, BuildContext buildContext) {
         return Optional.of(implType)
                 .filter(impl -> !interfaceStrategy.supports(impl))
+                .filter(impl -> !isInputOnly(impl))
                 .map(impl -> operationMapper.toGraphQLType(impl, buildContext))
                 .filter(impl -> impl instanceof GraphQLObjectType)
                 .map(impl -> (GraphQLObjectType) impl);
+    }
+
+    private boolean isInputOnly(AnnotatedType javaType) {
+        return javaType.isAnnotationPresent(Input.class) && !javaType.isAnnotationPresent(Type.class);
     }
 }

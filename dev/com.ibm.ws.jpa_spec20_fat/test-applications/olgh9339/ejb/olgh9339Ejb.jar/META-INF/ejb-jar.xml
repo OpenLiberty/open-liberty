@@ -61,13 +61,8 @@
                 <persistence-unit-ref-name>jpa/OLGH9339_AMRL</persistence-unit-ref-name>
                 <persistence-unit-name>OLGH9339_RL</persistence-unit-name>
             </persistence-unit-ref>
-
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>Cleanup</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
+
         <!-- Stateful Session Bean, PC: CM-ES -->
         <session>
             <ejb-name>OLGH9339SFExEJB</ejb-name>
@@ -99,12 +94,6 @@
                 <persistence-unit-name>OLGH9339_JTA</persistence-unit-name>
                 <persistence-context-type>Extended</persistence-context-type>
             </persistence-context-ref>
-
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>Cleanup</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
 
         <!-- Stateless Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
@@ -145,12 +134,6 @@
                 <description>Application-Managed RL-Tran Persistence Context</description>
                 <persistence-unit-ref-name>jpa/OLGH9339_AMRL</persistence-unit-ref-name>
                 <persistence-unit-name>OLGH9339_RL</persistence-unit-name>
-            </persistence-unit-ref>
-
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>Cleanup</persistence-unit-name>
             </persistence-unit-ref>
         </session>
     </enterprise-beans>

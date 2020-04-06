@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,6 +116,10 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
         _clientProvider = _config20.getClientProvider();
         _tokenCache = _config20.getTokenCache();
         _allowPublicClients = _config20.isAllowPublicClients();
+    }
+
+    OAuth20ComponentImpl() {
+        super(null, null);
     }
 
     public OAuth20ComponentImpl(OAuthComponentInstance parent,
@@ -1233,6 +1237,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
              */
             populateFromQueryString(request, attribList);
             populateFromRequest(request, attribList);
+            overrideUserName(request, attribList);
 
             if (OAuth20Constants.GRANT_TYPE_JWT.equalsIgnoreCase(grantType)) {
                 String client_secret = request.getParameter(OAuth20Constants.CLIENT_SECRET);
@@ -1249,6 +1254,23 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
             _log.exiting(CLASS, methodName, attribList);
         }
         return attribList;
+    }
+
+    /*
+     * If ClientAuthentication.validateResourceOwnerCredentials determined that the
+     * security name did not match what was supplied on the query parameter
+     * (probably due to some fancy ldap configuration)
+     * then switch it here to the security name.
+     */
+    void overrideUserName(HttpServletRequest request, AttributeList attribList) {
+        String override = (String) request.getAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME);
+        if (override != null) {
+            String name = attribList.getAttributeValueByName(OAuth20Constants.RESOURCE_OWNER_USERNAME);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "changing token attribute:" + OAuth20Constants.RESOURCE_OWNER_USERNAME + " from: " + name + " to: " + override);
+            }
+            attribList.setAttribute(OAuth20Constants.RESOURCE_OWNER_USERNAME, OAuth20Constants.ATTRTYPE_PARAM_BODY, new String[] { override });
+        }
     }
 
     AttributeList buildResourceAttributeList(HttpServletRequest request)

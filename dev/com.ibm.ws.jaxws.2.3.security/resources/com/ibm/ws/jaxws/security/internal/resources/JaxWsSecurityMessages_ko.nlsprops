@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: sslRef={0}(\uc73c)\ub85c SSL \uad6c\uc131\uc744 \uac00\uc838\uc624\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+err.when.get.ssl.config.explanation=ibm-ws-bnd.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c sslRef \uc18d\uc131\uc774 server.xml \ud30c\uc77c\uc758 ssl \uc694\uc18c\ub97c \ucc38\uc870\ud560 \uc218 \uc5c6\uac70\ub098 \ucc38\uc870\ub41c ssl \uc694\uc18c\uc758 \ucee8\ud150\uce20\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+err.when.get.ssl.config.useraction=sslRef \uc18d\uc131\uc758 \uac12\uc774 server.xml \ud30c\uc77c\uc5d0 \uc788\ub294 ssl \uc694\uc18c\uc758 ID\uc640 \uc77c\uce58\ud558\uac70\ub098 \ucc38\uc870\ub41c ssl \uc694\uc18c\uc758 \ucee8\ud150\uce20\uac00 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: {1}\uc5d0 \ub300\ud574 sslRef={0}(\uc73c)\ub85c SSLSocketFactory\ub97c \uac00\uc838\uc624\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+err.when.get.ssl.socket.factory.explanation=ibm-ws-bnd.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c sslRef \uc18d\uc131\uc774 server.xml \ud30c\uc77c\uc758 SSL \uad6c\uc131\uc744 \ucc38\uc870\ud558\ubbc0\ub85c server.xml \ud30c\uc77c\uc758 \ud0a4 \uc800\uc7a5\uc18c\ub098 \uc2e0\ub8b0 \uc800\uc7a5\uc18c \uc694\uc18c\uc758 \uad6c\uc131\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc73c\uba74 \uc608\uc678\uac00 \ubc1c\uc0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+err.when.get.ssl.socket.factory.useraction=\ud0a4 \uc800\uc7a5\uc18c\ub098 \uc2e0\ub8b0 \uc800\uc7a5\uc18c\uc758 \uc704\uce58 \ubc0f \ube44\ubc00\ubc88\ud638\uac00 server.xml \ud30c\uc77c\uc5d0 \uc62c\ubc14\ub974\uac8c \uc9c0\uc815\ub418\uc5c8\uc73c\uba70 ibm-ws-bnd.xml \ud30c\uc77c\uc758 \uc778\uc99d\uc11c \ubcc4\uba85\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: \uc0ac\uc6a9\uc790\uc758 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774\uace0 web.xml\uc5d0 \uc815\uc758\ub418\uc5b4\uc57c \ud558\ubbc0\ub85c ibm-ws-bnd.xml \ud30c\uc77c\uc5d0 \uc815\uc758\ub41c login-config \uc694\uc18c\ub294 \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=login-config \uc694\uc18c\ub294 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 web.xml \ud30c\uc77c\uc5d0\ub9cc \uad6c\uc131\ub420 \uc218 \uc788\uc73c\ubbc0\ub85c ibm-ws-bnd.xml \ud30c\uc77c\uc5d0 \uc815\uc758\ub41c login-config \uc694\uc18c\ub294 \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=login-config \uc694\uc18c\uac00 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 web.xml \ud30c\uc77c\uc5d0\ub9cc \uad6c\uc131\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: auth-method \uc720\ud615 {0}\uc774(\uac00) ibm-ws-bnd.xml \ud30c\uc77c\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ibm.ws.bnd.auth.method.not.support.explanation=ibm-ws-bnd.xml \ud30c\uc77c\uc740 auth-method \uc720\ud615\uc73c\ub85c BASIC \ubc0f CLIENT_CERT\ub9cc \uc9c0\uc6d0\ud569\ub2c8\ub2e4.
+ibm.ws.bnd.auth.method.not.support.useraction=ibm-ws-bnd.xml \ud30c\uc77c\uc5d0 \uc815\uc758\ub41c auth-method \uc720\ud615\uc758 \uac12\uc774 BASIC \ub610\ub294 CLIENT_CERT\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

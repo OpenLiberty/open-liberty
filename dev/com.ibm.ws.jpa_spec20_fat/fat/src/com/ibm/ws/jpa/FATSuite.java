@@ -21,13 +21,18 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                componenttest.custom.junit.runner.AlwaysPassesTest.class,
-                JPA20CriteriaAPI_WEB.class,
-//                JPA20EntityManager_WEB.class,
+                JPA20Cache_WEB.class,
+                JPA20CriteriaQuery_EJB.class,
+                JPA20CriteriaQuery_WEB.class,
+                JPA20OrderColumn_EJB.class,
+                JPA20OrderColumn_WEB.class,
                 JPA20QueryLockMode_EJB.class,
                 JPA20QueryLockMode_WEB.class,
+                TestOLGH9018_EJB.class,
+                TestOLGH9018_WEB.class,
                 TestOLGH9339_EJB.class,
                 TestOLGH9339_WEB.class,
+                componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",

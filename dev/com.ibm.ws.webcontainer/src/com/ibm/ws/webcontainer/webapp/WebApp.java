@@ -2384,15 +2384,17 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             logger.logp(Level.FINE, CLASS_NAME, "notifyServletContextCreated", "ENTRY"); //PI26908
 
         TxCollaboratorConfig txConfig = null;
+        final boolean hasListeners = !servletContextListeners.isEmpty();
+
         try {
-            webAppNameSpaceCollab.preInvoke(getModuleMetaData().getCollaboratorComponentMetaData());
+            if (hasListeners) {
+                webAppNameSpaceCollab.preInvoke(getModuleMetaData().getCollaboratorComponentMetaData());
 
-            txConfig = txCollab.preInvoke(null, this.isServlet23);
-            if (txConfig != null)
-                txConfig.setDispatchContext(null);
+                txConfig = txCollab.preInvoke(null, this.isServlet23);
+                if (txConfig != null)
+                    txConfig.setDispatchContext(null);
 
-            if (!servletContextListeners.isEmpty()) {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
                     logger.logp(Level.FINE, CLASS_NAME, "notifyServletContextCreated", "stopAppStartupOnListenerException = " + WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION);
 
                 Iterator i = servletContextListeners.iterator();
@@ -2443,13 +2445,15 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             logger.logp(Level.SEVERE, CLASS_NAME, "notifyServletContextCreated", "exception.caught.in.notifyServletContextCreated", new Object[] { e } ); // PK27660
         } finally {
             canAddServletContextListener = true;
-            try {
-                txCollab.postInvoke(null, txConfig, this.isServlet23);
-            } catch (Exception e) {
-                com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, CLASS_NAME + ".notifyServletContextCreated", "1327", this);
+            if (hasListeners) {
+                try {
+                    txCollab.postInvoke(null, txConfig, this.isServlet23);
+                } catch (Exception e) {
+                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, CLASS_NAME + ".notifyServletContextCreated", "1327", this);
 
+                }
+                webAppNameSpaceCollab.postInvoke();
             }
-            webAppNameSpaceCollab.postInvoke();
         }
     }
     

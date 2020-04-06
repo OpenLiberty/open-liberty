@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 20018 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap; //PI31734
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -664,7 +666,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param version
      * @throws NullPointerException
-     *             if the input version is null
+     *                                  if the input version is null
      */
     @Override
     public void setVersion(VersionValues version) {
@@ -686,7 +688,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
-     *             if input version is null
+     *                                                 if input version is null
      */
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
@@ -707,7 +709,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
-     *             if input version is null
+     *                                                 if input version is null
      */
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
@@ -739,7 +741,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param length
      * @throws IllegalArgumentException
-     *             if input length is invalid
+     *                                      if input length is invalid
      */
     @Override
     public void setContentLength(long length) {
@@ -1834,7 +1836,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param type
      * @throws NullPointerException
-     *             if input string is null
+     *                                  if input string is null
      */
     @Override
     public void setMIMEType(String type) {
@@ -1896,7 +1898,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * If the content type is null, or there is no explicit character encoding, <code>null</code> is returned.
      *
      * @param contentType
-     *            a content type header.
+     *                        a content type header.
      * @return Returns the character encoding for this flow, or null if the given
      *         content-type header is null or if no character enoding is present
      *         in the content-type header.
@@ -1933,7 +1935,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param set
      * @throws NullPointerException
-     *             if the input Charset is null
+     *                                  if the input Charset is null
      */
     @Override
     public void setCharset(Charset set) {
@@ -2301,6 +2303,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param cache
      */
     private void marshallCookieCache(CookieCacheData cache) {
+
         if (null != cache && cache.isDirty()) {
             HttpHeaderKeys type = cache.getHeaderType();
             parseAllCookies(cache, type);
@@ -2344,7 +2347,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         }
 
         super.preMarshallMessage();
-
         /**
          * Only if the cookies in storage(master list of all headers) have been
          * modified do we reserialize/transform before marshalling otherwise we
@@ -2353,6 +2355,18 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
          */
         marshallCookieCache(this.cookieCache);
         marshallCookieCache(this.cookie2Cache);
+        if (getServiceContext().getHttpConfig().useSameSiteConfig()) {
+            //If there are set-cookie and set-cookie2 headers and the respective cache hasn't been initialized,
+            //do so and set it as dirty so the cookie parsing logic is run.
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE) && (this.setCookieCache == null)) {
+                getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE).setIsDirty(true);
+            }
+
+            if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE2) && (this.setCookie2Cache == null)) {
+                getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE2).setIsDirty(true);
+            }
+
+        }
         marshallCookieCache(this.setCookieCache);
         marshallCookieCache(this.setCookie2Cache);
 
@@ -2666,13 +2680,12 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * operation. This is allowed on an outgoing message only.
      *
      * @param cookie
-     *            the <code>HttpCookie</code> to add.
+     *                       the <code>HttpCookie</code> to add.
      * @param cookieType
      * @return TRUE if the cookie was set successfully otherwise returns FALSE.
      *         if setcookie constraints are violated.
      **/
     protected boolean addCookie(HttpCookie cookie, HttpHeaderKeys cookieType) {
-
         // Set is only permitted on non-committed messages
         if (isCommitted()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2726,7 +2739,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param header
      * @return the caching data for the particular set of Cookies.
      * @throws IllegalArgumentException
-     *             if the header is not a cookie header
+     *                                      if the header is not a cookie header
      */
     private CookieCacheData getCookieCache(HttpHeaderKeys header) {
         // 347066 - removed sync because we only allow 1 thread to be working
@@ -2737,6 +2750,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         // middle (which throws off the parse cookie logic)
         if (header.equals(HttpHeaderKeys.HDR_COOKIE)) {
             if (null == this.cookieCache) {
+
                 this.cookieCache = new CookieCacheData(header);
                 if (!isIncoming()) {
                     parseAllCookies(this.cookieCache, header);
@@ -2825,9 +2839,9 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Marshall the list of Cookies into the base header storage area.
      *
      * @param list
-     *            the list of new cookies.
+     *                   the list of new cookies.
      * @param header
-     *            the type of header the new cookies are intended for.
+     *                   the type of header the new cookies are intended for.
      */
     private void marshallCookies(List<HttpCookie> list, HeaderKeys header) {
 
@@ -2842,6 +2856,55 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         // colon separation (if cookies were to go into one single header instead
         // of multiple)
         for (HttpCookie cookie : list) {
+            //Add Samesite default config
+            if (getServiceContext().getHttpConfig().useSameSiteConfig() && cookie.getAttribute("samesite") == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No SameSite value has been added for [" + cookie.getName() + "], checking configuration for a match");
+                }
+                String sameSiteAttributeValue = null;
+                Matcher m = null;
+
+                //First attempt to match the name explicitly.
+                if (getServiceContext().getHttpConfig().getSameSiteCookies().containsKey(cookie.getName())) {
+                    sameSiteAttributeValue = getServiceContext().getHttpConfig().getSameSiteCookies().get(cookie.getName());
+                }
+                //If the only pattern is a standalone '*' avoid regex cost
+                else if (getServiceContext().getHttpConfig().onlySameSiteStar()) {
+                    sameSiteAttributeValue = getServiceContext().getHttpConfig().getSameSiteCookies().get(HttpConfigConstants.WILDCARD_CHAR);
+                }
+
+                else {
+                    //Attempt to find a match amongst the configured SameSite patterns
+                    for (Pattern p : getServiceContext().getHttpConfig().getSameSitePatterns().keySet()) {
+                        m = p.matcher(cookie.getName());
+                        if (m.matches()) {
+                            sameSiteAttributeValue = getServiceContext().getHttpConfig().getSameSitePatterns().get(p);
+                            break;
+                        }
+                    }
+
+                }
+
+                if (sameSiteAttributeValue != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "SameSite configuration found, value set to: " + sameSiteAttributeValue);
+                    }
+                    cookie.setAttribute("samesite", sameSiteAttributeValue);
+                    //If SameSite has been defined, and it's value is set to 'none', ensure the cookie is set to secure
+                    if (!cookie.isSecure() && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Setting the Secure attribute for SameSite=None");
+                        }
+                        cookie.setSecure(true);
+                    }
+
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "No SameSite configuration found");
+                    }
+                }
+            }
+
             String value = CookieUtils.toString(cookie, header, getServiceContext().getHttpConfig().isv0CookieDateRFC1123compat(),
                                                 getServiceContext().getHttpConfig().shouldSkipCookiePathQuotes());
             if (null != value) {

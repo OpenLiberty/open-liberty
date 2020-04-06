@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: \u017d\u00e1dn\u00e1 aktivn\u00ed transakce WS-AT s ID {0} neexistuje.
+NO_WSAT_TRAN_CWLIB0201.explanation=Nelze naj\u00edt aktivn\u00ed transakci WS-AT, kter\u00e1 odpov\u00edd\u00e1 po\u017eadovan\u00e9mu ID glob\u00e1ln\u00ed transakce.
+NO_WSAT_TRAN_CWLIB0201.useraction=Podrobnosti o chyb\u011b najdete v protokolu.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: \u017d\u00e1dn\u00fd \u00fa\u010dastn\u00edk s ID {1} pro transakci {0} nebyly nalezen.
+NO_WSAT_PART_CWLIB0202.explanation=V r\u00e1mci glob\u00e1ln\u00ed transakce nelze naj\u00edt \u00fa\u010dastn\u00edka transakce odpov\u00eddaj\u00edc\u00edho po\u017eadovan\u00e9mu ID.
+NO_WSAT_PART_CWLIB0202.useraction=Podrobnosti o chyb\u011b najdete v protokolu.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: \u010casov\u00fd limit transakce vypr\u0161el. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=\u010casov\u00fd limit transakce vypr\u0161el a transakce byla vr\u00e1cena zp\u011bt.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=Podrobnosti o chyb\u011b najdete v protokolu.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: Nelze vyvolat webovou slu\u017ebu protokolu. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=P\u0159i vyvol\u00e1v\u00e1n\u00ed webov\u00fdch slu\u017eeb syst\u00e9mu do\u0161lo k chyb\u011b.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=Podrobnosti o chyb\u011b najdete v protokolu.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: Chyba zpracov\u00e1n\u00ed transakce.
+TRAN_MGR_ERROR_CWLIB0205.explanation=P\u0159i zpracov\u00e1n\u00ed funkce transakce byla p\u0159ijata chyba.
+TRAN_MGR_ERROR_CWLIB0205.useraction=Podrobnosti o chyb\u011b najdete v protokolu.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: Povolte SSL {0} pro WS-AT.
+WSAT_SECURITY_CWLIB0206.explanation=WS-AT pou\u017e\u00edv\u00e1 p\u0159ipojen\u00ed SSL k zabezpe\u010den\u00ed intern\u00ed komunikace.
+WSAT_SECURITY_CWLIB0206.useraction=Nen\u00ed.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: Povolit externalURLPrefix {0} pro WS-AT.
+WSAT_PROXY_CWLIB0207.explanation=WS-AT pou\u017e\u00edv\u00e1 server proxy pro intern\u00ed komunikaci.
+WSAT_PROXY_CWLIB0207.useraction=Nen\u00ed.
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: Nelze deserializovat prost\u0159edek transakce.
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=P\u0159i zpracov\u00e1n\u00ed prost\u0159edku spr\u00e1vce transakc\u00ed do\u0161lo k chyb\u011b.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=Podrobnosti o chyb\u011b najdete v protokolu.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: Nelze z\u00edskat koncov\u00fd bod syst\u00e9mov\u00e9 slu\u017eby.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=P\u0159i pokusu o z\u00edsk\u00e1n\u00ed koncov\u00e9ho bodu webov\u00fdch slu\u017eeb syst\u00e9mu do\u0161lo k chyb\u011b. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=Podrobnosti o chyb\u011b najdete v protokolu.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: externalURLPrefix {0} pro WS-AT mus\u00ed za\u010d\u00ednat http(s)://
+WSAT_PROXY_CWLIB0210.explanation=Adresa proxy pro WS-AT mus\u00ed za\u010d\u00ednat http(s)://
+WSAT_PROXY_CWLIB0210.useraction=Upravte adresu externalURLPrefix ke spu\u0161t\u011bn\u00ed s http(s)://
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: externalURLPrefix {0} pro WS-AT mus\u00ed za\u010d\u00ednat https:// p\u0159i povolen\u00ed SSL.
+WSAT_PROXY_CWLIB0211.explanation=Adresa proxy pro WS-AT mus\u00ed za\u010d\u00ednat https:// p\u0159i povolen\u00ed SSL.
+WSAT_PROXY_CWLIB0211.useraction=Upravte adresu externalURLPrefix ke spu\u0161t\u011bn\u00ed s https:// p\u0159i povolen\u00ed SSL.

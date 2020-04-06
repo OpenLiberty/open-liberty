@@ -12,6 +12,7 @@
 package com.ibm.ws.testtooling.vehicle.web;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.naming.InitialContext;
 
@@ -49,16 +50,27 @@ public class EJBTestVehicleServlet extends JPATestServlet {
 
     @Override
     protected void executeTest(String testName, String testMethod, String testResource) throws Exception {
+        executeTest(testName, testMethod, testResource, null);
+    }
+
+    @Override
+    protected void executeTest(String testName, String testMethod, String testResource, Map<String, java.io.Serializable> props) throws Exception {
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testClassName, testMethod);
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get(testResource));
+        if (testResource != null)
+            jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get(testResource));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("dbProductName", getDbProductName());
         properties.put("dbProductVersion", getDbProductVersion());
         properties.put("jdbcDriverVersion", getJdbcDriverVersion());
 
+        if (props != null && !props.isEmpty()) {
+            properties.putAll(props);
+        }
+
         executeTestVehicle(testExecCtx, ejbJNDIName);
     }
+
 }

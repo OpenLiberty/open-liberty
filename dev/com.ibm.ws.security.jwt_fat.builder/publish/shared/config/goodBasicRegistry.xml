@@ -1,0 +1,18 @@
+<server>
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="user1"
+			password="user1pwd" />
+		<user
+			name="user2"
+			password="user2pwd" />
+		<user
+			name="testuser"
+			password="testuserpwd" />
+	</basicRegistry>
+
+</server>

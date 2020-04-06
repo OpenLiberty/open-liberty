@@ -14,6 +14,7 @@ package suite.r80.base.common.datamodel.entities;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -102,9 +103,11 @@ import javax.persistence.Version;
 public class Entity0116 {
 
     @Id
+    @Column(precision = 10, scale = 6)
     private BigDecimal entity0116_id1;
 
     @Id
+    @Column(precision = 10, scale = 6)
     private BigDecimal entity0116_id2;
 
     @Version

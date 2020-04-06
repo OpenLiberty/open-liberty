@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -162,7 +162,11 @@ sslCert.option-desc.keyType=\tOptional. Ein PKCS12-Keystore wird standardm\u00e4
 sslCert.option-key.ext=\ \ \ \ --extInfo=Erweiterungsinformationen f\u00fcr das Zertifikat
 sslCert.option-desc.ext=\tDie Zertifikatserweiterungsinformationen, die dem Zertifikat hinzugef\u00fcgt werden sollen.\n\
 \tDie Standarderweiterung ist ein alternativer Namenseintrag f\u00fcr das Subject, bei dem \n\
-\tder Hostname verwendet wird.
+\tder Hostname verwendet wird. \
+Dieses Flag verwendet dieselbe Syntax wie das Flag -ext im \n\
+Java-Befehl ''keytool''. Dieses Flag kann im Befehl mehrfach verwendet werden.\n\
+\ 
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

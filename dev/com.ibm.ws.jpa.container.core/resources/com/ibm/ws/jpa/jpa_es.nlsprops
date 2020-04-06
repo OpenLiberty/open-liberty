@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -280,11 +280,13 @@ INCORRECT_JPA_LEVEL_CWWJP0049E.useraction=Cambie el servidor o la configuraci\u0
 JPA_PROVIDER_NOT_FOUND_CWWJP0050E=CWWJP0050E: No se ha podido encontrar el proveedor de persistencia {0}.
 JPA_PROVIDER_NOT_FOUND_CWWJP0050E.explanation=No se ha podido localizar la clase del proveedor JPA.
 JPA_PROVIDER_NOT_FOUND_CWWJP0050E.useraction=Cambie el servidor o la configuraci\u00f3n para que utilice el nivel de JPA soportado por el proveedor de persistencia indicado. 
+
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE: <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>, bells-1.0, <bell>, <library>, JPA, or javax.persistence.spi.PersistenceProvider
 NO_JPA_PROVIDER_FOUND_CWWJP0051E=CWWJP0051E: No se ha podido localizar ning\u00fan proveedor de persistencia predeterminado en la configuraci\u00f3n del servidor. Para configurar un proveedor de persistencia, utilice la configuraci\u00f3n <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> o habilite la caracter\u00edstica bells-1.0 y configure un <bell> para la <library> que contiene el proveedor de JPA. 
 NO_JPA_PROVIDER_FOUND_CWWJP0051E.explanation=No se ha podido localizar ninguna implementaci\u00f3n de javax.persistence.spi.PersistenceProvider.
 NO_JPA_PROVIDER_FOUND_CWWJP0051E.useraction=Para configurar un proveedor de persistencia, utilice la configuraci\u00f3n <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> o habilite la caracter\u00edstica bells-1.0 y configure un <bell> para la <library> que contiene el proveedor de JPA. 
+
 #-------------------------------------------------------------------------------
 JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I=CWWJP0052I: Se est\u00e1 utilizando un proveedor JPA de terceros, {0}.
 JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.explanation=Indica el nombre de clase de proveedor de persistencia de una implementaci\u00f3n JPA de terceros que se est\u00e1 utilizando.
@@ -299,6 +301,10 @@ JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=No se requiere ninguna acci\u00f
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: La implementaci\u00f3n de {0}, {1}, no es compatible con la especificaci\u00f3n de JPA 2.1 y no se puede utilizar. Obtenga una versi\u00f3n m\u00e1s reciente del proveedor de persistencia JPA que implemente JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=El proveedor de persistencia JPA no se puede utilizar porque la falta la implementaci\u00f3n de los m\u00e9todos requeridos por la especificaci\u00f3n JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtenga una versi\u00f3n m\u00e1s reciente del proveedor de persistencia JPA que cumpla la especificaci\u00f3n JPA 2.1.
+
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Se ha producido un error al intentar transformar la clase Java {0}. Se ha recuperado el detalle de error siguiente: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Se ha producido un error inesperado al transformar la clase Java. Este error suele producirse por un c\u00f3digo de bytes Java no v\u00e1lido.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Es posible que la memoria cach\u00e9 de clase est\u00e9 da\u00f1ada o que la aplicaci\u00f3n puede empaquetarse incorrectamente. En primer lugar, borre la memoria cach\u00e9 de clase. Si esta acci\u00f3n no resuelve el problema, revise el archivo de la aplicaci\u00f3n para encontrar errores de empaquetado.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

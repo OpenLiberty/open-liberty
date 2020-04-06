@@ -264,62 +264,6 @@ public class SimulatedControllerPXTestServlet extends HttpServlet {
     }
 
     /**
-     * Updates a partition entry.
-     */
-    public void testUpdatePartitions(HttpServletRequest request, PrintWriter out) throws Exception {
-        int expectedUpdateCount = Integer.parseInt(request.getParameter("expectedUpdateCount"));
-
-        String executorName = request.getParameter("executorId");
-        String hostName = request.getParameter("hostName");
-        String libertyServer = request.getParameter("libertyServer");
-        String userDir = request.getParameter("userDir");
-
-        String newExecutorName = request.getParameter("newExecutorId");
-        String newHostName = request.getParameter("newHostName");
-        String newLibertyServer = request.getParameter("newLibertyServer");
-        String newUserDir = request.getParameter("newUserDir");
-
-        String jndiName = request.getParameter("jndiName");
-
-        // TODO in the future we should use the mbean to do the update
-        tran.begin();
-        try {
-            PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
-            Field field = executor.getClass().getDeclaredField("taskStore");
-            field.setAccessible(true);
-            Object taskStore = field.get(executor);
-            Class<?> PartitionRecord = taskStore.getClass().getClassLoader().loadClass("com.ibm.wsspi.concurrent.persistent.PartitionRecord");
-
-            Object updates = PartitionRecord.getConstructor(boolean.class).newInstance(false);
-            if (newExecutorName != null)
-                PartitionRecord.getMethod("setExecutor", String.class).invoke(updates, newExecutorName);
-            if (newHostName != null)
-                PartitionRecord.getMethod("setHostName", String.class).invoke(updates, newHostName);
-            if (newLibertyServer != null)
-                PartitionRecord.getMethod("setLibertyServer", String.class).invoke(updates, newLibertyServer);
-            if (newUserDir != null)
-                PartitionRecord.getMethod("setUserDir", String.class).invoke(updates, newUserDir);
-
-            Object expected = PartitionRecord.getConstructor(boolean.class).newInstance(false);
-            if (executorName != null)
-                PartitionRecord.getMethod("setExecutor", String.class).invoke(expected, executorName);
-            if (hostName != null)
-                PartitionRecord.getMethod("setHostName", String.class).invoke(expected, hostName);
-            if (libertyServer != null)
-                PartitionRecord.getMethod("setLibertyServer", String.class).invoke(expected, libertyServer);
-            if (userDir != null)
-                PartitionRecord.getMethod("setUserDir", String.class).invoke(expected, userDir);
-
-            int updateCount = (Integer) taskStore.getClass().getMethod("persist", PartitionRecord, PartitionRecord).invoke(taskStore, updates, expected);
-
-            if (updateCount != expectedUpdateCount)
-                throw new Exception("Expected " + expectedUpdateCount + " partition entries updated, not " + updateCount);
-        } finally {
-            tran.commit();
-        }
-    }
-
-    /**
      * Verifies that a task runs successfully at least once, and then cancel it.
      */
     public void testVerifyTaskRunsAndCancel(HttpServletRequest request, PrintWriter out) throws Exception {

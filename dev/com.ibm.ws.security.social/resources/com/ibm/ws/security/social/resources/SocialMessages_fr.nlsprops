@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Usage interne uniquement.
 ADD_ID.useraction=Aucune action n'est requise.
@@ -35,6 +35,99 @@ SELECTION_PAGE_USERNAME=Nom utilisateur
 SELECTION_PAGE_PASSWORD=Mot de passe
 
 SELECTION_PAGE_SUBMIT=Soumettre
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: La valeur de l''attribut de configuration [{0}] dans la configuration de login social [{1}] est vide. La valeur par d\u00e9faut [{2}] de l''attribut de configuration est utilis\u00e9e.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=La valeur de cet attribut de configuration ne doit pas \u00eatre vide.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Assurez-vous que la valeur de cet attribut de configuration n'est pas vide ou retirez l'attribut de configuration pour utiliser la valeur par d\u00e9faut.
+
+# 0=Exception message
+KUBERNETES_ERROR_GETTING_USER_INFO=CWWKS5371E: La r\u00e9ponse de l''API utilisateur Kubernetes ne peut pas \u00eatre trait\u00e9e : {0}
+KUBERNETES_ERROR_GETTING_USER_INFO.explanation=Les informations sur l'utilisateur authentifi\u00e9 ne peuvent pas \u00eatre obtenues car une autre erreur est survenue.
+KUBERNETES_ERROR_GETTING_USER_INFO.useraction=Si le message contient un autre message d'erreur, consultez les actions utilisateur de ce message. Sinon, recherchez dans les journaux serveur d'autres messages d'erreur indiquant o\u00f9 l'autre erreur est survenue.
+
+KUBERNETES_ACCESS_TOKEN_MISSING=CWWKS5372E: Le jeton d'acc\u00e8s utilis\u00e9 pour extraire les informations utilisateur depuis l'API Kubernetes manque. V\u00e9rifiez qu'un jeton d'acc\u00e8s a \u00e9t\u00e9 renvoy\u00e9 depuis le noeud final de jeton du fournisseur OAuth.
+KUBERNETES_ACCESS_TOKEN_MISSING.explanation=Un jeton d'acc\u00e8s est requis pour l'extraction des informations sur l'utilisateur authentifi\u00e9. Le noeud final de jeton du fournisseur OAuth doit renvoyer le jeton d'acc\u00e8s.
+KUBERNETES_ACCESS_TOKEN_MISSING.useraction=V\u00e9rifiez que le noeud final de jeton du fournisseur OAuth a renvoy\u00e9 le jeton d'acc\u00e8s.
+
+# 0=HTTP response code, 1=Response body
+KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: L''API utilisateur Kubernetes a renvoy\u00e9 le code de r\u00e9ponse inattendu [{0}]. V\u00e9rifiez que la demande envoy\u00e9e \u00e0 l''API contient toutes les informations requises et que le jeton de compte de service Kubernetes a \u00e9t\u00e9 cr\u00e9\u00e9 avec les droits appropri\u00e9s. La r\u00e9ponse de l''API est la suivante : [{1}].
+KUBERNETES_USER_API_BAD_STATUS.explanation=L'API utilisateur Kubernetes n'a pas renvoy\u00e9 le code de statut attendu.
+KUBERNETES_USER_API_BAD_STATUS.useraction=V\u00e9rifiez la r\u00e9ponse de l'API qui se trouve dans le message d'erreur pour plus d'informations. V\u00e9rifiez que la demande envoy\u00e9e \u00e0 l'API contient toutes les informations requises. Assurez-vous que le jeton du compte de service Kubernetes a \u00e9t\u00e9 cr\u00e9\u00e9 avec les droits appropri\u00e9s.
+
+# 0=JSON key string, 1=User API response string
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: Une cl\u00e9 attendue manque dans la r\u00e9ponse de l''API utilisateur Kubernetes : [{0}]. La r\u00e9ponse compl\u00e8te est la suivante : [{1}].
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.explanation=La cl\u00e9 qui est sp\u00e9cifi\u00e9e dans le message doit se trouver dans la r\u00e9ponse de l'API. Il se peut qu'elle manque ou qu'elle se trouve ailleurs.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.useraction=V\u00e9rifiez la r\u00e9ponse de l'API pour d\u00e9terminer si la cl\u00e9 manque dans la r\u00e9ponse.
+
+# 0=Social login configuration ID
+ACCESS_TOKEN_MISSING_FROM_HEADERS=CWWKS5375E: La configuration de login social [{0}] sp\u00e9cifie qu''un jeton d''acc\u00e8s est requis dans la demande, mais aucun jeton d''acc\u00e8s n''est pr\u00e9sent.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.explanation=La configuration de login social qui est sp\u00e9cifi\u00e9e dans le message requiert que toutes les demandes entrantes contiennent un jeton d'acc\u00e8s.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.useraction=Si un nom d'en-t\u00eate de jeton d'acc\u00e8s est configur\u00e9 dans la configuration de login social, v\u00e9rifiez que l'en-t\u00eate est inclus dans la demande. Sinon, v\u00e9rifiez que de la demande comporte un en-t\u00eate Authorization. Assurez-vous que la valeur d'en-t\u00eate est conforme \u00e0 la sp\u00e9cification de jeton bearer OAuth. V\u00e9rifiez que le fournisseur OAuth est configur\u00e9 pour transmettre un jeton d'acc\u00e8s.
+
+# 0=Name of the configuration attribute that specifies the access token header name, 1=Social login configuration ID, 2=Custom access token header name
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING=CWWKS5376W: La valeur de l''attribut [{0}] dans la configuration de login social [{1}] indique qu''un jeton d''acc\u00e8s doit se trouver dans l''en-t\u00eate de demande [{2}]. Toutefois, aucun jeton n''est pr\u00e9sent dans cet en-t\u00eate.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.explanation=Il se peut que l'en-t\u00eate qui est sp\u00e9cifi\u00e9 dans le message manque dans la demande ou que la valeur de l'en-t\u00eate soit vide.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.useraction=V\u00e9rifiez que l'en-t\u00eate sp\u00e9cifi\u00e9 est pr\u00e9sent dans la demande. V\u00e9rifiez que la valeur de l'en-t\u00eate est conforme \u00e0 la sp\u00e9cification de jeton bearer OAuth.
+
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY=CWWKS5377E: La r\u00e9ponse de l'API utilisateur Kubernetes est nulle ou vide.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.explanation=La r\u00e9ponse de l'API utilisateur Kubernetes ne peut pas \u00eatre lue. La fonction de login social a rencontr\u00e9 une erreur alors qu'elle tentait de communiquer avec l'API utilisateur, ou bien le corps de la r\u00e9ponse de l'API utilisateur est vide.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.useraction=V\u00e9rifiez que la r\u00e9ponse de l'API utilisateur n'est pas vide et que la connexion \u00e0 l'API utilisateur a \u00e9t\u00e9 \u00e9tablie. Consultez les journaux du serveur afin de d\u00e9terminer si une erreur est survenue lorsque la fonction de login social tentait de communiquer avec l'API utilisateur.
+
+# 0=User API response string, 1=Exception message
+KUBERNETES_USER_API_RESPONSE_NOT_JSON=CWWKS5378E: La r\u00e9ponse de l''API utilisateur Kubernetes n''est pas un objet JSON valide. La r\u00e9ponse compl\u00e8te est la suivante : {0}. {1}
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.explanation=La r\u00e9ponse de l'API utilisateur Kubernetes doit \u00eatre un objet JSON valide contenant des informations sur l'utilisateur authentifi\u00e9.
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=V\u00e9rifiez que la valeur de l'API utilisateur dans la configuration de login social est une URL d'API utilisateur Kubernetes valide. V\u00e9rifiez la r\u00e9ponse de l'API utilisateur au cas o\u00f9 davantage d'informations seraient incluses.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=User API response string
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: La valeur de la cl\u00e9 [{0}] dans la r\u00e9ponse de l''API utilisateur Kubernetes doit \u00eatre de type {1} mais est de type {2}. La r\u00e9ponse compl\u00e8te de l''API utilisateur est la suivante : [ {3} ].
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=Le type de la valeur de la cl\u00e9 sp\u00e9cifi\u00e9 n'est pas correct. Il se peut que la r\u00e9ponse de l'API utilisateur soit incorrectement form\u00e9e ou que l'API utilisateur ait renvoy\u00e9 une r\u00e9ponse dont la structure est inattendue.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=V\u00e9rifiez la structure de la r\u00e9ponse de l'API utilisateur. V\u00e9rifiez la r\u00e9ponse de l'API utilisateur pour d\u00e9terminer si une erreur est survenue.
+
+# 0=Error string from user API response
+KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: L''API utilisateur Kubernetes a rencontr\u00e9 une erreur lors du traitement du jeton d''acc\u00e8s. L''erreur est la suivante : [{0}]
+KUBERNETES_USER_API_RESPONSE_ERROR.explanation=La r\u00e9ponse de l'API utilisateur Kubernetes comporte une erreur. Il se peut que le jeton d'acc\u00e8s ne soit pas valide ou qu'une autre erreur soit survenue lors du traitement du jeton.
+KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Consultez l'erreur qui est affich\u00e9e dans le message. Assurez-vous que le jeton d'acc\u00e8s est valide et qu'il est correctement form\u00e9.
+
+# 0=Social login configuration ID, 1=Value of the userNameAttribute, 2=userNameAttribute, 3=Alternative key that will be used instead
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: La configuration de login social [{0}] sp\u00e9cifie [{1}] comme valeur pour l''attribut [{2}], mais la r\u00e9ponse de l''API utilisateur ne contient pas de cl\u00e9 [{1}]. La cl\u00e9 [{3}], si elle est pr\u00e9sente dans la r\u00e9ponse de l''API utilisateur, est utilis\u00e9e \u00e0 la place pour d\u00e9terminer le nom d''utilisateur.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=La r\u00e9ponse de l'API utilisateur ne contient pas de cl\u00e9 correspondant \u00e0 la valeur de l'attribut de configuration qui est sp\u00e9cifi\u00e9 dans le message. La fonction de login social tente d'utiliser une autre cl\u00e9 \u00e0 la place.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=V\u00e9rifiez que l'attribut de configuration qui est sp\u00e9cifi\u00e9 dans le message est configur\u00e9 correctement. Assurez-vous que la valeur de l'attribut de configuration correspond \u00e0 l'entr\u00e9e figurant dans la r\u00e9ponse de l'API utilisateur qui doit \u00eatre utilis\u00e9e comme nom d'utilisateur.
+
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La r\u00e9ponse suivante de l''API utilisateur ne peut pas \u00eatre trait\u00e9e : {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Les informations sur le compte de service ne peuvent pas \u00eatre obtenues car une autre erreur est survenue.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Si le message contient un autre message d'erreur, consultez les actions utilisateur de ce message. Sinon, recherchez dans les journaux serveur d'autres messages d'erreur indiquant o\u00f9 l'autre erreur est survenue.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: L''API utilisateur a renvoy\u00e9 le code de r\u00e9ponse inattendu [{0}]. V\u00e9rifiez que la demande envoy\u00e9e \u00e0 l''API contient toutes les informations requises. La r\u00e9ponse de l''API est la suivante : [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=L'API utilisateur n'a pas renvoy\u00e9 le code de statut attendu. Il se peut que des informations manquent dans la demande ou que la demande ne soit pas autoris\u00e9e.
+USER_API_RESPONSE_BAD_STATUS.useraction=V\u00e9rifiez la r\u00e9ponse de l'API qui se trouve dans le message d'erreur pour plus d'informations. V\u00e9rifiez que la demande envoy\u00e9e \u00e0 l'API contient toutes les informations requises. V\u00e9rifiez que tous les jetons qui sont inclus dans la demande sont valides.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: Le contenu de la r\u00e9ponse n''est pas un objet JSON valide. La r\u00e9ponse compl\u00e8te est la suivante : {0}. {1}
+RESPONSE_NOT_JSON.explanation=La r\u00e9ponse doit \u00eatre un objet JSON valide.
+RESPONSE_NOT_JSON.useraction=V\u00e9rifiez que la demande a \u00e9t\u00e9 envoy\u00e9e \u00e0 la cible appropri\u00e9e. Assurez-vous que la cible d\u00e9sign\u00e9e de la demande peut renvoyer des donn\u00e9es JSON. Consultez la r\u00e9ponse pour d\u00e9terminer si d'autres informations sont incluses.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: Une cl\u00e9 attendue manque dans l''objet JSON fourni : [{0}]. L''objet JSON complet est le suivant : [{1}].
+JSON_MISSING_KEY.explanation=La cl\u00e9 qui est sp\u00e9cifi\u00e9e dans le message doit \u00eatre incluse dans les donn\u00e9es JSON. Il se peut qu'elle manque ou qu'elle se trouve ailleurs.
+JSON_MISSING_KEY.useraction=V\u00e9rifiez les donn\u00e9es JSON pour d\u00e9terminer si la cl\u00e9 manque.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: La valeur de la cl\u00e9 [{0}] dans les donn\u00e9es JSON doit \u00eatre de type {1}, mais est de type {2}. L''objet JSON est [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=Le type de la valeur de la cl\u00e9 sp\u00e9cifi\u00e9 n'est pas correct. Il se peut que les donn\u00e9es JSON soient incorrectement form\u00e9es ou que leur structure soit inattendue.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=V\u00e9rifiez la structure des donn\u00e9es JSON. V\u00e9rifiez les donn\u00e9es JSON pour d\u00e9terminer si une erreur est survenue.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: La r\u00e9ponse de l''API d''introspection de jeton ne peut pas \u00eatre trait\u00e9e : {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Les informations sur l'utilisateur authentifi\u00e9 ne peuvent pas \u00eatre obtenues car une autre erreur est survenue.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Si le message contient un autre message d'erreur, consultez les actions utilisateur de ce message. Sinon, recherchez dans les journaux serveur d'autres messages d'erreur indiquant o\u00f9 l'autre erreur est survenue.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La demande d''introspection de jeton a \u00e9chou\u00e9 car le jeton qui est inclus dans la demande n''est pas valide. La r\u00e9ponse compl\u00e8te est la suivante : {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Le serveur d'autorisation n'a pas \u00e9mis le jeton, le propri\u00e9taire de la ressource a r\u00e9voqu\u00e9 le jeton, le jeton est arriv\u00e9 \u00e0 expiration ou une autre erreur est survenue.
+INTROSPECT_USER_API_INACTIVE.useraction=Consultez la r\u00e9ponse incluse dans le message. V\u00e9rifiez que le noeud final d'introspection de jeton correct est utilis\u00e9. Assurez-vous que le jeton est valide et qu'il peut faire l'objet d'une introspection.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configuration de login social [{0}] a \u00e9t\u00e9 trait\u00e9e correctement.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configuration de login social indiqu\u00e9e a \u00e9t\u00e9 trait\u00e9e correctement.
@@ -433,8 +526,8 @@ RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: L''\u00e9tat de la r\u00e9ponse est
 RESPONSE_STATUS_MISSING_OR_ERROR.explanation=La demande a probablement \u00e9chou\u00e9 parce qu'elle \u00e9tait non autoris\u00e9e ou manquait d'informations, telles qu'un param\u00e8tre ou un en-t\u00eate de demande obligatoire. Si l'\u00e9tat de la r\u00e9ponse n'\u00e9tait pas nul, le message comporte la raison et le code d'\u00e9tat de la r\u00e9ponse.
 RESPONSE_STATUS_MISSING_OR_ERROR.useraction=V\u00e9rifiez le code d'\u00e9tat de la r\u00e9ponse \u00e9ventuellement pr\u00e9sent dans le message. V\u00e9rifiez que tous les param\u00e8tres et en-t\u00eates requis ont \u00e9t\u00e9 inclus dans la demande.
 
-# 0=URL to which the request was submitted, 1=Error message
-RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: La demande soumise au noeud final [{0}] a \u00e9chou\u00e9. L''erreur est la suivante : {1}
+# 0=URL to which the request was submitted, 1=HTTP response status (e.g. 404 Not Found), 2=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: La demande soumise au noeud final [{0}] a \u00e9chou\u00e9. Le statut de la r\u00e9ponse est [{1}]. L''erreur est la suivante : {2}
 RESPONSE_STATUS_UNSUCCESSFUL.explanation=La demande a probablement \u00e9chou\u00e9 parce qu'elle \u00e9tait non autoris\u00e9e ou manquait d'informations, telles qu'un param\u00e8tre ou un en-t\u00eate de demande obligatoire. La demande a peut-\u00eatre \u00e9t\u00e9 dirig\u00e9e vers un noeud final incorrect.
 RESPONSE_STATUS_UNSUCCESSFUL.useraction=V\u00e9rifiez que la demande a \u00e9t\u00e9 dirig\u00e9e vers le noeud final correct. V\u00e9rifiez que tous les param\u00e8tres et en-t\u00eates requis ont \u00e9t\u00e9 inclus dans la demande.
 

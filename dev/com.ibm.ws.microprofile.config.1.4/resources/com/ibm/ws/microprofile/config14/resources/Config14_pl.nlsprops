@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2018, 2019 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,6 +31,10 @@
 no.such.element.CWMCG0300E=CWMCG0300E: Nie znaleziono w\u0142a\u015bciwo\u015bci {0} w konfiguracji.
 no.such.element.CWMCG0300E.explanation=\u017b\u0105dana w\u0142a\u015bciwo\u015b\u0107 nie istnieje w \u017cadnym ze skonfigurowanych \u017ar\u00f3de\u0142 konfiguracji.
 no.such.element.CWMCG0300E.useraction=Dodaj w\u0142a\u015bciwo\u015b\u0107 do jednego z istniej\u0105cych \u017ar\u00f3de\u0142 konfiguracji lub dodaj \u017ar\u00f3d\u0142o konfiguracji, kt\u00f3re zawiera w\u0142a\u015bciwo\u015b\u0107.
+
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Nie powiod\u0142o si\u0119 zaplanowanie uniewa\u017cnienia pami\u0119ci podr\u0119cznej konfiguracji MicroProfile. Wyj\u0105tek: {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Zmiany w konfiguracji MicroProfile mog\u0105 nie zosta\u0107 odzwierciedlone w aplikacji.
+failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.4 error message

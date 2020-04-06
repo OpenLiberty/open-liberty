@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,6 @@ import com.ibm.ws.security.social.test.CommonTestClass;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
-
 import test.common.SharedOutputManager;
 
 public class TwitterTokenServicesTest extends CommonTestClass {
@@ -70,6 +69,7 @@ public class TwitterTokenServicesTest extends CommonTestClass {
     final String MSG_RESPONSE_FAILURE = "CWWKS5424E";
 
     static final String JSON_FAILURE_MSG = "JSON failure message. Something went wrong.";
+    static final String SAME_SITE_COOKIE_VALUE = "SameSiteValue";
 
     static Map<String, String> SUCCESSFUL_REQUEST_TOKEN_RESPONSE = new HashMap<String, String>();
     static Map<String, String> SUCCESSFUL_ACCESS_TOKEN_RESPONSE = new HashMap<String, String>();
@@ -92,7 +92,7 @@ public class TwitterTokenServicesTest extends CommonTestClass {
         UNSUCCESSFUL_RESPONSE.put(TwitterConstants.RESULT_RESPONSE_STATUS, TwitterConstants.RESULT_ERROR);
         UNSUCCESSFUL_RESPONSE.put(TwitterConstants.RESULT_MESSAGE, JSON_FAILURE_MSG);
     }
-
+    
     TwitterTokenServices tokenServices = new TwitterTokenServices() {
         @Override
         protected TwitterEndpointServices getTwitterEndpointServices() {
@@ -837,8 +837,12 @@ public class TwitterTokenServicesTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(false));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue(SAME_SITE_COOKIE_VALUE));
                 allowing(webAppSecConfig).createReferrerURLCookieHandler();
                 will(returnValue(new ReferrerURLCookieHandler(webAppSecConfig)));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Disabled"));
                 one(response).addCookie(with(any(Cookie.class)));
                 one(socialWebUtils).getRequestUrlWithEncodedQueryString(request);
                 will(returnValue(INCOMING_REQUEST_URL));

@@ -42,7 +42,7 @@ public class SpecificAnnotationsImpl implements SpecificAnnotations {
         Set<String> selectedClassNames =
             specificTargets.getAnnotatedClasses(
                 annotationClassName,
-                AnnotationTargets_Targets.POLICY_PARTIAL);
+                AnnotationTargets_Targets.POLICY_SEED);
         return selectedClassNames;
     }
 }

@@ -6,3 +6,4 @@ IBM-Process-Types: server, \
 -bundles=com.ibm.websphere.javaee.annotation.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.annotation:javax.annotation-api:1.2"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

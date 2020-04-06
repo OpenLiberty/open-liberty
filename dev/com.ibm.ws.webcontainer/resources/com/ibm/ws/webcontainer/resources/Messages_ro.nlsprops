@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1597,3 +1597,20 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=Verifica\u0163i co
 exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: ServletContainerInitializer [{0}], aflat \u00een urm\u0103toarea aplica\u0163ie [{2}], a produs urm\u0103toarea eroare la invocarea metodei onStartup: [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=A fost aruncat\u0103 o excep\u0163ie de la un ServletContainerInitializer la invocarea metodei onStartup.
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza erorii.
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: Nu a fost g\u0103sit\u0103 nicio defini\u0163ie de servlet pentru numele de servlet {0} \u00een maparea de filtru {1}.
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=Numele de servlet este utilizat \u00een maparea de filtru, dar nu are o defini\u0163ie.
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=Defini\u0163i servletul care este utilizat \u00een maparea de filtru ca nume de servlet.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: Un nume de cookie {0} cu valoarea atributului SameSite existent {1} este configurat cu valoarea nou\u0103 {2}. Niciun atribut SameSite nu este ad\u0103ugat pentru acest cookie.
+duplicate.samesite.attribute.for.cookie.name.explanation=Un nume de cookie nu poate fi configurat pentru mai multe valori de atribute SameSite. Atributul nu este ad\u0103ugat pentru cookie.
+duplicate.samesite.attribute.for.cookie.name.useraction=Verifica\u0163i configura\u0163ia descriptorului de implementare pentru a v\u0103 asigura c\u0103 numele de cookie este configurat doar pentru una din urm\u0103toarele valori ale atributului SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' sau 'SameSiteCookies_Strict'. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Un nume de cookie {0} care este configurat pentru valoarea de atribut SameSite {1} a fost identificat anterior ca un duplicat. Niciun atribut SameSite nu este ad\u0103ugat pentru acest cookie.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=Un nume de cookie nu poate fi configurat pentru mai multe valori de atribute SameSite. Numele de cookie a fost identificat deja ca un duplicat.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=Verifica\u0163i configura\u0163ia descriptorului de implementare pentru a v\u0103 asigura c\u0103 numele de cookie este configurat doar pentru una din urm\u0103toarele valori ale atributului SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' sau 'SameSiteCookies_Strict'. 

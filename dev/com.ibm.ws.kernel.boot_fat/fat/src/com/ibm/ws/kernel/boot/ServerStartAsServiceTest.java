@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -42,6 +43,13 @@ public class ServerStartAsServiceTest {
 
     @ClassRule
     public static final TestRule onWinRule = new OnlyRunOnWinRule();
+
+    @AfterClass
+    public static void after() throws Exception {
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
+    }
 
     @Test
     /**

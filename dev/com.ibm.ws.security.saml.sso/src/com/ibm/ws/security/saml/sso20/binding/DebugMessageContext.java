@@ -1,9 +1,9 @@
 /*
- * Licensed to the University Corporation for Advanced Internet Development, 
- * Inc. (UCAID) under one or more contributor license agreements.  See the 
+ * Licensed to the University Corporation for Advanced Internet Development,
+ * Inc. (UCAID) under one or more contributor license agreements.  See the
  * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache 
- * License, Version 2.0 (the "License"); you may not use this file except in 
+ * copyright ownership. The UCAID licenses this file to You under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
@@ -42,15 +42,14 @@ import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 
 /**
  * Base implemention of {@link SAMLMessageContext}.
- * 
- * @param <InboundMessageType> type of inbound SAML message
+ *
+ * @param <InboundMessageType>  type of inbound SAML message
  * @param <OutboundMessageType> type of outbound SAML message
- * @param <NameIdentifierType> type of name identifier used for subjects
+ * @param <NameIdentifierType>  type of name identifier used for subjects
  */
-public abstract class DebugMessageContext<InboundMessageType extends SAMLObject, OutboundMessageType extends SAMLObject, NameIdentifierType extends SAMLObject>
-                implements SAMLMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> {
+public abstract class DebugMessageContext<InboundMessageType extends SAMLObject, OutboundMessageType extends SAMLObject, NameIdentifierType extends SAMLObject> implements SAMLMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> {
     // This DebugMessageContext is not in use in the product code.
-    // But it helps during the debugging. It print out extra message during runtime 
+    // But it helps during the debugging. It print out extra message during runtime
     //   which is helpful in the tough debugging.
     // The MessageContext is implemented in the second part below
     public static final TraceComponent tc = Tr.register(DebugMessageContext.class,
@@ -485,8 +484,7 @@ public abstract class DebugMessageContext<InboundMessageType extends SAMLObject,
         if (artifactType != null) {
             checkNullObject(artifactType.clone());
             return artifactType.clone();
-        }
-        else {
+        } else {
             return null;
         }
     }

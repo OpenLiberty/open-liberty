@@ -245,13 +245,16 @@ public class SessionCacheTestServlet extends FATServlet {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
         // Useful to see when the provider changes the value that is used for CacheManager
-        ObjectName name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"), null).iterator().next();
-        System.out.println("Found with name " + name.toString());
+        ObjectName objectName = mbs
+                        .queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"), null)
+                        .iterator()
+                        .next();
+        System.out.println("Found with name " + objectName.toString());
 
         // CacheMXBean for session meta info cache
         CacheMXBean metaInfoCacheMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"),
+                                          objectName,
                                           CacheMXBean.class);
         assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
         assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
@@ -259,9 +262,12 @@ public class SessionCacheTestServlet extends FATServlet {
         assertTrue(metaInfoCacheMXBean.isStatisticsEnabled());
 
         // CacheMXBean for session attributes cache
+        objectName = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp"), null)
+                        .iterator()
+                        .next();
         CacheMXBean attrCacheMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp"),
+                                          objectName,
                                           CacheMXBean.class);
         assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
         assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
@@ -269,17 +275,23 @@ public class SessionCacheTestServlet extends FATServlet {
         assertTrue(attrCacheMXBean.isStatisticsEnabled());
 
         // CacheStatisticsMXBean for session meta info cache
+        objectName = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"), null)
+                        .iterator()
+                        .next();
         CacheStatisticsMXBean metaInfoCacheStatsMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"),
+                                          objectName,
                                           CacheStatisticsMXBean.class);
         metaInfoCacheStatsMXBean.clear();
         assertEquals(0, metaInfoCacheStatsMXBean.getCacheRemovals());
 
         // CacheStatisticsMXBean for session attributes cache
+        objectName = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp"), null)
+                        .iterator()
+                        .next();
         CacheStatisticsMXBean attrCacheStatsMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp"),
+                                          objectName,
                                           CacheStatisticsMXBean.class);
         long initialPuts = attrCacheStatsMXBean.getCachePuts();
 

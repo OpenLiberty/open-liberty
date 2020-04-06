@@ -42,6 +42,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH8294_Web extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh8294Web";
     private final static String RESOURCE_ROOT = "test-applications/olgh8294/";
     private final static String appFolder = "web";
     private final static String appName = "olgh8294Web";
@@ -59,10 +60,9 @@ public class TestOLGH8294_Web extends JPAFATServletClient {
         populateSet.add("JPA_OLGH8294_POPULATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("EclipseLinkServer")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH8294Servlet.class, path = "olgh8294" + "/" + "TestOLGH8294Servlet"),
-
+                    @TestServlet(servlet = TestOLGH8294Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8294Servlet")
     })
     public static LibertyServer server;
 

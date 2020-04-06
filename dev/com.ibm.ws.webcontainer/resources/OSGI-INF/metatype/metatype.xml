@@ -95,13 +95,6 @@
             required="false" type="Boolean" default="false" />
 
         <!--com.ibm.ws.webcontainer.-->
-        <AD id="channelWriteType"
-            name="%channelWriteType.name" 
-            description="%channelWriteType.desc" 
-            required="false" type="String" default="async" />
-
-
-        <!--com.ibm.ws.webcontainer.-->
         <AD id="suppressHtmlRecursiveErrorOutput"
             name="%suppressHtmlRecursiveErrorOutput.name" 
             description="%suppressHtmlRecursiveErrorOutput.desc" 

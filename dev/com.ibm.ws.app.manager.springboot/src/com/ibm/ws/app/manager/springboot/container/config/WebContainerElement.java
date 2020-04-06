@@ -29,7 +29,6 @@ public class WebContainerElement extends ConfigElement {
     private String httpsindicatorheader;
     private Boolean ExposeWebInfOnDispatch;
     private Boolean decodeurlplussign;
-    private String channelwritetype;
     private Boolean suppressHtmlRecursiveErrorOutput;
     private Boolean fileWrapperEvents;
     private String webgroupvhostnotfound;
@@ -198,13 +197,6 @@ public class WebContainerElement extends ConfigElement {
      */
     public Boolean getDecodeurlplussign() {
         return decodeurlplussign;
-    }
-
-    /**
-     * @return the channelwritetype
-     */
-    public String getChannelwritetype() {
-        return channelwritetype;
     }
 
     /**
@@ -715,12 +707,6 @@ public class WebContainerElement extends ConfigElement {
         this.decodeurlplussign = b;
     }
 
-    public final static String XML_ATTRIBUTE_NAME_CHANNEL_WRITE_TYPE = "com.ibm.ws.webcontainer.channelwritetype";
-
-    public void setChannelwritetype(String s) {
-        this.channelwritetype = s;
-    }
-
     public final static String XML_ATTRIBUTE_NAME_SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = "com.ibm.ws.webcontainer.suppressHtmlRecursiveErrorOutput";
 
     public void setSuppressHtmlRecursiveErrorOutput(Boolean b) {
@@ -1209,8 +1195,6 @@ public class WebContainerElement extends ConfigElement {
             buf.append("ExposeWebInfOnDispatch=\"" + ExposeWebInfOnDispatch + "\" ");
         if (decodeurlplussign != null)
             buf.append("decodeurlplussign=\"" + decodeurlplussign + "\" ");
-        if (channelwritetype != null)
-            buf.append("channelwritetype=\"" + channelwritetype + "\" ");
         if (suppressHtmlRecursiveErrorOutput != null)
             buf.append("suppressHtmlRecursiveErrorOutput=\"" + suppressHtmlRecursiveErrorOutput + "\" ");
         if (fileWrapperEvents != null)

@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.example.testlogic.JPATestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
@@ -27,7 +28,7 @@ public class TestExample_EJB_SL_Servlet extends EJBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {
-        testClassName = "com.ibm.ws.jpa.example.testlogic.JPATestLogic";
+        testClassName = JPATestLogic.class.getName();
         ejbJNDIName = "ejb/ExampleSLEJB";
 
         jpaPctxMap.put("test-jpa-resource-amjta",

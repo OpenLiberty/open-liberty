@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.session.cache.fat.infinispan;
 
 import java.net.HttpURLConnection;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -77,22 +76,5 @@ public class FATSuite {
         } finally {
             con.disconnect();
         }
-    }
-
-    /**
-     * Checks if multicast should be disabled in Hazelcast. We want to disable multicast on z/OS,
-     * and when the environment variable disable_multicast_in_fats=true.
-     *
-     * If you are seeing a lot of NPE errors while running this FAT bucket you might need to set
-     * disable_multicast_in_fats to true. This has been needed on some personal Linux systems, as
-     * well as when running through a VPN.
-     *
-     * @return true if multicast should be disabled.
-     */
-    public static boolean isMulticastDisabled() {
-        boolean multicastDisabledProp = Boolean.parseBoolean(System.getenv("disable_multicast_in_fats"));
-        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
-
-        return (multicastDisabledProp || osName.contains("z/os"));
     }
 }

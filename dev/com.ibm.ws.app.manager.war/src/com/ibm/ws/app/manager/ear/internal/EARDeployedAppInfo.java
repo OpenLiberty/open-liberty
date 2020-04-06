@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,8 +48,6 @@ import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
-import com.ibm.ws.container.service.metadata.extended.ModuleMetaDataExtender;
-import com.ibm.ws.container.service.metadata.extended.NestedModuleMetaDataFactory;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.app.Module;
 import com.ibm.ws.javaee.ddmodel.DDParser;
@@ -119,7 +117,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     }
 
     private ClassLoader getAppClassLoader() {
-        if ( appClassLoader == null ) {
+        if (appClassLoader == null) {
             appClassLoader = basicCreateAppClassLoader();
         }
         return appClassLoader;
@@ -128,30 +126,29 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     // The imports of the application class loader and for module
     // class loaders.
 
-    private static final List<String> DYNAMIC_IMPORTS =
-        Collections.unmodifiableList( Arrays.asList("*") );
+    private static final List<String> DYNAMIC_IMPORTS = Collections.unmodifiableList(Arrays.asList("*"));
 
     private ClassLoader basicCreateAppClassLoader() {
         String appPrefix;
-        if ( _tc.isDebugEnabled() ) {
+        if (_tc.isDebugEnabled()) {
             appPrefix = "Application [ " + getName() + " ]: ";
         } else {
             appPrefix = null;
         }
 
-        if ( appPrefix != null ) {
+        if (appPrefix != null) {
             Tr.debug(_tc, appPrefix + "Class loader ID [ " + appClassLoaderId + " ]");
         }
 
         List<Container> classLoaderContainers = new ArrayList<Container>();
         List<Container> nativeLibraryContainers = new ArrayList<Container>();
 
-        for ( ContainerInfo classesContainerInfo : getClasspathContainerInfos() ) {
+        for (ContainerInfo classesContainerInfo : getClasspathContainerInfos()) {
             Container classesContainer = classesContainerInfo.getContainer();
 
             classLoaderContainers.add(classesContainer);
 
-            if ( classesContainerInfo.getType() == ContainerInfo.Type.RAR_MODULE ) {
+            if (classesContainerInfo.getType() == ContainerInfo.Type.RAR_MODULE) {
                 nativeLibraryContainers.add(classesContainer);
             }
         }
@@ -163,7 +160,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         // Keep a reference to the protection domain: It is also used when creating
         // module class loaders.
         protectionDomain = getProtectionDomain();
-        if ( appPrefix != null ) {
+        if (appPrefix != null) {
             Tr.debug(_tc, appPrefix + "Protection domain [ " + protectionDomain + " ]");
         }
 
@@ -173,9 +170,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         appClassLoaderConfig.setNativeLibraryContainers(nativeLibraryContainers);
 
         ClassLoader useAppClassLoader = createTopLevelClassLoader(
-            classLoaderContainers, gatewayConfig, appClassLoaderConfig);
+                                                                  classLoaderContainers, gatewayConfig, appClassLoaderConfig);
 
-        if ( appPrefix != null ) {
+        if (appPrefix != null) {
             Tr.debug(_tc, appPrefix + "Class loader [ " + useAppClassLoader + " ]");
         }
         return useAppClassLoader;
@@ -184,21 +181,21 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     /**
      * Create deployment information for an application.
      *
-     * @param appInfo The application information.
-     * @param appDD The descriptor of the application.  May be null.
-     * @param factory Factory of various widgets used to process the application information.
+     * @param appInfo                  The application information.
+     * @param appDD                    The descriptor of the application. May be null.
+     * @param factory                  Factory of various widgets used to process the application information.
      * @param preExpansionAppContainer The container of the application prior to the
-     *     application expansion.
+     *                                     application expansion.
      *
      * @throws UnableToAdaptException Thrown in case of an error creating
-     *     deployment information for the application.
+     *                                    deployment information for the application.
      */
     EARDeployedAppInfo(
-        ApplicationInformation<DeployedAppInfo> appInfo,
-        Application appDD,
-        EARDeployedAppInfoFactoryImpl factory,
-        DeployedAppServices deployedAppServices,
-        Container preExpansionAppContainer) throws UnableToAdaptException {
+                       ApplicationInformation<DeployedAppInfo> appInfo,
+                       Application appDD,
+                       EARDeployedAppInfoFactoryImpl factory,
+                       DeployedAppServices deployedAppServices,
+                       Container preExpansionAppContainer) throws UnableToAdaptException {
 
         super(appInfo, deployedAppServices);
 
@@ -217,9 +214,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         // the name of the application file, subtracting ".ear" if that is present.
 
         String appName = ((appDD == null) ? null : appDD.getApplicationName());
-        if ( appName == null ) {
+        if (appName == null) {
             appName = ModuleInfoUtils.getModuleURIFromLocation(appInfo.getLocation());
-            if ( appName.endsWith(".ear") ) {
+            if (appName.endsWith(".ear")) {
                 appName = appName.substring(0, appName.length() - ".ear".length());
             }
         }
@@ -240,7 +237,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         this.createModules();
 
         Object appConfigContextRoot = appInfo.getConfigProperty(CONTEXT_ROOT);
-        if ( appConfigContextRoot != null ) {
+        if (appConfigContextRoot != null) {
             Tr.warning(_tc, "warning.context.root.not.used", appConfigContextRoot, appPreferredName);
         }
     }
@@ -254,15 +251,15 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
      */
     @Override
     protected ExtendedApplicationInfo createApplicationInfo() {
-        Container appLibContainer = ( (appLibsInfo != null) ? appLibsInfo.getLibsContainer() : null );
+        Container appLibContainer = ((appLibsInfo != null) ? appLibsInfo.getLibsContainer() : null);
 
         return appInfoFactory.createEARApplicationInfo(
-            getName(), appPreferredName,
-            getContainer(),
-            this,
-            getConfigHelper(),
-            appLibContainer,
-            this);
+                                                       getName(), appPreferredName,
+                                                       getContainer(),
+                                                       this,
+                                                       getConfigHelper(),
+                                                       appLibContainer,
+                                                       this);
     }
 
     // Application libraries helpers ...
@@ -271,9 +268,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     private AppLibsInfo createAppLibsInfo() {
         String libDir;
-        if ( (appDD != null) && (appDD.getLibraryDirectory() != null) ) {
+        if ((appDD != null) && (appDD.getLibraryDirectory() != null)) {
             libDir = appDD.getLibraryDirectory();
-            if ( libDir.length() == 0 ) {
+            if (libDir.length() == 0) {
                 // Having an empty library directory element means that the application
                 // has no library directory.
                 return null;
@@ -285,7 +282,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         }
 
         Entry libDirEntry = getContainer().getEntry(libDir);
-        if ( libDirEntry == null ) {
+        if (libDirEntry == null) {
             // The specified library location need not exists.  When it doesn't,
             // the application is treated as having no library directory.
             return null;
@@ -294,7 +291,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         Container libDirContainer;
         try {
             libDirContainer = libDirEntry.adapt(Container.class);
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             // FFDC
             // Treat this the same as other adapt failures: Report
             // the error, then move on with as much information as
@@ -334,7 +331,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
          * <code>"EAR" + earLibs.getPath() earLibContainer.getName()</code>
          * Most commonly, the EAR lib path is just "lib", giving a name, for
          * example, "EARlibmyJar.jar".
-         * 
+         *
          * @return The name of the EAR lib jar.
          */
         @Override
@@ -352,9 +349,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     /**
      * Container information for application libraries.
-     * 
+     *
      * This consists of a root library container and the collection
-     * of application libraries.  Included in the application libraries
+     * of application libraries. Included in the application libraries
      * are any jars obtained by expanding manifest class paths of the
      * actual application libraries.
      */
@@ -371,21 +368,21 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             // (2) Only entries in the immediate library folder are processed.
             // (3) Recursively process library jar manifest class paths.
 
-            for ( Entry libEntry : libsContainer ) {
+            for (Entry libEntry : libsContainer) {
                 String libEntryName = libEntry.getName();
-                if ( !libEntryName.toLowerCase().endsWith(".jar") ) {
+                if (!libEntryName.toLowerCase().endsWith(".jar")) {
                     continue;
                 }
 
                 Container libContainer;
                 try {
                     libContainer = libEntry.adapt(Container.class); // throws UnableToAdaptException
-                } catch ( UnableToAdaptException e ) {
+                } catch (UnableToAdaptException e) {
                     libContainer = null; // FFDC
                     // Entity beneath EAR/lib folder which has a ".jar" extension but which could
                     // not be opened as a container.  Usually, this means an invalid JAR.
                 }
-                if ( libContainer == null ) {
+                if (libContainer == null) {
                     // Since the file extension is ".jar", a null container should only
                     // occur because of an adapt exception.  The adapt call should never
                     // return null.
@@ -405,7 +402,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 try {
                     ManifestClassPathUtils.addCompleteJarEntryUrls(useLibsInfos, libEntry, resolvedManifestIdentities);
                     // throws UnableToAdaptException
-                } catch ( UnableToAdaptException e ) {
+                } catch (UnableToAdaptException e) {
                     // FFDC
                     // Ignore this the same as when a lib jar fails to adapt.
                 }
@@ -433,32 +430,31 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     /**
      * Answer information for all application libraries.
-     * 
+     *
      * This consists of two parts: Any shared libraries of the application,
-     * and the actual application libraries.  Included with the actual
+     * and the actual application libraries. Included with the actual
      * application libraries are any libraries found by expanding the
      * manifest class paths of the actual application libraries.
-     * 
+     *
      * @return Information for all application libraries.
      */
     @Override
     public List<ContainerInfo> getLibraryClassesContainerInfo() {
         List<ContainerInfo> sharedLibsInfos = super.getLibraryClassesContainerInfo();
 
-        if ( appLibsInfo == null ) {
+        if (appLibsInfo == null) {
             return sharedLibsInfos; // Already unmodifiable
         }
         List<ContainerInfo> appLibsInfos = appLibsInfo.getLibsInfos();
-        if ( appLibsInfos.isEmpty() ) {
+        if (appLibsInfos.isEmpty()) {
             return sharedLibsInfos; // Already unmodifiable
         }
 
-        if ( sharedLibsInfos.isEmpty() ) {
+        if (sharedLibsInfos.isEmpty()) {
             return Collections.unmodifiableList(appLibsInfos);
         }
 
-        List<ContainerInfo> infos =
-            new ArrayList<ContainerInfo>( appLibsInfos.size() + sharedLibsInfos.size() );
+        List<ContainerInfo> infos = new ArrayList<ContainerInfo>(appLibsInfos.size() + sharedLibsInfos.size());
         infos.addAll(appLibsInfos);
         infos.addAll(sharedLibsInfos);
 
@@ -469,26 +465,26 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     private boolean createModules() {
         String appPrefix;
-        if ( _tc.isDebugEnabled() ) {
+        if (_tc.isDebugEnabled()) {
             appPrefix = "Application [ " + getName() + " ]: ";
         } else {
             appPrefix = null;
         }
 
-        if ( appDD != null ) {
-            if ( appPrefix != null ) {
+        if (appDD != null) {
+            if (appPrefix != null) {
                 Tr.debug(_tc, appPrefix + "Modules specified by descriptor");
             }
 
-            ddInitializeInOrder = ( appDD.isSetInitializeInOrder() && appDD.isInitializeInOrder() );
+            ddInitializeInOrder = (appDD.isSetInitializeInOrder() && appDD.isInitializeInOrder());
 
             Set<String> moduleURIs = new HashSet<String>();
-            for ( Module ddModule : appDD.getModules() ) {
+            for (Module ddModule : appDD.getModules()) {
                 createModule(ddModule, moduleURIs);
             }
 
         } else {
-            if ( appPrefix != null ) {
+            if (appPrefix != null) {
                 Tr.debug(_tc, appPrefix + "Modules specified by extension and by annotations");
             }
             searchForModules();
@@ -496,7 +492,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         ensureUniqueModuleNames();
 
-        if ( appPrefix != null ) {
+        if (appPrefix != null) {
             Tr.debug(_tc, appPrefix + "Modules [ " + Integer.valueOf(moduleContainerInfos.size()) + " ]");
         }
 
@@ -510,14 +506,14 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     private void searchForModules() {
         String libDir = null;
         String libDirSlash = null;
-        if ( appLibsInfo != null ) {
+        if (appLibsInfo != null) {
             String libsPath = appLibsInfo.getLibsContainer().getPath();
-            if ( libsPath.length() > 0 ) {
+            if (libsPath.length() > 0) {
                 libDir = libsPath;
-                if ( libDir.endsWith("/") ) {
+                if (libDir.endsWith("/")) {
                     libDir = libDir.substring(0, libDir.length() - 1);
                 }
-                if ( !libDir.startsWith("/") ) {
+                if (!libDir.startsWith("/")) {
                     libDir = "/" + libDir;
                 }
                 libDirSlash = libDir + "/";
@@ -530,17 +526,17 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     /**
      * Recursively search application containers for modules.
      *
-     * @param libDir The application library directory.  Null if the application has no library.
-     * @param libDirSlash The application library directory, with trailing slash.  Null if the
-     *      application has no library.
-     * @param container The next container to scan.
+     * @param libDir      The application library directory. Null if the application has no library.
+     * @param libDirSlash The application library directory, with trailing slash. Null if the
+     *                        application has no library.
+     * @param container   The next container to scan.
      */
     private void searchForModules(String libDir, String libDirSlash, Container container) {
-        for ( Entry childEntry : container ) {
+        for (Entry childEntry : container) {
             String childPath = childEntry.getPath();
 
-            if ( (libDir != null) && (childPath.equals(libDir) || childPath.startsWith(libDirSlash))) {
-                if ( _tc.isDebugEnabled() ) {
+            if ((libDir != null) && (childPath.equals(libDir) || childPath.startsWith(libDirSlash))) {
+                if (_tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Skipping library container [ " + childPath + " ]");
                 }
                 continue;
@@ -553,19 +549,19 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             Container childContainer;
             try {
                 childContainer = childEntry.adapt(Container.class);
-            } catch ( UnableToAdaptException e ) {
+            } catch (UnableToAdaptException e) {
                 // error.application.library.container=
                 // CWWKZ0111E: Application {0} encountered a error when accessing application library {1}: {2}
                 Tr.error(_tc, "error.application.library.container", getName(), childPath, e);
                 continue;
             }
 
-            if ( childContainer == null ) {
-                if ( _tc.isDebugEnabled() ) {
+            if (childContainer == null) {
+                if (_tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Skipping non-container [ " + childPath + " ]");
                 }
             } else {
-                if ( childContainer.isRoot() ) {
+                if (childContainer.isRoot()) {
                     createModuleContainerInfo(childEntry, childPath, childContainer);
                 } else {
                     searchForModules(libDir, libDirSlash, childContainer);
@@ -573,11 +569,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
         }
     }
-    
+
     private void ensureUniqueModuleNames() {
         Set<String> usedNames = new HashSet<String>();
-        List<ModuleContainerInfoBase> unresolvedModuleInfos =
-            new ArrayList<ModuleContainerInfoBase>();
+        List<ModuleContainerInfoBase> unresolvedModuleInfos = new ArrayList<ModuleContainerInfoBase>();
 
         // Since EJB lookup names in java:global are sensitive to the module
         // name, we prefer to leave EJB module names alone if possible (as in
@@ -585,9 +580,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         // First allow EJB modules to keep their module names.  Collect non-EJB
         // modules and EJB modules with conflicting names.
-        for ( ModuleContainerInfoBase modInfo : moduleContainerInfos ) {
-            if ( (modInfo instanceof EJBModuleContainerInfo) && usedNames.add(modInfo.moduleName) ) {
-                if ( TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled() ) {
+        for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
+            if ((modInfo instanceof EJBModuleContainerInfo) && usedNames.add(modInfo.moduleName)) {
+                if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Keep " + modInfo.getModuleURI() + "(" + modInfo.getType() + ") as " + modInfo.moduleName);
                 }
             } else {
@@ -596,22 +591,22 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         }
 
         // Assign unique module names to the remaining modules as needed.
-        for ( ModuleContainerInfoBase modInfo : unresolvedModuleInfos ) {
-            if ( usedNames.add(modInfo.moduleName) ) {
-                if ( TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled() ) {
+        for (ModuleContainerInfoBase modInfo : unresolvedModuleInfos) {
+            if (usedNames.add(modInfo.moduleName)) {
+                if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Keep " + modInfo.getModuleURI() + "(" + modInfo.getType() + ") as " + modInfo.moduleName);
                 }
             } else {
                 // As in tWAS, prefer to use the module URI if possible.
                 String newModuleName;
-                if ( usedNames.add( modInfo.getModuleURI() ) ) {
+                if (usedNames.add(modInfo.getModuleURI())) {
                     newModuleName = modInfo.getModuleURI();
                 } else {
                     int number = 2;
                     do {
                         newModuleName = modInfo.moduleName + '_' + number;
                         number++;
-                    } while ( !usedNames.add(newModuleName) );
+                    } while (!usedNames.add(newModuleName));
                 }
                 if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Update " + modInfo.getModuleURI() + " (" + modInfo.getType() + ") from " + modInfo.moduleName + " to " + newModuleName);
@@ -623,20 +618,20 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     @Override
     public List<ModuleClassesContainerInfo> getModuleClassesContainerInfo() {
-        return Collections.unmodifiableList( new ArrayList<ModuleClassesContainerInfo>(moduleContainerInfos) );
+        return Collections.unmodifiableList(new ArrayList<ModuleClassesContainerInfo>(moduleContainerInfos));
     }
 
     private int connectorModuleCount;
     private int ejbModuleCount;
 
     public void createModuleContainerInfo(
-        ModuleHandler moduleHandler,
-        Container moduleContainer,
-        Entry altDDEntry,
-        String moduleURI,
-        ModuleClassesInfoProvider moduleClassesInfo,
-        String contextRoot, String mainClass,
-        boolean checkForDDOrAnnotations) throws UnableToAdaptException {
+                                          ModuleHandler moduleHandler,
+                                          Container moduleContainer,
+                                          Entry altDDEntry,
+                                          String moduleURI,
+                                          ModuleClassesInfoProvider moduleClassesInfo,
+                                          String contextRoot, String mainClass,
+                                          boolean checkForDDOrAnnotations) throws UnableToAdaptException {
 
         if (moduleHandler == connectorModuleHandler) {
             ConnectorModuleContainerInfo mci = new ConnectorModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("connector"), deployedAppServices.getNestedModuleMetaDataFactories("connector"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo);
@@ -690,12 +685,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
         }
         if (moduleHandler == webModuleHandler) {
-            //tWAS doesn't check the ibm-web-ext when deployed in an ear
-            //however, there is a liberty test, testContextRootWarInEar_Ext, which verifies this behavior
-            //since this could be considered a config related change, we can be different than tWAS and we don't want to break backward compatibility with Liberty 85
-            if (contextRoot == null) {
-                contextRoot = ContextRootUtil.getContextRoot(moduleContainer);
-            }
+
             WebModuleContainerInfo mci = new WebModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("web"), deployedAppServices.getNestedModuleMetaDataFactories("web"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, contextRoot);
             moduleContainerInfos.add(mci);
             if (_tc.isDebugEnabled()) {
@@ -821,7 +811,6 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         }
     }
 
-
     private void handleUnableToAdaptException(UnableToAdaptException e, String entryPath, String moduleTypeTag) {
         Throwable cause = e.getCause();
         Object causeMessage = (cause instanceof DDParser.ParseException) ? cause.getMessage() : e;
@@ -887,8 +876,8 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
      * Return the Main-Class from the MANIFEST.MF.
      *
      * @param appEntryContainer The root container.
-     * @param entryPath The path of the mainfest file.
-     * @param required true if current module is known to be a client module, and false otherwise
+     * @param entryPath         The path of the mainfest file.
+     * @param required          true if current module is known to be a client module, and false otherwise
      *
      * @return The main class or null depending on the boolean value 'required'.
      */
@@ -1011,9 +1000,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     //
 
     private List<ContainerInfo> classpathContainerInfos;
-    
+
     private List<ContainerInfo> getClasspathContainerInfos() {
-        if ( classpathContainerInfos == null ) {
+        if (classpathContainerInfos == null) {
             List<ContainerInfo> containerInfos = new ArrayList<ContainerInfo>();
 
             addEJBJarContainerInfos(containerInfos);
@@ -1028,9 +1017,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     private void addEJBJarContainerInfos(List<ContainerInfo> classpathContainerInfos) {
         try {
-            for ( ModuleContainerInfoBase modInfo : moduleContainerInfos ) {
-                if ( modInfo instanceof EJBModuleContainerInfo ) {
-                    classpathContainerInfos.addAll( modInfo.getClassesContainerInfo() );
+            for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
+                if (modInfo instanceof EJBModuleContainerInfo) {
+                    classpathContainerInfos.addAll(modInfo.getClassesContainerInfo());
                 }
             }
         } catch (Throwable th) {
@@ -1098,12 +1087,12 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         try {
             Entry entry;
-            while ( (entry = useContainer.adapt(Entry.class)) != null ) {
+            while ((entry = useContainer.adapt(Entry.class)) != null) {
                 // 'adapt' throws UnableToAdaptException
-                pathBuilder.insert(0,  entry.getPath() );
+                pathBuilder.insert(0, entry.getPath());
                 useContainer = entry.getRoot();
             }
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             // FFDC
             return null;
         }
@@ -1112,26 +1101,26 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     }
 
     /**
-     * Tell if a module has annotations.  This is currently used to type JAR files
-     * of applications which do not have a descriptor.  A JAR file is typed as an
+     * Tell if a module has annotations. This is currently used to type JAR files
+     * of applications which do not have a descriptor. A JAR file is typed as an
      * EJB JAR file if the JAR contains EJB annotations.
-     * 
-     * The detection is done on the immediate classes of the JAR.  Detection does
+     *
+     * The detection is done on the immediate classes of the JAR. Detection does
      * not examine any inherited information.
-     * 
+     *
      * Since inherited information is not used, the module annotations data structure
-     * is only given path information to the JAR itself.  The module class path is
+     * is only given path information to the JAR itself. The module class path is
      * never given links to external information.
      *
-     * @param moduleContainer The module container to test for annotations.
+     * @param moduleContainer        The module container to test for annotations.
      * @param useAnnotationTypeNames The names of annotations to detect in the
-     *     module container.
+     *                                   module container.
      *
      * @return True or false telling if any of the annotations is present as an
-     *     immediate annotation of a class of the module.
+     *         immediate annotation of a class of the module.
      */
     private boolean hasAnnotations(Container moduleContainer, List<String> useAnnotationTypeNames) {
-        if ( AnnotationsBetaHelper.getLibertyBeta() ) {
+        if (AnnotationsBetaHelper.getLibertyBeta()) {
             return hasAnnotationsPostBeta(moduleContainer, useAnnotationTypeNames);
         } else {
             return hasAnnotationsPreBeta(moduleContainer, useAnnotationTypeNames);
@@ -1181,17 +1170,17 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         String modImmediatePath = moduleContainer.getPath();
         String modFullPath = getFullPath(moduleContainer);
 
-        if ( _tc.isDebugEnabled() ) {
+        if (_tc.isDebugEnabled()) {
             Tr.debug(_tc, methodName + ": AppName [ " + appName + " ]");
             Tr.debug(_tc, methodName + ": ModImmediatePath [ " + modImmediatePath + " ]");
             Tr.debug(_tc, methodName + ": ModFullPath [ " + modFullPath + " ]");
         }
 
-        if ( modFullPath == null ) {
-            if ( _tc.isDebugEnabled() ) {
-                Tr.debug(_tc, methodName + ": Failed to obtain module path"); 
+        if (modFullPath == null) {
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, methodName + ": Failed to obtain module path");
             }
-        } else if ( modFullPath.isEmpty() ) {
+        } else if (modFullPath.isEmpty()) {
             modFullPath = null;
         }
 
@@ -1199,19 +1188,19 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         try {
             containerAnnotations = moduleContainer.adapt(com.ibm.ws.container.service.annocache.ContainerAnnotations.class);
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             // CWWKZ0121E: Application {0}: Failed to access annotations for module {1} of type {2}: {3}
             Tr.error(_tc, "error.module.class.source", appName, modImmediatePath, "EJB", e);
 
-            if ( _tc.isDebugEnabled() ) {
+            if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, methodName + ": [ false ]: Error obtaining annotations");
             }
             return false;
         }
 
-        if ( containerAnnotations == null ) {
-            if ( _tc.isDebugEnabled() ) {
-                Tr.debug(_tc, methodName + ": [ false ]: Unexpected null annotations"); 
+        if (containerAnnotations == null) {
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, methodName + ": [ false ]: Unexpected null annotations");
             }
             return false;
         }
@@ -1219,7 +1208,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         containerAnnotations.setAppName(appName);
         containerAnnotations.setModName(modFullPath);
 
-        containerAnnotations.setUseJandex( applicationInformation.getUseJandex() );
+        containerAnnotations.setUseJandex(applicationInformation.getUseJandex());
 
         // A class loader is *not* set to the annotations.
         //
@@ -1229,7 +1218,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         boolean selected = containerAnnotations.hasSpecifiedAnnotations(annotationClassNames);
 
-        if ( _tc.isDebugEnabled() ) {
+        if (_tc.isDebugEnabled()) {
             Tr.debug(_tc, methodName + ": [ " + appName + " ]" +
                           " [ " + modFullPath + " ]" +
                           " [ " + Boolean.valueOf(selected) + " ]");
@@ -1240,32 +1229,32 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     //
 
     /**
-     * Obtain a class loader for a module.  Class loader details depend on the module type:
-     * EJB and connector modules use the application class loader.  Web and client modules
+     * Obtain a class loader for a module. Class loader details depend on the module type:
+     * EJB and connector modules use the application class loader. Web and client modules
      * have more details class loaders.
-     * 
-     * @param moduleInfo Information for the module which is being created.
+     *
+     * @param moduleInfo        Information for the module which is being created.
      * @param moduleClassesInfo ...
-     * 
+     *
      * @return A class loader for the module.
      */
     @Override
     public ClassLoader createModuleClassLoader(ModuleInfo moduleInfo, List<ContainerInfo> moduleClassesInfos) {
-        if ( moduleInfo instanceof WebModuleInfo ) {
-            return createModuleChildClassLoader( WEB_MODULE_DOMAIN, moduleInfo, moduleClassesInfos );
-        } else if ( moduleInfo instanceof EJBModuleInfo ) {
-            return createEJBModuleClassLoader( (EJBModuleInfo) moduleInfo );
-        } else if ( moduleInfo instanceof ClientModuleInfo ) {
-            return createModuleChildClassLoader( CLIENT_MODULE_DOMAIN, moduleInfo, moduleClassesInfos );
-        } else if ( moduleInfo instanceof ConnectorModuleInfo ) {
-            return createConnectorModuleClassLoader( (ConnectorModuleInfo) moduleInfo );
+        if (moduleInfo instanceof WebModuleInfo) {
+            return createModuleChildClassLoader(WEB_MODULE_DOMAIN, moduleInfo, moduleClassesInfos);
+        } else if (moduleInfo instanceof EJBModuleInfo) {
+            return createEJBModuleClassLoader((EJBModuleInfo) moduleInfo);
+        } else if (moduleInfo instanceof ClientModuleInfo) {
+            return createModuleChildClassLoader(CLIENT_MODULE_DOMAIN, moduleInfo, moduleClassesInfos);
+        } else if (moduleInfo instanceof ConnectorModuleInfo) {
+            return createConnectorModuleClassLoader((ConnectorModuleInfo) moduleInfo);
         } else {
             return null;
         }
     }
 
     /**
-     * Obtain a class loader for an EJB module.  Answer the application
+     * Obtain a class loader for an EJB module. Answer the application
      * class loader.
      *
      * @param ejbModuleInfo EJB module information.
@@ -1277,7 +1266,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     }
 
     /**
-     * Obtain a class loader for a connector (RAR) module.  Answer the application
+     * Obtain a class loader for a connector (RAR) module. Answer the application
      * class loader.
      *
      * @param connectorModuleInfo Connector module information.
@@ -1291,62 +1280,59 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     /** Control parameter: Assign the module class loader an ID in the domain of web module class loaders. */
     private static final String WEB_MODULE_DOMAIN = "WebModule";
 
-    /** Control parameter: Assign the module class loader an ID in the domain of client module class loaders. */    
+    /** Control parameter: Assign the module class loader an ID in the domain of client module class loaders. */
     private static final String CLIENT_MODULE_DOMAIN = "ClientModule";
 
     /**
      * Create a class loader for a web or client module.
-     * 
+     *
      * The new module class loader delegates to the application class loader.
      *
      * Creation of the module class loader forces the assignment of the ID of the
      * class loader of the enclosing application.
      *
-     * @param type The domain of the module.  Either "WebModule" or "ClientModule".
-     * @param moduleInfo The module info.
+     * @param type                 The domain of the module. Either "WebModule" or "ClientModule".
+     * @param moduleInfo           The module info.
      * @param classesContainerInfo classes container information for the module.
      *
      * @return The class loader for the child module.
      */
     private ClassLoader createModuleChildClassLoader(
-        String moduleDomain, ModuleInfo moduleInfo,
-        List<ContainerInfo> classesContainerInfo) {
+                                                     String moduleDomain, ModuleInfo moduleInfo,
+                                                     List<ContainerInfo> classesContainerInfo) {
 
         String moduleName = moduleInfo.getName();
         String moduleUri = moduleInfo.getURI();
 
         String modulePrefix;
-        if ( _tc.isDebugEnabled() ) {
+        if (_tc.isDebugEnabled()) {
             modulePrefix = moduleDomain + " [ " + moduleName + " ]: ";
         } else {
             modulePrefix = null;
         }
 
-        List<Container> classesContainers =
-            new ArrayList<Container>( classesContainerInfo.size() );
-        for ( ContainerInfo containerInfo : classesContainerInfo ) {
-            classesContainers.add( containerInfo.getContainer() );
+        List<Container> classesContainers = new ArrayList<Container>(classesContainerInfo.size());
+        for (ContainerInfo containerInfo : classesContainerInfo) {
+            classesContainers.add(containerInfo.getContainer());
         }
 
-        // Force the app class loader ID to be assigned before assigning module 
+        // Force the app class loader ID to be assigned before assigning module
         // class loader IDs.
         //
         // Assuming a sequential ID assignment algorithm, the application class
         // loader ID will be less than all module class loader IDs.
 
         ClassLoaderIdentity appClassLoaderId = getAppClassLoaderId();
-        if ( modulePrefix != null ) {
+        if (modulePrefix != null) {
             Tr.debug(_tc, modulePrefix + "Application class loader ID [ " + appClassLoaderId + " ]");
         }
 
-        ClassLoaderIdentity moduleClassLoaderId =
-            classLoadingService.createIdentity(moduleDomain, getName() + "#" + moduleUri);
-        if ( modulePrefix != null ) {
+        ClassLoaderIdentity moduleClassLoaderId = classLoadingService.createIdentity(moduleDomain, getName() + "#" + moduleUri);
+        if (modulePrefix != null) {
             Tr.debug(_tc, modulePrefix + "Module class loader ID [ " + moduleClassLoaderId + " ]");
         }
 
-        ClassLoaderConfiguration moduleClassLoaderConfig =
-            classLoadingService.createClassLoaderConfiguration();
+        ClassLoaderConfiguration moduleClassLoaderConfig = classLoadingService.createClassLoaderConfiguration();
         moduleClassLoaderConfig.setId(moduleClassLoaderId);
         moduleClassLoaderConfig.setParentId(appClassLoaderId);
 
@@ -1354,17 +1340,16 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         moduleClassLoaderConfig.setIncludeAppExtensions(true);
         moduleClassLoaderConfig.setProtectionDomain(protectionDomain);
 
-        if ( modulePrefix != null ) {
+        if (modulePrefix != null) {
             Tr.debug(_tc, modulePrefix + "isDelegateLast [ " + Boolean.valueOf(isDelegateLast) + " ]");
             Tr.debug(_tc, modulePrefix + "includeAppExtensions [ true ]");
             Tr.debug(_tc, modulePrefix + "protectionDomain [ " + protectionDomain + " ]");
         }
 
-        ClassLoader moduleClassLoader =
-            classLoadingService.createChildClassLoader(classesContainers, moduleClassLoaderConfig);
+        ClassLoader moduleClassLoader = classLoadingService.createChildClassLoader(classesContainers, moduleClassLoaderConfig);
         associateClassLoaderWithApp(moduleClassLoader);
 
-        if ( modulePrefix != null ) {
+        if (modulePrefix != null) {
             Tr.debug(_tc, modulePrefix + " Class loader [ " + moduleClassLoader + " ]");
         }
         return moduleClassLoader;

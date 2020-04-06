@@ -12,6 +12,8 @@ import io.leangen.graphql.metadata.exceptions.TypeMappingException;
 import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Urls;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Type;
@@ -26,6 +28,8 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("WeakerAccess")
 public class DefaultOperationBuilder implements OperationBuilder {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultOperationBuilder.class);
 
     private final TypeInference typeInference;
 
@@ -74,6 +78,10 @@ public class DefaultOperationBuilder implements OperationBuilder {
     private Operation buildOperation(Type contextType, List<Resolver> resolvers, OperationDefinition.Operation operationType, GlobalEnvironment environment) {
         String name = resolveName(resolvers);
         AnnotatedType javaType = resolveJavaType(name, resolvers, environment.messageBundle);
+        if (OperationDefinition.Operation.QUERY == operationType && (javaType == null || Void.TYPE.equals(javaType.getType()))) {
+            log.error("Invalid query method detected. @Query annotation is not allowed on methods returning a void type: " + name);
+            throw new IllegalArgumentException("A query method may not be void: " + name);
+        }
         List<OperationArgument> arguments = collectArguments(name, resolvers);
         boolean batched = isBatched(resolvers);
         return new Operation(name, javaType, contextType, arguments, resolvers, operationType, batched);

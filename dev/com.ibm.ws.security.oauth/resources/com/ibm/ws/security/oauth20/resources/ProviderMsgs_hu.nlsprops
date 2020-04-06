@@ -317,7 +317,8 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: A k\u00e9r\u00e9s [{0}] par
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Az OAuth k\u00e9r\u00e9sben szerepl\u0151 konkr\u00e9t param\u00e9terhez megadott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek list\u00e1ja megtal\u00e1lhat\u00f3 a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 megadott attrib\u00fatum\u00e1ban.
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9sparam\u00e9ter \u00e9rt\u00e9kei \u00e9rv\u00e9nyesek. 
 
-security.oauth20.front.end.error=CWOAU0073E: Hiba t\u00f6rt\u00e9nt egy felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9sekor. Pr\u00f3b\u00e1lkozzon \u00fajra a hiteles\u00edt\u00e9ssel, vagy ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, vegye fel a kapcsolatot a webhely adminisztr\u00e1tor\u00e1val.
+# this message is also emitted by the oidc client via the PublicErrorFacingServlet
+security.oauth20.front.end.error=CWOAU0073E: Hiteles\u00edt\u00e9si hiba t\u00f6rt\u00e9nt. Pr\u00f3b\u00e1lja meg bez\u00e1rni a webb\u00f6ng\u00e9sz\u0151t \u00e9s \u00faj elv\u00e9gezni a hiteles\u00edt\u00e9st, vagy ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, vegye fel a kapcsolatot a webhely adminisztr\u00e1tor\u00e1val.
 security.oauth20.front.end.error.explanation=Lehets\u00e9ges, hogy a k\u00e9r\u00e9sb\u0151l hi\u00e1nyoznak inform\u00e1ci\u00f3k, a kiszolg\u00e1l\u00f3 egy bels\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt, vagy valami m\u00e1s hiba megakad\u00e1lyozta, hogy a kiszolg\u00e1l\u00f3 sikeresen hiteles\u00edtse a felhaszn\u00e1l\u00f3t.
 security.oauth20.front.end.error.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
 

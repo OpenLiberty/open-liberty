@@ -55,9 +55,7 @@ Include-Resource: \
   @lib/jaxb-core.jar!/!META-INF/maven/*, \
   @lib/jaxb-impl.jar!/!META-INF/maven/*, \
   @lib/jaxb-xjc.jar!/!META-INF/maven/*, \
-  @lib/jaxb-jxc.jar!/!META-INF/maven/*, \
-  com/ibm/ws/jaxb/tools/XJC.class=build/classes/com/ibm/ws/jaxb/tools/XJC.class, \
-  com/ibm/ws/jaxb/tools/SchemaGen.class=build/classes/com/ibm/ws/jaxb/tools/SchemaGen.class
+  @lib/jaxb-jxc.jar!/!META-INF/maven/*
 
 Private-Package:\
   com.ibm.ws.jaxb.tools.*

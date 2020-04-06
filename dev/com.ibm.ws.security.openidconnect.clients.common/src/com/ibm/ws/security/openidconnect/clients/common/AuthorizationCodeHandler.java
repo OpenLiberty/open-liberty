@@ -13,7 +13,9 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -35,6 +38,7 @@ public class AuthorizationCodeHandler {
     private OIDCClientAuthenticatorUtil authenticatorUtil = null;
     private SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
+    private static Map<String, Object> usedAuthCodes = Collections.synchronizedMap(new BoundedHashMap(20));
 
     public AuthorizationCodeHandler(SSLSupport sslsupt) {
         oidcClientUtil = getOidcClientUtil();
@@ -127,7 +131,9 @@ public class AuthorizationCodeHandler {
             //go get the userinfo if configured to do so, and update the authentication result to include it.
             new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, tokens, sslSocketFactory);
 
-        } catch (BadPostRequestException e) {
+            addAuthCodeToUsedList(authzCode);
+
+        } catch (BadPostRequestException e) { //CWWKS1708E
             Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getErrorMessage(), clientId, clientConfig.getTokenEndpointUrl() });
             sendErrorJSON(res, e.getStatusCode(), "invalid_request", e.getErrorMessage());
             oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, e.getStatusCode());
@@ -171,5 +177,13 @@ public class AuthorizationCodeHandler {
             }
         }
 
+    }
+
+    boolean isAuthCodeReused(String authzCode) {
+        return usedAuthCodes.containsKey(authzCode);
+    }
+
+    void addAuthCodeToUsedList(String authzCode) {
+        usedAuthCodes.put(authzCode, null);
     }
 }

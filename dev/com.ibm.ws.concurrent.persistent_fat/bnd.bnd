@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\
@@ -22,10 +20,15 @@ src: \
 fat.project: true
 fat.test.databases: true
 
+# Uncomment to test against alternative databases
+# Options: Derby, Postgres, DB2, Oracle, SQLServer
+#fat.bucket.db.type: Postgres
+
 # Uncomment to use remote docker host to simulate continuous build behavior.
-# fat.test.use.remote.docker: true
+#fat.test.use.remote.docker: true
 
 -buildpath: \
+	fattest.databases;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -34,10 +37,6 @@ fat.test.databases: true
 	org.testcontainers:database-commons;version=1.12.3,\
 	org.testcontainers:jdbc;version=1.12.3,\
 	org.testcontainers:testcontainers;version=1.12.3,\
-	org.testcontainers:db2;version=1.12.3,\
-	org.testcontainers:postgresql;version=1.12.3,\
-	org.testcontainers:mssqlserver;version=1.12.3,\
-	org.testcontainers:oracle-xe;version=1.12.3,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.slf4j:slf4j-api;version=1.7.7
 	

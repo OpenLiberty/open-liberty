@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 IBM Corporation and others.
+ * Copyright (c) 2002, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,7 @@ import com.ibm.tx.util.logging.TraceComponent;
  * Factory class to create and allows access to the RecoveryDirector. This is the Liberty version of this Factory
  * which creates a LibertyRecoveryDirectorImpl instance when requested by the TxTMHelper.
  */
-public class RecoveryDirectorFactory
-{
+public class RecoveryDirectorFactory {
     /**
      * WebSphere RAS TraceComponent registration
      */
@@ -40,7 +39,8 @@ public class RecoveryDirectorFactory
     /**
      * Private construcor to prevent this object being created.
      */
-    protected RecoveryDirectorFactory() {}
+    protected RecoveryDirectorFactory() {
+    }
 
     //------------------------------------------------------------------------------
     // Method: RecoveryDirectorFactory.recoveryDirector()
@@ -49,17 +49,15 @@ public class RecoveryDirectorFactory
      * Returns the singleton instance of the RecoveryDirector class. This method
      * uses reflection rather then a direct reference to the underlying class to avoid
      * a cyclic build dependency.
-     * 
+     *
      * @return RecoveryDirector The singleton instance of the RecoveryDirectorImpl.
      */
-    public static RecoveryDirector recoveryDirector() throws InternalLogException
-    {
+    public static RecoveryDirector recoveryDirector() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recoveryDirector");
 
         // If the recovery director is null its an error in JET
-        if (_recoveryDirector == null)
-        {
+        if (_recoveryDirector == null) {
             final InternalLogException ile = new InternalLogException();
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recoveryDirector", ile);
@@ -73,25 +71,23 @@ public class RecoveryDirectorFactory
 
     /**
      * Create a RecoveryDirector singleton
-     * 
+     *
      * @return RecoveryDirector instance
      */
-    public static RecoveryDirector createRecoveryDirector()
-    {
+    public static RecoveryDirector createRecoveryDirector() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createRecoveryDirector");
-        _recoveryDirector = LibertyRecoveryDirectorImpl.instance();
+        _recoveryDirector = RecoveryDirectorImpl.instance();
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "createRecoveryDirector", _recoveryDirector);
         return _recoveryDirector;
     }
 
-    public static void reset()
-    {
+    public static void reset() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "reset");
-        LibertyRecoveryDirectorImpl.reset();
+        RecoveryDirectorImpl.reset();
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "reset");

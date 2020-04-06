@@ -114,6 +114,32 @@ public class JobWaiter {
     /**
      * Wait for {@code JobWaiter#timeout} seconds for BOTH of:
      *
+     * 1) BatchStatus to be : FAILED
+     * AND
+     * 2) exitStatus to be non-null
+     *
+     * Returns JobExecution if it ends in <b>FAILED</b> status, otherwise throws
+     * <b>IllegalStateException</b>
+     *
+     * @param jobXMLName
+     * @param jobParameters
+     * @return JobExecution (for successfully completing job)
+     * @throws IllegalStateException
+     */
+    public JobExecution submitExpectedFailingJob(String jobXMLName, Properties jobParameters) throws IllegalStateException {
+        long executionId = jobOp.start(jobXMLName, jobParameters);
+        JobExecution jobExec = waitForFinish(executionId);
+        if (jobExec.getBatchStatus().equals(BatchStatus.FAILED)) {
+            logger.finer("Job " + executionId + " failed as expected.");
+            return jobExec;
+        } else {
+            throw new IllegalStateException("Job " + executionId + " finished with non-FAILED state: " + jobExec.getBatchStatus());
+        }
+    }
+
+    /**
+     * Wait for {@code JobWaiter#timeout} seconds for BOTH of:
+     *
      * 1) BatchStatus to be one of: STOPPED ,FAILED , COMPLETED, ABANDONED
      * AND
      * 2) exitStatus to be non-null

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -427,7 +427,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     @FFDCIgnore({ IOException.class })
     public void flushHeaders() throws IOException {
-        // Extra NPE tracing - defect 264444
+        // Extra NPE tracing
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             if (null == this.isc) {
                 Tr.debug(tc, "flushHeaders: isc is null");

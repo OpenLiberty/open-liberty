@@ -42,6 +42,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH8820_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh8820Ejb";
     private final static String RESOURCE_ROOT = "test-applications/olgh8820/";
     private final static String appFolder = "ejb";
     private final static String appName = "olgh8820Ejb";
@@ -57,12 +58,11 @@ public class TestOLGH8820_EJB extends JPAFATServletClient {
         createSet.add("JPA_OLGH8820_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("JPA21Server")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH8820_EJB_SL_Servlet.class, path = "olgh8820ejb" + "/" + "TestOLGH8820_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH8820_EJB_SF_Servlet.class, path = "olgh8820ejb" + "/" + "TestOLGH8820_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH8820_EJB_SFEx_Servlet.class, path = "olgh8820ejb" + "/" + "TestOLGH8820_EJB_SFEx_Servlet"),
-
+                    @TestServlet(servlet = TestOLGH8820_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8820_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestOLGH8820_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8820_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestOLGH8820_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8820_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 
@@ -106,10 +106,10 @@ public class TestOLGH8820_EJB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "olgh8820Ejb.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh8820.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh8820.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/olgh8820Ejb.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.olgh8820.ejb");

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1562,11 +1562,28 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=I bean enterprise di entit\u00e0 dich
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Rimuovere l'uso del bean enterprise di entit\u00e0\u00a0 non supportato dall'applicazione o comprimere il bean in un'applicazione della versione 6 o precedente.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Impossibile eseguire il bind dell''interfaccia {0} del bean {1} nel modulo {2} dell''applicazione {3} all''ubicazione del nome {4}. L l''interfaccia {5} del bean {6} nel modulo {7} dell''applicazione {8} \u00e8 gi\u00e0 collegata all''ubicazione del nome {4}. L''ubicazione del nome {4} non \u00e8 accessibile.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Ogni interfaccia bean enterprise deve specificare una ubicazione di bind univoca.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Correggere il file di bind di una di queste due interfacce in modo che ciascuna interfaccia disponga di una ubicazione di bind univoca.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Impossibile eseguire il bind dell''interfaccia {0} del bean {1} nel modulo {2} dell''applicazione {3} all''ubicazione del nome {4}. \u00c8 gi\u00e0 stato eseguito il bind dell''interfaccia {5} del bean {6} nel modulo {7} dell''applicazione {8} all''ubicazione del nome {4}. La posizione del nome {4} non \u00e8 accessibile.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Ogni interfaccia bean enterprise deve specificare una ubicazione di bind univoca.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Correggere il file di bind di una di queste due interfacce in modo che ciascuna interfaccia disponga di una ubicazione di bind univoca.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: Il nome bind JNDI (Java Naming and Directory Interface) {2} per il bean {0} o l''interfaccia home nel modulo {1} contiene uno spazio dei nomi.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=I nomi bind JNDI non devono contenere il carattere due punti (:), che denota uno spazio dei nomi. L'intera stringa prima e incluso il carattere due punti (:) \u00e8 considerata uno spazio dei nomi.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Correggere il file di bind ejb-jar-bnd.xml per fornire al bean un nome bind JNDI valido rimuovendo lo spazio dei nomi.
+
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: Il nome bind JNDI (Java Naming and Directory Interface) {2} per il bean {0} o l''interfaccia home locale nel modulo {1} contiene uno spazio dei nomi non valido.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Il nome bind locale pu\u00f2 contenere solo uno spazio dei nomi e deve iniziare con ejblocal:. Gli spazi nome sono indicati dal carattere due punti (:). L'intera stringa prima e incluso il carattere due punti (:) \u00e8 considerata uno spazio dei nomi.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Correggere il file di bind ejb-jar-bnd.xml per fornire al bean un nome bind JNDI valido rimuovendo lo spazio dei nomi non valido.
 
 #-------------------------------------------------------------------------------
 #

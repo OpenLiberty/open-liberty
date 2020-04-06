@@ -5,9 +5,12 @@ Bundle-Name: Apache CXF Runtime Core
 Bundle-Description: Apache CXF Runtime Core, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
  
 DynamicImport-Package: \
+  javax.xml.ws, \
+  javax.xml.ws.*, \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
   com.ctc.wstx.*
  
 Export-Package: \
@@ -41,7 +44,6 @@ Import-Package: \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
-  com.sun.xml.fastinfoset.stax;resolution:=optional, \
   javax.activation, \
   javax.annotation;version="[0.0,2)", \
   javax.jws.soap, \
@@ -70,57 +72,7 @@ Import-Package: \
   javax.xml.transform.stream, \
   javax.xml.validation, \
   javax.xml.xpath, \
-  junit.framework;resolution:=optional, \
-  org.apache.cxf;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.annotations;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.binding;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.bus;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.bus.blueprint;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.bus.extension;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.bus.managers;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.bus.spring;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.buslifecycle;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.catalog;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.classloader;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.jaxb;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.security;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.util;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.common.xmlschema;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.configuration;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.configuration.blueprint;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.configuration.security;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.configuration.spring;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.databinding;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.databinding.source.mime;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.extension;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.feature;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.headers;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.io;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.management;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.management.annotation;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.phase;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.resource;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.security;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.service;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.service.factory;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.service.invoker;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.staxutils;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.transport;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.transport.common.gzip;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.transports.http;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.workqueue;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
+  !junit.framework, \
   org.apache.ws.commons.schema, \
   org.apache.ws.commons.schema.constants, \
   org.apache.ws.commons.schema.extensions, \
@@ -129,12 +81,13 @@ Import-Package: \
   org.apache.xml.resolver;resolution:=optional, \
   org.apache.xml.resolver.helpers;resolution:=optional, \
   org.apache.xml.resolver.tools;resolution:=optional, \
-  org.junit;resolution:=optional, \
+  !org.junit, \
+  com.sun.xml.fastinfoset.stax;resolution:=optional, \
   org.osgi.framework, \
   org.osgi.service.cm, \
   org.osgi.util.tracker, \
   org.w3c.dom, \
-  org.xml.sax, \
+  org.xml.sax
 
 Private-Package: \
   schemas.blueprint, \

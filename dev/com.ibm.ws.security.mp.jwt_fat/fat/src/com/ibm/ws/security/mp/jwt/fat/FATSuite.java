@@ -15,12 +15,16 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
+import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 // Ported list of tests (some already renamed)
                 AlwaysRunAndPassTest.class,
                 // Basic Functional tests
+                // -- These tests will run 3 times - tests that pass the token in the Authorization header
+                // -- will run using "Bearer <token>", "Token <token>", and "misc <token>" - the use of
+                // -- the config attribute authorizationHeaderPrefix will tell runtime what prefix to look for
                 MPJwtBasicTests.class,
                 // More targeted tests
                 MPJwtConfigUsingBuilderTests.class,
@@ -52,4 +56,8 @@ import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 
 })
 
-public class FATSuite {}
+public class FATSuite {
+
+    public static String authHeaderPrefix = MpJwtFatConstants.TOKEN_TYPE_BEARER;
+
+}

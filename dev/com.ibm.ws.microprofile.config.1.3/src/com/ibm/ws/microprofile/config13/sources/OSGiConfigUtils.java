@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -206,7 +206,7 @@ public class OSGiConfigUtils {
      * @param applicationName The application name to look for
      * @return The application pid
      */
-    private static String getApplicationPID(BundleContext bundleContext, String applicationName) {
+    static String getApplicationPID(BundleContext bundleContext, String applicationName) {
         String applicationPID = null;
 
         if (FrameworkState.isValid()) {
@@ -292,12 +292,12 @@ public class OSGiConfigUtils {
     /**
      * Get the Configuration object which represents a <appProperties> element in the server.xml for a given application
      *
+     * @param admin           The ConfigurationAdmin service to use
      * @param bundleContext   The context to use in looking up OSGi service references
      * @param applicationName The application name to look for
      * @return The Configuration instance
      */
-    @FFDCIgnore(InvalidFrameworkStateException.class)
-    static SortedSet<Configuration> getConfigurations(BundleContext bundleContext, String applicationName) {
+    static SortedSet<Configuration> getConfigurations(ConfigurationAdmin admin, String applicationPID) {
 
         //sorting the Configuration objects by their PID which are in the format "appProperties.property_xx" where xx is an incrementing integer
         //so the first one discovered might be "appProperties.property_17" and the second one is "appProperties.property_18"
@@ -306,34 +306,26 @@ public class OSGiConfigUtils {
 
         if (FrameworkState.isValid()) {
             try {
-                String applicationPID = getApplicationPID(bundleContext, applicationName);
                 String applicationPropertiesPid = null;
-                ConfigurationAdmin admin = getConfigurationAdmin(bundleContext);
-                if (applicationPID != null) {
-                    String appPropertiesFilter = getApplicationPropertiesConfigFilter(applicationPID);
-                    Configuration[] appPropertiesOsgiConfigs = admin.listConfigurations(appPropertiesFilter);
-                    if (appPropertiesOsgiConfigs != null) {
-                        for (Configuration cfg : appPropertiesOsgiConfigs) {
-                            applicationPropertiesPid = cfg.getPid();
-                        }
+                String appPropertiesFilter = getApplicationPropertiesConfigFilter(applicationPID);
+                Configuration[] appPropertiesOsgiConfigs = admin.listConfigurations(appPropertiesFilter);
+                if (appPropertiesOsgiConfigs != null) {
+                    for (Configuration cfg : appPropertiesOsgiConfigs) {
+                        applicationPropertiesPid = cfg.getPid();
                     }
+                }
 
-                    if (applicationPropertiesPid != null) {
-                        String appPropertiesPropertyFilter = getApplicationPropertiesPropertyConfigFilter(applicationPropertiesPid);
-                        Configuration[] appPropertiesPropertyOsgiConfigs = admin.listConfigurations(appPropertiesPropertyFilter);
-                        if (appPropertiesPropertyOsgiConfigs != null) {
-                            for (Configuration cfg : appPropertiesPropertyOsgiConfigs) {
-                                configSet.add(cfg);
-                            }
+                if (applicationPropertiesPid != null) {
+                    String appPropertiesPropertyFilter = getApplicationPropertiesPropertyConfigFilter(applicationPropertiesPid);
+                    Configuration[] appPropertiesPropertyOsgiConfigs = admin.listConfigurations(appPropertiesPropertyFilter);
+                    if (appPropertiesPropertyOsgiConfigs != null) {
+                        for (Configuration cfg : appPropertiesPropertyOsgiConfigs) {
+                            configSet.add(cfg);
                         }
                     }
                 }
-            } catch (IOException |
-
-                            InvalidSyntaxException e) {
+            } catch (IOException | InvalidSyntaxException e) {
                 throw new ConfigException(e);
-            } catch (InvalidFrameworkStateException e) {
-                //ignore ... server is shutting down
             }
         }
 

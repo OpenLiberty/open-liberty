@@ -66,3 +66,4 @@ IBM-Process-Types: server, \
  com.ibm.ws.org.apache.yoko.rmi.spec.1.5
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

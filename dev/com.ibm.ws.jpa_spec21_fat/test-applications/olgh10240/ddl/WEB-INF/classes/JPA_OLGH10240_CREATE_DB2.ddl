@@ -1,0 +1,2 @@
+CREATE PROCEDURE ${schemaname}.simple_cursor_procedure (in_param_one INTEGER, OUT out_cursor_one CURSOR) BEGIN SET out_cursor_one = CURSOR FOR SELECT ITEM_STRING1 FROM STORED_PROCEDURE_ENTITY WHERE ITEM_INTEGER1 = in_param_one; OPEN out_cursor_one; END;
+CREATE TABLE ${schemaname}.SimpleEntityOLGH10240 (keyString VARCHAR(255) NOT NULL, itemInteger1 INTEGER, itemString1 VARCHAR(255), PRIMARY KEY (keyString))

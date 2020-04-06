@@ -48,6 +48,16 @@ property.not.found.CWMCG5004E=CWMCG5004E: A propriedade de configura\u00e7\u00e3
 property.not.found.CWMCG5004E.explanation=A propriedade nomeada n\u00e3o foi localizada em nenhuma das fontes configuradas. 
 property.not.found.CWMCG5004E.useraction=Assegure-se de que a propriedade exista em uma das origens de configura\u00e7\u00e3o.
 
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: A depend\u00eancia InjectionPoint n\u00e3o foi resolvida para o m\u00e9todo do Observer: {0}. Erro: {1}.
+unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=Uma ConfigProperty injetada n\u00e3o foi resolvida. A propriedade nomeada n\u00e3o p\u00f4de ser localizada ou um conversor do tipo necess\u00e1rio n\u00e3o foi resolvido. 
+unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=Verifique a mensagem do servidor e os logs FFDC para determinar a causa. Assegure-se de que a propriedade exista em uma das ConfigSources e de que os conversores tenham sido configurados.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: A depend\u00eancia de InjectionPoint n\u00e3o foi processada para o bean Observer: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=Ocorreu um erro desconhecido. N\u00e3o foi poss\u00edvel processar corretamente um m\u00e9todo Observer.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=Verifique a mensagem do servidor e os logs FFDC para determinar a causa.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message

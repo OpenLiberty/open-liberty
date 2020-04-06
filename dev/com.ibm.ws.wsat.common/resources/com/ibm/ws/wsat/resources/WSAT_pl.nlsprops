@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: Brak aktywnej transakcji WS-AT o identyfikatorze {0}.
+NO_WSAT_TRAN_CWLIB0201.explanation=Nie mo\u017cna znale\u017a\u0107 aktywnej transakcji WS-AT zgodnej z identyfikatorem transakcji globalnej.
+NO_WSAT_TRAN_CWLIB0201.useraction=Szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie mo\u017cna znale\u017a\u0107 w dziennikach.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: Nie znaleziono uczestnika o identyfikatorze {1} dla transakcji {0}.
+NO_WSAT_PART_CWLIB0202.explanation=W ramach transakcji globalnej nie mo\u017cna znale\u017a\u0107 uczestnika transakcji zgodnego z \u017c\u0105danym identyfikatorem.
+NO_WSAT_PART_CWLIB0202.useraction=Szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie mo\u017cna znale\u017a\u0107 w dziennikach.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: Przekroczono limit czasu transakcji. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=Przekroczono limit czasu transakcji i transakcja zostanie wycofana.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=Szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie mo\u017cna znale\u017a\u0107 w dziennikach.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: Nie mo\u017cna wywo\u0142a\u0107 us\u0142ugi WWW protoko\u0142u. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania systemowych us\u0142ug WWW.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=Szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie mo\u017cna znale\u017a\u0107 w dziennikach.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: B\u0142\u0105d przetwarzania transakcji.
+TRAN_MGR_ERROR_CWLIB0205.explanation=Odebrano komunikat o b\u0142\u0119dzie podczas przetwarzania funkcji transakcji.
+TRAN_MGR_ERROR_CWLIB0205.useraction=Szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie mo\u017cna znale\u017a\u0107 w dziennikach.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: W\u0142\u0105cz po\u0142\u0105czenie SSL {0} dla protoko\u0142u WS-AT.
+WSAT_SECURITY_CWLIB0206.explanation=Protok\u00f3\u0142 WS-AT u\u017cywa po\u0142\u0105czenia SSL do zabezpieczania komunikacji wewn\u0119trznej.
+WSAT_SECURITY_CWLIB0206.useraction=Brak.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: W\u0142\u0105cz w\u0142a\u015bciwo\u015b\u0107 externalURLPrefix {0} dla protoko\u0142u WS-AT.
+WSAT_PROXY_CWLIB0207.explanation=Protok\u00f3\u0142 WS-AT u\u017cywa proxy na potrzeby komunikacji wewn\u0119trznej.
+WSAT_PROXY_CWLIB0207.useraction=Brak.
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: Nie mo\u017cna deserializowa\u0107 zasobu transakcji.
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania zasobu mened\u017cera transakcji.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=Szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie mo\u017cna znale\u017a\u0107 w dziennikach.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: Nie mo\u017cna uzyska\u0107 punktu ko\u0144cowego us\u0142ugi systemowej.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=Podczas pr\u00f3by uzyskania punktu ko\u0144cowego systemowych us\u0142ug WWW wyst\u0105pi\u0142 b\u0142\u0105d. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=Szczeg\u00f3\u0142owe informacje o b\u0142\u0119dzie mo\u017cna znale\u017a\u0107 w dziennikach.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: W\u0142a\u015bciwo\u015b\u0107 externalURLPrefix {0} dla protoko\u0142u WS-AT musi si\u0119 rozpoczyna\u0107 przedrostkiem http(s)://
+WSAT_PROXY_CWLIB0210.explanation=Adres serwera proxy dla protoko\u0142u WS-AT musi si\u0119 rozpoczyna\u0107 przedrostkiem http(s)://
+WSAT_PROXY_CWLIB0210.useraction=Zmodyfikuj adres externalURLPrefix, aby si\u0119 rozpoczyna\u0142 przedrostkiem http(s)://
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: Po w\u0142\u0105czeniu protoko\u0142u SSL w\u0142a\u015bciwo\u015b\u0107 externalURLPrefix {0} dla protoko\u0142u WS-AT musi si\u0119 rozpoczyna\u0107 przedrostkiem https://.
+WSAT_PROXY_CWLIB0211.explanation=Po w\u0142\u0105czeniu protoko\u0142u SSL adres proxy dla protoko\u0142u WS-AT musi si\u0119 rozpoczyna\u0107 przedrostkiem https://.
+WSAT_PROXY_CWLIB0211.useraction=Zmodyfikuj adres externalURLPrefix, aby si\u0119 rozpoczyna\u0142 przedrostkiem https://, je\u015bli zostanie w\u0142\u0105czony protok\u00f3\u0142 SSL.

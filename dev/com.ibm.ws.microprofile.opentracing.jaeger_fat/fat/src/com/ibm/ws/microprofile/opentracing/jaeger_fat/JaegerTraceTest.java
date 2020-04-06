@@ -82,7 +82,7 @@ public class JaegerTraceTest {
     @After
     public void tearDown() throws Exception {
         if (currentServer != null && currentServer.isStarted()) {
-            currentServer.stopServer("CWMOT0008E", "CWMOT0009W");
+            currentServer.stopServer("CWMOT0009W", "CWMOT0010W");
         }
     }
     

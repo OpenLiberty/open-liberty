@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-ext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd" version="1.0">
+
+  <resource-ref name="jdbc/dsfat4ref2" commit-priority="2" isolation-level="TRANSACTION_READ_COMMITTED"/>
+
+  <resource-ref name="jdbc/dsfat4ref8" commit-priority="2" isolation-level="TRANSACTION_SERIALIZABLE"/>
+
+  <resource-ref name="jdbc/dsfat6ref1" isolation-level="TRANSACTION_READ_UNCOMMITTED"/>
+
+  <resource-ref name="jdbc/dsfat10ref2" commit-priority="20" isolation-level="TRANSACTION_READ_COMMITTED"/>
+  
+  <resource-ref name="jdbc/dsfatclcref" commit-priority="2" isolation-level="TRANSACTION_READ_COMMITTED"/>
+
+</web-ext>

@@ -36,20 +36,21 @@ import com.ibm.ws.security.oauth20.web.RegistrationEndpointServices;
 public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
 
     private static TraceComponent tc = Tr.register(OidcBaseClientProvider.class, "OAuth20Provider", "com.ibm.ws.security.oauth20.resources.ProviderMsgs");
-    private Logger logger = Logger.getLogger(OidcBaseClientProvider.class.getName());
+    private final Logger logger = Logger.getLogger(OidcBaseClientProvider.class.getName());
     private static final String ERROR_DESCRIPTION_UNIMPLEMENTED = "This method is unimplemented for non-database client stores.";
 
     protected static HashMap<String, OidcBaseClient> clientMap = new HashMap<String, OidcBaseClient>();
     protected String providerID;
     protected boolean hasRewrites; // URI redirect token substitution
     protected static final List<OidcBaseClient> clientsList = new ArrayList<OidcBaseClient>();
-    private String[] providerRewrites;
+    private final String[] providerRewrites;
 
     public OidcBaseClientProvider(String providerId, String[] providerRewrites) {
         this.providerID = providerId;
         this.providerRewrites = providerRewrites != null ? providerRewrites.clone() : null;
     }
 
+    @Override
     public void initialize() {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "initialize");
@@ -63,6 +64,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         }
     }
 
+    @Override
     public void init(OAuthComponentConfiguration config) {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "init");
@@ -92,6 +94,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         }
     }
 
+    @Override
     public boolean exists(String clientIdentifier) {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "exists");
@@ -106,6 +109,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         return result;
     }
 
+    @Override
     public OidcBaseClient get(String clientIdentifier) {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "get");
@@ -119,6 +123,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         return result;
     }
 
+    @Override
     public Collection<OidcBaseClient> getAll() throws OidcServerException {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "getAll");
@@ -133,6 +138,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         return results;
     }
 
+    @Override
     public Collection<OidcBaseClient> getAll(HttpServletRequest request) throws OidcServerException {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "getAll(request)");
@@ -152,6 +158,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         return results;
     }
 
+    @Override
     public boolean validateClient(String clientIdentifier, String clientSecret) {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "validateClient");
@@ -175,6 +182,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         return result;
     }
 
+    @Override
     public OidcBaseClient update(OidcBaseClient newClient) throws OidcServerException {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "update");
@@ -182,7 +190,6 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "update");
         }
-
         throw new OidcServerException(ERROR_DESCRIPTION_UNIMPLEMENTED, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
@@ -231,8 +238,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
 
         // Add client registration URI
         if (request != null && result != null/** && (OidcOAuth20Util.isNullEmpty(result.getRegistrationClientUri())) **/
-        )
-        {
+        ) {
             RegistrationEndpointServices.processClientRegistationUri(result, request);
         }
 
@@ -245,7 +251,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
                 if (result.getClientName() != null) {
                     result.setClientName(URLDecoder.decode(result.getClientName(), "UTF-8"));
                 }
-            } catch(UnsupportedEncodingException ex) {
+            } catch (UnsupportedEncodingException ex) {
                 // keep the existing client name
             }
         }
@@ -256,6 +262,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         return result;
     }
 
+    @Override
     public boolean delete(String clientIdentifier) throws OidcServerException {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "delete");
@@ -263,7 +270,6 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "delete");
         }
-
         throw new OidcServerException(ERROR_DESCRIPTION_UNIMPLEMENTED, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
@@ -278,6 +284,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         return clientMap.remove(getKey(clientIdentifier)) != null;
     }
 
+    @Override
     public OidcBaseClient put(OidcBaseClient newClient) throws OidcServerException {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "put");
@@ -285,7 +292,6 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "put");
         }
-
         throw new OidcServerException(ERROR_DESCRIPTION_UNIMPLEMENTED, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 }

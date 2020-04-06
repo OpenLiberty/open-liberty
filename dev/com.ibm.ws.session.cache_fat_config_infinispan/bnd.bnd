@@ -18,8 +18,6 @@ src: \
 fat.project: true
 tested.features: cdi-2.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 -buildpath: \
     com.ibm.websphere.javaee.jcache.1.1;version=latest,\

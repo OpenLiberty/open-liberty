@@ -41,46 +41,9 @@
                      !method.getName().startsWith("testNoRetriesWithAbortOn") &&
                      
                      // BulkheadFutureTest
-                     !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest") &&
+                     !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest")
                      
                      // Note: BulkheadSynchRetryTest and BulkheadSynchTest look vulnerable to the same issues but we haven't seen them fail
-                     
-                     // RetryTest
-                     !method.getName().startsWith("testRetryMaxDuration") &&
-                     !method.getName().startsWith("testRetryMaxDurationSeconds") &&
-                     !method.getName().startsWith("testRetryWithDelay") &&
-                     !method.getName().startsWith("testRetryWithNoDelayAndJitter") &&
-                     !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
-                     !method.getName().startsWith("testClassLevelRetryMaxDurationSeconds") &&
-                     
-                     // CircuitBreakerTimeoutTest
-                     !method.getDeclaringClass().getSimpleName().equals("CircuitBreakerTimeoutTest") &&
-                     
-                     // CircuitBreakerRetryTest
-                     !method.getName().startsWith("testCircuitOpenWithMultiTimeouts") &&
-                     !method.getName().startsWith("testCircuitOpenWithMultiTimeoutsAsync") &&
-                     
-                     // ConfigTest
-                     !method.getName().startsWith("testConfigMaxDuration") &&
-                     !method.getName().startsWith("testClassLevelConfigMaxDuration") &&
-                     
-                     // Note: The annotation disablement tests have some timing sensitive tests for Timeout and Async, but we haven't seen them fail
-                     
-                     // FallbackTest
-                     !method.getName().startsWith("testFallbackTimeout") &&
-                     !method.getName().startsWith("testFallbacktNoTimeout") &&
-                     
-                     // BulkheadMetricTest
-                     !method.getName().startsWith("bulkheadMetricAsyncTest") &&
-                     !method.getName().startsWith("bulkheadMetricHistogramTest") &&
-                     
-                     // TimeoutMetricTest
-                     !method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") &&
-                     
-                     // RetryTimeoutTest
-                     !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest")
-                     
-                     // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
                 ]]>
                 </script>
             </method-selector>

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1597,3 +1597,20 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=\uc560\ud50c\ub9ac
 exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: onStartup \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 [{2}]\uc5d0 \uc788\ub294 [{0}] ServletContainerInitializer\uc5d0\uc11c \ub2e4\uc74c \uc624\ub958\uac00 \uc0dd\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=onStartup \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 ServletContainerInitializer\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=\uc608\uc678\ub97c \uac80\ud1a0\ud558\uc5ec \uc624\ub958\uc758 \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: {1} \ud544\ud130 \ub9f5\ud551\uc5d0 {0} \uc11c\ube14\ub9bf \uc774\ub984\uc5d0 \ub300\ud55c \uc11c\ube14\ub9bf \uc815\uc758\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=\uc11c\ube14\ub9bf \uc774\ub984\uc774 \ud544\ud130 \ub9f5\ud551\uc5d0\uc11c \uc0ac\uc6a9\ub418\uc9c0\ub9cc \ud574\ub2f9 \uc815\uc758\uac00 \uc815\uc758\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=\uc11c\ube14\ub9bf \uc774\ub984 \ud544\ud130 \ub9f5\ud551\uc5d0 \uc0ac\uc6a9\ub418\ub294 \uc11c\ube14\ub9bf\uc744 \uc815\uc758\ud558\uc2ed\uc2dc\uc624.
+
+# {0} Cookie name that has conflict SameSite attribute
+# {1} current SameSite attribute value
+# {2} new SameSite attribute value
+duplicate.samesite.attribute.for.cookie.name=CWWWC0003W: \uae30\uc874 SameSite \uc18d\uc131 \uac12 {1}\uc774(\uac00) \uc788\ub294 {0} \ucfe0\ud0a4 \uc774\ub984\uc774 {2} \uc0c8 \uac12\uc73c\ub85c \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \ucfe0\ud0a4\uc5d0 \ub300\ud574 SameSite \uc18d\uc131\uc774 \ucd94\uac00\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+duplicate.samesite.attribute.for.cookie.name.explanation=\ud558\ub098\uc758 \ucfe0\ud0a4 \uc774\ub984\uc774 \uc5ec\ub7ec SameSite \uc18d\uc131 \uac12\uc73c\ub85c \uad6c\uc131\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ucfe0\ud0a4\uc5d0 \ub300\ud55c \uc18d\uc131\uc774 \ucd94\uac00\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+duplicate.samesite.attribute.for.cookie.name.useraction=\ubc30\uce58 \ub514\uc2a4\ud06c\ub9bd\ud130 \uad6c\uc131\uc744 \ud655\uc778\ud558\uc5ec SameSite \uc18d\uc131 \uac12('SameSiteCookies_Lax', 'SameSiteCookies_None' \ub610\ub294 'SameSiteCookies_Strict') \uc911 \ud558\ub098\uc5d0 \ub300\ud574\uc11c\ub9cc \ucfe0\ud0a4 \uc774\ub984\uc774 \uad6c\uc131\ub418\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624. 
+
+duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: {1} SameSite \uc18d\uc131 \uac12\uc5d0 \ub300\ud574 \uad6c\uc131\ub41c {0} \ucfe0\ud0a4 \uc774\ub984\uc774 \uc774\uc804\uc5d0 \uc911\ubcf5\ub41c \uac83\uc73c\ub85c \uc2dd\ubcc4\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \ucfe0\ud0a4\uc5d0 \ub300\ud574 SameSite \uc18d\uc131\uc774 \ucd94\uac00\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+duplicate.reported.for.samesite.attribute.cookie.name.explanation=\ud558\ub098\uc758 \ucfe0\ud0a4 \uc774\ub984\uc774 \uc5ec\ub7ec SameSite \uc18d\uc131 \uac12\uc73c\ub85c \uad6c\uc131\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774 \ucfe0\ud0a4 \uc774\ub984\uc740 \uc774\ubbf8 \uc911\ubcf5\ub41c \uac83\uc73c\ub85c \uc2dd\ubcc4\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+duplicate.reported.for.samesite.attribute.cookie.name.useraction=\ubc30\uce58 \ub514\uc2a4\ud06c\ub9bd\ud130 \uad6c\uc131\uc744 \ud655\uc778\ud558\uc5ec SameSite \uc18d\uc131 \uac12('SameSiteCookies_Lax', 'SameSiteCookies_None' \ub610\ub294 'SameSiteCookies_Strict') \uc911 \ud558\ub098\uc5d0 \ub300\ud574\uc11c\ub9cc \ucfe0\ud0a4 \uc774\ub984\uc774 \uad6c\uc131\ub418\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624. 

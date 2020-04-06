@@ -233,12 +233,12 @@ public class LoggingConfigurationService implements ManagedService {
         traceMapToLevel.put("debug", LogLevel.DEBUG);
 
         // alias {finer, entryexit}
-        traceMapToLevel.put("finer", LogLevel.DEBUG);
-        traceMapToLevel.put("entryexit", LogLevel.DEBUG);
+        traceMapToLevel.put("finer", LogLevel.INFO);
+        traceMapToLevel.put("entryexit", LogLevel.INFO);
 
         // alias {fine, event}
-        traceMapToLevel.put("fine", LogLevel.DEBUG);
-        traceMapToLevel.put("event", LogLevel.DEBUG);
+        traceMapToLevel.put("fine", LogLevel.INFO);
+        traceMapToLevel.put("event", LogLevel.INFO);
 
         traceMapToLevel.put("detail", LogLevel.INFO);
 

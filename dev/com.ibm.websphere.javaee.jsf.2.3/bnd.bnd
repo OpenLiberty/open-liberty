@@ -14,11 +14,8 @@ Bundle-Name: WS_J2EE_jsf
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsf.2.3; singleton:=true
 Bundle-Description: WS_J2EE_jsf, version 2.3
 
-javac.source: 1.8
-javac.target: 1.8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-Export-Package: javax.faces.*; version=2.3.4
+Export-Package: javax.faces.*; version=2.3.6
 
 DynamicImport-Package: com.ibm.ws.jsf.spi, \
                 com.ibm.ws.managedobject, \
@@ -26,15 +23,15 @@ DynamicImport-Package: com.ibm.ws.jsf.spi, \
                 org.apache.myfaces.spi
   
 Include-Resource: \
-	@${repo;org.apache.myfaces.core.api;2.3.4;EXACT}!/javax/faces, \
-	@${repo;org.apache.myfaces.core.api;2.3.4;EXACT}!/META-INF/**
+	@${repo;org.apache.myfaces.core.api;2.3.6;EXACT}!/javax/faces, \
+	@${repo;org.apache.myfaces.core.api;2.3.6;EXACT}!/META-INF/**
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	org.apache.myfaces.core.api;strategy=exact;version=2.3.4,\
+	org.apache.myfaces.core.api;strategy=exact;version=2.3.6,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\

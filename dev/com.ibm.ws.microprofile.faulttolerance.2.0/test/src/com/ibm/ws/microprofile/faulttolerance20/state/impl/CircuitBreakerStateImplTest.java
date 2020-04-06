@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,6 +104,91 @@ public class CircuitBreakerStateImplTest {
 
         // 4x TestExceptionB -> 0% failure rate -> circuit closed
         runFailures(state, 4, TestExceptionB.class);
+        // assert circuit closed
+        runSuccesses(state, 1);
+    }
+
+    @Test
+    public void testSkipOn() throws InterruptedException {
+        CircuitBreakerPolicyImpl policy = new CircuitBreakerPolicyImpl();
+        policy.setDelay(Duration.ofMillis(100));
+        policy.setFailureRatio(0.75);
+        policy.setRequestVolumeThreshold(4);
+        policy.setSuccessThreshold(1);
+        policy.setFailOn(TestExceptionA.class);
+        policy.setSkipOn(TestExceptionAextended.class);
+
+        // Summary:
+        // TestExceptionA         counts as a failure
+        // TestExceptionAextended counts as a pass due to skipOn despite being instance of failOn
+        // TestExceptionB         counts as a pass since not instance of failOn
+        // circuit opens if 75% of last 4 requests failed
+        // circuit half-closes after 100ms
+        // circuit fully closes after 1 successful request
+
+        // 4x TestExceptionA -> 100% failure rate -> circuit open
+        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy, dummyMetrics);
+        runFailures(state, 4, TestExceptionA.class);
+        assertFalse(state.requestPermissionToExecute());
+
+        // Wait >150ms -> circuit half-open
+        Thread.sleep(150);
+        // Run 1 success, results in circuit closed
+        runSuccesses(state, 1);
+
+        // 4x TestExceptionAextended -> 0% failure rate -> circuit closed
+        runFailures(state, 4, TestExceptionAextended.class);
+        // assert circuit closed
+        runSuccesses(state, 1);
+
+        // 4x TestExceptionB -> 0% failure rate -> circuit closed
+        // Since TestExceptionB (or any of its superclasses) isn't mentioned in either failOn nor skipOn
+        runFailures(state, 4, TestExceptionB.class);
+        // assert circuit closed
+        runSuccesses(state, 1);
+    }
+
+    @Test
+    public void testMultipleExceptions() throws InterruptedException {
+        CircuitBreakerPolicyImpl policy = new CircuitBreakerPolicyImpl();
+        policy.setDelay(Duration.ofMillis(100));
+        policy.setFailureRatio(0.75);
+        policy.setRequestVolumeThreshold(4);
+        policy.setSuccessThreshold(1);
+        policy.setFailOn(TestExceptionA.class, TestExceptionBextended.class);
+        policy.setSkipOn(TestExceptionB.class, TestExceptionAextended.class);
+
+        // Summary:
+        // Only TestExceptionA    counts as a failure
+        // TestExceptionAextended counts as a pass due to skipOn despite being instance of failOn
+        // TestExceptionB         counts as a pass due to skipOn
+        // TestExceptionBextended counts as a pass due to instance of skipOn despite being failOn
+        // circuit opens if 75% of last 4 requests failed
+        // circuit half-closes after 100ms
+        // circuit fully closes after 1 successful request
+
+        // 4x TestExceptionA -> 100% failure rate -> circuit open
+        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy, dummyMetrics);
+        runFailures(state, 4, TestExceptionA.class);
+        assertFalse(state.requestPermissionToExecute());
+
+        // Wait >150ms -> circuit half-open
+        Thread.sleep(150);
+        // Run 1 success, results in circuit closed
+        runSuccesses(state, 1);
+
+        // 4x TestExceptionAextended -> 0% failure rate -> circuit closed
+        runFailures(state, 4, TestExceptionAextended.class);
+        // assert circuit closed
+        runSuccesses(state, 1);
+
+        // 4x TestExceptionB -> 0% failure rate -> circuit closed
+        runFailures(state, 4, TestExceptionB.class);
+        // assert circuit closed
+        runSuccesses(state, 1);
+
+        // 4x TestExceptionBextended -> 0% failure rate -> circuit closed
+        runFailures(state, 4, TestExceptionBextended.class);
         // assert circuit closed
         runSuccesses(state, 1);
     }
@@ -254,6 +339,12 @@ public class CircuitBreakerStateImplTest {
     }
 
     static class TestExceptionB extends Exception {
+    }
+
+    static class TestExceptionAextended extends TestExceptionA {
+    }
+
+    static class TestExceptionBextended extends TestExceptionB {
     }
 
 }

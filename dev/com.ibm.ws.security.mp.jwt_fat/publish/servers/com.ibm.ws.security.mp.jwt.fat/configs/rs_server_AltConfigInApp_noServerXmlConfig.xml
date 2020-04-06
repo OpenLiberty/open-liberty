@@ -11,6 +11,8 @@
 	
 	<include location="${shared.config.dir}/microProfileMPConfigApps.xml"/>
 
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
 	<mpJwt id="mpJwt_1"/>
 
 </server>

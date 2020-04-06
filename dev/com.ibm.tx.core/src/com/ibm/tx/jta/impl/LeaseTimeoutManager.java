@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,88 +17,62 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.alarm.Alarm;
 import com.ibm.tx.util.alarm.AlarmListener;
-import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
-import com.ibm.ws.recoverylog.spi.LibertyRecoveryDirectorImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 
-/**
- * Manage the lease timer. Based on other timers in the codebase.
- * TODO rationalise
- */
 public class LeaseTimeoutManager {
     private static final TraceComponent tc = Tr.register(
                                                          LeaseTimeoutManager.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
-    private static TimeoutInfo _info;
+    private static String _recoveryIdentity;
+    private static String _recoveryGroup;
 
-    public static void setTimeout(SharedServerLeaseLog leaseLog, String recoveryIdentity, String recoveryGroup, RecoveryAgent recoveryAgent,
-                                  RecoveryDirector recoveryDirector,
-                                  int seconds) {
+    private static LeaseRenewer _renewer;
+    private static LeaseChecker _checker;
+
+    public static void setTimeouts(SharedServerLeaseLog leaseLog, String recoveryIdentity, String recoveryGroup, RecoveryAgent recoveryAgent, RecoveryDirector recoveryDirector,
+                                   int leaseLength, int leaseCheckInterval) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTimeout",
-                     new Object[] { leaseLog, recoveryIdentity, recoveryAgent, seconds });
+            Tr.entry(tc, "setTimeouts",
+                     new Object[] { leaseLog, recoveryIdentity, recoveryGroup, recoveryAgent, recoveryDirector, leaseLength, leaseCheckInterval });
 
-        // Stop any existing timeout
-        stopTimeout();
+        _recoveryIdentity = recoveryIdentity;
+        _recoveryGroup = recoveryGroup;
 
-        _info = new TimeoutInfo(leaseLog, recoveryIdentity, recoveryGroup, recoveryAgent, recoveryDirector, seconds);
+        _renewer = new LeaseRenewer(leaseLength, leaseLog);
+        _checker = new LeaseChecker(leaseCheckInterval, recoveryAgent, recoveryDirector);
+
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setTimeout", _info);
+            Tr.exit(tc, "setTimeouts");
     }
 
-    /**
-     * This class records information for a timeout for a transaction.
-     */
-    private static class TimeoutInfo implements AlarmListener {
-        protected final SharedServerLeaseLog _leaseLog;
-        protected String _recoveryIdentity;
-        protected String _recoveryGroup;
-        protected RecoveryAgent _recoveryAgent;
-        protected RecoveryDirector _recoveryDirector;
-        protected final int _duration;
+    private static class LeaseRenewer implements AlarmListener {
 
+        private final SharedServerLeaseLog _leaseLog;
         private Alarm _alarm;
 
-        private final AlarmManager _alarmManager = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager();
-
-        protected TimeoutInfo(SharedServerLeaseLog leaseLog, String recoveryIdentity, String recoveryGroup, RecoveryAgent recoveryAgent, RecoveryDirector recoveryDirector,
-                              int duration) {
-            if (tc.isEntryEnabled())
-                Tr.entry(tc, "TimeoutInfo", leaseLog);
-
+        private LeaseRenewer(int delay, SharedServerLeaseLog leaseLog) {
             _leaseLog = leaseLog;
-            _duration = duration;
-            _recoveryIdentity = recoveryIdentity;
-            _recoveryGroup = recoveryGroup;
 
-            _recoveryAgent = recoveryAgent;
-            _recoveryDirector = recoveryDirector;
-
-            _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
-
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "TimeoutInfo");
+            schedule(delay);
         }
 
-        /**
-         * Takes appropriate action for a timeout.
-         * The entry in the pendingTimeouts hashtable will be removed by
-         * the transaction completion code.
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.tx.util.alarm.AlarmListener#alarm(java.lang.Object)
          */
         @Override
-        public void alarm(Object alarmContext) {
-            if (tc.isEntryEnabled())
-                Tr.entry(tc, "alarm", _leaseLog);
+        public void alarm(Object delay) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "LeaseRenewal",
+                         new Object[] { _recoveryIdentity, _recoveryGroup });
 
-//            Tr.audit(tc, "WTRN0108I: " +
-//                         "Update " + _recoveryIdentity + " lease and check the leases of other servers");
-            // Update the lease when we pop
             try {
                 if (_leaseLog.lockLocalLease(_recoveryIdentity)) {
                     _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
@@ -109,42 +83,73 @@ public class LeaseTimeoutManager {
                         Tr.debug(tc, "Could not lock lease for " + _recoveryIdentity);
                 }
             } catch (Exception e) {
-                //TODO:
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Swallow exception " + e);
             }
 
-            // Check if other servers need recovering
+            schedule((int) delay);
+        }
+
+        void schedule(int delay) {
+            _alarm = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager().scheduleAlarm(delay * 1000l, this, delay);
+        }
+
+        void cancel() {
+            if (_alarm != null) {
+                _alarm.cancel();
+                _alarm = null;
+            }
+        }
+    }
+
+    private static class LeaseChecker implements AlarmListener {
+
+        private final RecoveryAgent _recoveryAgent;
+        private final RecoveryDirector _recoveryDirector;
+        private Alarm _alarm;
+
+        private LeaseChecker(int delay, RecoveryAgent recoveryAgent, RecoveryDirector recoveryDirector) {
+            _recoveryAgent = recoveryAgent;
+            _recoveryDirector = recoveryDirector;
+
+            schedule(delay);
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.tx.util.alarm.AlarmListener#alarm(java.lang.Object)
+         */
+        @Override
+        public void alarm(Object delay) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "LeaseCheck",
+                         new Object[] { _recoveryGroup });
+
             if (_recoveryAgent != null) {
                 ArrayList<String> peersToRecover = _recoveryAgent.processLeasesForPeers(_recoveryIdentity, _recoveryGroup);
                 if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl) {
                     try {
-                        ((LibertyRecoveryDirectorImpl) _recoveryDirector).peerRecoverServers(_recoveryAgent, _recoveryIdentity, peersToRecover);
+                        ((RecoveryDirectorImpl) _recoveryDirector).peerRecoverServers(_recoveryAgent, _recoveryIdentity, peersToRecover);
                     } catch (RecoveryFailedException e) {
-                        // The exception will have been reported in peerRecoverServers()
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Swallow exception " + e);
                     }
                 }
             }
 
-            // Respawn the alarm
-            _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "alarm");
+            schedule((int) delay);
         }
 
-        public void cancelAlarm() {
-            if (tc.isEntryEnabled())
-                Tr.entry(tc, "cancelAlarm", _alarm);
+        void schedule(int delay) {
+            _alarm = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager().scheduleAlarm(delay * 1000l, this, delay);
+        }
 
+        void cancel() {
             if (_alarm != null) {
                 _alarm.cancel();
                 _alarm = null;
             }
-
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "cancelAlarm");
         }
     }
 
@@ -152,8 +157,11 @@ public class LeaseTimeoutManager {
      *
      */
     public static void stopTimeout() {
-        if (_info != null) {
-            _info.cancelAlarm();
+        if (_renewer != null) {
+            _renewer.cancel();
+        }
+        if (_checker != null) {
+            _checker.cancel();
         }
     }
 }

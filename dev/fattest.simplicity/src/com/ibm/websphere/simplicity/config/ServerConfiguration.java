@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,9 @@ public class ServerConfiguration implements Cloneable {
     private String description;
     @XmlElement(name = "featureManager")
     private FeatureManager featureManager;
+
+    @XmlElement(name = "acmeCA")
+    private AcmeCA acmeCA;
 
     @XmlElement(name = "activationSpec")
     private ConfigElementList<ActivationSpec> activationSpecs;
@@ -249,11 +252,17 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "activedLdapFilterProperties")
     private ConfigElementList<LdapFilters> activedLdapFilterProperties;
 
+    @XmlElement(name = "orb")
+    private ORB orb;
+
     @XmlAnyAttribute
     private Map<QName, Object> unknownAttributes;
 
     @XmlAnyElement
     private List<Element> unknownElements;
+
+    @XmlElement(name = "samesite")
+    private ConfigElementList<SameSite> samesites;
 
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
@@ -749,9 +758,9 @@ public class ServerConfiguration implements Cloneable {
      * Removes all applications with a specific name
      *
      * @param name
-     *            the name of the applications to remove
+     * the name of the applications to remove
      * @return the removed applications (no longer bound to the server
-     *         configuration)
+     * configuration)
      */
     public ConfigElementList<Application> removeApplicationsByName(String name) {
         ConfigElementList<Application> installedApps = this.getApplications();
@@ -770,12 +779,12 @@ public class ServerConfiguration implements Cloneable {
      * a specific name if it already exists
      *
      * @param name
-     *            the name of the application
+     * the name of the application
      * @param path
-     *            the fully qualified path to the application archive on the
-     *            liberty machine
+     * the fully qualified path to the application archive on the
+     * liberty machine
      * @param type
-     *            the type of the application (ear/war/etc)
+     * the type of the application (ear/war/etc)
      * @return the deployed application
      */
     public Application addApplication(String name, String path, String type) {
@@ -977,6 +986,17 @@ public class ServerConfiguration implements Cloneable {
         return this.remoteFileAccesses;
     }
 
+    /**
+     * @return The configured top level orb element.
+     */
+    public ORB getOrb() {
+        if (this.orb == null) {
+            this.orb = new ORB();
+        }
+
+        return this.orb;
+    }
+
     private List<Field> getAllXmlElements() {
         List<Field> xmlElements = new ArrayList<Field>();
         for (Field field : getClass().getDeclaredFields()) {
@@ -1045,7 +1065,11 @@ public class ServerConfiguration implements Cloneable {
 
     /**
      * Calls modify() on elements in the configuration that implement the ModifiableConfigElement interface.
+     *
+     * No longer using bootstrap properties to update server config for database rotation.
+     * Instead look at using the fattest.databases module
      */
+    @Deprecated
     public void updateDatabaseArtifacts() throws Exception {
         List<ModifiableConfigElement> mofiableElementList = new ArrayList<ModifiableConfigElement>();
         findModifiableConfigElements(this, mofiableElementList);
@@ -1059,10 +1083,15 @@ public class ServerConfiguration implements Cloneable {
      * Finds all of the objects in the given config element that implement the
      * ModifiableConfigElement interface.
      *
+     * TODO Currently only used for method {@link componenttest.topology.impl.LibertyServer#configureForAnyDatabase()}
+     * which is currently deprecated. But this method is specific to Database rotation. If we start using the
+     * fat.modify tag and modifiableConfigElement interface for other modification purposes this method can be un-deprecated
+     *
      * @param element The config element to check.
      * @param modifiableConfigElements The list containing all modifiable elements.
      * @throws Exception
      */
+    @Deprecated
     private void findModifiableConfigElements(Object element, List<ModifiableConfigElement> modifiableConfigElements) throws Exception {
 
         // If the current element implements ModifiableConfigElement add it to the list.
@@ -1167,5 +1196,42 @@ public class ServerConfiguration implements Cloneable {
             this.activedLdapFilterProperties = new ConfigElementList<LdapFilters>();
         }
         return this.activedLdapFilterProperties;
+    }
+
+    /**
+     * Add a SameSite configuration to this server
+     *
+     * @param samesite The SameSite element to be added to this server.
+     */
+    public void addSameSite(SameSite samesite) {
+
+        ConfigElementList<SameSite> samesiteCfgs = getSameSites();
+
+        for (SameSite samesiteEntry : samesiteCfgs) {
+            if (samesiteEntry.getId().equals(samesite.getId())) {
+                samesiteCfgs.remove(samesiteEntry);
+            }
+        }
+        samesiteCfgs.add(samesite);
+    }
+
+    /**
+     * @return the samesite configurations for this server
+     */
+    public ConfigElementList<SameSite> getSameSites() {
+        if (this.samesites == null) {
+            this.samesites = new ConfigElementList<SameSite>();
+        }
+        return this.samesites;
+    }
+
+    /**
+     * @return the AcmeCA configuration for this server
+     */
+    public AcmeCA getAcmeCA() {
+        if (this.acmeCA == null) {
+            this.acmeCA = new AcmeCA();
+        }
+        return this.acmeCA;
     }
 }

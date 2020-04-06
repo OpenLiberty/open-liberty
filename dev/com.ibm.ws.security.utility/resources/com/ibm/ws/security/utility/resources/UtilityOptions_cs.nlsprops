@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -148,7 +148,9 @@ sslCert.option-desc.keyType=\tVoliteln\u00e9. Standardn\u011b bude vygenerov\u00
 sslCert.option-key.ext=\ \ \ \ Informace o roz\u0161\u00ed\u0159en\u00ed --extInfo=certificate
 sslCert.option-desc.ext=\tInformace o roz\u0161\u00ed\u0159en\u00ed certifik\u00e1tu p\u0159id\u00e1van\u00e9 k certifik\u00e1tu.\n\
 \tV\u00fdchoz\u00ed p\u0159\u00edpona je polo\u017eka Alternativn\u00ed n\u00e1zev subjektu uv\u00e1d\u011bj\u00edc\u00ed \n\
-\tn\u00e1zev hostitele.
+\tn\u00e1zev hostitele. Tento p\u0159\u00edznak se shoduje se stejnou syntax\u00ed jako p\u0159\u00edznak -ext \n\
+n\u00e1stroje Jave Keytool. Tento p\u0159\u00edznak lze v p\u0159\u00edkazu pou\u017e\u00edt v\u00edcekr\u00e1t \n \ 
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

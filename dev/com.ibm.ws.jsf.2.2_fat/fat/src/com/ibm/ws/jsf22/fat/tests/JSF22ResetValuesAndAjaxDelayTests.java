@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,12 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -24,12 +30,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -71,132 +71,134 @@ public class JSF22ResetValuesAndAjaxDelayTests {
 
     /**
      * Test the ajax resetValues attribute and also the f:resetValues component
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testResetValues() throws Exception {
-        WebClient webClient = new WebClient(browser);
+        try (WebClient webClient = new WebClient(browser)) {
 
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
-        URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "resetValuesTest.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "resetValuesTest.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/resetValuesTest.jsf");
-        HtmlElement link = (HtmlElement) page.getElementById("form1:link1");
-        page = link.click();
+            Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/resetValuesTest.jsf");
+            HtmlElement link = (HtmlElement) page.getElementById("form1:link1");
+            page = link.click();
 
-        HtmlElement checkValue = (HtmlElement) page.getElementById("form1:input1");
+            HtmlElement checkValue = (HtmlElement) page.getElementById("form1:input1");
 
-        Log.info(c, name.getMethodName(), "The input1 field should have a value of 1, actual: " + checkValue.asText());
-        assertEquals("1", checkValue.asText());
+            Log.info(c, name.getMethodName(), "The input1 field should have a value of 1, actual: " + checkValue.asText());
+            assertEquals("1", checkValue.asText());
 
-        HtmlElement saveButton = (HtmlElement) page.getElementById("form1:saveButton");
-        page = saveButton.click();
+            HtmlElement saveButton = (HtmlElement) page.getElementById("form1:saveButton");
+            page = saveButton.click();
 
-        HtmlElement checkMessage = (HtmlElement) page.getElementById("form1:messages");
-        Log.info(c, name.getMethodName(), "On save, the validation should have failed.  Message displayed: " + checkMessage.asText());
-        assertNotNull("A validation error should have been displayed", checkMessage.asText());
+            HtmlElement checkMessage = (HtmlElement) page.getElementById("form1:messages");
+            Log.info(c, name.getMethodName(), "On save, the validation should have failed.  Message displayed: " + checkMessage.asText());
+            assertNotNull("A validation error should have been displayed", checkMessage.asText());
 
-        //click the link again, the value should still increment which means the Ajax reset is working
-        page = link.click();
-        checkValue = (HtmlElement) page.getElementById("form1:input1");
+            //click the link again, the value should still increment which means the Ajax reset is working
+            page = link.click();
+            checkValue = (HtmlElement) page.getElementById("form1:input1");
 
-        Log.info(c, name.getMethodName(), "The input1 field should have a value of 2, actual: " + checkValue.asText());
-        assertEquals("2", checkValue.asText());
+            Log.info(c, name.getMethodName(), "The input1 field should have a value of 2, actual: " + checkValue.asText());
+            assertEquals("2", checkValue.asText());
 
-        //click the resetButton and ensure the fields are reset to 0 each, which means the f:resetValues component is working.
-        HtmlElement resetButton = (HtmlElement) page.getElementById("form1:resetButton");
-        page = resetButton.click();
+            //click the resetButton and ensure the fields are reset to 0 each, which means the f:resetValues component is working.
+            HtmlElement resetButton = (HtmlElement) page.getElementById("form1:resetButton");
+            page = resetButton.click();
 
-        checkValue = (HtmlElement) page.getElementById("form1:input1");
+            checkValue = (HtmlElement) page.getElementById("form1:input1");
 
-        Log.info(c, name.getMethodName(), "The input1 field should have been reset to 0, actual: " + checkValue.asText());
-        assertEquals("0", checkValue.asText());
+            Log.info(c, name.getMethodName(), "The input1 field should have been reset to 0, actual: " + checkValue.asText());
+            assertEquals("0", checkValue.asText());
 
-        HtmlElement checkValue2 = (HtmlElement) page.getElementById("form1:input2");
+            HtmlElement checkValue2 = (HtmlElement) page.getElementById("form1:input2");
 
-        Log.info(c, name.getMethodName(), "The input2 field should have been reset to 0, actual: " + checkValue2.asText());
-        assertEquals("0", checkValue2.asText());
-
+            Log.info(c, name.getMethodName(), "The input2 field should have been reset to 0, actual: " + checkValue2.asText());
+            assertEquals("0", checkValue2.asText());
+        }
     }
 
     /**
      * Test an Ajax request with a delay of 200 and make sure the method is only called once in that time.
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testAjaxDelay() throws Exception {
-        WebClient webClient = new WebClient(browser);
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        try (WebClient webClient = new WebClient(browser)) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
-        jsf22TracingServer.setMarkToEndOfLog();
+            jsf22TracingServer.setMarkToEndOfLog();
 
-        Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf");
-        URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "ajaxDelayTest.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "ajaxDelayTest.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        Log.info(c, name.getMethodName(), "Returned from navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf and setting mark in logs.");
+            Log.info(c, name.getMethodName(), "Returned from navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf and setting mark in logs.");
 
-        Log.info(c, name.getMethodName(), "Sleeping for 1 second");
-        Thread.sleep(1000);
+            Log.info(c, name.getMethodName(), "Sleeping for 1 second");
+            Thread.sleep(1000);
 
-        Log.info(c, name.getMethodName(), "Getting input field");
-        HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:name");
+            Log.info(c, name.getMethodName(), "Getting input field");
+            HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:name");
 
-        Log.info(c, name.getMethodName(), "Typing value 'joh'");
-        input.type("joh", false, false, false);
+            Log.info(c, name.getMethodName(), "Typing value 'joh'");
+            input.type("joh", false, false, false);
 
-        Log.info(c, name.getMethodName(), "Checking logs for bean call entry");
-        int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(1, "AjaxDelayTest getMatchingEmployees");
+            Log.info(c, name.getMethodName(), "Checking logs for bean call entry");
+            int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(1, "AjaxDelayTest getMatchingEmployees");
 
-        Log.info(c, name.getMethodName(), "The bean method should have been called once, actual amount is: " + numOfMethodCalls);
-        assertEquals(1, numOfMethodCalls);
+            Log.info(c, name.getMethodName(), "The bean method should have been called once, actual amount is: " + numOfMethodCalls);
+            assertEquals(1, numOfMethodCalls);
+        }
     }
 
     /**
      * Test an Ajax request with a delay of zero (0) and make sure the method is called on each keyup (3 times).
-     * 
+     *
      * @throws Exception
      */
 
     @Test
     public void testAjaxZeroDelay() throws Exception {
-        WebClient webClient = new WebClient(browser);
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        try (WebClient webClient = new WebClient(browser)) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
-        jsf22TracingServer.setMarkToEndOfLog();
+            jsf22TracingServer.setMarkToEndOfLog();
 
-        Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/ajaxZeroDelayTest.jsf");
-        URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "ajaxZeroDelayTest.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/ajaxZeroDelayTest.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "ajaxZeroDelayTest.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        Log.info(c, name.getMethodName(), "Returned from navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf and setting mark in logs.");
+            Log.info(c, name.getMethodName(), "Returned from navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf and setting mark in logs.");
 
-        Log.info(c, name.getMethodName(), "Sleeping for 1 second");
-        Thread.sleep(1000);
+            Log.info(c, name.getMethodName(), "Sleeping for 1 second");
+            Thread.sleep(1000);
 
-        Log.info(c, name.getMethodName(), "Getting input field");
-        HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:name");
+            Log.info(c, name.getMethodName(), "Getting input field");
+            HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:name");
 
-        Log.info(c, name.getMethodName(), "Typing value 'joh'");
-        input.type("joh", false, false, false);
+            Log.info(c, name.getMethodName(), "Typing value 'joh'");
+            input.type("joh", false, false, false);
 
-        Log.info(c, name.getMethodName(), "Checking logs for bean call entry");
-        int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(3, "AjaxDelayTest getMatchingEmployees");
+            Log.info(c, name.getMethodName(), "Checking logs for bean call entry");
+            int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(3, "AjaxDelayTest getMatchingEmployees");
 
-        Log.info(c, name.getMethodName(), "The bean method should have been called three times, actual amount is: " + numOfMethodCalls);
-        assertEquals(3, numOfMethodCalls);
+            Log.info(c, name.getMethodName(), "The bean method should have been called three times, actual amount is: " + numOfMethodCalls);
+            assertEquals(3, numOfMethodCalls);
+        }
     }
 
     /**
      * Test an Ajax request with a delay of none and make sure the method is called on each keyup (3 times).
-     * 
+     *
      * @throws Exception
      */
 

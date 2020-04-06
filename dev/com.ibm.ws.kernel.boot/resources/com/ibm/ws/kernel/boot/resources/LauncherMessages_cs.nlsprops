@@ -445,7 +445,7 @@ error.create.unknownJavaLevel.useraction=Ujist\u011bte se, \u017ee pou\u017e\u00
 
 error.create.java8serverenv=CWWKE0103E: Nelze vytvo\u0159it soubor server.env v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {0}
 error.create.java8serverenv.explanation=Proces, kter\u00fd se pokou\u0161\u00ed vytvo\u0159it server, nebyl schopen vygenerovat soubor server.env v ur\u010den\u00e9m um\u00edst\u011bn\u00ed. Tento soubor poskytuje po\u017eadovan\u00e9 argumenty prost\u0159ed\u00ed JVM pro server tak, aby spr\u00e1vn\u011b fungoval.
-error.create.java8serverenv.useraction=Ujist\u011bte se, \u017ee m\u00e1te p\u0159\u00edstup pro z\u00e1pis k adres\u00e1\u0159i serveru i dostate\u010dn\u00e9 m\u00edsto na disku. Nav\u00edc m\u016f\u017eete ru\u010dn\u011b vytvo\u0159it soubor server.env pomoc\u00ed n\u00e1sleduj\u00edc\u00ed hodnoty:  WLP_SKIP_MAXPERMSIZE=true. Mus\u00edte se ujistit, \u017ee proces serveru m\u00e1 k tomuto souboru p\u0159\u00edstup pro \u010dten\u00ed.
+error.create.java8serverenv.useraction=Ujist\u011bte se, \u017ee m\u00e1te p\u0159\u00edstup pro z\u00e1pis k adres\u00e1\u0159i serveru i dostate\u010dn\u00e9 m\u00edsto na disku. Mus\u00edte se ujistit, \u017ee proces serveru m\u00e1 k tomuto souboru p\u0159\u00edstup pro \u010dten\u00ed.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Tento produkt je betaverze a nelze jej pou\u017e\u00edt v produk\u010dn\u00edm prost\u0159ed\u00ed. \u00dapln\u00e9 licen\u010dn\u00ed podm\u00ednky lze zobrazit zde: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Tento produkt je betaverza a mus\u00ed b\u00fdt pou\u017eit v souladu s podm\u00ednkami beta licence.
@@ -696,10 +696,6 @@ warning.package.root.invalid.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u0
 warning.package.root.invalid.runnable=CWWKE0948W: Volba --server-root s --include=runnable nen\u00ed povolenou kombinac\u00ed. V\u00fdchoz\u00ed argument wlp je pou\u017eit pro ko\u0159enov\u00fd adres\u00e1\u0159 serveru.
 warning.package.root.invalid.runnable.explanation=U\u017eivatel provedl po\u017eadavek na bal\u00edk s volbou --server-root a --include=runnable, co\u017e nen\u00ed povolenou kombinac\u00ed. Pou\u017eije se v\u00fdchoz\u00ed ko\u0159enov\u00fd adres\u00e1\u0159 serveru wlp.
 warning.package.root.invalid.runnable.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
-
-error.no.serialfilteragent=CWWKE0949E: Uveden\u00fd soubor JAR modulu Serial Filter Agent {0} neexistuje.
-error.no.serialfilteragent.explanation=Uveden\u00fd soubor JAR modulu Serial Filter Agent neexistuje, nebo se nezda\u0159ilo na\u010dten\u00ed.
-error.no.serialfilteragent.useraction= Zkontrolujte, \u017ee soubor existuje a \u017ee jej m\u016f\u017ee aktu\u00e1ln\u00ed u\u017eivatel \u010d\u00edst.
 
 error.package.extension=CWWKE0950E: N\u00e1zev archivn\u00edho souboru mus\u00ed kon\u010dit p\u0159\u00edponou .jar, je-li pou\u017eita volba runnable.
 error.package.extension.explanation=Volba --archive mus\u00ed obsahovat p\u0159\u00edponu souboru, kter\u00e1 kon\u010d\u00ed p\u0159\u00edponou .jar p\u0159i ur\u010den\u00ed --include=runnable.

@@ -1,0 +1,16 @@
+<server>
+
+    <featureManager>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+
+    <httpEndpoint
+        id="defaultHttpEndpoint"
+        host="*"
+        httpPort="${bvt.prop.security_1_HTTP_default}"
+        httpsPort="${bvt.prop.security_1_HTTP_default.secure}"
+    >
+        <tcpOptions soReuseAddr="true" />
+    </httpEndpoint>
+
+</server>

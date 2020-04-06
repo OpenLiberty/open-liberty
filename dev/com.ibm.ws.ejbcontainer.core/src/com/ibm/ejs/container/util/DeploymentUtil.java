@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2019 IBM Corporation and others.
+ * Copyright (c) 1998, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -475,18 +475,20 @@ public final class DeploymentUtil
      * performs validation. <p>
      *
      * RemoteException is never a 'checked' exception, and exceptions that
-     * are subclasses of other 'checked' exceptios will either be eliminated,
+     * are subclasses of other 'checked' exceptions will either be eliminated,
      * or sorted in parent-last order to avoid 'unreachable' code. <p>
      *
      * The following rules from the EJB Specification will be checked:
      * <ul>
      * <li> Only Remote interfaces that implement java.rmi.Remote may
      * throw RemoteException.
-     * <li> Application exceptions must not subclass RemoteException.
+     * <li> Application exceptions must not subclass RemoteException. For interfaces
+     * that implement java.rmi.Remote, they will be tolerated; they will not appear
+     * in returned list.
      * <li> Only EJB 3.0 or later applications may have Application exceptions
      * that subclass RuntimeException.
      * <li> All methods on an interface that implements java.rmi.Remote
-     * must throw RemoteException.
+     * must throw RemoteException or superclass of RemoteException.
      * </ul>
      *
      * This method is designed for use when generating the EJB Wrappers,
@@ -515,7 +517,7 @@ public final class DeploymentUtil
      * performs validation. <p>
      *
      * RemoteException is never a 'checked' exception, and exceptions that
-     * are subclasses of other 'checked' exceptios will either be eliminated,
+     * are subclasses of other 'checked' exceptions will either be eliminated,
      * or sorted in parent-last order to avoid 'unreachable' code. <p>
      *
      * The following rules from the EJB Specification will be checked:
@@ -523,11 +525,12 @@ public final class DeploymentUtil
      * <li> Only Remote interfaces that implement java.rmi.Remote may
      * throw RemoteException.
      * <li> Application exceptions must not subclass RemoteException unless a
-     * custom property is specified.
+     * custom property is specified. For interfaces that implement java.rmi.Remote,
+     * they will be tolerated; they will not appear in returned list.
      * <li> Only EJB 3.0 or later applications may have Application exceptions
      * that subclass RuntimeException.
      * <li> All methods on an interface that implements java.rmi.Remote
-     * must throw RemoteException.
+     * must throw RemoteException or superclass of RemoteException.
      * </ul>
      *
      * This method is designed for use when generating the EJB Wrappers,
@@ -561,7 +564,7 @@ public final class DeploymentUtil
      * performs validation. <p>
      *
      * RemoteException is never a 'checked' exception, and exceptions that
-     * are subclasses of other 'checked' exceptios will either be eliminated,
+     * are subclasses of other 'checked' exceptions will either be eliminated,
      * or sorted in parent-last order to avoid 'unreachable' code. <p>
      *
      * The following rules from the EJB Specification will be checked:
@@ -569,11 +572,13 @@ public final class DeploymentUtil
      * <li> Only Remote interfaces that implement java.rmi.Remote may
      * throw RemoteException.
      * <li> Application exceptions must not subclass RemoteException unless
-     * declaredRemoteAreApplicationExceptions is true.
+     * declaredRemoteAreApplicationExceptions is true. For interfaces that
+     * implement java.rmi.Remote, they will be tolerated; they will not appear
+     * in returned list.
      * <li> Only EJB 3.0 or later applications may have Application exceptions
      * that subclass RuntimeException.
      * <li> All methods on an interface that implements java.rmi.Remote
-     * must throw RemoteException.
+     * must throw RemoteException or superclass of RemoteException.
      * </ul>
      *
      * This method is designed for use when generating the EJB Wrappers,
@@ -616,7 +621,9 @@ public final class DeploymentUtil
             // --------------------------------------------------------------------
             if (exception == RemoteException.class)
             {
-                if (!isRmiRemote)
+                // Required for RMI Remote and allowed for 2.x local by EJBDeploy,
+                // so no warning for remote or 2.x local interfaces
+                if (!isRmiRemote && (wrapperType != EJBWrapperType.LOCAL) && (wrapperType != EJBWrapperType.LOCAL_HOME))
                 {
                     // This is only a warning since the spec says 'should' and not
                     // must... but let them know it is a bad idea.            d450525
@@ -646,6 +653,15 @@ public final class DeploymentUtil
                          wrapperType == EJBWrapperType.BUSINESS_LOCAL))
                 {
                     // Keep the exception.
+                }
+                // For tie/wrapper that extends RMI Remote, ignore since a superclass
+                // exception (Exception or RemoteException) must be present and will
+                // handle reporting as an unchecked exception. Also ignoring for 2.x
+                // local interfaces, since they were tolerated by EJBDeploy.
+                else if (isRmiRemote || wrapperType == EJBWrapperType.LOCAL || wrapperType == EJBWrapperType.LOCAL_HOME)
+                {
+                    // Remove the exception; tolerated and ignored, not checked
+                    continue;
                 }
                 else
                 {

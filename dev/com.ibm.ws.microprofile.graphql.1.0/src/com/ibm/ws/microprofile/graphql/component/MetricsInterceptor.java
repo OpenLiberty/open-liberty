@@ -13,6 +13,7 @@ package com.ibm.ws.microprofile.graphql.component;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
@@ -31,7 +32,6 @@ import org.eclipse.microprofile.metrics.Timer.Context;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 
 @Trivial
 @Dependent
@@ -42,7 +42,33 @@ public class MetricsInterceptor {
 
     private final static String PREFIX = "mp_graphql_";
     private final static TraceComponent tc = Tr.register(MetricsInterceptor.class);
-    private final static MetricRegistry metrics = MetricRegistryFactory.getVendorRegistry();
+    final static MetricRegistry metrics;
+
+    static {
+        Supplier<MetricRegistry> metricsSupplier = null;
+        if (canLoad("com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory")) {
+            metricsSupplier = () -> {
+                return com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory.getVendorRegistry();
+            };
+        } else if (canLoad("com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory")) {
+            metricsSupplier = () -> {
+                return com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory.getVendorRegistry();
+            };
+        }
+        if (metricsSupplier != null) {
+            metrics = metricsSupplier.get();
+        } else {
+            metrics = null;
+        }
+    }
+
+    private static boolean canLoad(String className) {
+        try {
+            return Class.forName(className) != null;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
 
     @AroundInvoke
     public Object captureMetrics(InvocationContext ctx) throws Exception {

@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64.Decoder;
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -29,6 +30,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.JEEExecutionContextHelper;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
@@ -40,6 +42,9 @@ public abstract class JPATestServlet extends FATServlet {
 
     private static int portNumber = 0;
 
+    protected final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
+    protected String testClassName;
+
     @Resource
     protected UserTransaction tx;
 
@@ -48,6 +53,20 @@ public abstract class JPATestServlet extends FATServlet {
         portNumber = request.getLocalPort();
 
         super.doGet(request, response);
+    }
+
+    protected void executeTest(String testName, String testMethod, String testResource) throws Exception {
+        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testClassName, testMethod);
+
+        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
+        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get(testResource));
+
+        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
+        properties.put("dbProductName", getDbProductName());
+        properties.put("dbProductVersion", getDbProductVersion());
+        properties.put("jdbcDriverVersion", getJdbcDriverVersion());
+
+        executeTestVehicle(testExecCtx);
     }
 
     protected void executeTestVehicle(TestExecutionContext ctx) {

@@ -129,14 +129,15 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     DiscoveryConfigUtils discoveryUtil = new DiscoveryConfigUtils();
 
     @Override
-    protected void setRequiredConfigAttributes(Map<String, Object> props) {
-        this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
-        this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+    protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
+        getRequiredConfigAttribute(props, KEY_clientId);
+        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
     }
 
     @Override
-    protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
-
+    protected void setAllConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.clientId = configUtils.getConfigAttribute(props, KEY_clientId);
+        this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
         this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
         this.discoveryEndpointUrl = configUtils.getConfigAttribute(props, KEY_DISCOVERY_ENDPOINT);
