@@ -33,7 +33,7 @@ src: \
 	
 fat.project: true
 
-# These features get added programatically
+# These features get added programmatically
 tested.features: \
   jaxws-2.2,\
   ejb-3.2
