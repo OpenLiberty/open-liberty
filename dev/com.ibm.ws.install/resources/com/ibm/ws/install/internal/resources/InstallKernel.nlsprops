@@ -847,9 +847,13 @@ ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: The {0} and {1} singleton feat
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=The features cannot be installed at the same time.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Remove one of the features and try again.
 
-ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Unable to unzip the license package with Maven coordinate {0} from the local repository at file path {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Unable to unzip the license package with Maven coordinate {0} from the repository at file path {1}.
 ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Unable to unzip license package to the wlp installation.
-ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Ensure you have the correct permissions for reading from the local repository.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Ensure you have the correct permissions to read from the repository.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Unable to process license file at file location {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Unable to process the license file for license acceptance information.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Ensure you have the correct permissions to read from the license file.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
