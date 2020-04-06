@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -184,6 +185,21 @@ public class ShrinkHelper {
      * @param overWrite Wheather or not to overwrite an existing artifact
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite) {
+        return exportArtifact(a, dest, printArchiveContents, overWrite, false);
+    }
+
+    /**
+     * Writes an Archive to a a file in the target destination
+     * with the file name returned by a.getName(), which should include the
+     * file type extension (ear, war, jar, rar, etc).
+     *
+     * @param a                    The archive to export as a file
+     * @param dest                 The target folder to export the archive to (i.e. publish/files/apps)
+     * @param printArchiveContents Whether or not to log the contents of the archive being exported
+     * @param overWrite            Whether or not to overwrite an existing artifact
+     * @param expand               Whether or not to explode the archive at the destination
+     */
+    public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite, boolean expand) {
         Log.info(c, "exportArtifact", "Exporting shrinkwrap artifact: " + a.toString() + " to " + dest);
         File outputFile = new File(dest, a.getName());
         if (outputFile.exists() && !overWrite) {
@@ -191,7 +207,11 @@ public class ShrinkHelper {
             return a;
         }
         outputFile.getParentFile().mkdirs();
-        a.as(ZipExporter.class).exportTo(outputFile, true);
+        if (expand) {
+            a.as(ExplodedExporter.class).exportExploded(outputFile.getParentFile(), outputFile.getName());
+        } else {
+            a.as(ZipExporter.class).exportTo(outputFile, true);
+        }
         if (printArchiveContents)
             Log.info(ShrinkHelper.class, "exportArtifact", a.toString(true));
         return a;
