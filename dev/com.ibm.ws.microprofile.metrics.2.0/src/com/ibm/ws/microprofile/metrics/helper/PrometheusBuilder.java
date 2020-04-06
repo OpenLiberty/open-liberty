@@ -37,7 +37,7 @@ public class PrometheusBuilder {
     private static final TraceComponent tc = Tr.register(PrometheusBuilder.class);
 
     private static final String QUANTILE = "quantile";
-    private static Set<String> improperGaugeSet = new HashSet<String>();
+    private static Set<MetricID> improperGaugeSet = new HashSet<MetricID>();
 
     @FFDCIgnore({ IllegalStateException.class })
 
@@ -57,9 +57,9 @@ public class PrometheusBuilder {
                 return;
             }
             if (!Number.class.isInstance(gaugeValue)) {
-                if (!improperGaugeSet.contains(name)) {
-                    Tr.event(tc, "Skipping Prometheus output for Gauge: " + name + " of type " + ((Gauge) currentMetricMap.get(mid)).getValue().getClass());
-                    improperGaugeSet.add(name);
+                if (!improperGaugeSet.contains(mid)) {
+                    Tr.event(tc, "Skipping Prometheus output for Gauge: " + mid.toString() + " of type " + ((Gauge) currentMetricMap.get(mid)).getValue().getClass());
+                    improperGaugeSet.add(mid);
                 }
                 return;
             }
