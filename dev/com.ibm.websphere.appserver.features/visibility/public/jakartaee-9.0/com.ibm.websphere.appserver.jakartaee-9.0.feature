@@ -10,4 +10,4 @@ Subsystem-Name: Jakarta EE Platform 9.0
   com.ibm.websphere.appserver.concurrent-2.0,\
   com.ibm.websphere.appserver.webProfile-9.0
 kind=noship
-edition=base
+edition=full
