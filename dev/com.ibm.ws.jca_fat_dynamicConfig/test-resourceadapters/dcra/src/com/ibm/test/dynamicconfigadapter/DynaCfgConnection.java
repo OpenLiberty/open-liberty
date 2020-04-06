@@ -30,8 +30,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
+import javax.resource.spi.ConnectionEvent;
+import javax.resource.spi.ConnectionEventListener;
 
 public class DynaCfgConnection implements Connection {
     boolean isClosed;

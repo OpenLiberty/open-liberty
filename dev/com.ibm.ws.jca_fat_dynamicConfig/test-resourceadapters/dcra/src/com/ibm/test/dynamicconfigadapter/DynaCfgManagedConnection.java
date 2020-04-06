@@ -17,13 +17,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
+import javax.resource.spi.ConnectionEventListener;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.LocalTransaction;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionMetaData;
 import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
-import javax.sql.ConnectionEventListener;
 import javax.transaction.xa.XAResource;
 
 public class DynaCfgManagedConnection implements ManagedConnection {

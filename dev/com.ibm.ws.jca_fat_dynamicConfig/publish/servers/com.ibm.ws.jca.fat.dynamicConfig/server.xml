@@ -10,8 +10,8 @@
  -->
 <server>
     <featureManager>
-      <feature>jca-1.6</feature>
-      <feature>servlet-3.0</feature>  
+      <feature>jca-1.7</feature>
+      <feature>servlet-3.1</feature>  
       <feature>jndi-1.0</feature> 
     </featureManager>
 
@@ -19,7 +19,7 @@
 
     <variable name="onError" value="FAIL"/>
 
-    <resourceAdapter id="dcra" location="${server.config.dir}/connectors/loose/DynamicConfigRA.rar.xml"/>
+    <resourceAdapter id="dcra" location="${server.config.dir}/connectors/dcra.rar"/>
 
     <adminObject id="myAdminObject" jndiName="eis/myAdminObject">
       <properties.dcra.List/>

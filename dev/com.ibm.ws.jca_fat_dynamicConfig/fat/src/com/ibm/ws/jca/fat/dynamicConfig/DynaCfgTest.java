@@ -10,25 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.dynamicConfig;
 
-import static org.junit.Assert.fail;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ActivationSpec;
 import com.ibm.websphere.simplicity.config.AdminObject;
 import com.ibm.websphere.simplicity.config.Application;
@@ -41,12 +38,15 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * General tests that involve updating configuration while the server is running.
  */
-public class DynaCfgTest {
+@RunWith(FATRunner.class)
+public class DynaCfgTest extends FATServletClient {
 
     @Server("com.ibm.ws.jca.fat.dynamicConfig")
     public static LibertyServer server;
@@ -72,42 +72,33 @@ public class DynaCfgTest {
     private static String[] cleanUpExprs = EMPTY_EXPR_LIST;
 
     /**
-     * Utility method to run a test in a servlet.
-     *
-     * @param test Test name to supply as an argument to the servlet
-     * @return output of the servlet
-     * @throws IOException if an error occurs
+     * Utility method to run test on server given testName
      */
-    private StringBuilder runInServlet(String test, String webmodule) throws IOException {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + webmodule + "?test=" + test);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
+    private void runTest(String testName) throws Exception {
+        runTest(server, dynamicConfigTestServlet, testName);
+    }
 
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
+    /**
+     * Utility method to update config and wait for cleanUpExprs in logs
+     */
+    private void updateConfig(ServerConfiguration config) throws Exception {
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addInstalledAppForValidation(dynamicConfigTestAppName);
+        //Create ear
+        WebArchive war = ShrinkHelper.buildDefaultApp(dynamicConfigTestServlet, "web", "web.mdb");
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, dynamicConfigTestAppName + ".ear")
+                        .addAsModule(war);
+        ShrinkHelper.addDirectory(ear, "test-applications/dynaCfgTestApp/resources");
+        ShrinkHelper.exportToServer(server, "apps", ear);
+
+        //Create rar
+        ShrinkHelper.defaultRar(server, dynamicConfigTestRarName, "com.ibm.test.dynamicconfigadapter");
+
         server.startServer();
         originalServerConfig = server.getServerConfiguration().clone();
     }
@@ -119,52 +110,43 @@ public class DynaCfgTest {
      */
     @Before
     public void setUpPerTest() throws Exception {
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(originalServerConfig);
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
+        //Reset cleanup expressions to an empty list
         cleanUpExprs = EMPTY_EXPR_LIST;
+        //Update server to original config
+        updateConfig(originalServerConfig);
+        //Log restoration
         Log.info(getClass(), "setUpPerTest", "server configuration restored");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKG0007W", // could not delete from workarea
-                          "CWWKE0700W",
-                          "CWWKE0701E.*NullPointerException", // Remove when FELIX-4682 is fixed and integrated
-                          "CNTR4015W"); // EXPECTED : Warning for not having activation spec in server.xml for all beans on the application, this is OK
-        if (originalServerConfig != null)
-            server.updateServerConfiguration(originalServerConfig);
+        if (server.isStarted()) {
+            server.stopServer("CWWKG0007W", // could not delete from workarea
+                              "CWWKE0700W",
+                              "CWWKE0701E.*NullPointerException", // Remove when FELIX-4682 is fixed and integrated
+                              "CNTR4015W"); // EXPECTED : Warning for not having activation spec in server.xml for all beans on the application, this is OK
+            if (originalServerConfig != null)
+                server.updateServerConfiguration(originalServerConfig);
+        }
     }
 
     // Removed a separate test for removing an adminObject because it was duplicated in part of the following test
-
     // Test adding and removing an AdminObject
     @Test
     public void testAddingAdminObject_List() throws Exception {
-        Log.entering(getClass(), "testAddingAdminObject_List");
-
-        server.setMarkToEndOfLog();
         ServerConfiguration config = server.getServerConfiguration();
         config.getAdminObjects().removeBy("jndiName", "eis/myAdminObject");
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
 
-        runInServlet("testAdminObject_NoList", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testAdminObject_NoList");
 
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(originalServerConfig);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
-
-        runInServlet("testAdminObject_List", dynamicConfigTestServlet);
-
-        Log.exiting(getClass(), "testAddingAdminObject_List");
+        updateConfig(originalServerConfig);
+        runTest("testAdminObject_List");
     }
 
     // Add, modify, then remove an activation spec
     @Test
     public void testAddModifyRemoveActivationSpec() throws Exception {
-        Log.entering(getClass(), "testAddModifyRemoveActivationSpec");
-
         ServerConfiguration config = server.getServerConfiguration();
 
         // First, need a connection factory to trigger the MDB
@@ -175,12 +157,8 @@ public class DynaCfgTest {
         cf.setJndiName("eis/cf");
         cf.getProperties_dcra().add(new JCAGeneratedProperties());
         config.getConnectionFactories().add(cf);
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
-
-        runInServlet("testActivationSpec_NoMessages", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testActivationSpec_NoMessages");
 
         // add: <activationSpec id="dynaCfgTestApp/fvtweb/DynaCfgMessageDrivenBean">
         //        <properties.dcra/>
@@ -190,60 +168,37 @@ public class DynaCfgTest {
         JCAGeneratedProperties properties_dcra = new JCAGeneratedProperties();
         activationSpec.getProperties_dcra().add(properties_dcra);
         config.getActivationSpecs().add(activationSpec);
+        updateConfig(config);
+        runTest("testActivationSpec_NoMessages");
 
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
-
-        runInServlet("testActivationSpec_NoMessages", dynamicConfigTestServlet);
-
-        // Enable the mdb-3.1 feature
-        config.getFeatureManager().getFeatures().add("mdb-3.1");
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
+        // Enable the mdb-3.2 feature
+        config.getFeatureManager().getFeatures().add("mdb-3.2");
         cleanUpExprs = APP_AND_RA_RECYCLE_EXPR_LIST;
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
-
-        runInServlet("testActivationSpec_MessageOn_0", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testActivationSpec_MessageOn_0");
 
         // modify: <properties.dcra messageFilterMax="100"/>
         properties_dcra.setMessageFilterMax("100");
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testActivationSpec_MessageOn_0_100", dynamicConfigTestServlet);
+        cleanUpExprs = APP_RECYCLE_EXPR_LIST;
+        updateConfig(config);
+        runTest("testActivationSpec_MessageOn_0_100");
 
         // modify: <properties.dcra messageFilterMax="50" messageFilterMin="5"/>
         properties_dcra.setMessageFilterMax("50");
         properties_dcra.setMessageFilterMin("5");
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testActivationSpec_MessageOn_5_50", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testActivationSpec_MessageOn_5_50");
 
         // remove activationSpec
         config.getActivationSpecs().remove(activationSpec);
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testActivationSpec_NoMessages", dynamicConfigTestServlet);
-
-        Log.exiting(getClass(), "testAddModifyRemoveActivationSpec");
+        updateConfig(config);
+        runTest("testActivationSpec_NoMessages");
     }
 
     // Add, modify, then remove a connection factory
     @Test
     public void testAddModifyRemoveConnectionFactory_CommonDataSource() throws Exception {
-        Log.entering(getClass(), "testAddModifyRemoveConnectionFactory_CommonDataSource");
-
-        runInServlet("testCommonDataSource_None", dynamicConfigTestServlet);
+        runTest("testCommonDataSource_None");
 
         ServerConfiguration config = server.getServerConfiguration();
 
@@ -257,81 +212,50 @@ public class DynaCfgTest {
         cf.setJndiName("eis/${id}");
         cf.getProperties_dcra().add(properties_dcra);
         config.getConnectionFactories().add(cf);
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
-
-        runInServlet("testCommonDataSource_LoginTimeout_60", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testCommonDataSource_LoginTimeout_60");
 
         // modify: <properties.dcra loginTimeout="80"/>
         properties_dcra.setLoginTimeout("80");
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testCommonDataSource_LoginTimeout_80", dynamicConfigTestServlet);
+        cleanUpExprs = APP_RECYCLE_EXPR_LIST;
+        updateConfig(config);
+        runTest("testCommonDataSource_LoginTimeout_80");
 
         // modify: <properties.dcra/>
         properties_dcra.setLoginTimeout(null);
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testCommonDataSource_LoginTimeout_100", dynamicConfigTestServlet);
-        runInServlet("testDataSource_ContainerAuthData_None", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testCommonDataSource_LoginTimeout_100");
+        runTest("testDataSource_ContainerAuthData_None");
 
         // add: <containerAuthData user="user1" password="{xor}Lyg7bg=="/>
         AuthData containerAuthData = new AuthData();
         containerAuthData.setUser("user1");
         containerAuthData.setPassword("{xor}Lyg7bg==");
         cf.getContainerAuthData().add(containerAuthData);
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testDataSource_ContainerAuthData_User1", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testDataSource_ContainerAuthData_User1");
 
         // modify: <containerAuthData user="user2" password="{xor}Lyg7bQ=="/>
         containerAuthData.setUser("user2");
         containerAuthData.setPassword("{xor}Lyg7bQ==");
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testDataSource_ContainerAuthData_User2", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testDataSource_ContainerAuthData_User2");
 
         // remove containerAuthData
         cf.getContainerAuthData().clear();
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testDataSource_ContainerAuthData_None", dynamicConfigTestServlet);
+        updateConfig(config);
+        runTest("testDataSource_ContainerAuthData_None");
 
         // remove
         config.getConnectionFactories().removeBy("id", "cf");
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, APP_RECYCLE_EXPR_LIST);
-
-        runInServlet("testCommonDataSource_None", dynamicConfigTestServlet);
-
-        Log.exiting(getClass(), "testAddModifyRemoveConnectionFactory_CommonDataSource");
+        updateConfig(config);
+        runTest("testCommonDataSource_None");
     }
 
     // Test using <application type="rar" .../> instead of <resourceAdapter .../>
     //@Test TODO re-enable once we solve the problem with the app not coming back up when resource adapter goes away
     public void testApplicationTypeRAR() throws Exception {
-        Log.entering(getClass(), "testApplicationTypeRAR");
-
-        runInServlet("testAdminObject_List", dynamicConfigTestServlet);
+        runTest("testAdminObject_List");
 
         ServerConfiguration config = server.getServerConfiguration();
 
@@ -340,62 +264,48 @@ public class DynaCfgTest {
         // to being a duplicate.
 
         // Replace
-        //   <resourceAdapter id="dcra" location="${server.config.dir}/connectors/DynamicConfigRA.rar"/>
+        //   <resourceAdapter id="dcra" location="${server.config.dir}/connectors/dcra.rar"/>
         ResourceAdapter resourceAdapter = config.getResourceAdapters().removeBy("id", dynamicConfigTestRarName);
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(null,
-                                                 "CWWKZ0009I.*" + dynamicConfigTestAppName,
-                                                 "J2CA7009I.*DynamicConfigRA");
+        cleanUpExprs = new String[] { "CWWKZ0009I.*" + dynamicConfigTestAppName, "J2CA7009I.*dcra" };
+        updateConfig(config);
 
         // with
-        //   <application type="rar" location="${server.config.dir}/connectors/DynamicConfigRA.rar"/>
+        //   <application type="rar" location="${server.config.dir}/connectors/dcra.rar"/>
         Application application = new Application();
         application.setType("rar");
         application.setLocation(resourceAdapter.getLocation());
         config.getApplications().add(application);
 
-        // and corresponding update of <properties.dcra.List> to <properties.DynamicConfigRA.List/>
+        // and corresponding update of <properties.dcra.List> to <properties.dcra.List/>
         AdminObject adminObject = config.getAdminObjects().getById("myAdminObject");
         adminObject.getProperties_dcra_List().remove(0);
         adminObject.getProperties_DynamicConfigRA_List().add(new JCAGeneratedProperties());
 
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, "J2CA700[13]I.*DynamicConfigRA");
-
-        runInServlet("testAdminObject_List", dynamicConfigTestServlet);
+        cleanUpExprs = new String[] { "J2CA700[13]I.*dcra" };
+        updateConfig(config);
+        runTest("testAdminObject_List");
 
         cleanUpExprs = APP_RECYCLE_EXPR_LIST;
-
-        Log.exiting(getClass(), "testApplicationTypeRAR");
     }
 
     // Test changing an AdminObject's JndiName
     @Test
     public void testChangingAdminObject_List() throws Exception {
-        Log.entering(getClass(), "testChangingAdminObject_List");
-
-        server.setMarkToEndOfLog();
         ServerConfiguration config = server.getServerConfiguration();
         AdminObject adminObject = config.getAdminObjects().getBy("jndiName", "eis/myAdminObject");
         adminObject.setJndiName("eis/list2");
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        updateConfig(config);
 
-        runInServlet("testAdminObject_NoList", dynamicConfigTestServlet);
-        runInServlet("testAdminObject_List2", dynamicConfigTestServlet);
+        runTest("testAdminObject_NoList");
+        runTest("testAdminObject_List2");
 
         cleanUpExprs = APP_RECYCLE_EXPR_LIST;
-        Log.exiting(getClass(), "testChangingAdminObject_List");
     }
 
     // Switch the vendor properties of eis/myAdminObject from properties.dcra.List to properties.dcra.Date.
     // Then update a vendor property.
     @Test
     public void testChangingAdminObject_VendorProperties() throws Exception {
-        Log.entering(getClass(), "testChangingAdminObject_VendorProperties");
-
         ServerConfiguration config = server.getServerConfiguration();
         AdminObject adminObject = config.getAdminObjects().getBy("jndiName", "eis/myAdminObject");
 
@@ -404,31 +314,23 @@ public class DynaCfgTest {
         JCAGeneratedProperties properties_dcra_Date = new JCAGeneratedProperties();
         properties_dcra_Date.setYear(Integer.toString(2013 - 1900));
         adminObject.getProperties_dcra_Date().add(properties_dcra_Date);
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames);
+        updateConfig(config);
 
-        runInServlet("testAdminObject_Date_2013_Jan_1", dynamicConfigTestServlet);
+        runTest("testAdminObject_Date_2013_Jan_1");
 
         // Update a vendor property
         properties_dcra_Date.setMonth(Integer.toString(Calendar.DECEMBER));
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
         cleanUpExprs = APP_RECYCLE_EXPR_LIST;
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
+        updateConfig(config);
 
-        runInServlet("testAdminObject_Date_2013_Dec_1", dynamicConfigTestServlet);
-
-        Log.exiting(getClass(), "testChangingAdminObject_VendorProperties");
+        runTest("testAdminObject_Date_2013_Dec_1");
     }
 
     // Part 1: Customize the properties.dcra.List adminObject properties to have no suffix.
     // Part 2: Customize the properties.dcra.List adminObject properties to have a "LinkedList" suffix.
     @Test
     public void testCustomizeAdminObject() throws Exception {
-        Log.entering(getClass(), "testCustomizeAdminObject");
-
-        runInServlet("testAdminObject_List", dynamicConfigTestServlet);
+        runTest("testAdminObject_List");
 
         ServerConfiguration config = server.getServerConfiguration();
 
@@ -448,12 +350,10 @@ public class DynaCfgTest {
         adminObject.getProperties_dcra_List().remove(0);
         adminObject.getProperties_dcra().add(new JCAGeneratedProperties());
 
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
         cleanUpExprs = APP_AND_RA_RECYCLE_EXPR_LIST;
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
+        updateConfig(config);
 
-        runInServlet("testAdminObject_List", dynamicConfigTestServlet);
+        runTest("testAdminObject_List");
 
         // Part 2: Customize the properties.dcra.List adminObject properties to have a "LinkedList" suffix.
 
@@ -466,42 +366,30 @@ public class DynaCfgTest {
         adminObjectLL.getProperties_dcra_LinkedList().add(new JCAGeneratedProperties());
         config.getAdminObjects().add(adminObjectLL);
 
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
+        updateConfig(config);
 
-        runInServlet("testAdminObject_Date_2013_Jan_1", dynamicConfigTestServlet);
-        runInServlet("testAdminObject_List2", dynamicConfigTestServlet);
-
-        Log.exiting(getClass(), "testCustomizeAdminObject");
+        runTest("testAdminObject_Date_2013_Jan_1");
+        runTest("testAdminObject_List2");
     }
 
     @Test
     public void testRARemovalCF() throws Exception {
-        Log.entering(getClass(), "testRARemovalCF");
-
-        runInServlet("testRARUsable", dynamicConfigTestServlet);
-
+        runTest("testRARUsable");
         ServerConfiguration config = server.getServerConfiguration();
+        //remove rar
         config.getResourceAdapters().removeById(dynamicConfigTestRarName);
 
+        cleanUpExprs = new String[] { "CWWKZ0009I.*dynaCfgTestApp",
+                                      "J2CA7009I.*dcra",
+                                      "CWWKZ0003I.*dynaCfgTestApp" };
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config); // Remove rar
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("dynaCfgTestApp"),
-                                                 new String[] { "CWWKZ0009I.*dynaCfgTestApp",
-                                                                "J2CA7009I.*dcra",
-                                                                "CWWKZ0003I.*dynaCfgTestApp"
-                                                 });
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("dynaCfgTestApp"), cleanUpExprs);
         cleanUpExprs = new String[] { "J2CA7001I.*dcra" };
+        updateConfig(originalServerConfig);
 
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(originalServerConfig); // Now add back rar
-        server.waitForConfigUpdateInLogUsingMark(appNames, cleanUpExprs);
         cleanUpExprs = EMPTY_EXPR_LIST;
-
-        runInServlet("testRARUsable", dynamicConfigTestServlet);
-
-        Log.exiting(getClass(), "testRARemovalCF");
+        runTest("testRARUsable");
 
     }
 }

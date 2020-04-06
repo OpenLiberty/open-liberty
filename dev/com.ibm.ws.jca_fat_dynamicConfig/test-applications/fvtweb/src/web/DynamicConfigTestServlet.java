@@ -16,12 +16,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,24 +32,25 @@ import javax.sql.DataSource;
 
 import web.mdb.DynaCfgMessageDrivenBean;
 
+@WebServlet("/*")
 public class DynamicConfigTestServlet extends HttpServlet {
     private static final long serialVersionUID = 7709282314904580334L;
 
     /**
      * Message written to servlet to indicate that is has been successfully invoked.
      */
-    public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
+    public static final String SUCCESS_MESSAGE = "SUCCESS";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
+        String test = request.getParameter("testMethod");
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
         System.out.println("-----> " + test + " starting");
         try {
             getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class).invoke(this, request, response);
             System.out.println("<----- " + test + " successful");
-            out.println(test + " COMPLETED SUCCESSFULLY");
+            out.println(test + " " + SUCCESS_MESSAGE);
         } catch (Throwable x) {
             if (x instanceof InvocationTargetException)
                 x = x.getCause();
@@ -187,18 +190,18 @@ public class DynamicConfigTestServlet extends HttpServlet {
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
-    @SuppressWarnings("deprecation")
     public void testAdminObject_Date_2013_Dec_1(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Date date = (Date) new InitialContext().lookup("eis/myAdminObject");
-        int year = date.getYear() + 1900;
+        Calendar cal = new GregorianCalendar();
+        cal.setTime((Date) new InitialContext().lookup("eis/myAdminObject"));
+        int year = cal.get(Calendar.YEAR);
         if (year != 2013)
-            throw new Exception("Unexpected year: " + year + " for date " + date);
-        int month = date.getMonth();
+            throw new Exception("Unexpected year: " + year + " for date " + cal);
+        int month = cal.get(Calendar.MONTH);
         if (month != Calendar.DECEMBER)
-            throw new Exception("Unexpected month: " + month + " for date " + date);
-        int dayOfMonth = date.getDate();
+            throw new Exception("Unexpected month: " + month + " for date " + cal);
+        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
         if (dayOfMonth != 1)
-            throw new Exception("Unexpected day of month: " + dayOfMonth + " for date " + date);
+            throw new Exception("Unexpected day of month: " + dayOfMonth + " for date " + cal);
     }
 
     /**
@@ -208,18 +211,18 @@ public class DynamicConfigTestServlet extends HttpServlet {
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
-    @SuppressWarnings("deprecation")
     public void testAdminObject_Date_2013_Jan_1(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Date date = (Date) new InitialContext().lookup("eis/myAdminObject");
-        int year = date.getYear() + 1900;
+        Calendar cal = new GregorianCalendar();
+        cal.setTime((Date) new InitialContext().lookup("eis/myAdminObject"));
+        int year = cal.get(Calendar.YEAR);
         if (year != 2013)
-            throw new Exception("Unexpected year: " + year + " for date " + date);
-        int month = date.getMonth();
+            throw new Exception("Unexpected year: " + year + " for date " + cal);
+        int month = cal.get(Calendar.MONTH);
         if (month != Calendar.JANUARY)
-            throw new Exception("Unexpected month: " + month + " for date " + date);
-        int dayOfMonth = date.getDate();
+            throw new Exception("Unexpected month: " + month + " for date " + cal);
+        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
         if (dayOfMonth != 1)
-            throw new Exception("Unexpected day of month: " + dayOfMonth + " for date " + date);
+            throw new Exception("Unexpected day of month: " + dayOfMonth + " for date " + cal);
     }
 
     /**

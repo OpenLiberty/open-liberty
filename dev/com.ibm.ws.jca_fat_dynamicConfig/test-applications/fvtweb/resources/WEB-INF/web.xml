@@ -15,22 +15,6 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
     id="WebApp_ID">
 
-  <display-name>DynaCfgWeb</display-name>
-
-  <!-- SERVLET DEFINITIONS -->
-  <servlet id="Default">
-    <servlet-name>DynaCfg Test Servlet</servlet-name>
-    <display-name>Dynamic Configuration Test Servlet</display-name>
-    <servlet-class>web.DynamicConfigTestServlet</servlet-class>
-    <load-on-startup></load-on-startup>
-  </servlet>
-
-  <!-- SERVLET MAPPINGS -->        
-  <servlet-mapping id="ServletMapping_Default">
-    <servlet-name>DynaCfg Test Servlet</servlet-name>
-    <url-pattern>/*</url-pattern>
-  </servlet-mapping>
-
   <!-- RESOURCE REFERENCES -->
   <resource-ref>
     <res-ref-name>eis/cfref</res-ref-name>

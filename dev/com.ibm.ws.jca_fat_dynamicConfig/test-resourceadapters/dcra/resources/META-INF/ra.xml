@@ -10,7 +10,7 @@
         IBM Corporation - initial API and implementation
  -->
 <connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6">
-  <description>This is the ra.xml for DynamicConfigRA</description> 
+  <description>This is the ra.xml for dcra</description> 
   <display-name>Dynamic Configuration Test Resource Adapter</display-name> 
   <vendor-name>IBM</vendor-name> 
   <eis-type>Multiple</eis-type> 
