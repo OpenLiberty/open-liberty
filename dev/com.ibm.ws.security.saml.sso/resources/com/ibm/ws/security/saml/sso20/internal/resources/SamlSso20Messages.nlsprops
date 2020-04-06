@@ -222,7 +222,7 @@ SAML20_NO_INRESPONSETO.useraction=Contact the IdP administrator to make sure the
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: The SAML assertion does not contain a [{0}] attribute.  A [{0}] attribute is required.  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: The SAML assertion does not contain a [{0}] element.  A [{0}] element is required.  
 SAML20_ATTRIBUTE_ERR.explanation=The SAML assertion is missing an attribute required by the run time.
 SAML20_ATTRIBUTE_ERR.useraction=The required attribute must be added to the SAML assertion.  Contact the identity provider (IdP) administrator to make sure the IdP is configured properly or configure the service provider (SP) or the TAI to define a value for the attribute.
 
