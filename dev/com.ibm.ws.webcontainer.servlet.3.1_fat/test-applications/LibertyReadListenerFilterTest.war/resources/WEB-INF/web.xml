@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<filter>
+    <filter-name>ReadListenerFilter</filter-name>
+    <filter-class>
+        com.ibm.ws.fat.wc.servlet31.readListener.ReadListenerFilter
+    </filter-class>
+        <init-param>
+        <param-name>test-param</param-name>
+        <param-value>This parameter is for testing.</param-value>
+       </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>ReadListenerFilter</filter-name>
+    <servlet-name>ReadListenerFilterServlet</servlet-name>
+    
+     
+  </filter-mapping>
+<servlet>
+   <servlet-name>ReadListenerFilterServlet</servlet-name>
+   <servlet-class>com.ibm.ws.fat.wc.servlet31.readListener.ReadListenerFilterServlet</servlet-class>
+   </servlet>
+ <servlet-mapping>
+      <servlet-name>ReadListenerFilterServlet</servlet-name>
+      <url-pattern>/LibertyReadListenerFilterTest/ReadListenerFilterServlet</url-pattern>
+   </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,72 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src:\
+    fat/src,\
+	test-applications/CDI12Test.jar/src,\
+	test-applications/CDI12Test.war/src,\
+	test-applications/CDI12TestV2.jar/src,\
+	test-applications/CDI12TestV2Counter.war/src,\
+	test-applications/CDI12TestV2Currency.war/src,\
+	test-applications/CDI12TestV2Dynamic.war/src,\
+	test-applications/CDI12TestV2Injection.war/src,\
+	test-applications/CDI12TestV2Listeners.war/src,\
+	test-applications/CDI12TestV2NoInjection.war/src,\
+	test-applications/CDI12TestV2Upgrade.war/src,\
+	test-applications/FormLogin_ReadListener.war/src,\
+	test-applications/LibertyReadListenerFilterTest.war/src,\
+	test-applications/LibertyReadWriteListenerTest.war/src,\
+	test-applications/LibertyWriteListenerFilterTest.war/src,\
+	test-applications/multiNBReadApp.war/src,\
+	test-applications/ServletcontextAddListener.war/src,\
+	test-applications/ServletContextCreateListener.war/src,\
+	test-applications/SessionIdListener.jar/src,\
+	test-applications/SessionIdListenerAddListener.war/src,\
+	test-applications/SingletonStore.jar/src,\
+	test-applications/TestHttpSessionAttrListener.war/src,\
+	test-applications/TestMetadataComplete.jar/src,\
+	test-applications/TestMetadataComplete.war/src,\
+	test-applications/TestMetadataCompleteExcludedFragment.jar/src,\
+	test-applications/TestProgrammaticListenerAddition.jar/src,\
+	test-applications/TestServlet31.jar/src,\
+	test-applications/TestServlet31.war/src,\
+	test-applications/TestServlet31AltVHost1.war/src,\
+	test-applications/TestServlet31AltVHost2.war/src,\
+	test-applications/TestServletMapping.war/src,\
+	test-applications/TestServletMappingAnno.war/src,\
+
+fat.project: true
+
+# Define additional tested features that are NOT present any any XML files in this bucket.
+# In this case, jsp-2.2 is added programatically at runtime.
+tested.features:\
+	servlet-4.0,\
+	cdi-2.0,\
+
+javac.source: 1.7
+javac.target: 1.7
+
+-buildpath: \
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+    com.ibm.ws.jsp.2.3;version=latest,\
+    com.ibm.ws.org.apache.jasper.el.3.0;version=latest,\
+    httpunit:httpunit;version=1.5.4,\
+    commons-httpclient:commons-httpclient;version=3.1,\
+    org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
+    org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
+    com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
