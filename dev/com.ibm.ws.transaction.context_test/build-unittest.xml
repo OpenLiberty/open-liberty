@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.transaction.context_test" default="unittest">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+  <import file="../ant_build/public_imports/unittest_imports.xml"/>
+
+</project>
