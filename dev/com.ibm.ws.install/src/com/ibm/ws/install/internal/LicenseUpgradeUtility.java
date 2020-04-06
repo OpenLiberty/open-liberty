@@ -14,7 +14,9 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
+import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallLicense;
+import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 import wlp.lib.extract.SelfExtract;
@@ -83,8 +85,10 @@ public class LicenseUpgradeUtility {
 
     /**
      * @return
+     * @throws IOException
+     * @throws InstallException
      */
-    public boolean handleLicenses() {
+    public boolean handleLicenses() throws InstallException {
         if (acceptLicense) {
             return true;
         }
@@ -290,7 +294,7 @@ public class LicenseUpgradeUtility {
         }
     }
 
-    private void processLicense(String filePath) {
+    private void processLicense(String filePath) throws InstallException {
         File file = new File(filePath);
         StringBuffer sb = new StringBuffer();
         BufferedReader reader = null;
@@ -315,7 +319,7 @@ public class LicenseUpgradeUtility {
                 }
             }
         } catch (IOException e) {
-            //TODO
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_READ_LICENSE", filePath));
         } finally {
             SelfExtractUtils.tryToClose(reader);
         }
