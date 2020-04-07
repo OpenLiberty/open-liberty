@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -33,10 +35,12 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -68,19 +72,13 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-/**
- * All declarative services annotations on this class are ignored.
- * The annotations on
- * com.ibm.ws.concurrent.ee.ManagedExecutorServiceImpl and
- * com.ibm.ws.concurrent.mp.ManagedExecutorImpl
- * apply instead.
- */
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
-           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
+           service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
+           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService" })
-public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
+                        "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
+public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutor, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
     /**
@@ -92,6 +90,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * Execution properties that specify to suspend the current transaction.
      */
     private static final Map<String, String> XPROPS_SUSPEND_TRAN = Collections.singletonMap(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
+
+    private final boolean allowLifeCycleMethods;
 
     /**
      * Names of applications using this ResourceFactory
@@ -122,6 +122,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * Default execution properties to use for tasks where none are specified.
      */
     private final AtomicReference<Map<String, String>> defaultExecutionProperties = new AtomicReference<Map<String, String>>();
+
+    /**
+     * Hash code for this instance.
+     */
+    private final int hash;
 
     /**
      * Reference to the JNDI name (if any) of this managed executor service.
@@ -169,22 +174,24 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /**
      * Constructor for OSGi code path.
      */
-    @Trivial
     public ManagedExecutorServiceImpl() {
         mpContextService = null;
+        allowLifeCycleMethods = false;
+        hash = super.hashCode();
     }
 
     /**
      * Constructor for ManagedExecutorBuilder (from MicroProfile Context Propagation).
      */
-    @Trivial // traced in super super class
-    public ManagedExecutorServiceImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
-                                      AtomicServiceReference<ThreadContextProvider> tranContextProviderRef) {
+    public ManagedExecutorServiceImpl(String name, int hash, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
+                                      AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         this.name.set(name);
+        this.hash = hash;
         this.policyExecutor = policyExecutor;
         this.longRunningPolicyExecutorRef.set(policyExecutor);
         this.mpContextService = mpThreadContext;
         this.tranContextProviderRef = tranContextProviderRef;
+        allowLifeCycleMethods = true;
     }
 
     /**
@@ -260,10 +267,21 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
     /** {@inheritDoc} */
     @Override
-    @Trivial
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
-        throw new IllegalStateException(new UnsupportedOperationException("awaitTermination"));
+        if (allowLifeCycleMethods)
+            return getNormalPolicyExecutor().awaitTermination(timeout, unit);
+        else // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
+            throw new IllegalStateException(new UnsupportedOperationException("awaitTermination"));
+    }
+
+    @Override
+    public <U> CompletableFuture<U> completedFuture(U value) {
+        return ManagedCompletableFuture.completedFuture(value, this);
+    }
+
+    @Override
+    public <U> CompletionStage<U> completedStage(U value) {
+        return ManagedCompletableFuture.completedStage(value, this);
     }
 
     /**
@@ -330,6 +348,16 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     @Override
+    public <U> CompletableFuture<U> failedFuture(Throwable ex) {
+        return ManagedCompletableFuture.failedFuture(ex, this);
+    }
+
+    @Override
+    public <U> CompletionStage<U> failedStage(Throwable ex) {
+        return ManagedCompletableFuture.failedStage(ex, this);
+    }
+
+    @Override
     public ApplicationRecycleContext getContext() {
         return null;
     }
@@ -389,8 +417,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * We prepend the managed executor name if it isn't already included in the policy executor's identifier.
      *
      * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
-     *            concurrencyPolicy[longRunningPolicy]
-     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
+     *                                     concurrencyPolicy[longRunningPolicy]
+     *                                     managedExecutorService[executor1]/longRunningPolicy[default-0]
      * @return identifier to use in messages and for matching of tasks upon shutdown.
      */
     @Trivial
@@ -398,6 +426,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         return policyExecutorIdentifier.startsWith("managed") //
                         ? policyExecutorIdentifier //
                         : new StringBuilder(name.get()).append(" (").append(policyExecutorIdentifier).append(')').toString();
+    }
+
+    @Override
+    @Trivial
+    public int hashCode() {
+        return hash;
     }
 
     /** {@inheritDoc} */
@@ -451,16 +485,33 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     @Trivial
     public boolean isShutdown() {
-        // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
-        throw new IllegalStateException(new UnsupportedOperationException("isShutdown"));
+        if (allowLifeCycleMethods)
+            return getNormalPolicyExecutor().isShutdown();
+        else // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
+            throw new IllegalStateException(new UnsupportedOperationException("isShutdown"));
     }
 
     /** {@inheritDoc} */
     @Override
     @Trivial
     public boolean isTerminated() {
-        // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
-        throw new IllegalStateException(new UnsupportedOperationException("isTerminated"));
+        if (allowLifeCycleMethods)
+            return getNormalPolicyExecutor().isTerminated();
+        else // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
+            throw new IllegalStateException(new UnsupportedOperationException("isTerminated"));
+    }
+
+    @Override
+    public <U> CompletableFuture<U> newIncompleteFuture() {
+        if (ManagedCompletableFuture.JAVA8)
+            return new ManagedCompletableFuture<U>(new CompletableFuture<U>(), this, null);
+        else
+            return new ManagedCompletableFuture<U>(this, null);
+    }
+
+    @Override
+    public CompletableFuture<Void> runAsync(Runnable runnable) {
+        return ManagedCompletableFuture.runAsync(runnable, this);
     }
 
     /**
@@ -507,16 +558,20 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     @Trivial
     public void shutdown() {
-        // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
-        throw new IllegalStateException(new UnsupportedOperationException("shutdown"));
+        if (allowLifeCycleMethods)
+            getNormalPolicyExecutor().shutdown();
+        else // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
+            throw new IllegalStateException(new UnsupportedOperationException("shutdown"));
     }
 
     /** {@inheritDoc} */
     @Override
     @Trivial
     public List<Runnable> shutdownNow() {
-        // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
-        throw new IllegalStateException(new UnsupportedOperationException("shutdownNow"));
+        if (allowLifeCycleMethods)
+            return getNormalPolicyExecutor().shutdownNow();
+        else // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
+            throw new IllegalStateException(new UnsupportedOperationException("shutdownNow"));
     }
 
     /** {@inheritDoc} */
@@ -565,6 +620,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         return submit(task, null);
     }
 
+    @Override
+    public <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier) {
+        return ManagedCompletableFuture.supplyAsync(supplier, this);
+    }
+
     /**
      * Uses the transaction context provider to suspends the currently active transaction or LTC on the thread.
      *
@@ -579,12 +639,20 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         return suspendedTranSnapshot;
     }
 
+    @Override
+    @Trivial
+    public String toString() {
+        String s = name.get();
+        return s.startsWith("ManagedExecutor@") ? s : ("ManagedExecutor@" + Integer.toHexString(hashCode()) + ' ' + s);
+    }
+
     /**
      * Declarative Services method for unsetting the concurrency policy
      *
      * @param svc the service
      */
-    protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {}
+    protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
+    }
 
     /**
      * Declarative Services method for unsetting the context service reference

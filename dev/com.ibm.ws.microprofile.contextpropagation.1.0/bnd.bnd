@@ -50,7 +50,6 @@ instrument.classesExcludes: com/ibm/ws/microprofile/context/resources/*.class
   com.ibm.ws.bnd.annotations;version=latest, \
   com.ibm.ws.concurrency.policy;version=latest,\
   com.ibm.ws.concurrent;version=latest,\
-  com.ibm.ws.concurrent.mp.1.0;version=latest,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.container.service.compat;version=latest,\
   com.ibm.ws.context;version=latest,\
