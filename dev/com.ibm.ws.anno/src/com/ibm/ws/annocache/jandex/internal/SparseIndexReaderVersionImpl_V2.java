@@ -18,6 +18,25 @@
  * All modifications made by IBM from initial source -
  * https://github.com/wildfly/jandex/blob/master/src/main/java/org/jboss/jandex/IndexReaderV2.java
  * commit - 36c2b049b7858205c6504308a5e162a4e943ff21
+ * 
+ * Have been merged from the following, which update the Jandex supported version from
+ * Jandex 2.0.3.Final to Jandex 2.1.2.Final:
+ *
+ * "JANDEX-46 Add support for default annotation attribute"
+ * [updates version from 6 to 7]
+ * wildfly/jandex@c208ff5#diff-a696ceb786df083f5910564662f55bc9
+ *
+ * "Support method parameters"
+ * [updates version from 7 to 8]
+ * wildfly/jandex@452bbd4#diff-a696ceb786df083f5910564662f55bc9
+ *
+ * "Fix JANDEX-49: Rregression introduced by 6da4d88, which was incomplete"
+ * [updates version from 8 to 9]
+ * wildfly/jandex@ce4dd9a#diff-a696ceb786df083f5910564662f55bc9
+ *
+ * "Ensure class is set for annotation targets of MethodParameterInfo"
+ * [bug fix; no version update]
+ * wildfly/jandex@a5cd95a#diff-a696ceb786df083f5910564662f55bc9
  */
 package com.ibm.ws.annocache.jandex.internal;
 
@@ -32,8 +51,24 @@ import java.util.List;
 public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion {
     // Handled range of index versions.
 
+    // Max version updated to 7 per:
+    //   JANDEX-46 Add support for default annotation attribute
+    //   wildfly/jandex@c208ff5#diff-a696ceb786df083f5910564662f55bc9
+
+    // Max version updated to 8 per:
+    //   Support method parameters
+    //   wildfly/jandex@452bbd4#diff-a696ceb786df083f5910564662f55bc9
+
+    // Max version updated to 9 per:
+    //   Fix JANDEX-49: Rregression introduced by 6da4d88, which was incomplete
+    //   wildfly/jandex@ce4dd9a#diff-a696ceb786df083f5910564662f55bc9
+
+    // The following update does not change max version, not is it applicable to the sparse reader:
+    //   Ensure class is set for annotation targets of MethodParameterInfo
+    //   wildfly/jandex@a5cd95a#diff-a696ceb786df083f5910564662f55bc9
+
     public static final int MIN_VERSION = 6;
-    public static final int MAX_VERSION = 6;
+    public static final int MAX_VERSION = 9;
 
     public static boolean accept(int version) {
         return ( (version >= SparseIndexReaderVersionImpl_V2.MIN_VERSION) && 
@@ -132,8 +167,6 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
             return null;
         }
     }
-
-    private static final int HAS_ENCLOSING_METHOD = 1;
 
     //
 
@@ -415,6 +448,11 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
     }
 
     private boolean selectType(byte targetType) {
+        // Method parameter annotations are currently ignored; meaning, no updates are
+        // needed.
+        //   Ensure class is set for annotation targets of MethodParameterInfo [bug fix; no version update]
+        //   wildfly/jandex@a5cd95a#diff-a696ceb786df083f5910564662f55bc9
+
         return ( (targetType == SparseIndexReaderVersionImpl_V2.AnnoTarget.CLASS.tag) ||
                  (targetType == SparseIndexReaderVersionImpl_V2.AnnoTarget.FIELD.tag) ||
                  (targetType == SparseIndexReaderVersionImpl_V2.AnnoTarget.METHOD.tag) );
@@ -490,33 +528,36 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
         // System.out.println("Skip values [ " + numValues + " ]");
 
         for ( int valueNo = 0; valueNo < numValues; valueNo++ ) {
-            input.seekPackedU32();
+            movePastAnnotationValue();
+        }
+    }
+    
+    private void movePastAnnotationValue() throws IOException {
+        input.seekPackedU32(); // name
 
-            byte valueType = input.readByte();
+        byte valueType = input.readByte();
+        // System.out.println("Value [ " + AnnoValue.select(valueType) + " ]");
 
-            if ( valueType == AnnoValue.ARRAY.tag ) {
-                movePastAnnotationValues();
+        if ( valueType == AnnoValue.ARRAY.tag ) {
+            movePastAnnotationValues();
 
-            } else if ( valueType == AnnoValue.NESTED.tag ) {
-                @SuppressWarnings("unused")
-                int annoOffset = readAnnotation();
+        } else if ( valueType == AnnoValue.NESTED.tag ) {
+            @SuppressWarnings("unused")
+            int annoOffset = readAnnotation();
 
+        } else {
+            AnnoValue annoValue = AnnoValue.values()[valueType];
+
+            int skipCount = annoValue.skipCount;
+            if ( skipCount != 0 ) {
+                input.skipBytes(skipCount);
             } else {
-                AnnoValue annoValue = AnnoValue.values()[valueType];
-
-                int skipCount = annoValue.skipCount;
-                if ( skipCount != 0 ) {
-                    input.skipBytes(skipCount);
-                } else {
-                    int readCount = annoValue.readCount;
+                int readCount = annoValue.readCount;
+                input.seekPackedU32();
+                if ( readCount == 2 ) {
                     input.seekPackedU32();
-                    if ( readCount == 2 ) {
-                        input.seekPackedU32();
-                    }
                 }
             }
-
-            // System.out.println("Value [ " + AnnoValue.select(valueType) + " ]");
         }
     }
 
@@ -672,12 +713,33 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
 
         // System.out.println("Reading method [ " + methodName + " ]");
 
-        input.seekPackedU32(); // Skip unused method data.
-        input.seekPackedU32();
-        input.seekPackedU32();
-        input.seekPackedU32();
-        input.seekPackedU32();
-        input.seekPackedU32();
+        input.seekPackedU32(); // flags // Skip unused method data.
+        input.seekPackedU32(); // type parameters
+        input.seekPackedU32(); // receiver type
+        input.seekPackedU32(); // return type
+        input.seekPackedU32(); // parameters
+        input.seekPackedU32(); // exceptions
+
+        // Annotation default values are written to the index starting with index format version 7.
+        //   JANDEX-46 Add support for default annotation attribute
+        //   wildfly/jandex@c208ff5#diff-a696ceb786df083f5910564662f55bc9
+        if ( version >= 7 ) {
+            boolean hasDefaultValue = ( input.readByte() > 0 );
+            if ( hasDefaultValue ) {
+                movePastAnnotationValue(); // default value
+            }
+        }
+
+        // Method parameters are written to the index starting with index format version 8.
+        //   Support method parameters
+        //   wildfly/jandex@452bbd4#diff-a696ceb786df083f5910564662f55bc9
+
+        if ( version >= 8 ) {
+            int numParms = input.readPackedU32(); 
+            for ( int parmNo = 0; parmNo < numParms; parmNo++ ) {
+                input.seekPackedU32(); // parm bytes
+            }
+        }
 
         SparseDotName[] methodAnnotations = readElementAnnotations(methodName);
 
@@ -746,9 +808,35 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
 
         SparseClassInfo classInfo = new SparseClassInfo(className, superClassName, flags, interfaceNames);
 
-        input.seekPackedU32(); // Skip unused class data.
-        input.seekPackedU32();
-        readPastEnclosingMethod();
+        // Nesting information became a two bit field in version 9:
+        //   Fix JANDEX-49: Rregression introduced by 6da4d88, which was incomplete [updates version from 8 to 9]
+        //   wildfly/jandex@ce4dd9a#diff-a696ceb786df083f5910564662f55bc9
+
+        int enclosureBits = input.readUnsignedByte();
+
+        boolean hasEnclosingClass;
+        boolean hasEnclosingMethod;
+        if ( version >= 9 ) {
+            // Starting with v9, both the enclosing class and the enclosing
+            // method are optional.  The enclosure bits are a two bit field.
+            // But, the method bit cannot be set unless the class bit is set.
+            // [ 0, 0 ], [ 1, 0 ], [ 1, 1 ] are allowed; [ 0, 1 ] is not allowed.
+            hasEnclosingClass = ((enclosureBits & 1) == 1);
+            hasEnclosingMethod = ((enclosureBits & 2) == 2);
+        } else {
+            // Prior to v9, enclosing class information is always present.
+            // And the enclosure bits are a single bit field.
+            hasEnclosingClass = true;
+            hasEnclosingMethod = ((enclosureBits & 1) == 1);
+        }
+
+        if ( hasEnclosingClass ) {
+            input.seekPackedU32(); // enclosing class // Skip unused class data.
+            input.seekPackedU32(); // simple name
+            if ( hasEnclosingMethod ) {
+                readPastEnclosingMethod();
+            }
+        }
 
         int numAnnotations = input.readPackedU32();
         // System.out.println("Next class annotations [ " + numAnnotations + " ]");
@@ -767,12 +855,14 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
     }
 
     private void readPastEnclosingMethod() throws IOException{
-        if ( input.readUnsignedByte() == HAS_ENCLOSING_METHOD ) {
-            input.seekPackedU32(); //eName
-            input.seekPackedU32(); //eClass
-            input.seekPackedU32(); //returnType
-            input.seekPackedU32(); //parameters
-        }
+        // Detection of the enclosing method now happens when detecting the enclosing method.
+        //   Fix JANDEX-49: Rregression introduced by 6da4d88, which was incomplete
+        //   wildfly/jandex@ce4dd9a#diff-a696ceb786df083f5910564662f55bc9
+
+        input.seekPackedU32(); //eName
+        input.seekPackedU32(); //eClass
+        input.seekPackedU32(); //returnType
+        input.seekPackedU32(); //parameters
     }
 
     // Do our best to avoid unnecessary reallocations of the
