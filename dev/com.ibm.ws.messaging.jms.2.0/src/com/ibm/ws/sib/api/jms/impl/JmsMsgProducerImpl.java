@@ -513,7 +513,7 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
             SibTr.entry(this, tc, "getTimeToLive");
         checkClosed();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "setTimeToLive", defaultTimeToLive);
+            SibTr.exit(this, tc, "getTimeToLive", defaultTimeToLive);
         return defaultTimeToLive;
     }
 
@@ -612,61 +612,63 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
 
     private void send_internal(Message message, CompletionListener cListner) throws JMSException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "send_internal", new Object[] { message, cListner });
+            SibTr.entry(this, tc, "send_internal(Message,CompletionListener)", new Object[] { message, cListner });
 
-        synchronized (sessionSyncLock) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "got lock");
+        try {
+            synchronized (sessionSyncLock) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(this, tc, "got lock");
 
-            //validates if message is null.. if that is case throws MessageFormatException
-            validateMessageForNull(message);
+                //validates if message is null.. if that is case throws MessageFormatException
+                validateMessageForNull(message);
 
-            // if this is an unidentified producer, throw an
-            // UnsupportedOperationException as this is an identified producer method.
-            if (this.dest == null) {
-                throw (UnsupportedOperationException) JmsErrorUtils.newThrowable(
-                                                                                 UnsupportedOperationException.class,
-                                                                                 "NO_DEST_SPECIFIED_ON_SEND_CWSIA0065",
-                                                                                 null,
-                                                                                 tc);
-            }
-
-            //in case of non-managed environments.. the message may be a proxy.. then get the actual message implementation
-            //if the message owned by SIBus
-            if (!session.isManaged()) {
-                message = getMessageFromProxy(message);
-            }
-
-            if (cListner == null) {
-                // Sync send... blocking till all previous async sends are resolved.
-                waitForAsyncSendsResolution();
-
-                //all async sends are resolved.. can be performed Sync send
-                //call internal method to actually start sending
-                sendUsingProducerSession(message);
-
-            } else {
-                //Async Send
-
-                if (session.isManaged()) {
-                    throw (javax.jms.JMSException) JmsErrorUtils.newThrowable(javax.jms.JMSException.class,
-                                                                              "MGD_ENV_CWSIA0084",
-                                                                              new Object[] { "MessageProducer.send" },
-                                                                              tc);
+                // if this is an unidentified producer, throw an
+                // UnsupportedOperationException as this is an identified producer method.
+                if (this.dest == null) {
+                    throw (UnsupportedOperationException) JmsErrorUtils.newThrowable(
+                                                                                     UnsupportedOperationException.class,
+                                                                                     "NO_DEST_SPECIFIED_ON_SEND_CWSIA0065",
+                                                                                     null,
+                                                                                     tc);
                 }
 
-                //increment the async send usage counter.
-                _inProgressAysncSends.incrementAndGet();
+                //in case of non-managed environments.. the message may be a proxy.. then get the actual message implementation
+                //if the message owned by SIBus
+                if (!session.isManaged()) {
+                    message = getMessageFromProxy(message);
+                }
 
-                session.addtoAsysncSendQueue(this, cListner, message, PRODUCER_SEND_WITH_ONLY_MESSAGE, null);
-                return;
+                if (cListner == null) {
+                    // Sync send... blocking till all previous async sends are resolved.
+                    waitForAsyncSendsResolution();
 
-            }
+                    //all async sends are resolved.. can be performed Sync send
+                    //call internal method to actually start sending
+                    sendUsingProducerSession(message);
 
-        } // releases the lock
+                } else {
+                    //Async Send
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "send_internal");
+                    if (session.isManaged()) {
+                        throw (javax.jms.JMSException) JmsErrorUtils.newThrowable(javax.jms.JMSException.class,
+                                                                                  "MGD_ENV_CWSIA0084",
+                                                                                  new Object[] { "MessageProducer.send" },
+                                                                                  tc);
+                    }
+
+                    //increment the async send usage counter.
+                    _inProgressAysncSends.incrementAndGet();
+
+                    session.addtoAsysncSendQueue(this, cListner, message, PRODUCER_SEND_WITH_ONLY_MESSAGE, null);
+                    return;
+
+                }
+
+            } // releases the lock
+        } finally {
+          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+              SibTr.exit(this, tc, "send_internal(Message,CompletionListener)");
+        }
     }
 
     /**
@@ -717,96 +719,101 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
         checkClosed();
         // check for sync/async conflicts
         session.checkSynchronousUsage("send");
-        // if the supplied message is null, throw a jms MessageFormatException.
-        if (message == null) {
-            throw (MessageFormatException) JmsErrorUtils.newThrowable(
-                                                                      MessageFormatException.class,
-                                                                      "INVALID_VALUE_CWSIA0068",
-                                                                      new Object[] { "message", null },
-                                                                      tc);
+        try {
+          // if the supplied message is null, throw a jms MessageFormatException.
+          if (message == null) {
+              throw (MessageFormatException) JmsErrorUtils.newThrowable(
+                                                                        MessageFormatException.class,
+                                                                        "INVALID_VALUE_CWSIA0068",
+                                                                        new Object[] { "message", null },
+                                                                        tc);
+          }
+          if (propsOverriden) {
+              // This block will be invoked if the user is flipping back and forth
+              // between the multi-arg identified send, and this 1-arg send. In this
+              // case we need to re-instate the dm, pri, ttl values from the producer.
+              producerProperties.setInDeliveryMode(defaultDeliveryMode);
+              producerProperties.setInPriority(defaultPriority);
+              producerProperties.setInTTL(defaultTimeToLive);
+
+              // Mark that we are back with the defaults so we don't do this set the
+              // next time around.
+              propsOverriden = false;
+          }
+
+          // Delegate to the internal send method.
+          sendMessage(producerProperties, message, dest);
+        } finally {
+          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "sendUsingProducerSession");
         }
-        if (propsOverriden) {
-            // This block will be invoked if the user is flipping back and forth
-            // between the multi-arg identified send, and this 1-arg send. In this
-            // case we need to re-instate the dm, pri, ttl values from the producer.
-            producerProperties.setInDeliveryMode(defaultDeliveryMode);
-            producerProperties.setInPriority(defaultPriority);
-            producerProperties.setInTTL(defaultTimeToLive);
-
-            // Mark that we are back with the defaults so we don't do this set the
-            // next time around.
-            propsOverriden = false;
-        }
-
-        // Delegate to the internal send method.
-        sendMessage(producerProperties, message, dest);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "sendUsingProducerSession");
-
     }
 
     private void send_internal(Message message, int deliveryMode, int priority, long timeToLive, CompletionListener cListner) throws JMSException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "send_internal", new Object[] { message, deliveryMode, priority, timeToLive, cListner });
+            SibTr.entry(this
+                       ,tc
+                       ,"send_internal(Message,int,int,long,CompletionListener)"
+                       ,new Object[] { message, deliveryMode, priority, timeToLive, cListner }
+                       );
 
-        synchronized (sessionSyncLock) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "got lock");
+        try {
+            synchronized (sessionSyncLock) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(this, tc, "got lock");
 
-            //validates if message is null.. if that is case throws MessageFormatException
-            validateMessageForNull(message);
+                //validates if message is null.. if that is case throws MessageFormatException
+                validateMessageForNull(message);
 
-            //validates priority,deliveeryMode and timetoLive
-            validatePriority(priority);
-            validateDeliveryMode(deliveryMode);
-            validateTimeToLive(timeToLive);
+                //validates priority,deliveeryMode and timetoLive
+                validatePriority(priority);
+                validateDeliveryMode(deliveryMode);
+                validateTimeToLive(timeToLive);
 
-            // if this is an unidentified producer, throw an
-            // UnsupportedOperationException this is an identified producer method.
-            if (this.dest == null) {
-                throw (UnsupportedOperationException) JmsErrorUtils.newThrowable(
-                                                                                 UnsupportedOperationException.class,
-                                                                                 "NO_DEST_SPECIFIED_ON_SEND_CWSIA0065",
-                                                                                 null,
-                                                                                 tc);
-            }
-
-            //in case of non-managed environments.. the message may be a proxy.. then get the actual message implementation
-            //if the message owned by SIBus
-            if (!session.isManaged()) {
-                message = getMessageFromProxy(message);
-            }
-
-            if (cListner == null) {
-                // Sync send... blocking till all previous Async sends are resolved.
-                waitForAsyncSendsResolution();
-
-                //all async sends are resolved.. call internal method to actually start sending
-                sendUsingProducerSession(message, deliveryMode, priority, timeToLive);
-
-            } else {
-                //Async Send
-
-                if (session.isManaged()) {
-                    throw (javax.jms.JMSException) JmsErrorUtils.newThrowable(javax.jms.JMSException.class,
-                                                                              "MGD_ENV_CWSIA0084",
-                                                                              new Object[] { "MessageProducer.send" },
-                                                                              tc);
+                // if this is an unidentified producer, throw an
+                // UnsupportedOperationException this is an identified producer method.
+                if (this.dest == null) {
+                    throw (UnsupportedOperationException) JmsErrorUtils.newThrowable(
+                                                                                     UnsupportedOperationException.class,
+                                                                                     "NO_DEST_SPECIFIED_ON_SEND_CWSIA0065",
+                                                                                     null,
+                                                                                     tc);
                 }
 
-                //increment the async send usage counter.
-                _inProgressAysncSends.incrementAndGet();
+                //in case of non-managed environments.. the message may be a proxy.. then get the actual message implementation
+                //if the message owned by SIBus
+                if (!session.isManaged()) {
+                    message = getMessageFromProxy(message);
+                }
 
-                session.addtoAsysncSendQueue(this, cListner, message, PRODUCER_SEND_MESSAGE_WITH_PARAMETERS, new Object[] { deliveryMode, priority, timeToLive });
-                return;
+                if (cListner == null) {
+                    // Sync send... blocking till all previous Async sends are resolved.
+                    waitForAsyncSendsResolution();
 
-            }
+                    //all async sends are resolved.. call internal method to actually start sending
+                    sendUsingProducerSession(message, deliveryMode, priority, timeToLive);
 
-        } // releases the lock
+                } else {
+                    //Async Send
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "send_internal");
+                    if (session.isManaged()) {
+                        throw (javax.jms.JMSException) JmsErrorUtils.newThrowable(javax.jms.JMSException.class,
+                                                                                  "MGD_ENV_CWSIA0084",
+                                                                                  new Object[] { "MessageProducer.send" },
+                                                                                  tc);
+                    }
+
+                    //increment the async send usage counter.
+                    _inProgressAysncSends.incrementAndGet();
+
+                    session.addtoAsysncSendQueue(this, cListner, message, PRODUCER_SEND_MESSAGE_WITH_PARAMETERS, new Object[] { deliveryMode, priority, timeToLive });
+                    return;
+
+                }
+            } // releases the lock
+        } finally {
+          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+              SibTr.exit(this, tc, "send_internal(Message,int,int,long,CompletionListener)");
+        }
     }
 
     /**
@@ -859,69 +866,83 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
 
     void send_internal(Destination destination, Message message, CompletionListener cListner) throws JMSException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "send", new Object[] { destination, message, cListner });
+            SibTr.entry(this
+                       ,tc
+                       ,"send_internal(Destination,Message,CompletionListener)"
+                       ,new Object[] { destination, message, cListner }
+                       );
 
         // Defer straight through to the many arg version (which will do all the locking and checking).
         send_internal(destination, message, defaultDeliveryMode, defaultPriority, defaultTimeToLive, cListner);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "send");
+            SibTr.exit(this, tc, "send_internal(Destination,Message,CompletionListener)");
     }
 
-    private void send_internal(Destination destination, Message message, int deliveryMode, int priority, long timeToLive, CompletionListener cListner) throws JMSException {
+    private void send_internal(Destination destination
+                              ,Message message
+                              ,int deliveryMode
+                              ,int priority
+                              ,long timeToLive
+                              ,CompletionListener cListner
+                              ) throws JMSException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "send", new Object[] { destination, message, deliveryMode, priority, timeToLive, cListner });
+            SibTr.entry(this
+                       ,tc
+                       ,"send_internal(Destination,Message,int,int,long,CompletionListener)"
+                       ,new Object[] { destination, message, deliveryMode, priority, timeToLive, cListner }
+                       );
 
-        synchronized (sessionSyncLock) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "got lock");
+        try {
+            synchronized (sessionSyncLock) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "got lock");
 
-            //validates if message is null.. if that is case throws MessageFormatException
-            validateMessageForNull(message);
+                //validates if message is null.. if that is case throws MessageFormatException
+                validateMessageForNull(message);
 
-            //validates priority,deliveeryMode and timetoLive
-            validatePriority(priority);
-            validateDeliveryMode(deliveryMode);
-            validateTimeToLive(timeToLive);
+                //validates priority,deliveeryMode and timetoLive
+                validatePriority(priority);
+                validateDeliveryMode(deliveryMode);
+                validateTimeToLive(timeToLive);
 
-            //validated destination
-            validateDestination(destination);
+                //validated destination
+                validateDestination(destination);
 
-            //in case of non-managed environments.. the message may be a proxy.. then get the actual message implementation
-            //if the message owned by SIBus
-            if (!session.isManaged()) {
-                message = getMessageFromProxy(message);
-            }
-
-            if (cListner == null) {
-                // Sync send... blocking till all previous async sends are resolved.
-                waitForAsyncSendsResolution();
-
-                //all async sends are resolved.. call internal method to actually start sending
-                sendUsingConnection(destination, message, deliveryMode, priority, timeToLive);
-
-            } else {
-                //Async Send
-
-                if (session.isManaged()) {
-                    throw (javax.jms.JMSException) JmsErrorUtils.newThrowable(javax.jms.JMSException.class,
-                                                                              "MGD_ENV_CWSIA0084",
-                                                                              new Object[] { "MessageProducer.send" },
-                                                                              tc);
+                //in case of non-managed environments.. the message may be a proxy.. then get the actual message implementation
+                //if the message owned by SIBus
+                if (!session.isManaged()) {
+                    message = getMessageFromProxy(message);
                 }
 
-                //increment the async send usage counter.
-                _inProgressAysncSends.incrementAndGet();
+                if (cListner == null) {
+                    // Sync send... blocking till all previous async sends are resolved.
+                    waitForAsyncSendsResolution();
 
-                session.addtoAsysncSendQueue(this, cListner, message, CONNECTION_SEND_MESSAGE_WITH_PARAMETERS, new Object[] { deliveryMode, priority, timeToLive, destination });
-                return;
+                    //all async sends are resolved.. call internal method to actually start sending
+                    sendUsingConnection(destination, message, deliveryMode, priority, timeToLive);
 
-            }
+                } else {
+                    //Async Send
 
-        } // releases the lock
+                    if (session.isManaged()) {
+                        throw (javax.jms.JMSException) JmsErrorUtils.newThrowable(javax.jms.JMSException.class,
+                                                                                  "MGD_ENV_CWSIA0084",
+                                                                                  new Object[] { "MessageProducer.send" },
+                                                                                  tc);
+                    }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "send");
+                    //increment the async send usage counter.
+                    _inProgressAysncSends.incrementAndGet();
+
+                    session.addtoAsysncSendQueue(this, cListner, message, CONNECTION_SEND_MESSAGE_WITH_PARAMETERS, new Object[] { deliveryMode, priority, timeToLive, destination });
+                    return;
+
+                }
+            } // releases the lock
+        } finally {
+          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+              SibTr.exit(this, tc, "send_internal(Destination,Message,int,int,long,CompletionListener)");
+        }
     }
 
     /**
