@@ -41,9 +41,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.concurrent.ContextService;
-import javax.enterprise.concurrent.ManagedTask;
-
 import org.eclipse.microprofile.context.ThreadContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -65,6 +62,7 @@ import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.context.service.serializable.ContextualInvocationHandler;
 import com.ibm.ws.context.service.serializable.ContextualObject;
 import com.ibm.ws.context.service.serializable.ThreadContextManager;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -81,10 +79,14 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
+           service = { ResourceFactory.class, javax.enterprise.concurrent.ContextService.class, //
+                       ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
            property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
                         "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
-public class ContextServiceImpl implements ContextService, ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
+public class ContextServiceImpl implements //
+                jakarta.enterprise.concurrent.ContextService, //
+                javax.enterprise.concurrent.ContextService, //
+                ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 
     // Names of references
@@ -111,6 +113,11 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, Thre
      * Component context for this contextService instance.
      */
     private ComponentContext componentContext;
+
+    /**
+     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    private int eeVersion;
 
     /**
      * Lock for reading and updating configuration.
@@ -232,10 +239,13 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, Thre
             if (internalNames != null)
                 internalNames.add(TASK_OWNER);
         }
-        if (task != null && (internalNames == null || !execProps.containsKey(ManagedTask.IDENTITY_NAME))) {
-            execProps.put(ManagedTask.IDENTITY_NAME, task.getClass().getName());
+        if (task != null && (internalNames == null ||
+                             !(execProps.containsKey("jakarta.enterprise.concurrent.IDENTITY_NAME") ||
+                               execProps.containsKey("javax.enterprise.concurrent.IDENTITY_NAME")))) {
+            String key = eeVersion < 9 ? "javax.enterprise.concurrent.IDENTITY_NAME" : "jakarta.enterprise.concurrent.IDENTITY_NAME";
+            execProps.put(key, task.getClass().getName());
             if (internalNames != null)
-                internalNames.add(ManagedTask.IDENTITY_NAME);
+                internalNames.add(key);
         }
 
         lock.readLock().lock();
@@ -728,17 +738,38 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, Thre
      * @param ref reference to the service
      */
     @Reference(name = BASE_INSTANCE,
-               service = ContextService.class,
+               service = WSContextService.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY,
                target = "(id=unbound)")
-    protected void setBaseInstance(ServiceReference<ContextService> ref) {
+    protected void setBaseInstance(ServiceReference<WSContextService> ref) {
         lock.writeLock().lock();
         try {
             threadContextConfigurations = null;
         } finally {
             lock.writeLock().unlock();
+        }
+    }
+
+    /**
+     * Declarative Services method for setting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    @Reference(service = JavaEEVersion.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.STATIC,
+               policyOption = ReferencePolicyOption.GREEDY,
+               target = "(id=unbound)")
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
         }
     }
 
@@ -761,13 +792,22 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, Thre
      *
      * @param ref reference to the service
      */
-    protected void unsetBaseInstance(ServiceReference<ContextService> ref) {
+    protected void unsetBaseInstance(ServiceReference<WSContextService> ref) {
         lock.writeLock().lock();
         try {
             threadContextConfigurations = null;
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    /**
+     * Declarative Services method for unsetting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        eeVersion = 0;
     }
 
     /**

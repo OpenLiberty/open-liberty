@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,13 @@ package com.ibm.ws.concurrent.internal;
 
 import java.util.Date;
 
-import javax.enterprise.concurrent.LastExecution;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Information about a single execution of a task.
  */
 @Trivial
-public class LastExecutionImpl implements LastExecution {
+public class LastExecutionImpl implements jakarta.enterprise.concurrent.LastExecution, javax.enterprise.concurrent.LastExecution {
     private final long endTime;
     private final String identityName;
     private final Object result;

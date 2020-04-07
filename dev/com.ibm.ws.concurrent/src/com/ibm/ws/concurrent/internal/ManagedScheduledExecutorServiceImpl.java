@@ -20,10 +20,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
-import javax.enterprise.concurrent.Trigger;
-
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -46,14 +42,17 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
-                       ManagedScheduledExecutorService.class },
+           service = { ExecutorService.class, javax.enterprise.concurrent.ManagedExecutorService.class,
+                       ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
+                       javax.enterprise.concurrent.ManagedScheduledExecutorService.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
-public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
+public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements //
+                jakarta.enterprise.concurrent.ManagedScheduledExecutorService, javax.enterprise.concurrent.ManagedScheduledExecutorService {
+
     private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorServiceImpl.class);
 
     /**
@@ -129,12 +128,26 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     /**
+     * @see jakarta.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.util.concurrent.Callable, jakarta.enterprise.concurrent.Trigger)
+     */
+    @Override
+    public <V> ScheduledFuture<V> schedule(Callable<V> task, jakarta.enterprise.concurrent.Trigger trigger) {
+        if (trigger == null)
+            throw new NullPointerException(jakarta.enterprise.concurrent.Trigger.class.getName());
+
+        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, trigger);
+        if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
+            purgeFutures();
+        return scheduledTask.future;
+    }
+
+    /**
      * @see javax.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.util.concurrent.Callable, javax.enterprise.concurrent.Trigger)
      */
     @Override
-    public <V> ScheduledFuture<V> schedule(Callable<V> task, Trigger trigger) {
+    public <V> ScheduledFuture<V> schedule(Callable<V> task, javax.enterprise.concurrent.Trigger trigger) {
         if (trigger == null)
-            throw new NullPointerException(Trigger.class.getName());
+            throw new NullPointerException(javax.enterprise.concurrent.Trigger.class.getName());
 
         ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
@@ -154,12 +167,26 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     /**
+     * @see jakarta.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.lang.Runnable, jakarta.enterprise.concurrent.Trigger)
+     */
+    @Override
+    public ScheduledFuture<?> schedule(Runnable task, jakarta.enterprise.concurrent.Trigger trigger) {
+        if (trigger == null)
+            throw new NullPointerException(jakarta.enterprise.concurrent.Trigger.class.getName());
+
+        ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, false, trigger);
+        if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
+            purgeFutures();
+        return scheduledTask.future;
+    }
+
+    /**
      * @see javax.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.lang.Runnable, javax.enterprise.concurrent.Trigger)
      */
     @Override
-    public ScheduledFuture<?> schedule(Runnable task, Trigger trigger) {
+    public ScheduledFuture<?> schedule(Runnable task, javax.enterprise.concurrent.Trigger trigger) {
         if (trigger == null)
-            throw new NullPointerException(Trigger.class.getName());
+            throw new NullPointerException(javax.enterprise.concurrent.Trigger.class.getName());
 
         ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, false, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
