@@ -18,8 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.annotation.WebServlet;
-
 import org.junit.Test;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
@@ -85,15 +83,29 @@ public class TestServletProcessor {
         }
 
         // Infer queryPath from contextRoot() and @WebServlet annotation
-        WebServlet webServlet = anno.servlet().getAnnotation(WebServlet.class);
-        if (webServlet == null || (webServlet.value().length == 0 && webServlet.urlPatterns().length == 0))
+        String[] webServletValue = new String[] {};
+        String[] webServletUrlPatterns = new String[] {};
+        if (javax.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet())) {
+            javax.servlet.annotation.WebServlet webServlet = anno.servlet().getAnnotation(javax.servlet.annotation.WebServlet.class);
+            if (webServlet != null) {
+                webServletValue = webServlet.value();
+                webServletUrlPatterns = webServlet.urlPatterns();
+            }
+        } else {
+            jakarta.servlet.annotation.WebServlet webServlet = anno.servlet().getAnnotation(jakarta.servlet.annotation.WebServlet.class);
+            if (webServlet != null) {
+                webServletValue = webServlet.value();
+                webServletUrlPatterns = webServlet.urlPatterns();
+            }
+        }
+        if (webServletValue.length == 0 && webServletUrlPatterns.length == 0)
             throw new IllegalArgumentException("When using @TestServlet.contextRoot(), the referenced HTTPServlet must define a URL path via the @WebServlet annotation");
 
         queryPath = anno.contextRoot();
-        if (webServlet.value().length > 0)
-            queryPath += webServlet.value()[0];
+        if (webServletValue.length > 0)
+            queryPath += webServletValue[0];
         else
-            queryPath += webServlet.urlPatterns()[0];
+            queryPath += webServletUrlPatterns[0];
         return queryPath.replace("//", "/").replace("*", "");
     }
 
