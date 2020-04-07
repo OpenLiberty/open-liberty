@@ -680,7 +680,7 @@ public class JwKRetriever {
     }
 
     protected HttpClientBuilder getBuilder(boolean useSystemPropertiesForHttpClientConnections) {
-        return useSystemPropertiesForHttpClientConnections ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+        return useSystemPropertiesForHttpClientConnections ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
     }
 
     private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider, boolean useSystemPropertiesForHttpClientConnections) {

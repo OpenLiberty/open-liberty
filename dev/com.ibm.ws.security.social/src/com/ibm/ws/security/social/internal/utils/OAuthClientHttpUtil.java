@@ -350,7 +350,7 @@ public class OAuthClientHttpUtil {
     }
 
     private HttpClientBuilder getBuilder(boolean useJvmProps) {
-        return useJvmProps ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
     }
 
     public static OAuthClientHttpUtil getInstance() {
