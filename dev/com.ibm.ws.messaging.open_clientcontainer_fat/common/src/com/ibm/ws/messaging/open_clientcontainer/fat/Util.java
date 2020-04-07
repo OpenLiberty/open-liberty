@@ -38,34 +38,48 @@ public class Util {
     return logger_;
   }
 
-  /**
-   * 
-   * @param currentMethodName - the method name whose caller you want to know
-   * @param tiers - how many callers back you want to know.
-   * @return
-   */
-  private static StackTraceElement getCaller(int tiers) {
-      StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-      for (int i = 1; i < elements.length; ++i) {
-          if (elements[i].getMethodName().equals("getCaller")) {
-              return elements[i + tiers + 1];
-          }
+  private static StackTraceElement getCaller(int tiers)
+  {
+    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+    for (int i = 1; i < elements.length; ++i)
+    {
+      if (elements[i].getMethodName().equals("getCaller")&&elements.length>i+tiers+1)
+      {
+        return elements[i + tiers + 1];
       }
+    }
+    if (elements.length<2+tiers)
+    {
       // If it isn't found just return the 3rd element
       return elements[2 + tiers];
+    }
+    else
+    {
+      return new StackTraceElement("<unknown>","<unknown>","<unknown>",0);
+    }
   }
 
-  public static StackTraceElement getCaller() {
-      // Not calling other getCaller method to avoid two getCaller methods on the stack
-      StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-      for (int i = 1; i < elements.length; ++i) {
-          if (elements[i].getMethodName().equals("getCaller")) {
-              // + 2 because we want to know the method that called the method that called getCaller
-              return elements[i + 2];
-          }
+  // This variant returns the frame for "getCaller"+2 - +2 so "getCaller" makes sense in the place it is used
+  public static StackTraceElement getCaller()
+  {
+    // Not calling other getCaller method to avoid two getCaller methods on the stack
+    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+    for (int i = 1; i < elements.length; ++i)
+    {
+      if (elements[i].getMethodName().equals("getCaller")&&elements.length>i+2)
+      {
+        return elements[i + 2]; // +2 for correct meaning where getCaller is used
       }
+    }
+    if (4<elements.length)
+    {
       // If it isn't found just return the 4th element
       return elements[4];
+    }
+    else
+    {
+      return new StackTraceElement("<unknown>","<unknown>","<unknown>",0);
+    }
   }
   
   // tracing/logging helper methods so we can simplify and keep consistent
