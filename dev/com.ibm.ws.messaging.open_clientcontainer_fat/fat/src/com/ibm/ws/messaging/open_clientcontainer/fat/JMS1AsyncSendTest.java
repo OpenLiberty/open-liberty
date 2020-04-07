@@ -95,7 +95,6 @@ public class JMS1AsyncSendTest extends FATBase {
   public void testJMS1SessionInListener() throws Exception { runTest(); }
   @Test
   public void testJMS1TransactionAndListener() throws Exception { runTest(); }
-  @Ignore // disabling for now: issue 9842
   @Test
   public void testJMS1TimeToLive() throws Exception { runTest(); }
   @Test

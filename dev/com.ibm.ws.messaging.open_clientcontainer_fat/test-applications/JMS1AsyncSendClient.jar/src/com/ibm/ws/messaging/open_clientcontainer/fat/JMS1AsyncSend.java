@@ -43,6 +43,10 @@ public class JMS1AsyncSend extends ClientMain {
   private QueueConnection                queueConnection_ = null;
   private Connection                     connection_ = null;
   private Queue                          queueOne_ = null;
+  private Queue                          queueOneOverrideTTL_ = null;
+  private Queue                          queueOneDefaultTTL_ = null;
+  private Queue                          queueOneLongOverrideTTL_ = null;
+  private Queue                          queueOneLongDefaultTTL_ = null;
   private Queue                          depthLimitedQueue_ = null;
   private BasicCompletionListener        completionListener_ = null;
   private MessageOrderCompletionListener messageOrderListener_ = null;
@@ -60,6 +64,14 @@ public class JMS1AsyncSend extends ClientMain {
     ConnectionFactory cf = (ConnectionFactory) jndi.lookup("java:comp/env/jndi_JMS_BASE_QCF");
     Util.CODEPATH();
     queueOne_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE");
+    Util.CODEPATH();
+    queueOneOverrideTTL_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE_WITH_OVERRIDE_TTL");
+    Util.CODEPATH();
+    queueOneDefaultTTL_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE_WITH_DEFAULT_TTL");
+    Util.CODEPATH();
+    queueOneLongOverrideTTL_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE_WITH_LONG_OVERRIDE_TTL");
+    Util.CODEPATH();
+    queueOneLongDefaultTTL_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE_WITH_LONG_DEFAULT_TTL");
     Util.CODEPATH();
     depthLimitedQueue_ = (Queue) jndi.lookup("java:comp/env/jndi_DEPTH_LIMITED_QUEUE");
     Util.CODEPATH();
@@ -167,7 +179,7 @@ public class JMS1AsyncSend extends ClientMain {
     for (int i = 0; i < messageOrderListener_.getExpectedMessageCount(); i++) {
       Message message = session.createMessage();
       message.setIntProperty("Message_Order",i);
-      producer.send(queueOne_, message, DeliveryMode.PERSISTENT, 0, 10000, messageOrderListener_);
+      producer.send(queueOne_, message, DeliveryMode.PERSISTENT, 0, 10203, messageOrderListener_);
       int messageOrder = consumer.receive(WAIT_TIME).getIntProperty("Message_Order");
       if (i!=messageOrder) outOfOrderCount++;
       Util.TRACE("Message_Order for "+i+" = "+messageOrder);
@@ -269,7 +281,7 @@ public class JMS1AsyncSend extends ClientMain {
       Message message = session.createTextMessage("testJMS1MessageOrderingMultipleSessions");
       message.setIntProperty("Session_Number",i%3);
       message.setIntProperty("Message_Order",i);
-      producer[i%3].send(message, DeliveryMode.PERSISTENT, 0, 10000, completionListener_);
+      producer[i%3].send(message, DeliveryMode.PERSISTENT, 0, 12345, completionListener_);
     }
 
     boolean conditionMet = completionListener_.waitFor(11, 0);
@@ -414,13 +426,13 @@ public class JMS1AsyncSend extends ClientMain {
       Util.CODEPATH();
     }
     try {
-      producer.send(textMessage, DeliveryMode.PERSISTENT, 0, 10000, completionListener_);
+      producer.send(textMessage, DeliveryMode.PERSISTENT, 0, 10001, completionListener_);
       result += ",5 argument send test failed";
     } catch (UnsupportedOperationException e) {
       Util.CODEPATH();
     }
     try {
-      producer.send(null, textMessage, DeliveryMode.PERSISTENT, 0, 10000, completionListener_);
+      producer.send(null, textMessage, DeliveryMode.PERSISTENT, 0, 10002, completionListener_);
       result += ",6 argument send test failed";
     } catch (InvalidDestinationException e) {
       Util.CODEPATH();
@@ -584,27 +596,55 @@ public class JMS1AsyncSend extends ClientMain {
     clearQueue(queueOne_);
     completionListener_.reset();
     QueueSession session = queueConnection_.createQueueSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
-    MessageProducer producer = session.createProducer(null);
+    MessageProducer unbound = session.createProducer(null);
+    MessageProducer bound = session.createProducer(queueOne_);
+    MessageProducer boundTTL = session.createProducer(queueOneDefaultTTL_);
+    MessageProducer boundLongTTL = session.createProducer(queueOneLongDefaultTTL_);
+
     MessageConsumer consumer = session.createConsumer(queueOne_);
-    TextMessage textMessage = session.createTextMessage("testJMS1TimeToLive");
 
-    producer.send(queueOne_, textMessage, DeliveryMode.NON_PERSISTENT, 0, 500, completionListener_);
+    TextMessage tm1 = session.createTextMessage("#1 Set TTL in method call for a queue without explicit TTL set");
+    unbound.send(queueOne_, tm1, DeliveryMode.NON_PERSISTENT, 0, 500, completionListener_);
+    TextMessage tm2 = session.createTextMessage("#2 Use override TTL from XML");
+    unbound.send(queueOneOverrideTTL_, tm2, DeliveryMode.NON_PERSISTENT, 0, 2500, completionListener_);  // value should be ignored
+    TextMessage tm3 = session.createTextMessage("#3 Use default TTL from XML");
+    unbound.send(queueOneDefaultTTL_, tm3, completionListener_);
+    TextMessage tm4 = session.createTextMessage("#4 Use default TTL from XML (bound)");
+    boundTTL.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+    boundTTL.send(tm4, completionListener_);
+    TextMessage tm5 = session.createTextMessage("#5 Set TTL in method call for a producer bound to a destination without TTL");
+    bound.send(tm5, DeliveryMode.NON_PERSISTENT, 0, 500, completionListener_);
+    TextMessage tm6 = session.createTextMessage("#6 Set TTL in bound producer overriding default from destination");
+    bound.setTimeToLive(500);
+    bound.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+    bound.send(tm6, completionListener_);
+    TextMessage tm7 = session.createTextMessage("#7 Set default TTL in unbound produder and use that");
+    unbound.setTimeToLive(500);
+    unbound.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+    unbound.send(queueOneLongDefaultTTL_, tm7, completionListener_);
+    TextMessage tm8 = session.createTextMessage("#8 Set TTL in method for a producer bound to a destination with default TTL");
+    boundLongTTL.send(tm8, DeliveryMode.NON_PERSISTENT, 0, 500, completionListener_);
+
+    Util.CODEPATH();
+    boolean conditionMet = completionListener_.waitFor(100, 7, 0);  // ensure they are all on the queue before we start waiting
+    Thread.sleep(1000);                                             // wait plenty of time for all to expire
     Util.CODEPATH();
 
-    boolean conditionMet = completionListener_.waitFor(1, 0);  // ensure it is on the queue before we start waiting
-    Thread.sleep(3000);                                        // wait plenty of time for it to expire
-    Util.CODEPATH();
-
+    String messages = "";
     try (QueueBrowser qb = session.createBrowser(queueOne_)) {
       Enumeration en = qb.getEnumeration();
-      for (messageCount=0;en.hasMoreElements();en.nextElement()) messageCount++;
+      for (messageCount=0;en.hasMoreElements();) {
+        messageCount++;
+        TextMessage msg = (TextMessage)en.nextElement();
+        messages += "\n"+msg.getText();
+      }
     }
+    clearQueue(queueOne_);
 
-    Message messageReceived = (Message) consumer.receiveNoWait();
-    Util.TRACE("conditionMet="+conditionMet+",messageCount="+messageCount+",messageReceived="+messageReceived);
+    Util.TRACE("conditionMet="+conditionMet+",messageCount="+messageCount+",lingering messages:"+messages);
 
-    if (messageCount != 0 || messageReceived != null || conditionMet == false ) {
-      result += ",positive TTL test failed";
+    if (messageCount != 0 || conditionMet == false ) {
+      result += ","+messageCount+" positive TTL test"+(1==messageCount?"":"s")+" failed";
     }
     completionListener_.reset();
 
@@ -612,6 +652,7 @@ public class JMS1AsyncSend extends ClientMain {
 
     Util.CODEPATH();
     MessageProducer producer2 = session.createProducer(queueOne_);
+    TextMessage textMessage = session.createTextMessage("Negative TTL");
     try {
       producer2.send(textMessage, DeliveryMode.NON_PERSISTENT, 0, -100, completionListener_);
     } catch (JMSException e) {
@@ -626,7 +667,7 @@ public class JMS1AsyncSend extends ClientMain {
       for (messageCount=0;en.hasMoreElements();en.nextElement()) messageCount++;
     }
 
-    messageReceived = (Message)consumer.receiveNoWait();
+    Message messageReceived = (Message)consumer.receiveNoWait();
     Util.TRACE("conditionMet="+conditionMet+",messageCount="+messageCount+",messageReceived="+messageReceived);
 
     if (exceptionCaught == false || messageCount != 0 || messageReceived != null || conditionMet == true) {
@@ -654,7 +695,7 @@ public class JMS1AsyncSend extends ClientMain {
     MessageProducer producer = session.createProducer(null);
 
     for (int priority = 0; priority < 10; priority++) {
-      producer.send(queueOne_, textMessage, DeliveryMode.PERSISTENT, priority, 10000, completionListener_);
+      producer.send(queueOne_, textMessage, DeliveryMode.PERSISTENT, priority, 14321, completionListener_);
     }
 
     completionListener_.waitFor(10, 0);
@@ -692,7 +733,7 @@ public class JMS1AsyncSend extends ClientMain {
 
     boolean exceptionCaught = false;
     try {
-      producer.send(queueOne_, textMessage, DeliveryMode.PERSISTENT, -2 /* priority */, 10000, completionListener_);
+      producer.send(queueOne_, textMessage, DeliveryMode.PERSISTENT, -2 /* priority */, 12321, completionListener_);
     } catch (JMSException e) {
       exceptionCaught = true;
     }
@@ -722,14 +763,14 @@ public class JMS1AsyncSend extends ClientMain {
     // good delivery modes
     try {
       exceptionOnNonPersistent = false;
-      producer.send(textMessage, DeliveryMode.NON_PERSISTENT, 0, 100000, completionListener_);
+      producer.send(textMessage, DeliveryMode.NON_PERSISTENT, 0, 10100, completionListener_);
     } catch (JMSException ignored) {
       exceptionOnNonPersistent = true;
     }
 
     try {
       exceptionOnPersistent = false;
-      producer.send(textMessage, DeliveryMode.PERSISTENT, 0, 100000, completionListener_);
+      producer.send(textMessage, DeliveryMode.PERSISTENT, 0, 10200, completionListener_);
     } catch (JMSException ignored) {
       exceptionOnPersistent = true;
     }
@@ -739,7 +780,7 @@ public class JMS1AsyncSend extends ClientMain {
     // bad delivery mode
     try {
       exceptionOnBad = false;
-      producer.send(textMessage, 9 /* bad mode */, 0, 10000, completionListener_);
+      producer.send(textMessage, 9 /* bad mode */, 0, 10009, completionListener_);
     } catch (JMSException e) {
       exceptionOnBad = true;
     }

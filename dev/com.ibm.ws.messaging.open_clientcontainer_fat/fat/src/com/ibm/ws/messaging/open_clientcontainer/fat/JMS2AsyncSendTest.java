@@ -101,4 +101,6 @@ public class JMS2AsyncSendTest extends FATBase {
   public void testJMS2DefaultConnectionFactory() throws Exception { runTest(); }
   @Test
   public void testJMS2DefaultConnectionFactoryVariation() throws Exception { runTest(); }
+  @Test
+  public void testJMS2TimeToLive() throws Exception { runTest(); }
 }

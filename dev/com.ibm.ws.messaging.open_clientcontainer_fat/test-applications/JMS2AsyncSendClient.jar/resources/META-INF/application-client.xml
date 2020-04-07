@@ -19,6 +19,24 @@
   </resource-ref>
 
   <resource-ref>
+    <res-ref-name>java:comp/env/jndi_QUEUE_ONE_WITH_DEFAULT_TTL</res-ref-name>
+    <res-type>javax.jms.Queue</res-type>
+    <lookup-name>jndi_QUEUE_ONE_WITH_DEFAULT_TTL</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_QUEUE_ONE_WITH_LONG_DEFAULT_TTL</res-ref-name>
+    <res-type>javax.jms.Queue</res-type>
+    <lookup-name>jndi_QUEUE_ONE_WITH_LONG_DEFAULT_TTL</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_QUEUE_ONE_WITH_OVERRIDE_TTL</res-ref-name>
+    <res-type>javax.jms.Queue</res-type>
+    <lookup-name>jndi_QUEUE_ONE_WITH_OVERRIDE_TTL</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
     <res-ref-name>java:comp/env/jndi_DEPTH_LIMITED_QUEUE</res-ref-name>
     <res-type>javax.jms.Queue</res-type>
     <lookup-name>jndi_DEPTH_LIMITED_QUEUE</lookup-name>

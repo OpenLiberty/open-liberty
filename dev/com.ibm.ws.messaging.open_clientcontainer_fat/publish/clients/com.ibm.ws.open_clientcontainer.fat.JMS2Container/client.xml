@@ -15,6 +15,18 @@
     <properties.wasJms queueName="QUEUE_ONE"/>
   </jmsQueue>
 
+  <jmsQueue jndiName="jndi_QUEUE_ONE_WITH_DEFAULT_TTL">
+    <properties.wasJms queueName="QUEUE_ONE" timeToLiveDefault="500"/>
+  </jmsQueue>
+
+  <jmsQueue jndiName="jndi_QUEUE_ONE_WITH_LONG_DEFAULT_TTL">
+    <properties.wasJms queueName="QUEUE_ONE" timeToLiveDefault="5000"/>
+  </jmsQueue>
+
+  <jmsQueue jndiName="jndi_QUEUE_ONE_WITH_OVERRIDE_TTL">
+    <properties.wasJms queueName="QUEUE_ONE" timeToLive="500"/>
+  </jmsQueue>
+
   <jmsQueue jndiName="jndi_DEPTH_LIMITED_QUEUE">
     <properties.wasJms queueName="DEPTH_LIMITED_QUEUE"/>
   </jmsQueue>

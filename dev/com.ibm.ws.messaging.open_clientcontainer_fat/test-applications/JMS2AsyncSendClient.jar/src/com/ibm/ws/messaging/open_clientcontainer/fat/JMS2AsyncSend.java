@@ -43,6 +43,9 @@ public class JMS2AsyncSend extends ClientMain {
   private QueueConnectionFactory          queueConnectionFactory_ = null;
   private ConnectionFactory               connectionFactory_ = null;
   private Queue                           queueOne_ = null;
+  private Queue                           queueOneDefaultTTL_ = null;
+  private Queue                           queueOneOverrideTTL_ = null;
+  private Queue                           queueOneLongDefaultTTL_ = null;
   private Queue                           depthLimitedQueue_ = null;
   private BasicCompletionListener         completionListener_ = null;
   private MessageOrderCompletionListener  messageOrderListener_ = null;
@@ -57,6 +60,9 @@ public class JMS2AsyncSend extends ClientMain {
     queueConnectionFactory_ = (QueueConnectionFactory) jndi.lookup("java:comp/env/jndi_JMS_BASE_QCF");
     connectionFactory_ = (ConnectionFactory) jndi.lookup("java:comp/env/jndi_JMS_BASE_QCF");
     queueOne_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE");
+    queueOneDefaultTTL_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE_WITH_DEFAULT_TTL");
+    queueOneOverrideTTL_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE_WITH_OVERRIDE_TTL");
+    queueOneLongDefaultTTL_ = (Queue) jndi.lookup("java:comp/env/jndi_QUEUE_ONE_WITH_LONG_DEFAULT_TTL");
     depthLimitedQueue_ = (Queue) jndi.lookup("java:comp/env/jndi_DEPTH_LIMITED_QUEUE");
 
     completionListener_ = new BasicCompletionListener();
@@ -162,7 +168,7 @@ public class JMS2AsyncSend extends ClientMain {
 
       boolean completed = completionListener_.waitFor(5, 0);
       Util.TRACE("completed="+completed
-              +"completionCount="+completionListener_.completionCount_
+              +",completionCount="+completionListener_.completionCount_
               +",exceptionCount="+completionListener_.exceptionCount_
               );
 
@@ -171,7 +177,7 @@ public class JMS2AsyncSend extends ClientMain {
 
       boolean conditionMet = completionListener_.waitFor(5, 1);
       Util.TRACE("conditionMet="+conditionMet
-              +"completionCount="+completionListener_.completionCount_
+              +",completionCount="+completionListener_.completionCount_
               +",exceptionCount="+completionListener_.exceptionCount_
               );
 
@@ -878,6 +884,53 @@ public class JMS2AsyncSend extends ClientMain {
       reportSuccess();
     } else {
       reportFailure();
+    }
+  }
+
+  @ClientTest
+  public void testJMS2TimeToLive() throws Exception {
+    try (JMSContext context = queueConnectionFactory_.createContext()) {
+      // all queues are aliases of the same ME queue but with different attributes, so we need clear only the one
+      clearQueue(queueOne_);
+
+      JMSProducer producer = context.createProducer();
+      TextMessage tmXML = context.createTextMessage("testJMS2TimeToLive: XML default TTL");
+      producer.send(queueOneDefaultTTL_, tmXML);
+      Util.CODEPATH();
+      TextMessage tmOverrideXML = context.createTextMessage("testJMS2TimeToLive: XML override TTL");
+      producer.setTimeToLive(5000);   // this should end up being overrideen by the XML setting
+      producer.send(queueOneOverrideTTL_, tmOverrideXML);
+      Util.CODEPATH();
+      TextMessage tmProducer = context.createTextMessage("testJMS2TimeToLive: Producer TTL");
+      producer.setTimeToLive(500);
+      producer.send(queueOne_, tmProducer);
+      Util.CODEPATH();
+      TextMessage tmLongDefault = context.createTextMessage("testJMS2TimeToLive: Producer TTL superceding XML default");
+      producer.setTimeToLive(500);
+      producer.send(queueOneLongDefaultTTL_, tmProducer);
+      Util.CODEPATH();
+
+      Thread.sleep(1000);     // enough time for them to expire
+
+      Util.CODEPATH();
+      QueueBrowser qb = context.createBrowser(queueOne_);
+      Enumeration en = qb.getEnumeration();
+      String messages = "";
+      int messageCount = 0;
+      while (en.hasMoreElements()) {
+        messageCount++;
+        TextMessage msg = (TextMessage)en.nextElement();
+        messages += "\n"+msg;
+      }
+      clearQueue(queueOne_);
+
+      Util.TRACE("messageCount="+messageCount+",messages:"+messages);
+
+      if (0==messageCount) {
+        reportSuccess();
+      } else {
+        reportFailure("Message"+(1==messageCount?"":"s")+" that should have expired:"+messages);
+      }
     }
   }
 
