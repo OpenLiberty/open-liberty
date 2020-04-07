@@ -303,10 +303,20 @@ public class FeatureUtility {
         boolean upgraded = (boolean) map.get("upgrade.complete");
         if (upgraded) {
         	LicenseUpgradeUtility luu = new LicenseUpgradeUtility.LicenseUpgradeUtilityBuilder().setFeatures(featuresToInstall).setAcceptLicense(licenseAccepted).build();
-            if (!luu.handleLicenses()) {
+        	boolean isLicenseAccepted = false;
+        	try {
+            	isLicenseAccepted = luu.handleLicenses();
+            } catch (InstallException e) {
+            	map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
+            	throw e;
+            }
+            if (!isLicenseAccepted) {
                 map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+            } else {
+            	luu.handleOLLicense();
             }
+        	
         }
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
