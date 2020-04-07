@@ -1,0 +1,86 @@
+<!--
+    Copyright (c) 2012, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>concurrent-1.0</feature>
+      <feature>servlet-3.0</feature>
+      <feature>jca-1.6</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>jndi-1.0</feature>
+      <feature>jms-1.1</feature>
+      <feature>jmsMdb-3.1</feature>
+      <feature>wab-1.0</feature>
+      <feature>monitor-1.0</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear">
+      <resourceAdapter id="imsico1210" alias="ims">
+        <customize suffix="cci.cf" interface="javax.resource.cci.ConnectionFactory"/>
+        <properties.fvtapp.ims traceNumberOfFiles="10"/> 
+      </resourceAdapter>
+      <resourceAdapter id="tra1" autoStart="true">
+        <contextService id="contextSvc1">
+          <jeeMetadataContext/>
+        </contextService>
+        <properties.fvtapp.tra1 delay="1000" period="100" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+      </resourceAdapter>
+      <resourceAdapter id="fvt10ra" autoStart="true" />
+    </application>
+
+    <application type="ear" id="standaloneapp" name="standaloneapp" location="standaloneapp.ear">
+    </application>    
+
+    <application type="war" id="standardWAB" name="standardWAB" location="standardWAB.war">
+    </application>
+
+    <authData id="imsuser1" user="imsuser1" password="{xor}NjIsLyg7bg=="/>
+    <authData id="imsuser2" user="imsuser2" password="{xor}NjIsLyg7bQ=="/>
+
+    <connectionFactory id="ims1" jndiName="ims/cf1">
+      <connectionManager maxPoolSize="1" connectionTimeout="0"/>
+      <properties.fvtapp.ims.cci.cf DataStoreName="TESTST" UserName="testUser" Password="testpass"/>
+    </connectionFactory>
+    
+    <connectionFactory id="cci" jndiName="cci/cf1">
+      <properties.fvtapp.fvt10ra />
+    </connectionFactory>
+    
+    <jmsQueue id="queue1" jndiName="jms/queue1">
+      <properties.fvtapp.tra1 queueName="queue1"/>
+    </jmsQueue>
+
+    <jmsTopic id="topic1" jndiName="jms/topic1">
+      <properties.fvtapp.tra1 topicName="topic1"/>
+    </jmsTopic>
+
+    <jmsActivationSpec id="FVTMessageDrivenBeanOverride">
+      <properties.fvtapp.tra1 destinationRef="queue1" destinationType="javax.jms.Queue"/>
+    </jmsActivationSpec>
+    
+    <resourceAdapter id="tra2" location="${server.config.dir}/connectors/tra2.rar" autoStart="true">
+      <properties.tra2 delay="1000" period="100" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+      <classloader privateLibraryRef="NativeLib"/>
+    </resourceAdapter>
+    
+    <library id="NativeLib">
+      <fileset dir="${server.config.dir}/native" includes="*"/>
+    </library>
+    
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="loadLibrary.Test"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+</server>

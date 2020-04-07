@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Application-ManifestVersion: 1.0
+Application-Name: jcaTest
+Application-Version: 1.0.0
+Application-SymbolicName: com.ibm.test.JcaTestApp
+Application-Content: com.ibm.ws.jca.fat.blueprintJNDI;version=1.0.0
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE connector PUBLIC '-//Sun Microsystems, Inc.//DTD Connector 1.0//EN' 'http://java.sun.com/dtd/connector_1_0.dtd'>
+<connector>
+    <display-name>Test Resource Adapter</display-name>
+    <vendor-name>IBM</vendor-name>
+    <spec-version>1.0</spec-version>
+    <eis-type>TEST EIS</eis-type>
+    <version>1.0</version>
+    <resourceadapter>
+        <managedconnectionfactory-class>fat.jca.test10ra.FVT10ManagedConnectionFactory</managedconnectionfactory-class>
+        <connectionfactory-interface>javax.resource.cci.ConnectionFactory</connectionfactory-interface>
+        <connectionfactory-impl-class>fat.jca.test10ra.FVT10ConnectionFactory</connectionfactory-impl-class>
+        <connection-interface>javax.resource.cci.Connection</connection-interface>
+        <connection-impl-class>fat.jca.test10ra.FVT10Connection</connection-impl-class>
+        <transaction-support>NoTransaction</transaction-support>
+        <reauthentication-support>false</reauthentication-support>
+    </resourceadapter>
+</connector>

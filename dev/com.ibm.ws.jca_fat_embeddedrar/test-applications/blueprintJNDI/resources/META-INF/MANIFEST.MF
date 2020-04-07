@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-Description: test, version 1.0.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JCA test bundle
+Bundle-SymbolicName: com.ibm.ws.jca.fat.blueprintJNDI
+Bundle-Vendor: IBM
+Bundle-Version: 1.0.0
+Import-Package: javax.resource.cci, javax.naming, org.osgi.framework
