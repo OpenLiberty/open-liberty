@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,13 +56,8 @@ public class EndpointServices {
 
     static ConcurrentServiceReferenceMap<String, SocialLoginConfig> socialLoginConfigRef = null;
     static AtomicServiceReference<SecurityService> securityServiceRef = null;
-    static transient ReferrerURLCookieHandler referrerURLCookieHandler = null;
 
     SocialWebUtils webUtils = new SocialWebUtils();
-
-    public static void setReferrerURLCookieHandler(ReferrerURLCookieHandler referrerURLCookieHandler) {
-        EndpointServices.referrerURLCookieHandler = referrerURLCookieHandler;
-    }
 
     public static void setActivatedSocialLoginConfigRef(ConcurrentServiceReferenceMap<String, SocialLoginConfig> socialLoginConfigRef) {
         EndpointServices.socialLoginConfigRef = socialLoginConfigRef;
@@ -354,11 +349,13 @@ public class EndpointServices {
             }
             return;
         }
-        if (referrerURLCookieHandler == null) {
-            referrerURLCookieHandler = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().createReferrerURLCookieHandler();
-        }
+        ReferrerURLCookieHandler referrerURLCookieHandler = getReferrerUrlCookieHandler();
         Cookie c = referrerURLCookieHandler.createCookie(cookieName, value, req);
         resp.addCookie(c);
+    }
+
+    ReferrerURLCookieHandler getReferrerUrlCookieHandler() {
+        return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().createReferrerURLCookieHandler();
     }
 
     protected void cacheSensitiveValueInCookie(HttpServletRequest req, HttpServletResponse resp, String cookieName, @Sensitive String value) {
@@ -368,9 +365,7 @@ public class EndpointServices {
             }
             return;
         }
-        if (referrerURLCookieHandler == null) {
-            referrerURLCookieHandler = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().createReferrerURLCookieHandler();
-        }
+        ReferrerURLCookieHandler referrerURLCookieHandler = getReferrerUrlCookieHandler();
         Cookie c = referrerURLCookieHandler.createCookie(cookieName, value, req);
         resp.addCookie(c);
     }
