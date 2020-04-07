@@ -58,6 +58,11 @@ installFeature.option-key.--verbose=\
 installFeature.option-desc.--verbose=\
 \tDisplay additional debug information while the action runs.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--acceptLicense=\
+\ \ \ \ --acceptLicense
+installFeature.option-desc.--acceptLicense=\
+\tAccepts the  license agreement.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\
 \ \ \ \ --noCache
 installFeature.option-desc.--noCache=\
@@ -82,6 +87,11 @@ installServerFeatures.option-key.--verbose=\
 \ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\
 \tDisplay additional debug information while the action runs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--acceptLicense=\
+\ \ \ \ --acceptLicense
+installServerFeatures.option-desc.--acceptLicense=\
+\tAccepts the  license agreement.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\
 \ \ \ \ --noCache

@@ -33,6 +33,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         setupEnv();
         copyFileToMinifiedRoot("usr/temp", "../../publish/tmp/serverX.zip");
         replaceWlpProperties(getPreviousWlpVersion());
+        replaceWlpProperties(getPreviousWlpVersion());
         Log.exiting(c, methodName);
     }
 
