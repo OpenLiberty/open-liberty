@@ -53,6 +53,7 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                // Shared Servers
                 WCServerTest.class,
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
@@ -70,8 +71,9 @@ import componenttest.rules.repeater.RepeatTests;
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
-                WCServletContainerInitializerExceptionTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
+                // @Server Annotations 
+                WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class
 })
 public class FATSuite {
