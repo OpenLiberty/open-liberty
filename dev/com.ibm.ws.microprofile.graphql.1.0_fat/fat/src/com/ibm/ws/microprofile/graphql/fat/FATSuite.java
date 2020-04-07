@@ -25,7 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 IfaceTest.class,
                 IgnoreTest.class,
                 InputFieldsTest.class,
-                MetricsTest.class,
+                //MetricsTest.class, // temporary - Metrics module being replaced in SmallRye
                 OutputFieldsTest.class,
                 TypesTest.class,
                 VoidQueryTest.class
