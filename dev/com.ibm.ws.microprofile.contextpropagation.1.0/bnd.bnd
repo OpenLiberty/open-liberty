@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2019 IBM Corporation and others.
+# Copyright (c) 2018,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -42,7 +42,6 @@ instrument.classesExcludes: com/ibm/ws/microprofile/context/resources/*.class
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
-  com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0,\
   com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\
