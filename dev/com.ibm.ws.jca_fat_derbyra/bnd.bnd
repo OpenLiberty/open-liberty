@@ -19,7 +19,7 @@ src: \
 fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
-# In this case, Java EE 8 features are added programatically at runtime by the RepeatTests rule.
+# In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
 tested.features:\
 	appsecurity-3.0, servlet-4.0
 
