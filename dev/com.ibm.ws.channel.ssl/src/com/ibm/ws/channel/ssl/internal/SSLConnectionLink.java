@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -377,6 +377,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         private WsByteBuffer encryptedAppBuffer;
         /** Inbound or outbound */
         private final FlowType flowType;
+        /** allow other code to tell this class if they changed netBuffer */
+        private WsByteBuffer updatedNetBuffer = null;
 
         /**
          * Constructor.
@@ -399,6 +401,17 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             this.decryptedNetBuffer = _decryptedNetBuffer;
             this.encryptedAppBuffer = _encryptedAppBuffer;
             this.flowType = _flowType;
+        }
+
+        @Override
+        public void updateNetBuffer(WsByteBuffer newBuffer) {
+            netBuffer = newBuffer;
+            updatedNetBuffer = newBuffer;
+        }
+
+        @Override
+        public WsByteBuffer getUpdatedNetBuffer() {
+            return updatedNetBuffer;
         }
 
         /*
@@ -575,9 +588,15 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // Continue the SSL handshake. Do this with asynchronous handShake
             result = SSLUtils.handleHandshake(this, netBuffer, decryptedNetBuffer,
                                               encryptedAppBuffer, result, callback, false);
+
             // Check to see if the work was able to be done synchronously.
             if (result != null) {
                 // Handshake is done.
+
+                if ((callback != null) && (callback.getUpdatedNetBuffer() != null)) {
+                    netBuffer = callback.getUpdatedNetBuffer();
+                }
+
                 readyInboundPostHandshake(netBuffer, decryptedNetBuffer,
                                           encryptedAppBuffer, result.getHandshakeStatus());
             } else {
@@ -800,6 +819,10 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // Check to see if the work was able to be done synchronously.
             if (sslResult != null) {
                 // Handshake was done synchronously.
+                if ((callback != null) && (callback.getUpdatedNetBuffer() != null)) {
+                    netBuffer = callback.getUpdatedNetBuffer();
+                }
+
                 readyOutboundPostHandshake(netBuffer, decryptedNetBuffer,
                                            encryptedAppBuffer, sslResult.getHandshakeStatus(), async);
             }
