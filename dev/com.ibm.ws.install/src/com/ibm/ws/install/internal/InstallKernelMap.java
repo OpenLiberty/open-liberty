@@ -155,6 +155,7 @@ public class InstallKernelMap implements Map {
     private final String JSON_ARTIFACT_ID = "features";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final String MAVEN_CENTRAL = "https://repo.maven.apache.org/maven2/";
+    private final MavenRepository MAVEN_CENTRAL_REPOSITORY = new MavenRepository("Maven Central",MAVEN_CENTRAL, null, null);
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "tmp"
                                           + File.separator;
     private static final String ETC_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "etc"
@@ -967,7 +968,8 @@ public class InstallKernelMap implements Map {
         } else {
             downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
         }
-        String repo = getRepo(fromRepo);
+        MavenRepository repo = getMavenRepo(fromRepo);
+
 
         try {
             artifactDownloader.setEnvMap(envMap);
@@ -1000,7 +1002,7 @@ public class InstallKernelMap implements Map {
         }
         String artifact = (String) this.get(DOWNLOAD_ARTIFACT_SINGLE);
         String filetype = (String) this.get(DOWNLOAD_FILETYPE);
-        String repo = getRepo(fromRepo);
+        MavenRepository repo = getMavenRepo(fromRepo);
         try {
             artifactDownloader.setEnvMap(envMap);
             artifactDownloader.synthesizeAndDownload(artifact, filetype, downloadDir, repo, true);
@@ -1086,13 +1088,41 @@ public class InstallKernelMap implements Map {
 
         if (envMap.get("FEATURE_REPO_URL") != null) {
             fine("Connecting to the following repository: " + envMap.get("FEATURE_REPO_URL"));
-            repo = envMap.get("FEATURE_REPO_URL");
+            repo = (String) envMap.get("FEATURE_REPO_URL");
         } else {
             fine("Connecting to the following repository: " + MAVEN_CENTRAL);
             repo = MAVEN_CENTRAL;
         }
         return repo;
     }
+
+    /**
+     * @return
+     */
+    private MavenRepository getMavenRepo(String fromRepo) {
+        // get the next working maven repo
+        MavenRepository next = getNextWorkingRepository();
+
+        MavenRepository repo = next != null ? next : MAVEN_CENTRAL_REPOSITORY;
+        fine("Connecting to the following repository: " + repo.getRepositoryUrl());
+        return repo;
+    }
+
+
+    private MavenRepository getNextWorkingRepository()  {
+        List<MavenRepository> repositories = (List<MavenRepository>) envMap.get("FEATURE_UTILITY_MAVEN_REPOSITORIES");
+        if(repositories == null){
+            return null;
+        }
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        for(MavenRepository repository : repositories){
+            if(artifactDownloader.testConnection(repository)){
+                return repository;
+            }
+        }
+        return null;
+    }
+
 
     @SuppressWarnings("unchecked")
     public File downloadSingleFeature() {
@@ -1113,7 +1143,7 @@ public class InstallKernelMap implements Map {
         } else {
             downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
         }
-        String repo = getRepo(fromRepo);
+        MavenRepository repo = getMavenRepo(fromRepo);
         try {
             artifactDownloader.setEnvMap(envMap);
             artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);

@@ -42,14 +42,14 @@ public class ArtifactDownloader {
     private final ProgressBar progressBar = ProgressBar.getInstance();
     private static Map<String, Object> envMap = null;
 
-    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
+    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
         checkValidProxy();
         configureProxyAuthentication();
-        configureAuthentication();
+        configureAuthentication(repository);
 
         downloadedFiles.clear();
-        repo = FormatUrlSuffix(repo);
+        String repo = FormatUrlSuffix(repository.getRepositoryUrl());
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
         List<String> missingFeatures;
         dLocation = FormatPathSuffix(dLocation);
@@ -87,8 +87,8 @@ public class ArtifactDownloader {
             progressBar.updateMethodMap("downloadArtifact", individualSize);
             logger.info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
             for (String coords : mavenCoords) {
-                synthesizeAndDownload(coords, "esa", dLocation, repo, false);
-                synthesizeAndDownload(coords, "pom", dLocation, repo, false);
+                synthesizeAndDownload(coords, "esa", dLocation, repository, false);
+                synthesizeAndDownload(coords, "pom", dLocation, repository, false);
 
                 // update progress bar, drain the downloadArtifacts total size
                 updateProgress(individualSize);
@@ -119,10 +119,10 @@ public class ArtifactDownloader {
         return result;
     }
 
-    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo, boolean individualDownload) throws InstallException {
+    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, MavenRepository repository, boolean individualDownload) throws InstallException {
         configureProxyAuthentication();
-        configureAuthentication();
-        repo = FormatUrlSuffix(repo);
+        configureAuthentication(repository);
+        String repo = FormatUrlSuffix(repository.getRepositoryUrl());
         dLocation = FormatPathSuffix(dLocation);
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
         String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
@@ -242,17 +242,37 @@ public class ArtifactDownloader {
         }
     }
 
-    private void configureAuthentication() {
-        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null
-            && envMap.get("https.proxyUser") == null) {
+    private void configureAuthentication(final MavenRepository repository) {
+        if(repository.getUserId() != null && repository.getPassword() != null &&
+                envMap.get("https.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication((String)envMap.get("FEATURE_REPO_USER"), ((String)envMap.get("FEATURE_REPO_PASSWORD")).toCharArray());
+                    return new PasswordAuthentication((String)repository.getUserId(), ((String)repository.getPassword()).toCharArray());
                 }
             });
         }
     }
+
+    /**
+     * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
+     * @return
+     */
+    protected boolean testConnection(MavenRepository repository){
+        configureProxyAuthentication();
+        configureAuthentication(repository);
+        try {
+            int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap);
+            if (responseCode != 404) {
+                // repo is fine for use
+                return true;
+            }
+        } catch (IOException e) {
+
+        }
+        return false;
+    }
+
 
     private void downloadInternal(URI address, File destination) throws IOException, InstallException {
         OutputStream out = null;
