@@ -313,6 +313,8 @@ public class FeatureUtility {
             if (!isLicenseAccepted) {
                 map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+            } else {
+            	luu.handleOLLicense();
             }
         	
         }

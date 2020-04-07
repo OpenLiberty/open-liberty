@@ -32,8 +32,13 @@ public class LicenseUpgradeUtility {
     static final private String UNSPECIFIED_LICENSE_TYPE = "UNSPECIFIED";
 
     final String WEBSPHERE_PROPERTIES_FILE_DIR = "/lib/versions/";
+    final String WEBSPHERE_TAGS_DIR = WEBSPHERE_PROPERTIES_FILE_DIR + "tags/";
     final String WEBSPHERE_PROPERTIES_FILE_NAME = "WebsphereApplicationServer.properties";
     final String WEBSPHERE_LICENSE_FILE_DIR = "/lafiles/com.ibm.websphere.appserver/";
+    final String OL_LICENSE_FILE_DIR = "/lafiles/io.openliberty/";
+    final String OL_LICENSE = "LICENSE";
+    final String OL_NOTICES = "NOTICES";
+    final String OL_TAG_PREFIX = "openliberty";
     private String name;
     private String programName;
     private static final String PROGRAM_NAME = "Program Name (Program Number):";
@@ -322,6 +327,27 @@ public class LicenseUpgradeUtility {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_READ_LICENSE", filePath));
         } finally {
             SelfExtractUtils.tryToClose(reader);
+        }
+    }
+
+    /**
+     * @throws InstallException
+     *
+     */
+    public void handleOLLicense() throws InstallException {
+        File oldLicense = new File(wlpDir + File.separator + OL_LICENSE);
+        File oldNotices = new File(wlpDir + File.separator + OL_NOTICES);
+        File laDir = new File(wlpDir + OL_LICENSE_FILE_DIR);
+        laDir.mkdirs();
+        oldLicense.renameTo(new File(wlpDir + OL_LICENSE_FILE_DIR + OL_LICENSE));
+        oldNotices.renameTo(new File(wlpDir + OL_LICENSE_FILE_DIR + OL_NOTICES));
+        File tagsFolder = new File(wlpDir + WEBSPHERE_TAGS_DIR);
+        File[] listOfFiles = tagsFolder.listFiles();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].getName().toLowerCase().contains(OL_TAG_PREFIX)) {
+                listOfFiles[i].delete();
+            }
         }
     }
 
