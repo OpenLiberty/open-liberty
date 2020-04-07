@@ -147,9 +147,9 @@ public class StandardELContext extends ELContext {
     public ELResolver getELResolver() {
         if (elResolver == null) {
             CompositeELResolver resolver = new CompositeELResolver();
-            resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
             customResolvers = new CompositeELResolver();
             resolver.add(customResolvers);
+            resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
             if (streamELResolver != null) {
                 resolver.add(streamELResolver);
             }
