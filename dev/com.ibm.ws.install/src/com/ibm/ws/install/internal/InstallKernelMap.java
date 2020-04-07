@@ -163,7 +163,7 @@ public class InstallKernelMap implements Map {
     private static final String LICENSE_DIRECTORY = "lafiles" + File.separator;
     private static final String LIB_VERSIONS_DIRECTORY = "lib" + File.separator + "versions" + File.separator;
     private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
-    private Map<String, String> envMap = null;
+    private Map<String, Object> envMap = null;
     private final List<File> upgradeFiles = new ArrayList<File>();
 
     private enum ActionType {
@@ -302,6 +302,9 @@ public class InstallKernelMap implements Map {
                 return downloadEsas();
             }
         } else if (ENVIRONMENT_VARIABLE_MAP.equals(key)) {
+            if(envMap != null){
+                return envMap;
+            }
             envMap = getEnvMap();
             return envMap;
         } else if (CLEANUP_UPGRADE.equals(key)) {
@@ -878,6 +881,14 @@ public class InstallKernelMap implements Map {
         }
 
         return upgradeRequired;
+    }
+
+    public void overrideEnvMap(Map<String, Object> overrideMap){
+        if(this.envMap == null || overrideMap == null) return;
+
+        this.envMap.putAll(overrideMap);
+
+
     }
 
     private static Collection<String> keepFirstInstance(Collection<String> dupStrCollection) {
@@ -1473,8 +1484,8 @@ public class InstallKernelMap implements Map {
 
     }
 
-    private Map<String, String> getEnvMap() {
-        Map<String, String> envMapRet = new HashMap<String, String>();
+    private Map<String, Object> getEnvMap() {
+        Map<String, Object> envMapRet = new HashMap<String, Object>();
 
         //parse through httpProxy env variables
         String proxyEnvVarHttp = System.getenv("http_proxy");
@@ -1514,6 +1525,11 @@ public class InstallKernelMap implements Map {
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
         envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
+        List<MavenRepository> repos = new ArrayList<>();
+        repos.add(new MavenRepository("Environment Variables Repo", System.getenv("FEATURE_REPO_URL"),
+                System.getenv("FEATURE_REPO_USER"), System.getenv("FEATURE_REPO_PASSWORD")));
+        envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
+
         envMapRet.put("FEATURE_LOCAL_REPO", System.getenv("FEATURE_LOCAL_REPO"));
 
         //search through the properties file to look for overrides if they exist TODO
@@ -1538,11 +1554,24 @@ public class InstallKernelMap implements Map {
                     for (String k : proxyVarKeys) {
                         envMapRet.put(k, proxyVar.get(k));
                     }
-                } else {
-                    envMapRet.put(key, propsFileMap.get(key));
                 }
             }
+            if(propsFileMap.containsKey("FEATURE_LOCAL_REPO")){
+                envMapRet.put("FEATURE_LOCAL_REPO", propsFileMap.get("FEATURE_LOCAL_REPO"));
+            }
+            String url = propsFileMap.get("FEATURE_REPO_URL");
+            String user = propsFileMap.get("FEATURE_REPO_USER");
+            String pass = propsFileMap.get("FEATURE_REPO_PASSWORD");
+            if(url != null){
+                MavenRepository repo = new MavenRepository("featureUtility.env repo", url, user, pass);
+                repos = new ArrayList<>();
+                repos.add(repo);
+                envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
+            }
+
         }
+
+
 
         return envMapRet;
     }

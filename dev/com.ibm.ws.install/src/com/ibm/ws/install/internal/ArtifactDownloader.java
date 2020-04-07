@@ -40,7 +40,7 @@ public class ArtifactDownloader {
     private final Logger logger = InstallLogUtils.getInstallLogger();
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
-    private static Map<String, String> envMap = null;
+    private static Map<String, Object> envMap = null;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
@@ -248,7 +248,7 @@ public class ArtifactDownloader {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(envMap.get("FEATURE_REPO_USER"), envMap.get("FEATURE_REPO_PASSWORD").toCharArray());
+                    return new PasswordAuthentication((String)envMap.get("FEATURE_REPO_USER"), ((String)envMap.get("FEATURE_REPO_PASSWORD")).toCharArray());
                 }
             });
         }
@@ -267,10 +267,10 @@ public class ArtifactDownloader {
                                                  destination.toString());
             }
             if (envMap.get("https.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else if (envMap.get("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else {
                 conn = url.openConnection();
@@ -339,7 +339,7 @@ public class ArtifactDownloader {
     private String calculateUserInfo(URI uri) {
 
         if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
-            return envMap.get("FEATURE_REPO_USER") + ':' + envMap.get("FEATURE_REPO_PASSWORD");
+            return (String)envMap.get("FEATURE_REPO_USER") + ':' + (String)envMap.get("FEATURE_REPO_PASSWORD");
         }
         return uri.getUserInfo();
     }
@@ -347,7 +347,7 @@ public class ArtifactDownloader {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(envMap.get("https.proxyUser"), envMap.get("https.proxyPassword").toCharArray());
+            return new PasswordAuthentication((String) envMap.get("https.proxyUser"), ((String)envMap.get("https.proxyPassword")).toCharArray());
         }
     }
 
@@ -377,14 +377,14 @@ public class ArtifactDownloader {
 
     public void checkValidProxy() throws InstallException {
 
-        String proxyPort = envMap.get("https.proxyPort");
+        String proxyPort = (String) envMap.get("https.proxyPort");
         if (envMap.get("https.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (envMap.get("https.proxyHost").isEmpty()) {
+            if (((String)envMap.get("https.proxyHost")).isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (envMap.get("https.proxyPassword").isEmpty() ||
+            } else if (((String)envMap.get("https.proxyPassword")).isEmpty() ||
                        envMap.get("https.proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
@@ -396,11 +396,11 @@ public class ArtifactDownloader {
 
     }
 
-    public void setEnvMap(Map<String, String> envMap) {
+    public void setEnvMap(Map<String, Object> envMap) {
         this.envMap = envMap;
     }
 
-    public Map<String, String> getEnvMap() {
+    public Map<String, Object> getEnvMap() {
         return this.envMap;
     }
 
