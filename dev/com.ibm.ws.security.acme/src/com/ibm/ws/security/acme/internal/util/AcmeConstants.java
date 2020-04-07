@@ -22,11 +22,7 @@ public class AcmeConstants {
 	public static final String DIR_URI = "directoryURI";
 	public static final String DOMAIN = "domain";
 	public static final String VALID_FOR = "validFor";
-	public static final String COUNTRY = "country";
-	public static final String LOCALITY = "locality";
-	public static final String STATE = "state";
-	public static final String ORG = "organization";
-	public static final String OU = "organizationalUnit";
+	public static final String SUBJECT_DN = "subjectDN";
 
 	// Challenge and order related fields.
 	public static final String CHALL_RETRIES = "challengeRetries";
@@ -37,7 +33,6 @@ public class AcmeConstants {
 	// ACME account related fields.
 	public static final String ACCOUNT_KEY_FILE = "accountKeyFile";
 	public static final String ACCOUNT_CONTACT = "accountContact";
-	public static final String ACCEPT_TERMS = "acceptTermsOfService";
 	public static final String DOMAIN_KEY_FILE = "domainKeyFile";
 
 	// Transport configuration.
@@ -46,7 +41,7 @@ public class AcmeConstants {
 	public static final String TRANSPORT_TRUST_STORE = "trustStore";
 	public static final String TRANSPORT_TRUST_STORE_PASSWORD = "trustStorePassword";
 	public static final String TRANSPORT_TRUST_STORE_TYPE = "trustStoreType";
-	
+
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -59,7 +54,7 @@ public class AcmeConstants {
 	public static final String DEFAULT_KEY_STORE = "defaultKeyStore";
 	public static final String DEFAULT_ALIAS = "default";
 	public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";
-	
+
 	public static final String ACCOUNT_TYPE = "account";
 	public static final String DOMAIN_TYPE = "domain";
 }

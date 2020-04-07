@@ -24,6 +24,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -122,15 +123,15 @@ public class AcmeProviderImpl implements AcmeProvider {
 		applicationStateListenerRef.get().waitUntilWebAppAvailable();
 
 		/*
-		 * Keep a reference to the existing certificate that we will replace so
-		 * we can revoke it.
+		 * Keep a reference to the existing certificate chain that we will
+		 * replace so we can revoke it.
 		 */
-		X509Certificate existingCertificate = null;
+		List<X509Certificate> existingCertChain = null;
 		if (keyStore == null) {
-			existingCertificate = getConfiguredDefaultCertificate();
+			existingCertChain = getConfiguredDefaultCertificate();
 		} else {
 			try {
-				existingCertificate = (X509Certificate) keyStore.getCertificate(DEFAULT_ALIAS);
+				existingCertChain = convertToX509CertChain(keyStore.getCertificateChain(DEFAULT_ALIAS));
 			} catch (KeyStoreException e) {
 				throw new AcmeCaException(
 						Tr.formatMessage(tc, "CWPKI2029E", keyStoreFile, DEFAULT_ALIAS, e.getMessage()), e);
@@ -140,7 +141,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		/*
 		 * Check whether we need a new certificate.
 		 */
-		AcmeCertificate acmeCertificate = checkAndRetrieveCertificate(existingCertificate, forceRefresh);
+		AcmeCertificate acmeCertificate = checkAndRetrieveCertificate(existingCertChain, forceRefresh);
 
 		if (acmeCertificate != null) {
 			/*
@@ -170,12 +171,12 @@ public class AcmeProviderImpl implements AcmeProvider {
 			 * Revoke the old certificate, which has now been replaced in the
 			 * keystore.
 			 */
-			if (existingCertificate != null) {
+			if (existingCertChain != null) {
 				try {
-					revoke(existingCertificate);
+					revoke(existingCertChain.get(0));
 				} catch (AcmeCaException e) {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-						Tr.debug(tc, "Failed to revoke the certificate.", existingCertificate);
+						Tr.debug(tc, "Failed to revoke the certificate.", existingCertChain);
 					}
 				}
 			}
@@ -186,7 +187,8 @@ public class AcmeProviderImpl implements AcmeProvider {
 			 * 
 			 * TODO Use CWPKI0803A?
 			 */
-			Tr.audit(tc, "CWPKI2007I", acmeConfig.getDirectoryURI(), acmeCertificate.getCertificate().getNotAfter());
+			Tr.audit(tc, "CWPKI2007I", acmeCertificate.getCertificate().getSerialNumber().toString(16),
+					acmeConfig.getDirectoryURI(), acmeCertificate.getCertificate().getNotAfter().toInstant().toString());
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "Previous certificate requested from ACME CA server is still valid.");
@@ -255,14 +257,14 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * Check the existing certificate and determine whether a new certificate is
 	 * required.
 	 * 
-	 * @param existingCertificate
-	 *            the existing certificate.
+	 * @param existingCertChain
+	 *            the existing certificate chain.
 	 * @return true if a new certificate should be requested, false if the
 	 *         existing certificate is still valid.
 	 * @throws AcmeCaException
 	 *             If there was an issue checking the existing certificate.
 	 */
-	private boolean isCertificateRequired(X509Certificate existingCertificate) throws AcmeCaException {
+	private boolean isCertificateRequired(List<X509Certificate> existingCertChain) throws AcmeCaException {
 		/**
 		 * Check to see if we need to fetch a new certificate. Reasons may
 		 * include:
@@ -275,39 +277,54 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * 5. TODO More?
 		 * </pre>
 		 */
-		boolean certificateRequired = false;
-		if (isCertificateExpired(existingCertificate)) {
-			certificateRequired = true;
-		} else if (isCertificateRevoked(existingCertificate)) {
-			certificateRequired = true;
-		} else if (hasWrongDomains(existingCertificate)) {
-			certificateRequired = true;
-		}
-
-		return certificateRequired;
+		return isExpired(existingCertChain.get(0)) || isRevoked(existingCertChain)
+				|| hasWrongDomains(existingCertChain.get(0)) || hasWrongSubjectRDNs(existingCertChain.get(0));
 	}
 
 	/**
 	 * Check if a new certificate is required and retrieve it if so.
 	 * 
-	 * @param existingCertificate
-	 *            the existing certificate.
+	 * @param existingCertChain
+	 *            the existing certificate chain.
 	 * @param forceRefresh
 	 *            Force a refresh of the certificate.
 	 * @return The {@link AcmeCertificate} containing the new certificate.
 	 * @throws AcmeCaException
 	 *             If there was an issue checking or retrieving the certificate.
 	 */
-	private AcmeCertificate checkAndRetrieveCertificate(X509Certificate existingCertificate, boolean forceRefresh)
+	private AcmeCertificate checkAndRetrieveCertificate(List<X509Certificate> existingCertChain, boolean forceRefresh)
 			throws AcmeCaException {
 		/*
 		 * Check if we need to get a new certificate.
 		 */
-		if (forceRefresh || isCertificateRequired(existingCertificate)) {
+		if (forceRefresh || isCertificateRequired(existingCertChain)) {
 			return fetchCertificate();
 		}
 
 		return null;
+	}
+
+	/**
+	 * Convert an array of {@link Certificate} to a {@link List} of
+	 * {@link X509Certificate}.
+	 * 
+	 * @param certChain
+	 *            The certificate chain array to convert.
+	 * @return The {@link List} of {@link X509Certificate}s.
+	 * @throws AcmeCaException
+	 *             If any of the certificates were not an instance of
+	 *             {@link X509Certificate}.
+	 */
+	private List<X509Certificate> convertToX509CertChain(Certificate[] certChain) throws AcmeCaException {
+		List<X509Certificate> x509Chain = new ArrayList<X509Certificate>();
+		for (Certificate cert : certChain) {
+			if (cert instanceof X509Certificate) {
+				x509Chain.add((X509Certificate) cert);
+			} else {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2044E", cert.getType()));
+			}
+		}
+		return x509Chain;
 	}
 
 	/**
@@ -408,13 +425,78 @@ public class AcmeProviderImpl implements AcmeProvider {
 	}
 
 	/**
+	 * Check if the certificate's subject RDNs match the configured subjectDN.
+	 * 
+	 * <p/>
+	 * Note that this isn't the best check. It is possible that the ACME CA
+	 * server may not even honor the RDN's (beside the required CN).
+	 * 
+	 * @param certificate
+	 *            The certificate to check.
+	 * @return whether the certificate's subject RDNs match the configured
+	 *         subjectDN.
+	 * @throws AcmeCaException
+	 */
+	private boolean hasWrongSubjectRDNs(X509Certificate certificate) throws AcmeCaException {
+		String methodName = "hasWrongSubjectRDNs(X509Certificate)";
+		boolean hasWrongSubjectRDNs = false;
+
+		List<Rdn> configuredRdns = acmeConfig.getSubjectDN();
+		List<Rdn> certRdns;
+		try {
+			certRdns = new LdapName(certificate.getSubjectX500Principal().getName()).getRdns();
+
+		} catch (InvalidNameException e) {
+			throw new AcmeCaException(
+					Tr.formatMessage(tc, "CWPKI2031E", certificate.getSubjectX500Principal().getName(),
+							certificate.getSerialNumber().toString(16), e.getMessage()),
+					e);
+		}
+
+		/*
+		 * Determine if the RDNs match between the configuration and the
+		 * certificate.
+		 */
+		boolean rdnsMatch = true;
+		if (certRdns.size() == 1) {
+			/*
+			 * If the certificate only has a single RDN, assume that the CA
+			 * doesn't honor other RDNs besides CN.
+			 */
+			rdnsMatch = certRdns.get(0).equals(configuredRdns.get(0));
+		} else if (certRdns.size() == configuredRdns.size()) {
+			/*
+			 * More than 1 RDN for both the configured subjedDN and the cert?
+			 * Make sure they all match.
+			 */
+			for (int idx = 0; idx < certRdns.size(); idx++) {
+				if (!certRdns.get(idx).equals(configuredRdns.get(idx))) {
+					rdnsMatch = false;
+					break;
+				}
+			}
+		} else {
+			rdnsMatch = false;
+		}
+
+		if (!rdnsMatch) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, methodName, "The certificate subject's RDNs do not match the configuration.");
+			}
+			hasWrongSubjectRDNs = true;
+		}
+
+		return hasWrongSubjectRDNs;
+	}
+
+	/**
 	 * Is the existing certificate expired or nearly expired?
 	 * 
 	 * @param certificate
 	 *            The certificate to check.
 	 * @return true if the certificate is expired or nearly expiring.
 	 */
-	private boolean isCertificateExpired(X509Certificate certificate) {
+	private boolean isExpired(X509Certificate certificate) {
 		/*
 		 * Certificates not after date.
 		 */
@@ -442,12 +524,35 @@ public class AcmeProviderImpl implements AcmeProvider {
 	/**
 	 * Has the certificate been revoked?
 	 * 
-	 * @param certificate
-	 *            The certificate to check.
+	 * @param certificateChain
+	 *            The certificate chain to check.
 	 * @return True if the certificate has been revoked, false otherwise.
 	 */
-	private boolean isCertificateRevoked(X509Certificate certificate) {
-		// TODO Check CRLs and OSCPs
+	private boolean isRevoked(List<X509Certificate> certificateChain) {
+
+		// try {
+		// CertificateFactory certificateFactory =
+		// CertificateFactory.getInstance("X.509");
+		// CertPath certPath =
+		// certificateFactory.generateCertPath(certificateChain);
+		// CertPathValidator validator = CertPathValidator.getInstance("PKIX");
+		// PKIXParameters params = new PKIXParameters(keystore);
+		// params.setRevocationEnabled(true);
+		//
+		// if (!Boolean.valueOf(Security.getProperty("oscp.enabled"))) {
+		// Tr.warning(tc,
+		// "ABCDEFGH: OCSP certificate revocation checking is not enabled.
+		// Certificate revocate checking will be limited to CRLs only.");
+		// }
+		//
+		// PKIXCertPathValidatorResult r = (PKIXCertPathValidatorResult)
+		// validator.validate(certPath, params);
+		// return true;
+		//
+		// } catch (NoSuchAlgorithmException e) {
+		//
+		// }
+
 		return false;
 	}
 
@@ -492,16 +597,18 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * Get the current certificate for the default alias from the default
 	 * keystore.
 	 * 
-	 * @return The {@link X509Certificate} that is stored under the default
-	 *         alias in the default keystore.
+	 * @return The {@link X509Certificate} chain that is stored under the
+	 *         default alias in the default keystore.
 	 * @throws AcmeCaException
 	 */
-	private X509Certificate getConfiguredDefaultCertificate() throws AcmeCaException {
+	private List<X509Certificate> getConfiguredDefaultCertificate() throws AcmeCaException {
 		/*
 		 * Get our existing certificate.
 		 */
 		try {
-			return keyStoreServiceRef.get().getX509CertificateFromKeyStore(DEFAULT_KEY_STORE, DEFAULT_ALIAS);
+			Certificate[] certChain = keyStoreServiceRef.get().getCertificateChainFromKeyStore(DEFAULT_KEY_STORE,
+					DEFAULT_ALIAS);
+			return convertToX509CertChain(certChain);
 		} catch (KeyStoreException | CertificateException e) {
 			throw new AcmeCaException(
 					Tr.formatMessage(tc, "CWPKI2033E", DEFAULT_ALIAS, DEFAULT_KEY_STORE, e.getMessage()), e);
@@ -516,6 +623,8 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 *            The path to generate the new keystore.
 	 * @param password
 	 *            The password for the generated keystore and certificate.
+	 * @throws CertificateException
+	 *             if there was an error creating the certificate.
 	 */
 	@Override
 	public File createDefaultSSLCertificate(String filePath, @Sensitive String password) throws CertificateException {

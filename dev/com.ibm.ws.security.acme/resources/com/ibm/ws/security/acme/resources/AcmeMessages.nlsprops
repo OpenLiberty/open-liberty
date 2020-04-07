@@ -48,9 +48,9 @@ CWPKI2005E.useraction=Select a certificate authority that provides a supported c
 
 CWPKI2006I=CWPKI2006I: The ACME certificate authority at the {0} URI provided the following terms of service: {1}
 CWPKI2006I.explanation=The certificate authority provides terms of service.
-CWPKI2006I.useraction= Review the provided terms of service.
+CWPKI2006I.useraction=Review the provided terms of service.
 
-CWPKI2007I=CWPKI2007I: The ACME service installed a certificate that is signed by the ACME certificate authority at the {0} URI. The expiration date is {1}.
+CWPKI2007I=CWPKI2007I: The ACME service installed a certificate with a {0} serial number that is signed by the ACME certificate authority at the {1} URI. The expiration date is {2}.
 CWPKI2007I.explanation=The ACME service successfully retrieved and installed a certificate from the configured certificate authority.
 CWPKI2007I.useraction=No action is required.
 
@@ -177,3 +177,27 @@ CWPKI2037E.useraction=Provide at least one non-null, non-empty domain in the con
 CWPKI2038W=CWPKI2038W: The ACME service was unable to revoke the certificate with serial number {0}. The error is ''{1}.''
 CWPKI2038W.explanation=The ACME service attempted to revoke the certificate, but was unable to.
 CWPKI2038W.useraction=Review the error message for details on the failure. The certificate will need to be revoked manually.
+
+CWPKI2039E=CWPKI2039E: The ''{0}'' distinguished name (DN) defined by subjectDN contains a ''{1}'' cn relative distinguished name (RDN) value that does not match any of the defined domains.
+CWPKI2039E.explanation=If the cn RDN value is included in the DN, it must match one of the defined domains.
+CWPKI2039E.useraction=Provide either a subjectDN attribute value with a cn RDN value that matches one of the defined domains or a subjectDN attribute value that does not have the cn RDN included.
+
+CWPKI2040E=CWPKI2040E: The cn relative distinguished name (RDN) was not the first RDN in the subjectDN configuration attribute.
+CWPKI2040E.explanation=If the cn RDN is defined, it must be the first RDN in the subjectDN configuration attribute.
+CWPKI2040E.useraction=Provide a subjectDN attribute value that either defines the cn attribute as the first RDN, or does not contain the cn attribute. If the cn attribute is not defined, the first defined domain is used as the cn RDN value.
+
+CWPKI2041E=CWPKI2041E: The ''{0}'' relative distinguished name (RDN) type in the subjectDN configuration attribute is not supported. The following RDN types are supported: cn, o, ou, c, st, l.
+CWPKI2041E.explanation=The subjectDN attribute value contains an RDN that is not supported.
+CWPKI2041E.useraction=Provide a subjectDN attribute value that does not contain unsupported RDN types. The following RDN types are supported: cn, o, ou, c, st, l.
+
+CWPKI2042E=CWPKI2042E: The ''{0}'' subjectDN attribute value is not a valid distinguished name. The error is ''{1}''.
+CWPKI2042E.explanation=The subjectDN attribute must be a valid distinguished name.
+CWPKI2042E.useraction=Provide a valid distinguished name as the subjectDN attribute value.
+
+CWPKI2043E=CWPKI2043E: The ''{0}'' value is not a valid relative distinguished name (RDN). The error is ''{1}''.
+CWPKI2043E.explanation=The ACME service was not able to create an RDN from the specified value.
+CWPKI2043E.useraction=Ensure the the domain included in the value is a valid RDN value.
+
+CWPKI2044E=CWPKI2044E: The certificate is not an X.509 certificate. The certificate type is {0}.
+CWPKI2044E.explanation=The ACME service expects all certificates in the certificate chain to be X.509 certificates.
+CWPKI2044E.useraction=Ensure that all the certificates in the certificate chain are X.509 certificates and try again.

@@ -252,7 +252,7 @@ public class AcmeFatUtils {
 	 *            Liberty server to update.
 	 * @param originalConfig
 	 *            The original configuration to update from.
-	 * @param userAcmeURIs
+	 * @param useAcmeURIs
 	 *            Use "acme://" style URIs for ACME providers.
 	 * @param domains
 	 *            Domains to request the certificate for.
@@ -271,16 +271,8 @@ public class AcmeFatUtils {
 		 * Configure the acmeCA-2.0 feature.
 		 */
 		AcmeCA acmeCA = clone.getAcmeCA();
-		acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI(useAcmeURIs));
 		acmeCA.setDomain(Arrays.asList(domains));
-		acmeCA.setAcceptTermsOfService(true);
-
-		if (!useAcmeURIs) {
-			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
-			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
-			acmeTransportConfig.setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
-			acmeCA.setAcmeTransportConfig(acmeTransportConfig);
-		}
+		configureAcmeCaConnection(useAcmeURIs, acmeCA);
 
 		/*
 		 * The defaultHttpEndpoint needs to point to the port the CA has been
@@ -297,6 +289,24 @@ public class AcmeFatUtils {
 		 * Apply the configuration.
 		 */
 		AcmeFatUtils.updateConfigDynamically(server, clone);
+	}
+
+	/**
+	 * Configure the connection related information for the ACME CA server.
+	 * 
+	 * @param useAcmeURIs
+	 *            Use "acme://" style URIs for ACME providers.
+	 * @param acmeCA
+	 *            The {@link AcmeCA} instance to update.
+	 */
+	public static void configureAcmeCaConnection(boolean useAcmeURIs, AcmeCA acmeCA) {
+		acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI(useAcmeURIs));
+		if (!useAcmeURIs) {
+			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
+			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
+			acmeTransportConfig.setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
+			acmeCA.setAcmeTransportConfig(acmeTransportConfig);
+		}
 	}
 
 	/**
@@ -401,7 +411,7 @@ public class AcmeFatUtils {
 	 * @param server
 	 */
 	public static final void waitForAcmeToReplaceCertificate(LibertyServer server) {
-		assertNotNull("ACME did not update replace the certificate.", server.waitForStringInLog("CWPKI2007I"));
+		assertNotNull("ACME did not replace the certificate.", server.waitForStringInLog("CWPKI2007I"));
 	}
 
 	/**

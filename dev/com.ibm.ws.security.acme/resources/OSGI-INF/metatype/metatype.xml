@@ -26,11 +26,7 @@
   <!-- CSR related fields. -->
   <AD id="domain"               name="internal" description="internal use only" type="String"  required="true"  cardinality="2147483647" />
   <AD id="validFor"             name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" />
-  <AD id="country"              name="internal" description="internal use only" type="String"  required="false" />
-  <AD id="locality"             name="internal" description="internal use only" type="String"  required="false" />
-  <AD id="state"                name="internal" description="internal use only" type="String"  required="false" />
-  <AD id="organization"         name="internal" description="internal use only" type="String"  required="false" />
-  <AD id="organizationalUnit"   name="internal" description="internal use only" type="String"  required="false" />
+  <AD id="subjectDN"            name="internal" description="internal use only" type="String"  required="false" />
   
   <!-- Challenge and order related fields. -->
   <AD id="challengeRetries"     name="internal" description="internal use only" type="Integer" required="false" default="10" />
@@ -41,7 +37,6 @@
   <!-- ACME account related fields. -->
   <AD id="accountKeyFile"       name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeAccountKey.pem" />
   <AD id="accountContact"       name="internal" description="internal use only" type="String"  required="false" cardinality="2147483647" />
-  <AD id="acceptTermsOfService" name="internal" description="internal use only" type="Boolean" required="false" default="false" />
   <AD id="domainKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeDomainKey.pem" />
 
   <!-- Transport configuration. -->
