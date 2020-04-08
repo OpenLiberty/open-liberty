@@ -70,5 +70,5 @@ Subsystem-Category: JavaEE8Application
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
 Subsystem-Name: Java Servlets 5.0
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel
