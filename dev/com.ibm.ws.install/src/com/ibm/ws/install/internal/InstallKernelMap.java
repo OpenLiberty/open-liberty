@@ -134,6 +134,7 @@ public class InstallKernelMap implements Map {
     private static final String IS_FEATURE_UTILITY = "is.feature.utility";
     private static final String CLEANUP_UPGRADE = "cleanup.upgrade";
     private static final String UPGRADE_COMPLETE = "upgrade.complete";
+    private static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -422,6 +423,12 @@ public class InstallKernelMap implements Map {
                 data.put(ENVIRONMENT_VARIABLE_MAP, value);
             } else {
                 throw new IllegalArgumentException();
+            }
+        } else if (OVERRIDE_ENVIRONMENT_VARIABLES.equals(key)) {
+            if(value instanceof Map<?, ?>) {
+                overrideEnvMap((Map<String, Object>) value);
+            } else {
+                throw  new IllegalArgumentException();
             }
         } else if (DOWNLOAD_ARTIFACT_SINGLE.equals(key)) {
             if (value instanceof String) {
@@ -878,18 +885,34 @@ public class InstallKernelMap implements Map {
             }
 
         } catch (FileNotFoundException e) {
-            throw new InstallException("websphere json file not found"); //TODO
+//            throw new InstallException("websphere json file not found"); //TODO
+            // this keeps giving me an error
+//            com.ibm.ws.install.InstallException: websphere json file not found
+//            at com.ibm.ws.install.internal.InstallKernelMap.upgradeRequired(InstallKernelMap.java:888)
+//            at com.ibm.ws.install.internal.InstallKernelMap.singleFileResolve(InstallKernelMap.java:767)
+//            at com.ibm.ws.install.internal.InstallKernelMap.get(InstallKernelMap.java:287)
+            // when i try ./featureUtility installFeature jsp-2.3
         }
 
         return upgradeRequired;
     }
 
+    /**
+     * override the environmental variable values map
+     * @param overrideMap
+     */
     public void overrideEnvMap(Map<String, Object> overrideMap){
-        if(this.envMap == null || overrideMap == null) return;
-
-        this.envMap.putAll(overrideMap);
-
-
+        logger.fine("envmap before:" );
+        if(overrideMap == null){
+            return;
+        }
+        if(envMap == null){
+            envMap = new HashMap<>();
+        }
+        logger.fine(this.envMap.toString());
+        envMap.putAll(overrideMap);
+        logger.fine("printing envmap after");
+        logger.fine(envMap.toString());
     }
 
     private static Collection<String> keepFirstInstance(Collection<String> dupStrCollection) {
@@ -1018,7 +1041,7 @@ public class InstallKernelMap implements Map {
     }
 
     /**
-     * @param fromRepo
+     * @param
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -1115,7 +1138,9 @@ public class InstallKernelMap implements Map {
             return null;
         }
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        artifactDownloader.setEnvMap(envMap);
         for(MavenRepository repository : repositories){
+            logger.fine("Testing connection for repository: " + repository);
             if(artifactDownloader.testConnection(repository)){
                 return repository;
             }
@@ -1259,7 +1284,7 @@ public class InstallKernelMap implements Map {
     /**
      * generate a JSON from provided individual ESA files
      *
-     * @param generatedJson path
+     * @param jsonDirectory path
      * @param shortNameMap  contains features parsed from individual esa files
      * @return singleJson file
      * @throws IOException
@@ -1829,7 +1854,7 @@ public class InstallKernelMap implements Map {
     /**
      * @param downloadDir
      * @param licenseCoord
-     * @param targerDir
+     * @param targetDir
      * @throws IOException
      */
     private void unpackLicenseObject(String downloadDir, String licenseCoord, String targetDir) throws IOException {

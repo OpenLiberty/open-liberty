@@ -154,7 +154,7 @@ public class ArtifactDownloader {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
             } else {
-                download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats);
+                download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats, repository);
             }
         } catch (IOException e) {
             throw new InstallException(e.getMessage());
@@ -163,12 +163,12 @@ public class ArtifactDownloader {
     }
 
     private void download(String urlLocation, String dLocation, String groupId, String artifactId, String version, String filename,
-                          String[] checksumFormats) throws IOException, InstallException {
+                          String[] checksumFormats, MavenRepository mavenRepository) throws IOException, InstallException {
         try {
             URI uriLoc = new URI(urlLocation);
             File fileLoc = new File(ArtifactDownloaderUtils.getFileLocation(dLocation, groupId, artifactId, version, filename));
 
-            downloadInternal(uriLoc, fileLoc);
+            downloadInternal(uriLoc, fileLoc, mavenRepository);
 
             downloadedFiles.add(fileLoc);
             boolean someChecksumExists = false;
@@ -263,6 +263,7 @@ public class ArtifactDownloader {
         configureAuthentication(repository);
         try {
             int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap);
+            logger.fine("Response code: " + responseCode);
             if (responseCode != 404) {
                 // repo is fine for use
                 return true;
@@ -274,7 +275,7 @@ public class ArtifactDownloader {
     }
 
 
-    private void downloadInternal(URI address, File destination) throws IOException, InstallException {
+    private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
         OutputStream out = null;
         URLConnection conn;
         InputStream in = null;
@@ -295,7 +296,7 @@ public class ArtifactDownloader {
             } else {
                 conn = url.openConnection();
             }
-            addBasicAuthentication(address, conn);
+            addBasicAuthentication(address, conn, repository);
             final String userAgentValue = calculateUserAgent();
             conn.setRequestProperty("User-Agent", userAgentValue);
             conn.connect();
@@ -331,8 +332,8 @@ public class ArtifactDownloader {
         return String.format("%s/%s (%s;%s;%s) (%s;%s;%s)", appName, appVersion, osName, osVersion, osArch, javaVendor, javaVersion, javaVendorVersion);
     }
 
-    private void addBasicAuthentication(URI address, URLConnection conn) throws IOException {
-        String userInfo = calculateUserInfo(address);
+    private void addBasicAuthentication(URI address, URLConnection conn, MavenRepository repository) throws IOException {
+        String userInfo = calculateUserInfo(address, repository);
         if (userInfo == null) {
             return;
         }
@@ -356,11 +357,13 @@ public class ArtifactDownloader {
         }
     }
 
-    private String calculateUserInfo(URI uri) {
-
-        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
-            return (String)envMap.get("FEATURE_REPO_USER") + ':' + (String)envMap.get("FEATURE_REPO_PASSWORD");
+    private String calculateUserInfo(URI uri, MavenRepository repository) {
+        if(repository.getUserId() != null && repository.getPassword() != null){
+            return repository.getUserId() + ":" + repository.getPassword();
         }
+//        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
+//            return (String)envMap.get("FEATURE_REPO_USER") + ':' + (String)envMap.get("FEATURE_REPO_PASSWORD");
+//        }
         return uri.getUserInfo();
     }
 

@@ -88,7 +88,7 @@ public class FeatureUtility {
 
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-        Map<String, String> envMap = (Map<String, String>) map.get("environment.variable.map");
+        Map<String, Object> envMap = (Map<String, Object>) map.get("environment.variable.map");
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }
@@ -100,12 +100,14 @@ public class FeatureUtility {
         		fine("FEATURE_REPO_PASSWORD: *********");
         	} else if (key.equals("FEATURE_LOCAL_REPO") && envMap.get("FEATURE_LOCAL_REPO") != null) {
         		fine(key +": " + envMap.get(key));
-        		File local_repo = new File(envMap.get("FEATURE_LOCAL_REPO"));
+        		File local_repo = new File((String) envMap.get("FEATURE_LOCAL_REPO"));
         		this.fromDir = local_repo;
         	}else {
-        		fine(key +": " + envMap.get(key));
+        		fine(key +": " + (envMap.get(key)));
         	}
         }
+        overrideEnvMapWithProperties();
+
         if (noCache != null && noCache) {
             fine("Features installed from the remote repository will not be cached locally");
         }
@@ -189,13 +191,17 @@ public class FeatureUtility {
             overrideMap.put("http_proxy", https_proxy);
         }
 
+        // override the local feature repo
+        if(FeatureUtilityProperties.getFeatureLocalRepo() != null){
+            overrideMap.put("FEATURE_LOCAL_REPO", FeatureUtilityProperties.getFeatureLocalRepo());
+        }
+
         // override maven repositories
         if(!FeatureUtilityProperties.isUsingDefaultRepo()){
             overrideMap.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", FeatureUtilityProperties.getMirrorRepositories());
         }
 
-
-
+        map.put("override.environment.variables", overrideMap);
     }
 
     /**
