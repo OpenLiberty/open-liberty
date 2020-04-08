@@ -3799,6 +3799,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Set autocommit FALSE and RR isolation on the connection
                 initialIsolation = prepareConnectionForBatch(conn);
                 internalHeartBeat(conn);
+
                 // commit the work
                 conn.commit();
                 sqlSuccess = true;
@@ -3851,6 +3852,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
                         sqlSuccess = heartbeatRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
                                                                    _lightweightTransientRetrySleepTime);
+                        if (!sqlSuccess)
+                            nonTransientException = heartbeatRetry.getNonTransientException();
                     } else {
                         // Exception not able to be retried
                         Tr.debug(tc, "Cannot recover from Exception when heartbeating for server " + _serverName + " Exception: "
@@ -3989,6 +3992,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tableExists) {
             try {
                 isClaimed = internalClaimRecoveryLogs(conn, true);
+
                 // commit the work
                 conn.commit();
                 sqlSuccess = true;
@@ -4015,6 +4019,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         Tr.debug(tc, "Close Failed, after claimLocalRecoveryLogs success, got exception: " + exc);
                 }
             } else { // !sqlSuccess
+                // Ensure that "isClaimed" is false in this case
+                isClaimed = false;
                 // Tidy up current connection before dropping into retry code
                 // Attempt a rollback. If it fails, trace the failure but allow processing to continue
                 try {
@@ -4229,6 +4235,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             // Set autocommit FALSE and RR isolation on the connection
             initialIsolation = prepareConnectionForBatch(conn);
             isClaimed = internalClaimRecoveryLogs(conn, false);
+
             // commit the work
             conn.commit();
             sqlSuccess = true;
@@ -4256,6 +4263,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     Tr.debug(tc, "Close Failed, after claimPeerRecoveryLogs success, got exception: " + exc);
             }
         } else { // !sqlSuccess
+            // Ensure that "isClaimed" is false in this case
+            isClaimed = false;
+
             // Tidy up current connection before dropping into retry code
             // Attempt a rollback. If it fails, trace the failure but allow processing to continue
             try {
@@ -4353,7 +4363,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setStandardTransientErrorRetryAttempts", standardTransientErrorRetryAttempts);
 
-        _lightweightTransientRetryAttempts = standardTransientErrorRetryAttempts;
+        _transientRetryAttempts = standardTransientErrorRetryAttempts;
     }
 
     /*
@@ -4379,7 +4389,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setLightweightTransientErrorRetryAttempts", lightweightTransientErrorRetryAttempts);
 
-        _transientRetryAttempts = lightweightTransientErrorRetryAttempts;
+        _lightweightTransientRetryAttempts = lightweightTransientErrorRetryAttempts;
     }
 
     /**
