@@ -1800,25 +1800,22 @@ public class InstallKernelMap implements Map {
         String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion + ".json";
         File websphereJson = new File(jsonPath);
         Set<String> result = new HashSet<String>();
-        try {
-            try (JsonReader reader = Json.createReader(new FileInputStream(websphereJson))) {
-                JsonArray assetList = reader.readArray();
-                for (JsonValue val : assetList) {
-                    if (val.getValueType() == ValueType.OBJECT) {
-                        JsonObject featureObject = (JsonObject) val;
-                        JsonObject wlpFeatureInfo = featureObject.getJsonObject("wlpInformation");
-                        String lowerCaseShortName = wlpFeatureInfo.getString("lowerCaseShortName", null);
-                        String name = featureObject.getString("name", null);
-                        String licenseMavenCoordinate = wlpFeatureInfo.getString("licenseMavenCoordinate", defaultLicense);
-                        if (lowerCaseShortName != null && containsStr(lowerCaseShortName, featureList)) {
-                            result.add(licenseMavenCoordinate);
-                        } else if (name != null && containsStr(name, featureList)) {
-                            result.add(licenseMavenCoordinate);
-                        }
+        try (JsonReader reader = Json.createReader(new FileInputStream(websphereJson))) {
+            JsonArray assetList = reader.readArray();
+            for (JsonValue val : assetList) {
+                if (val.getValueType() == ValueType.OBJECT) {
+                    JsonObject featureObject = (JsonObject) val;
+                    JsonObject wlpFeatureInfo = featureObject.getJsonObject("wlpInformation");
+                    String lowerCaseShortName = wlpFeatureInfo.getString("lowerCaseShortName", null);
+                    String name = featureObject.getString("name", null);
+                    String licenseMavenCoordinate = wlpFeatureInfo.getString("licenseMavenCoordinate", defaultLicense);
+                    if (lowerCaseShortName != null && containsStr(lowerCaseShortName, featureList)) {
+                        result.add(licenseMavenCoordinate);
+                    } else if (name != null && containsStr(name, featureList)) {
+                        result.add(licenseMavenCoordinate);
                     }
                 }
             }
-
         } catch (FileNotFoundException e) {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", WEBSPHERE_LIBERTY_GROUP_ID));
         }
