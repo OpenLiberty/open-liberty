@@ -40,7 +40,7 @@ public class LicenseUpgradeUtility {
     final String OL_NOTICES = "NOTICES";
     final String OL_TAG_PREFIX = "openliberty";
     private String name;
-    private String programName;
+    private final String programName;
     private static final String PROGRAM_NAME = "Program Name (Program Number):";
     private static final String LA_PREFIX = "LA_";
     private static final String LI_PREFIX = "LI_";
@@ -93,7 +93,7 @@ public class LicenseUpgradeUtility {
      * @throws IOException
      * @throws InstallException
      */
-    public boolean handleLicenses() throws InstallException {
+    public boolean handleLicenses(String featureList) throws InstallException {
         if (acceptLicense) {
             return true;
         }
@@ -105,7 +105,7 @@ public class LicenseUpgradeUtility {
             System.out.println("unable to find license files in folder: " + wlpDir + WEBSPHERE_LICENSE_FILE_DIR);
             //TODO throw an error
         }
-        if (!!!handleLicenseAcceptance(laFilePath, liFilePath)) {
+        if (!!!handleLicenseAcceptance(laFilePath, liFilePath, featureList)) {
             return false;
         }
         return true;
@@ -170,11 +170,11 @@ public class LicenseUpgradeUtility {
         return result;
     }
 
-    private boolean handleLicenseAcceptance(String laFilePath, String liFilePath) {
+    private boolean handleLicenseAcceptance(String laFilePath, String liFilePath, String featureList) {
         //
         // Display license requirement
         //
-        SelfExtract.wordWrappedOut(SelfExtract.format("licenseStatement", new Object[] { programName, name }));
+        SelfExtract.wordWrappedOut(SelfExtract.format("licenseStatement", new Object[] { featureList, name }));
         System.out.println();
         if (!obtainLicenseAgreement(laFilePath, liFilePath)) {
             return false;
@@ -197,7 +197,7 @@ public class LicenseUpgradeUtility {
         SelfExtract.wordWrappedOut(SelfExtract.format("showInformation", "--viewLicenseInfo"));
         view = SelfExtract.getResponse(SelfExtract.format("promptInfo"), "", "xX");
         if (view) {
-            SelfExtract.wordWrappedOut(getStrFromFile(laFilePath));
+            SelfExtract.wordWrappedOut(getStrFromFile(liFilePath));
             System.out.println();
         }
 
@@ -314,13 +314,6 @@ public class LicenseUpgradeUtility {
                         name = line.replaceFirst("\\d\\.", "").trim();
                     }
                     firstTenLinesCounter += 1;
-                }
-                if (isProgramName && !line.isEmpty()) {
-                    programName = line.replaceAll("[(].+[)]", "").trim();
-                    isProgramName = false;
-                }
-                if (line.contains(PROGRAM_NAME)) {
-                    isProgramName = true;
                 }
             }
         } catch (IOException e) {
