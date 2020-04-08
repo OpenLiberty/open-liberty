@@ -39,7 +39,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	private static final String CLASS_NAME = GrpcServletContainerInitializer.class.getName();
 	private static final Logger logger = Logger.getLogger(GrpcServletContainerInitializer.class.getName());
 
-	private static ConcurrentHashMap<String, GrpcServletApplication>  grpcApplications;
+	private static ConcurrentHashMap<String, GrpcServletApplication> grpcApplications;
 	GrpcServlet grpcServlet;
 
 	/**
@@ -56,33 +56,35 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 			// TODO: optionally load classes with CDI to allow injection in service classes
 			// init all other BindableService classes via reflection
 			GrpcServletApplication currentApp = grpcApplications.get(((WebApp) sc).getApplicationName());
-			Set<String> services = currentApp.getServiceClassNames();
-			if (services != null) {
-				Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
-				for (String serviceClassName : services) {
-					BindableService service = newServiceInstanceFromClassName(serviceClassName);
-					if (service != null) {
-						grpcServiceClasses.put(serviceClassName, service);
+			if (currentApp != null) {
+				Set<String> services = currentApp.getServiceClassNames();
+				if (services != null) {
+					Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
+					for (String serviceClassName : services) {
+						BindableService service = newServiceInstanceFromClassName(serviceClassName);
+						if (service != null) {
+							grpcServiceClasses.put(serviceClassName, service);
+						}
 					}
-				}
-				if (!grpcServiceClasses.isEmpty()) {
-					// pass all of our grpc service implementors into a new GrpcServlet
-					// and register that new Servlet on this context
-					grpcServlet = new GrpcServlet(new ArrayList<BindableService>(grpcServiceClasses.values()));
-					ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet", grpcServlet);
-					servletRegistration.setAsyncSupported(true);
+					if (!grpcServiceClasses.isEmpty()) {
+						// pass all of our grpc service implementors into a new GrpcServlet
+						// and register that new Servlet on this context
+						grpcServlet = new GrpcServlet(new ArrayList<BindableService>(grpcServiceClasses.values()));
+						ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet", grpcServlet);
+						servletRegistration.setAsyncSupported(true);
 
-					// register URL mappings for each gRPC service we've registered
-					for (BindableService service : grpcServiceClasses.values()) {
-						String serviceName = service.bindService().getServiceDescriptor().getName();
-						String urlPattern = "/" + serviceName + "/*";
-						servletRegistration.addMapping(urlPattern);
-						// keep track of this service name -> application path mapping
-						currentApp.addServiceName(serviceName, sc.getContextPath());
-						Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup",
-								"Registered gRPC service at URL: " + urlPattern);
+						// register URL mappings for each gRPC service we've registered
+						for (BindableService service : grpcServiceClasses.values()) {
+							String serviceName = service.bindService().getServiceDescriptor().getName();
+							String urlPattern = "/" + serviceName + "/*";
+							servletRegistration.addMapping(urlPattern);
+							// keep track of this service name -> application path mapping
+							currentApp.addServiceName(serviceName, sc.getContextPath());
+							Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup",
+									"Registered gRPC service at URL: " + urlPattern);
+						}
+						return;
 					}
-					return;
 				}
 			}
 		}
