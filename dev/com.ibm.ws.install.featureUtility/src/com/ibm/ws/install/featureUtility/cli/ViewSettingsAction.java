@@ -24,7 +24,7 @@ import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.RepositoryConfigValidationResult;
 import com.ibm.ws.install.featureUtility.props.PropertiesUtils;
 import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
-import com.ibm.ws.install.featureUtility.props.MavenRepository;
+import com.ibm.ws.install.internal.MavenRepository;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.cmdline.InstallExecutor;

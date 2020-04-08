@@ -32,6 +32,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String methodName = "setup";
         Log.entering(c, methodName);
         setupEnv();
+
+        // rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
+        replaceWlpProperties(getPreviousWlpVersion());
         replaceWlpProperties(getPreviousWlpVersion());
         Log.exiting(c, methodName);
     }
@@ -280,7 +283,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String methodName = "testInvalidMavenCoordinatePackaging";
         Log.entering(c, methodName);
 
-        String currentVersion = getPreviousWlpVersion();
+        String currentVersion = getCurrentWlpVersion();
 
         deleteFeaturesAndLafilesFolders(methodName);
 
@@ -305,7 +308,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String methodName = "testInvalidMavenCoordinateFormatting";
         ProgramOutput po;
         String output;
-        String version = getPreviousWlpVersion();
+        String version = getCurrentWlpVersion();
 
         deleteFeaturesAndLafilesFolders(methodName);
 

@@ -134,6 +134,7 @@ public class InstallKernelMap implements Map {
     private static final String IS_FEATURE_UTILITY = "is.feature.utility";
     private static final String CLEANUP_UPGRADE = "cleanup.upgrade";
     private static final String UPGRADE_COMPLETE = "upgrade.complete";
+    private static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -155,6 +156,7 @@ public class InstallKernelMap implements Map {
     private final String JSON_ARTIFACT_ID = "features";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final String MAVEN_CENTRAL = "https://repo.maven.apache.org/maven2/";
+    private final MavenRepository MAVEN_CENTRAL_REPOSITORY = new MavenRepository("Maven Central",MAVEN_CENTRAL, null, null);
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "tmp"
                                           + File.separator;
     private static final String ETC_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "etc"
@@ -163,7 +165,7 @@ public class InstallKernelMap implements Map {
     private static final String LICENSE_DIRECTORY = "lafiles" + File.separator;
     private static final String LIB_VERSIONS_DIRECTORY = "lib" + File.separator + "versions" + File.separator;
     private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
-    private Map<String, String> envMap = null;
+    private Map<String, Object> envMap = null;
     private final List<File> upgradeFiles = new ArrayList<File>();
 
     private enum ActionType {
@@ -302,6 +304,9 @@ public class InstallKernelMap implements Map {
                 return downloadEsas();
             }
         } else if (ENVIRONMENT_VARIABLE_MAP.equals(key)) {
+            if(envMap != null){
+                return envMap;
+            }
             envMap = getEnvMap();
             return envMap;
         } else if (CLEANUP_UPGRADE.equals(key)) {
@@ -418,6 +423,12 @@ public class InstallKernelMap implements Map {
                 data.put(ENVIRONMENT_VARIABLE_MAP, value);
             } else {
                 throw new IllegalArgumentException();
+            }
+        } else if (OVERRIDE_ENVIRONMENT_VARIABLES.equals(key)) {
+            if(value instanceof Map<?, ?>) {
+                overrideEnvMap((Map<String, Object>) value);
+            } else {
+                throw  new IllegalArgumentException();
             }
         } else if (DOWNLOAD_ARTIFACT_SINGLE.equals(key)) {
             if (value instanceof String) {
@@ -852,7 +863,6 @@ public class InstallKernelMap implements Map {
         String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion + ".json";
         File websphereJson = new File(jsonPath);
         boolean upgradeRequired = false;
-        try {
             try (JsonReader reader = Json.createReader(new FileInputStream(websphereJson))) {
                 JsonArray assetList = reader.readArray();
                 int i = 0;
@@ -871,13 +881,29 @@ public class InstallKernelMap implements Map {
                     }
                     i = i + 1;
                 }
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new InstallException("websphere json file not found"); //TODO
+            } catch (FileNotFoundException e) {
+            throw new InstallException("websphere json file not found"); //TODO NEED MESSAGE
         }
 
         return upgradeRequired;
+    }
+
+    /**
+     * override the environmental variable values map
+     * @param overrideMap
+     */
+    public void overrideEnvMap(Map<String, Object> overrideMap){
+        logger.fine("envmap before:" );
+        if(overrideMap == null){
+            return;
+        }
+        if(envMap == null){
+            envMap = new HashMap<>();
+        }
+        logger.fine(this.envMap.toString());
+        envMap.putAll(overrideMap);
+        logger.fine("printing envmap after");
+        logger.fine(envMap.toString());
     }
 
     private static Collection<String> keepFirstInstance(Collection<String> dupStrCollection) {
@@ -956,7 +982,8 @@ public class InstallKernelMap implements Map {
         } else {
             downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
         }
-        String repo = getRepo(fromRepo);
+        MavenRepository repo = getMavenRepo(fromRepo);
+
 
         try {
             artifactDownloader.setEnvMap(envMap);
@@ -989,7 +1016,7 @@ public class InstallKernelMap implements Map {
         }
         String artifact = (String) this.get(DOWNLOAD_ARTIFACT_SINGLE);
         String filetype = (String) this.get(DOWNLOAD_FILETYPE);
-        String repo = getRepo(fromRepo);
+        MavenRepository repo = getMavenRepo(fromRepo);
         try {
             artifactDownloader.setEnvMap(envMap);
             artifactDownloader.synthesizeAndDownload(artifact, filetype, downloadDir, repo, true);
@@ -1005,7 +1032,7 @@ public class InstallKernelMap implements Map {
     }
 
     /**
-     * @param fromRepo
+     * @param
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -1075,13 +1102,43 @@ public class InstallKernelMap implements Map {
 
         if (envMap.get("FEATURE_REPO_URL") != null) {
             fine("Connecting to the following repository: " + envMap.get("FEATURE_REPO_URL"));
-            repo = envMap.get("FEATURE_REPO_URL");
+            repo = (String) envMap.get("FEATURE_REPO_URL");
         } else {
             fine("Connecting to the following repository: " + MAVEN_CENTRAL);
             repo = MAVEN_CENTRAL;
         }
         return repo;
     }
+
+    /**
+     * @return
+     */
+    private MavenRepository getMavenRepo(String fromRepo) {
+        // get the next working maven repo
+        MavenRepository next = getNextWorkingRepository();
+
+        MavenRepository repo = next != null ? next : MAVEN_CENTRAL_REPOSITORY;
+        fine("Connecting to the following repository: " + repo.getRepositoryUrl());
+        return repo;
+    }
+
+
+    private MavenRepository getNextWorkingRepository()  {
+        List<MavenRepository> repositories = (List<MavenRepository>) envMap.get("FEATURE_UTILITY_MAVEN_REPOSITORIES");
+        if(repositories == null){
+            return null;
+        }
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        artifactDownloader.setEnvMap(envMap);
+        for(MavenRepository repository : repositories){
+            logger.fine("Testing connection for repository: " + repository);
+            if(artifactDownloader.testConnection(repository)){
+                return repository;
+            }
+        }
+        return null;
+    }
+
 
     @SuppressWarnings("unchecked")
     public File downloadSingleFeature() {
@@ -1102,7 +1159,7 @@ public class InstallKernelMap implements Map {
         } else {
             downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
         }
-        String repo = getRepo(fromRepo);
+        MavenRepository repo = getMavenRepo(fromRepo);
         try {
             artifactDownloader.setEnvMap(envMap);
             artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
@@ -1218,7 +1275,7 @@ public class InstallKernelMap implements Map {
     /**
      * generate a JSON from provided individual ESA files
      *
-     * @param generatedJson path
+     * @param jsonDirectory path
      * @param shortNameMap  contains features parsed from individual esa files
      * @return singleJson file
      * @throws IOException
@@ -1473,8 +1530,8 @@ public class InstallKernelMap implements Map {
 
     }
 
-    private Map<String, String> getEnvMap() {
-        Map<String, String> envMapRet = new HashMap<String, String>();
+    private Map<String, Object> getEnvMap() {
+        Map<String, Object> envMapRet = new HashMap<String, Object>();
 
         //parse through httpProxy env variables
         String proxyEnvVarHttp = System.getenv("http_proxy");
@@ -1514,6 +1571,11 @@ public class InstallKernelMap implements Map {
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
         envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
+        List<MavenRepository> repos = new ArrayList<>();
+        repos.add(new MavenRepository("Environment Variables Repo", System.getenv("FEATURE_REPO_URL"),
+                System.getenv("FEATURE_REPO_USER"), System.getenv("FEATURE_REPO_PASSWORD")));
+        envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
+
         envMapRet.put("FEATURE_LOCAL_REPO", System.getenv("FEATURE_LOCAL_REPO"));
 
         //search through the properties file to look for overrides if they exist TODO
@@ -1538,11 +1600,24 @@ public class InstallKernelMap implements Map {
                     for (String k : proxyVarKeys) {
                         envMapRet.put(k, proxyVar.get(k));
                     }
-                } else {
-                    envMapRet.put(key, propsFileMap.get(key));
                 }
             }
+            if(propsFileMap.containsKey("FEATURE_LOCAL_REPO")){
+                envMapRet.put("FEATURE_LOCAL_REPO", propsFileMap.get("FEATURE_LOCAL_REPO"));
+            }
+            String url = propsFileMap.get("FEATURE_REPO_URL");
+            String user = propsFileMap.get("FEATURE_REPO_USER");
+            String pass = propsFileMap.get("FEATURE_REPO_PASSWORD");
+            if(url != null){
+                MavenRepository repo = new MavenRepository("featureUtility.env repo", url, user, pass);
+                repos = new ArrayList<>();
+                repos.add(repo);
+                envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
+            }
+
         }
+
+
 
         return envMapRet;
     }
@@ -1770,7 +1845,7 @@ public class InstallKernelMap implements Map {
     /**
      * @param downloadDir
      * @param licenseCoord
-     * @param targerDir
+     * @param targetDir
      * @throws IOException
      */
     private void unpackLicenseObject(String downloadDir, String licenseCoord, String targetDir) throws IOException {

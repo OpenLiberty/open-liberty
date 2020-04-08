@@ -2,11 +2,11 @@ package com.ibm.ws.install.featureUtility.props;
 
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.MavenRepository;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +42,14 @@ public class FeatureUtilityProperties {
 
     public static List<MavenRepository> getMirrorRepositories(){
         return repositoryList;
+    }
+
+    public static boolean canConstructHttpProxy(){
+        return getProxyHost() != null && getProxyPort() != null;
+    }
+
+    public static boolean canConstructHttpsProxy(){
+        return getProxyHost() != null && getProxyPort() != null && getProxyUser() != null && getProxyPassword() != null;
     }
 
     public static String getProxyHost(){

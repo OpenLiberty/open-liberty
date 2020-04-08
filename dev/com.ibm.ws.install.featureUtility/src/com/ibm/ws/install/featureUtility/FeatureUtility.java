@@ -37,19 +37,11 @@ import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.LicenseUpgradeUtility;
+import com.ibm.ws.install.internal.MavenRepository;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
-import com.ibm.ws.kernel.boot.ReturnCode;
-import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
-import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
-import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
-import com.ibm.ws.repository.connections.ProductDefinition;
-import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
 import com.ibm.ws.repository.exceptions.RepositoryException;
-import com.ibm.ws.repository.resources.RepositoryResource;
 //import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
@@ -96,7 +88,7 @@ public class FeatureUtility {
 
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-        Map<String, String> envMap = (Map<String, String>) map.get("environment.variable.map");
+        Map<String, Object> envMap = (Map<String, Object>) map.get("environment.variable.map");
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }
@@ -108,12 +100,14 @@ public class FeatureUtility {
         		fine("FEATURE_REPO_PASSWORD: *********");
         	} else if (key.equals("FEATURE_LOCAL_REPO") && envMap.get("FEATURE_LOCAL_REPO") != null) {
         		fine(key +": " + envMap.get(key));
-        		File local_repo = new File(envMap.get("FEATURE_LOCAL_REPO"));
+        		File local_repo = new File((String) envMap.get("FEATURE_LOCAL_REPO"));
         		this.fromDir = local_repo;
         	}else {
-        		fine(key +": " + envMap.get(key));
+        		fine(key +": " + (envMap.get(key)));
         	}
         }
+        overrideEnvMapWithProperties();
+
         if (noCache != null && noCache) {
             fine("Features installed from the remote repository will not be cached locally");
         }
@@ -168,6 +162,46 @@ public class FeatureUtility {
         map.put("license.accept", licenseAccepted);
         map.get("install.kernel.init.code");
 
+    }
+
+
+    /**
+     * Override the environment variables with any properties we can find
+     */
+    private void overrideEnvMapWithProperties(){
+        if(!FeatureUtilityProperties.didLoadProperties()){
+            logger.fine("No featureUtility.properties detected.");
+            return;
+        }
+        Map<String, Object> overrideMap = new HashMap<>();
+        logger.fine("Overriding the environment variables using featureUtility.properties");
+
+        // override proxy settings
+        String host = FeatureUtilityProperties.getProxyHost();
+        String port = FeatureUtilityProperties.getProxyPort();
+        String username = FeatureUtilityProperties.getProxyUser();
+        String password = FeatureUtilityProperties.getProxyPassword();
+
+        if(FeatureUtilityProperties.canConstructHttpProxy()){
+            String http_proxy = "http://" + host + ":" + "port";
+            overrideMap.put("http_proxy", http_proxy);
+        }
+        if(FeatureUtilityProperties.canConstructHttpsProxy()) {
+            String https_proxy = "https://" + username + ":" + password + "@" + host + ":" + port;
+            overrideMap.put("http_proxy", https_proxy);
+        }
+
+        // override the local feature repo
+        if(FeatureUtilityProperties.getFeatureLocalRepo() != null){
+            overrideMap.put("FEATURE_LOCAL_REPO", FeatureUtilityProperties.getFeatureLocalRepo());
+        }
+
+        // override maven repositories
+        if(!FeatureUtilityProperties.isUsingDefaultRepo()){
+            overrideMap.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", FeatureUtilityProperties.getMirrorRepositories());
+        }
+
+        map.put("override.environment.variables", overrideMap);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.ibm.ws.install.featureUtility.props;
+package com.ibm.ws.install.internal;
 
 public class MavenRepository {
     private String name;
@@ -7,7 +7,6 @@ public class MavenRepository {
     private String password;
 
     public MavenRepository(String name, String repositoryUrl, String userId, String password) {
-        // todo throw exception if any of these parameters are null?
         this.name = name;
         this.repositoryUrl = repositoryUrl;
         this.userId = userId;

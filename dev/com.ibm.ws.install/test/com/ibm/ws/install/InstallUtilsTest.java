@@ -36,7 +36,7 @@ public class InstallUtilsTest {
 
     @Test
     public void testGetEditionName() {
-        assertEquals("Expected empty string", "Base", InstallUtils.getEditionName("BASE"));
+        assertEquals("Expected Base", "Base", InstallUtils.getEditionName("BASE"));
         assertEquals("Expected (ILAN)", "(ILAN)", InstallUtils.getEditionName("BASE_ILAN"));
         assertEquals("Expected for Developers", "for Developers", InstallUtils.getEditionName("DEVELOPERS"));
         assertEquals("Expected - Express", "- Express", InstallUtils.getEditionName("EXPRESS"));

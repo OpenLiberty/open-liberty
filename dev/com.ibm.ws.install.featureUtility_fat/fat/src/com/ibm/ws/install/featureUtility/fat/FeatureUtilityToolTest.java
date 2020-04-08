@@ -186,8 +186,8 @@ public abstract class FeatureUtilityToolTest {
      *
      * @return previous wlp version. ex: returns 19.0.0.11 if the current version is 19.0.0.12
      */
-    protected static String getPreviousWlpVersion(){
-        String version = originalWlpVersion;
+    protected static String getPreviousWlpVersion() throws IOException {
+        String version = getCurrentWlpVersion();
         String [] split = version.split("\\.");
         String year = split[0];
         String month = split[3];
@@ -237,15 +237,35 @@ public abstract class FeatureUtilityToolTest {
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productEdition : " + originalWlpEdition);
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
         } finally {
-                try {
-                    assert fIn != null;
-                    fIn.close();
-                } catch (IOException e) {
-                    // ignore we are trying to close.
-                }
+            try {
+                assert fIn != null;
+                fIn.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
             }
         }
-    
+    }
+
+    public static String getCurrentWlpVersion() throws IOException {
+        File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/openliberty.properties");
+        wlpVersionPropFile.setReadable(true);
+
+        FileInputStream fIn = null;
+        wlpVersionProps = new Properties();
+        try {
+            fIn = new FileInputStream(wlpVersionPropFile);
+            wlpVersionProps.load(fIn);
+            return wlpVersionProps.getProperty("com.ibm.websphere.productVersion");
+
+        } finally {
+            try {
+                assert fIn != null;
+                fIn.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+
     public static String getWlpEdition() throws IOException {
         File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
         Log.info(c, "getWlpEdition", "wlpVersionPropFile exists : " + wlpVersionPropFile.exists());
@@ -270,6 +290,7 @@ public abstract class FeatureUtilityToolTest {
     	}
         return wlpEdition;
     }
+
 
     protected static void replaceWlpProperties(String version) throws Exception {
         OutputStream os = null;
