@@ -1484,6 +1484,7 @@ public class InstallKernelMap implements Map {
         String openLibertyVersion = getLibertyVersion();
         // get open liberty json
         List<File> result = new ArrayList<File>();
+        List<String> jsonsNotFound = new ArrayList<>();
         this.put(DOWNLOAD_FILETYPE, "json");
         boolean singleArtifactInstall = true;
         this.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, singleArtifactInstall);
@@ -1504,13 +1505,24 @@ public class InstallKernelMap implements Map {
                 // convert to json exception msg
 //                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", jsonGroupId));
             }
-            if (downloaded instanceof List) {
-                result.addAll((List<File>) downloaded);
+            if(downloaded == null){
+                fine("Could not download this json with maven coordinate: " + jsonCoord);
+                jsonsNotFound.add(jsonCoord);
+            }
+            else if (downloaded instanceof List) {
+                if(((List) downloaded).isEmpty()){
+                    jsonsNotFound.add(jsonCoord);
+                } else {
+                    result.addAll((List<File>) downloaded);
+                }
             } else if (downloaded instanceof File) {
-                result.add((File) downloaded);
+                if(!((File) downloaded).exists()){
+                    jsonsNotFound.add(jsonCoord);
+                } else {
+                    result.add((File) downloaded);
+                }
             }
             // TODO TODO TODO TODO TODO TODO TODO
-
         }
 
 //        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
@@ -1522,8 +1534,15 @@ public class InstallKernelMap implements Map {
 //        data.put("download.artifact.list", CLJsonCoord);
 //        File CL = (File) this.get("download.result");
 //        result.add(CL);
-
         fine("Downloaded the following json files from remote: " + result);
+
+        if(!jsonsNotFound.isEmpty()){
+            InstallException ie = new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS", jsonsNotFound));
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+        }
+
         return result;
 
     }

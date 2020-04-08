@@ -502,6 +502,12 @@ public class FeatureUtility {
         if (jsonFiles.isEmpty() || jsonFiles.size() != jsonsRequired.size()) {
             fine("Could not find all json files from local directories, now downloading from Maven..");
             jsonFiles.addAll(map.getJsonsFromMavenCentral(jsonsRequired));
+            if (map.get("action.error.message") != null) {
+                // error with installation
+                fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+                String exceptionMessage = (String) map.get("action.error.message");
+                throw new InstallException(exceptionMessage);
+            }
         }
         return jsonFiles;
     }
