@@ -265,6 +265,7 @@ public abstract class FeatureUtilityToolTest {
                 // ignore we are trying to close.
             }
         }
+    }
 
     public static String getWlpEdition() throws IOException {
         File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
@@ -358,5 +359,20 @@ public abstract class FeatureUtilityToolTest {
         Log.info(c, methodName, "DELETED FOLDERS: /lib/features, /lafiles? VALUES: " + features + ", " + lafiles);
 
         return features && lafiles;
+    }
+    
+    protected static boolean deleteProps(String methodName) throws IOException {
+        // delete /lib/features and /lafiles
+        boolean etc = TestUtils.deleteFolder(new File(minifiedRoot + "/etc"));
+        boolean props = new File(minifiedRoot+"/lib/versions/WebSphereApplicationServer.properties").delete();
+
+        Log.info(c, methodName, "DELETED files/folders: /etc, /lib/versions/WebSphereApplicationServer.properties? VALUES: " + etc + ", " + props);
+
+        return etc && props;
+    }
+    
+    protected static boolean deleteRepo(String methodName) throws IOException {
+    	boolean repo = TestUtils.deleteFolder(new File(minifiedRoot + "/repo"));
+    	return repo;
     }
 }

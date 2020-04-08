@@ -113,7 +113,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testBaseLicenseAccept";
         Log.entering(c, METHOD_NAME);
         replaceWlpProperties("20.0.0.4");
-        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.env");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
         
         copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
         		"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
@@ -127,46 +127,61 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
         		"../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
         
-        writeToProps(minifiedRoot+ "/etc/featureUtility.env", "FEATURE_LOCAL_REPO", minifiedRoot + "/repo/");
-        String[] param1s = { "installFeature", "adminCenter-1.0", "--verbose" , "--acceptLicense" };
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String edition = getWlpEdition();
         
         assertTrue("Should be edition Base", (edition.contains("BASE")));
 
-
+        deleteProps(METHOD_NAME);
+        deleteRepo(METHOD_NAME);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
 
         Log.exiting(c, METHOD_NAME);
     }
     
+    /**
+     * Test the licenseAcceptance by providing both a base and ND feature, the resulting wlp should be
+     * of version ND.
+     * @throws Exception
+     */
+    @Test
+    public void testMultiFeatureLicenseAccept() throws Exception {
+        final String METHOD_NAME = "testBaseLicenseAccept";
+        Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+        
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+        		"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+        		"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+        
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
+        		"../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
+        
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
+        		"../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
+        
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
 
-//    /**
-//     * Test the licenseAcceptance for a multiple features. Given a Base feature and an ND feature
-//     * the resulting wlp should be version ND
-//     * @throws Exception
-//     */
-//    @Test
-//    public void testMultiFeatureLicenseAccept() throws Exception {
-//        final String METHOD_NAME = "testClosedLibertyFeature";
-//        Log.entering(c, METHOD_NAME);
-//
-//        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
-//
-//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
-//        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-//        assertEquals("Exit code should be 0", 0, po.getReturnCode());
-//        String output = po.getStdout();
-//        assertTrue("Should contain adminCenter-1.0", (output.contains("adminCenter-1.0")));
-//
-//
-//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
-//
-//
-//        Log.exiting(c, METHOD_NAME);
-//    }
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        String edition = getWlpEdition();
+        
+        assertTrue("Should be edition ND", (edition.contains("ND")));
+
+        deleteProps(METHOD_NAME);
+        deleteRepo(METHOD_NAME);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
+
+        Log.exiting(c, METHOD_NAME);
+    }
 
 
     /**

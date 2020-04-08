@@ -882,7 +882,7 @@ public class InstallKernelMap implements Map {
                     i = i + 1;
                 }
             } catch (FileNotFoundException e) {
-            throw new InstallException("websphere json file not found"); //TODO NEED MESSAGE
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_FIND_WEBSPHERE_JSON", jsonPath));
         }
 
         return upgradeRequired;
