@@ -39,8 +39,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	private static final String CLASS_NAME = GrpcServletContainerInitializer.class.getName();
 	private static final Logger logger = Logger.getLogger(GrpcServletContainerInitializer.class.getName());
 
-	private static ConcurrentHashMap<String, GrpcServletApplication> grpcApplications;
-	GrpcServlet grpcServlet;
+	private static final ConcurrentHashMap<String, GrpcServletApplication> grpcApplications = new ConcurrentHashMap<String, GrpcServletApplication>();
 
 	/**
 	 * Search for all implementors of io.grpc.BindableService and register them with
@@ -49,7 +48,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 	@Override
 	public void onStartup(Set<Class<?>> ctx, ServletContext sc) throws ServletException {
 
-		if (grpcApplications != null) {
+		if (!grpcApplications.isEmpty()) {
 			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
 					"Attempting to load gRPC services for app " + sc.getServletContextName());
 
@@ -69,7 +68,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 					if (!grpcServiceClasses.isEmpty()) {
 						// pass all of our grpc service implementors into a new GrpcServlet
 						// and register that new Servlet on this context
-						grpcServlet = new GrpcServlet(new ArrayList<BindableService>(grpcServiceClasses.values()));
+						GrpcServlet grpcServlet = new GrpcServlet(new ArrayList<BindableService>(grpcServiceClasses.values()));
 						ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet", grpcServlet);
 						servletRegistration.setAsyncSupported(true);
 
@@ -135,9 +134,6 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 			if (services != null && !services.isEmpty()) {
 				if (!services.isEmpty()) {
-					if (grpcApplications == null) {
-						grpcApplications = new ConcurrentHashMap<String, GrpcServletApplication>();
-					}
 					GrpcServletApplication currentApplication = new GrpcServletApplication();
 					currentApplication.addServiceClassNames(services);
 					grpcApplications.put(appInfo.getName(), currentApplication);
@@ -159,15 +155,11 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 	@Override
 	public void applicationStopping(ApplicationInfo appInfo) {
-		grpcServlet = null;
 		// clean up any grpc URL mappings
-		if (grpcApplications != null) {
+		if (!grpcApplications.isEmpty()) {
 			GrpcServletApplication currentApp = grpcApplications.remove(appInfo.getName());
 			if (currentApp != null) {
 				currentApp.destroy();
-				if (grpcApplications.isEmpty()) {
-					grpcApplications = null;
-				}
 			}
 		}
 	}
