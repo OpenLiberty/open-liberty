@@ -855,6 +855,10 @@ ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Unable to process license file at file 
 ERROR_FAILED_TO_READ_LICENSE.explanation=Unable to process the license file for license acceptance information.
 ERROR_FAILED_TO_READ_LICENSE.useraction=Ensure you have the correct permissions to read from the license file.
 
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Unable to find Websphere JSON file at file location {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Unable to find Websphere JSON file.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Ensure that you have network connection and write permissions to the configured local Maven directory.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No action is required.
