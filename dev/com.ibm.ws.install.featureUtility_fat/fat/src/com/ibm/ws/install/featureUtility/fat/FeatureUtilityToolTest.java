@@ -43,6 +43,7 @@ public abstract class FeatureUtilityToolTest {
     private static String unzipDestination;
 
     private static Properties wlpVersionProps;
+    private static Properties featureUtilityProps;
     private static String originalWlpVersion;
     private static String originalWlpEdition;
     private static String originalWlpInstallType;
@@ -106,6 +107,18 @@ public abstract class FeatureUtilityToolTest {
         Log.exiting(c, methodName);
         return unzipDestination + "/wlp";
     }
+    
+    public String unzipToInstallRootFatWlp(String zipFile) throws IOException {
+    	String fileDest = installRoot + "/../featureUtility_fat_wlp_repo/";
+    	File uz = new File(fileDest);
+    	if(uz.exists()){
+            TestUtils.deleteFolder(uz);
+        }
+        uz.mkdirs();
+    	ZipFile destFile = new ZipFile(pathToAutoFVTTestFiles + "/" + zipFile);
+        TestUtils.unzipFileIntoDirectory(destFile, new File(fileDest));
+        return fileDest + destFile.getName();
+    }
 
     /**
      * Delete the wlp.zip and new feature utility wlp folder
@@ -143,6 +156,26 @@ public abstract class FeatureUtilityToolTest {
     public static void copyFileToMinifiedRoot(String extendedPath, String fileName) throws Exception {
         LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
     }
+    
+    public static void writeToProps(String remoteFileName, String property, String value) throws Exception {
+        OutputStream os = null;
+        featureUtilityProps = new Properties();
+        try {
+            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            os = rf.openForWriting(false);
+            featureUtilityProps.setProperty(property, value);
+            Log.info(c, "writeToProps", "Set the " + property + " to : " + value);
+            featureUtilityProps.store(os, null);
+            os.close();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+		
+	}
 
     private static boolean isClosedLibertyWlp(){
         return new File(installRoot + "/lib/versions/WebSphereApplicationServer.properties").exists();
@@ -172,7 +205,6 @@ public abstract class FeatureUtilityToolTest {
         return String.format("%s.%s.%s.%s", newYear, split[1], split[2], newMonth);
 
     }
-
 
 
 
@@ -213,6 +245,31 @@ public abstract class FeatureUtilityToolTest {
                 }
             }
         }
+    
+    public static String getWlpEdition() throws IOException {
+        File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+        Log.info(c, "getWlpEdition", "wlpVersionPropFile exists : " + wlpVersionPropFile.exists());
+        
+        wlpVersionPropFile.setReadable(true);
+
+        FileInputStream fIn2 = null;
+        Properties wlpProps = new Properties();
+        String wlpEdition;
+        try {
+            fIn2 = new FileInputStream(wlpVersionPropFile);
+            wlpProps.load(fIn2);
+            wlpEdition = wlpProps.getProperty("com.ibm.websphere.productEdition");
+            Log.info(c, "getWlpEdition", "com.ibm.websphere.productEdition : " + wlpEdition);
+        } finally {
+        	try {
+            	assert fIn2 != null;
+            	fIn2.close();
+        	} catch (IOException e) {
+            	// ignore we are trying to close.
+        	}
+    	}
+        return wlpEdition;
+    }
 
     protected static void replaceWlpProperties(String version) throws Exception {
         OutputStream os = null;
@@ -266,6 +323,7 @@ public abstract class FeatureUtilityToolTest {
 //        Log.info(c, testcase, "repository.description.url: " + TestUtils.repositoryDescriptionUrl);
         Log.info(c, testcase, "command: " + root + "/bin/" + command + " " + args);
         ProgramOutput po = server.getMachine().execute(root + "/bin/" + command, params, root, envProps);
+        Log.info(c, testcase, po.getStderr());
         Log.info(c, testcase, po.getStdout());
         Log.info(c, testcase, command + " command exit code: " + po.getReturnCode());
         return po;
