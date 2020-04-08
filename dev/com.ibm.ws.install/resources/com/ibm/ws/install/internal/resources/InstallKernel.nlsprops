@@ -859,6 +859,11 @@ ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Unable to find Websphere JSON fi
 ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Unable to find Websphere JSON file.
 ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Ensure that you have network connection and write permissions to the configured local Maven directory.
 
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Unable to find the following feature jsons locally or on the configured Maven repository: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=The jsons could not be found locally or on the configured Maven repository.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Ensure that you have network connection and the json files exist on the configured Maven repository.
+
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No action is required.

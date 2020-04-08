@@ -413,11 +413,49 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     }
 
     /**
-     * TODO need to set up environmental variables
+     * Tests the functionality of viewSettings --viewvalidationmessages with a well-formatted
+     * wlp/etc/featureUtility.properties file
      */
     @Test
-    public void testProxyFeature(){
-        assertEquals("", 2, 1 + 1);
+    public void testSettingsValidationClean() throws Exception {
+        final String METHOD_NAME = "testSettingsValidationClean";
+        Log.entering(c, METHOD_NAME);
+
+        // copy over the featureUtility.properties file from the publish folder
+        copyFileToMinifiedRoot("etc","../../publish/tmp/cleanPropertyFile/featureUtility.properties");
+        String [] param1s = {"viewSettings" , "--viewvalidationmessages"};
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals(0, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should pass validation", output.contains("Validation Results: The properties file successfully passed the validation."));
+
+
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+        deleteEtcFolder(METHOD_NAME);
+        Log.exiting(c, METHOD_NAME);
     }
 
+
+    /**
+     * Tests the functionality of viewSettings --viewvalidationmessages with an invalid
+     * wlp/etc/featureUtility.properties file
+     */
+    @Test
+    public void testSettingsValidationInvalid() throws Exception {
+        final String METHOD_NAME = "testSettingsValidationInvalid";
+        Log.entering(c, METHOD_NAME);
+
+        // copy over the featureUtility.properties file from the publish folder
+        copyFileToMinifiedRoot("etc","../../publish/tmp/invalidPropertyFile/featureUtility.properties");
+        String [] param1s = {"viewSettings" , "--viewvalidationmessages"};
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals(20,  po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Shouldnt pass validation", output.contains("Number of errors"));
+
+
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+        deleteEtcFolder(METHOD_NAME);
+        Log.exiting(c, METHOD_NAME);
+    }
 }

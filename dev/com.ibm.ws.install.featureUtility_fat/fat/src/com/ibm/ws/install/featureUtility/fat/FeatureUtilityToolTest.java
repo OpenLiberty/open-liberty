@@ -375,4 +375,12 @@ public abstract class FeatureUtilityToolTest {
     	boolean repo = TestUtils.deleteFolder(new File(minifiedRoot + "/repo"));
     	return repo;
     }
+
+    protected static boolean deleteEtcFolder(String methodName){
+        boolean etc = TestUtils.deleteFolder(new File(minifiedRoot + "/etc"));
+        Log.info(c, methodName, "DELETED files/folders: /etc ? VALUE: " + etc);
+
+        return etc;
+
+    }
 }
