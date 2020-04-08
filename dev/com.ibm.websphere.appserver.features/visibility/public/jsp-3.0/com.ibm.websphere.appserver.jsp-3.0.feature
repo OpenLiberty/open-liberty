@@ -45,5 +45,5 @@ Subsystem-Name: JavaServer Pages 3.0
  com.ibm.websphere.javaee.jsp.tld.2.2.jakarta; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel
