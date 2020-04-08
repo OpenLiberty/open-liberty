@@ -863,7 +863,6 @@ public class InstallKernelMap implements Map {
         String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion + ".json";
         File websphereJson = new File(jsonPath);
         boolean upgradeRequired = false;
-        try {
             try (JsonReader reader = Json.createReader(new FileInputStream(websphereJson))) {
                 JsonArray assetList = reader.readArray();
                 int i = 0;
@@ -882,16 +881,8 @@ public class InstallKernelMap implements Map {
                     }
                     i = i + 1;
                 }
-            }
-
-        } catch (FileNotFoundException e) {
-//            throw new InstallException("websphere json file not found"); //TODO
-            // this keeps giving me an error
-//            com.ibm.ws.install.InstallException: websphere json file not found
-//            at com.ibm.ws.install.internal.InstallKernelMap.upgradeRequired(InstallKernelMap.java:888)
-//            at com.ibm.ws.install.internal.InstallKernelMap.singleFileResolve(InstallKernelMap.java:767)
-//            at com.ibm.ws.install.internal.InstallKernelMap.get(InstallKernelMap.java:287)
-            // when i try ./featureUtility installFeature jsp-2.3
+            } catch (FileNotFoundException e) {
+            throw new InstallException("websphere json file not found"); //TODO NEED MESSAGE
         }
 
         return upgradeRequired;
