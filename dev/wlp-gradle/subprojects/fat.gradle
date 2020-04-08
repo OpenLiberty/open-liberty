@@ -41,6 +41,7 @@ configurations {
   jdbcDrivers { transitive = false; }
   databaseRotationDrivers
   derby
+  jakartaTransformer
 }
 
 dependencies {
@@ -67,11 +68,37 @@ dependencies {
        'net.java.dev.jna:jna:5.2.0',
        'org.slf4j:slf4j-api:1.7.7',
        'org.slf4j:slf4j-jdk14:1.7.7'
+
+  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bndlib:4.3.1',
+        'commons-cli:commons-cli:1.4',
+        'org.slf4j:slf4j-simple:1.7.29',
+        'org.slf4j:slf4j-api:1.7.26',
+        'com.ibm.ws:jakartaee-transformer:0.0.7'
 }
 
 task addRequiredLibraries(type: Copy) {
   mustRunAfter jar
   from configurations.requiredLibs
+  into new File(autoFvtDir, 'lib')
+}
+
+task addJakartaTransformerRules {
+  mustRunAfter jar
+
+  doLast{
+    copy {
+      from project(':wlp-jakartaee-transform').file('rules')
+      include 'jakarta*.properties'
+      into new File(autoFvtDir, 'autoFVT-templates')
+    }
+  }
+}
+
+task addJakartaTransformer(type: Copy) {
+  mustRunAfter jar
+  dependsOn addJakartaTransformerRules
+
+  from configurations.jakartaTransformer
   into new File(autoFvtDir, 'lib')
 }
 
@@ -495,13 +522,13 @@ build {
 }
 
 buildfat {
-  dependsOn cleanFat
-  dependsOn assemble
-  dependsOn build
-  dependsOn zipProjectFVT
+ dependsOn cleanFat
+ dependsOn assemble
+ dependsOn build
+ dependsOn zipProjectFVT
 }
 
 task buildandrun {
-  dependsOn buildfat
-  dependsOn runfat
+ dependsOn buildfat
+ dependsOn runfat
 }

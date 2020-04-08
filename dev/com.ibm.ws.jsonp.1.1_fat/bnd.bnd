@@ -17,6 +17,11 @@ src: \
 
 fat.project: true
 
+tested.features: \
+  servlet-5.0,\
+  jsonp-1.1,\
+  jsonp-2.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest

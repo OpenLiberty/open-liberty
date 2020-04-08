@@ -2,6 +2,10 @@ com.ibm.ws.commons-collections:commons-collections:3.2.1
 com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws.internal.prereq.java:java.rtSunKrb5:1.8.0
 com.ibm.ws.internal.prereq.java:java.ibmjgssprovider:1.8.0
+biz.aQute.bnd:biz.aQute.bndlib:4.3.1
+commons-cli:commons-cli:1.4
+org.slf4j:slf4j-simple:1.7.29
+com.ibm.ws:jakartaee-transformer:0.0.7
 com.ibm.ws.javax.j2ee:connector:1.6
 com.ibm.ws.javax.j2ee:el:2.2
 com.ibm.ws.javax.j2ee:jaxrpc:1.0

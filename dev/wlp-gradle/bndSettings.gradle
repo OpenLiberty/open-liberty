@@ -159,6 +159,7 @@ if (addAll) {
 projectNames.add('build.image')
 projectNames.add('wlp-bndPlugins')
 projectNames.add('wlp-rasInstrumentation')
+projectNames.add('wlp-jakartaee-transform')
 
 // Add each project and its dependencies to the graph
 projectNames.each { projectName ->
