@@ -427,14 +427,6 @@ public class IRequestImpl implements IRequestExtended
           if(objs != null) {
               rc = (java.security.cert.X509Certificate[]) objs;
           }
-          else {
-              // javadoc: getPeerCertificateChain exists for compatibility with previous releases
-              // http://docs.oracle.com/javase/7/docs/api/javax/net/ssl/SSLSession.html#getPeerCertificateChain()
-              objs = ssl.getSession().getPeerCertificateChain();
-              if (objs != null) {
-                  rc = convertCertificateChain((javax.security.cert.X509Certificate[]) objs);
-              }
-          }
         }
         catch (javax.net.ssl.SSLPeerUnverifiedException e) {
             if (tc.isDebugEnabled())
@@ -444,22 +436,6 @@ public class IRequestImpl implements IRequestExtended
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         Tr.debug(tc, "certs->", (Object[]) rc);
       return rc;
-  }
-
-  /**
-   * Method pulled from tWAS com.ibm.ws.webcontainer.channel.WCCRequestimpl
-   */
-  private X509Certificate[] convertCertificateChain(javax.security.cert.X509Certificate[] inChain) throws Exception {
-      //321485
-      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-          Tr.debug(tc, "convertCertificateChain", ""); //306998.4
-
-      X509Certificate[] outChain = new X509Certificate[inChain.length];
-      CertificateFactory cf = CertificateFactory.getInstance("X.509");
-      for (int idx = 0; idx < inChain.length; idx++) {
-          outChain[idx] = (X509Certificate) (cf.generateCertificate(new ByteArrayInputStream(inChain[idx].getEncoded())));
-      }
-      return outChain;
   }
   // End PI29820
 
