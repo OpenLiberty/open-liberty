@@ -831,12 +831,10 @@ public class InstallKernelMap implements Map {
         } catch (RepositoryResolutionException e) {
             boolean isFeatureUtility = (Boolean) this.get(IS_FEATURE_UTILITY);
             data.put(ACTION_RESULT, ERROR);
-            fine(ExceptionUtils.stacktraceToString(e));
             InstallException ie = ExceptionUtils.create(e, e.getTopLevelFeaturesNotResolved(), (File) data.get(RUNTIME_INSTALL_DIR), false, isOpenLiberty, isFeatureUtility);
             data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
         } catch (InstallException e) {
-            e.printStackTrace();
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
