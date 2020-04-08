@@ -60,7 +60,7 @@ test.project: true
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.jakartaee.servlet.5.0;version=latest,\
-    com.ibm.ws:jakartaee-transformer;version=0.0.6,\
+    com.ibm.ws:jakartaee-transformer;version=0.0.7,\
 	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.componenttest;version=latest,\
 	com.ibm.ws.componenttest:com.ibm.componenttest.common;version=1.0.0,\

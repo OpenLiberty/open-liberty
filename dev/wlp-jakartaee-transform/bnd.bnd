@@ -12,10 +12,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
--include= jar:${fileuri;${repo;com.ibm.ws:jakartaee-transformer;0.0.6}}!/META-INF/MANIFEST.MF
+-include= jar:${fileuri;${repo;com.ibm.ws:jakartaee-transformer;0.0.7}}!/META-INF/MANIFEST.MF
 
 -includeresource: \
-    @${repo;com.ibm.ws:jakartaee-transformer;0.0.6}!/!META-INF/maven/*
+    @${repo;com.ibm.ws:jakartaee-transformer;0.0.7}!/!META-INF/maven/*
 
 Main-Class: com.ibm.ws.jakarta.transformer.JakartaTransformer
 
@@ -41,7 +41,7 @@ tool.project: true
 generate.replacement: false
 
 -buildpath: \
-	com.ibm.ws:jakartaee-transformer;strategy=exact;version=0.0.6,\
+	com.ibm.ws:jakartaee-transformer;strategy=exact;version=0.0.7,\
 	biz.aQute.bnd:biz.aQute.bndlib;version=4.3.1,\
     commons-cli:commons-cli;version=1.4,\
     org.slf4j:slf4j-simple;version=1.7.29
