@@ -194,6 +194,7 @@ public class FeatureUtility {
         // override the local feature repo
         if(FeatureUtilityProperties.getFeatureLocalRepo() != null){
             overrideMap.put("FEATURE_LOCAL_REPO", FeatureUtilityProperties.getFeatureLocalRepo());
+            this.fromDir = new File(FeatureUtilityProperties.getFeatureLocalRepo());
         }
 
         // override maven repositories
