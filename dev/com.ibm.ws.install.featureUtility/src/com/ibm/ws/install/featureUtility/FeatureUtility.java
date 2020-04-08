@@ -80,6 +80,7 @@ public class FeatureUtility {
         this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
         Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
         jsonsRequired.addAll(Arrays.asList("io.openliberty.features", "com.ibm.websphere.appserver.features"));
+        
 
         this.esaFile = builder.esaFile;
         this.noCache = builder.noCache;
@@ -89,6 +90,7 @@ public class FeatureUtility {
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
         Map<String, Object> envMap = (Map<String, Object>) map.get("environment.variable.map");
+        map.put("req.ol.json.coord", "io.openliberty.features");
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }

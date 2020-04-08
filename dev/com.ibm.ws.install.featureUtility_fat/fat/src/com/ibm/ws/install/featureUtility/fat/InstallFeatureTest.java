@@ -182,6 +182,45 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         Log.exiting(c, METHOD_NAME);
     }
+    
+    /**
+     * Test the licenseAcceptance by providing both a base and ND feature, the resulting wlp should be
+     * of version ND.
+     * @throws Exception
+     */
+    @Test
+    public void testFeatureLocalRepoOverride() throws Exception {
+        final String METHOD_NAME = "testBaseLicenseAccept";
+        Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+        
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+        		"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+        		"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/el-3.0/20.0.0.4",
+        		"../../publish/repo/io/openliberty/features/el-3.0/20.0.0.4/el-3.0-20.0.0.4.esa");
+        
+        
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        String[] param1s = { "installFeature", "el-3.0", "--verbose"};
+
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain el-3.0", output.contains("el-3.0"));
+        
+        
+        deleteProps(METHOD_NAME);
+        deleteRepo(METHOD_NAME);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
+
+        Log.exiting(c, METHOD_NAME);
+    }
 
 
     /**
