@@ -335,11 +335,12 @@ public class FeatureUtility {
         // fine("resolved features: " + resolvedFeatures);
         checkResolvedFeatures(resolvedFeatures);
         boolean upgraded = (boolean) map.get("upgrade.complete");
+        List<String> causedUpgrade = (List<String>) map.get("caused.upgrade");
         if (upgraded) {
         	LicenseUpgradeUtility luu = new LicenseUpgradeUtility.LicenseUpgradeUtilityBuilder().setFeatures(featuresToInstall).setAcceptLicense(licenseAccepted).build();
         	boolean isLicenseAccepted = false;
         	try {
-            	isLicenseAccepted = luu.handleLicenses();
+            	isLicenseAccepted = luu.handleLicenses(featureFormat(causedUpgrade));
             } catch (InstallException e) {
             	map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
             	throw e;
@@ -397,7 +398,30 @@ public class FeatureUtility {
         }
     }
 
-    /**
+    private String featureFormat(List<String> causedUpgrade) {
+		if (causedUpgrade.size() == 1) {
+			return causedUpgrade.get(0);
+		}
+		if (causedUpgrade.size() == 2) {
+			return causedUpgrade.get(0) + " and " + causedUpgrade.get(1);
+		}
+		if (causedUpgrade.size() > 2) {
+			String result = "";
+			for (String str: causedUpgrade) {
+				if (causedUpgrade.indexOf(str) == 0) {
+					result += causedUpgrade.get(0);
+				} else if (causedUpgrade.indexOf(str) < causedUpgrade.size() - 1) {
+					result += ", " + causedUpgrade.get(causedUpgrade.indexOf(str));
+				} else {
+					result += ", and " + causedUpgrade.get(causedUpgrade.indexOf(str));
+				}
+			}
+			return result;
+		}
+		return null;
+	}
+
+	/**
      * Check for any errors with the list of resolved features
      *
      * @param resolvedFeatures list of resolved features returned by the resolver

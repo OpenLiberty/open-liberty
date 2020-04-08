@@ -135,6 +135,7 @@ public class InstallKernelMap implements Map {
     private static final String CLEANUP_UPGRADE = "cleanup.upgrade";
     private static final String UPGRADE_COMPLETE = "upgrade.complete";
     private static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
+    private static final String CAUSED_UPGRADE = "caused.upgrade";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -882,7 +883,6 @@ public class InstallKernelMap implements Map {
             } catch (FileNotFoundException e) {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_FIND_WEBSPHERE_JSON", jsonPath));
         }
-
         return upgradeRequired;
     }
 
@@ -1816,9 +1816,14 @@ public class InstallKernelMap implements Map {
      */
     private Set<String> getMinLicenses(String fromRepo, List<String> featureList, String defaultLicense) throws InstallException {
         fine("parsing websphere json for minimal license coordinates");
+        String baseLicenseCoord = WEBSPHERE_LIBERTY_GROUP_ID + ":wlp-base-license:" + openLibertyVersion;
+        String NDLicenseCoord = WEBSPHERE_LIBERTY_GROUP_ID + ":wlp-nd-license:" + openLibertyVersion;
+        boolean isND = false;
         String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion + ".json";
         File websphereJson = new File(jsonPath);
         Set<String> result = new HashSet<String>();
+        List<String> causedUpgradeND = new ArrayList<String>();
+        List<String> causedUpgradeBASE = new ArrayList<String>();
         try (JsonReader reader = Json.createReader(new FileInputStream(websphereJson))) {
             JsonArray assetList = reader.readArray();
             for (JsonValue val : assetList) {
@@ -1829,6 +1834,12 @@ public class InstallKernelMap implements Map {
                     String name = featureObject.getString("name", null);
                     String licenseMavenCoordinate = wlpFeatureInfo.getString("licenseMavenCoordinate", defaultLicense);
                     if (lowerCaseShortName != null && containsStr(lowerCaseShortName, featureList)) {
+                        if (licenseMavenCoordinate.contains(NDLicenseCoord)) {
+                            causedUpgradeND.add(lowerCaseShortName);
+                            isND = true;
+                        } else {
+                            causedUpgradeBASE.add(lowerCaseShortName);
+                        }
                         result.add(licenseMavenCoordinate);
                     } else if (name != null && containsStr(name, featureList)) {
                         result.add(licenseMavenCoordinate);
@@ -1837,6 +1848,11 @@ public class InstallKernelMap implements Map {
             }
         } catch (FileNotFoundException e) {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", WEBSPHERE_LIBERTY_GROUP_ID));
+        }
+        if (isND) {
+            data.put(CAUSED_UPGRADE, causedUpgradeND);
+        } else {
+            data.put(CAUSED_UPGRADE, causedUpgradeBASE);
         }
         return result;
     }
