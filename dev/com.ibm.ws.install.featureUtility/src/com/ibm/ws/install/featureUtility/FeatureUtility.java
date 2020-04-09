@@ -89,8 +89,9 @@ public class FeatureUtility {
 
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-        Map<String, Object> envMap = (Map<String, Object>) map.get("environment.variable.map");
         map.put("req.ol.json.coord", "io.openliberty.features");
+        Map<String, Object> envMap = (Map<String, Object>) map.get("environment.variable.map");
+        
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }

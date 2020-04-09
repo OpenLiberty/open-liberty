@@ -1132,7 +1132,6 @@ public class InstallKernelMap implements Map {
         String openLibertyVersion = getLibertyVersion();
         List<String> reqJsons = new ArrayList<String>();
         reqJsons.add((String) data.get(REQ_OL_JSON_COORD) + ":" + "features" + ":" + openLibertyVersion);
-        fine("this is the req ol json maven coord: " + reqJsons);
         for(MavenRepository repository : repositories){
             logger.fine("Testing connection for repository: " + repository);
             if(artifactDownloader.testConnection(repository)){
