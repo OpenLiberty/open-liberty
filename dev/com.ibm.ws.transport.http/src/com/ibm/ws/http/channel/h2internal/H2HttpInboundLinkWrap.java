@@ -124,7 +124,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 }
             } else if (GrpcServletServices.getServletGrpcServices() != null) {
 
-                Map<String, String> servicePaths = GrpcServletServices.getServletGrpcServices();
+                Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null) {
                     routeGrpcServletRequest(servicePaths);
                 }
@@ -139,7 +139,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      * the correct application context root to the request. For this example, the URL will change from
      * "/helloworld.Greeter/SayHello" -> "/app_context_root/helloworld.Greeter/SayHello"
      */
-    private void routeGrpcServletRequest(Map<String, String> servicePaths) {
+    private void routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
         String requestContentType = getContentType().toLowerCase();
         if ("application/grpc".equalsIgnoreCase(requestContentType)) {
 
@@ -150,7 +150,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             int index = searchURL.lastIndexOf('/');
             searchURL = searchURL.substring(0, index);
 
-            String contextRoot = servicePaths.get(searchURL);
+            String contextRoot = servicePaths.get(searchURL).getContextRoot();
 
             if (contextRoot != null && !!!"/".equals(contextRoot)) {
                 String newPath = contextRoot + currentURL;

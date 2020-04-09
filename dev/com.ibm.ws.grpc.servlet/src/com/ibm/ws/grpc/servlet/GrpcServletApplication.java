@@ -18,13 +18,13 @@ class GrpcServletApplication {
 	 * @param String serviceName
 	 * @param String ontextPath
 	 */
-	void addServiceName(String serviceName, String contextPath) {
+	void addServiceName(String serviceName, String contextPath, Class<?> clazz) {
 		if (serviceNames == null) {
 			serviceNames = new HashSet<String>();
 		}
 		serviceNames.add(serviceName);
-		if (serviceName != null && contextPath != null) {
-			GrpcServletServices.addServletGrpcService(serviceName, contextPath);
+		if (serviceName != null && contextPath != null && clazz != null) {
+			GrpcServletServices.addServletGrpcService(serviceName, contextPath, clazz);
 		}
 	}
 
@@ -33,11 +33,11 @@ class GrpcServletApplication {
 	 * These classes will be initialized by Libery during startup.
 	 * @param Set<String> service class names
 	 */
-	void addServiceClassNames(Set<String> names) {
+	void addServiceClassName(String name) {
 		if (serviceClassNames == null) {
 			serviceClassNames = new HashSet<String>();
 		}
-		serviceClassNames.addAll(names);
+		serviceClassNames.add(name);
 	}
 
 	/**
@@ -58,4 +58,5 @@ class GrpcServletApplication {
 		serviceClassNames = null;
 	}
 }
+
 

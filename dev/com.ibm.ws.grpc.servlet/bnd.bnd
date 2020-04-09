@@ -49,7 +49,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
   com.ibm.ws.transport.http;version=latest,\
   com.ibm.ws.webcontainer,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
-  com.google.guava:guava;version=27.0.1
+  com.google.guava:guava;version=27.0.1,\
+  com.ibm.ws.security.authorization.util
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

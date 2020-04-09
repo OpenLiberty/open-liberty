@@ -73,12 +73,13 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 					servletRegistration.setAsyncSupported(true);
 
 					// register URL mappings for each gRPC service we've registered
-					for (BindableService service : grpcServiceClasses.values()) {
+					for (String className : grpcServiceClasses.keySet()) {
+						BindableService service = grpcServiceClasses.get(className);
 						String serviceName = service.bindService().getServiceDescriptor().getName();
 						String urlPattern = "/" + serviceName + "/*";
 						servletRegistration.addMapping(urlPattern);
 						// keep track of this service name -> application path mapping
-						currentApp.addServiceName(serviceName, sc.getContextPath());
+						currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
 						Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup",
 								"Registered gRPC service at URL: " + urlPattern);
 					}
@@ -137,7 +138,10 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 						grpcApplications = new ConcurrentHashMap<String, GrpcServletApplication>();
 					}
 					GrpcServletApplication currentApplication = new GrpcServletApplication();
-					currentApplication.addServiceClassNames(services);
+					for (String name : services) {
+						// only add the class name
+						currentApplication.addServiceClassName(name);
+					}
 					grpcApplications.put(appInfo.getName(), currentApplication);
 				}
 			}

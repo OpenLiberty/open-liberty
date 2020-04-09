@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class GrpcServletServices {
 
-    private static Map<String, String> servletGrpcServices;
+    private static final Map<String, ServiceInformation> servletGrpcServices = new ConcurrentHashMap<String, ServiceInformation>();
 
     /**
      * Register an a gRPC service with its application
@@ -26,14 +26,11 @@ public class GrpcServletServices {
      * @param String gRPC service name
      * @param String contextRoot for the app
      */
-    public static void addServletGrpcService(String service, String contextRoot) {
-        if (servletGrpcServices == null) {
-            servletGrpcServices = new ConcurrentHashMap<String, String>();
-        }
+    public static void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
         if (servletGrpcServices.containsKey(service)) {
             throw new RuntimeException("duplicate gRPC service added: " + service);
         } else {
-            servletGrpcServices.put(service, contextRoot);
+            servletGrpcServices.put(service, new ServiceInformation(contextRoot, clazz));
         }
     }
 
@@ -47,7 +44,7 @@ public class GrpcServletServices {
             servletGrpcServices.remove(service);
         }
         if (servletGrpcServices.isEmpty()) {
-            servletGrpcServices = null;
+            servletGrpcServices.clear();
         }
     }
 
@@ -56,7 +53,7 @@ public class GrpcServletServices {
      *
      * @return HashMap<String service, String contextRoot> or null if the set is empty
      */
-    public static Map<String, String> getServletGrpcServices() {
+    public static Map<String, ServiceInformation> getServletGrpcServices() {
         if (servletGrpcServices == null) {
             return null;
         }
@@ -64,6 +61,24 @@ public class GrpcServletServices {
     }
 
     public static void destroy() {
-        servletGrpcServices = null;
+        servletGrpcServices.clear();
+    }
+
+    public static class ServiceInformation {
+        String contextRoot;
+        Class<?> clazz;
+
+        ServiceInformation(String root, Class<?> c) {
+            contextRoot = root;
+            clazz = c;
+        }
+
+        public String getContextRoot() {
+            return contextRoot;
+        }
+
+        public Class<?> getServiceClass() {
+            return clazz;
+        }
     }
 }

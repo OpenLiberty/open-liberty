@@ -11,7 +11,8 @@ IBM-ShortName: grpcServlet-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC Servlet 1.0
 -bundles=\
-  com.ibm.ws.grpc.servlet.1.0
+  com.ibm.ws.grpc.servlet.1.0,\
+  com.ibm.ws.security.authorization.util
 -features=\
   com.ibm.websphere.appserver.internal.grpc-1.0, \
   com.ibm.websphere.appserver.servlet-4.0
