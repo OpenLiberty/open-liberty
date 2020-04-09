@@ -35,6 +35,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         setupEnv();
 
         // rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
+        deleteProps(methodName);
         replaceWlpProperties(getPreviousWlpVersion());
         replaceWlpProperties(getPreviousWlpVersion());
         Log.exiting(c, methodName);
@@ -141,8 +142,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String edition = getWlpEdition();
-        
-        assertTrue("Should be edition Base", (edition.contains("BASE")));
+        if (edition.contains("zOS")) {
+        	assertTrue("Should be edition zOS", (edition.contains("zOS")));
+        } else {
+        	assertTrue("Should be edition Base", (edition.contains("BASE")));
+        }
 
         deleteProps(METHOD_NAME);
         deleteRepo(METHOD_NAME);
@@ -181,8 +185,12 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String edition = getWlpEdition();
+        if (edition.contains("zOS")) {
+        	assertTrue("Should be edition zOS", (edition.contains("zOS")));
+        } else {
+        	assertTrue("Should be edition ND", (edition.contains("ND")));
+        }
         
-        assertTrue("Should be edition ND", (edition.contains("ND")));
 
         deleteProps(METHOD_NAME);
         deleteRepo(METHOD_NAME);
