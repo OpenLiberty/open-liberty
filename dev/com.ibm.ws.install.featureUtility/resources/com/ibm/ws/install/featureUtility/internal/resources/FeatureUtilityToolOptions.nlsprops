@@ -61,7 +61,7 @@ installFeature.option-desc.--verbose=\
 installFeature.option-key.--acceptLicense=\
 \ \ \ \ --acceptLicense
 installFeature.option-desc.--acceptLicense=\
-\tAccepts the  license agreement.
+\tAccepts the license agreement.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\
 \ \ \ \ --noCache
@@ -91,7 +91,7 @@ installServerFeatures.option-desc.--verbose=\
 installServerFeatures.option-key.--acceptLicense=\
 \ \ \ \ --acceptLicense
 installServerFeatures.option-desc.--acceptLicense=\
-\tAccepts the  license agreement.
+\tAccepts the license agreement.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\
 \ \ \ \ --noCache

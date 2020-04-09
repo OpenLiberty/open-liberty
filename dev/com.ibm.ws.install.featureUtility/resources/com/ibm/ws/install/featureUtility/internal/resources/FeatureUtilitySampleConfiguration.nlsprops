@@ -9,18 +9,19 @@
 #NLS_ENCODING=UNICODE
 # NLS_MESSAGEFORMAT_VAR
 # Only need to translate the commented lines (lines that start with '##') below.
-# The following keywords does not needed to be translated.
+# The following keywords do not need to be translated.
 
 SAMPLE_CONFIG=\
 ######################################################################\n\
 ## ## Define the Maven Central mirror repository##\n\
-## By default featureUtility will download from Maven Central. Users\n\
-## can setup a mirror of the Maven Central and override the featureUtility\n\
-## default Maven Central connection with the mirror repository.\n\
+## By default featureUtility downloads from Maven Central. Users\n\
+## can set up a mirror of the Maven Central Repository and\n\
+## override the featureUtility default Maven Central connection\n\
+## with the mirror repository.\n\
 ## -------------------------------------------------------------------\n\
 #mavenCentralMirror.url=http://w3.mycompany.com/pub/maven2\n\
 \n\
-## Specify the credentials of Maven Central mirror repository, if required.\n\
+## Specify the credentials of the Maven Central mirror repository, if required.\n\
 ## For enhanced security, encode the value of the .password\n\
 ## property by using the securityUtility encode action.\n\
 ## If you do not set the user and password, you receive a prompt\n\
@@ -31,9 +32,9 @@ SAMPLE_CONFIG=\
 \n\
 ######################################################################\n\
 ## ## Using custom remote repositories ##\n\
-## featureUtility can install remote Maven on-prem repositories. Provide\n\
-## a repository name and the URL to each remote Maven on-prem repository\n\
-## containing Liberty feature artifacts.\n\
+## featureUtility can install remote Maven on-premises repositories. Provide\n\
+## a repository name and the URL to each remote Maven on-premise repository\n\
+## that contains Liberty feature artifacts.\n\
 ## The repositories are accessed in the order that they are specified.\n\
 ## -------------------------------------------------------------------\n\
 #remoteRepositoryName1.url=http://w3.mycompany.com/repository\n\
@@ -54,8 +55,8 @@ SAMPLE_CONFIG=\
 ## specify values for the proxy settings properties.\n\
 ## For enhanced security, encode the value of the proxyPassword\n\
 ## property by using the securityUtility encode action.\n\
-## If you do not set the proxyUser and proxyPassword, you receive\n\
-## a prompt to provide them.\n\
+## If you do not set the proxyUser and proxyPassword properties,\n\
+## you receive a prompt to provide them.\n\
 ## -------------------------------------------------------------------\n\
 #proxyHost=hostName\n\
 #proxyPort=3128\n\
