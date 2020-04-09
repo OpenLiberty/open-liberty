@@ -1,0 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+test.dependsOn assemble
+
+copyPiiFiles {
+  include '**/*.properties'
+}
+
+// This task removes the non-tranformed build jar from the build image.
+// The transformed jar remains published.  Remote or disable this task 
+// when modifying this project to build the yasson release artifact 
+// acquired from maven central.
+task retractWLPJars(type: Delete) {
+    dependsOn publishWLPJars
+
+    FileTree tree = fileTree(dir: buildImage.file('wlp/lib'))
+    delete fileTree(dir: buildImage.file('wlp/lib')).matching {
+        include 'com.ibm.ws.org.eclipse.yasson.2.0_*.jar'
+    }
+}
+
+assemble.dependsOn retractWLPJars
