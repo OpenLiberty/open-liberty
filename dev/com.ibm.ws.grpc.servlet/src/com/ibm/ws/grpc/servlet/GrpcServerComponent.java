@@ -16,8 +16,14 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
@@ -25,22 +31,48 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.grpc.Utils;
+import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import io.grpc.BindableService;
 import io.grpc.servlet.GrpcServlet;
 
 @Component(service = { ApplicationStateListener.class,
 		ServletContainerInitializer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-public class GrpcServletContainerInitializer implements ServletContainerInitializer, ApplicationStateListener {
+public class GrpcServerComponent implements ServletContainerInitializer, ApplicationStateListener {
 
-	private static final String CLASS_NAME = GrpcServletContainerInitializer.class.getName();
-	private static final Logger logger = Logger.getLogger(GrpcServletContainerInitializer.class.getName());
+	private static final String CLASS_NAME = GrpcServerComponent.class.getName();
+	private static final Logger logger = Logger.getLogger(GrpcServerComponent.class.getName());
 
-	private static ConcurrentHashMap<String, GrpcServletApplication>  grpcApplications;
-	GrpcServlet grpcServlet;
+	private static ConcurrentHashMap<String, GrpcServletApplication> grpcApplications;
+
+	private static boolean useSecurity = false;
+
+	private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
+
+	private final AtomicServiceReference<FeatureProvisioner> _featureProvisioner = new AtomicServiceReference<FeatureProvisioner>(
+			FEATUREPROVISIONER_REFERENCE_NAME);
+
+	@Activate
+	protected void activate(ComponentContext cc) {
+		_featureProvisioner.activate(cc);
+	}
+
+	@Deactivate
+	protected void deactivate(ComponentContext cc) {
+		_featureProvisioner.deactivate(cc);
+	}
+
+	@Reference(name = FEATUREPROVISIONER_REFERENCE_NAME, service = FeatureProvisioner.class, cardinality = ReferenceCardinality.MANDATORY)
+	protected void setFeatureProvisioner(ServiceReference<FeatureProvisioner> ref) {
+		_featureProvisioner.setReference(ref);
+	}
+
+	protected void unsetFeatureProvisioner(FeatureProvisioner featureProvisioner) {
+	}
 
 	/**
 	 * Search for all implementors of io.grpc.BindableService and register them with
@@ -68,7 +100,8 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 				if (!grpcServiceClasses.isEmpty()) {
 					// pass all of our grpc service implementors into a new GrpcServlet
 					// and register that new Servlet on this context
-					grpcServlet = new GrpcServlet(new ArrayList<BindableService>(grpcServiceClasses.values()));
+					GrpcServlet grpcServlet = new GrpcServlet(
+							new ArrayList<BindableService>(grpcServiceClasses.values()));
 					ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet", grpcServlet);
 					servletRegistration.setAsyncSupported(true);
 
@@ -152,6 +185,7 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 	@Override
 	public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+		setSecurityEnabled();
 		initGrpcServices(appInfo);
 	}
 
@@ -161,7 +195,6 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 	@Override
 	public void applicationStopping(ApplicationInfo appInfo) {
-		grpcServlet = null;
 		// clean up any grpc URL mappings
 		if (grpcApplications != null) {
 			GrpcServletApplication currentApp = grpcApplications.remove(appInfo.getName());
@@ -176,5 +209,22 @@ public class GrpcServletContainerInitializer implements ServletContainerInitiali
 
 	@Override
 	public void applicationStopped(ApplicationInfo appInfo) {
+	}
+
+	/**
+	 * Set useSecurity to true if any of the appSecurity features are enabled
+	 */
+	private void setSecurityEnabled() {
+		Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();
+		if (currentFeatureSet.contains("appSecurity-2.0") || currentFeatureSet.contains("appSecurity-1.0")
+				|| currentFeatureSet.contains("appSecurity-3.0")) {
+			useSecurity = true;
+			return;
+		}
+		useSecurity = false;
+
+	}
+	public static boolean isSecurityEnabled() {
+		return useSecurity;
 	}
 }

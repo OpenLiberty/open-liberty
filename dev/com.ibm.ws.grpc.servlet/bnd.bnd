@@ -17,7 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.grpc.servlet.1.0
 Bundle-Description: gRPC Servlet, version 1.0
 
 -dsannotations: \
-  com.ibm.ws.grpc.servlet.GrpcServletContainerInitializer
+  com.ibm.ws.grpc.servlet.GrpcServerComponent
 
 Import-Package: !sun.*,\
   !com.google.code.gson,\
@@ -40,6 +40,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.kernel.feature;version=latest,\
   com.ibm.ws.adaptable.module;version=latest,\
   com.ibm.ws.app.manager.lifecycle;version=latest,\
   com.ibm.ws.resource;version=latest,\

@@ -17,9 +17,9 @@ public class LibertyAuthorizationInterceptor implements ServerInterceptor {
 		boolean isAuthorized = GrpcServletUtils.authMap.get(key);
 		if (!isAuthorized) {
 			call.close(Status.UNAUTHENTICATED.withDescription("Unauthorized"), headers);
-			return null;
+			// return no-op listener
+			return new ServerCall.Listener<ReqT>() {};
 		}
 		return next.startCall(call, headers);
 	}
-
 }

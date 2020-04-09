@@ -24,6 +24,7 @@ import static java.util.logging.Level.FINEST;
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.grpc.servlet.GrpcServerComponent;
 import com.ibm.ws.grpc.servlet.GrpcServletUtils;
 
 import io.grpc.Attributes;
@@ -127,7 +128,10 @@ public final class ServletAdapter {
     // Liberty change: remove application context root from path 
     // then perform authentication/authorization
     method = GrpcServletUtils.translateLibertyPath(method);
-    boolean libertyAuth = GrpcServletUtils.doServletAuth(req, resp, method);
+    boolean libertyAuth = true;
+    if (GrpcServerComponent.isSecurityEnabled()) {
+      libertyAuth = GrpcServletUtils.doServletAuth(req, resp, method);
+    }
 
     AsyncContext asyncCtx = req.startAsync(req, resp);
 
