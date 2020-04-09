@@ -243,12 +243,12 @@ public class ArtifactDownloader {
     }
 
     private void configureAuthentication(final MavenRepository repository) {
-        if(repository.getUserId() != null && repository.getPassword() != null &&
-                envMap.get("https.proxyUser") == null) {
+        if (repository.getUserId() != null && repository.getPassword() != null &&
+            envMap.get("https.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication((String)repository.getUserId(), ((String)repository.getPassword()).toCharArray());
+                    return new PasswordAuthentication(repository.getUserId(), repository.getPassword().toCharArray());
                 }
             });
         }
@@ -256,9 +256,32 @@ public class ArtifactDownloader {
 
     /**
      * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
+     *
      * @return
      */
-    protected boolean testConnection(MavenRepository repository){
+    protected boolean testConnection(MavenRepository repository, List<String> mavenCoords) {
+        configureProxyAuthentication();
+        configureAuthentication(repository);
+        List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repository.getRepositoryUrl());
+        try {
+            int responseCode = ArtifactDownloaderUtils.exists(featureURLs.get(0), envMap);
+            logger.fine("Response code: " + responseCode);
+            if (responseCode != 404) {
+                // repo is fine for use
+                return true;
+            }
+        } catch (IOException e) {
+
+        }
+        return false;
+    }
+
+    /**
+     * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
+     *
+     * @return
+     */
+    protected boolean testConnection(MavenRepository repository) {
         configureProxyAuthentication();
         configureAuthentication(repository);
         try {
@@ -273,7 +296,6 @@ public class ArtifactDownloader {
         }
         return false;
     }
-
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
         OutputStream out = null;
@@ -358,7 +380,7 @@ public class ArtifactDownloader {
     }
 
     private String calculateUserInfo(URI uri, MavenRepository repository) {
-        if(repository.getUserId() != null && repository.getPassword() != null){
+        if (repository.getUserId() != null && repository.getPassword() != null) {
             return repository.getUserId() + ":" + repository.getPassword();
         }
 //        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
@@ -370,7 +392,7 @@ public class ArtifactDownloader {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication((String) envMap.get("https.proxyUser"), ((String)envMap.get("https.proxyPassword")).toCharArray());
+            return new PasswordAuthentication((String) envMap.get("https.proxyUser"), ((String) envMap.get("https.proxyPassword")).toCharArray());
         }
     }
 
@@ -403,11 +425,11 @@ public class ArtifactDownloader {
         String proxyPort = (String) envMap.get("https.proxyPort");
         if (envMap.get("https.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (((String)envMap.get("https.proxyHost")).isEmpty()) {
+            if (((String) envMap.get("https.proxyHost")).isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (((String)envMap.get("https.proxyPassword")).isEmpty() ||
+            } else if (((String) envMap.get("https.proxyPassword")).isEmpty() ||
                        envMap.get("https.proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
