@@ -356,6 +356,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     
     private static Object[] OBJ_EMPTY = new Object[] {};
     private static Class<?>[] CLASS_EMPTY = new Class<?>[] {};
+    private volatile boolean isInitializing = false;
 
     // PK37608 Start
     static {
@@ -6635,19 +6636,28 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     public void setExtensionFactories(List extensionFactories) {
         this.extensionFactories = extensionFactories;
     }
-
+   
     // LIBERTY Added for delayed start.
     public void initialize() throws ServletException, Throwable {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
-            logger.entering(CLASS_NAME, "Initialize : app = " + config.getApplicationName() + ", initialized = " + initialized + ", destroyed = " + destroyed);
+            logger.entering(CLASS_NAME, "Initialize : app = " + config.getApplicationName() + ", initialized = " + initialized + ", destroyed = " + destroyed + ", initializing = " + isInitializing );
+        
+        if (isInitializing)
+            throw new java.lang.IllegalStateException("application is starting, can't initialize it now.");
         
         if (!initialized && !destroyed) {
             synchronized (lock) {
                 if (!initialized && !destroyed &&!com.ibm.ws.webcontainer.osgi.WebContainer.isServerStopping()) {
-                    initialize(this.config, this.moduleConfig, this.extensionFactories);
-                    started();
-                    initialized = true;
-                    config.setSessionCookieConfigInitilialized();
+                    try {
+                        isInitializing = true; 
+                        initialize(this.config, this.moduleConfig, this.extensionFactories);
+                        started();
+                        initialized = true;
+                        config.setSessionCookieConfigInitilialized();
+                    }
+                    finally {
+                        isInitializing = false; 
+                    }
                 }
             }
         }
