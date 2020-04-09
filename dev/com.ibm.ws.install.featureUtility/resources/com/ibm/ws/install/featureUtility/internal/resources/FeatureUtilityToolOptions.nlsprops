@@ -106,6 +106,6 @@ viewSettings.option-key.--viewValidationMessages=\
 \ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\
 \tUse this option to display the detailed messages from the            \n\
-\tvalidation of the configured repositories.properties file.           \n\
+\tvalidation of the configured featureUtility.properties file.           \n\
 \tEach message contains an error code, the line number where the error \n\
 \twas found, and the cause of the error.
