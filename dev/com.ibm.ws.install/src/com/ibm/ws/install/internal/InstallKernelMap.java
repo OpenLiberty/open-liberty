@@ -136,6 +136,7 @@ public class InstallKernelMap implements Map {
     private static final String UPGRADE_COMPLETE = "upgrade.complete";
     private static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
     private static final String CAUSED_UPGRADE = "caused.upgrade";
+    private static final String REQ_OL_JSON_COORD = "req.ol.json.coord";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -1128,10 +1129,15 @@ public class InstallKernelMap implements Map {
         }
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
         artifactDownloader.setEnvMap(envMap);
+        String openLibertyVersion = getLibertyVersion();
+        List<String> reqJsons = new ArrayList<String>();
+        reqJsons.add((String) data.get(REQ_OL_JSON_COORD) + ":" + "features" + ":" + openLibertyVersion);
         for(MavenRepository repository : repositories){
             logger.fine("Testing connection for repository: " + repository);
             if(artifactDownloader.testConnection(repository)){
                 return repository;
+            } else {
+                artifactDownloader.testConnection(repository, reqJsons);
             }
         }
         return null;
