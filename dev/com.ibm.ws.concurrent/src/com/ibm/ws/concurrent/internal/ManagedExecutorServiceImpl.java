@@ -78,6 +78,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                        ResourceFactory.class, ApplicationRecycleComponent.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
+                        "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
 public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutor, //
@@ -567,8 +568,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.STATIC,
-               policyOption = ReferencePolicyOption.GREEDY,
-               target = "(id=unbound)")
+               policyOption = ReferencePolicyOption.GREEDY)
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         String version = (String) ref.getProperty("version");
         if (version == null) {

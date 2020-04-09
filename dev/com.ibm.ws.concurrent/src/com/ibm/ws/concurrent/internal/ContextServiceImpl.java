@@ -81,7 +81,8 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ResourceFactory.class, javax.enterprise.concurrent.ContextService.class, //
                        ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
+           property = { "creates.objectClass=jakarta.enterprise.concurrent.ContextService",
+                        "creates.objectClass=javax.enterprise.concurrent.ContextService",
                         "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
 public class ContextServiceImpl implements //
                 jakarta.enterprise.concurrent.ContextService, //
@@ -760,8 +761,7 @@ public class ContextServiceImpl implements //
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.STATIC,
-               policyOption = ReferencePolicyOption.GREEDY,
-               target = "(id=unbound)")
+               policyOption = ReferencePolicyOption.GREEDY)
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         String version = (String) ref.getProperty("version");
         if (version == null) {
