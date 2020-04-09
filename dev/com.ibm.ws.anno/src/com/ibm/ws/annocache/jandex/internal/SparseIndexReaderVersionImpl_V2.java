@@ -174,6 +174,8 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
         this.input = input;
         this.version = version;
 
+        // System.out.println("Version [ " + version + " ]");
+
         // Set this to an expected maximum number of class annotations.
         // The list will be enlarged if a class has more than the preset
         // allocation.
@@ -808,32 +810,44 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
 
         SparseClassInfo classInfo = new SparseClassInfo(className, superClassName, flags, interfaceNames);
 
-        // Nesting information became a two bit field in version 9:
+        // Nesting information became a two bit field in version 9.
+        // Also, the nesting information was moved to before the enclosing class information.
         //   Fix JANDEX-49: Rregression introduced by 6da4d88, which was incomplete [updates version from 8 to 9]
         //   wildfly/jandex@ce4dd9a#diff-a696ceb786df083f5910564662f55bc9
 
-        int enclosureBits = input.readUnsignedByte();
-
-        boolean hasEnclosingClass;
-        boolean hasEnclosingMethod;
         if ( version >= 9 ) {
             // Starting with v9, both the enclosing class and the enclosing
             // method are optional.  The enclosure bits are a two bit field.
             // But, the method bit cannot be set unless the class bit is set.
             // [ 0, 0 ], [ 1, 0 ], [ 1, 1 ] are allowed; [ 0, 1 ] is not allowed.
-            hasEnclosingClass = ((enclosureBits & 1) == 1);
-            hasEnclosingMethod = ((enclosureBits & 2) == 2);
+
+            // Starting with v9, the enclosure bits are placed before the enclosing
+            // class information.
+
+            int enclosureBits = input.readUnsignedByte();
+            // System.out.println("Class name [ " + className + " ] Enclosure bits [ " + enclosureBits + " ]");
+
+            if ( enclosureBits > 0 ) {
+                readPastEnclosingClass();
+                if ( (enclosureBits & 2) == 2 ) {
+                    readPastEnclosingMethod();
+                }
+            }
+
         } else {
             // Prior to v9, enclosing class information is always present.
             // And the enclosure bits are a single bit field.
-            hasEnclosingClass = true;
-            hasEnclosingMethod = ((enclosureBits & 1) == 1);
-        }
 
-        if ( hasEnclosingClass ) {
-            input.seekPackedU32(); // enclosing class // Skip unused class data.
-            input.seekPackedU32(); // simple name
-            if ( hasEnclosingMethod ) {
+            // Note that the enclosure bits are after the enclosing class information.
+
+            readPastEnclosingClass();
+
+            int enclosureBits = input.readUnsignedByte();
+            // System.out.println("Class name [ " + className + " ] Enclosure bits [ " + enclosureBits + " ]");
+
+            // Should be set as just bit 1, but the Wyldfly code tests this way.
+            // hasEnclosingMethod = ((enclosureBits & 1) == 1);
+            if ( enclosureBits == 1 ) {
                 readPastEnclosingMethod();
             }
         }
@@ -854,7 +868,12 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
         return classInfo;
     }
 
-    private void readPastEnclosingMethod() throws IOException{
+    private void readPastEnclosingClass() throws IOException {
+        input.seekPackedU32(); // enclosing class // Skip unused class data.
+        input.seekPackedU32(); // simple name
+    }
+
+    private void readPastEnclosingMethod() throws IOException {
         // Detection of the enclosing method now happens when detecting the enclosing method.
         //   Fix JANDEX-49: Rregression introduced by 6da4d88, which was incomplete
         //   wildfly/jandex@ce4dd9a#diff-a696ceb786df083f5910564662f55bc9
