@@ -1,2 +1,2 @@
-DROP TABLE ${schemaname}.NoResultEntityOLGH8014;
-DROP TABLE ${schemaname}.SimpleEntityOLGH8014;
+DROP TABLE NoResultEntityOLGH8014;
+DROP TABLE SimpleEntityOLGH8014;

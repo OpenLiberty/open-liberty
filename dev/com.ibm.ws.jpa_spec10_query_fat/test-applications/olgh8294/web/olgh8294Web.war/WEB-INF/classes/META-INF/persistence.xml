@@ -35,7 +35,6 @@
 
     <persistence-unit name="OLGH8294_PROPERTY_RL" transaction-type="RESOURCE_LOCAL">
         <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
-        <class>com.ibm.ws.jpa.olgh8294.model.SimpleEntityOLGH8294</class>
         <properties>
             <!-- Testing that with this property set, EclipseLink will 
             force query parameters to be bound (?, ?) 
