@@ -688,6 +688,10 @@ public class AcmeClient {
 	@FFDCIgnore(AcmeException.class)
 	public void revoke(X509Certificate certificate) throws AcmeCaException {
 
+		if (certificate == null) {
+			return;
+		}
+
 		/*
 		 * Load the account key file.
 		 */
@@ -712,7 +716,7 @@ public class AcmeClient {
 			 */
 			Login login = new Login(acct.getLocation(), accountKeyPair, session);
 			try {
-				Certificate.revoke(login, certificate, RevocationReason.UNSPECIFIED);
+				Certificate.revoke(login, certificate, RevocationReason.SUPERSEDED);
 			} catch (AcmeException e) {
 				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", acmeConfig.getDirectoryURI(),
 						certificate.getSerialNumber().toString(16), e.getMessage()), e);

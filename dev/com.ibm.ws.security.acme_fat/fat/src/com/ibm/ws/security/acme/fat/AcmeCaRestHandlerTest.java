@@ -32,12 +32,10 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.Testcontainers;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -69,15 +67,14 @@ public class AcmeCaRestHandlerTest {
 	private static final String READER_PASS = "readerpass";
 	private static final String UNAUTHORIZED_USER = "unauthorized";
 	private static final String UNAUTHORIZED_PASS = "unauthorizedpass";
-	private boolean usePebbleURI = true;
 
 	@ClassRule
 	public static CAContainer pebble = new PebbleContainer();
-	
+
 	static {
 		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
 	}
-	
+
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		ORIGINAL_CONFIG = server.getServerConfiguration();
@@ -110,6 +107,7 @@ public class AcmeCaRestHandlerTest {
 		try {
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSSLToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -121,10 +119,9 @@ public class AcmeCaRestHandlerTest {
 
 			Log.info(this.getClass(), methodName, "Performing PUT #1");
 			performPut(204, ADMIN_USER, ADMIN_PASS);
-			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
-			
 			Log.info(this.getClass(), methodName, "Performing GET #2");
 			String html2 = performGet(200, ADMIN_USER, ADMIN_PASS);
 			assertNotNull("Should have received an HTML document from REST endpoint.", html2);
@@ -157,6 +154,7 @@ public class AcmeCaRestHandlerTest {
 		try {
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSSLToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -206,11 +204,12 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server,  pebble, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSSLToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -252,7 +251,6 @@ public class AcmeCaRestHandlerTest {
 			HttpGet httpGet = new HttpGet("https://localhost:" + server.getHttpDefaultSecurePort() + REST_ENDPOINT);
 			httpGet.setHeader("Authorization",
 					"Basic " + DatatypeConverter.printBase64Binary((user + ":" + password).getBytes()));
-
 
 			/*
 			 * Send the GET request and process the response.
