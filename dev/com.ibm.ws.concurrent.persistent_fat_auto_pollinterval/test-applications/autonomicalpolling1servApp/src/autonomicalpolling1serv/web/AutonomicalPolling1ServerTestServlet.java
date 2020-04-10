@@ -55,31 +55,35 @@ public class AutonomicalPolling1ServerTestServlet extends FATServlet {
 	/**
 	 * testPersistentExecPolling - Verify the persistent executor delays are spaced out by the poll interval (1 second).
 	 * For example, if there are 5 persistent executors, then their poll delays should round to 0,1,2,3,and 4 seconds.
+	 * Also, tolerate -1,0,1,2,3 to allow for a poll that has already fired and is in-progress before computing its next time.
 	 */
 	public void testPersistentExecPolling(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		int numPersistentExecs = Integer.parseInt(request.getParameter("numPersistentExecs"));
 		final long[] expectedDelays = new long[numPersistentExecs];
+		final long[] alternateExpectedDelays = new long[numPersistentExecs];
 		long delays[] = new long[numPersistentExecs];
 		int attempts = 0;
 
 		// initialize expectedDelays to {0,1,2...}
+		// initialize alternateExpectedDelays to {-1,0,1...}
 		for (int i = 0; i < expectedDelays.length; i++) {
 			expectedDelays[i] = i;
+			alternateExpectedDelays[i] = i - 1;
 		}
 
-		while (attempts < 20) {
+		while (attempts < 100) {
 			attempts++;
 			collectDelays(delays);
 
 			Arrays.sort(delays);
 			System.out.println("persistent executor delays: " + Arrays.toString(delays));
 
-			if(Arrays.equals(expectedDelays, delays)) {
+			if (Arrays.equals(expectedDelays, delays) || Arrays.equals(alternateExpectedDelays, delays)) {
 				// We got passing results.
 				response.getWriter().println("PASSED");
 				return;
 			}
-			// Wait a least one poll interval to try again.
+			// Wait at least one poll interval to try again.
 			Thread.sleep(1100);
 		}
 		
