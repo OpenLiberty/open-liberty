@@ -563,43 +563,50 @@ public class AcmeSimpleTest {
 			 * unreadable.
 			 * 
 			 **********************************************************************/
-			Log.info(AcmeSimpleTest.class, methodName, "Test 6 - unreadable account key file");
-			acmeCA.setSubjectDN("cn=domain1.com");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
-			assertNotNull("Expected CWPKI2021E in logs.", server.waitForStringInLog("CWPKI2021E"));
+			
+			if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) { // windows not enforcing the setReadable/setWriteable
+				Log.info(AcmeSimpleTest.class, methodName, "Skipping unreadable/unwriteable file tests on Windows: " + System.getProperty("os.name", "unknown"));
+				acmeCA.setSubjectDN("cn=domain1.com");
+				acmeCA.setAccountKeyFile(null);
+			} else {
+				Log.info(AcmeSimpleTest.class, methodName, "Test 6 - unreadable account key file");
+				acmeCA.setSubjectDN("cn=domain1.com");
+				AcmeFatUtils.configureAcmeCA(server, configuration);
+				assertNotNull("Expected CWPKI2021E in logs.", server.waitForStringInLog("CWPKI2021E"));
 
-			/***********************************************************************
-			 * 
-			 * Set the account key file to be unwritable. The account key file
-			 * is unwritable.
-			 * 
-			 **********************************************************************/
-			Log.info(AcmeSimpleTest.class, methodName, "Test 7 - unwritable account key file");
-			acmeCA.setAccountKeyFile(unwritableDir + "/unwritable.key");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
-			assertNotNull("Expected CWPKI2023E in logs.", server.waitForStringInLog("CWPKI2023E"));
+				/***********************************************************************
+				 * 
+				 * Set the account key file to be unwritable. The account key file
+				 * is unwritable.
+				 * 
+				 **********************************************************************/
+				Log.info(AcmeSimpleTest.class, methodName, "Test 7 - unwritable account key file");
+				acmeCA.setAccountKeyFile(unwritableDir + "/unwritable.key");
+				AcmeFatUtils.configureAcmeCA(server, configuration);
+				assertNotNull("Expected CWPKI2023E in logs.", server.waitForStringInLog("CWPKI2023E"));
 
-			/***********************************************************************
-			 * 
-			 * Set the account key file to default. The domain key file is
-			 * unreadable.
-			 * 
-			 **********************************************************************/
-			Log.info(AcmeSimpleTest.class, methodName, "Test 8 - unreadable domain key file");
-			acmeCA.setAccountKeyFile(null);
-			AcmeFatUtils.configureAcmeCA(server, configuration);
-			assertNotNull("Expected CWPKI2020E in logs.", server.waitForStringInLog("CWPKI2020E"));
+				/***********************************************************************
+				 * 
+				 * Set the account key file to default. The domain key file is
+				 * unreadable.
+				 * 
+				 **********************************************************************/
+				Log.info(AcmeSimpleTest.class, methodName, "Test 8 - unreadable domain key file");
+				acmeCA.setAccountKeyFile(null);
+				AcmeFatUtils.configureAcmeCA(server, configuration);
+				assertNotNull("Expected CWPKI2020E in logs.", server.waitForStringInLog("CWPKI2020E"));
 
-			/***********************************************************************
-			 * 
-			 * Set the domain key file to be unwritable. The domain key file is
-			 * unwritable.
-			 * 
-			 **********************************************************************/
-			Log.info(AcmeSimpleTest.class, methodName, "Test 9 - unwritable domain key file");
-			acmeCA.setDomainKeyFile(unwritableDir + "/unwritable.key");
-			AcmeFatUtils.configureAcmeCA(server, configuration);
-			assertNotNull("Expected CWPKI2022E in logs.", server.waitForStringInLog("CWPKI2022E"));
+				/***********************************************************************
+				 * 
+				 * Set the domain key file to be unwritable. The domain key file is
+				 * unwritable.
+				 * 
+				 **********************************************************************/
+				Log.info(AcmeSimpleTest.class, methodName, "Test 9 - unwritable domain key file");
+				acmeCA.setDomainKeyFile(unwritableDir + "/unwritable.key");
+				AcmeFatUtils.configureAcmeCA(server, configuration);
+				assertNotNull("Expected CWPKI2022E in logs.", server.waitForStringInLog("CWPKI2022E"));
+			}
 
 			/***********************************************************************
 			 * 
