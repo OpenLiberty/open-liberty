@@ -202,7 +202,6 @@ CWPKI2044E=CWPKI2044E: The certificate is not an X.509 certificate. The certific
 CWPKI2044E.explanation=The ACME service expects all certificates in the certificate chain to be X.509 certificates.
 CWPKI2044E.useraction=Ensure that all the certificates in the certificate chain are X.509 certificates and try again.
 
-# {2} is a time stamp
 CWPKI2045W=CWPKI2045W: The certificate with {0} serial number that is signed by the ACME certificate authority at the {1} URI is not valid until {2}.
 CWPKI2045W.explanation=The valid period on the certificate is in the future. SSL/TLS requests fail until the current date and time are within the range that is specified by the valid period on the certificate.
 CWPKI2045W.useraction=Update the local time on the server if the time is incorrect.
@@ -226,3 +225,28 @@ CWPKI2049E.useraction=Manually replace the account key pair files as directed in
 CWPKI2050E=CWPKI2050E: Failed to back up the existing account key pair file while refreshing the account key pair. The error is ''{0}''.
 CWPKI2050E.explanation=The existing account key pair file was not be backed up. 
 CWPKI2050E.useraction=Ensure that the directory that contains the existing account key pair file is writable. Review the error message for details on the failure.
+
+CWPKI2051W=CWPKI2051W: The renewBeforeExpiration property was set to {0} which is shorter than the minimum renew time. The renewBeforeExpiration property is reset to {1}.
+CWPKI2051W.explanation=The value for the renewBeforeExpiration property was below the minimum duration to request a new certificate and is reset to the minimum renew time. This could have a negative impact on server performance.
+CWPKI2051W.useraction=To avoid this warning message, set the renewBeforeExpiration property in the server configuration to a duration that is longer than the minimum renew time. To use the default setting, remove the renewBeforeExpiration property from the server configuration.
+
+CWPKI2052I=CWPKI2052I: The certificate with {0} serial number expires on {1}. The ACME service will request a new certificate from the ACME certificate authority at the {2} URI.
+CWPKI2052I.explanation=The ACME service requests a new certificate based on the renewBeforeExpiration property in the server configuration and the expiration date of the certificate. If the renewBeforeExpiration property is not configured, the default value is used.
+CWPKI2052I.useraction=No action is required.
+
+CWPKI2053W=CWPKI2053W: The certificate with {0} serial number expired on {1}. The ACME service is not configured to automatically request a new certificate.
+CWPKI2053W.explanation=The TLS/SSL requests cannot complete because the certificate expired.
+CWPKI2053W.useraction=Update the renewBeforeExpiration property in the server configuration to a value greater than 0 to automatically request a new certificate or use the ACME REST interface to request a new certificate.
+
+CWPKI2054W=CWPKI2054W: The renewBeforeExpiration property was set to {0}, which is equal to or longer than the validity period of the certificate with {1} serial number. The validity period of the certificate is {2}. The renewBeforeExpiration property is reset to {3}.
+CWPKI2054W.explanation=The value of the renewBeforeExpiration property was longer than the validity period of the certificate. The renewBeforeExpiration property is reset to the default value.
+CWPKI2054W.useraction=To avoid this warning message, set the renewBeforeExpiration property in the server configuration to an amount that is less than the length of the validity period of the certificate. To use the default setting, remove the renewBeforeExpiration property.
+
+CWPKI2055W=CWPKI2055W: The renewBeforeExpiration property is set to a short amount of time. The ACME service makes frequent requests for a new certificate. The renewBeforeExpiration property is {0}.
+CWPKI2055W.explanation=Frequent certificate requests can have a negative impact on server performance. The number of requests can also exceed the number allowed by the certificate authority.
+CWPKI2055W.useraction=To avoid this warning message, set the renewBeforeExpiration property in the server configuration to a longer duration. To use the default setting, remove the renewBeforeExpiration property from the server configuration.
+
+CWPKI2056W=CWPKI2056W: The validity period of the certificate with {0} serial number is shorter than the {1} minimum renew time. The validity period of the certification is {2}. The renewBeforeExpiration property is reset to {3}.
+CWPKI2056W.explanation=The validity period is shorter than the minimum renew time. The certificate expires before a new certificate is requested.
+CWPKI2056W.useraction=To avoid certificate expiration, request a certificate with a longer validity period. If the certificate authority supports a custom validity period, set the validFor property in the server configuration.
+

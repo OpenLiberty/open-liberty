@@ -17,8 +17,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AcmeClientTest.class, AcmeSimpleTest.class, AcmeURISimpleTest.class, AcmeBoulderSimpleTest.class,
-		AcmeCaRestHandlerTest.class
+@SuiteClasses({ AcmeClientTest.class, 
+	AcmeSimpleTest.class,
+	AcmeURISimpleTest.class,
+	AcmeBoulderSimpleTest.class,  
+	AcmeCaRestHandlerTest.class, 
+	AcmeValidityAndRenewTest.class
 	 })
 public class FATSuite {
 

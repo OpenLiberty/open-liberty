@@ -45,6 +45,8 @@ public class AcmeCA extends ConfigElement {
 
     private String validFor; // Duration
 
+    private String renewBeforeExpiration;
+
     /**
      * @return the accountContact
      */
@@ -225,6 +227,21 @@ public class AcmeCA extends ConfigElement {
         this.validFor = validFor;
     }
 
+    /**
+     * @return the renewBeforeExpiration
+     */
+    public String getRenewBeforeExpiration() {
+        return renewBeforeExpiration;
+    }
+
+    /**
+     * @param renewBeforeExpiration the renewBeforeExpiration to set
+     */
+    @XmlAttribute(name = "renewBeforeExpiration")
+    public void setRenewBeforeExpiration(String renewBeforeExpiration) {
+        this.renewBeforeExpiration = renewBeforeExpiration;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -266,6 +283,9 @@ public class AcmeCA extends ConfigElement {
         }
         if (validFor != null) {
             sb.append("validFor=\"").append(validFor).append("\" ");;
+        }
+        if (renewBeforeExpiration != null) {
+            sb.append("renewBeforeExpiration=\"").append(renewBeforeExpiration).append("\" ");;
         }
 
         sb.append("}");

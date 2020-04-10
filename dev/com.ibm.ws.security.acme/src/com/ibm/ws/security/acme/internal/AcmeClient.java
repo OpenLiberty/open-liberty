@@ -388,6 +388,11 @@ public class AcmeClient {
 			Tr.warning(tc, "CWPKI2045W", x509Cert.getSerialNumber().toString(16), acmeConfig.getDirectoryURI(),
 					x509Cert.getNotBefore().toInstant().toString());
 		}
+
+		checkRenewTimeAgainstCertValidityPeriod(certificate.getCertificate().getNotBefore(),
+				certificate.getCertificate().getNotAfter(),
+				certificate.getCertificate().getSerialNumber().toString(16));
+
 		return new AcmeCertificate(domainKeyPair, x509Cert, certificate.getCertificateChain());
 	}
 
@@ -1237,6 +1242,45 @@ public class AcmeClient {
 		@Override
 		public String toString() {
 			return super.toString() + "{" + account.getLocation() + "}";
+		}
+	}
+	
+	/**
+	 * Check that the valid period of the certificate works with the configured renewBeforeExpiration. Adjust the
+	 * renew timing if necessary.
+	 * 
+	 * @param notBefore
+	 * @param notAfter
+	 * @param serialNumber
+	 */
+	protected void checkRenewTimeAgainstCertValidityPeriod(Date notBefore, Date notAfter, String serialNumber) {
+		long notBeforems = notBefore.getTime();
+		long notAfterms = notAfter.getTime();
+
+		long validityPeriod = notAfterms - notBeforems;
+		
+		long renewBeforeExpirationMs = acmeConfig.getRenewBeforeExpirationMs();
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Validity versus renew check", notBeforems, notAfterms, validityPeriod, renewBeforeExpirationMs);
+		}
+		
+		/*
+		 * If the renewBeforeExpirationMs is longer than the validityPeriod, reset it so we can make a best effort at fetching a new
+		 * certificate prior to expiration.
+		 */
+		if (validityPeriod <= renewBeforeExpirationMs) {
+			if (validityPeriod <= AcmeConstants.RENEW_CERT_MIN) { // less than the minimum renew, reset to min.
+				Tr.warning(tc, "CWPKI2056W", serialNumber,  AcmeConstants.RENEW_CERT_MIN + "ms", validityPeriod, AcmeConstants.RENEW_CERT_MIN + "ms");
+				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_CERT_MIN, false);
+			} else if (validityPeriod <= AcmeConstants.RENEW_DEFAULT_MS) { // less than the default period, reset to half the time.
+				long resetRenew = Math.round(validityPeriod * AcmeConstants.RENEW_DIVISOR);
+				long priorRenew = renewBeforeExpirationMs;
+				acmeConfig.setRenewBeforeExpirationMs(resetRenew <= AcmeConstants.RENEW_CERT_MIN ? AcmeConstants.RENEW_CERT_MIN : resetRenew, false); // floor is still the min renew
+				Tr.warning(tc, "CWPKI2054W", priorRenew  +"ms", serialNumber, validityPeriod, renewBeforeExpirationMs+ "ms");
+			} else { // reset to the default renew time.
+				Tr.warning(tc, "CWPKI2054W", renewBeforeExpirationMs +"ms", serialNumber, validityPeriod + "ms", AcmeConstants.RENEW_DEFAULT_MS + "ms");
+				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_DEFAULT_MS, false);
+			}
 		}
 	}
 }

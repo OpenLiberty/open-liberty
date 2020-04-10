@@ -12,6 +12,8 @@
 package com.ibm.ws.security.acme.internal;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -322,6 +324,7 @@ public class AcmeConfigTest {
 				new SerializableProtectedString("acmepassword".toCharArray()));
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.TRANSPORT_TRUST_STORE_TYPE, "PKCS12");
 		properties.put(AcmeConstants.VALID_FOR, 5L);
+		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, 691200000L); // 8 days
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -352,6 +355,32 @@ public class AcmeConfigTest {
 		assertEquals("ou=liberty", acmeConfig.getSubjectDN().get(1).toString());
 		assertEquals("o=ibm.com", acmeConfig.getSubjectDN().get(2).toString());
 		assertEquals(5L, acmeConfig.getValidForMs().longValue());
+		
+		assertEquals(691200000L, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertTrue("Auto-renewal should be enabled", acmeConfig.isAutoRenewOnExpiration());
+	}
+	
+	@Test
+	public void constructor_validConfig_disableRenew() throws Exception {
+
+		/*
+		 * Create a properties map.
+		 */
+		Map<String, Object> properties = getBasicConfig();
+
+		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, -1L);
+
+		/*
+		 * Instantiate the ACME configuration.
+		 */
+		AcmeConfig acmeConfig = new AcmeConfig(properties);
+
+		/*
+		 * Verify values. A negative or zero renew disables auto-renew
+		 */
+		
+		assertEquals(0L, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertFalse("Auto-renewal should be disabled", acmeConfig.isAutoRenewOnExpiration());
 	}
 
 	@Test
@@ -370,6 +399,7 @@ public class AcmeConfigTest {
 		properties.put(AcmeConstants.ORDER_RETRIES, -3);
 		properties.put(AcmeConstants.ORDER_RETRY_WAIT, -4L);
 		properties.put(AcmeConstants.VALID_FOR, -5L);
+		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, AcmeConstants.RENEW_CERT_MIN - 10);
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -384,5 +414,17 @@ public class AcmeConfigTest {
 		assertEquals(10, acmeConfig.getOrderRetries().intValue());
 		assertEquals(3000L, acmeConfig.getOrderRetryWaitMs().intValue());
 		assertEquals(null, acmeConfig.getValidForMs());
+		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertTrue("Auto-renewal should be enabled", acmeConfig.isAutoRenewOnExpiration());
+	}
+	
+	private Map<String, Object> getBasicConfig() {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(AcmeConstants.ACCOUNT_KEY_FILE, "account.key");
+		properties.put(AcmeConstants.DIR_URI, "https://localhost:443/dir");
+		properties.put(AcmeConstants.DOMAIN_KEY_FILE, "domain.key");
+		properties.put(AcmeConstants.DOMAIN, new String[] { "domain1.com", "domain2.com" });
+
+		return properties;
 	}
 }
