@@ -444,6 +444,10 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                 hasCustomBindings = true;
                 bindLocalHomeBindingName(bindingObject, hr);
             }
+            if (bmd.remoteHomeJndiBindingName != null && !local && interfaceIndex == -1) {
+                hasCustomBindings = true;
+                bindLegacyRemoteBinding(bindingObject, hr, bmd.remoteHomeJndiBindingName);
+            }
 
             if (bmd.businessInterfaceJndiBindingNames != null && interfaceIndex >= 0 && bmd.businessInterfaceJndiBindingNames.containsKey(interfaceName)) {
                 hasCustomBindings = true;
