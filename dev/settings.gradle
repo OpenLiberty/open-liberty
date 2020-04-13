@@ -42,6 +42,21 @@ pluginManagement {
 
   String repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
 
+  // Bnd configuration for where to download open source software binaries that we've built from source.
+  String fetchRepoSource = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
+                  +'name = RemoteSource;'
+                  +'releaseUrl=https://repo.maven.apache.org/maven2/'
+                  +';index=${build}/oss_source_dependencies.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemoteSource'
+                  +';local=~/.ibmartifactory/repository'
+                  +';releaseUrl=' + ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-source-built-maven-local')
+                  +';snapshotUrl=' + ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-source-built-maven-local')
+                  +';index=${build}/oss_source_dependencies.maven')
+  props.setProperty('fetch.oss.source.repository', fetchRepoSource)
+
   // Bnd configuration for where to download open source software binaries from.
   String fetchRepoPublic = !isUsingArtifactory ?
           ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
