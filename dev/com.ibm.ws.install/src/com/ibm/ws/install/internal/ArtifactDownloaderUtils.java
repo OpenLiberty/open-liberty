@@ -27,7 +27,7 @@ public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
 
-    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, String> envMap) throws IOException {
+    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException {
         List<String> result = new ArrayList<String>();
         for (String url : featureURLs) {
             if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
@@ -37,11 +37,11 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static boolean fileIsMissing(String url, Map<String, String> envMap) throws IOException {
+    public static boolean fileIsMissing(String url, Map<String, Object> envMap) throws IOException {
         return !(exists(url, envMap) == HttpURLConnection.HTTP_OK);
     }
 
-    public static int exists(String URLName, Map<String, String> envMap) throws IOException {
+    public static int exists(String URLName, Map<String, Object> envMap) throws IOException {
         try {
             URL url = new URL(URLName);
             if (url.getProtocol().equals("https")) {
@@ -49,10 +49,10 @@ public class ArtifactDownloaderUtils {
                 HttpsURLConnection conn;
 
                 if (envMap.get("https.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
                     conn = (HttpsURLConnection) url.openConnection(proxy);
                 } else if (envMap.get("http.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
                     conn = (HttpsURLConnection) url.openConnection(proxy);
                 } else {
                     conn = (HttpsURLConnection) url.openConnection();
@@ -67,10 +67,10 @@ public class ArtifactDownloaderUtils {
                 HttpURLConnection.setFollowRedirects(true);
                 HttpURLConnection conn;
                 if (envMap.get("https.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
                     conn = (HttpURLConnection) url.openConnection(proxy);
                 } else if (envMap.get("http.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
                     conn = (HttpURLConnection) url.openConnection(proxy);
                 } else {
                     conn = (HttpURLConnection) url.openConnection();
@@ -90,6 +90,8 @@ public class ArtifactDownloaderUtils {
             throw e;
         }
     }
+
+
 
     public static List<String> acquireFeatureURLs(List<String> mavenCoords, String repo) {
         List<String> result = new ArrayList<String>();

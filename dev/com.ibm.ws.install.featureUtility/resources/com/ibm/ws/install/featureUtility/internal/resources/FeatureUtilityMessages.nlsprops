@@ -1,0 +1,55 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=featureUtility Settings
+MSG_PROPERTIES_FILE_NOT_FOUND=No user configuration detected. The Maven Central Repository is the default assets repository.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=To customize featureUtility settings, create a featureUtility.properties file at the following location: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Use the following sample as a template to create your own featureUtility.properties file. Uncomment the lines marked by a single # character, and replace the values with your own customized values.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=To customize installUtility settings, create a repositories.properties file at the following location: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Use the following sample as a template to create your own repositories.properties file. Uncomment the lines marked by a single # character, and replace the values with your own customized values.
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=Use Default Repository:
+MSG_DEFAULT_REPO_NAME_LABEL=Default Assets Repository:
+MSG_DEFAULT_REPO_NAME=Maven Central Repository
+MSG_CONFIG_REPO_LABEL=Configured Repositories
+MSG_NO_CONFIG_REPO=No repositories configured
+MSG_UNSPECIFIED=<Unspecified>
+MSG_PASSWORD_NOT_ENCODED_PROXY=The password for this proxy is not encoded. You can encode the password by running the securityUtility encode action with the --encoding option set to a supported encoding type. The supported types are xor (default), aes, and hash.
+MSG_PROXY_LABEL=Proxy Settings
+MSG_NO_CONFIG_PROXY=No proxy configured
+MSG_REPO_FILE_NOT_FOUND=No user configuration detected. The IBM WebSphere Liberty Repository is the default assets repository.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=To customize installUtility settings, create a repositories.properties file at the following location: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Use the following sample as a template to create your own repositories.properties file. Uncomment the lines marked by a single # character, and replace the values with your own customized values.
+MSG_VALIDATION_SUCCESSFUL=The properties file successfully passed the validation.
+MSG_VALIDATION_FAILED_NO_MESSAGES=The properties file failed the validation. Use the --viewValidationMessages option to view detailed validation messages.
+MSG_VALIDATION_NUM_OF_ERRORS=Number of errors: {0}
+MSG_VALIDATION_MESSAGES=Properties File Validation
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_PASSWORD_NOT_ENCODED=The password for this repository is not encoded. You can encode passwords by running the securityUtility encode command with the --encoding option set to a supported encoding type, which are xor (default), aes, and hash.
+
+FIELD_REPO_NAME=Name: {0}
+FIELD_REPO_LOCATION=Location: {0}
+FIELD_REPO_STATUS=Status: {0}
+FIELD_REPO_REASON=Reason: {0}
+FIELD_REPO_WARNING=Warning: {0}
+FIELD_NAME=Name:
+FIELD_PORT=Port:
+FIELD_LOCATION=Location:
+FIELD_PROXY_SERVER=Proxy Server:
+FIELD_USER=User Name:
+FIELD_PASS=Password:
+FIELD_PROPS_FILE=Properties File: {0}
+FIELD_REPO=Repository Server: {0} ({1})
+FIELD_PROXY=Proxy Server: {0}
+FIELD_VALIDATION_RESULTS=Validation Results: {0}
+FIELD_VALIDATION_LINE=Line: {0}
