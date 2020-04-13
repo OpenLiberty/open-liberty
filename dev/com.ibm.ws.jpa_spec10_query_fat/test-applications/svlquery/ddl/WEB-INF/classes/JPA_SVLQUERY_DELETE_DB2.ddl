@@ -1,0 +1,20 @@
+DELETE FROM ${schemaname}.Jpa2Address;
+DELETE FROM ${schemaname}.Jpa2Person;
+DELETE FROM ${schemaname}.JPAAddressBean;
+DELETE FROM ${schemaname}.JPACustomerPartTab;
+DELETE FROM ${schemaname}.JPADeptBean;
+DELETE FROM ${schemaname}.JPAEmpBean;
+DELETE FROM ${schemaname}.JPALineItemPartTab;
+DELETE FROM ${schemaname}.JPAOrderPartTab;
+DELETE FROM ${schemaname}.JPAPartTab;
+DELETE FROM ${schemaname}.JPAProductPartTab;
+DELETE FROM ${schemaname}.JPAProjectBean;
+DELETE FROM ${schemaname}.JPASupplierparttab;
+DELETE FROM ${schemaname}.JPASupplierparttab_JPAPartTab;
+DELETE FROM ${schemaname}.JPATaskBean;
+DELETE FROM ${schemaname}.JPATaskBean_JPAEmpBean;
+DELETE FROM ${schemaname}.JPATypeTestBean;
+DELETE FROM ${schemaname}.JPAUsagePartTab;
+DELETE FROM ${schemaname}.JPAXYZ;
+DELETE FROM ${schemaname}.Person_residences;
+
