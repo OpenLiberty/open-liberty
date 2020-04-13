@@ -454,7 +454,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                 if (local) {
                     bindLocalBusinessInterface(bindingObject, hr);
                 } else {
-                    // TODO: Remote Business Interface Binding
+                    bindLegacyRemoteBinding(bindingObject, hr, bmd.businessInterfaceJndiBindingNames.get(interfaceName));
                 }
             }
 

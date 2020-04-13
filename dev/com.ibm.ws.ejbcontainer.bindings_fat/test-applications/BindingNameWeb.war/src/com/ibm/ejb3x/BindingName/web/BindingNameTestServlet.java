@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -55,12 +56,12 @@ public class BindingNameTestServlet extends FATServlet {
      * Tests that the remote default binding should not have been bound because we
      * have custom bindings.
      */
-    //@Test
+    @Test
     public void testBindingNameRemoteDefaultDisabled() {
         try {
-            Object bean = new InitialContext().lookup("ejb/BindingNameTestApp/BindingNameEJB.jar/BindingName5#com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIintf");
+            Object bean = new InitialContext().lookup("ejb/BindingNameTestApp/BindingNameEJB.jar/BindingName5#com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf");
             if (bean != null) {
-                fail("remote default bindings lookup should not have worked because we have custom bindings");
+                fail("Remote default bindings lookup should not have worked because we have custom bindings");
             }
         } catch (NamingException e) {
             // expected to not work
@@ -419,13 +420,23 @@ public class BindingNameTestServlet extends FATServlet {
             } else {
                 // expected to fail in other cases
             }
+        } catch (ClassCastException cce) {
+            // For the hybrid beans they might have a remote bound in the lookup string, so we'll get a class cast
+            // since we try all the lookup combinations, just ignore it.
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While performing lookup " + lookupName + " for " + BindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
+            }
         }
     }
 
     private void testLookupCombinationsHelperRemote(Context context, String contextString, String lookupName, String BindingName, String beanNum, String passingCases) {
         try {
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + BindingName);
-            RemoteBindingNameIntf beanHome = (RemoteBindingNameIntf) context.lookup(lookupName);
+            Object o = context.lookup(lookupName);
+            RemoteBindingNameIntf beanHome = (RemoteBindingNameIntf) PortableRemoteObject.narrow(o, RemoteBindingNameIntf.class);
             if (passingCases.contains(beanNum)) {
                 if (context.lookup(lookupName) == null) {
                     fail("lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
@@ -442,6 +453,13 @@ public class BindingNameTestServlet extends FATServlet {
                 if (beanHome != null) {
                     fail("lookup " + lookupName + " should have failed for " + BindingName + " and context " + contextString);
                 }
+            }
+        } catch (ClassCastException cce) {
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While narrowing lookup " + lookupName + " for " + BindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
@@ -465,13 +483,13 @@ public class BindingNameTestServlet extends FATServlet {
         testLookupCombinations(false, "binding-name=\"ejblocal:BindingNameIntf2\"", 2);
     }
 
-    //@Test
+    @Test
     public void testRemoteBindingNameStartsWithEJB() throws Exception {
         // binding-name="ejb/BindingNameIntf3"
         testLookupCombinations(true, "binding-name=\"ejb/BindingNameIntf3\"", 3);
     }
 
-    //@Test
+    @Test
     public void testRemoteBindingNamePlain() throws Exception {
         // binding-name="BindingNameIntf4"
         testLookupCombinations(true, "binding-name=\"BindingNameIntf4\"", 4);
@@ -489,13 +507,13 @@ public class BindingNameTestServlet extends FATServlet {
         testLookupCombinations(false, "binding-name=\"ejblocal:BindingNameIntf6\"", 6);
     }
 
-    //@Test
+    @Test
     public void testHybridRemoteBindingNameStartsWithEJB() throws Exception {
         // binding-name="ejb/BindingNameIntf7"
         testLookupCombinations(true, "binding-name=\"ejb/BindingNameIntf7\"", 7);
     }
 
-    //@Test
+    @Test
     public void testHybridRemoteBindingNamePlain() throws Exception {
         // binding-name="BindingNameIntf8"
         testLookupCombinations(true, "binding-name=\"BindingNameIntf8\"", 8);
