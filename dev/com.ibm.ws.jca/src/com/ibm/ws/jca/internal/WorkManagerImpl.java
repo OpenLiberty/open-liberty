@@ -27,6 +27,7 @@ import javax.resource.spi.work.WorkRejectedException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.threading.RunnableWithContext;
 
 /**
  * Implementation of J2C WorkManager for WebSphere Application Server
@@ -164,7 +165,7 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            Future f = bootstrapContext.execSvc.submit(workProxy);
+            Future f = bootstrapContext.execSvc.submit((RunnableWithContext)workProxy);
 
             if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
@@ -244,7 +245,7 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            Future f = bootstrapContext.execSvc.submit(workProxy);
+            Future f = bootstrapContext.execSvc.submit((RunnableWithContext) workProxy);
 
             if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
