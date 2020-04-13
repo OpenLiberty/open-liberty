@@ -435,8 +435,8 @@ public class BindingNameTestServlet extends FATServlet {
     private void testLookupCombinationsHelperRemote(Context context, String contextString, String lookupName, String BindingName, String beanNum, String passingCases) {
         try {
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + BindingName);
-            Object o = context.lookup(lookupName);
-            RemoteBindingNameIntf beanHome = (RemoteBindingNameIntf) PortableRemoteObject.narrow(o, RemoteBindingNameIntf.class);
+            Object lookup = context.lookup(lookupName);
+            RemoteBindingNameIntf beanHome = (RemoteBindingNameIntf) PortableRemoteObject.narrow(lookup, RemoteBindingNameIntf.class);
             if (passingCases.contains(beanNum)) {
                 if (context.lookup(lookupName) == null) {
                     fail("lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
