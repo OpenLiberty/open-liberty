@@ -22,12 +22,12 @@ Import-Package: \
   com.ibm.wsspi.classloading, \
   javax.enterprise.context.spi, \
   javax.enterprise.inject.spi, \
-  javax.json.bind;version="[2.0,3)", \
-  javax.json.bind.spi;version="[2.0,3)", \
-  javax.json.bind.adapter;version="[2.0,3)", \
-  javax.json.bind.annotation;version="[2.0,3)", \
-  javax.json.bind.config;version="[2.0,3)", \
-  javax.json.bind.serializer;version="[2.0,3)", \
+  javax.json.bind;version="[1.0,2)", \
+  javax.json.bind.spi;version="[1.0,2)", \
+  javax.json.bind.adapter;version="[1.0,2)", \
+  javax.json.bind.annotation;version="[1.0,2)", \
+  javax.json.bind.config;version="[1.0,2)", \
+  javax.json.bind.serializer;version="[1.0,2)", \
   javax.json, \
   javax.json.spi, \
   javax.json.stream, \
