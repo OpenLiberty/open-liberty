@@ -21,7 +21,6 @@ copyPiiFiles {
 task retractWLPJars(type: Delete) {
     dependsOn publishWLPJars
 
-    FileTree tree = fileTree(dir: buildImage.file('wlp/lib'))
     delete fileTree(dir: buildImage.file('wlp/lib')).matching {
         include 'com.ibm.ws.org.eclipse.yasson.2.0_*.jar'
     }
