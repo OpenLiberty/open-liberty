@@ -237,6 +237,8 @@ public class InvokerTask implements Runnable, Synchronization {
 
         Config config = persistentExecutor.configRef.get();
         if (persistentExecutor.deactivated || !config.enableTaskExecution) {
+            if (!config.enableTaskExecution)
+                persistentExecutor.inMemoryTaskIds.clear();
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run[" + taskId + ']', persistentExecutor.deactivated ? "deactivated" : ("enableTaskExecution? " + config.enableTaskExecution));
             return;

@@ -528,6 +528,11 @@
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
+      <artifactId>grpc-census</artifactId>
+      <version>1.27.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
       <artifactId>grpc-context</artifactId>
       <version>1.27.0</version>
     </dependency>
@@ -1514,6 +1519,11 @@
     <dependency>
       <groupId>org.apache.wink</groupId>
       <artifactId>wink-common</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.wink</groupId>
+      <artifactId>wink-client-apache-httpclient</artifactId>
       <version>1.4</version>
     </dependency>
     <dependency>

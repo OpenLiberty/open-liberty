@@ -175,7 +175,6 @@ public class CDIInjectionTests extends CDITestBase {
         String msgToSearchFor1 = "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
         String msgToSearchFor2 = "MyFaces CDI support enabled";
 
-        // Use the SharedServer to verify a response.
         this.verifyResponse("CDIInjectionTests", "index.xhtml", "Hello Worldy world", jsf23CDIServer);
 
         // Check the trace.log to see if the proper InjectionProvider is being used.

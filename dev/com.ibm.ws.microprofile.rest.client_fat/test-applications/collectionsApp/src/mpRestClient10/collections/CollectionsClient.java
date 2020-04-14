@@ -13,6 +13,7 @@ package mpRestClient10.collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -42,5 +43,13 @@ public interface CollectionsClient {
     @DELETE
     @Path("/byName")
     Map<String, Widget> removeWidgets(Set<String> names) throws UnknownWidgetException;
+    
+    @GET
+    CompletionStage<Set<Widget>> getWidgetsAsync();
+
+    @GET
+    @Path("/byName/{search}")
+    CompletionStage<Map<String, Widget>> getWidgetsByNameAsync(@PathParam("search") String search) 
+                    throws UnknownWidgetException;
 
 }

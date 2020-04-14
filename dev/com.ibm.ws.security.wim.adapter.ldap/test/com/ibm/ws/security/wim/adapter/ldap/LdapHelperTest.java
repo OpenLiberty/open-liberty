@@ -62,4 +62,38 @@ public class LdapHelperTest {
         assertEquals("Expected no change when there are null values.", "uid=user,ou=users,o=ibm.com",
                      LdapHelper.replaceRDN("uid=user,ou=users,o=ibm.com", new String[] { "uid" }, new String[] { null }));
     }
+
+    @Test
+    public void getRDN() {
+        /*
+         * Test argument values that immediately return the input DN.
+         */
+        assertEquals("Null DN should return argument.", null, LdapHelper.getRDN(null));
+        assertEquals("Empty DN should return argument.", "", LdapHelper.getRDN(""));
+        assertEquals("Whitespace DN should return argument.", "      ", LdapHelper.getRDN("      "));
+
+        /*
+         * Get a Valid RDN from the original DN
+         */
+        assertEquals("get Valid RDN", "uid=user", LdapHelper.getRDN("uid=user,ou=users,o=ibm.com"));
+
+        /*
+         * Get a Valid RDN from a DN with an escaped comma
+         */
+        assertEquals("get Valid RDN", "uid=user\\,john", LdapHelper.getRDN("uid=user\\,john,ou=users,o=ibm.com"));
+
+        /*
+         * Get a valid RDN from an invalid DN
+         */
+        assertEquals("get Valid RDN with LDAPSyntaxException", "uid=user", LdapHelper.getRDN("uid=user,ou=users,,,o=ibm.com;"));
+
+        /*
+         * Get a valid RDN from an invalud DN that contains escaped commas
+         */
+        assertEquals("get Valid RDN with LDAPSyntaxException and escaped comma", "uid=user\\,", LdapHelper.getRDN("uid=user\\,,ou=users,   o=ibm.com;"));
+        assertEquals("get Valid RDN with LDAPSyntaxException and multiple escaped commas", "uid=user\\,\\,", LdapHelper.getRDN("uid=user\\,\\,,ou=users,   o=ibm.com;"));
+        assertEquals("get Valid RDN with LDAPSyntaxException and multiple escaped commas should return the original DN", "uid=user\\,\\, \\#",
+                     LdapHelper.getRDN("uid=user\\,\\, \\#"));
+
+    }
 }

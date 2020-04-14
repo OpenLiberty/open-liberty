@@ -144,17 +144,16 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     @Override
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] annotations,
                            MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
-        Object obj = null;
+        
         // For most generic return types, we want to use the genericType so as to ensure
         // that the generic value is not lost on conversion - specifically in collections.
         // But for CompletionStage<SomeType> we want to use clazz to pull the right value
         // - and then client code will handle the result, storing it in the CompletionStage.
         if ((genericType instanceof ParameterizedType) &&
             CompletionStage.class.equals( ((ParameterizedType)genericType).getRawType())) {
-            obj = getJsonb().fromJson(entityStream, clazz);
-        } else {
-            obj = getJsonb().fromJson(entityStream, genericType);
+            genericType = ((ParameterizedType)genericType).getActualTypeArguments()[0];
         }
+        Object obj = getJsonb().fromJson(entityStream, genericType);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);

@@ -382,6 +382,9 @@ task runfat(type: Exec) {
   mustRunAfter buildfat
   mustRunAfter cleanBeforeRun
   environment System.getProperties()
+  //Add fat.test.localrun to JVM environment.
+  //Not accessible during builds since tests are run on child systems with a different JVM
+  environment "fat.test.localrun", "true"
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
     args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')
@@ -390,11 +393,7 @@ task runfat(type: Exec) {
     args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
 
-  doLast {
-    //This should be set during the execution phase and not the configuration stage
-    //Only set this property to true if the runfat task is called (which should only happen when calling buildandrun)
-    System.setProperty("fat.test.localrun", "true");
-    
+  doLast {    
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails

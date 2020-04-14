@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Sprawd\u017a, czy wszystkie op
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Wpisu {0} jaasLoginContext nie mo\u017cna poda\u0107 jako wpisu konfiguracji JAAS w pliku server.xml, jaas.conf lub w obu tych plikach.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=W \u015brodowisku wykonawczym s\u0105 u\u017cywane domy\u015blne konfiguracje modu\u0142u Krb5LoginModule i mechanizm SPNEGO z pliku server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Usu\u0144 wpis jaasLoginContext z pliku server.xml lub pozw\u00f3l, aby \u015brodowisko wykonawcze u\u017cywa\u0142o wpisu domy\u015blnego.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Niestandardowy modu\u0142 logowania JAAS {0} nie zosta\u0142 za\u0142adowany, poniewa\u017c element konfiguracji {1} okre\u015bla zar\u00f3wno atrybut libraryRef, jak i atrybut classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Nale\u017cy okre\u015bli\u0107 tylko jeden atrybut, libraryRef albo classProviderRef, aby wskaza\u0107 artefakt, z kt\u00f3rego ma zosta\u0107 za\u0142adowany niestandardowy modu\u0142 logowania JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Usu\u0144 atrybut libraryRef albo atrybut classProviderRef, w zale\u017cno\u015bci od tego, kt\u00f3ry z nich nie zawiera klasy niestandardowego modu\u0142u logowania JAAS.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Niestandardowy modu\u0142 logowania JAAS {0} nie zosta\u0142 znaleziony, poniewa\u017c element konfiguracji {1} nie okre\u015bla atrybutu libraryRef ani atrybutu classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Nale\u017cy okre\u015bli\u0107 dok\u0142adnie jeden atrybut, libraryRef albo classProviderRef, aby wskaza\u0107 artefakt, z kt\u00f3rego ma zosta\u0107 za\u0142adowany niestandardowy modu\u0142 logowania JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Okre\u015bl atrybut libraryRef albo classProviderRef, aby wskaza\u0107 po\u0142o\u017cenie, z kt\u00f3rego ma zosta\u0107 za\u0142adowana klasa niestandardowego modu\u0142u logowania JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: Klasa niestandardowego modu\u0142u logowania JAAS {0} nie zosta\u0142a znaleziona w artefakcie {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=Okre\u015blona aplikacja lub adapter zasob\u00f3w nie zawiera wymaganej klasy niestandardowego modu\u0142u logowania JAAS lub klasa niestandardowego modu\u0142u logowania JAAS jest obecna w aplikacji, ale w miejscu, z kt\u00f3rego nie mo\u017cna jej za\u0142adowa\u0107.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Upewnij si\u0119, \u017ce skonfigurowana klasa niestandardowego modu\u0142u logowania JAAS i nazwa jej pakietu s\u0105 poprawne. Je\u015bli okre\u015blona jest aplikacja, klasa modu\u0142u logowania musi by\u0107 zawarta w aplikacji: w archiwum JAR najwy\u017cszego poziomu albo w module adaptera zasob\u00f3w.

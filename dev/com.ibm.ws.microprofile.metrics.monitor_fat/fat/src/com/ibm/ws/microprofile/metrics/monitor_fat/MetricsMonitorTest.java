@@ -95,6 +95,7 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_monitor.xml");
     	server.startServer();
+        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
     	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, "------- server started -----");
@@ -118,6 +119,7 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.0 and monitor-1.0: vendor metrics should not be available ------");
     	server.setServerConfigurationFile("server_mpMetric10Monitor10.xml");
     	server.startServer();
+        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
     	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
         String logMsg = server.waitForStringInLog("SRVE9103I",60000);   
         Log.info(c, testName, logMsg);
@@ -137,6 +139,7 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable microProfile-1.3 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_microProfile13Monitor10.xml");
     	server.startServer();
+        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
     	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, server.waitForStringInLog("CWWKS5500I",60000));
     	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
@@ -226,4 +229,5 @@ public class MetricsMonitorTest {
     		}
     	}
     }
+
 }

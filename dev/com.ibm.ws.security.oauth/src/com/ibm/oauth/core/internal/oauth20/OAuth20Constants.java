@@ -186,6 +186,9 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String APP_PASSWORD_URI = "app-passwords"; // also hardcoded in oidc server metatype.xml
     public static final String APP_TOKEN_URI = "app-tokens"; // also hardcoded in oidc server metatype.xml
     public static final String AUTHORIZE_URI = "authorize"; // also hardcoded in oidc server metatype.xml
+    public static final String USERS_TOKEN_MGMT_URI = "usersTokenManagement"; // also hardcoded in oidc server metatype.xml
+    public static final String PERS_TOKEN_MGMT_URI = "personalTokenManagement"; // also hardcoded in oidc server metatype.xml
+    public static final String CLIENT_MGMT_URI = "clientManagement"; // also hardcoded in oidc server metatype.xml
     public static final String CLIENT_METATYPE_URI = "clientMetatype";
     public static final String USED_FOR = "used_for";
     public static final String USED_BY = "used_by";

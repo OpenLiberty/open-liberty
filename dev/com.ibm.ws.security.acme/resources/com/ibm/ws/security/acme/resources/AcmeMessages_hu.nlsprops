@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2019,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,19 +10,120 @@
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security.acme/resources/com/ibm/ws/security/acme/resources/AcmeMessages.nlsprops
-#COMPONENTPREFIX CWWKX
+#COMPONENTPREFIX CWPKI
 #COMPONENTNAMEFOR WebSphere ACME
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-
-# TODO: Get the correct Message Prefix block for ACME feature
-# liberty wiki should have a list of the Message Prefix
-# Message prefix block: CWWKJ0200 - CWWKJ0299
-
+# Message prefix block: CWPKI2000 - CWPKI2299
 #-----  ACME messages
 
-CWWKX0000I=CWWKX0000I: Teszt\u00fczenet
-CWWKX0000I.explanation= Teszt\u00fczenet le\u00edr\u00e1sa
-CWWKX0000I.useraction= Most nincs teend\u0151
+# The ACME referred to in these messages stands for Automatic Certificate Management Environment.
+# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
+
+CWPKI2001E=CWPKI2001E: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g a(z) {0} URI azonos\u00edt\u00f3n azt v\u00e1laszolta, hogy a(z) {1} tartom\u00e1ny jogosults\u00e1gellen\u0151rz\u0151 k\u00e9rd\u00e9se sikertelen volt. Az ellen\u0151rz\u0151k\u00e9rd\u00e9s \u00e1llapota {2}.  A hiba: {3}.
+CWPKI2001E.explanation=Az ellen\u0151rz\u0151k\u00e9rd\u00e9s \u00e1llapota azt jelezte, hogy a jogosults\u00e1gellen\u0151rz\u0151 k\u00e9rd\u00e9s sikertelen volt, \u00e9s nem hozhat\u00f3 l\u00e9tre tan\u00fas\u00edtv\u00e1ny.
+CWPKI2001E.useraction=Tekintse \u00e1t az \u00e1llapot\u00fczenetet \u00e9s a hib\u00e1t a hib\u00e1val kapcsolatos r\u00e9szletek\u00e9rt.
+
+CWPKI2002E=CWPKI2002E: Az ACME szolg\u00e1ltat\u00e1s lek\u00e9rdez\u00e9s t\u00fall\u00e9pte az id\u0151korl\u00e1tot, mik\u00f6zben az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l a(z) {1} URI azonos\u00edt\u00f3hoz tartoz\u00f3 {0} tartom\u00e1nyra vonatkoz\u00f3an sikeres jogosults\u00e1gellen\u0151rz\u00e9si k\u00e9rd\u00e9st keresett. Az \u00e1llapot: {2}. A be\u00e1ll\u00edtott id\u0151korl\u00e1t: {3}.
+CWPKI2002E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g ellen\u0151rz\u0151 k\u00e9r\u00e9se nem ker\u00fclt \u00e9rv\u00e9nyes\u00edt\u00e9sre a be\u00e1ll\u00edtott id\u0151n bel\u00fcl, \u00e9s nem hozhat\u00f3 l\u00e9tre tan\u00fas\u00edtv\u00e1ny.
+CWPKI2002E.useraction=Vizsg\u00e1lja fel\u00fcl a be\u00e1ll\u00edtott tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g URI azonos\u00edt\u00f3j\u00e1t. Ellen\u0151rizze, hogy az URI sikeresen el\u00e9rhet\u0151-e a h\u00edv\u00f3 kiszolg\u00e1l\u00f3val. Ellen\u0151rizze, hogy a h\u00edv\u00f3 kiszolg\u00e1l\u00f3 tud-e v\u00e1laszt fogadni a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l. Vizsg\u00e1lja fel\u00fcl az \u00e1llapotk\u00f3dot. N\u00e9h\u00e1ny tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g hosszabb id\u0151korl\u00e1tot szabhat meg. 
+CWPKI2003E=CWPKI2003E: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g a(z) {0} URI azonos\u00edt\u00f3n azt v\u00e1laszolta, hogy a(z) {1} tartom\u00e1nyok tan\u00fas\u00edtv\u00e1nyrendel\u00e9se sikertelen volt. A rendel\u00e9s \u00e1llapota: {2}. A hiba: {3}.
+CWPKI2003E.explanation=A rendel\u00e9s \u00e1llapota azt jelezte, hogy a jogosults\u00e1grendel\u00e9si ig\u00e9ny sikertelen volt, \u00e9s nem hozhat\u00f3 l\u00e9tre tan\u00fas\u00edtv\u00e1ny.
+CWPKI2003E.useraction=Tekintse \u00e1t az \u00e1llapot\u00fczenetet \u00e9s a hib\u00e1t a hib\u00e1val kapcsolatos r\u00e9szletek\u00e9rt.
+
+CWPKI2004E=CWPKI2004E: Az ACME szolg\u00e1ltat\u00e1s lek\u00e9rdez\u00e9se t\u00fall\u00e9pte az id\u0151korl\u00e1tot, mik\u00f6zben az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l a(z) {1} URI azonos\u00edt\u00f3hoz tartoz\u00f3 {0} tartom\u00e1nyra vonatkoz\u00f3an sikeres rendel\u00e9st keresett. Az \u00e1llapot: {2}. A be\u00e1ll\u00edtott id\u0151korl\u00e1t: {3}.
+CWPKI2004E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g tartom\u00e1nyi tan\u00fas\u00edtv\u00e1nyrendel\u00e9si ig\u00e9nye nem fejez\u0151d\u00f6tt be a be\u00e1ll\u00edtott id\u0151n bel\u00fcl, \u00e9s nem hozhat\u00f3 l\u00e9tre tan\u00fas\u00edtv\u00e1ny.
+CWPKI2004E.useraction=Vizsg\u00e1lja fel\u00fcl a be\u00e1ll\u00edtott tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g URI azonos\u00edt\u00f3j\u00e1t. Ellen\u0151rizze, hogy az URI sikeresen el\u00e9rhet\u0151-e a h\u00edv\u00f3 kiszolg\u00e1l\u00f3val. Ellen\u0151rizze, hogy a h\u00edv\u00f3 kiszolg\u00e1l\u00f3 tud-e v\u00e1laszt fogadni a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l. Vizsg\u00e1lja fel\u00fcl az \u00e1llapotk\u00f3dot. N\u00e9h\u00e1ny tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g hosszabb id\u0151korl\u00e1tot szabhat meg. 
+CWPKI2005E=CWPKI2005E: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l a(z) {0} URI c\u00edmen visszaadott jogosults\u00e1gk\u00e9r\u00e9s nem tartalmazott \u00e9rv\u00e9nyes ellen\u0151rz\u0151k\u00e9rd\u00e9s t\u00edpust. A t\u00e1mogatott ellen\u0151rz\u0151k\u00e9rd\u00e9s t\u00edpusok: {1}.
+CWPKI2005E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g egy jelenleg nem t\u00e1mogatott ellen\u0151rz\u0151k\u00e9rd\u00e9s t\u00edpust adott vissza. Ellen\u0151rizze, hogy a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g a t\u00e1mogatott list\u00e1ban szerepl\u0151 t\u00edpust haszn\u00e1l-e.
+CWPKI2005E.useraction=V\u00e1lasszon olyan tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1got, amely t\u00e1mogatott jogosults\u00e1gellen\u0151rz\u0151 k\u00e9rd\u00e9st\u00edpust biztos\u00edt.
+
+CWPKI2006I=CWPKI2006I: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g a(z) {0} URI c\u00edmen a k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1si felt\u00e9teleket biztos\u00edtotta: {1}
+CWPKI2006I.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g szolg\u00e1ltat\u00e1si felt\u00e9teleket biztos\u00edt.
+CWPKI2006I.useraction= Tekintse \u00e1t a szolg\u00e1ltat\u00e1si felt\u00e9teleket.
+
+CWPKI2007I=CWPKI2007I: Az ACME szolg\u00e1ltat\u00e1s egy ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g \u00e1ltal al\u00e1\u00edrt tan\u00fas\u00edtv\u00e1nyt telep\u00edtett a(z) {0} URI c\u00edmen. A lej\u00e1rati d\u00e1tuma: {1}.
+CWPKI2007I.explanation=Az ACME szolg\u00e1ltat\u00e1s sikeresen lek\u00e9rt \u00e9s telep\u00edtett egy tan\u00fas\u00edtv\u00e1nyt a be\u00e1ll\u00edtott tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l.
+CWPKI2007I.useraction=Nincs teend\u0151.
+
+CWPKI2008E=CWPKI2008E: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gi k\u00f6nyvt\u00e1r URI azonos\u00edt\u00f3j\u00e1nak \u00e9rv\u00e9nyes URI azonos\u00edt\u00f3nak kell lennie. A kapott URI null\u00e9rt\u00e9k\u0171 vagy \u00fcres volt. A kapott URI: '{0}'.
+CWPKI2008E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gi k\u00f6nyvt\u00e1r URI nincs megfelel\u0151en be\u00e1ll\u00edtva.
+CWPKI2008E.useraction=Adjon meg \u00e9rv\u00e9nyes ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gi k\u00f6nyvt\u00e1r URI azonos\u00edt\u00f3t a konfigur\u00e1ci\u00f3ban.
+
+CWPKI2009E=CWPKI2009E: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1ghoz a(z) {0} URI c\u00edmen int\u00e9zett jogosults\u00e1gellen\u0151rz\u0151 k\u00e9rd\u00e9s sikertelen volt. A hiba: {1}.
+CWPKI2009E.explanation=A jogosults\u00e1gellen\u0151rz\u0151 k\u00e9rd\u00e9s sikertelen volt, \u00e9s nem hozhat\u00f3 l\u00e9tre tan\u00fas\u00edtv\u00e1ny.
+CWPKI2009E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2010E=CWPKI2010E: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1ghoz a(z) {0} URI c\u00edmen int\u00e9zett jogosults\u00e1gellen\u0151rz\u0151 k\u00e9rd\u00e9s friss\u00edt\u00e9se sikertelen volt. A hiba: {1}.
+CWPKI2010E.explanation=A jogosults\u00e1gellen\u0151rz\u0151 k\u00e9rd\u00e9s friss\u00edt\u00e9se sikertelen volt, \u00e9s nem friss\u00edthet\u0151 tan\u00fas\u00edtv\u00e1ny.
+CWPKI2010E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2011E=CWPKI2011E: Az ACME szolg\u00e1ltat\u00e1s nem tudott az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g r\u00e9sz\u00e9re tan\u00fas\u00edtv\u00e1nyrendel\u00e9st l\u00e9trehozni a(z) {0} URI c\u00edmen. A hiba: {1}.
+CWPKI2011E.explanation=A tan\u00fas\u00edtv\u00e1nyrendel\u00e9s l\u00e9trehoz\u00e1sa meghi\u00fasult, \u00e9s nem ig\u00e9nyelhet\u0151 al\u00e1\u00edrt tan\u00fas\u00edtv\u00e1ny.
+CWPKI2011E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2012E=CWPKI2012E: Az ACME szolg\u00e1ltat\u00e1s nem tudta al\u00e1\u00edrni az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g r\u00e9sz\u00e9re sz\u00f3l\u00f3 tan\u00fas\u00edtv\u00e1nyal\u00e1\u00edr\u00e1si k\u00e9r\u00e9st a(z) {0} URI c\u00edmen. A hiba: {1}.
+CWPKI2012E.explanation=A tan\u00fas\u00edtv\u00e1nyrendel\u00e9s l\u00e9trej\u00f6tt, de a k\u00e9r\u00e9s al\u00e1\u00edr\u00e1sa meghi\u00fasult, \u00e9s nem ig\u00e9nyelhet\u0151 al\u00e1\u00edrt tan\u00fas\u00edtv\u00e1ny.
+CWPKI2012E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2013E=CWPKI2013E: A tan\u00fas\u00edtv\u00e1nyal\u00e1\u00edr\u00e1si k\u00e9r\u00e9s l\u00e9trej\u00f6tt \u00e9s al\u00e1\u00edr\u00e1sra ker\u00fclt, de a rendel\u00e9si ig\u00e9ny az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1ghoz a(z) {0} URI c\u00edmen sikertelen volt. A hiba: {1}.
+CWPKI2013E.explanation=A tan\u00fas\u00edtv\u00e1nyrendel\u00e9s l\u00e9trehoz\u00e1sra \u00e9s al\u00e1\u00edr\u00e1sra ker\u00fclt, de a tan\u00fas\u00edtv\u00e1ny megrendel\u00e9se a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l sikertelen volt.
+CWPKI2013E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2014E=CWPKI2014E: A(z) {0} URI azonos\u00edt\u00f3j\u00fa ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g tan\u00fas\u00edtv\u00e1nyal\u00e1\u00edr\u00e1si k\u00e9r\u00e9se l\u00e9trej\u00f6tt \u00e9s al\u00e1\u00edr\u00e1sra ker\u00fclt, de a k\u00e9r\u00e9s k\u00f3dol\u00e1sa meghi\u00fasult. A hiba: {1}.
+CWPKI2014E.explanation=A tan\u00fas\u00edtv\u00e1nyal\u00e1\u00edr\u00e1si k\u00e9r\u00e9s k\u00f3dol\u00e1sa meghi\u00fasult, \u00e9s nem hozhat\u00f3 l\u00e9tre al\u00e1\u00edrt tan\u00fas\u00edtv\u00e1ny.
+CWPKI2014E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2015E=CWPKI2015E: A(z) {0} URI azonos\u00edt\u00f3j\u00fa ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l az ACME szolg\u00e1ltat\u00e1s tan\u00fas\u00edtv\u00e1nyrendel\u00e9si \u00e1llapotk\u00e9r\u00e9se meghi\u00fasult. A hiba: {1}.
+CWPKI2015E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g aszinkron m\u00f3don teljes\u00edtett egy rendel\u00e9st. Az ACME szolg\u00e1ltat\u00e1s hib\u00e1t kapott a rendel\u00e9s \u00e1llapot\u00e1nak ellen\u0151rz\u00e9se sor\u00e1n. Nem k\u00e9rhet\u0151 ig\u00e9nyelhet\u0151 al\u00e1\u00edrt tan\u00fas\u00edtv\u00e1ny.
+CWPKI2015E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2016E=CWPKI2016E: Az ACME szolg\u00e1ltat\u00e1sig\u00e9nyl\u00e9se egy megl\u00e9v\u0151 fi\u00f3kra vonatkoz\u00f3an a(z) {0} URI azonos\u00edt\u00f3j\u00fa ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l sikertelen volt. A hiba: {1}.
+CWPKI2016E.explanation=Egy megl\u00e9v\u0151 fi\u00f3k nem tal\u00e1lhat\u00f3, vagy m\u00e1s hiba t\u00f6rt\u00e9nt. Nem v\u00e9gezhet\u0151k m\u00f3dos\u00edt\u00e1sok a fi\u00f3kra vagy a tan\u00fas\u00edtv\u00e1nyra vonatkoz\u00f3an.
+CWPKI2016E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Ellen\u0151rizze, hogy az URI sikeresen el\u00e9rhet\u0151-e a h\u00edv\u00f3 kiszolg\u00e1l\u00f3val. Ellen\u0151rizze, hogy a h\u00edv\u00f3 kiszolg\u00e1l\u00f3 tud-e v\u00e1laszt fogadni a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l. 
+CWPKI2017E=CWPKI2017E: Az ACME szolg\u00e1ltat\u00e1si felt\u00e9tel k\u00e9r\u00e9se a(z) {0} URI azonos\u00edt\u00f3j\u00fa ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l sikertelen volt. A hiba: {1}.
+CWPKI2017E.explanation=Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g szolg\u00e1ltat\u00e1si felt\u00e9telei nem napl\u00f3zhat\u00f3k. 
+CWPKI2017E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Keresse fel az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g webhely\u00e9t a szolg\u00e1ltat\u00e1s felt\u00e9teleinek \u00e1ttekint\u00e9se \u00e9rdek\u00e9ben.
+
+CWPKI2018E=CWPKI2018E: A felhaszn\u00e1l\u00f3i fi\u00f3k nem hozhat\u00f3 l\u00e9tre a(z) {0} URI c\u00edmen az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gn\u00e1l. A hiba: {1}.
+CWPKI2018E.explanation=A felhaszn\u00e1l\u00f3i fi\u00f3k l\u00e9trehoz\u00e1si k\u00e9r\u00e9s meghi\u00fasult.
+CWPKI2018E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2019I=CWPKI2019I: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g \u00e1ltal a(z) {0} URI c\u00edmen megadott fi\u00f3k URL c\u00edme: {1}.
+CWPKI2019I.explanation=A fi\u00f3k sikeresen l\u00e9trej\u00f6tt.
+CWPKI2019I.useraction=Nincs teend\u0151.
+
+CWPKI2020E=CWPKI2020E: Az ACME szolg\u00e1ltat\u00e1s nem tudta olvasni az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g fi\u00f3k tartom\u00e1nykulcsf\u00e1jlj\u00e1t a(z) {0} URI c\u00edmen. A f\u00e1jl helye: {1}. A hiba: {2}.
+CWPKI2020E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g fi\u00f3k tartom\u00e1nykulcsf\u00e1jlja nem nyithat\u00f3 meg. Ez akkor fordulhat el\u0151, ha a f\u00e1jlenged\u00e9lyek nem megfelel\u0151ek, vagy a f\u00e1jl nem l\u00e9tezik.
+CWPKI2020E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Ellen\u0151rizze, hogy a f\u00e1jl helye megfelel\u0151-e, \u00e9s a kiszolg\u00e1l\u00f3 rendelkezik f\u00e1jlolvas\u00e1si enged\u00e9llyel.
+
+CWPKI2021E=CWPKI2021E: Az ACME szolg\u00e1ltat\u00e1s nem tudta olvasni az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gi fi\u00f3k kulcsf\u00e1jlj\u00e1t a(z) {0} URI c\u00edmen. A f\u00e1jl helye: {1}. A hiba: {2}.
+CWPKI2021E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g fi\u00f3k kulcsf\u00e1jlja nem nyithat\u00f3 meg. Ez akkor fordulhat el\u0151, ha a f\u00e1jlenged\u00e9lyek nem megfelel\u0151ek, vagy a f\u00e1jl nem l\u00e9tezik.
+CWPKI2021E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Ellen\u0151rizze, hogy a f\u00e1jl helye megfelel\u0151-e, \u00e9s a kiszolg\u00e1l\u00f3 rendelkezik f\u00e1jlolvas\u00e1si enged\u00e9llyel.
+
+CWPKI2022E=CWPKI2022E: Az ACME szolg\u00e1ltat\u00e1s nem tudta \u00edrni az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g fi\u00f3k tartom\u00e1nykulcsf\u00e1jlj\u00e1t a(z) {0} URI c\u00edmen. A f\u00e1jl helye: {1}. A hiba: {2}.
+CWPKI2022E.explanation=A tartom\u00e1nykulcsok nem t\u00e1rolhat\u00f3k a tartom\u00e1nykulcsf\u00e1jlban. Ez akkor fordulhat el\u0151, ha a f\u00e1jlenged\u00e9lyek nem megfelel\u0151ek, vagy a f\u00e1jl nem l\u00e9tezik.
+CWPKI2022E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Ellen\u0151rizze, hogy a f\u00e1jl helye megfelel\u0151-e, \u00e9s a kiszolg\u00e1l\u00f3 rendelkezik f\u00e1jl\u00edr\u00e1si enged\u00e9llyel.
+
+CWPKI2023E=CWPKI2023E: Nem siker\u00fclt az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g fi\u00f3kj\u00e1hoz tartoz\u00f3 fi\u00f3kkulcsf\u00e1jl \u00edr\u00e1sa a(z) {0} URI c\u00edmen. A f\u00e1jl helye: {1}. A hiba: {2}.
+CWPKI2023E.explanation=A fi\u00f3kkulcsok nem t\u00e1rolhat\u00f3k a fi\u00f3kkulcsf\u00e1jlban. Ez akkor fordulhat el\u0151, ha a f\u00e1jlenged\u00e9lyek nem megfelel\u0151ek, vagy a f\u00e1jl nem l\u00e9tezik.
+CWPKI2023E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Ellen\u0151rizze, hogy a f\u00e1jl helye megfelel\u0151-e, \u00e9s a kiszolg\u00e1l\u00f3 rendelkezik f\u00e1jl\u00edr\u00e1si enged\u00e9llyel.
+
+CWPKI2024E=CWPKI2024E: Az ACME szolg\u00e1ltat\u00e1s nem tudta visszavonni az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l ig\u00e9nyelt tan\u00fas\u00edtv\u00e1nyt a(z) {0} URI c\u00edmen. A tan\u00fas\u00edtv\u00e1ny sorozatsz\u00e1ma: {1}. A hiba: {2}.
+CWPKI2024E.explanation=Egy tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si k\u00e9r\u00e9s meghi\u00fasult. Lehet, hogy a tan\u00fas\u00edtv\u00e1ny nem vonhat\u00f3 vissza, \u00e9s m\u00e9g haszn\u00e1latban lehet.
+CWPKI2024E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2025W=CWPKI2025W: Az ACME szolg\u00e1ltat\u00e1s tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si k\u00e9r\u00e9st kapott, de a(z) {0} URI azonos\u00edt\u00f3j\u00fa ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g fi\u00f3kkulcsp\u00e1rja nem t\u00f6lthet\u0151 be.
+CWPKI2025W.explanation=A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si k\u00e9r\u00e9s meghi\u00fasult, mert a fi\u00f3kkulcsp\u00e1r nem t\u00f6lthet\u0151 be.
+CWPKI2025W.useraction=A hib\u00e1val kapcsolatos r\u00e9szletek\u00e9rt tekintse \u00e1t a napl\u00f3ban a kor\u00e1bbi hib\u00e1kat. Vizsg\u00e1lja fel\u00fcl a kulcst\u00e1rol\u00f3f\u00e1jlt a tan\u00fas\u00edtv\u00e1ny l\u00e9tez\u00e9s\u00e9nek ellen\u0151rz\u00e9se \u00e9rdek\u00e9ben.
+
+CWPKI2026W=CWPKI2026W: Az ACME szolg\u00e1ltat\u00e1s tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si k\u00e9r\u00e9st kapott, de a(z) {0} URI azonos\u00edt\u00f3j\u00fa ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g fi\u00f3k nem tal\u00e1lhat\u00f3.
+CWPKI2026W.explanation=A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si k\u00e9r\u00e9s meghi\u00fasult, mert a fi\u00f3k nem tal\u00e1lhat\u00f3.
+CWPKI2026W.useraction=Vizsg\u00e1lja fel\u00fcl a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g URI azonos\u00edt\u00f3j\u00e1t. Vizsg\u00e1lja fel\u00fcl a kulcst\u00e1rol\u00f3f\u00e1jlt a tan\u00fas\u00edtv\u00e1ny l\u00e9tez\u00e9s\u00e9nek ellen\u0151rz\u00e9se \u00e9rdek\u00e9ben.
+
+CWPKI2027E=CWPKI2027E: Az ACME szolg\u00e1ltat\u00e1s {0} f\u00e1jl\u00fatvonala null\u00e9rt\u00e9k\u0171 vagy \u00fcres. A megadott \u00fatvonal: '{1}'.
+CWPKI2027E.explanation=A f\u00e1jl\u00fatvonal null\u00e9rt\u00e9k\u0171 vagy \u00fcres volt, \u00e9s nem haszn\u00e1lhat\u00f3 a tartom\u00e1ny- \u00e9s fi\u00f3kkulcsokhoz.
+CWPKI2027E.useraction=Adjon meg \u00e9rv\u00e9nyes f\u00e1jl\u00fatvonalat a konfigur\u00e1ci\u00f3ban.

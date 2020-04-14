@@ -10,9 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.failover1serv;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.websphere.simplicity.Machine;
+
+import componenttest.topology.database.DerbyNetworkUtilities;
+import componenttest.topology.impl.LibertyFileManager;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -21,4 +28,13 @@ import org.junit.runners.Suite.SuiteClasses;
     SwitchFromSingleInstanceToFailOverTest.class
     })
 public class FATSuite {
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        DerbyNetworkUtilities.startDerbyNetwork();
+    }
+
+    @AfterClass
+    public static void afterSuite() throws Exception{
+        DerbyNetworkUtilities.stopDerbyNetwork();
+    }
 }

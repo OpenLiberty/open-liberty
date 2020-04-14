@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs20.security;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 import javax.annotation.Priority;
 import javax.servlet.ServletException;
@@ -25,31 +26,37 @@ import org.apache.cxf.interceptor.security.AccessDeniedException;
 import org.apache.cxf.interceptor.security.AuthenticationException;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageUtils;
+import org.apache.cxf.security.SecurityContext;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.jaxrs20.security.LibertySimpleAuthorizingInterceptor;
+import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
+import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 
 @Priority(Priorities.AUTHORIZATION)
 public class LibertyAuthFilter implements ContainerRequestFilter {
-    private LibertySimpleAuthorizingInterceptor interceptor;
 
     @Override
-    @FFDCIgnore({ AuthenticationException.class, AccessDeniedException.class })
+    @FFDCIgnore({ UnauthenticatedException.class, UnauthenticatedException.class, AccessDeniedException.class })
     public void filter(ContainerRequestContext context) {
         Message m = JAXRSUtils.getCurrentMessage();
         try {
             try {
-                interceptor.handleMessage(m);
-            } catch (AuthenticationException ex) {
-                if (authenticate(m)) {
-                    // try again with authenticated user
-                    interceptor.handleMessage(m);
-                } else {
-                    // could not authenticate - return 401
-                    // TODO: check response code on servlet response and use the same status?
-                    context.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+                handleMessage(m);
+            } catch (UnauthenticatedException ex) {
+                try { 
+                    if (authenticate(m)) {
+                        // try again with authenticated user
+                        handleMessage(m);
+                        return;
+                    }
+                } catch (UnauthenticatedException ex2) {
+                    // ignore - still abort with 401
                 }
+                // could not authenticate - return 401
+                // TODO: check response code on servlet response and use the same status?
+                context.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
         } catch (AccessDeniedException ex) {
             context.abortWith(Response.status(Response.Status.FORBIDDEN).build());
@@ -67,7 +74,14 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
         return false;
     }
 
-    public void setInterceptor(LibertySimpleAuthorizingInterceptor in) {
-        interceptor = in;
+    private void handleMessage(Message message) throws UnauthenticatedException{
+        HttpServletRequest req = (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
+        Method method = MessageUtils.getTargetMethod(message, () -> 
+            new AccessDeniedException("Method is not available : Unauthorized"));
+        if (RoleMethodAuthUtil.parseMethodSecurity(method, req.getUserPrincipal(), s -> req.isUserInRole(s))) {
+            return;
+        }
+
+        throw new AccessDeniedException("Unauthorized");
     }
 }

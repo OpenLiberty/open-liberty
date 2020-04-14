@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.transaction.SystemException;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -44,7 +43,6 @@ import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.FileFailureScope;
 import com.ibm.ws.recoverylog.spi.FileLogProperties;
 import com.ibm.ws.recoverylog.spi.HeartbeatLog;
-import com.ibm.ws.recoverylog.spi.HeartbeatLogManager;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.InvalidLogPropertiesException;
@@ -73,6 +71,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     protected RecoveryDirector _recoveryDirector;
 
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
+
+    private RecoveryLog _transactionLog = null;
+    private RecoveryLog _partnerLog = null;
     // In the special case where we are operating in the cloud, we'll also work with a "lease" log
     SharedServerLeaseLog _leaseLog;
 
@@ -83,8 +84,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    protected TxRecoveryAgentImpl() {
-    }
+    protected TxRecoveryAgentImpl() {}
 
     public TxRecoveryAgentImpl(RecoveryDirector rd) throws Exception {
         _recoveryDirector = rd;
@@ -123,8 +123,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {
-    }
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
 
     @Override
     public int clientIdentifier() {
@@ -238,9 +237,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             byte[] applId = ConfigurationProviderManager.getConfigurationProvider().getApplId();
             int epoch = Configuration.getCurrentEpoch();
 
-            RecoveryLog transactionLog = null;
-            RecoveryLog partnerLog = null;
-
             // As long as a physical location for the recovery logs is found, and logging is enabled (ie user
             // has not specified ";0" as the log location string for a file based log) then create the
             if ((tlc != null) && (tlc.enabled())) {
@@ -278,12 +274,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 // Create the Transaction log
                 //
-                transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
+                _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
                 //
                 // Create the Partner (XAResources) log
                 //
-                partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+                _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
 
                 // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
                 if (tc.isDebugEnabled())
@@ -301,7 +297,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             //
             // Create the RecoveryManager and associate it with the logs
             //
-            fsc.createRecoveryManager(this, transactionLog, partnerLog, null, applId, epoch);
+            fsc.createRecoveryManager(this, _transactionLog, _partnerLog, null, applId, epoch);
 
             // Initiate recovery on a separate thread.
             // Cannot use default threadpool threads as these are subject to hang detection and if we
@@ -524,8 +520,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void prepareForRecovery(FailureScope failureScope) {
-    }
+    public void prepareForRecovery(FailureScope failureScope) {}
 
     /**
      * @param fs
@@ -595,9 +590,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // Stop lease timeout alarm popping when server is on its way down
         LeaseTimeoutManager.stopTimeout();
 
-        // Stop HADB Log Availability alarm popping when server is on its way down
-        HeartbeatLogManager.stopTimeout();
-
+        // Drive the serverStopping() method on the SQLMultiScopeRecoveryLog if appropriate. This will manage
+        // the cancelling of the HADB Log Availability alarm
+        if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The log is a Heartbeatlog");
+            HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
+            heartbeatLog.serverStopping();
+        }
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
         // processing recovery for it) and tell them to shutdown.
@@ -918,6 +918,25 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             if (tc.isEntryEnabled())
                                 Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
                             heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
+
+                            // SQL HADB Retry parameters (optional)
+                            int standardTransientErrorRetryTime = cp.getStandardTransientErrorRetryTime();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "standardTransientErrorRetryTime - ", standardTransientErrorRetryTime);
+                            heartbeatLog.setStandardTransientErrorRetryTime(standardTransientErrorRetryTime);
+                            int standardTransientErrorRetryAttempts = cp.getStandardTransientErrorRetryAttempts();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "standardTransientErrorRetryAttempts - ", standardTransientErrorRetryAttempts);
+                            heartbeatLog.setStandardTransientErrorRetryAttempts(standardTransientErrorRetryAttempts);
+
+                            int lightweightTransientErrorRetryTime = cp.getLightweightTransientErrorRetryTime();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "lightweightTransientErrorRetryTime - ", lightweightTransientErrorRetryTime);
+                            heartbeatLog.setLightweightTransientErrorRetryTime(lightweightTransientErrorRetryTime);
+                            int lightweightTransientErrorRetryAttempts = cp.getLightweightTransientErrorRetryAttempts();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "lightweightTransientErrorRetryAttempts - ", lightweightTransientErrorRetryAttempts);
+                            heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
                         }
                     }
                 }

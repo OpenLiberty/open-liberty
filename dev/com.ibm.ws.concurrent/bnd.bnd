@@ -21,14 +21,20 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package:\
   com.ibm.ws.concurrent,\
-  com.ibm.ws.concurrent.service
-    
+  com.ibm.ws.concurrent.mp.spi.*
+
 Private-Package:\
   com.ibm.ws.concurrent.internal.*,\
   com.ibm.ws.concurrent.resources.*
 
 Include-Resource:\
   OSGI-INF=resources/OSGI-INF
+
+-dsannotations: \
+  com.ibm.ws.concurrent.internal.ContextServiceImpl,\
+  com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
+  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl,\
+  com.ibm.ws.concurrent.mp.spi.CompletionStageFactory
 
 Service-Component:\
   com.ibm.ws.concurrent.managedThreadFactory;\
@@ -60,6 +66,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.jakarta.concurrency.2.0;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.app.manager.lifecycle;version=latest,\

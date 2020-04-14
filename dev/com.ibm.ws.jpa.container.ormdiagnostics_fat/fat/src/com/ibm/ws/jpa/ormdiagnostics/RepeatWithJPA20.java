@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- *
- */
 public class RepeatWithJPA20 extends FeatureReplacementAction {
     public static final String ID = "JPA20_FEATURES";
 
@@ -43,7 +40,7 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
 
     @Override
     public boolean isEnabled() {
-        LibertyServer server = LibertyServerFactory.getLibertyServer("JPADiagTestServer");
+        LibertyServer server = LibertyServerFactory.getLibertyServer("JPAORMServer");
 
         File jpa20Feature = new File(server.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
         Log.info(getClass(), "isEnabled", "Does the jpa-2.0 feature exist? " + jpa20Feature.exists());

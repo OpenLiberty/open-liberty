@@ -15,12 +15,15 @@ import static org.junit.Assert.fail;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingName;
 import com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameHome;
 import com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome;
+import com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingRemoteName;
 
 import componenttest.app.FATServlet;
 
@@ -55,12 +58,12 @@ public class SimpleBindingNameTestServlet extends FATServlet {
      * Tests that the remote default binding should not have been bound because we
      * have custom bindings.
      */
-    //@Test
+    @Test
     public void testRemoteDefaultDisabledSimpleBindingName() {
         try {
             Object bean = new InitialContext().lookup("ejb/SimpleBindingNameTestApp/SimpleBindingNameEJB.jar/SimpleBindingName4#com.ibm.ejb3x.SimpleBindingName.ejb.SimpleBindingNameRemoteHome");
             if (bean != null) {
-                fail("EJBLocal default bindings lookup should not have worked because we have custom bindings");
+                fail("remote default bindings lookup should not have worked because we have custom bindings");
             }
         } catch (NamingException e) {
             // expected to not work
@@ -348,12 +351,17 @@ public class SimpleBindingNameTestServlet extends FATServlet {
                     fail("lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                 }
                 try {
-                    if (beanHome.create() == null) {
+                    SimpleBindingName bean = beanHome.create();
+                    if (bean == null) {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
+                    }
+                    System.out.println("Got bean, calling method");
+                    if (bean.foo() == null) {
+                        fail("bean.method() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                     }
                 } catch (Exception e) {
                     e.printStackTrace(System.out);
-                    fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
+                    fail("home.create() or method call for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                 }
             } else {
                 if (beanHome != null) {
@@ -367,29 +375,52 @@ public class SimpleBindingNameTestServlet extends FATServlet {
             } else {
                 // expected to fail in other cases
             }
+        } catch (ClassCastException cce) {
+            // For the hybrid beans they might have a remote bound in the lookup string, so we'll get a class cast
+            // since we try all the lookup combinations, just ignore it.
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While performing lookup " + lookupName + " for " + SimpleBindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
+            }
         }
     }
 
     private void testLookupCombinationsHelperRemote(Context context, String contextString, String lookupName, String SimpleBindingName, String beanNum, String passingCases) {
         try {
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + SimpleBindingName);
-            SimpleBindingNameRemoteHome beanHome = (SimpleBindingNameRemoteHome) context.lookup(lookupName);
+            Object lookup = context.lookup(lookupName);
+            SimpleBindingNameRemoteHome beanHome = (SimpleBindingNameRemoteHome) PortableRemoteObject.narrow(lookup, SimpleBindingNameRemoteHome.class);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {
                     fail("lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                 }
                 try {
-                    if (beanHome.create() == null) {
-                        fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
+                    SimpleBindingRemoteName bean = beanHome.create();
+                    if (bean == null) {
+                        fail("bean.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                     }
+                    System.out.println("Got bean, calling method");
+                    if (bean.foo() == null) {
+                        fail("bean.method() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace(System.out);
-                    fail("home.create() for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
+                    fail("home.create() or method call for lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);
                 }
             } else {
                 if (beanHome != null) {
                     fail("lookup " + lookupName + " should have failed for " + SimpleBindingName + " and context " + contextString);
                 }
+            }
+        } catch (ClassCastException cce) {
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While narrowing lookup " + lookupName + " for " + SimpleBindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
@@ -413,13 +444,13 @@ public class SimpleBindingNameTestServlet extends FATServlet {
         testLookupCombinations(false, "simple-binding-name=\"ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome2\"", 2);
     }
 
-    //@Test
+    @Test
     public void testRemoteSimpleBindingNameStartsWithCom() throws Exception {
         // simple-binding-name="com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome3">
         testLookupCombinations(true, "simple-binding-name=\"com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome3\"", 3);
     }
 
-    //@Test
+    @Test
     public void testRemoteSimpleBindingNameStartsWithEJB() throws Exception {
         // simple-binding-name="ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome4">
         testLookupCombinations(true, "simple-binding-name=\"ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome4\"", 4);
@@ -437,13 +468,13 @@ public class SimpleBindingNameTestServlet extends FATServlet {
         testLookupCombinations(false, "simple-binding-name=\"ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome6\"", 6);
     }
 
-    //@Test
+    @Test
     public void testHybridBindingNameStartsWithComRemoteMode() throws Exception {
         // simple-binding-name="com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome7">
         testLookupCombinations(true, "simple-binding-name=\"com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome7\"", 7);
     }
 
-    //@Test
+    @Test
     public void testHybridBindingNameStartsWithEJBRemoteMode() throws Exception {
         // simple-binding-name="ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome8">
         testLookupCombinations(true, "simple-binding-name=\"ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome8\"", 8);

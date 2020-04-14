@@ -16,28 +16,22 @@
 
 	<include location="../fatTestPorts.xml" />
 
-	<acmeCA directoryURI="https://localhost/dir" challengeRetries="3"
-		challengeRetryWait="30s" orderRetries="4" orderRetryWait="40s">
+	<acmeCA directoryURI="https://localhost/dir" 
+	        challengeRetries="3"
+		    challengeRetryWait="30s"
+		    orderRetries="4"
+		    orderRetryWait="40s"
+		    accountKeyFile="/tmp/accountKey.pem"
+		    domainKeyFile="/tmp/domainKey.pem"
+		    validFor="365d"
+		    subjectDN="cn=domain1.com,ou=Liberty,o=IBM,st=MN,l=Rochester,c=USA"		    >
 
-		<!-- Account information. -->
-		<acceptTermsOfService>true</acceptTermsOfService>
-		<accountKeyFile>/tmp/accountKey.pem</accountKeyFile>
 		<accountContact>mailto:Luke.Skywalker@JediMaster.org</accountContact>
 		<accountContact>mailto:He.Man@MastersOfTheUniverse.org</accountContact>
 
-		<!-- Domain configuration. We require at least one domain. -->
-		<domainKeyFile>/tmp/domainKey.pem</domainKeyFile>
 		<domain>domain1.com</domain>
 		<domain>domain2.com</domain>
 		<domain>domain3.com</domain>
-
-		<!-- Certificate configuration. -->
-		<validFor>365d</validFor>
-		<locality>Rochester</locality>
-		<state>MN</state>
-		<country>USA</country>
-		<organization>IBM</organization>
-		<organizationalUnit>Liberty</organizationalUnit>
 	</acmeCA>
 	
 </server>

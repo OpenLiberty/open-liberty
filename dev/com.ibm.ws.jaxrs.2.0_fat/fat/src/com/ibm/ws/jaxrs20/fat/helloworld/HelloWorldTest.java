@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat.helloworld;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -83,6 +84,12 @@ public class HelloWorldTest {
         runGetMethod(200, "/helloworld/apppathrest%21/helloworld", "Hello World");
     }
 
+    // disable this test until webcontainer fixes on their end as well
+//    @Test
+    public void testInvalidCharset() throws Exception {
+        assertEquals(400, runGetMethodInvalidCharset("/helloworld/rest/helloworld"));
+    }
+
     private StringBuilder runGetMethod(int exprc, String requestUri, String testOut)
                     throws IOException {
         URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
@@ -119,36 +126,18 @@ public class HelloWorldTest {
         }
     }
 
-    private StringBuilder runDeleteMethod(int exprc, String testOut)
+    private int runGetMethodInvalidCharset(String requestUri)
                     throws IOException {
-        URL url = new URL("http://localhost:" + getPort()
-                          + "/helloworld/rest/helloworld");
-        int retcode;
+        URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         try {
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setUseCaches(false);
-            con.setRequestMethod("DELETE");
+            con.setRequestProperty("Content-Type", "text/plain; charset=invalid");
+            con.setRequestMethod("GET");
 
-            retcode = con.getResponseCode();
-            if (retcode != exprc)
-                fail("Bad return Code from Delete");
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br
-                            .readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
+            return con.getResponseCode();
         } finally {
             con.disconnect();
         }

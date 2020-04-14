@@ -54,7 +54,6 @@ import componenttest.topology.utils.HttpUtils;
 public class ConsoleFormatTest {
     private static final Class<?> c = ConsoleFormatTest.class;
 
-    private static final String CONSOLE_LOG = "logs/ConsoleFormatTest.log";
     private static final String TRACE_SPEC = "com.ibm.ws.logging.*=all";
 
     private static final String DEV_FORMAT = "dev";
@@ -112,7 +111,7 @@ public class ConsoleFormatTest {
     @Test
     public void testDynamicSimpleFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
-        RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Verify if the console logging format is in the default dev format
         List<String> lines = server.findStringsInLogs(DEV_FORMAT_REGEX_PATTERN, consoleLogFile);
@@ -148,7 +147,7 @@ public class ConsoleFormatTest {
     @Test
     public void testInvalidConsoleFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
-        RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simples" and traceSpec=off in server.xml
         setServerConfiguration(INVALID_CONSOLE_FORMAT, false, false, consoleLogFile);
@@ -173,7 +172,7 @@ public class ConsoleFormatTest {
     @Test
     public void testDeprecatedBasicConsoleFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
-        RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="basic" and traceSpec=off in server.xml
         setServerConfiguration(DEPRECATED_BASIC_FORMAT, false, false, consoleLogFile);
@@ -206,12 +205,12 @@ public class ConsoleFormatTest {
             setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.console.format", SIMPLE_FORMAT);
 
             // Retrieve the consoleLogFile RemoteFile
-            RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+            RemoteFile consoleLogFile = server.getConsoleLogFile();
 
             // Check in console.log file to see if the message is formatted in the simple console format
-            List<String> lines = server.findStringsInLogs(DEV_FORMAT_REGEX_PATTERN, consoleLogFile);
+            List<String> lines = server.findStringsInLogs(SIMPLE_FORMAT_REGEX_PATTERN, consoleLogFile);
             Log.info(c, "testSimpleFormatSetInBootstrapProperties", "The simple console formatted lines : " + lines);
-            assertTrue("The console log is not in simple format.", lines.isEmpty());
+            assertTrue("The console log is not in simple format.", lines.size() > 0);
 
         } finally {
             // Restore the initial contents of bootstrap.properties
@@ -236,7 +235,7 @@ public class ConsoleFormatTest {
             setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.console.format", INVALID_CONSOLE_FORMAT);
 
             // Retrieve the consoleLogFile RemoteFile
-            RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+            RemoteFile consoleLogFile = server.getConsoleLogFile();
 
             // Verify if the WARNING message appeared in the logs.
             String line = server.waitForStringInLogUsingMark("CWWKG0032W", consoleLogFile);
@@ -264,7 +263,7 @@ public class ConsoleFormatTest {
     @Test
     public void testSimpleConsoleFormatWithIsoDateFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
-        RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simple", traceSpec=off, isoDateFormat=true in server.xml
         setServerConfiguration(SIMPLE_FORMAT, false, true, consoleLogFile);
@@ -286,7 +285,7 @@ public class ConsoleFormatTest {
     @Test
     public void testSimpleConsoleFormatWithSysOutSysErrMsgs() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
-        RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simple", traceSpec=off, isoDateFormat=false in server.xml
         setServerConfiguration(SIMPLE_FORMAT, false, false, consoleLogFile);
@@ -319,7 +318,7 @@ public class ConsoleFormatTest {
     @AllowedFFDC
     public void testSimpleConsoleFormatWithException() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
-        RemoteFile consoleLogFile = server.getFileFromLibertyServerRoot(CONSOLE_LOG);
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simple", traceSpec=off, isoDateFormat=false in server.xml
         setServerConfiguration(SIMPLE_FORMAT, false, false, consoleLogFile);
@@ -356,11 +355,11 @@ public class ConsoleFormatTest {
         serverEnv.startServer();
 
         // Retrieve the consoleLogFile RemoteFile
-        RemoteFile consoleLogFile = serverEnv.getFileFromLibertyServerRoot(CONSOLE_LOG);
+        RemoteFile consoleLogFile = serverEnv.getConsoleLogFile();
 
         // Verify if the console logging format is not in the default dev format, and is in the simple format
-        List<String> lines = serverEnv.findStringsInLogs(DEV_FORMAT_REGEX_PATTERN, consoleLogFile);
-        assertTrue("The console log is not in simple format.", lines.isEmpty());
+        List<String> lines = serverEnv.findStringsInLogs(SIMPLE_FORMAT_REGEX_PATTERN, consoleLogFile);
+        assertTrue("The console log is not in simple format.", lines.size() > 0);
 
         // Stop the serverEnv
         if (serverEnv != null && serverEnv.isStarted()) {

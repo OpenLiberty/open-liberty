@@ -26,6 +26,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
+ com.ibm.ws.security.authorization.util, \
  com.ibm.ws.jaxrs.2.0.web, \
  com.ibm.ws.jaxrs.2.0.server, \
  com.ibm.ws.jaxrs.2.0.client
