@@ -42,7 +42,7 @@ public class ClassAvailableHookClassAdapter extends ClassVisitor {
      * @param delegate the class adapter to delegate to
      */
     public ClassAvailableHookClassAdapter(ClassVisitor delegate) {
-        super(Opcodes.ASM7, delegate);
+        super(Opcodes.ASM8, delegate);
     }
 
     @Override
@@ -88,7 +88,7 @@ class ProcessCandidateHookMethodAdapter extends MethodVisitor {
     boolean supportsClassLiterals;
 
     protected ProcessCandidateHookMethodAdapter(MethodVisitor visitor, Type classType, boolean supportsClassLiterals) {
-        super(Opcodes.ASM7, visitor);
+        super(Opcodes.ASM8, visitor);
         this.classType = classType;
         this.supportsClassLiterals = supportsClassLiterals;
     }
