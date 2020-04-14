@@ -136,7 +136,7 @@ public final class ServletAdapter {
     AsyncContext asyncCtx = req.startAsync(req, resp);
 
     if (logger.isLoggable(FINEST)) {
-        logger.log(FINE, "Liberty inbound gRPC request path translated to {0}" + method);
+        logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
     }
 
     Metadata headers = getHeaders(req, libertyAuth);
