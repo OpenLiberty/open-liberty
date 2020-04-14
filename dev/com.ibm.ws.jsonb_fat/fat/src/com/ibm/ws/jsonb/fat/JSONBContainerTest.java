@@ -38,7 +38,7 @@ import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.JohnzonTestServlet;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once jsonbContainer-2.0 is available
+@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once cdi-3.0 is available
 public class JSONBContainerTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonb.container.fat")
