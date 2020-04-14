@@ -10,10 +10,7 @@
  *******************************************************************************/
 package web.embedded;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
@@ -36,17 +33,16 @@ import javax.resource.cci.Interaction;
 import javax.resource.cci.RecordFactory;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkManager;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import componenttest.app.FATServlet;
 import fat.jca.testra.DummyMessage;
 import fat.jca.testra.DummyQueue;
 import fat.jca.testra.DummyResourceAdapter;
 
-public class JCAFVTServlet extends HttpServlet {
+public class JCAFVTServlet extends FATServlet {
     private static final long serialVersionUID = 7709282314904580334L;
 
     public static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -55,36 +51,6 @@ public class JCAFVTServlet extends HttpServlet {
      * Maximum number of milliseconds the tests should wait for something to happen.
      */
     private static long TIMEOUT = TimeUnit.MINUTES.toMillis(2);
-
-    /**
-     * Message written to servlet to indicate that is has been successfully
-     * invoked.
-     */
-    public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
-
-    @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
-        PrintWriter out = response.getWriter();
-        out.println("Starting " + test + "<br>");
-        System.out.println("-----> " + test + " starting");
-        try {
-            getClass().getMethod(test, HttpServletRequest.class,
-                                 HttpServletResponse.class)
-                            .invoke(this, request, response);
-            System.out.println("<----- " + test + " successful");
-            out.println(test + " COMPLETED SUCCESSFULLY");
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            System.out.println("<----- " + test + " failed:");
-            x.printStackTrace(System.out);
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-        }
-    }
 
     /**
      * Use an embedded resource adapter that we configured with

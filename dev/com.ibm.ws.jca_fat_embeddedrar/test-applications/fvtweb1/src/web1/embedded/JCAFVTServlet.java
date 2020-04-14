@@ -10,49 +10,15 @@
  *******************************************************************************/
 package web1.embedded;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class JCAFVTServlet extends HttpServlet {
+import componenttest.app.FATServlet;
+
+public class JCAFVTServlet extends FATServlet {
     private static final long serialVersionUID = 7709282314904580334L;
-
-    /**
-     * Message written to servlet to indicate that is has been successfully
-     * invoked.
-     */
-    public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
-
-    @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
-        PrintWriter out = response.getWriter();
-        out.println("Starting " + test + "<br>");
-        System.out.println("-----> " + test + " starting");
-        try {
-            getClass().getMethod(test, HttpServletRequest.class,
-                                 HttpServletResponse.class)
-                            .invoke(this, request, response);
-            System.out.println("<----- " + test + " successful");
-            out.println(test + " COMPLETED SUCCESSFULLY");
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            System.out.println("<----- " + test + " failed:");
-            x.printStackTrace(System.out);
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-        }
-    }
 
     /**
      * Verify that an Embedded Connection Factory cannot be looked up from another App

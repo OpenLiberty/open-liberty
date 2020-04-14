@@ -11,31 +11,34 @@
 package com.ibm.ws.jca.fat.embedded;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
 import java.util.Locale;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * General tests that don't involve updating configuration while the server is running.
  */
-public class EmbeddedJCATest {
+@RunWith(FATRunner.class)
+public class EmbeddedJCATest extends FATServletClient {
 
     private static final String fvtapp = "fvtapp";
     private static final String standaloneapp = "standaloneapp";
@@ -43,46 +46,46 @@ public class EmbeddedJCATest {
     private static final String fvtweb1 = "fvtweb1";
     private static final String standardWAB = "standardWAB";
 
-    private static LibertyServer server;
+    @Server("com.ibm.ws.jca.fat.embeddedrar")
+    public static LibertyServer server;
+
     private static String activationError;
-
-    /**
-     * Utility method to run a test on JCAFVTServlet.
-     *
-     * @param test Test name to supply as an argument to the servlet
-     * @return output of the servlet
-     * @throws IOException if an error occurs
-     */
-    private StringBuilder runInServlet(String test, String webmodule) throws IOException {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + webmodule + "?test=" + test);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.embeddedrar");
+
+        //Build jars that will be in the rar
+        JavaArchive j1 = ShrinkWrap.create(JavaArchive.class, "JCAFAT1.jar").addPackage("fat.jca.embeddedresourceadapter.jar1");
+        JavaArchive j2 = ShrinkWrap.create(JavaArchive.class, "JCAFAT2.jar").addPackage("fat.jca.embeddedresourceadapter.jar2");
+
+        //Build rars
+        ResourceAdapterArchive r1 = ShrinkWrap.create(ResourceAdapterArchive.class, "tra1.rar")
+                        .addAsManifestResource(new File("test-resourceadapters/test-resourceadapter/resources/META-INF/ra.xml"))
+                        .addAsDirectories("/test-resourceadapters/test-resourceadapter/lib")
+                        .addAsLibraries(j1, j2);
+        r1.as(JavaArchive.class)
+                        .addPackage("fat.jca.testra")
+                        .addPackage("fat.jca.dll");
+
+        ResourceAdapterArchive r2 = ShrinkWrap.create(ResourceAdapterArchive.class, "tra2.rar")
+                        .addAsManifestResource(new File("test-resourceadapters/test-resourceadapter/resources/META-INF/ra.xml"))
+                        .addAsLibraries(j1, j2);
+        r2.as(JavaArchive.class)
+                        .addPackage("fat.jca.testra")
+                        .addPackage("fat.jca.dll");
+
+        ResourceAdapterArchive r3 = ShrinkWrap.create(ResourceAdapterArchive.class, "fvt10ra.rar")
+                        .addAsManifestResource(new File("test-resourceadapters/test-resourceadapter/resources/META-INF/ra10.xml"));
+        r3.as(JavaArchive.class)
+                        .addPackage("fat.jca.test10ra");
+
+        ShrinkHelper.exportToServer(server, "connectors", r1);
+        ShrinkHelper.exportToServer(server, "connectors", r2);
+        ShrinkHelper.exportToServer(server, "connectors", r3);
+
+        WebArchive fvtwebWAR = ShrinkWrap.create(WebArchive.class, fvtweb + ".war");
+        WebArchive fvtweb1WAR = ShrinkWrap.create(WebArchive.class, fvtweb1 + ".war");
+
         server.addInstalledAppForValidation(fvtapp);
         server.addInstalledAppForValidation(standaloneapp);
         server.startServer();
@@ -136,58 +139,58 @@ public class EmbeddedJCATest {
 
     @Test
     public void testConfigurationOfEmbeddedResourceAdapter() throws Exception {
-        runInServlet("testConfigurationOfEmbeddedResourceAdapter", fvtweb);
+        runTest(server, fvtweb, getTestMethodSimpleName());
     }
 
     @Test
     public void testEmbeddedConnectionFactory() throws Exception {
-        runInServlet("testEmbeddedConnectionFactory", fvtweb);
+        runTest(server, fvtweb, getTestMethodSimpleName());
     }
 
     @Test
     public void testEmbeddedConnectionFactory10() throws Exception {
-        runInServlet("testEmbeddedConnectionFactory10", fvtweb);
+        runTest(server, fvtweb, getTestMethodSimpleName());
     }
 
     @Test
     public void testEmbeddedActivationSpec() throws Exception {
-        runInServlet("testEmbeddedActivationSpec", fvtweb);
+        runTest(server, fvtweb, getTestMethodSimpleName());
         assertNotNull("the MDB should have recieved this message and sent it out to the logs",
                       server.waitForStringInLog("FVTMessageDrivenBean:message:testActivationSpec"));
     }
 
     @Test
     public void testEmbeddedDestinations() throws Exception {
-        runInServlet("testEmbeddedDestinations", fvtweb);
+        runTest(server, fvtweb, getTestMethodSimpleName());
     }
 
     @ExpectedFFDC({ "javax.resource.ResourceException" })
     @Test
     public void testEmbeddedConnectionFactoryFromDifferentEAR() throws Exception {
-        runInServlet("testEmbeddedConnectionFactoryFromDifferentEAR", fvtweb1);
+        runTest(server, fvtweb1, getTestMethodSimpleName());
     }
 
     @ExpectedFFDC({ "javax.resource.ResourceException" })
     @Test
     public void testEmbeddedAOFromDifferentEAR() throws Exception {
-        runInServlet("testEmbeddedAOFromDifferentEAR", fvtweb1);
+        runTest(server, fvtweb1, getTestMethodSimpleName());
     }
 
     @Test
     public void testEmbeddedConnectionFactoryFromDifferentEARIndirectLookup() throws Exception {
-        runInServlet("testEmbeddedConnectionFactoryFromDifferentEARIndirectLookup", fvtweb1);
+        runTest(server, fvtweb1, getTestMethodSimpleName());
     }
 
     @ExpectedFFDC({ "javax.resource.ResourceException" })
     @Test
     public void testEmbeddedAOFromDifferentEARIndirectLookup() throws Exception {
-        runInServlet("testEmbeddedAOFromDifferentEARIndirectLookup", fvtweb1);
+        runTest(server, fvtweb1, getTestMethodSimpleName());
     }
 
     @ExpectedFFDC({ "javax.resource.ResourceException" })
     @Test
     public void testEmbeddedAOFromDifferentWAB() throws Exception {
-        runInServlet("testEmbeddedAOFromDifferentWAB", standardWAB);
+        runTest(server, standardWAB, getTestMethodSimpleName());
     }
 
     @Test
@@ -217,11 +220,11 @@ public class EmbeddedJCATest {
 
     @Test
     public void testReauthentication() throws Exception {
-        runInServlet("testReauthentication", fvtweb);
+        runTest(server, fvtweb, getTestMethodSimpleName());
     }
 
     @Test
     public void testConnectionPoolStats() throws Exception {
-        runInServlet("testConnectionPoolStats", fvtweb);
+        runTest(server, fvtweb, getTestMethodSimpleName());
     }
 }
