@@ -146,6 +146,10 @@ public class GrpcServletUtils {
 	private static void handleMessage(HttpServletRequest req, String path) throws UnauthenticatedException, AccessDeniedException {
 
 		Method method = GrpcServletUtils.getTargetMethod(path);
+		if (method == null) {
+			// the requested service doesn't exist - we'll handle this further up
+			return;
+		}
 		if (RoleMethodAuthUtil.parseMethodSecurity(method, req.getUserPrincipal(), s -> req.isUserInRole(s))) {
 			return;
 		}

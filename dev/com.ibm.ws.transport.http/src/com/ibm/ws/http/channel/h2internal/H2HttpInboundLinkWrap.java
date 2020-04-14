@@ -125,7 +125,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             } else if (GrpcServletServices.getServletGrpcServices() != null) {
 
                 Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
-                if (servicePaths != null) {
+                if (servicePaths != null && !servicePaths.isEmpty()) {
                     routeGrpcServletRequest(servicePaths);
                 }
             }
