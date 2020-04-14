@@ -59,15 +59,31 @@ public class JSONObject {
         }
 
         /**
-         * Add multiple fields
+         * Add formatted JSON, primarily used for adding multiple fields
          */
-        public JSONObjectBuilder addFields(String s) {
+        public JSONObjectBuilder addPreformatted(String s) {
             if (s.isEmpty()) {
                 return this;
             }
             prepForNewField();
 
             jsonBuilder.append(s);
+            return this;
+        }
+
+        /**
+         * Add preformatted field that is omittable, primarily used for adding "ibm_tags" and "tags" fields
+         */
+        public JSONObjectBuilder addPreformattedField(String name, String preformattedValue) {
+            if (name.isEmpty() || preformattedValue.isEmpty())
+                return this;
+
+            if (name.equals(OMIT_FIELDS_STRING))
+                return this;
+
+            prepForNewField();
+
+            jsonBuilder.append("\"" + name + "\":" + preformattedValue);
             return this;
         }
 
