@@ -25,6 +25,7 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/JohnzonTestServlet")
 public class JohnzonTestServlet extends FATServlet {
 
+    //TODO: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     @Test
     @SkipForRepeat(EE9_FEATURES)
     public void testApplicationClasses() throws Exception {

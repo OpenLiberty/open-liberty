@@ -53,6 +53,7 @@ public class JSONPContainerTest extends FATServletClient {
 
     @Test
     @SkipForRepeat(EE9_FEATURES)
+    //TODO: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     public void testJsonpProviderAvailableJohnzon() throws Exception {
         runTest(server, appName + "/JSONPTestServlet", "testJsonpProviderAvailable&JsonpProvider=" + FATSuite.PROVIDER_JOHNZON_JSONP);
     }
