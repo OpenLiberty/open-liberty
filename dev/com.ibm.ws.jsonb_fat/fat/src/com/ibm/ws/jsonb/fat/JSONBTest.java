@@ -39,7 +39,7 @@ import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.YassonTestServlet;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once cdi-3.0 is available
+@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once cdi-3.0 is available, https://github.com/OpenLiberty/open-liberty/issues/11633
 public class JSONBTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonb.fat")
