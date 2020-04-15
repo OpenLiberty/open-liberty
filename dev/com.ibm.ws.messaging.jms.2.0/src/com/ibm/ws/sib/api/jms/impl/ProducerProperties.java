@@ -113,6 +113,13 @@ public class ProducerProperties
     setInPriorityOverride(dest.getPriority());
     setInTTL_Override(dest.getTimeToLive());
 
+    String defDM = dest.getDeliveryModeDefault();
+    if (null!=defDM) {
+      setInDeliveryMode(defDM.equals(ApiJmsConstants.DELIVERY_MODE_PERSISTENT)?DeliveryMode.PERSISTENT:DeliveryMode.NON_PERSISTENT);
+    }
+    if (null!=dest.getPriorityDefault()) setInPriority(dest.getPriorityDefault());
+    if (null!=dest.getTimeToLiveDefault()) setInTTL(dest.getTimeToLiveDefault());
+
     outboundForwardRoutingPath = dest.getConvertedFRP();
     outboundReverseRoutingPath_Part = dest.getConvertedRRP();
     outboundDiscrim = dest.getDestDiscrim();

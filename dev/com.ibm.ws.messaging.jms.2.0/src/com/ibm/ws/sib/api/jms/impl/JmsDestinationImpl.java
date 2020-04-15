@@ -282,6 +282,17 @@ public class JmsDestinationImpl implements JmsDestination, ApiJmsConstants, JmsI
             SibTr.exit(this, tc, "getDeliveryMode", dm);
         return dm;
     }
+    @Override
+    public String getDeliveryModeDefault() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "getDeliveryModeDefault");
+
+        String dm = (String) properties.get(JmsInternalConstants.DELIVERY_MODE_DEFAULT);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "getDeliveryModeDefault", dm);
+        return dm;
+    }
 
     /**
      * @see com.ibm.websphere.sib.api.jms.JmsDestination#setDeliveryMode(java.lang.String)
@@ -309,6 +320,29 @@ public class JmsDestinationImpl implements JmsDestination, ApiJmsConstants, JmsI
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "setDeliveryMode");
     }
+    @Override
+    public void setDeliveryModeDefault(String x) throws JMSException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "setDeliveryModeDefault", x);
+
+        // check supplied value is valid
+        if (ApiJmsConstants.DELIVERY_MODE_APP.equals(x)
+            || ApiJmsConstants.DELIVERY_MODE_NONPERSISTENT.equals(x)
+            || ApiJmsConstants.DELIVERY_MODE_PERSISTENT.equals(x)) {
+            // value ok, store it
+            updateProperty(JmsInternalConstants.DELIVERY_MODE_DEFAULT, x);
+        }
+        else {
+            // bad value, throw exception
+            throw (JMSException) JmsErrorUtils.newThrowable(JMSException.class
+                                                            , "INVALID_VALUE_CWSIA0281"
+                                                            , new Object[] { "deliveryModeDefault", x }
+                                                            , tc);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "setDeliveryModeDefault");
+    }
 
     /**
      * @see com.ibm.websphere.sib.api.jms.JmsDestination#getTimeToLive()
@@ -322,6 +356,17 @@ public class JmsDestinationImpl implements JmsDestination, ApiJmsConstants, JmsI
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getTimeToLive", ttl);
+        return ttl;
+    }
+    @Override
+    public Long getTimeToLiveDefault() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "getTimeToLiveDefault");
+
+        Long ttl = (Long) properties.get(JmsInternalConstants.TIME_TO_LIVE_DEFAULT);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "getTimeToLiveDefault", ttl);
         return ttl;
     }
 
@@ -355,6 +400,32 @@ public class JmsDestinationImpl implements JmsDestination, ApiJmsConstants, JmsI
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "setTimeToLive");
     }
+    public void setTimeToLiveDefault(Long x) throws JMSException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "setTimeToLiveDefault", x);
+
+        // valid values are null, 0 <= x <= MAX_TIME_TO_LIVE and -2
+        if (x == null) {
+            updateProperty(JmsInternalConstants.TIME_TO_LIVE_DEFAULT, null);
+        }
+        else if (x.longValue() == -2) {
+            // This value is for consistency with MA88, map to null
+            updateProperty(JmsInternalConstants.TIME_TO_LIVE_DEFAULT, null);
+        }
+        else if (x.longValue() >= 0 && x.longValue() <= MfpConstants.MAX_TIME_TO_LIVE) {
+            updateProperty(JmsInternalConstants.TIME_TO_LIVE_DEFAULT, x);
+        }
+        else {
+            // bad value, throw exception
+            throw (JMSException) JmsErrorUtils.newThrowable(JMSException.class
+                                                            , "INVALID_VALUE_CWSIA0281"
+                                                            , new Object[] { "timeToLiveDefault", x }
+                                                            , tc);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "setTimeToLiveDefault");
+    }
 
     /**
      * @see com.ibm.websphere.sib.api.jms.JmsDestination#getPriority()
@@ -368,6 +439,17 @@ public class JmsDestinationImpl implements JmsDestination, ApiJmsConstants, JmsI
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getPriority", pri);
+        return pri;
+    }
+    @Override
+    public Integer getPriorityDefault() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "getPriorityDefault");
+
+        Integer pri = (Integer) properties.get(JmsInternalConstants.PRIORITY_DEFAULT);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "getPriorityDefault", pri);
         return pri;
     }
 
@@ -400,6 +482,33 @@ public class JmsDestinationImpl implements JmsDestination, ApiJmsConstants, JmsI
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "setPriority");
+    }
+    @Override
+    public void setPriorityDefault(Integer x) throws JMSException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "setPriorityDefault", x);
+
+        // valid values are null, 0 <= x <= 9 and -2
+        if (x == null) {
+            updateProperty(JmsInternalConstants.PRIORITY_DEFAULT, null);
+        }
+        else if (x.intValue() == -2) {
+            // This value is for consistency with MA88, map to null
+            updateProperty(JmsInternalConstants.PRIORITY_DEFAULT, null);
+        }
+        else if (0 <= x.intValue() && x.intValue() <= 9) {
+            updateProperty(JmsInternalConstants.PRIORITY_DEFAULT, x);
+        }
+        else {
+            // bad value, throw exception
+            throw (JMSException) JmsErrorUtils.newThrowable(JMSException.class
+                                                            , "INVALID_VALUE_CWSIA0281"
+                                                            , new Object[] { "priorityDefault", x }
+                                                            , tc);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "setPriorityDefault");
     }
 
     /**

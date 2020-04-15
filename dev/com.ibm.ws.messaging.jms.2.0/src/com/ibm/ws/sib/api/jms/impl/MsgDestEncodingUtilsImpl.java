@@ -148,6 +148,9 @@ public class MsgDestEncodingUtilsImpl implements MessageDestEncodingUtils
   private static final String BD = null;  private final static int BD_INT = 13;  //"blockedDestinationCode"
   private static final String DN = null;  private final static int DN_INT = 14;  //"destName"
   private static final String DD = null;  private final static int DD_INT = 15;  //"destDiscrim"
+  private static final String TD = "td";  private final static int TD_INT = 16;  //"timeToLiveDefault"
+  private static final String MD = "md";  private final static int MD_INT = 17;  //"deliveryMethodDefault"
+  private static final String PD = "pd";  private final static int PD_INT = 18;  //"priorityDefault"
 
   // ---------------------------------------------------------------------------
 
@@ -439,8 +442,11 @@ public class MsgDestEncodingUtilsImpl implements MessageDestEncodingUtils
     // Parameters:
     //        PropertyCoder               ( LongName                            ShortName), IntValue,  ValueType    , DefaultValue             SuppressIfDefaultInJNDI)
     addToMaps(new PhantomPropertyCoder    (JmsInternalConstants.PRIORITY             , PR),  PR_INT,   Integer.class, Integer.valueOf(Message.DEFAULT_PRIORITY) ,null);
+    addToMaps(new IntegerPropertyCoder    (JmsInternalConstants.PRIORITY_DEFAULT     , PD),  PD_INT,   Integer.class, Integer.valueOf(Message.DEFAULT_PRIORITY) ,null);
     addToMaps(new PhantomPropertyCoder    (JmsInternalConstants.DELIVERY_MODE        , DM),  DM_INT,   String.class , ApiJmsConstants.DELIVERY_MODE_APP         ,null);
+    addToMaps(new StringPropertyCoder     (JmsInternalConstants.DELIVERY_MODE_DEFAULT, MD),  MD_INT,   String.class , ApiJmsConstants.DELIVERY_MODE_APP         ,null);
     addToMaps(new PhantomPropertyCoder    (JmsInternalConstants.TIME_TO_LIVE         , TL),  TL_INT,   Long.class   , Long.valueOf(Message.DEFAULT_TIME_TO_LIVE),null);
+    addToMaps(new IntegerPropertyCoder    (JmsInternalConstants.TIME_TO_LIVE_DEFAULT , TD),  TD_INT,   Long.class   , Long.valueOf(Message.DEFAULT_TIME_TO_LIVE),null);
     addToMaps(new ReadAheadCoder          ("readAhead"                               , RA),  RA_INT,   String.class , ApiJmsConstants.READ_AHEAD_AS_CONNECTION  ,null);
     addToMaps(new ShortStringPropertyCoder("topicName"                               , TN),  TN_INT,   String.class , null                                      ,null);
     addToMaps(new ShortStringPropertyCoder("topicSpace"                              , TS),  TS_INT,   String.class , JmsTopicImpl.DEFAULT_TOPIC_SPACE          ,null);
@@ -805,11 +811,20 @@ public class MsgDestEncodingUtilsImpl implements MessageDestEncodingUtils
       case PR_INT:
         dest.setPriority((Integer)value);
         break;
+      case PD_INT:
+        dest.setPriorityDefault((Integer)value);
+        break;
       case DM_INT:
         dest.setDeliveryMode((String)value);
         break;
+      case MD_INT:
+        dest.setDeliveryModeDefault((String)value);
+        break;
       case TL_INT:
         dest.setTimeToLive((Long)value);
+        break;
+      case TD_INT:
+        dest.setTimeToLiveDefault((Long)value);
         break;
       case RA_INT:
         dest.setReadAhead((String)value);

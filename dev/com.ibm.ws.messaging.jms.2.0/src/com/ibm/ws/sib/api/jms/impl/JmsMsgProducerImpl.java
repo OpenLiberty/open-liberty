@@ -69,8 +69,11 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
     private SICoreConnection coreConnection;
     private ProducerSession prod;
     private int defaultDeliveryMode = DeliveryMode.PERSISTENT;
+    private boolean explicitDeliveryMode = false;
     private int defaultPriority = 4;
+    private boolean explicitPriority = false;
     private long defaultTimeToLive = 0;
+    private boolean explicitTTL = false;
     private long defaultDeliveryDelay = 0;
     private JmsDestinationImpl dest = null;
     private JmsSessionImpl session = null;
@@ -220,6 +223,18 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
         if (dest != null) {
             // Set up the ProducerProperties object for this producer if it is not
             // an unidentified producer.
+
+            // inherit defaults from destination (if set)
+            String defDM = dest.getDeliveryModeDefault();
+            if (null!=defDM) {
+              setDeliveryMode(defDM.equals(ApiJmsConstants.DELIVERY_MODE_PERSISTENT)
+                             ?DeliveryMode.PERSISTENT
+                             :DeliveryMode.NON_PERSISTENT
+                             );
+            }
+            if (null!=dest.getPriorityDefault()) setPriority(dest.getPriorityDefault());
+            if (null!=dest.getTimeToLiveDefault()) setTimeToLive(dest.getTimeToLiveDefault());
+
             producerProperties = new ProducerProperties(dest, this, passThruProps, persistentReliability, nonPersistentReliability);
 
             try {
@@ -419,6 +434,7 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
         validateDeliveryMode(deliveryMode);
         // By this point we know it is valid.
         this.defaultDeliveryMode = deliveryMode;
+        explicitDeliveryMode = true;
         // Need to drive any required updates to the ProducerProperties
         // state. Note that producerProperties will be null if this is
         // an unidentified producer.
@@ -456,6 +472,7 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
         validatePriority(x);
         // At this point we know it is a valid priority.
         defaultPriority = x;
+        explicitPriority = true;
         // Need to drive any required updates to the ProducerProperties
         // state. Note that producerProperties will be null if this is
         // an unidentified producer.
@@ -493,6 +510,7 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
         validateTimeToLive(timeToLive);
         // We know by this point that it must be valid.
         this.defaultTimeToLive = timeToLive;
+        explicitTTL = true;
         // Need to drive any required updates to the ProducerProperties
         // state. Note that producerProperties will be null if this is
         // an unidentified producer.
@@ -872,8 +890,22 @@ public class JmsMsgProducerImpl implements JmsMsgProducer, ApiJmsConstants, JmsI
                        ,new Object[] { destination, message, cListner }
                        );
 
+        // Check if we should be using the producer or destination's default delivery mode, priority & TTL
+        int dm = defaultDeliveryMode;
+        int p = defaultPriority;
+        long ttl = defaultTimeToLive;
+        JmsDestinationImpl d = (JmsDestinationImpl)destination;
+        if (!explicitDeliveryMode&&null!=d&&null!=d.getDeliveryModeDefault()) {
+          dm = d.getDeliveryModeDefault().equals(ApiJmsConstants.DELIVERY_MODE_PERSISTENT)
+               ?DeliveryMode.PERSISTENT
+               :DeliveryMode.NON_PERSISTENT
+               ;
+        }
+        if (!explicitPriority&&null!=d&&null!=d.getPriorityDefault()) p = d.getPriorityDefault();
+        if (!explicitTTL&&null!=d&&null!=d.getTimeToLiveDefault()) ttl = d.getTimeToLiveDefault();
+
         // Defer straight through to the many arg version (which will do all the locking and checking).
-        send_internal(destination, message, defaultDeliveryMode, defaultPriority, defaultTimeToLive, cListner);
+        send_internal(destination, message, dm, p, ttl, cListner);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "send_internal(Destination,Message,CompletionListener)");

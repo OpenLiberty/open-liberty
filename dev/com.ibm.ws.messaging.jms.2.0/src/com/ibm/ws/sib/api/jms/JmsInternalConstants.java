@@ -77,16 +77,19 @@ public interface JmsInternalConstants
    * Used as the key value for the delivery mode property of a Destination.
    */
   public static final String DELIVERY_MODE = "deliveryMode";
+  public static final String DELIVERY_MODE_DEFAULT = "deliveryModeDefault";
   
   /**
    * Used as the key value for the priority property of a Destination.
    */
   public static final String PRIORITY = "priority";
+  public static final String PRIORITY_DEFAULT = "priorityDefault";
   
   /**
    * Used as the key value for the time to live property of a Destination.
    */
   public static final String TIME_TO_LIVE = "timeToLive";
+  public static final String TIME_TO_LIVE_DEFAULT = "timeToLiveDefault";
   
   /**
    * Used as the key value for the forward routing path property of a Destination.
