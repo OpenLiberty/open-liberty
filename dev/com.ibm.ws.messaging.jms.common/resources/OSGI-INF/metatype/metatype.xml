@@ -154,7 +154,7 @@
   </AD>
   <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
   <AD id="timeToLive" type="String" ibm:type="duration(s)" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" required="false" />
-  <AD id="timeToLiveDefault" type="String" ibm:type="duration(s)" default="0s" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" />
+  <AD id="timeToLiveDefault" type="String" ibm:type="duration(s)" default="0s" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" required="false" />
  </OCD>
 
  <Designate factoryPid="com.ibm.ws.jca.jmsTopic.properties.wasJms.javax.jms.Topic-com.ibm.ws.sib.api.jms.impl.JmsTopicImpl">
@@ -183,7 +183,7 @@
   </AD>
   <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
   <AD id="timeToLive" type="String" ibm:type="duration(s)" default="0s" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" required="false" />
-  <AD id="timeToLiveDefault" type="String" ibm:type="duration(s)" default="0s" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" />
+  <AD id="timeToLiveDefault" type="String" ibm:type="duration(s)" default="0s" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" required="false" />
   <AD id="topicName" type="String" default="Default.Topic" name="%topic.TopicName" description="%topic.TopicName.desc" />
   <AD id="topicSpace" type="String" default="Default.Topic.Space" name="%topic.TopicSpace" description="%topic.TopicSpace.desc" />
  </OCD>

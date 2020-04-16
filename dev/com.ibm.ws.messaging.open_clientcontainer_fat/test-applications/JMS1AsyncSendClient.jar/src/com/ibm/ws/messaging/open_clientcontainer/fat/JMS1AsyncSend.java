@@ -626,8 +626,13 @@ public class JMS1AsyncSend extends ClientMain {
     boundLongTTL.send(tm8, DeliveryMode.NON_PERSISTENT, 0, 500, completionListener_);
 
     Util.CODEPATH();
-    boolean conditionMet = completionListener_.waitFor(100, 7, 0);  // ensure they are all on the queue before we start waiting
+    boolean conditionMet = completionListener_.waitFor(250, 7, 0);  // ensure they are all on the queue before we start waiting
     Thread.sleep(1000);                                             // wait plenty of time for all to expire
+    if (!conditionMet)
+    {
+      // recheck how many were completed after the longer wait to try minimise false-error window
+      conditionMet = (7==completionListener_.completionCount_&&0==completionListener_.exceptionCount_);
+    }
     Util.CODEPATH();
 
     String messages = "";
