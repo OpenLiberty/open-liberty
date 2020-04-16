@@ -236,7 +236,6 @@ public class SecureHttp2Client {
 
                     @Override
                     public void failed(final Exception cause) {
-                        System.out.println("(push)->" + cause);
                         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "push failed: " + cause);
                         final StringWriter sw = new StringWriter();
                         final PrintWriter pw = new PrintWriter(sw, true);
