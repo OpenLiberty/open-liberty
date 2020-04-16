@@ -122,7 +122,8 @@ io.opentracing:opentracing-util:0.30.0
 io.opentracing:opentracing-util:0.31.0
 io.perfmark:perfmark-api:0.20.1
 io.projectreactor:reactor-core:3.1.8.RELEASE
-io.reactivex.rxjava2:rxjava:2.2.13
+io.reactivex.rxjava2:rxjava:2.2.19
+io.reactivex:rxjava:1.3.8
 io.smallrye:smallrye-graphql:1.0.2
 io.smallrye:smallrye-graphql-client:1.0.2
 io.smallrye:smallrye-graphql-client-api:1.0.2
@@ -238,6 +239,8 @@ org.apache.cxf:cxf-rt-management:3.3.0
 org.apache.cxf:cxf-rt-management:3.3.3
 org.apache.cxf:cxf-rt-rs-client:3.1.18
 org.apache.cxf:cxf-rt-rs-extension-providers:3.1.18
+org.apache.cxf:cxf-rt-rs-extension-reactivestreams:3.3.6
+org.apache.cxf:cxf-rt-rs-extension-rx2:3.3.6
 org.apache.cxf:cxf-rt-rs-mp-client:3.2.6
 org.apache.cxf:cxf-rt-rs-service-description:3.1.18
 org.apache.cxf:cxf-rt-rs-service-description:3.3.0
@@ -399,6 +402,8 @@ org.glassfish.jersey.core:jersey-client:2.26
 org.glassfish.jersey.core:jersey-common:2.12
 org.glassfish.jersey.core:jersey-common:2.26
 org.glassfish.jersey.core:jersey-server:2.12
+org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava:2.30.1
+org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava2:2.30.1
 org.glassfish.jersey.inject:jersey-hk2:2.26
 org.glassfish:javax.faces:2.3.3
 org.glassfish:javax.json:1.0.4
@@ -484,6 +489,7 @@ org.quartz-scheduler:quartz:2.2.1
 org.reactivestreams:reactive-streams-examples:1.0.2
 org.reactivestreams:reactive-streams-tck:1.0.2
 org.reactivestreams:reactive-streams:1.0.2
+org.reactivestreams:reactive-streams:1.0.3
 org.rnorth.duct-tape:duct-tape:1.0.7
 org.shredzone.acme4j:acme4j-client:2.7
 org.shredzone.acme4j:acme4j-utils:2.7
@@ -559,6 +565,7 @@ org.testcontainers:postgresql:1.14.0
 org.testcontainers:testcontainers:1.14.0
 org.testng:testng:6.14.3
 org.yaml:snakeyaml:1.18
+rx:rx:1.3.8
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.1
 xalan:xalan:2.7.2
