@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -64,6 +65,8 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_accountKeyFile_unreadable() throws Exception {
+		
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setReadable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2021E");
@@ -81,6 +84,8 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_accountKeyFile_unwritable() throws Exception {
+		
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setWritable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2023E");
@@ -151,6 +156,8 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_domainKeyFile_unreadable() throws Exception {
+		
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setReadable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2020E");
@@ -169,6 +176,8 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_domainKeyFile_unwritable() throws Exception {
+		
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setWritable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2022E");
