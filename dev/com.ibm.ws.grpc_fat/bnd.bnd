@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+fat.minimum.java.level: 11
+
 src: \
 	fat/src,\
 	test-applications/app1/src
