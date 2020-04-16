@@ -255,7 +255,11 @@ public class CookieProcessingTests extends CommonSecurityFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_TokenInAuthHeader() throws Exception {
-
+     
+        // we need to make sure we get a jwt with a unique issued-at claim, i.e. at least one second after last test,
+        // otherwise we can get a duplicate jwt, same as prior test, and test will fail because jwt is a duplicate.
+        Thread.sleep(1100);
+        
         // get jwt token from token endpoint
         String tokenEndpointUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + "/jwt/ibm/api/defaultJwtSso/token";
         wc = actions.createWebClient();
