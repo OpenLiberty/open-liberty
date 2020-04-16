@@ -156,7 +156,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding
      */
-    //@Test
+    @Test
     public void testTargetOneRBIBND() throws Exception {
         RemoteTargetOneBiz rto1 = null;
 
@@ -221,7 +221,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 1 for TargetBeanTwo
      */
-    //@Test
+    @Test
     public void testTargetTwoRBIBND1() throws Exception {
         RemoteTargetTwoBiz1 rt2b1 = null;
 
@@ -241,7 +241,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 2 for TargetBeanTwo
      */
-    //@Test
+    @Test
     public void testTargetTwoRBIBND2() throws Exception {
         RemoteTargetTwoBiz2 rt2b2 = null;
 
@@ -261,7 +261,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 3 for TargetBeanTwo
      */
-    //@Test
+    @Test
     public void testTargetTwoRBIBND3() throws Exception {
         RemoteTargetTwoBiz3 rt2b3 = null;
 
@@ -338,7 +338,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 1 for TargetBeanFour
      */
-    //@Test
+    @Test
     public void testTargetFourRBIBND1() throws Exception {
         RemoteTargetFourBiz1 rt4b1 = null;
 
@@ -358,7 +358,7 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 2 for TargetBeanFour
      */
-    //@Test
+    @Test
     public void testTargetFourRBIBND2() throws Exception {
         RemoteTargetFourBiz2 rt2b4 = null;
 
