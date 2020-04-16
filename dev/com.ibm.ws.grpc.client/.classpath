@@ -1,6 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.grpc.common/generated/com.ibm.ws.grpc.common.1.0.jar" sourcepath="/Users/wtlucy/projects/grpc/grpc-java-1.27.0.zip">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.grpc.common.1.0.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.ws.grpc.common"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="com/ibm/ws/grpc/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/inprocess/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/internal/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/protobuf/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/protobuf/lite/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/stub/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/stub/annotations/*"/>
+			<accessrule kind="accessible" pattern="io/grpc/util/*"/>
+			<accessrule kind="accessible" pattern="google/api/*"/>
+			<accessrule kind="accessible" pattern="google/cloud/audit/*"/>
+			<accessrule kind="accessible" pattern="google/geo/type/*"/>
+			<accessrule kind="accessible" pattern="google/logging/type/*"/>
+			<accessrule kind="accessible" pattern="google/longrunning/*"/>
+			<accessrule kind="accessible" pattern="google/protobuf/*"/>
+			<accessrule kind="accessible" pattern="google/protobuf/compiler/*"/>
+			<accessrule kind="accessible" pattern="google/rpc/*"/>
+			<accessrule kind="accessible" pattern="google/type/*"/>
+			<accessrule kind="accessible" pattern="com/google/api/*"/>
+			<accessrule kind="accessible" pattern="com/google/cloud/audit/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/annotations/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/base/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/base/internal/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/cache/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/collect/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/escape/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/eventbus/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/graph/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/hash/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/html/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/io/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/math/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/net/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/primitives/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/reflect/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/util/concurrent/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/util/concurrent/internal/*"/>
+			<accessrule kind="accessible" pattern="com/google/common/xml/*"/>
+			<accessrule kind="accessible" pattern="com/google/geo/type/*"/>
+			<accessrule kind="accessible" pattern="com/google/j2objc/annotations/*"/>
+			<accessrule kind="accessible" pattern="com/google/logging/type/*"/>
+			<accessrule kind="accessible" pattern="com/google/longrunning/*"/>
+			<accessrule kind="accessible" pattern="com/google/protobuf/*"/>
+			<accessrule kind="accessible" pattern="com/google/protobuf/compiler/*"/>
+			<accessrule kind="accessible" pattern="com/google/rpc/*"/>
+			<accessrule kind="accessible" pattern="com/google/thirdparty/publicsuffix/*"/>
+			<accessrule kind="accessible" pattern="com/google/type/*"/>
+			<accessrule kind="accessible" pattern="io/perfmark/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/common/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/contrib/grpc/metrics/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/internal/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/metrics/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/metrics/data/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/metrics/export/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/resource/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/stats/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/tags/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/tags/propagation/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/tags/unsafe/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/trace/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/trace/config/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/trace/export/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/trace/internal/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/trace/propagation/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/trace/samplers/*"/>
+			<accessrule kind="accessible" pattern="io/opencensus/trace/unsafe/*"/>
+			<accessrule kind="accessible" pattern="org/checkerframework/checker/nullness/compatqual/*"/>
+			<accessrule kind="accessible" pattern="org/checkerframework/framework/qual/*"/>
+			<accessrule kind="accessible" pattern="org/checkerframework/checker/nullness/qual/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.webcontainer"/>
+	<classpathentry kind="lib" path="/Users/wtlucy/.m2/repository/io/grpc/grpc-netty-shaded/1.27.0/grpc-netty-shaded-1.27.0.jar">
+		<attributes>
+			<attribute name="bsn" value="io.grpc:grpc-netty-shaded"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.grpc.client"/>
+			<attribute name="version" value="1.27.0"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

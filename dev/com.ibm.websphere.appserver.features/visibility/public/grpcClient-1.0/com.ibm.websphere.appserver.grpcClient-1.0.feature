@@ -5,6 +5,7 @@ singleton=true
 IBM-App-ForceRestart: install, \
   uninstall
 IBM-API-Package: \
+  com.ibm.ws.grpc.client; type="internal", \
   io.grpc.netty.shaded.io.grpc.netty; type="internal", \
   io.grpc.netty.shaded.io.netty.bootstrap; type="internal", \
   io.grpc.netty.shaded.io.netty.buffer; type="internal", \

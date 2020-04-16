@@ -141,23 +141,26 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      */
     private void routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
         String requestContentType = getContentType().toLowerCase();
-        if ("application/grpc".equalsIgnoreCase(requestContentType)) {
+        if (requestContentType != null) {
+            if ("application/grpc".equalsIgnoreCase(requestContentType)) {
 
-            String currentURL = this.pseudoHeaders.get(HpackConstants.PATH);
+                String currentURL = this.pseudoHeaders.get(HpackConstants.PATH);
 
-            String searchURL = currentURL;
-            searchURL = searchURL.substring(1);
-            int index = searchURL.lastIndexOf('/');
-            searchURL = searchURL.substring(0, index);
+                String searchURL = currentURL;
+                searchURL = searchURL.substring(1);
+                int index = searchURL.lastIndexOf('/');
+                searchURL = searchURL.substring(0, index);
 
-            String contextRoot = servicePaths.get(searchURL).getContextRoot();
+                String contextRoot = servicePaths.get(searchURL).getContextRoot();
 
-            if (contextRoot != null && !!!"/".equals(contextRoot)) {
-                String newPath = contextRoot + currentURL;
-                this.pseudoHeaders.put(HpackConstants.PATH, newPath);
-                Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+                if (contextRoot != null && !!!"/".equals(contextRoot)) {
+                    String newPath = contextRoot + currentURL;
+                    this.pseudoHeaders.put(HpackConstants.PATH, newPath);
+                    Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+                } else {
+                    Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
+                }
             }
-            Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
         }
     }
 
