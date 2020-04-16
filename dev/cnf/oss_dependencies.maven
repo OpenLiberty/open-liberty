@@ -419,7 +419,7 @@ org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
 org.jboss.weld:weld-osgi-bundle:2.4.8.Final
 org.jboss.weld:weld-osgi-bundle:3.1.1.Final
 org.jboss.weld.se:weld-se-core:3.1.1.Final
-org.jboss:jandex:2.0.3.Final
+org.jboss:jandex:2.1.2.Final
 org.jmock:jmock-junit4:2.5.1
 org.jmock:jmock-junit4:2.6.0
 org.jmock:jmock-legacy:2.5.0
