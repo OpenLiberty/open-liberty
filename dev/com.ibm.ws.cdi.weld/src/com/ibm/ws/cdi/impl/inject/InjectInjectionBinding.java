@@ -253,7 +253,7 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getInjectionObjectInstance", Util.identity(retObj));
+            Tr.exit(tc, "getInjectionObject", Util.identity(retObj));
         }
         return retObj;
     }
