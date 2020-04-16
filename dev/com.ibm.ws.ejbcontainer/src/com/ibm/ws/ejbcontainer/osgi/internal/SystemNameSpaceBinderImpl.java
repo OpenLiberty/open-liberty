@@ -117,7 +117,7 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
     public void unbindEJBLocal(List<String> names) throws NamingException {}
 
     @Override
-    public void bindSimpleBindingName(String bindingObject, HomeRecord hr, boolean local) {}
+    public void bindSimpleBindingName(String bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) {}
 
     @Override
     public void bindLocalHomeBindingName(String bindingObject, HomeRecord hr) {}

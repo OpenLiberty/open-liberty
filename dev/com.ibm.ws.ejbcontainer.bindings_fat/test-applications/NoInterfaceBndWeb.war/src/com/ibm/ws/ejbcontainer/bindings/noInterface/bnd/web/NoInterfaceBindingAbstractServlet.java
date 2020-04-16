@@ -20,6 +20,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.junit.Test;
+
 // import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
 import com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean;
 import com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness;
@@ -312,7 +314,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      * local interfaces, just the simple name is used. The No-Interface
      * view is considered a 'local' interface.
      **/
-    //@Test
+    @Test
     public void testNoInterfaceSimpleBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
