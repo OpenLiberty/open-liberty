@@ -10,15 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.http2;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Keep track of gRPC service to application mappings
  */
 public class GrpcServletServices {
 
-    private static final Map<String, ServiceInformation> servletGrpcServices = new ConcurrentHashMap<String, ServiceInformation>();
+    private static final Map<String, ServiceInformation> servletGrpcServices = new HashMap<String, ServiceInformation>();
 
     /**
      * Register an a gRPC service with its application
@@ -26,7 +26,7 @@ public class GrpcServletServices {
      * @param String gRPC service name
      * @param String contextRoot for the app
      */
-    public static void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
+    public static synchronized void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
         if (servletGrpcServices.containsKey(service)) {
             throw new RuntimeException("duplicate gRPC service added: " + service);
         } else {
@@ -39,13 +39,8 @@ public class GrpcServletServices {
      *
      * @param String service
      */
-    public static void removeServletGrpcService(String service) {
-        if (servletGrpcServices != null) {
-            servletGrpcServices.remove(service);
-        }
-        if (servletGrpcServices.isEmpty()) {
-            servletGrpcServices.clear();
-        }
+    public static synchronized void removeServletGrpcService(String service) {
+        servletGrpcServices.remove(service);
     }
 
     /**
@@ -53,8 +48,8 @@ public class GrpcServletServices {
      *
      * @return HashMap<String service, String contextRoot> or null if the set is empty
      */
-    public static Map<String, ServiceInformation> getServletGrpcServices() {
-        if (servletGrpcServices == null) {
+    public static synchronized Map<String, ServiceInformation> getServletGrpcServices() {
+        if (servletGrpcServices.isEmpty()) {
             return null;
         }
         return servletGrpcServices;

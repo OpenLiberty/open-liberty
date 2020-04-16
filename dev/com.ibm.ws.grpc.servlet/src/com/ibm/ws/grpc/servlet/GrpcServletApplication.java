@@ -10,8 +10,8 @@ import com.ibm.ws.http2.GrpcServletServices;
  */
 class GrpcServletApplication {
 
-	Set<String> serviceNames;
-	Set<String> serviceClassNames;
+	Set<String> serviceNames = new HashSet<String>();
+	Set<String> serviceClassNames = new HashSet<String>();
 
 	/**
 	 * Add a service name to context path mapping
@@ -19,9 +19,7 @@ class GrpcServletApplication {
 	 * @param String ontextPath
 	 */
 	void addServiceName(String serviceName, String contextPath, Class<?> clazz) {
-		if (serviceNames == null) {
-			serviceNames = new HashSet<String>();
-		}
+
 		serviceNames.add(serviceName);
 		if (serviceName != null && contextPath != null && clazz != null) {
 			GrpcServletServices.addServletGrpcService(serviceName, contextPath, clazz);
@@ -34,9 +32,6 @@ class GrpcServletApplication {
 	 * @param Set<String> service class names
 	 */
 	void addServiceClassName(String name) {
-		if (serviceClassNames == null) {
-			serviceClassNames = new HashSet<String>();
-		}
 		serviceClassNames.add(name);
 	}
 

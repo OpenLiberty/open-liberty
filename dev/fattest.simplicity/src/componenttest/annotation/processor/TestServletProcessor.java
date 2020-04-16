@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 import org.junit.runners.model.FrameworkField;
@@ -85,19 +83,41 @@ public class TestServletProcessor {
         }
 
         // Infer queryPath from contextRoot() and @WebServlet annotation
-        WebServlet webServlet = anno.servlet().getAnnotation(WebServlet.class);
-        if (webServlet == null || (webServlet.value().length == 0 && webServlet.urlPatterns().length == 0))
+        String[] webServletValue = new String[] {};
+        String[] webServletUrlPatterns = new String[] {};
+        if (javax.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet())) {
+            javax.servlet.annotation.WebServlet webServlet = anno.servlet().getAnnotation(javax.servlet.annotation.WebServlet.class);
+            if (webServlet != null) {
+                webServletValue = webServlet.value();
+                webServletUrlPatterns = webServlet.urlPatterns();
+            }
+        } else {
+            jakarta.servlet.annotation.WebServlet webServlet = anno.servlet().getAnnotation(jakarta.servlet.annotation.WebServlet.class);
+            if (webServlet != null) {
+                webServletValue = webServlet.value();
+                webServletUrlPatterns = webServlet.urlPatterns();
+            }
+        }
+        if (webServletValue.length == 0 && webServletUrlPatterns.length == 0)
             throw new IllegalArgumentException("When using @TestServlet.contextRoot(), the referenced HTTPServlet must define a URL path via the @WebServlet annotation");
 
         queryPath = anno.contextRoot();
-        if (webServlet.value().length > 0)
-            queryPath += webServlet.value()[0];
+        if (webServletValue.length > 0)
+            queryPath += webServletValue[0];
         else
-            queryPath += webServlet.urlPatterns()[0];
+            queryPath += webServletUrlPatterns[0];
         return queryPath.replace("//", "/").replace("*", "");
     }
 
     private static Method[] getTestServletMethods(TestServlet anno) {
+        if (!!!(javax.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet()) ||
+                jakarta.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet()))) {
+            throw new IllegalArgumentException("The servlet referenced by the " + annoToString(anno) + " annotation " +
+                                               "is not a subclass of javax.servlet.http.HttpServlet nor jakarta.servlet.http.HttpServlet. " +
+                                               "When using the @TestServlet annotation make sure to declare a servlet class that " +
+                                               "extends either javax.servlet.http.HttpServlet or jakarta.servlet.http.HttpServlet");
+
+        }
         try {
             return anno.servlet().getMethods();
         } catch (TypeNotPresentException | LinkageError e) {

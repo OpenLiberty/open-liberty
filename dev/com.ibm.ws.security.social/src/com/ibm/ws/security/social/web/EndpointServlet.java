@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.web;
 
@@ -39,7 +39,6 @@ public class EndpointServlet extends HttpServlet {
     private transient ServletContext servletContext = null;
     private transient BundleContext bundleContext = null;
     private transient ServiceReference<EndpointServices> endpointServicesRef = null;
-    private transient ReferrerURLCookieHandler referrerURLCookieHandler = null;
 
     private static final long serialVersionUID = 1L;
 
@@ -52,8 +51,6 @@ public class EndpointServlet extends HttpServlet {
         servletContext = getServletContext();
         bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");
         endpointServicesRef = bundleContext.getServiceReference(EndpointServices.class);
-        referrerURLCookieHandler = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().createReferrerURLCookieHandler();
-        EndpointServices.setReferrerURLCookieHandler(referrerURLCookieHandler);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "init:" + servletContext + "   " + bundleContext + "  " + endpointServicesRef);

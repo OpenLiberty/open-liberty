@@ -155,6 +155,7 @@ public class GrpcServletTest {
 		Assert.assertNull(GrpcServletServices.getServletGrpcServices());
 		
 		// check that the same path can be re-added
+		app = new GrpcServletApplication();
 		app.addServiceClassName(serviceClassName);
 		app.addServiceName(serviceName, contextRoot, GrpcServletServices.class);
 		Assert.assertEquals(contextRoot, GrpcServletServices.getServletGrpcServices().get(serviceName).getContextRoot());

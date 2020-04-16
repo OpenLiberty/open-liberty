@@ -197,8 +197,12 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject - the EJBBinding
      * @param hr - the bean home record
      * @param local - if it is a local bean
+     * @param generateDisambiguatedSimpleBindingNames - A boolean, which when true
+     *            will cause any generated simple binding names to be
+     *            constructed to include "#<interfaceName>" at the end
+     *            of the binding name.
      */
-    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local);
+    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames);
 
     /**
      * Binds the localHomeBindingName custom binding

@@ -276,10 +276,26 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
+                // Configure the SQL HADB Retry parameters
+                if (_transactionLog != null && _transactionLog instanceof HeartbeatLog) {
+                    HeartbeatLog heartbeatLog = (HeartbeatLog) _transactionLog;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "The transaction log is a Heartbeatlog, configure SQL HADB retry parameters");
+                    configureSQLHADBRetryParameters(heartbeatLog, cp);
+                }
+
                 //
                 // Create the Partner (XAResources) log
                 //
                 _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+
+                // Configure the SQL HADB Retry parameters
+                if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
+                    HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "The partner log is a Heartbeatlog, configure SQL HADB retry parameters");
+                    configureSQLHADBRetryParameters(heartbeatLog, cp);
+                }
 
                 // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
                 if (tc.isDebugEnabled())
@@ -904,39 +920,19 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Custom PartnerLog is set - ", partnerLog);
 
-                        if (partnerLog instanceof HeartbeatLog) {
+                        if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "The log is a Heartbeatlog");
                             heartbeatLog = (HeartbeatLog) partnerLog;
                             // Configure the log
                             ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-                            int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "peerLockTimeBeforeStale - ", peerLockTimeBeforeStale);
-                            heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
-                            int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
-                            heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
 
-                            // SQL HADB Retry parameters (optional)
-                            int standardTransientErrorRetryTime = cp.getStandardTransientErrorRetryTime();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "standardTransientErrorRetryTime - ", standardTransientErrorRetryTime);
-                            heartbeatLog.setStandardTransientErrorRetryTime(standardTransientErrorRetryTime);
-                            int standardTransientErrorRetryAttempts = cp.getStandardTransientErrorRetryAttempts();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "standardTransientErrorRetryAttempts - ", standardTransientErrorRetryAttempts);
-                            heartbeatLog.setStandardTransientErrorRetryAttempts(standardTransientErrorRetryAttempts);
+                            // SQL Peer Locking parameters
+                            configureSQLPeerLockParameters(heartbeatLog, cp);
 
-                            int lightweightTransientErrorRetryTime = cp.getLightweightTransientErrorRetryTime();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "lightweightTransientErrorRetryTime - ", lightweightTransientErrorRetryTime);
-                            heartbeatLog.setLightweightTransientErrorRetryTime(lightweightTransientErrorRetryTime);
-                            int lightweightTransientErrorRetryAttempts = cp.getLightweightTransientErrorRetryAttempts();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "lightweightTransientErrorRetryAttempts - ", lightweightTransientErrorRetryAttempts);
-                            heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
+                            // SQL HADB Retry parameters
+                            configureSQLHADBRetryParameters(heartbeatLog, cp);
+                            configureSQLHADBLightweightRetryParameters(heartbeatLog, cp);
                         }
                     }
                 }
@@ -964,5 +960,74 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
         return enableLocking;
+    }
+
+    /**
+     * Configure the SQL Peer Locking parameters
+     *
+     * @param recLog
+     * @param cp
+     */
+    private void configureSQLPeerLockParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "configureSQLPeerLockParameters", new java.lang.Object[] { heartbeatLog, cp, this });
+
+        // The optional SQL Peer Lock parameters
+        int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "peerLockTimeBeforeStale - ", peerLockTimeBeforeStale);
+        heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
+        int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
+        heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "configureSQLPeerLockParameters");
+    }
+
+    /**
+     * Configure the SQL HADB Retry parameters
+     *
+     * @param recLog
+     * @param cp
+     */
+    private void configureSQLHADBRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "configureSQLHADBRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
+
+        // The optional SQL HADB Retry parameters
+        int standardTransientErrorRetryTime = cp.getStandardTransientErrorRetryTime();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "standardTransientErrorRetryTime - ", standardTransientErrorRetryTime);
+        heartbeatLog.setStandardTransientErrorRetryTime(standardTransientErrorRetryTime);
+        int standardTransientErrorRetryAttempts = cp.getStandardTransientErrorRetryAttempts();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "standardTransientErrorRetryAttempts - ", standardTransientErrorRetryAttempts);
+        heartbeatLog.setStandardTransientErrorRetryAttempts(standardTransientErrorRetryAttempts);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "configureSQLHADBRetryParameters");
+    }
+
+    /**
+     * Configure the Lightweight SQL HADB Retry parameters
+     *
+     * @param recLog
+     * @param cp
+     */
+    private void configureSQLHADBLightweightRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "configureSQLHADBLightweightRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
+
+        // The optional SQL HADB Retry parameters
+        int lightweightTransientErrorRetryTime = cp.getLightweightTransientErrorRetryTime();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "lightweightTransientErrorRetryTime - ", lightweightTransientErrorRetryTime);
+        heartbeatLog.setLightweightTransientErrorRetryTime(lightweightTransientErrorRetryTime);
+        int lightweightTransientErrorRetryAttempts = cp.getLightweightTransientErrorRetryAttempts();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "lightweightTransientErrorRetryAttempts - ", lightweightTransientErrorRetryAttempts);
+        heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");
     }
 }

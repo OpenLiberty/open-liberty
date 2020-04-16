@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * A representation of the parsed values from a <tt>ScheduleExpression</tt>,
  * which can be used to calculate timeouts.
  */
-public class ParsedScheduleExpression
-                implements Serializable
-{
+public class ParsedScheduleExpression implements Serializable {
     private static final TraceComponent tc = Tr.register(ParsedScheduleExpression.class,
                                                          "EJBContainer",
                                                          "com.ibm.ejs.container.container");
@@ -46,63 +44,58 @@ public class ParsedScheduleExpression
     /**
      * Determine if the bitmask <tt>haystack</tt> contains the set bit
      * <tt>needle</tt>.
-     * 
+     *
      * @param haystack a bitmask of values
-     * @param needle a 0-based position
+     * @param needle   a 0-based position
      * @return <tt>true</tt> if <tt>haystack</tt> contains <tt>needle</tt>
      */
-    private static boolean contains(long haystack, int needle)
-    {
+    private static boolean contains(long haystack, int needle) {
         return (haystack & (1L << needle)) != 0;
     }
 
     /**
      * Returns a bitmask containing all of the bits in <tt>haystack</tt> with
      * higher positions than <tt>needle</tt>.
-     * 
+     *
      * @param haystack a bitmask of values
-     * @param needle a 0-based position
+     * @param needle   a 0-based position
      * @return a bitmask of all bits in haystack with higher positions than
      *         needle.
      */
-    private static long higher(long haystack, int needle)
-    {
+    private static long higher(long haystack, int needle) {
         // Mask off the low bits.
         return haystack & ~((1L << (needle + 1)) - 1);
     }
 
     /**
      * Returns the position of the lowest set bit in <tt>haystack</tt>.
-     * 
+     *
      * @param haystack a non-zero bitmask
      * @return a 0-based index of the next set bit
      */
-    private static int first(long haystack)
-    {
+    private static int first(long haystack) {
         return Long.numberOfTrailingZeros(haystack);
     }
 
     /**
      * Returns the position of the lowest set bit in <tt>haystack</tt>, or 0 if
      * haystack is {@link #WILD_CARD}.
-     * 
+     *
      * @param haystack a possibly zero bitmask
      * @return the lowest set bit
      */
-    private static int firstOfWildCard(long haystack) // d659945.1
-    {
+    private static int firstOfWildCard(long haystack) {
         return haystack == WILD_CARD ? 0 : first(haystack);
     }
 
     /**
      * Converts a <tt>java.util.Calendar</tt> to a string that is formatted for
      * diagnostics.
-     * 
+     *
      * @param cal the calendar instance
      * @return a readable format
      */
-    private static String toString(Calendar cal)
-    {
+    private static String toString(Calendar cal) {
         return String.format("%04d-%02d-%02d %02d:%02d:%02d %s",
                              cal.get(Calendar.YEAR),
                              cal.get(Calendar.MONTH) + 1,
@@ -168,7 +161,7 @@ public class ParsedScheduleExpression
      * A bitmask of the last days of the month to match (0-7 representing
      * -7-Last), or WILD_CARD. For example, if "Last, -6, -7" were specified,
      * the bitmask would look like:
-     * 
+     *
      * <pre>
      * 0b1000 0011 (LSB)
      * ^ ^^
@@ -182,7 +175,7 @@ public class ParsedScheduleExpression
      * position within into the bitmask is (weekInMonth * 7) + dayOfWeek. For
      * example, if "1st Sun, 2nd Mon, 3rd Mon" were specified, the indices would
      * be 0*7+0=0, 1*7+1=8, 2*7+1=15, and the low word would look like:
-     * 
+     *
      * <pre>
      * .. 0000 0000 0000 0000 1000 0001 0000 0001 (LSB)
      * ^ ^ ^
@@ -221,17 +214,15 @@ public class ParsedScheduleExpression
 
     /**
      * Only {@link ScheduleExpressionParser.parse} should create instances.
-     * 
+     *
      * @param schedule the expression being parsed
      */
-    ParsedScheduleExpression(ScheduleExpression schedule)
-    {
+    ParsedScheduleExpression(ScheduleExpression schedule) {
         ivSchedule = schedule;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final String nl = System.getProperty("line.separator");
         StringBuilder out = new StringBuilder();
         out.append(super.toString());
@@ -259,56 +250,41 @@ public class ParsedScheduleExpression
         return out.toString();
     }
 
-    private static boolean toStringAddComma(StringBuilder out, boolean any)
-    {
-        if (any)
-        {
+    private static boolean toStringAddComma(StringBuilder out, boolean any) {
+        if (any) {
             out.append(", ");
         }
 
         return true;
     }
 
-    private static void toString(StringBuilder out, long value, int min, String[] values)
-    {
-        if (value == WILD_CARD)
-        {
+    private static void toString(StringBuilder out, long value, int min, String[] values) {
+        if (value == WILD_CARD) {
             out.append("*");
-        }
-        else
-        {
+        } else {
             boolean any = false;
 
-            for (int i = 0; i < 64; i++)
-            {
-                if (contains(value, i))
-                {
+            for (int i = 0; i < 64; i++) {
+                if (contains(value, i)) {
                     any = toStringAddComma(out, any);
                     out.append(values != null ? values[i] : Integer.toString(i + min));
                 }
             }
 
-            if (!any)
-            {
+            if (!any) {
                 out.append("<none>");
             }
         }
     }
 
-    private void toStringLastDaysOfMonth(StringBuilder out)
-    {
-        if (lastDaysOfMonth == WILD_CARD)
-        {
+    private void toStringLastDaysOfMonth(StringBuilder out) {
+        if (lastDaysOfMonth == WILD_CARD) {
             out.append("<none>");
-        }
-        else
-        {
+        } else {
             boolean any = false;
 
-            for (int i = 0; i <= 7; i++)
-            {
-                if (contains(lastDaysOfMonth, i))
-                {
+            for (int i = 0; i <= 7; i++) {
+                if (contains(lastDaysOfMonth, i)) {
                     any = toStringAddComma(out, any);
                     out.append(i == 7 ? "Last" : Integer.toString(i - 7));
                 }
@@ -316,46 +292,31 @@ public class ParsedScheduleExpression
         }
     }
 
-    private void toStringDaysOfWeekInMonth(StringBuilder out)
-    {
-        if (daysOfWeekInMonth == WILD_CARD)
-        {
+    private void toStringDaysOfWeekInMonth(StringBuilder out) {
+        if (daysOfWeekInMonth == WILD_CARD) {
             out.append("<none>");
-        }
-        else
-        {
+        } else {
             boolean any = false;
 
-            for (int weekInMonth = 0; weekInMonth < ScheduleExpressionParser.LAST_WEEK_OF_MONTH; weekInMonth++)
-            {
-                for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
-                {
-                    if (contains(daysOfWeekInMonth, weekInMonth * 7 + dayOfWeek))
-                    {
+            for (int weekInMonth = 0; weekInMonth < ScheduleExpressionParser.LAST_WEEK_OF_MONTH; weekInMonth++) {
+                for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+                    if (contains(daysOfWeekInMonth, weekInMonth * 7 + dayOfWeek)) {
                         any = toStringAddComma(out, any);
-                        out.append(ScheduleExpressionParser.WEEKS_OF_MONTH[weekInMonth])
-                                        .append(' ')
-                                        .append(ScheduleExpressionParser.DAYS_OF_WEEK[dayOfWeek]);
+                        out.append(ScheduleExpressionParser.WEEKS_OF_MONTH[weekInMonth]).append(' ').append(ScheduleExpressionParser.DAYS_OF_WEEK[dayOfWeek]);
                     }
                 }
             }
         }
     }
 
-    private void toStringLastDaysOfWeekInMonth(StringBuilder out)
-    {
-        if (lastDaysOfWeekInMonth == WILD_CARD)
-        {
+    private void toStringLastDaysOfWeekInMonth(StringBuilder out) {
+        if (lastDaysOfWeekInMonth == WILD_CARD) {
             out.append("<none>");
-        }
-        else
-        {
+        } else {
             boolean any = false;
 
-            for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
-            {
-                if (contains(lastDaysOfWeekInMonth, dayOfWeek))
-                {
+            for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+                if (contains(lastDaysOfWeekInMonth, dayOfWeek)) {
                     any = toStringAddComma(out, any);
                     out.append("Last ").append(ScheduleExpressionParser.DAYS_OF_WEEK[dayOfWeek]);
                 }
@@ -363,35 +324,25 @@ public class ParsedScheduleExpression
         }
     }
 
-    private void toStringYears(StringBuilder out)
-    {
-        if (years == null)
-        {
+    private void toStringYears(StringBuilder out) {
+        if (years == null) {
             out.append('*');
-        }
-        else
-        {
+        } else {
             boolean any = false;
 
-            for (int i = ScheduleExpressionParser.MINIMUM_YEAR; i <= ScheduleExpressionParser.MAXIMUM_YEAR; i++)
-            {
-                if (years.get(i - ScheduleExpressionParser.MINIMUM_YEAR))
-                {
+            for (int i = ScheduleExpressionParser.MINIMUM_YEAR; i <= ScheduleExpressionParser.MAXIMUM_YEAR; i++) {
+                if (years.get(i - ScheduleExpressionParser.MINIMUM_YEAR)) {
                     int end = i;
                     while (end + 1 <= ScheduleExpressionParser.MAXIMUM_YEAR &&
-                           years.get(end + 1 - ScheduleExpressionParser.MINIMUM_YEAR))
-                    {
+                           years.get(end + 1 - ScheduleExpressionParser.MINIMUM_YEAR)) {
                         end++;
                     }
 
                     any = toStringAddComma(out, any);
-                    if (i != end)
-                    {
+                    if (i != end) {
                         out.append(i).append('-').append(end);
                         i = end;
-                    }
-                    else
-                    {
+                    } else {
                         out.append(i);
                     }
                 }
@@ -399,24 +350,16 @@ public class ParsedScheduleExpression
         }
     }
 
-    private void toStringVariableDayOfMonthRanges(StringBuilder out, String indent, String nl) // d659945
-    {
-        if (variableDayOfMonthRanges == null)
-        {
+    private void toStringVariableDayOfMonthRanges(StringBuilder out, String indent, String nl) {
+        if (variableDayOfMonthRanges == null) {
             out.append("<none>");
-        }
-        else
-        {
+        } else {
             boolean any = false;
 
-            for (int i = 0; i < variableDayOfMonthRanges.size(); i++)
-            {
-                if (any)
-                {
+            for (int i = 0; i < variableDayOfMonthRanges.size(); i++) {
+                if (any) {
                     out.append(nl).append(indent);
-                }
-                else
-                {
+                } else {
                     any = true;
                 }
 
@@ -427,59 +370,60 @@ public class ParsedScheduleExpression
 
     /**
      * Returns expression that was parsed to create this object.
-     * 
+     *
      * @return the expression that was parsed to create this object
      */
-    public ScheduleExpression getSchedule()
-    {
+    public ScheduleExpression getSchedule() {
         return ivSchedule;
     }
 
     /**
      * Determines the first timeout of the schedule expression.
-     * 
+     *
      * @return the first timeout in milliseconds, or -1 if there are no timeouts
      *         for the expression
      */
-    public long getFirstTimeout()
-    {
-        long lastTimeout = Math.max(System.currentTimeMillis(), start); // d666295
+    public long getFirstTimeout() {
+        long lastTimeout = Math.max(System.currentTimeMillis(), start);
 
         // If we're already past the end date, then there is no timeout.
-        if (lastTimeout > end)
-        {
+        if (lastTimeout > end) {
             return -1;
         }
 
-        return getTimeout(lastTimeout, false);
+        long firstTimeout = getTimeout(lastTimeout, false);
+
+        // If no timeout found, allow for a timer being created to expire one time
+        // on the current second boundary; effectively rounding ms off current time
+        if (firstTimeout == -1 && lastTimeout != start) {
+            firstTimeout = getTimeout(lastTimeout - 999, false);
+        }
+
+        return firstTimeout;
     }
 
     /**
      * Determines the next timeout for the schedule expression.
-     * 
+     *
      * @param lastTimeout the last timeout in milliseconds
      * @return the next timeout in milliseconds, or -1 if there are no more
      *         future timeouts for the expression
      * @throws IllegalArgumentException if lastTimeout is before the start time
-     *             of the expression
+     *                                      of the expression
      */
-    public long getNextTimeout(long lastTimeout)
-    {
+    public long getNextTimeout(long lastTimeout) {
         // Perform basic validation of lastTimeout, which should be a value that
         // was previously returned from getFirstTimeout.
 
-        if (lastTimeout < start)
-        {
+        if (lastTimeout < start) {
             throw new IllegalArgumentException("last timeout " + lastTimeout + " is before start time " + start);
         }
 
-        if (lastTimeout > end)
-        {
+        if (lastTimeout > end) {
             throw new IllegalArgumentException("last timeout " + lastTimeout + " is after end time " + end);
         }
 
-        if (lastTimeout % 1000 != 0) // d666295
-        {
+        if (lastTimeout % 1000 != 0) {
             throw new IllegalArgumentException("last timeout " + lastTimeout + " is mid-second");
         }
 
@@ -489,12 +433,11 @@ public class ParsedScheduleExpression
     /**
      * Creates a calendar object for the specified time using the time zone of
      * the schedule expression.
-     * 
+     *
      * @param the time in milliseconds
      * @return a calendar object
      */
-    private Calendar createCalendar(long time)
-    {
+    private Calendar createCalendar(long time) {
         // The specification accounts for gregorian dates only.
         Calendar cal = new GregorianCalendar(timeZone); // d639610
         cal.setTimeInMillis(time);
@@ -504,24 +447,22 @@ public class ParsedScheduleExpression
 
     /**
      * Determines the next timeout for the schedule expression.
-     * 
+     *
      * @param lastTimeout the last timeout in milliseconds, or the current time
-     *            if reschedule is false
-     * @param reschedule <tt>true</tt> if lastTimeout is an exclusive lower
-     *            bound for the next timeout
+     *                        if reschedule is false
+     * @param reschedule  <tt>true</tt> if lastTimeout is an exclusive lower
+     *                        bound for the next timeout
      * @return the next timeout in milliseconds, or -1 if there are no more
      *         future timeouts for the expression
      * @throws IllegalArgumentException if the expression contains an invalid
-     *             attribute value
+     *                                      attribute value
      */
-    private long getTimeout(long lastTimeout, boolean reschedule)
-    {
+    private long getTimeout(long lastTimeout, boolean reschedule) {
         Calendar cal = createCalendar(lastTimeout);
 
         // If this expression is being rescheduled, then add a second to make
         // progress towards the next timeout.
-        if (reschedule)
-        {
+        if (reschedule) {
             cal.add(Calendar.SECOND, 1);
         }
         // d666295 - Otherwise, if this method is called from getFirstTimeout,
@@ -529,14 +470,12 @@ public class ParsedScheduleExpression
         // current time is mid-second, then we also want to advance to the next
         // second.  Note that the parser has already guaranteed that the start
         // time has been rounded.
-        else if (lastTimeout != start && lastTimeout % 1000 != 0) // d666295
-        {
+        else if (lastTimeout != start && lastTimeout % 1000 != 0) {
             cal.set(Calendar.MILLISECOND, 0);
             cal.add(Calendar.SECOND, 1);
         }
 
-        if (!advance(cal))
-        {
+        if (!advance(cal)) {
             return -1;
         }
 
@@ -547,15 +486,14 @@ public class ParsedScheduleExpression
      * Moves the values of the fields of the specified calendar forward in
      * time until the date/time of the calendar satisfies the constraints of
      * this expression.
-     * 
+     *
      * @param cal the current time
      * @return <tt>true</tt> if the date/time already satisfies the
      *         constraints or could be adjusted forward to match the constraints;
      *         <tt>false</tt> if there are no future dates/times that match the
      *         constraints
      */
-    private boolean advance(Calendar cal)
-    {
+    private boolean advance(Calendar cal) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "advance: " + toString(cal));
@@ -587,20 +525,16 @@ public class ParsedScheduleExpression
         // DST will execute hour(1) only once (adding a second to a Calendar with
         // time 1:00:00 results in 2:00:00 regardless of whether it is the
         // "first" or "second" 1AM).
-        for (;;)
-        {
-            if (cal.getTimeInMillis() > end)
-            {
+        for (;;) {
+            if (cal.getTimeInMillis() > end) {
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "advance: failed: " + toString(cal));
                 return false;
             }
 
-            if (seconds != WILD_CARD)
-            {
+            if (seconds != WILD_CARD) {
                 int second = cal.get(Calendar.SECOND);
-                if (!contains(seconds, second))
-                {
+                if (!contains(seconds, second)) {
                     advance(cal, Calendar.SECOND, Calendar.MINUTE, seconds, second);
 
                     if (isTraceOn && tc.isDebugEnabled())
@@ -609,11 +543,9 @@ public class ParsedScheduleExpression
                 }
             }
 
-            if (minutes != WILD_CARD)
-            {
+            if (minutes != WILD_CARD) {
                 int minute = cal.get(Calendar.MINUTE);
-                if (!contains(minutes, minute))
-                {
+                if (!contains(minutes, minute)) {
                     cal.set(Calendar.SECOND, firstOfWildCard(seconds)); // d659945.1
                     advance(cal, Calendar.MINUTE, Calendar.HOUR_OF_DAY, minutes, minute);
 
@@ -623,11 +555,9 @@ public class ParsedScheduleExpression
                 }
             }
 
-            if (hours != WILD_CARD)
-            {
+            if (hours != WILD_CARD) {
                 int hour = cal.get(Calendar.HOUR_OF_DAY);
-                if (!contains(hours, hour))
-                {
+                if (!contains(hours, hour)) {
                     // d659945.1 - Reset fields using firstOfWildCard.
                     cal.set(Calendar.SECOND, firstOfWildCard(seconds));
                     cal.set(Calendar.MINUTE, firstOfWildCard(minutes));
@@ -639,8 +569,7 @@ public class ParsedScheduleExpression
                 }
             }
 
-            if (advanceDayIfNeeded(cal))
-            {
+            if (advanceDayIfNeeded(cal)) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "advanced day: " + toString(cal));
 
@@ -648,8 +577,7 @@ public class ParsedScheduleExpression
                 // never match for any month (for example, "30--2"), so ensure that
                 // we terminate when we advance past year 9999.
                 int year = cal.get(Calendar.YEAR);
-                if (year > ScheduleExpressionParser.MAXIMUM_YEAR)
-                {
+                if (year > ScheduleExpressionParser.MAXIMUM_YEAR) {
                     if (isTraceOn && tc.isEntryEnabled())
                         Tr.exit(tc, "advance: failed: " + toString(cal));
                     return false;
@@ -658,11 +586,9 @@ public class ParsedScheduleExpression
                 continue;
             }
 
-            if (months != WILD_CARD)
-            {
+            if (months != WILD_CARD) {
                 int month = cal.get(Calendar.MONTH);
-                if (!contains(months, month))
-                {
+                if (!contains(months, month)) {
                     // d659945.1 - Reset fields using firstOfWildCard.
                     cal.set(Calendar.SECOND, firstOfWildCard(seconds));
                     cal.set(Calendar.MINUTE, firstOfWildCard(minutes));
@@ -678,19 +604,14 @@ public class ParsedScheduleExpression
             }
 
             int year = cal.get(Calendar.YEAR);
-            if (years == null)
-            {
-                if (year > ScheduleExpressionParser.MAXIMUM_YEAR) // d665298
-                {
+            if (years == null) {
+                if (year > ScheduleExpressionParser.MAXIMUM_YEAR) {
                     if (isTraceOn && tc.isEntryEnabled())
                         Tr.exit(tc, "advance: failed: " + toString(cal));
                     return false;
                 }
-            }
-            else
-            {
-                if (!years.get(year - ScheduleExpressionParser.MINIMUM_YEAR)) // d665298
-                {
+            } else {
+                if (!years.get(year - ScheduleExpressionParser.MINIMUM_YEAR)) {
                     // d659945.1 - Reset fields using firstOfWildCard.
                     cal.set(Calendar.SECOND, firstOfWildCard(seconds));
                     cal.set(Calendar.MINUTE, firstOfWildCard(minutes));
@@ -698,8 +619,7 @@ public class ParsedScheduleExpression
                     cal.set(Calendar.DAY_OF_MONTH, 1);
                     cal.set(Calendar.MONTH, firstOfWildCard(months));
 
-                    if (!advanceYear(cal, year))
-                    {
+                    if (!advanceYear(cal, year)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(tc, "advance: failed to advance past year " + year);
                         return false;
@@ -729,12 +649,11 @@ public class ParsedScheduleExpression
     /**
      * Checks whether the day field matches the constraints, and advances its
      * value if it does not.
-     * 
+     *
      * @param cal the current time
      * @return <tt>true</tt> if the day field was advanced
      */
-    private boolean advanceDayIfNeeded(Calendar cal)
-    {
+    private boolean advanceDayIfNeeded(Calendar cal) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         // Try all of the different mechanisms for matching a day, but only if
@@ -748,15 +667,13 @@ public class ParsedScheduleExpression
         int day = cal.get(Calendar.DAY_OF_MONTH) - 1;
         int nextDay = Integer.MAX_VALUE;
 
-        if (daysOfMonth != WILD_CARD)
-        {
+        if (daysOfMonth != WILD_CARD) {
             int result = getNextDayOfMonth(day);
 
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "next dayOfMonth = " + result);
 
-            if (result == day)
-            {
+            if (result == day) {
                 return false;
             }
 
@@ -765,15 +682,13 @@ public class ParsedScheduleExpression
 
         int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH) - 1;
 
-        if (lastDaysOfMonth != WILD_CARD)
-        {
+        if (lastDaysOfMonth != WILD_CARD) {
             int result = getNextLastDayOfMonth(day, lastDay);
 
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "next lastDayOfMonth = " + result);
 
-            if (result == day)
-            {
+            if (result == day) {
                 return false;
             }
 
@@ -782,68 +697,59 @@ public class ParsedScheduleExpression
 
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK) - 1;
 
-        if (daysOfWeek != WILD_CARD)
-        {
+        if (daysOfWeek != WILD_CARD) {
             int result = getNextDayOfWeek(day, dayOfWeek);
 
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "next daysOfWeek = " + result);
 
-            if (result == day)
-            {
+            if (result == day) {
                 return false;
             }
 
             nextDay = Math.min(nextDay, result);
         }
 
-        if (daysOfWeekInMonth != WILD_CARD)
-        {
+        if (daysOfWeekInMonth != WILD_CARD) {
             int result = getNextDayOfWeekInMonth(day, lastDay, dayOfWeek);
 
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "daysOfWeekInMonth includes " + result);
 
-            if (result == day)
-            {
+            if (result == day) {
                 return false;
             }
 
             nextDay = Math.min(nextDay, result);
         }
 
-        if (lastDaysOfWeekInMonth != WILD_CARD)
-        {
+        if (lastDaysOfWeekInMonth != WILD_CARD) {
             int result = getNextLastDayOfWeekInMonth(day, lastDay, dayOfWeek);
 
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "next lastDaysOfWeekInMonth = " + result);
 
-            if (result == day)
-            {
+            if (result == day) {
                 return false;
             }
 
             nextDay = Math.min(nextDay, result);
         }
 
-        if (variableDayOfMonthRanges != null) // d659945
-        {
+        if (variableDayOfMonthRanges != null) {
             int result = getNextVariableDay(day, lastDay, dayOfWeek);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "next variableDayOfMonthRanges = " + result);
 
-            if (result == day)
-            {
+            if (result == day) {
                 return false;
             }
 
             nextDay = Math.min(nextDay, result);
         }
 
-        if (nextDay == Integer.MAX_VALUE)
-        {
+        if (nextDay == Integer.MAX_VALUE) {
             // No day constraints are specified for this expression.
             return false;
         }
@@ -853,13 +759,10 @@ public class ParsedScheduleExpression
         cal.set(Calendar.MINUTE, firstOfWildCard(minutes));
         cal.set(Calendar.HOUR_OF_DAY, firstOfWildCard(hours));
 
-        if (nextDay <= lastDay)
-        {
+        if (nextDay <= lastDay) {
             // A constraint matched a day within the current month.
             cal.set(Calendar.DAY_OF_MONTH, nextDay + 1);
-        }
-        else
-        {
+        } else {
             // There were no matches for the rest of the days in the current
             // month.  Advance to the next month and try again.
             cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -875,29 +778,25 @@ public class ParsedScheduleExpression
      * needle is found in haystack, then that higher position is set as the
      * value in field. Otherwise, the lowest value in haystack is set as the
      * value in field, and the value in nextField is incremented.
-     * 
+     *
      * <p>For example, if field=Calendar.SECOND, haystack is {30, 40, 50},
      * and needle is 35, then the seconds field will be set to 40, and the
      * minutes field will be unchanged. However, if haystack={10, 20, 30},
      * then the value in the seconds field will be set to 10, and the value of
      * the minutes field will be incremented.
-     * 
-     * @param cal the current time
-     * @param field a field from <tt>java.util.Calendar</tt>
-     * @param field the next coarser field after <tt>field</tt>; for example,
-     *            if field=Calendar.SECOND, nextField=Calendar.MINUTE
+     *
+     * @param cal      the current time
+     * @param field    a field from <tt>java.util.Calendar</tt>
+     * @param field    the next coarser field after <tt>field</tt>; for example,
+     *                     if field=Calendar.SECOND, nextField=Calendar.MINUTE
      * @param haystack the bitmask
-     * @param needle the current position in the bitmask; only higher
+     * @param needle   the current position in the bitmask; only higher
      */
-    private static void advance(Calendar cal, int field, int nextField, long haystack, int needle)
-    {
+    private static void advance(Calendar cal, int field, int nextField, long haystack, int needle) {
         long higher = higher(haystack, needle);
-        if (higher != 0)
-        {
+        if (higher != 0) {
             cal.set(field, first(higher));
-        }
-        else
-        {
+        } else {
             cal.set(field, first(haystack));
             cal.add(nextField, 1);
         }
@@ -906,17 +805,14 @@ public class ParsedScheduleExpression
     /**
      * Returns the next day of the month after <tt>day</tt> that satisfies the
      * dayOfMonth constraint.
-     * 
+     *
      * @param day the current 0-based day of the month
      * @return a value greater than or equal to <tt>day</tt>
      */
-    private int getNextDayOfMonth(int day)
-    {
-        if (!contains(daysOfMonth, day))
-        {
+    private int getNextDayOfMonth(int day) {
+        if (!contains(daysOfMonth, day)) {
             long higher = higher(daysOfMonth, day);
-            if (higher != 0)
-            {
+            if (higher != 0) {
                 return first(higher);
             }
 
@@ -929,13 +825,12 @@ public class ParsedScheduleExpression
     /**
      * Returns the next day of the month after <tt>day</tt> that satisfies
      * the lastDayOfMonth constraint.
-     * 
-     * @param day the current 0-based day of the month
+     *
+     * @param day     the current 0-based day of the month
      * @param lastDay the current 0-based last day of the month
      * @return a value greater than or equal to <tt>day</tt>
      */
-    private int getNextLastDayOfMonth(int day, int lastDay)
-    {
+    private int getNextLastDayOfMonth(int day, int lastDay) {
         // lastDaysOfMonth = 0b1000 0011  (LSB) = Last, -6, -7
         // Shift left so that "Last" aligns with the last day of the month.
         // For example, for Jan, we want the Last bit in position 31, so we
@@ -944,11 +839,9 @@ public class ParsedScheduleExpression
         int offset = lastDay - 7;
         long bits = lastDaysOfMonth << offset;
 
-        if (!contains(bits, day))
-        {
+        if (!contains(bits, day)) {
             long higher = higher(bits, day);
-            if (higher != 0)
-            {
+            if (higher != 0) {
                 return first(higher);
             }
 
@@ -961,18 +854,15 @@ public class ParsedScheduleExpression
     /**
      * Returns the next day of the month after <tt>day</tt> that satisfies
      * the dayOfWeek constraint.
-     * 
-     * @param day the current 0-based day of the month
+     *
+     * @param day       the current 0-based day of the month
      * @param dayOfWeek the current 0-based day of the week
      * @return a value greater than or equal to <tt>day</tt>
      */
-    private int getNextDayOfWeek(int day, int dayOfWeek)
-    {
-        if (!contains(daysOfWeek, dayOfWeek))
-        {
+    private int getNextDayOfWeek(int day, int dayOfWeek) {
+        if (!contains(daysOfWeek, dayOfWeek)) {
             long higher = higher(daysOfWeek, dayOfWeek);
-            if (higher != 0)
-            {
+            if (higher != 0) {
                 return day + (first(higher) - dayOfWeek);
             }
 
@@ -985,31 +875,26 @@ public class ParsedScheduleExpression
     /**
      * Returns the next day of the month after <tt>day</tt> that satisfies
      * the lastDayOfWeek constraint.
-     * 
-     * @param day the current 0-based day of the month
-     * @param lastDay the current 0-based last day of the month
+     *
+     * @param day       the current 0-based day of the month
+     * @param lastDay   the current 0-based last day of the month
      * @param dayOfWeek the current 0-based day of the week
      * @return a value greater than or equal to <tt>day</tt>
      */
-    private int getNextDayOfWeekInMonth(int day, int lastDay, int dayOfWeek)
-    {
+    private int getNextDayOfWeekInMonth(int day, int lastDay, int dayOfWeek) {
         int weekInMonth = day / 7;
 
-        for (;;)
-        {
-            if (contains(daysOfWeekInMonth, weekInMonth * 7 + dayOfWeek))
-            {
+        for (;;) {
+            if (contains(daysOfWeekInMonth, weekInMonth * 7 + dayOfWeek)) {
                 return day;
             }
 
             day++;
-            if (day > lastDay)
-            {
+            if (day > lastDay) {
                 return ADVANCE_TO_NEXT_MONTH;
             }
 
-            if ((day % 7) == 0)
-            {
+            if ((day % 7) == 0) {
                 weekInMonth++;
             }
 
@@ -1020,24 +905,20 @@ public class ParsedScheduleExpression
     /**
      * Returns the next day of the month after <tt>day</tt> that satisfies
      * the lastDaysOfWeekInMonth constraint.
-     * 
-     * @param day the current 0-based day of the month
-     * @param lastDay the current 0-based last day of the month
+     *
+     * @param day       the current 0-based day of the month
+     * @param lastDay   the current 0-based last day of the month
      * @param dayOfWeek the current 0-based day of the week
      * @return a value greater than or equal to <tt>day</tt>
      */
-    private int getNextLastDayOfWeekInMonth(int day, int lastDay, int dayOfWeek)
-    {
-        for (;;)
-        {
-            if (lastDay - day < 7 && contains(lastDaysOfWeekInMonth, dayOfWeek))
-            {
+    private int getNextLastDayOfWeekInMonth(int day, int lastDay, int dayOfWeek) {
+        for (;;) {
+            if (lastDay - day < 7 && contains(lastDaysOfWeekInMonth, dayOfWeek)) {
                 return day;
             }
 
             day++;
-            if (day > lastDay)
-            {
+            if (day > lastDay) {
                 return ADVANCE_TO_NEXT_MONTH;
             }
 
@@ -1048,21 +929,18 @@ public class ParsedScheduleExpression
     /**
      * Returns the next day of the month after <tt>day</tt> that satisfies
      * the variableDayOfMonthRanges constraint.
-     * 
-     * @param day the current 0-based day of the month
-     * @param lastDay the current 0-based last day of the month
+     *
+     * @param day       the current 0-based day of the month
+     * @param lastDay   the current 0-based last day of the month
      * @param dayOfWeek the current 0-based day of the week
      * @return a value greater than or equal to <tt>day</tt>
      */
-    private int getNextVariableDay(int day, int lastDay, int dayOfWeek) // d659945
-    {
+    private int getNextVariableDay(int day, int lastDay, int dayOfWeek) {
         int nextDay = ADVANCE_TO_NEXT_MONTH;
 
-        for (int i = 0; i < variableDayOfMonthRanges.size(); i++)
-        {
+        for (int i = 0; i < variableDayOfMonthRanges.size(); i++) {
             int result = variableDayOfMonthRanges.get(i).getNextDay(day, lastDay, dayOfWeek);
-            if (result == day)
-            {
+            if (result == day) {
                 return day;
             }
 
@@ -1075,15 +953,13 @@ public class ParsedScheduleExpression
     /**
      * Moves the value of the year field forward in time to satisfy the year
      * constraint.
-     * 
+     *
      * @param year the current year
      * @return <tt>true</tt> if a higher year was found
      */
-    private boolean advanceYear(Calendar cal, int year)
-    {
+    private boolean advanceYear(Calendar cal, int year) {
         year = years.nextSetBit(year + 1 - ScheduleExpressionParser.MINIMUM_YEAR); // d665298
-        if (year >= 0)
-        {
+        if (year >= 0) {
             cal.set(Calendar.YEAR, year + ScheduleExpressionParser.MINIMUM_YEAR); // d665298
             return true;
         }
@@ -1092,8 +968,7 @@ public class ParsedScheduleExpression
     }
 
     private void writeObject(ObjectOutputStream out) // d639610
-    throws IOException
-    {
+                    throws IOException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "writeObject");
@@ -1108,8 +983,7 @@ public class ParsedScheduleExpression
     }
 
     private void readObject(ObjectInputStream in) // d639610
-    throws IOException, ClassNotFoundException
-    {
+                    throws IOException, ClassNotFoundException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "readObject");
@@ -1117,8 +991,7 @@ public class ParsedScheduleExpression
         in.defaultReadObject();
 
         int version = in.readInt();
-        if (version != VERSION)
-        {
+        if (version != VERSION) {
             throw new IOException("invalid version: " + version);
         }
 
@@ -1139,33 +1012,30 @@ public class ParsedScheduleExpression
      * This class represents a dayOfMonth range with at least one bound
      * containing "Last", "Last Day", or [-7, -1].
      */
-    static class VariableDayOfMonthRange // d659945
-    {
+    static class VariableDayOfMonthRange {
         /**
          * The inclusive lower bound of the range as encoded by {@link ScheduleExpressionParser#readSingleValue}.
          */
-        private int ivEncodedMin;
+        private final int ivEncodedMin;
 
         /**
          * The inclusive upper bound of the range as encoded by {@link ScheduleExpressionParser#readSingleValue}.
          */
-        private int ivEncodedMax;
+        private final int ivEncodedMax;
 
         /**
          * Constructs a new dayOfMonth range.
-         * 
+         *
          * @param encodedMin the lower bound as encoded by {@link ScheduleExpressionParser#readSingleValue}
          * @param encodedMax the upper bound as encoded by {@link ScheduleExpressionParser#readSingleValue}
          */
-        VariableDayOfMonthRange(int encodedMin, int encodedMax)
-        {
+        VariableDayOfMonthRange(int encodedMin, int encodedMax) {
             ivEncodedMin = encodedMin;
             ivEncodedMax = encodedMax;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             StringBuilder out = new StringBuilder();
             out.append('[');
             toString(out, ivEncodedMin);
@@ -1176,43 +1046,32 @@ public class ParsedScheduleExpression
             return out.toString();
         }
 
-        private static void toString(StringBuilder out, int value)
-        {
-            if (value < ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH)
-            {
+        private static void toString(StringBuilder out, int value) {
+            if (value < ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH) {
                 out.append(value);
-            }
-            else if (value == ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH)
-            {
+            } else if (value == ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH) {
                 out.append("Last");
-            }
-            else if (value < ScheduleExpressionParser.ENCODED_NTH_DAY_OF_WEEK_IN_MONTH)
-            {
+            } else if (value < ScheduleExpressionParser.ENCODED_NTH_DAY_OF_WEEK_IN_MONTH) {
                 out.append(ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH - value);
-            }
-            else
-            {
+            } else {
                 int encoded = value - ScheduleExpressionParser.ENCODED_NTH_DAY_OF_WEEK_IN_MONTH;
                 int weekOfMonth = encoded / 7;
                 int dayOfWeek = encoded % 7;
 
-                out.append(ScheduleExpressionParser.WEEKS_OF_MONTH[weekOfMonth])
-                                .append(' ')
-                                .append(ScheduleExpressionParser.DAYS_OF_WEEK[dayOfWeek]);
+                out.append(ScheduleExpressionParser.WEEKS_OF_MONTH[weekOfMonth]).append(' ').append(ScheduleExpressionParser.DAYS_OF_WEEK[dayOfWeek]);
             }
         }
 
         /**
          * Returns the next day of the month after <tt>day</tt> that is within
          * the bounds of this range.
-         * 
-         * @param day the current 0-based day of the month
-         * @param lastDay the current 0-based last day of the month
+         *
+         * @param day       the current 0-based day of the month
+         * @param lastDay   the current 0-based last day of the month
          * @param dayOfWeek the current 0-based day of the week
          * @return a value greater than or equal to <tt>day</tt>
          */
-        public int getNextDay(int day, int lastDay, int dayOfWeek)
-        {
+        public int getNextDay(int day, int lastDay, int dayOfWeek) {
             // The EJB 3.1 spec does not state how to handle variable range
             // bounds.  This implementation translates the bounds to actual days
             // of the current month and then applies the section 18.2.1.1.4 rule:
@@ -1230,29 +1089,22 @@ public class ParsedScheduleExpression
             int maxDay = actualDayOfMonth(ivEncodedMax, day, lastDay, dayOfWeek);
             int result;
 
-            if (minDay > maxDay)
-            {
+            if (minDay > maxDay) {
                 // d659945.2 - The spec gives no guidance on what to do for
                 // inverted variable range bounds.  Unlike normal range bounds, it
                 // makes more sense to just advance to the next month, so that's
                 // what this implementation does.
                 result = ADVANCE_TO_NEXT_MONTH;
-            }
-            else
-            {
+            } else {
                 // Check if the current day is in the range.
-                if (day >= minDay && day <= maxDay)
-                {
+                if (day >= minDay && day <= maxDay) {
                     result = day;
                 }
                 // If the current day is before the range, advance to the range
                 // minimum if it's a valid day in the current month.
-                else if (day < minDay && minDay <= lastDay)
-                {
+                else if (day < minDay && minDay <= lastDay) {
                     result = minDay;
-                }
-                else
-                {
+                } else {
                     result = ADVANCE_TO_NEXT_MONTH;
                 }
             }
@@ -1269,23 +1121,20 @@ public class ParsedScheduleExpression
         /**
          * Converts an encoded upper or lower bound value to an actual day of the
          * current month.
-         * 
+         *
          * @param encodedValue the upper or lower bound value as encoded by {@link ScheduleExpressionParser#readSingleValue}
-         * @param day the current 0-based day of the month
-         * @param lastDay the current 0-based last day of the month
-         * @param dayOfWeek the current 0-based day of the week
+         * @param day          the current 0-based day of the month
+         * @param lastDay      the current 0-based last day of the month
+         * @param dayOfWeek    the current 0-based day of the week
          * @return a value greater than or equal to <tt>day</tt>
          */
-        private static int actualDayOfMonth(int encodedValue, int day, int lastDay, int dayOfWeek)
-        {
-            if (encodedValue < ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH)
-            {
+        private static int actualDayOfMonth(int encodedValue, int day, int lastDay, int dayOfWeek) {
+            if (encodedValue < ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH) {
                 // Simple day of month.
                 return encodedValue - 1;
             }
 
-            if (encodedValue < ScheduleExpressionParser.ENCODED_NTH_DAY_OF_WEEK_IN_MONTH)
-            {
+            if (encodedValue < ScheduleExpressionParser.ENCODED_NTH_DAY_OF_WEEK_IN_MONTH) {
                 // Nth last day of month.
                 return lastDay - (encodedValue - ScheduleExpressionParser.ENCODED_NTH_LAST_DAY_OF_MONTH);
             }
@@ -1295,13 +1144,11 @@ public class ParsedScheduleExpression
             int targetWeekOfMonth = encoded / 7;
             int targetDayOfWeek = encoded % 7;
 
-            if (targetWeekOfMonth == ScheduleExpressionParser.LAST_WEEK_OF_MONTH)
-            {
+            if (targetWeekOfMonth == ScheduleExpressionParser.LAST_WEEK_OF_MONTH) {
                 // The day of the week for the last day of the month.
                 int lastDayOfWeek = (dayOfWeek + lastDay - day) % 7;
 
-                if (targetDayOfWeek <= lastDayOfWeek)
-                {
+                if (targetDayOfWeek <= lastDayOfWeek) {
                     // For example, the target day of week is "Last Mon" and the day
                     // of the week of the last day of the month is Wed.  In that
                     // case, Wed "minus" Mon is 2 days, so subtract that from the

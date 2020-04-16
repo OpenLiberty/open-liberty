@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,8 @@ import java.lang.invoke.MethodType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -33,8 +33,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import javax.enterprise.concurrent.ManagedTask;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -119,7 +117,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * Execution property that indicates a task should run with any previous transaction suspended.
      */
-    private static Map<String, String> XPROPS_SUSPEND_TRAN = Collections.singletonMap(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
+    private static final Map<String, String> XPROPS_SUSPEND_TRAN = new TreeMap<String, String>();
+    static {
+        XPROPS_SUSPEND_TRAN.put("jakarta.enterprise.concurrent.TRANSACTION", "SUSPEND");
+        XPROPS_SUSPEND_TRAN.put("javax.enterprise.concurrent.TRANSACTION", "SUSPEND");
+    }
 
     /**
      * Privileged action that obtains the Liberty non-deferrable ScheduledExecutorService.
@@ -219,8 +221,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Use this constructor only for Java SE 8.
      *
      * @param completableFuture underlying completable future upon which this instance is backed.
-     * @param managedExecutor managed executor service
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param managedExecutor   managed executor service
+     * @param futureRef         reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
     ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
@@ -247,7 +249,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Construct a completable future with a managed executor as its default asynchronous execution facility.
      *
      * @param managedExecutor managed executor service
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param futureRef       reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
     ManagedCompletableFuture(Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
@@ -278,7 +280,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.completedFuture(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param value result of the completed future
+     * @param value    result of the completed future
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
@@ -360,7 +362,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.failedFuture(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param x the exception.
+     * @param x        the exception.
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
@@ -393,7 +395,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.failedStage(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param x the exception.
+     * @param x        the exception.
      * @param executor executor to become the default asynchronous execution facility for the completion stage
      * @return completed completion stage
      */
@@ -444,15 +446,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Alternative to CompletableFuture.runAsync(action, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
-     * @param action the action to run asynchronously.
+     * @param action   the action to run asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
     @Trivial // traced by caller
     public static CompletableFuture<Void> runAsync(Runnable action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -496,15 +496,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Alternative to CompletableFuture.supplyAsync(supplier, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
-     * @param action the supplier to invoke asynchronously.
+     * @param action   the supplier to invoke asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
     @Trivial // traced by caller
     public static <U> CompletableFuture<U> supplyAsync(Supplier<U> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -540,9 +538,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> acceptEither(CompletionStage<? extends T> other, Consumer<? super T> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualConsumer)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -574,9 +570,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> acceptEitherAsync(CompletionStage<? extends T> other, Consumer<? super T> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -606,9 +600,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> CompletableFuture<U> applyToEither(CompletionStage<? extends T> other, Function<? super T, U> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualFunction)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -640,9 +632,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> CompletableFuture<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -745,9 +735,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             throw new UnsupportedOperationException();
 
         if (!super.isDone()) {
-            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-            if (action instanceof ManagedTask)
-                throw new IllegalArgumentException(ManagedTask.class.getName());
+            rejectManagedTask(action);
 
             ThreadContextDescriptor contextDescriptor;
             if (action instanceof ContextualSupplier) {
@@ -831,9 +819,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<T> exceptionally(Function<Throwable, ? extends T> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualFunction)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -858,9 +844,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (super_exceptionallyAsync == null) // unavailable prior to Java 12
             throw new UnsupportedOperationException();
 
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -887,9 +871,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (super_exceptionallyCompose == null) // unavailable prior to Java 12
             throw new UnsupportedOperationException();
 
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualFunction)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -915,9 +897,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (super_exceptionallyComposeAsync == null) // unavailable prior to Java 12
             throw new UnsupportedOperationException();
 
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -986,9 +966,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <R> CompletableFuture<R> handle(BiFunction<? super T, Throwable, ? extends R> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualBiFunction)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1018,9 +996,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <R> CompletableFuture<R> handleAsync(BiFunction<? super T, Throwable, ? extends R> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1115,8 +1091,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * ManagedCompletionStage overrides to ensure that an instance of that class is created instead.
      *
      * @param completableFuture underlying completable future upon which this instance is backed.
-     * @param managedExecutor managed executor service
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param managedExecutor   managed executor service
+     * @param futureRef         reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      * @return a new instance of this class.
      */
     @Trivial
@@ -1183,13 +1159,21 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+     */
+    private static final void rejectManagedTask(Object action) {
+        if (action instanceof jakarta.enterprise.concurrent.ManagedTask)
+            throw new IllegalArgumentException(jakarta.enterprise.concurrent.ManagedTask.class.getName());
+        if (action instanceof javax.enterprise.concurrent.ManagedTask)
+            throw new IllegalArgumentException(javax.enterprise.concurrent.ManagedTask.class.getName());
+    }
+
+    /**
      * @see java.util.concurrent.CompletionStage#runAfterBoth(java.util.concurrent.CompletionStage, java.lang.Runnable)
      */
     @Override
     public CompletableFuture<Void> runAfterBoth(CompletionStage<?> other, Runnable action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualRunnable)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1221,9 +1205,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> runAfterBothAsync(CompletionStage<?> other, Runnable action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1253,9 +1235,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> runAfterEither(CompletionStage<?> other, Runnable action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualRunnable)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1287,9 +1267,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> runAfterEitherAsync(CompletionStage<?> other, Runnable action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1376,9 +1354,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> thenAccept(Consumer<? super T> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualConsumer)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1408,9 +1384,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> thenAcceptAsync(Consumer<? super T> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1438,9 +1412,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> CompletableFuture<Void> thenAcceptBoth(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualBiConsumer)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1472,9 +1444,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> CompletableFuture<Void> thenAcceptBothAsync(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1504,9 +1474,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <R> CompletableFuture<R> thenApply(Function<? super T, ? extends R> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualFunction)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1536,9 +1504,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <R> CompletableFuture<R> thenApplyAsync(Function<? super T, ? extends R> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1566,9 +1532,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U, R> CompletableFuture<R> thenCombine(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends R> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualBiFunction)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1600,9 +1564,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U, R> CompletableFuture<R> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends R> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1632,9 +1594,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> CompletableFuture<U> thenCompose(Function<? super T, ? extends CompletionStage<U>> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualFunction)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1664,9 +1624,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> CompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1694,9 +1652,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> thenRun(Runnable action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualRunnable)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1726,9 +1682,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<Void> thenRunAsync(Runnable action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
@@ -1774,9 +1728,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Trivial
     public String toString() {
         StringBuilder s = new StringBuilder(250).append(getClass().getSimpleName()) //
-                        .append('@')
-                        .append(Integer.toHexString(System.identityHashCode(this)))
-                        .append('[');
+                        .append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         if (JAVA8)
             s.append(Integer.toHexString(completableFuture.hashCode())).append(' ');
         if (JAVA8 ? completableFuture.isDone() : super.isDone())
@@ -1803,9 +1755,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<T> whenComplete(BiConsumer<? super T, ? super Throwable> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         if (!(action instanceof ContextualBiConsumer)) {
             ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
@@ -1835,9 +1785,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public CompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        rejectManagedTask(action);
 
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 

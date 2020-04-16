@@ -162,7 +162,7 @@ CWPKI2034E=CWPKI2034E: The ACME service could not create a keystore instance. Th
 CWPKI2034E.explanation=The ACME service fetched a new certificate, but creating or initializing a keystore for storing the certificate failed.
 CWPKI2034E.useraction=Review the error message for details on the failure.
 
-CWPKI2035E=CWPKI2035E: The ACME service could not store the signed certificate in the {0) keystore. The error is ''{1}''.
+CWPKI2035E=CWPKI2035E: The ACME service could not store the signed certificate in the {0} keystore. The error is ''{1}''.
 CWPKI2035E.explanation=The certificate was successfully retrieved from the certificate authority, but it cannot be stored locally.
 CWPKI2035E.useraction=Review the error message for details on the failure. Verify the keystore file location is correct and the server has write file permissions.
 
