@@ -1776,8 +1776,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.STATIC,
-               policyOption = ReferencePolicyOption.GREEDY,
-               target = "(id=unbound)")
+               policyOption = ReferencePolicyOption.GREEDY)
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         String version = (String) ref.getProperty("version");
         if (version == null) {

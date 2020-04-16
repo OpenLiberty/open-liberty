@@ -12,6 +12,7 @@
 
     <featureManager>
         <feature>componenttest-1.0</feature>
+        <feature>concurrent-2.0</feature>
         <feature>jdbc-4.2</feature>
         <feature>jndi-1.0</feature>
         <feature>mpContextPropagation-1.0</feature>

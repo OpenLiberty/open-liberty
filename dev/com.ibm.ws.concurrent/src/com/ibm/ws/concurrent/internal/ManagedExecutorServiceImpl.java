@@ -37,8 +37,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedTask;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
@@ -51,6 +49,7 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -58,6 +57,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
@@ -73,12 +73,18 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
+           service = { ExecutorService.class, ManagedExecutor.class, //
+                       javax.enterprise.concurrent.ManagedExecutorService.class, //
+                       ResourceFactory.class, ApplicationRecycleComponent.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
+                        "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
-public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutor, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
+public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutor, //
+                jakarta.enterprise.concurrent.ManagedExecutorService, //
+                javax.enterprise.concurrent.ManagedExecutorService, //
+                ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
     /**
@@ -87,9 +93,14 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     static final String APP_RECYCLE_SERVICE = "ApplicationRecycleCoordinator";
 
     /**
-     * Execution properties that specify to suspend the current transaction.
+     * Jakarta EE Concurrency execution properties that specify to suspend the current transaction.
      */
-    private static final Map<String, String> XPROPS_SUSPEND_TRAN = Collections.singletonMap(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
+    private static final Map<String, String> JAKARTA_SUSPEND_TRAN = Collections.singletonMap("jakarta.enterprise.concurrent.TRANSACTION", "SUSPEND");
+
+    /**
+     * Java EE Concurrency execution properties that specify to suspend the current transaction.
+     */
+    private static final Map<String, String> JAVAX_SUSPEND_TRAN = Collections.singletonMap("javax.enterprise.concurrent.TRANSACTION", "SUSPEND");
 
     private final boolean allowLifeCycleMethods;
 
@@ -122,6 +133,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * Default execution properties to use for tasks where none are specified.
      */
     private final AtomicReference<Map<String, String>> defaultExecutionProperties = new AtomicReference<Map<String, String>>();
+
+    /**
+     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    int eeVersion;
 
     /**
      * Hash code for this instance.
@@ -396,14 +412,24 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         if (task == null) // NullPointerException is required per the JavaDoc API
             throw new NullPointerException(Tr.formatMessage(tc, "CWWKC1111.task.invalid", (Object) null));
 
-        Map<String, String> execProps = task instanceof ManagedTask ? ((ManagedTask) task).getExecutionProperties() : null;
+        Map<String, String> execProps;
+        if (task instanceof jakarta.enterprise.concurrent.ManagedTask)
+            execProps = ((jakarta.enterprise.concurrent.ManagedTask) task).getExecutionProperties();
+        else if (task instanceof javax.enterprise.concurrent.ManagedTask)
+            execProps = ((javax.enterprise.concurrent.ManagedTask) task).getExecutionProperties();
+        else
+            execProps = null;
+
         if (execProps == null)
             execProps = defaultExecutionProperties.get();
         else {
             execProps = new TreeMap<String, String>(execProps);
-            String tranProp = execProps.remove(ManagedTask.TRANSACTION);
-            if (tranProp != null && !ManagedTask.SUSPEND.equals(tranProp)) // USE_TRANSACTION_OF_EXECUTION_THREAD not valid for managed tasks
-                throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1130.xprop.value.invalid", name, ManagedTask.TRANSACTION, tranProp));
+            String tranPropKey;
+            String tranProp = execProps.remove(tranPropKey = "jakarta.enterprise.concurrent.TRANSACTION");
+            if (tranProp == null)
+                tranProp = execProps.remove(tranPropKey = "javax.enterprise.concurrent.TRANSACTION");
+            if (tranProp != null && !"SUSPEND".equals(tranProp)) // USE_TRANSACTION_OF_EXECUTION_THREAD not valid for managed tasks
+                throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1130.xprop.value.invalid", name, tranPropKey, tranProp));
             if (!execProps.containsKey(WSContextService.DEFAULT_CONTEXT))
                 execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
             if (!execProps.containsKey(WSContextService.TASK_OWNER))
@@ -535,6 +561,26 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /**
+     * Declarative Services method for setting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    @Reference(service = JavaEEVersion.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.STATIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
+        }
+    }
+
+    /**
      * Declarative Services method for setting the long running concurrency policy.
      *
      * @param svc the service
@@ -631,7 +677,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @return ThreadContext instance that must be used to restore the suspended transaction context if returned.
      *         Null if transaction context is unavailable.
      */
+    @SuppressWarnings("deprecation")
     ThreadContext suspendTransaction() {
+        Map<String, String> XPROPS_SUSPEND_TRAN = eeVersion < 9 ? JAVAX_SUSPEND_TRAN : JAKARTA_SUSPEND_TRAN;
         ThreadContextProvider tranContextProvider = AccessController.doPrivileged(tranContextProviderAccessor);
         ThreadContext suspendedTranSnapshot = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(XPROPS_SUSPEND_TRAN, null);
         if (suspendedTranSnapshot != null)
@@ -661,6 +709,15 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.unsetReference(ref);
+    }
+
+    /**
+     * Declarative Services method for unsetting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        eeVersion = 0;
     }
 
     /**
