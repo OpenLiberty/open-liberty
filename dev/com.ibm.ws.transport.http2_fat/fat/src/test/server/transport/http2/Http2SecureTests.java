@@ -67,7 +67,7 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client requests a servlet that will generate a push request
      * Test Outcome: Server pushes a resource to the client
-     *
+     * Note: JDK9+ required here for ALPN
      * @throws Exception
      */
     @Test
@@ -83,7 +83,7 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client makes multiple requests to a servlet that will generate a push request
      * Test Outcome: Server pushes multiple resources to the client
-     *
+     * Note: JDK9+ required here for ALPN
      * @throws Exception
      */
     @Test
@@ -101,7 +101,7 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client makes a request to a servlet with a simple body
      * Test Outcome: Server responds with the servlet body
-     *
+     * Note: JDK9+ required here for ALPN
      * @throws Exception
      */
     @Test
@@ -117,7 +117,7 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client makes multiple requests to a servlet with a simple body
      * Test Outcome: Server responds multiple times
-     *
+     * Note: JDK9+ required here for ALPN
      * @throws Exception
      */
     @Test
