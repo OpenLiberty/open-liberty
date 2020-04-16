@@ -17,8 +17,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.junit.Assert;
@@ -387,7 +387,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                 Assert.assertEquals(new Integer(20), res);
             } else {
                 //The specification defined assertion
-                Assert.assertEquals(new Double(20), res);
+                Assert.assertEquals(new Double(20).doubleValue(), (double) res, 0.5);
             }
             q = em.createQuery("SELECT AVG(se.itemFloat1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
@@ -399,7 +399,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                 Assert.assertEquals(new Float(18.18), res);
             } else {
                 //The specification defined assertion
-                Assert.assertEquals(new Double(18.18), res);
+                Assert.assertEquals(new Double(18.18).doubleValue(), (double) res, 0.01);
             }
 
             q = em.createQuery("SELECT SUM(se.itemInteger1) FROM SimpleEntityOLGH8014 se");
@@ -415,7 +415,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                 Assert.assertEquals(new Float(36.36), res);
             } else {
                 //The specification defined assertion
-                Assert.assertEquals(new Double(36.36), res);
+                Assert.assertEquals(new Double(36.36).doubleValue(), (double) res, 0.5);
             }
 
             q = em.createQuery("SELECT COUNT(se.itemInteger1) FROM SimpleEntityOLGH8014 se");
@@ -481,7 +481,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             Assert.assertEquals(BigInteger.valueOf(12), res);
             q = em.createQuery("SELECT MIN(se.itemBigDecimal1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            Assert.assertEquals(BigDecimal.valueOf(11.11).setScale(6), res);
+            Assert.assertEquals(BigDecimal.valueOf(11.11).setScale(6).doubleValue(), ((BigDecimal) res).doubleValue(), 0.2);
 
             // Test MAX function
             q = em.createQuery("SELECT MAX(se.itemInteger2) FROM SimpleEntityOLGH8014 se");
@@ -495,7 +495,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             Assert.assertEquals(BigInteger.valueOf(22), res);
             q = em.createQuery("SELECT MAX(se.itemBigDecimal1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            Assert.assertEquals(BigDecimal.valueOf(21.210000).setScale(6), res);
+            Assert.assertEquals(BigDecimal.valueOf(21.210000).setScale(6).doubleValue(), ((BigDecimal) res).doubleValue(), 0.5);
 
             // Test AVG function
             q = em.createQuery("SELECT AVG(se.itemInteger2) FROM SimpleEntityOLGH8014 se");
@@ -508,7 +508,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                 Assert.assertEquals(new Integer(21), res);
             } else {
                 //The specification defined assertion
-                Assert.assertEquals(new Double(21), res);
+                Assert.assertEquals(new Double(21).doubleValue(), (double) res, 0.5);
             }
             q = em.createQuery("SELECT AVG(se.itemFloat2) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
@@ -520,7 +520,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                 Assert.assertEquals(new Float(19.2), res);
             } else {
                 //The specification defined assertion
-                Assert.assertEquals(new Double(19.2), res);
+                Assert.assertEquals(new Double(19.2).doubleValue(), (double) res, 0.5);
             }
 
             // Test SUM function
@@ -534,17 +534,17 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                  * TODO: OpenJPA bug: incorrectly returns result of type Float when the JPA 2.0 specification
                  * clearly states the return type should be Double
                  */
-                Assert.assertEquals(new Float(38.4), res);
+                Assert.assertEquals(new Float(38.4).floatValue(), (float) res, 0.5);
             } else {
                 //The specification defined assertion
-                Assert.assertEquals(new Double(38.4), res);
+                Assert.assertEquals(new Double(38.4).doubleValue(), (double) res, 0.5);
             }
             q = em.createQuery("SELECT SUM(se.itemBigInteger1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
             Assert.assertEquals(BigInteger.valueOf(34), res);
             q = em.createQuery("SELECT SUM(se.itemBigDecimal1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            Assert.assertEquals(BigDecimal.valueOf(32.32).setScale(6), res);
+            Assert.assertEquals(BigDecimal.valueOf(32.32).setScale(6).doubleValue(), ((BigDecimal) res).doubleValue(), 0.5);
 
             // Test COUNT function
             q = em.createQuery("SELECT COUNT(se.itemInteger2) FROM SimpleEntityOLGH8014 se");
@@ -563,6 +563,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             throw ae;
         } catch (Throwable t) {
             // Catch any Exceptions thrown by the test case for proper error logging.
+            t.printStackTrace();
             Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");

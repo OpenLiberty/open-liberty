@@ -17,6 +17,8 @@ Bundle-Description: WAS JSP 2.3, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
+jakartaeeMe: true
+
 -dsannotations: com.ibm.ws.jsp23.webcontainerext.JspVersionFactoryImpl, \
 com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspHelper23Factory, \
 com.ibm.ws.jsp23.translator.visitor.validator.ElValidatorExtFactoryImpl, \

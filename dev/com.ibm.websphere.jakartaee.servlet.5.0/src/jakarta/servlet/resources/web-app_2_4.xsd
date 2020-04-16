@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+  **  The actual Sun XSD for this stripped down XSD can be found at
+  **  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd
+  **  This XSD contains only the functional elements for programatic use.
+-->
+
+
+<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" 
+            targetNamespace="http://java.sun.com/xml/ns/j2ee" 
+            xmlns:j2ee="http://java.sun.com/xml/ns/j2ee" 
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            elementFormDefault="qualified" 
+            attributeFormDefault="unqualified" 
+            version="2.4">
+    <xsd:include schemaLocation="j2ee_1_4.xsd" />
+    <xsd:include schemaLocation="jsp_2_0.xsd" />
+    <xsd:element name="web-app" type="j2ee:web-appType">
+        <xsd:unique name="web-app-servlet-name-uniqueness">
+            <xsd:selector xpath="j2ee:servlet" />
+            <xsd:field xpath="j2ee:servlet-name" />
+        </xsd:unique>
+        <xsd:unique name="web-app-filter-name-uniqueness">
+            <xsd:selector xpath="j2ee:filter" />
+            <xsd:field xpath="j2ee:filter-name" />
+        </xsd:unique>
+        <xsd:unique name="web-app-ejb-local-ref-name-uniqueness">
+            <xsd:selector xpath="j2ee:ejb-local-ref" />
+            <xsd:field xpath="j2ee:ejb-ref-name" />
+        </xsd:unique>
+        <xsd:unique name="web-app-ejb-ref-name-uniqueness">
+            <xsd:selector xpath="j2ee:ejb-ref" />
+            <xsd:field xpath="j2ee:ejb-ref-name" />
+        </xsd:unique>
+        <xsd:unique name="web-app-resource-env-ref-uniqueness">
+            <xsd:selector xpath="j2ee:resource-env-ref" />
+            <xsd:field xpath="j2ee:resource-env-ref-name" />
+        </xsd:unique>
+        <xsd:unique name="web-app-message-destination-ref-uniqueness">
+            <xsd:selector xpath="j2ee:message-destination-ref" />
+            <xsd:field xpath="j2ee:message-destination-ref-name" />
+        </xsd:unique>
+        <xsd:unique name="web-app-res-ref-name-uniqueness">
+            <xsd:selector xpath="j2ee:resource-ref" />
+            <xsd:field xpath="j2ee:res-ref-name" />
+        </xsd:unique>
+        <xsd:unique name="web-app-env-entry-name-uniqueness">
+            <xsd:selector xpath="j2ee:env-entry" />
+            <xsd:field xpath="j2ee:env-entry-name" />
+        </xsd:unique>
+        <xsd:key name="web-app-role-name-key">
+            <xsd:selector xpath="j2ee:security-role" />
+            <xsd:field xpath="j2ee:role-name" />
+        </xsd:key>
+        <xsd:keyref name="web-app-role-name-references" refer="j2ee:web-app-role-name-key">
+            <xsd:selector xpath="j2ee:servlet/j2ee:security-role-ref" />
+            <xsd:field xpath="j2ee:role-link" />
+        </xsd:keyref>
+    </xsd:element>
+    <xsd:complexType name="auth-constraintType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="role-name" type="j2ee:role-nameType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="auth-methodType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="dispatcherType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="FORWARD" />
+                <xsd:enumeration value="INCLUDE" />
+                <xsd:enumeration value="REQUEST" />
+                <xsd:enumeration value="ERROR" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="encodingType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[^\s]+" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="error-codeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:xsdPositiveIntegerType">
+                <xsd:pattern value="\d{3}" />
+                <xsd:attribute name="id" type="xsd:ID" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="error-pageType">
+        <xsd:sequence>
+            <xsd:choice>
+                <xsd:element name="error-code" type="j2ee:error-codeType" />
+                <xsd:element name="exception-type" type="j2ee:fully-qualified-classType"></xsd:element>
+            </xsd:choice>
+            <xsd:element name="location" type="j2ee:war-pathType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="filter-mappingType">
+        <xsd:sequence>
+            <xsd:element name="filter-name" type="j2ee:filter-nameType" />
+            <xsd:choice>
+                <xsd:element name="url-pattern" type="j2ee:url-patternType" />
+                <xsd:element name="servlet-name" type="j2ee:servlet-nameType" />
+            </xsd:choice>
+            <xsd:element name="dispatcher" type="j2ee:dispatcherType" minOccurs="0" maxOccurs="4" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="filter-nameType">
+        <xsd:simpleContent>
+            <xsd:extension base="j2ee:nonEmptyStringType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="filterType">
+        <xsd:sequence>
+            <xsd:group ref="j2ee:descriptionGroup" />
+            <xsd:element name="filter-name" type="j2ee:filter-nameType" />
+            <xsd:element name="filter-class" type="j2ee:fully-qualified-classType"></xsd:element>
+            <xsd:element name="init-param" type="j2ee:param-valueType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="form-login-configType">
+        <xsd:sequence>
+            <xsd:element name="form-login-page" type="j2ee:war-pathType"></xsd:element>
+            <xsd:element name="form-error-page" type="j2ee:war-pathType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="http-methodType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="GET" />
+                <xsd:enumeration value="POST" />
+                <xsd:enumeration value="PUT" />
+                <xsd:enumeration value="DELETE" />
+                <xsd:enumeration value="HEAD" />
+                <xsd:enumeration value="OPTIONS" />
+                <xsd:enumeration value="TRACE" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="locale-encoding-mapping-listType">
+        <xsd:sequence>
+            <xsd:element name="locale-encoding-mapping" type="j2ee:locale-encoding-mappingType" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="locale-encoding-mappingType">
+        <xsd:sequence>
+            <xsd:element name="locale" type="j2ee:localeType" />
+            <xsd:element name="encoding" type="j2ee:encodingType" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:simpleType name="localeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[a-z]{2}(_|-)?([\p{L}\-\p{Nd}]{2})?" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="login-configType">
+        <xsd:sequence>
+            <xsd:element name="auth-method" type="j2ee:auth-methodType" minOccurs="0" />
+            <xsd:element name="realm-name" type="j2ee:string" minOccurs="0"></xsd:element>
+            <xsd:element name="form-login-config" type="j2ee:form-login-configType" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="mime-mappingType">
+        <xsd:sequence>
+            <xsd:element name="extension" type="j2ee:string" />
+            <xsd:element name="mime-type" type="j2ee:mime-typeType" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="mime-typeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:pattern value="[\p{L}\-\p{Nd}]+/[\p{L}\-\p{Nd}\.]+" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="nonEmptyStringType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:minLength value="1" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="security-constraintType">
+        <xsd:sequence>
+            <xsd:element name="display-name" type="j2ee:display-nameType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="web-resource-collection" type="j2ee:web-resource-collectionType" maxOccurs="unbounded" />
+            <xsd:element name="auth-constraint" type="j2ee:auth-constraintType" minOccurs="0" />
+            <xsd:element name="user-data-constraint" type="j2ee:user-data-constraintType" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="servlet-mappingType">
+        <xsd:sequence>
+            <xsd:element name="servlet-name" type="j2ee:servlet-nameType" />
+            <xsd:element name="url-pattern" type="j2ee:url-patternType" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="servlet-nameType">
+        <xsd:simpleContent>
+            <xsd:extension base="j2ee:nonEmptyStringType" />
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="servletType">
+        <xsd:sequence>
+            <xsd:group ref="j2ee:descriptionGroup" />
+            <xsd:element name="servlet-name" type="j2ee:servlet-nameType" />
+            <xsd:choice>
+                <xsd:element name="servlet-class" type="j2ee:fully-qualified-classType"></xsd:element>
+                <xsd:element name="jsp-file" type="j2ee:jsp-fileType" />
+            </xsd:choice>
+            <xsd:element name="init-param" type="j2ee:param-valueType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="load-on-startup" type="j2ee:xsdIntegerType" minOccurs="0"></xsd:element>
+            <xsd:element name="run-as" type="j2ee:run-asType" minOccurs="0" />
+            <xsd:element name="security-role-ref" type="j2ee:security-role-refType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="session-configType">
+        <xsd:sequence>
+            <xsd:element name="session-timeout" type="j2ee:xsdIntegerType" minOccurs="0"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="transport-guaranteeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:enumeration value="NONE" />
+                <xsd:enumeration value="INTEGRAL" />
+                <xsd:enumeration value="CONFIDENTIAL" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="user-data-constraintType">
+        <xsd:sequence>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="transport-guarantee" type="j2ee:transport-guaranteeType" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="war-pathType">
+        <xsd:simpleContent>
+            <xsd:restriction base="j2ee:string">
+                <xsd:pattern value="/.*" />
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="web-app-versionType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="2.4" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="web-appType">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:group ref="j2ee:descriptionGroup" />
+            <xsd:element name="distributable" type="j2ee:emptyType" />
+            <xsd:element name="context-param" type="j2ee:param-valueType"></xsd:element>
+            <xsd:element name="filter" type="j2ee:filterType" />
+            <xsd:element name="filter-mapping" type="j2ee:filter-mappingType" />
+            <xsd:element name="listener" type="j2ee:listenerType" />
+            <xsd:element name="servlet" type="j2ee:servletType" />
+            <xsd:element name="servlet-mapping" type="j2ee:servlet-mappingType" />
+            <xsd:element name="session-config" type="j2ee:session-configType" />
+            <xsd:element name="mime-mapping" type="j2ee:mime-mappingType" />
+            <xsd:element name="welcome-file-list" type="j2ee:welcome-file-listType" />
+            <xsd:element name="error-page" type="j2ee:error-pageType" />
+            <xsd:element name="jsp-config" type="j2ee:jsp-configType" />
+            <xsd:element name="security-constraint" type="j2ee:security-constraintType" />
+            <xsd:element name="login-config" type="j2ee:login-configType" />
+            <xsd:element name="security-role" type="j2ee:security-roleType" />
+            <xsd:group ref="j2ee:jndiEnvironmentRefsGroup" />
+            <xsd:element name="message-destination" type="j2ee:message-destinationType" />
+            <xsd:element name="locale-encoding-mapping-list" type="j2ee:locale-encoding-mapping-listType" />
+        </xsd:choice>
+        <xsd:attribute name="version" type="j2ee:web-app-versionType" use="required" />
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="web-resource-collectionType">
+        <xsd:sequence>
+            <xsd:element name="web-resource-name" type="j2ee:string"></xsd:element>
+            <xsd:element name="description" type="j2ee:descriptionType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="url-pattern" type="j2ee:url-patternType" maxOccurs="unbounded" />
+            <xsd:element name="http-method" type="j2ee:http-methodType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+    <xsd:complexType name="welcome-file-listType">
+        <xsd:sequence>
+            <xsd:element name="welcome-file" type="xsd:string" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:ID" />
+    </xsd:complexType>
+</xsd:schema>
