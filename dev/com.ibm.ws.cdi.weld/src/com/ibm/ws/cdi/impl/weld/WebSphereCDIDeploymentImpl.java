@@ -50,6 +50,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.cdi.liberty.ExtensionMetaData;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
@@ -74,6 +75,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     private Application application;
     private final SimpleServiceRegistry serviceRegistry;
     private Iterable<Metadata<Extension>> extensions;
+    private final Set<Extension> spiExtensions = new HashSet<Extension>();
     private final WebSphereInjectionServicesImpl injectionServices;
     private final CDIRuntime cdiRuntime;
     private final CDIImpl cdi;
@@ -493,6 +495,14 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
             }
             extensions = extensionSet;
 
+            for (Extension spiExtension : spiExtensions) {
+                ExtensionMetaData metaData = new ExtensionMetaData(spiExtension);
+                extensionSet.add(metaData);
+
+                WebSphereBeanDeploymentArchive bda = getBeanDeploymentArchive(spiExtension.getClass());
+                extensionBDAs.put(bda.getId(), bda);
+            }
+
             //Create an ordered list so we will find the extension bdas first in getBeanDeploymentArchiveFromClass
             initializeOrderedBeanDeploymentArchives();
         }
@@ -685,6 +695,11 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     @Override
     public CDI<Object> getCDI() {
         return this.cdi;
+    }
+
+    @Override
+    public void registerSPIExtension(Set<Extension> extensions) {
+        spiExtensions.addAll(extensions);
     }
 
 }

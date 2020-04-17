@@ -63,9 +63,10 @@ import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtensionMetaData;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.injectionengine.InjectionEngine;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -92,6 +93,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     /** Reference for all portal extensions **/
     private final ConcurrentServiceReferenceSet<WebSphereCDIExtension> extensionsSR = new ConcurrentServiceReferenceSet<WebSphereCDIExtension>("extensionService");
 
+    /** Reference for extensions added via SPI **/
+    private final ConcurrentServiceReferenceSet<WebSphereCDIExtensionMetaData> spiExtensionsSR = new ConcurrentServiceReferenceSet<WebSphereCDIExtensionMetaData>("spiExtensionService");
+
     private final AtomicServiceReference<ArtifactContainerFactory> containerFactorySRRef = new AtomicServiceReference<ArtifactContainerFactory>("containerFactory");
     private final AtomicServiceReference<AdaptableModuleFactory> adaptableModuleFactorySRRef = new AtomicServiceReference<AdaptableModuleFactory>("adaptableModuleFactory");
     private final AtomicServiceReference<InjectionEngine> injectionEngineServiceRef = new AtomicServiceReference<InjectionEngine>("injectionEngine");
@@ -116,6 +120,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         ejbEndpointServiceSR.activate(cc);
         classLoadingSRRef.activate(cc);
         extensionsSR.activate(cc);
+        spiExtensionsSR.activate(cc);
         applicationSlot = metaDataSlotServiceSR.getServiceWithException().reserveMetaDataSlot(ApplicationMetaData.class);
         ejbServices.activate(cc);
         securityServices.activate(cc);
@@ -147,6 +152,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         securityServices.deactivate(cc);
         transactionService.deactivate(cc);
         extensionsSR.deactivate(cc);
+        spiExtensionsSR.deactivate(cc);
         containerFactorySRRef.deactivate(cc);
         scheduledExecutorServiceRef.deactivate(cc);
         executorServiceRef.deactivate(cc);
@@ -232,6 +238,20 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         CDIContainerImpl cdiContainer = getCDIContainer();
         if (cdiContainer != null) {
             cdiContainer.removeRuntimeExtensionArchive(reference);
+        }
+    }
+
+    @Reference(name = "spiExtensionService", service = WebSphereCDIExtensionMetaData.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
+    protected void setSPIExtensionService(ServiceReference<WebSphereCDIExtensionMetaData> reference) {
+        spiExtensionsSR.addReference(reference);
+    }
+
+    protected void unsetSPIExtensionService(ServiceReference<WebSphereCDIExtensionMetaData> reference) {
+        spiExtensionsSR.removeReference(reference);
+        //the cdi container has a cache of ExtensionArchives ... remove this extension from that cache
+        CDIContainerImpl cdiContainer = getCDIContainer();
+        if (cdiContainer != null) {
+            cdiContainer.removeRuntimeExtensionArchiveMetaData(reference);
         }
     }
 
@@ -347,6 +367,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public Iterator<ServiceAndServiceReferencePair<WebSphereCDIExtension>> getExtensionServices() {
         return extensionsSR.getServicesWithReferences();
+    }
+
+    @Override
+    public Iterator<ServiceAndServiceReferencePair<WebSphereCDIExtensionMetaData>> getSPIExtensionServices() {
+        return spiExtensionsSR.getServicesWithReferences();
     }
 
     @Override
@@ -531,9 +556,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                                                          Set<String> extraClasses,
                                                          Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
-                                                         boolean extClassesOnly) throws CDIException {
+                                                         boolean extClassesOnly,
+                                                         Set<String> extraExtensionClasses) throws CDIException {
 
-        ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle, extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
+        ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle, extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly,
+                                                                                        extraExtensionClasses);
 
         return extensionArchive;
     }
@@ -613,11 +640,13 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         }
     }
 
-    public boolean isWeldProxy(Class clazz){
+    @Override
+    public boolean isWeldProxy(Class clazz) {
         return CDIUtils.isWeldProxy(clazz);
     }
 
-    public boolean isWeldProxy(Object obj){
+    @Override
+    public boolean isWeldProxy(Object obj) {
         return CDIUtils.isWeldProxy(obj);
     }
 

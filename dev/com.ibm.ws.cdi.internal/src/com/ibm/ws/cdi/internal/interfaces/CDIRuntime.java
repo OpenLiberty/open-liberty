@@ -28,6 +28,7 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.cdi.extension.WebSphereCDIExtension;
+import com.ibm.wsspi.cdi.extension.WebSphereCDIExtensionMetaData;
 import com.ibm.wsspi.injectionengine.InjectionEngine;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 
@@ -54,6 +55,11 @@ public interface CDIRuntime extends CDIService {
      * @return an iterator through all the registered {@link WebSphereCDIExtension} services
      */
     public Iterator<ServiceAndServiceReferencePair<WebSphereCDIExtension>> getExtensionServices();
+
+    /**
+     * @return an iterator through all the registered {@link WebSphereCDIExtensionMetaData} services
+     */
+    public Iterator<ServiceAndServiceReferencePair<WebSphereCDIExtensionMetaData>> getSPIExtensionServices();
 
     /**
      * @return the {@link EjbEndpointService}
@@ -115,7 +121,8 @@ public interface CDIRuntime extends CDIService {
      */
     public ExtensionArchive getExtensionArchiveForBundle(Bundle bundle, Set<String> extra_classes, Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
-                                                         boolean extClassesOnly) throws CDIException;
+                                                         boolean extClassesOnly,
+                                                         Set<String> extensionClassNames) throws CDIException;
 
     /**
      * @return
