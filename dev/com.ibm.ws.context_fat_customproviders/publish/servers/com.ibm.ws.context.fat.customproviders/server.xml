@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2011,2017 IBM Corporation and others.
+    Copyright (c) 2011,2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -9,14 +9,16 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-  <include optional="true" location="${shared.config.dir}/bvtTestPorts.xml"/>
+  <include location="../fatTestPorts.xml"/>
 
   <featureManager>
-    <feature>servlet-3.0</feature>
+    <feature>componenttest-1.0</feature>
     <feature>concurrent-1.0</feature>
-    <feature>contexttest-1.0</feature>
+    <feature>contextproviderinternals-1.0</feature> <!-- exposes product internals to the user feature -->
+    <feature>usr:contexttest-1.0</feature>
     <feature>jndi-1.0</feature>
     <feature>osgiConsole-1.0</feature>
+    <feature>servlet-3.1</feature>
   </featureManager>
 
   <variable name="onError" value="FAIL"/>
@@ -77,5 +79,14 @@
   <contextService id="InfiniteLoopContextSvc3" baseContextRef="InfiniteLoopContextSvc1"/>
 
   <!-- A fake test service that uses ContextService -->
-  <threadfactory id="myThreadFactory" contextServiceRef="BufferContextSvc"/>
+  <test.thread.factory id="myThreadFactory" contextServiceRef="BufferContextSvc"/>
+
+  <javaPermission codeBase="${server.config.dir}/dropins/contextbvt.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission codeBase="${server.config.dir}/dropins/contextbvt.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission codeBase="${server.config.dir}/dropins/contextbvt.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+  <javaPermission codeBase="${server.config.dir}/dropins/contextbvt.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+  <javaPermission codeBase="${server.config.dir}/dropins/contextbvt.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission codeBase="${server.config.dir}/dropins/contextbvt.war" className="org.osgi.framework.AdminPermission" name="*" actions="context"/>
+  <javaPermission codeBase="${server.config.dir}/dropins/contextbvt.war" className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+
 </server>

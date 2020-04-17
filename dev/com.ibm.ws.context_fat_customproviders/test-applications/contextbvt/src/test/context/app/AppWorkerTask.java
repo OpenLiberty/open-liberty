@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2017 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package test.context.app;
 
 import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 
 import javax.enterprise.concurrent.ContextService;
@@ -32,18 +34,20 @@ public class AppWorkerTask implements AppTask, AppWork, Serializable {
     // get the value for each of the parameters from the map service
     @Override
     public Object doTask(Object... params) throws Exception {
-        String[] results = new String[params.length];
-        @SuppressWarnings("rawtypes")
-        ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
-        @SuppressWarnings("unchecked")
-        Map<String, String> mapSvc = bundleContext.getService(mapSvcRef);
-        try {
-            for (int i = 0; i < params.length; i++)
-                results[i] = mapSvc.get(params[i]);
-        } finally {
-            bundleContext.ungetService(mapSvcRef);
-        }
-        return results.length == 1 ? results[0] : results;
+        return AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+            String[] results = new String[params.length];
+            @SuppressWarnings("rawtypes")
+            ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
+            @SuppressWarnings("unchecked")
+            Map<String, String> mapSvc = bundleContext.getService(mapSvcRef);
+            try {
+                for (int i = 0; i < params.length; i++)
+                    results[i] = mapSvc.get(params[i]);
+            } finally {
+                bundleContext.ungetService(mapSvcRef);
+            }
+            return results.length == 1 ? results[0] : results;
+        });
     }
 
     // get the execution properties for the first parameter (which must be a contextual proxy)

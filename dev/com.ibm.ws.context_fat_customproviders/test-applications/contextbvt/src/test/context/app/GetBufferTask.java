@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2017 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -34,14 +36,16 @@ public class GetBufferTask implements Callable<String>, Runnable, InvocationHand
 
     @Override
     public String call() throws Exception {
-        BundleContext bundleContext = FrameworkUtil.getBundle(GetBufferTask.class.getClassLoader().getClass()).getBundleContext();
-        ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
-        final Appendable bufferSvc = bundleContext.getService(bufferSvcRef);
-        try {
-            return bufferSvc.toString();
-        } finally {
-            bundleContext.ungetService(bufferSvcRef);
-        }
+        return AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> {
+            BundleContext bundleContext = FrameworkUtil.getBundle(GetBufferTask.class.getClassLoader().getClass()).getBundleContext();
+            ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
+            final Appendable bufferSvc = bundleContext.getService(bufferSvcRef);
+            try {
+                return bufferSvc.toString();
+            } finally {
+                bundleContext.ungetService(bufferSvcRef);
+            }
+        });
     }
 
     /** {@inheritDoc} */

@@ -15,13 +15,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,11 +51,9 @@ import javax.enterprise.concurrent.ContextService;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.annotation.WebServlet;
 
+import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -66,8 +64,12 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextDeserializer;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.app.FATServlet;
+
 @SuppressWarnings("serial")
-public class ContextServiceTestServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/ContextServiceTestServlet")
+public class ContextServiceTestServlet extends FATServlet {
     TraceComponent tc = Tr.register(ContextServiceTestServlet.class);
 
     static final BundleContext bundleContext = FrameworkUtil.getBundle(ContextServiceTestServlet.class.getClassLoader().getClass()).getBundleContext();
@@ -79,35 +81,16 @@ public class ContextServiceTestServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        unmanagedExecutor.shutdownNow();
+        AccessController.doPrivileged((PrivilegedAction<?>) () -> unmanagedExecutor.shutdownNow());
         super.destroy();
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
-        PrintWriter out = response.getWriter();
-        out.println("Starting " + test + "<br>");
-        Tr.entry(this, tc, test);
-        try {
-            getClass().getMethod(test, HttpServletRequest.class, PrintWriter.class).invoke(this, request, response.getWriter());
-            out.println(test + " COMPLETED SUCCESSFULLY");
-            Tr.exit(this, tc, test);
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            Tr.exit(this, tc, test, x);
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-        }
     }
 
     /**
      * Test that regardless of whether context is specified, if the DEFAULT_CONTEXT=ALL_CONTEXT_TYPES execution property is specified,
      * then default context is applied to the thread.
      */
-    public void testApplyDefaultContextForAllContextTypes(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testApplyDefaultContextForAllContextTypes() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
 
         @SuppressWarnings("rawtypes")
@@ -176,7 +159,8 @@ public class ContextServiceTestServlet extends HttpServlet {
      * Test that when context isn't specified, if the DEFAULT_CONTEXT=UNCONFIGURED_CONTEXT_TYPES execution property is specified,
      * then default context is applied to the thread.
      */
-    public void testApplyDefaultContextForUnconfiguredContextTypes(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testApplyDefaultContextForUnconfiguredContextTypes() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
 
         @SuppressWarnings("rawtypes")
@@ -243,7 +227,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test thread context that we captured from a service component activate method.
      */
-    public void testCaptureContextOfServiceComponent(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testCaptureContextOfServiceComponent() throws Exception {
         ServiceReference<Executor> svcRef = bundleContext.getServiceReferences(Executor.class, "(owner=myThreadFactory)").iterator().next();
         Executor contextualExecutor = bundleContext.getService(svcRef);
         try {
@@ -280,7 +265,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test classloader context
      */
-    public void testClassloaderContext(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testClassloaderContext() throws Exception {
         final String className = AppTask.class.getName();
 
         final Callable<Class<?>> loadClass = new Callable<Class<?>>() {
@@ -301,8 +287,7 @@ public class ContextServiceTestServlet extends HttpServlet {
         @SuppressWarnings("unchecked")
         Callable<Class<?>> contextualLoadClass = contextSvc.createContextualProxy(loadClass, Callable.class);
 
-        Map<String, String> xpropsSkipClassloaderContext = Collections.singletonMap
-                        (WSContextService.SKIP_CONTEXT_PROVIDERS, "com.ibm.ws.classloader.context.provider");
+        Map<String, String> xpropsSkipClassloaderContext = Collections.singletonMap(WSContextService.SKIP_CONTEXT_PROVIDERS, "com.ibm.ws.classloader.context.provider");
         @SuppressWarnings("unchecked")
         Callable<Class<?>> skipContextLoadClass = mapContextSvc.createContextualProxy(loadClass, xpropsSkipClassloaderContext, Callable.class);
 
@@ -337,7 +322,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test context propagation of the "map" context
      */
-    public void testContextSnapshot(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testContextSnapshot() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
         ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
@@ -381,7 +367,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Contextualize a task interface defined by the application.
      */
-    public void testContextualizeAppDefinedClass(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testContextualizeAppDefinedClass() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
         ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
@@ -436,7 +423,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Verify that the contextualMethods setting properly controls which methods are invoked with context.
      */
-    public void testContextualMethods(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testContextualMethods() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
         ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
@@ -502,7 +490,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test capture and propagation of a "numeration" context with a configured attribute (radix=2)
      */
-    public void testContextWithConfiguredAttribute(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testContextWithConfiguredAttribute() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<?> numSvcRef = bundleContext.getServiceReference("test.numeration.NumerationService");
         final Object numSvc = bundleContext.getService(numSvcRef);
@@ -547,7 +536,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test default classloader context
      */
-    public void testDefaultClassloaderContext(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testDefaultClassloaderContext() throws Exception {
         final String className = AppTask.class.getName();
 
         final Callable<Class<?>> loadClass = new Callable<Class<?>>() {
@@ -585,7 +575,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test default Java EE metadata context
      */
-    public void testDefaultJEEMetadataContext(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testDefaultJEEMetadataContext() throws Exception {
         final Callable<?> javaCompLookup = new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -617,7 +608,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Try to use a context that has configuration errors.
      */
-    public void testErrorsInConfig(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testErrorsInConfig() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
         ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
@@ -688,7 +680,8 @@ public class ContextServiceTestServlet extends HttpServlet {
      * Use the contextService.getContext interface to capture serializable context.
      * Serialize it and deserialize it, and make sure it works.
      */
-    public void testGetContext(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testGetContext() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
         final Appendable bufferSvc = bundleContext.getService(bufferSvcRef);
@@ -741,7 +734,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test ContextService.getExecutionProperties
      */
-    public void testGetExecutionProperties(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testGetExecutionProperties() throws Exception {
         Map<String, String> execProps;
 
         // null contextual proxy
@@ -821,7 +815,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Confirm that we don't hang when baseContextRef causes an infinite loop of dependencies
      */
-    public void testInfiniteBaseContext(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testInfiniteBaseContext() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         try {
             ContextService contextSvc = (ContextService) new InitialContext().lookup("concurrent/InfiniteLoopContextSvc1");
@@ -829,7 +824,8 @@ public class ContextServiceTestServlet extends HttpServlet {
             // Take a snapshot of context
             Runnable runnable = contextSvc.createContextualProxy(new Runnable() {
                 @Override
-                public void run() {}
+                public void run() {
+                }
             }, Runnable.class);
 
             runnable.run();
@@ -845,7 +841,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Contextualize a task to run on an unmanaged thread
      */
-    public void testJEEMetadataContext(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testJEEMetadataContext() throws Exception {
         final Callable<?> javaCompLookup = new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -865,8 +862,9 @@ public class ContextServiceTestServlet extends HttpServlet {
             throw new Exception("lookup from contextual proxy returned null");
 
         // Skip jeeMetadataContext
-        Map<String, String> xpropsSkipJeeMetadataContext = Collections.singletonMap
-                        (WSContextService.SKIP_CONTEXT_PROVIDERS, "does.not.exist,com.ibm.ws.javaee.metadata.context.provider,com.ibm.security.thread.zos.context.provider");
+        Map<String, String> xpropsSkipJeeMetadataContext = Collections
+                        .singletonMap(WSContextService.SKIP_CONTEXT_PROVIDERS,
+                                      "does.not.exist,com.ibm.ws.javaee.metadata.context.provider,com.ibm.security.thread.zos.context.provider");
         Callable<?> contextualizedJavaCompLookup = mapContextSvc.createContextualProxy(javaCompLookup, xpropsSkipJeeMetadataContext, Callable.class);
         // should not interfere with current thread
         result = contextualizedJavaCompLookup.call();
@@ -886,7 +884,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test context propagation of different "numeration" contexts in combination
      */
-    public void testMultipleContextServices(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testMultipleContextServices() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         // Get the numeration service
         ServiceReference<?> numSvcRef = bundleContext.getServiceReference("test.numeration.NumerationService");
@@ -985,7 +984,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Tests of contextual proxy for multiple interfaces.
      */
-    public void testMultipleInterfaces(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testMultipleInterfaces() throws Exception {
         // no interfaces
         try {
             Object contextualProxy = mapContextSvc.createContextualProxy(new AppWorkerTask());
@@ -1115,7 +1115,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Test that when context isn't specified, it should neither be propagated nor removed from the thread.
      */
-    public void testNoContext(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testNoContext() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
         ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
@@ -1173,7 +1174,8 @@ public class ContextServiceTestServlet extends HttpServlet {
      * "map" context and "numeration" context being propagated to the thread first
      * and removed after.
      */
-    public void testOrderOfContextPropagation(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testOrderOfContextPropagation() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
         final Appendable bufferSvc = bundleContext.getService(bufferSvcRef);
@@ -1286,7 +1288,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Programmatically specify additional thread context to capture.
      */
-    public void testProgrammaticallyAddContextConfiguration(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testProgrammaticallyAddContextConfiguration() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
 
         @SuppressWarnings("rawtypes")
@@ -1421,7 +1424,9 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Attempt to propagate invalidly configured context that results in a RejectedExecutionException
      */
-    public void testRejectedExecutionException(HttpServletRequest request, PrintWriter out) throws Exception {
+    @ExpectedFFDC(value = "java.util.concurrent.RejectedExecutionException")
+    @Test
+    public void testRejectedExecutionException() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         try {
             ContextService contextSvc = (ContextService) new InitialContext().lookup("concurrent/NumContextSvc0");
@@ -1502,7 +1507,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Submit contextual tasks to a thread pool
      */
-    public void testRunOnThreadPool(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testRunOnThreadPool() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
         ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
@@ -1572,7 +1578,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Serialize a contextual task. Then deserialize it and use it.
      */
-    public void testSerialization(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testSerialization() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
         final Appendable bufferSvc = bundleContext.getService(bufferSvcRef);
@@ -1627,7 +1634,8 @@ public class ContextServiceTestServlet extends HttpServlet {
      * Verify that ThreadContextManager instance gets returned before any other WSContextService.
      * Verify that DefaultContextService gets returned before any configured ContextService.
      */
-    public void testServiceRanking(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testServiceRanking() throws Exception {
         ServiceReference<WSContextService> ref1 = bundleContext.getServiceReference(WSContextService.class);
         WSContextService svc1 = bundleContext.getService(ref1);
         try {
@@ -1653,7 +1661,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Error path tests for contextual proxy for a single interface.
      */
-    public void testSingleInterface(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testSingleInterface() throws Exception {
         // null instance
         try {
             Runnable contextualProxy = mapContextSvc.createContextualProxy(null, Runnable.class);
@@ -1700,7 +1709,8 @@ public class ContextServiceTestServlet extends HttpServlet {
      * Use a fake ThreadFactory that relies on the context service,
      * and allows for us to test serialization/deserialization of context.
      */
-    public void testThreadFactory(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testThreadFactory() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
         ServiceReference<Map> mapSvcRef = bundleContext.getServiceReference(Map.class);
@@ -1763,7 +1773,8 @@ public class ContextServiceTestServlet extends HttpServlet {
     /**
      * Submit a task that implements WSIdentifiable and verify that the owner and taskName are honored.
      */
-    public void testWSIdentifiable(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testWSIdentifiable() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
         final Appendable bufferSvc = bundleContext.getService(bufferSvcRef);
