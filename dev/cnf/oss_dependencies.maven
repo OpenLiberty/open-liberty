@@ -464,11 +464,11 @@ org.osgi:org.osgi.service.subsystem:1.1.0
 org.osgi:org.osgi.util.function:1.1.0
 org.osgi:org.osgi.util.promise:1.1.1
 org.osgi:osgi.core:7.0.0
-org.ow2.asm:asm-analysis:7.3.1
-org.ow2.asm:asm-commons:7.3.1
-org.ow2.asm:asm-tree:7.3.1
-org.ow2.asm:asm-util:7.3.1
-org.ow2.asm:asm:7.3.1
+org.ow2.asm:asm-analysis:8.0.1
+org.ow2.asm:asm-commons:8.0.1
+org.ow2.asm:asm-tree:8.0.1
+org.ow2.asm:asm-util:8.0.1
+org.ow2.asm:asm:8.0.1
 org.postgresql:postgresql:42.2.5
 org.powermock:powermock-core:1.5
 org.quartz-scheduler:quartz:2.2.1

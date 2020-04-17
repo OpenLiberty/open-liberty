@@ -144,7 +144,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
          * annotations.
          */
         public MethodVisitorImpl_Info() {
-            super(Opcodes.ASM7);
+            super(Opcodes.ASM8);
 
             this.methodInfo = null;
             this.methodAnnotations = null;
@@ -284,7 +284,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
          * to a field, and has a null method and null annotations.
          */
         public FieldVisitorImpl_Info() {
-            super(Opcodes.ASM7);
+            super(Opcodes.ASM8);
 
             fieldInfo = null;
             annotations = null;
@@ -356,7 +356,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
     //
 
     public ClassVisitorImpl_Info(InfoStoreImpl infoStore, String externalName) {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
 
         String methodName = "<init>";
 
