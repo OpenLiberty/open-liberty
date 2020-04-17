@@ -14,7 +14,7 @@ public class LibertyAuthorizationInterceptor implements ServerInterceptor {
 			ServerCallHandler<ReqT, RespT> next) {
 
 		String key = headers.get(GrpcServletUtils.LIBERTY_AUTH_KEY);
-		boolean isAuthorized = GrpcServletUtils.authMap.get(key);
+		boolean isAuthorized = GrpcServletUtils.authMap.remove(key);
 		if (!isAuthorized) {
 			call.close(Status.UNAUTHENTICATED.withDescription("Unauthorized"), headers);
 			// return no-op listener

@@ -127,9 +127,11 @@ public class GrpcServletUtils {
 					return true;
 				}
 			} catch (UnauthenticatedException | AccessDeniedException ex2) {
+				// TODO: catch other exceptions
 			}
 
 		} catch (AccessDeniedException e) {
+			// TODO: catch other exceptions
 		}
 		return false;
 	}
