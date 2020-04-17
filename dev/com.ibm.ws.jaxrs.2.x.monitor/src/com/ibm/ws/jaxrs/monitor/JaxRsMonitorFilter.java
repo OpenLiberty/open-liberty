@@ -91,7 +91,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     	
     	long elapsedTime = 0;
         //Calculate the response time for the resource method.
-        Long startTime = (long)reqCtx.getProperty(START_TIME);
+        Long startTime = (Long)reqCtx.getProperty(START_TIME);
         if (startTime!=null) {
             elapsedTime = System.nanoTime() - startTime.longValue();
         }
