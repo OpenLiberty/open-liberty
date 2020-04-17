@@ -55,11 +55,11 @@ public class IORTestServlet extends FATServlet {
     }
 
     @Test
-    public void testEjbIorHasButOneProfile() throws Exception {
+    public void testEjbIorHasExactlyOneProfile() throws Exception {
         TestRemote ejb = IiopLogic.lookupEjb(orb);
         final int numProfiles = IiopLogic.getNumProfiles((Stub) ejb, orb);
         System.out.printf("### IOR retrieved, with %d profile(s).%n", numProfiles);
-        Assert.assertEquals(numProfiles, 1);
+        Assert.assertEquals("There should be only one profile in the IOR", 1, numProfiles);
     }
 
     /**
