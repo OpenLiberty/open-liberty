@@ -26,6 +26,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -222,15 +223,21 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
             throw new IOException("Stream is closed");
         }
-        // There's a timing window where the server could be working on a response, it gets interrupted,
+        // There's an H2 timing window where the server could be working on a response, it gets interrupted,
         // the frame that comes in has an error, and the connection gets shutdown and all resources
-        // are cleaned up.  Then we come back here after the interruption. Handle this case.
-        if (null == this.isc.getResponse()) {
+        // including the response are cleaned up.  Then we come back here after the interruption. Handle this case.
+
+        String upgraded = null;
+        if (null != vc) {
+            upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
+        }
+        if ((upgraded != null) && (upgraded.compareToIgnoreCase("true") == 0) &&
+            (null == this.isc.getResponse())) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "validate response is cleaned up hc: " + this.hashCode() + " details: " + this);
             }
 
-            throw new IOException("Response already cleared");
+            throw new IOException("H2 Response already cleared on error condition");
 
         }
 
