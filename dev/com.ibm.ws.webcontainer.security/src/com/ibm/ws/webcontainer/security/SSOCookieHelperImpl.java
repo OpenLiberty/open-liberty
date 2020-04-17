@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -547,9 +548,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             return;
         }
 
-        SubjectHelper subjectHelper = new SubjectHelper();
-
-        if (subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie) == null) {
+        if (!isDisableLtpaCookie(subject)) {
             addLtpaSsoCookiesToResponse(subject, req, resp);
         }
 
@@ -562,6 +561,15 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
     }
 
+    private boolean isDisableLtpaCookie(Subject subject) {
+        SubjectHelper subjectHelper = new SubjectHelper();
+        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie);
+        if (hashtable != null && (boolean) hashtable.get(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE))
+            return true;
+        else
+            return false;
+    }
+
     /**
      * @param subject
      * @param req
@@ -569,24 +577,20 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      */
     private void addLtpaSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         SingleSignonToken ssoToken = getDefaultSSOTokenFromSubject(subject);
-        if (ssoToken == null) {
-            return;
-        }
+        if (ssoToken != null) {
+            byte[] ssoTokenBytes = ssoToken.getBytes();
+            if (ssoTokenBytes != null) {
+                ByteArray cookieBytes = new ByteArray(ssoTokenBytes);
+                String cookieByteString = cookieByteStringCache.get(cookieBytes);
+                if (cookieByteString == null) {
+                    cookieByteString = StringUtil.toString(Base64Coder.base64Encode(ssoTokenBytes));
+                    updateCookieCache(cookieBytes, cookieByteString);
+                }
 
-        byte[] ssoTokenBytes = ssoToken.getBytes();
-        if (ssoTokenBytes == null) {
-            return;
+                Cookie ssoCookie = createCookie(req, cookieByteString);
+                resp.addCookie(ssoCookie);
+            }
         }
-
-        ByteArray cookieBytes = new ByteArray(ssoTokenBytes);
-        String cookieByteString = cookieByteStringCache.get(cookieBytes);
-        if (cookieByteString == null) {
-            cookieByteString = StringUtil.toString(Base64Coder.base64Encode(ssoTokenBytes));
-            updateCookieCache(cookieBytes, cookieByteString);
-        }
-
-        Cookie ssoCookie = createCookie(req, cookieByteString);
-        resp.addCookie(ssoCookie);
     }
 
     /** {@inheritDoc} */

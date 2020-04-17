@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,10 @@ package com.ibm.ws.security.authentication.internal.cache.keyproviders;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Hashtable;
 
 import javax.security.auth.Subject;
 
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
 import com.ibm.ws.security.authentication.internal.SSOTokenHelper;
@@ -28,7 +26,6 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  * Provides the SSO token bytes as the cache key.
  */
 public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
-    private static final String[] disableSsoLtpaCookie = new String[] { AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE };
 
     /** {@inheritDoc} */
     @Override
@@ -39,29 +36,20 @@ public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
     private String getSingleSignonTokenBytes(final Subject subject) {
         String base64EncodedSSOTokenBytes = null;
 
-        if (isDisableLtpaSSOCache(subject))
-            return null;
-
-        SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
-
-            @Override
-            public SingleSignonToken run() {
-                return SSOTokenHelper.getSSOToken(subject);
-            }
-        });
-        if (ssoToken != null) {
-            base64EncodedSSOTokenBytes = Base64Coder.toString(Base64Coder.base64Encode(ssoToken.getBytes()));
-        }
-        return base64EncodedSSOTokenBytes;
-    }
-
-    private boolean isDisableLtpaSSOCache(final Subject subject) {
         SubjectHelper subjectHelper = new SubjectHelper();
-        //No need to check for value true or false.
-        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie);
-        if (hashtable != null)
-            return true;
-        else
-            return false;
+
+        if (!subjectHelper.isDisableLtpaCookie(subject)) {
+            SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
+                @Override
+                public SingleSignonToken run() {
+                    return SSOTokenHelper.getSSOToken(subject);
+                }
+            });
+            if (ssoToken != null) {
+                base64EncodedSSOTokenBytes = Base64Coder.toString(Base64Coder.base64Encode(ssoToken.getBytes()));
+            }
+        }
+
+        return base64EncodedSSOTokenBytes;
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,11 @@ public class SubjectHelper {
     /**
      * This key maps to a boolean property in a Subject's private credentials
      * hashtable. When the property is true, the authentication service will
-     * not put a LTPA cookie in the response and will not use the LTPA SSO cache key to cache the subject.
+     * not put a LTPA cookie in the response and will not use the SSO LTPA cache key to cache the subject.
      */
+    private static final String INTERNAL_DISABLE_SSO_LTPA_COOKIE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cookie";
+
+    private static final String[] disableSsoLtpaCookie = new String[] { INTERNAL_DISABLE_SSO_LTPA_COOKIE };
 
     /**
      * Check whether the subject is un-authenticated or not.
@@ -404,20 +407,13 @@ public class SubjectHelper {
         return null;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static String setSystemProperty(final String propName, final String propValue) {
-
-        String savedPropValue = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            @Override
-            public String run() {
-                String oldValue = System.getProperty(propName);
-                System.setProperty(propName, propValue);
-                return oldValue;
-            }
-        });
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, propName + " property previous: " + ((savedPropValue != null) ? savedPropValue : "<null>") + " and now: " + propValue);
-
-        return savedPropValue;
+    public boolean isDisableLtpaCookie(final Subject subject) {
+        SubjectHelper subjectHelper = new SubjectHelper();
+        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie);
+        if (hashtable != null && (boolean) hashtable.get(INTERNAL_DISABLE_SSO_LTPA_COOKIE))
+            return true;
+        else
+            return false;
     }
+
 }
