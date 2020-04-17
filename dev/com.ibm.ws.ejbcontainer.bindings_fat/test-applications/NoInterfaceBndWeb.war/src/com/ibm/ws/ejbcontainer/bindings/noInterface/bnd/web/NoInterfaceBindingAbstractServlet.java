@@ -127,7 +127,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
             bean = (ComplexNoInterfaceBean) ivContext.lookup("ejblocal:" + beanInterface);
             fail("Ambiguous No-Interface short default found");
         } catch (NamingException nex) {
-            // TODO: Enable when AmbiguousEJBReferenceException support is added
+            // TODO: Enable when AmbiguousEJBReferenceException support is added (#11441)
             // Throwable cause = nex.getCause();
             // if (cause instanceof AmbiguousEJBReferenceException) {
             // svLogger.info("lookup of short default failed as expected : " +
@@ -217,7 +217,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      *
      * For configurations with multiple interfaces, all interfaces are tested. <p>
      **/
-    //@Test
+    @Test
     public void testNoInterfaceComponentIdBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
@@ -403,7 +403,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      *
      * For configurations with multiple interfaces, all interfaces are tested. <p>
      **/
-    //@Test
+    @Test
     public void testNoInterfaceCustomBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
