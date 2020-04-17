@@ -52,7 +52,7 @@ public class URAPIs_ADLDAP_SSLTest {
     /** Test rule for testing for expected exceptions. */
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    private static InMemoryADLDAPServer ds;
+    private static InMemoryADLDAPServer ldapServer;
 
     /**
      * Setup the test case.
@@ -76,8 +76,8 @@ public class URAPIs_ADLDAP_SSLTest {
             }
         } finally {
             try {
-                if (ds != null) {
-                    ds.shutDown(true);
+                if (ldapServer != null) {
+                    ldapServer.shutDown(true);
                 }
             } catch (Exception e) {
                 Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
@@ -107,7 +107,7 @@ public class URAPIs_ADLDAP_SSLTest {
         ServerConfiguration serverConfig = server.getServerConfiguration();
         LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort("LDAPS")));
+        ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
         ldap.setBindDN(InMemoryADLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryADLDAPServer.getBindPassword());
         server.updateServerConfiguration(serverConfig);
@@ -138,7 +138,7 @@ public class URAPIs_ADLDAP_SSLTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupLdapServer() throws Exception {
-        ds = new InMemoryADLDAPServer();
+        ldapServer = new InMemoryADLDAPServer();
     }
 
     /**
