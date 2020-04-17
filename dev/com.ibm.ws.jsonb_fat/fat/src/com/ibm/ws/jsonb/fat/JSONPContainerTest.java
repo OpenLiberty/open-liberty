@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,6 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -49,6 +52,8 @@ public class JSONPContainerTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(EE9_FEATURES)
+    //TODO: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     public void testJsonpProviderAvailableJohnzon() throws Exception {
         runTest(server, appName + "/JSONPTestServlet", "testJsonpProviderAvailable&JsonpProvider=" + FATSuite.PROVIDER_JOHNZON_JSONP);
     }

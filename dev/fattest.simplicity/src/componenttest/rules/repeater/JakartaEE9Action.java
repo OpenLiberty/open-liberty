@@ -49,7 +49,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     static final String[] EE9_FEATURES_ARRAY = { "jakartaee-9.0", "webProfile-9.0", "jakartaeeClient-9.0", "componenttest-2.0",
                                                  "beanValidation-3.0", "cdi-3.0", "concurrent-2.0",
                                                  "el-4.0", "javaMail-2.0", "jaxrs-3.0", "jaxrsClient-3.0",
-                                                 "jpa-3.0", "jsonp-2.0", "jsonb-2.0",
+                                                 "jpa-3.0", "jsonp-2.0", "jsonb-2.0", "jsonpContainer-2.0", "jsonbContainer-2.0",
                                                  "jsf-3.0", "jsp-3.0", "servlet-5.0"
     };
 
