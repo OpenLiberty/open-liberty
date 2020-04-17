@@ -15,7 +15,7 @@ WS-TraceGroup: WSSECURITY
 
 cxfVersion=2.6.2
 
-Bundle-Name: com.ibm.ws.org.apache.cxf.ws.security
+Bundle-Name: com.ibm.ws.org.apache.cxf.ws.security.2.6.2
 Bundle-Description: cxf ws security, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.ws.security.2.6.2
 Bundle-ActivationPolicy: lazy

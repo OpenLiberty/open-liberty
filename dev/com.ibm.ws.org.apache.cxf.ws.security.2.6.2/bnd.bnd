@@ -10,11 +10,8 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-globalize: false
-instrument.ffdc: true
-
 cxfVersion=2.6.2
-
+    
 -includeresource: \
     @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \
     @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
@@ -29,6 +26,18 @@ cxfVersion=2.6.2
     org/apache/cxf/ws/security/wss4j/Messages.properties=resources/org/apache/cxf/ws/security/wss4j/Messages.nlsprops, \
     org/apache/cxf=${bin}/org/apache/cxf
 
+globalize: false
+
+instrument.ffdc: true
+
+instrument.classesIncludes: \
+    org/apache/cxf/binding/xml/interceptor/XMLFaultInInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/AbstractUsernameTokenAuthenticatingInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/AbstractWSS4JInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/PolicyBasedWSS4JInInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/PolicyBasedWSS4JOutInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/WSS4JInInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/WSS4JOutInterceptor.class
 
 -buildpath: \
     org.apache.cxf:cxf-rt-ws-security;strategy=exact;version=${cxfVersion}, \
@@ -41,3 +50,4 @@ cxfVersion=2.6.2
     com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2, \
     com.ibm.ws.org.apache.neethi.3.0.2, \
     com.ibm.ws.net.sf.ehcache.core.2.5.2
+
