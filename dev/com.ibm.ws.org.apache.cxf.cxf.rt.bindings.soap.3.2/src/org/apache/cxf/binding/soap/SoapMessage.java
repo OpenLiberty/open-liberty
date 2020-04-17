@@ -37,7 +37,10 @@ public class SoapMessage extends MessageImpl {
     private static final long serialVersionUID = 6310906412722265578L;
     private SoapVersion version;
 
+    // Liberty Change
     private static final Logger LOG = LogUtils.getL7dLogger(SoapMessage.class);
+    // End Liberty Change
+    
     public SoapMessage(Message message) {
         super(message);
         setVersion(Soap11.getInstance());

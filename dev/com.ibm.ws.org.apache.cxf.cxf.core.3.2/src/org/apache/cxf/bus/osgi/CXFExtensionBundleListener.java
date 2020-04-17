@@ -62,13 +62,14 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                 || bundle.getState() == Bundle.ACTIVE
                 || bundle.getState() == Bundle.STOPPING)
                 && bundle.getBundleId() != context.getBundle().getBundleId()) {
+            	// Start Liberty Change
                 String bundleName = bundle.toString();
                 if(!bundleName.startsWith("com.ibm.ws.org.apache.cxf")) {
                     // don't register non-cxf bundles
                 }       
                 else
                     register(bundle);
-                    
+                //    
             }
         }
     }
@@ -160,6 +161,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
             Throwable origExc = null;
             try {
                 try { 
+                	//Start Liberty Change
                     c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                         @Override
                         public Class<?> run() throws ClassNotFoundException {
@@ -173,6 +175,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                         throw e;
                     }
                 }
+                // End Liberty Change
 
             } catch (Throwable e) {
                 origExc = e;
