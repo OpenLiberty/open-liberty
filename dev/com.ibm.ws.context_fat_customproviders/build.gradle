@@ -1,0 +1,41 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+task copyFeatureBundle_buffer(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'buffer.jar'
+}
+
+task copyFeatureBundle_map(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'map.jar'
+}
+
+task copyFeatureBundle_numeration(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'numeration.jar'
+}
+
+task copyFeatureBundle_threadfactory(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'threadfactory.jar'
+}
+
+autoFVT {
+  dependsOn copyFeatureBundle_buffer
+  dependsOn copyFeatureBundle_map
+  dependsOn copyFeatureBundle_numeration
+  dependsOn copyFeatureBundle_threadfactory
+}
