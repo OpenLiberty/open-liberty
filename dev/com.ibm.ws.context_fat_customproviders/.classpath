@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/context/src"/>
 	<classpathentry kind="src" path="test-applications/contextbvt/src"/>
 	<classpathentry kind="src" path="test-bundles/buffer/src"/>
 	<classpathentry kind="src" path="test-bundles/map/src"/>
