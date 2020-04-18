@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -24,10 +25,12 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
 
-    // Using the RepeatTests @ClassRule will cause all tests to be run twice.
-    // First without any modifications, then again with all features upgraded to their EE8 equivalents.
+    // Using the RepeatTests @ClassRule will cause all tests to be run three times.
+    // First without any modifications, then again with all features upgraded to their EE8 equivalents,
+    // and finally again with all features _and applications_ upgrade to Jakarta EE 9 equivalents
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .andWith(new JakartaEE9Action());
 
 }

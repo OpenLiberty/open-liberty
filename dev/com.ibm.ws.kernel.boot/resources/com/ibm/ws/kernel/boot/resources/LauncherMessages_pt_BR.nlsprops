@@ -502,7 +502,7 @@ error.create.unknownJavaLevel.useraction=Assegure-se de utilizar um JDK suportad
 
 error.create.java8serverenv=CWWKE0103E: N\u00e3o \u00e9 poss\u00edvel criar um arquivo server.env no seguinte local: {0}
 error.create.java8serverenv.explanation=O processo que est\u00e1 tentando criar o servidor n\u00e3o p\u00f4de gerar um arquivo server.env no local especificado.  Esse arquivo fornece os argumentos JVM necess\u00e1rios para o funcionamento adequado do servidor.
-error.create.java8serverenv.useraction=Assegure-se de ter acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e que o espa\u00e7o em disco seja suficiente.  Al\u00e9m disso, \u00e9 poss\u00edvel criar manualmente o arquivo server.env com o seguinte valor: WLP_SKIP_MAXPERMSIZE=true.  Deve-se assegurar que o processo do servidor tenha acesso de leitura a esse arquivo.
+error.create.java8serverenv.useraction=Assegure-se de ter acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e que o espa\u00e7o em disco seja suficiente. Deve-se assegurar que o processo do servidor tenha acesso de leitura a esse arquivo.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Este produto \u00e9 beta e n\u00e3o pode ser usado na produ\u00e7\u00e3o. Os termos de licen\u00e7a integrais podem ser visualizados aqui: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Este produto \u00e9 beta e deve ser usado de acordo com os termos da licen\u00e7a beta.

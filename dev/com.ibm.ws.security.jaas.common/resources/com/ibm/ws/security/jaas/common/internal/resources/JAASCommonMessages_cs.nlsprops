@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Ov\u011b\u0159te, \u017ee v\u0
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Polo\u017eku jaasLoginContext {0} nelze ur\u010dit jako polo\u017eku konfigurace JAAS v souboru server.xml, souboru jaas.conf nebo v obou souborech.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=B\u011bhov\u00e9 prost\u0159ed\u00ed pou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed konfiguraci Krb5LoginModule a konfiguraci SPNEGO v souboru server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Odeberte polo\u017eku jaasLoginContext ze souboru server.xml nebo nechte b\u011bhov\u00e9 prost\u0159ed\u00ed pou\u017e\u00edt v\u00fdchoz\u00ed polo\u017eku.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul JAAS {0} nen\u00ed na\u010dten, proto\u017ee prvek konfigurace {1} ur\u010duje atributy libraryRef i classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Je t\u0159eba ur\u010dit pouze jeden atribut, libraryRef nebo classProviderRef, abyste ozna\u010dili artefakt, ze kter\u00e9ho m\u00e1 b\u00fdt na\u010dten vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Odeberte bu\u010f atribut libraryRef, nebo atribut classProviderRef, podle toho, kter\u00fd neobsahuje t\u0159\u00eddu vlastn\u00edho p\u0159ihla\u0161ovac\u00edho modulu JAAS.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul JAAS {0} nebyl nalezen, proto\u017ee prvek konfigurace {1} nespecifikuje atribut libraryRef nebo classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Je t\u0159eba ur\u010dit p\u0159esn\u011b jeden atribut, libraryRef nebo classProviderRef, abyste ozna\u010dili artefakt, ze kter\u00e9ho m\u00e1 b\u00fdt na\u010dten vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Ur\u010dete atribut libraryRef nebo classProviderRef k ozna\u010den\u00ed um\u00edst\u011bn\u00ed, ze kter\u00e9ho m\u00e1 b\u00fdt na\u010dtena t\u0159\u00edda vlastn\u00edho p\u0159ihla\u0161ovac\u00edho modulu JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: T\u0159\u00edda vlastn\u00edho p\u0159ihla\u0161ovac\u00edho modulu JAAS {0} nebyla nalezena v artefaktu {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=Zadan\u00e1 aplikace nebo adapt\u00e9r prost\u0159edku neobsahuje po\u017eadovanou t\u0159\u00eddu vlastn\u00edho p\u0159ihla\u0161ovac\u00edho modulu JAAS, nebo se t\u0159\u00edda vlastn\u00edho p\u0159ihla\u0161ovac\u00edho modulu JAAS nach\u00e1z\u00ed v aplikaci na m\u00edst\u011b, ze kter\u00e9ho ji nelze na\u010d\u00edst.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Ujist\u011bte se, \u017ee nakonfigurovan\u00e1 t\u0159\u00edda vlastn\u00edho p\u0159ihla\u0161ovac\u00edho modulu JAAS a jej\u00ed n\u00e1zev bal\u00edku jsou spr\u00e1vn\u00e9. Pokud je zad\u00e1na aplikace, mus\u00ed b\u00fdt t\u0159\u00edda p\u0159ihla\u0161ovac\u00edho modulu obsa\u017eena v aplikaci, bu\u010f v JAR nejvy\u0161\u0161\u00ed \u00farovn\u011b, nebo v modulu adapt\u00e9ru prost\u0159edku.

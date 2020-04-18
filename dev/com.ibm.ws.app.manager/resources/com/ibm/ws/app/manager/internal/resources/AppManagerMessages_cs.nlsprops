@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -216,3 +216,9 @@ APPLICATION_JANDEX_ENABLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Pou\u017eit\u00ed Jandex je pro aplikaci {0} zak\u00e1z\u00e1no.
 APPLICATION_JANDEX_DISABLED.explanation=Index Jandex je pro uvedenou aplikaci zak\u00e1z\u00e1n.
 APPLICATION_JANDEX_DISABLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: N\u00e1sleduj\u00edc\u00ed aplikace nelze spustit, proto\u017ee hodnota jejich atribut\u016f startAfter vede k cyklu: {0} 
+error.startAfter.cycle.explanation=\u017d\u00e1dnou z aplikac\u00ed nelze spustit, proto\u017ee ka\u017ed\u00e1 z\u00e1vis\u00ed na n\u011bkter\u00e9 jin\u00e9 aplikaci, kter\u00e1 m\u00e1 b\u00fdt spu\u0161t\u011bna jako prvn\u00ed.
+error.startAfter.cycle.useraction=Zm\u011b\u0148te hodnotu atributu startAfter pro aplikace v cyklu, aby nem\u011bly cyklick\u00e9 z\u00e1vislosti.
+

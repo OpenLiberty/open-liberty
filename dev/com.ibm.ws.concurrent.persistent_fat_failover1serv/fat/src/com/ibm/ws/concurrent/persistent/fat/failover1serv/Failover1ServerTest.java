@@ -82,7 +82,8 @@ public class Failover1ServerTest extends FATServletClient {
             "javax.transaction.xa.XAException", // rollback/abort path
             "javax.persistence.PersistenceException", // caused by RollbackException
             "javax.persistence.ResourceException", // connection error event on retry
-            "java.lang.IllegalStateException" // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.IllegalStateException", // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.NullPointerException" // can happen when task execution overlaps removal of executor
     })
     @Test
     public void testMultipleInstancesCompeteToRunManyLateTasks() throws Exception {
@@ -230,6 +231,12 @@ public class Failover1ServerTest extends FATServletClient {
                 server.startServer();
             }
         }
+
+        // If this test runs last, then stopServer will happen immediately afterward,
+        // and when test infrastructure also runs slowly, then the 30 seconds allotted by server
+        // quiesce are not enough and warnings will go into the logs and be reported as a test failure.
+        // To reduce the chance of that, wait for some progress to be made,
+        server.waitForStringInLog("DSRA8206I"); // connected to Derby
     }
 
     /**
@@ -239,7 +246,7 @@ public class Failover1ServerTest extends FATServletClient {
     // If scheduled task execution happens to be attempted while persistentExecutors are being removed, it might fail.
     // This is expected. After the configuration update completes, tasks will be able to run again successfully
     // and pass the test.
-    @AllowedFFDC("java.lang.IllegalStateException")
+    @AllowedFFDC({ "java.lang.IllegalStateException", "java.lang.NullPointerException" })
     @Test
     public void testMultipleInstancesCompeteToRunOneLateTask() throws Exception {
         // Schedule on the only instance that is currently able to run tasks

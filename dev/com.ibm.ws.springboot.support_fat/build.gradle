@@ -93,6 +93,10 @@ autoFVT.doLast {
       from new File('../com.ibm.ws.springboot.support.version21.test.app/build/libs/','com.ibm.ws.springboot.support.version21.test.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
+    copy {
+      from new File('../com.ibm.ws.springboot.support.version22.test.app/build/libs/','com.ibm.ws.springboot.support.version22.test.app-0.0.1-SNAPSHOT.jar')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
     
   }
 }

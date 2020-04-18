@@ -18,6 +18,8 @@ import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.executable.ExecutableType;
+import javax.validation.executable.ValidateOnExecution;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -82,6 +84,20 @@ public class BookStoreWithValidation extends AbstractBookStoreWithValidation imp
     public Response addBookDirect(@Valid BookWithValidation book, @Context final UriInfo uriInfo) {
         books.put(book.getId(), book);
         return Response.created(uriInfo.getRequestUriBuilder().path(book.getId()).build()).build();
+    }
+
+    @POST
+    @Path("/booksNoValidate")
+    @ValidateOnExecution(type = ExecutableType.NONE)
+    public Response addBookNoValidation(@NotNull @FormParam("id") String id) {
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/booksValidate")
+    @ValidateOnExecution(type = ExecutableType.IMPLICIT)
+    public Response addBookValidate(@NotNull @FormParam("id") String id) {
+        return Response.ok().build();
     }
 
     @POST

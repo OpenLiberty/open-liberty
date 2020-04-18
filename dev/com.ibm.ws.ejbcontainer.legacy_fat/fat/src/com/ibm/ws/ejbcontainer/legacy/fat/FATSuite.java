@@ -15,11 +15,15 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.SFLocalTest;
+import com.ibm.ws.ejbcontainer.legacy.fat.tests.SFRemoteTest;
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.SLLocalTest;
+import com.ibm.ws.ejbcontainer.legacy.fat.tests.SLRemoteTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 SFLocalTest.class,
-                SLLocalTest.class
+                SLLocalTest.class,
+                SFRemoteTest.class,
+                SLRemoteTest.class
 })
 public class FATSuite {}

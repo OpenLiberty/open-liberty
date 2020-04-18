@@ -120,7 +120,8 @@ Include-Resource: \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.TimerServiceJavaColonNamingHelper, \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper, \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBLocalNamingHelperImpl, \
-  com.ibm.ws.ejbcontainer.osgi.internal.naming.LocalColonEJBNamingHelperImpl
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.LocalColonEJBNamingHelperImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBRemoteBeanFactory
 
 Service-Component: \
   com.ibm.ws.ejb.injection.processor.EJBProcessorProvider;\

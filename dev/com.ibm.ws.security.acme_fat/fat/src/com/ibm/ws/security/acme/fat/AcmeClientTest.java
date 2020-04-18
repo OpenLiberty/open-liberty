@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,7 +37,8 @@ import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.docker.PebbleContainer;
 import com.ibm.ws.security.acme.internal.AcmeClient;
-import com.ibm.ws.security.acme.internal.CSROptions;
+import com.ibm.ws.security.acme.internal.AcmeConfig;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import com.ibm.ws.security.acme.utils.HttpChallengeServer;
 
@@ -130,6 +132,7 @@ public class AcmeClientTest {
 			ks.load(null, null);
 			ks.setCertificateEntry("acme-https", acmeHttpsCert);
 			ks.store(new FileOutputStream(TRUSTSTORE_FILE), TRUSTSTORE_PASSWORD.toCharArray());
+
 		} catch (Exception e) {
 			Log.error(AcmeClientTest.class, "<cinit>", e);
 		}
@@ -137,6 +140,7 @@ public class AcmeClientTest {
 
 	@BeforeClass
 	public static void beforeClass() throws IOException {
+
 		/*
 		 * Start a simple HTTP server to respond to challenges.
 		 */
@@ -181,8 +185,7 @@ public class AcmeClientTest {
 		/*
 		 * Create an AcmeService to test.
 		 */
-		AcmeClient acmeClient = new AcmeClient(acmeDirectoryURI, FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
+		AcmeClient acmeClient = new AcmeClient(getAcmeConfig(TEST_DOMAIN_1));
 
 		/*
 		 * Link the new client to the challenge response server.
@@ -192,8 +195,7 @@ public class AcmeClientTest {
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient
-				.fetchCertificate(new CSROptions(Arrays.asList(new String[] { TEST_DOMAIN_1 })));
+		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
 
 		/*
 		 * Verify that the certificate returned from the ACME CA is signed by
@@ -214,8 +216,8 @@ public class AcmeClientTest {
 		/*
 		 * Create an AcmeService to test.
 		 */
-		AcmeClient acmeClient = new AcmeClient(acmeDirectoryURI, FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
+		AcmeClient acmeClient = new AcmeClient(
+				getAcmeConfig(TEST_DOMAIN_1, TEST_DOMAIN_2, TEST_DOMAIN_3, TEST_DOMAIN_4));
 
 		/*
 		 * Link the new client to the challenge response server.
@@ -225,8 +227,7 @@ public class AcmeClientTest {
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient.fetchCertificate(new CSROptions(
-				Arrays.asList(new String[] { TEST_DOMAIN_1, TEST_DOMAIN_2, TEST_DOMAIN_3, TEST_DOMAIN_4 })));
+		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
 
 		/*
 		 * Verify that the certificate returned from the ACME CA is signed by
@@ -249,8 +250,7 @@ public class AcmeClientTest {
 		/*
 		 * Create an AcmeService to test.
 		 */
-		AcmeClient acmeClient = new AcmeClient(acmeDirectoryURI, FILE_ACCOUNT_KEY, FILE_DOMAIN_KEY, null);
-		acmeClient.setAcceptTos(true);
+		AcmeClient acmeClient = new AcmeClient(getAcmeConfig(TEST_DOMAIN_1));
 
 		/*
 		 * Link the new client to the challenge response server.
@@ -260,8 +260,7 @@ public class AcmeClientTest {
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient
-				.fetchCertificate(new CSROptions(Arrays.asList(new String[] { TEST_DOMAIN_1 })));
+		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
 
 		/*
 		 * The certificate should be valid.
@@ -279,5 +278,23 @@ public class AcmeClientTest {
 		 */
 		assertEquals("The new certificate should be revoked.", "Revoked",
 				FATSuite.pebble.getAcmeCertificateStatus(newCertificate.getCertificate()));
+	}
+
+	/**
+	 * Get a {@link AcmeConfig} instance for the test.
+	 * 
+	 * @param domains
+	 *            Domains to configure.
+	 * @return The {@link AcmeConfig} instance.
+	 * @throws AcmeCaException
+	 *             If the instance could not be created.
+	 */
+	private static AcmeConfig getAcmeConfig(String... domains) throws AcmeCaException {
+		Map<String, Object> acmeProperties = new HashMap<String, Object>();
+		acmeProperties.put(AcmeConstants.DOMAIN, domains);
+		acmeProperties.put(AcmeConstants.DIR_URI, acmeDirectoryURI);
+		acmeProperties.put(AcmeConstants.ACCOUNT_KEY_FILE, FILE_ACCOUNT_KEY);
+		acmeProperties.put(AcmeConstants.DOMAIN_KEY_FILE, FILE_DOMAIN_KEY);
+		return new AcmeConfig(acmeProperties);
 	}
 }

@@ -192,6 +192,77 @@ public class DependantApplicationTest {
         }
     }
 
+    /**
+     * Increase the maximum pool size of a top level connection manager. Verify that the configuration update is honored
+     * and check whether it causes application restart.
+     */
+    @AllowedFFDC("com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException") // test case intentionally runs out of connections to test pool size
+    @Test
+    public void testIncreaseMaxPoolSizeOfTopLevelConnectionManager() throws Exception {
+        Log.entering(getClass(), "testIncreaseMaxPoolSizeOfTopLevelConnectionManager");
+
+        // Remove the nested connection manager and use a top level connection manager instead.
+        ServerConfiguration config = server.getServerConfiguration();
+        ConnectionManager conMgr1 = new ConnectionManager();
+        conMgr1.setId("conMgr1");
+        conMgr1.setMaxPoolSize("1");
+        conMgr1.setConnectionTimeout("0");
+        config.addConnectionManager(conMgr1);
+        JMSConnectionFactory cf1 = config.getJMSConnectionFactories().getById("cf1");
+        cf1.getConnectionManager().clear();
+        cf1.setConnectionManagerRef(conMgr1.getId());
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST);
+
+        runInServlet("testMaxPoolSize1&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
+        runInServlet("setServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
+
+        // Update the top level connectionManager
+        conMgr1.setMaxPoolSize("2");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST);
+
+        runInServlet("testMaxPoolSize2&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
+        // TODO runInServlet("requireServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
+
+        runInServlet("resetState", fvtweb);
+
+        cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
+        Log.exiting(getClass(), "testIncreaseMaxPoolSizeOfTopLevelConnectionManager");
+    }
+
+    /**
+     * Increase the maximum pool size of a nested connection manager. Verify that the configuration update is honored
+     * and check whether it causes application restart.
+     */
+    @AllowedFFDC("com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException") // test case intentionally runs out of connections to test pool size
+    @Test
+    public void testIncreaseMaxPoolSizeOfNestedConnectionManager() throws Exception {
+        Log.entering(getClass(), "testIncreaseMaxPoolSizeOfNestedConnectionManager");
+
+        runInServlet("testMaxPoolSize2&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
+        runInServlet("setServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
+
+        // Update a nested connectionManager
+        ServerConfiguration config = server.getServerConfiguration();
+        JMSConnectionFactory cf1 = config.getJMSConnectionFactories().getById("cf1");
+        ConnectionManager conMgr = cf1.getConnectionManager().get(0);
+        conMgr.setMaxPoolSize("3");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
+
+        runInServlet("testMaxPoolSizeGreaterThan2&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
+        // TODO runInServlet("requireServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
+
+        runInServlet("resetState", fvtweb);
+
+        cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
+        Log.exiting(getClass(), "testIncreaseMaxPoolSizeOfNestedConnectionManager");
+    }
+
     @Test
     public void testUpdateActivationSpecConfigProperties() throws Exception {
         Log.entering(getClass(), "testUpdateActivationSpecConfigProperties");

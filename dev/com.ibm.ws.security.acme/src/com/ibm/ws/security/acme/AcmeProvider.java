@@ -13,7 +13,6 @@ package com.ibm.ws.security.acme;
 import java.io.File;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Sensitive;

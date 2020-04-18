@@ -138,4 +138,9 @@ public class Http2FullTracingTests extends FATServletClient {
     public void testContinuationFrameAfterDataFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    @Test
+    public void testInvalidPaddingValue() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
 }

@@ -39,6 +39,8 @@ Include-Resource: \
 
 instrument.classesExcludes: com/ibm/ws/webcontainer/cors/internal/resources/*.class
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.logging.core,\

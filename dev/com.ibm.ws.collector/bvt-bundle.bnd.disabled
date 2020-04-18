@@ -1,0 +1,23 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: BVT Server-side sample bundle
+Bundle-SymbolicName: test.sample
+Bundle-Description: Test bundle for the build.example.project
+
+# optional... 
+WS-TraceGroup: test
+
+Private-Package: test.sample.*
+
+Include-Resource: OSGI-INF=bvt-bundle/resources/OSGI-INF
+
+-dsannotations: test.sample.internal.WidgetImpl,\
+  test.sample.refs.internal.NeedsOneWidget,\
+  test.sample.refs.internal.DynamicNeedsOneWidget,\
+  test.sample.refs.internal.MaybeOneWidget,\
+  test.sample.refs.internal.DynamicMaybeOneWidget,\
+  test.sample.refs.internal.AtLeastOneWidget,\
+  test.sample.refs.internal.MaybeSomeWidgets
+
+  

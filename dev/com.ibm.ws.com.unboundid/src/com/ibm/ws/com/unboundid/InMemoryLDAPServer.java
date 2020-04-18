@@ -19,6 +19,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
@@ -60,6 +65,8 @@ public class InMemoryLDAPServer {
 
     private static final String keystorePassword = "LDAPpassword";
     private String keystore;
+    private static final String listenerName = "LDAP";
+    private static final String secureListenerName = "LDAPS";
 
     /**
      * Creates a new instance of the in memory LDAP server. It initializes the directory
@@ -71,19 +78,26 @@ public class InMemoryLDAPServer {
      * @throws Exception If something went wrong
      */
     public InMemoryLDAPServer(boolean useWimSchema, String... bases) throws Exception {
+        SSLContext sslc = SSLContext.getDefault();
+        SSLSocketFactory sslf = sslc.getSocketFactory();
+        SSLSocket ssls = (SSLSocket) sslf.createSocket();
+        SSLUtil.setEnabledSSLProtocols(Arrays.asList(ssls.getSupportedProtocols()));
+        SSLUtil.setEnabledSSLCipherSuites(Arrays.asList(ssls.getSupportedCipherSuites()));
 
         config = new InMemoryDirectoryServerConfig(bases);
         config.addAdditionalBindCredentials(getBindDN(), getBindPassword());
 
-        keystore = extractResourceToFile("/resources/keystore.jks", "keystore", ".jks").getAbsolutePath();
+        keystore = extractResourceToFile("/resources/keystore.p12", "keystore", ".p12").getAbsolutePath();
         final SSLUtil serverSSLUtil = new SSLUtil(new KeyStoreKeyManager(keystore, keystorePassword
-                        .toCharArray(), "JKS", "cert-alias"), new TrustAllTrustManager());
+                        .toCharArray(), "PKCS12", "cert-alias"), new TrustAllTrustManager());
+
         ArrayList<InMemoryListenerConfig> configs = new ArrayList<InMemoryListenerConfig>();
-        InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig("LDAPS", 0, serverSSLUtil.createSSLServerSocketFactory());
+        InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig(secureListenerName, 0, serverSSLUtil.createSSLServerSocketFactory());
         configs.add(secure);
-        InMemoryListenerConfig insecure = InMemoryListenerConfig.createLDAPConfig("LDAP", null, 0, null);
+        InMemoryListenerConfig insecure = InMemoryListenerConfig.createLDAPConfig(listenerName, null, 0, null);
         configs.add(insecure);
         config.setListenerConfigs(configs);
+
         Schema schema = null;
         if (useWimSchema) {
             InputStream in = getClass().getResourceAsStream("/resources/wimschema.ldif");
@@ -199,8 +213,27 @@ public class InMemoryLDAPServer {
      *
      * @return the port this directory server is listening to
      */
+    @Deprecated
     public int getListenPort() {
-        return ds.getListenPort("LDAP");
+        return ds.getListenPort(listenerName);
+    }
+
+    /**
+     * Get the port for the insecure LDAP port.
+     *
+     * @return LDAP port
+     */
+    public int getLdapPort() {
+        return ds.getListenPort(listenerName);
+    }
+
+    /**
+     * Get the secure LDAPS port.
+     *
+     * @return LDAPS port
+     */
+    public int getLdapsPort() {
+        return ds.getListenPort(secureListenerName);
     }
 
     /**
@@ -274,13 +307,5 @@ public class InMemoryLDAPServer {
      */
     public int importFromLDIF(boolean clear, String path) throws LDAPException {
         return ds.importFromLDIF(clear, path);
-    }
-
-    /**
-     * @param listenerName - The name of the listener for which to retrieve the listen port. It may be null in order to obtain the listen port for the first active listener
-     * @return The configured listen port for the specified listener, or -1 if there is no such listener or the listener is not active.
-     */
-    public int getListenPort(String listenerName) {
-        return ds.getListenPort(listenerName);
     }
 }

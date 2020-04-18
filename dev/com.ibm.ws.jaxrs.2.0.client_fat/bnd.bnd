@@ -36,7 +36,7 @@ src: \
 
 fat.project: true
 
-# These features get added programatically
+# These features get added programmatically
 tested.features: \
   jaxrsclient-2.1,\
   jaxrs-2.1,\

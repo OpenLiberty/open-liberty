@@ -904,7 +904,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             NameSpaceBinder<?> binder = osgiMMD.systemModuleNameSpaceBinder;
             return binder != null ? binder : new SystemNameSpaceBinderImpl(ejbRemoteRuntimeServiceRef.getService());
         }
-        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), getEJBLocalNamingHelper(), getLocalColonEJBNamingHelper(), ejbRemoteRuntimeServiceRef.getService());
+        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), getEJBLocalNamingHelper(), getLocalColonEJBNamingHelper(), ejbRemoteRuntimeServiceRef);
     }
 
     @Override

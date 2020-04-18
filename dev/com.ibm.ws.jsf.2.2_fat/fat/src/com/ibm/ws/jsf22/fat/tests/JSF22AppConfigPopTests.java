@@ -76,7 +76,6 @@ public class JSF22AppConfigPopTests {
     }
 
     protected void verifyResponse(String contextRoot, String resource, String expectedResponse, LibertyServer server) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);

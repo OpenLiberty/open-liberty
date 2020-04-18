@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.testing.mpOpenTracing;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
-
-import org.eclipse.microprofile.opentracing.Traced;
 
 import io.opentracing.Tracer;
 
@@ -56,6 +57,13 @@ public class MPOpenTracing extends Application {
         return "Hello World";
     }
 
+    @GET
+    @Path("notFound")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String notFound() {
+        throw new NotFoundException("This is an expected exception.  Do not open a defect.");
+    }
+
     /**
      * List classes of providers.
      */
@@ -82,5 +90,11 @@ public class MPOpenTracing extends Application {
         } else {
             return tracer.toString();
         }
+    }
+    
+    @DELETE
+    @Path("reset")
+    public void clearTracer() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        tracer.getClass().getMethod("reset").invoke(tracer);
     }
 }

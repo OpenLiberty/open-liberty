@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -469,8 +469,12 @@ warning.supplied.config.not.valid.explanation= Un atributo de configuraci\u00f3n
 warning.supplied.config.not.valid.useraction=Actualice la configuraci\u00f3n de servidor para eliminar el valor de atributo incorrecto.
 
 variables.in.id.not.supported=CWWKG0104W: El atributo de ID con el valor {1} para el elemento de configuraci\u00f3n {0} debe tener un valor fijo. Las variables en el atributo ID no se sustituir\u00e1n.
-variables.in.id.not.supported.explanation= Los valores de variables no est\u00e1n permitidos en atributos de ID. Todas las variables en atributos de ID se tratar\u00e1n como series literales.  
-variables.in.id.not.supported.useraction= Elimine la variable del valor del atributo de ID.
+variables.in.id.not.supported.explanation=Los valores de variables no est\u00e1n permitidos en atributos de ID. Todas las variables en atributos de ID se tratar\u00e1n como series literales.  
+variables.in.id.not.supported.useraction=Elimine la variable del valor del atributo de ID.
+
+error.root.must.be.server=CWWKG0105E: El documento de configuraci\u00f3n {0} debe empezar con el elemento [{1}].
+error.root.must.be.server.explanation=La configuraci\u00f3n debe estar contenida en un elemento de servidor o un elemento de cliente. 
+error.root.must.be.server.useraction=A\u00f1ada un elemento de servidor o cliente como la ra\u00edz del archivo de configuraci\u00f3n. 
 
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

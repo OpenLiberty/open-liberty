@@ -55,6 +55,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.UserTransaction;
@@ -198,6 +200,12 @@ public class DataSourceTestServlet extends FATServlet {
     @Resource(lookup = "java:comp/env/jdbc/dsValTderbyAnn")
     DataSource dsValTderbyAnn;
 
+    /**
+     * This state is used by certain tests to determine whether a Servlet instance,
+     * and thus the application as a whole, survives a config update.
+     */
+    private String state = "NEW";
+
     @Resource
     private UserTransaction tran;
 
@@ -268,6 +276,24 @@ public class DataSourceTestServlet extends FATServlet {
         // End the current LTC and get a new one, so that test methods start from the correct place
         tran.begin();
         tran.commit();
+    }
+
+    public void requireNewServletInstance(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if (!"NEW".equals(state))
+            throw new Exception("It appears that the existing servlet instance was used, meaning the app was not restarted. State: " + state);
+    }
+
+    public void requireServletInstanceStillActive(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if (!"SERVLET_INSTANCE_STILL_ACTIVE".equals(state))
+            throw new Exception("It appears that a different servlet instance was used, meaning the app was restarted. State: " + state);
+    }
+
+    public void resetState(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        state = "NEW";
+    }
+
+    public void setServletInstanceStillActive(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        state = "SERVLET_INSTANCE_STILL_ACTIVE";
     }
 
     /**

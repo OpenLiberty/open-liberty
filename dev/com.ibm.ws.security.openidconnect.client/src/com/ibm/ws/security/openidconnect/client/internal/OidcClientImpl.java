@@ -12,7 +12,6 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -21,6 +20,7 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -425,16 +425,35 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return oidcClientAuthenticator.authenticate(req, res, oidcClientConfig);
     }
 
+    private boolean requestHasOidcCookie(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            for (int i = 0; i < cookies.length; i++) {
+                Cookie ck = cookies[i];
+                if (ck.getName().startsWith(ClientConstants.COOKIE_NAME_OIDC_CLIENT_PREFIX)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getOidcProvider(HttpServletRequest req) {
-
         String ctxPath = req.getContextPath();
         if ("/IBMJMXConnectorREST".equals(ctxPath)) { //RTC244184
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "return null for contextPath=/IBMJMXConnectorREST");
+            if (!requestHasOidcCookie(req)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "return null for contextPath=/IBMJMXConnectorREST");
+                }
+                return null;
+            } else {
+                // admin center scenario - avoid forcing a double login if already authenticated via oidc.
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "contextPath=/IBMJMXConnectorREST but oidc cookie found, let authentication proceed");
+                }
             }
-            return null;
         }
 
         // RTC248370
@@ -462,7 +481,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return oidcProvider;
     }
 
-    // warn  if >1 auth filter could have matched this request. If so, inconsistent behavior is possible. 
+    // warn  if >1 auth filter could have matched this request. If so, inconsistent behavior is possible.
     void warnIfAmbiguousAuthFilters(Iterator<OidcClientConfig> oidcClientConfigs, HttpServletRequest req,
             ConcurrentServiceReferenceMap<String, AuthenticationFilter> AFServiceRef) {
 

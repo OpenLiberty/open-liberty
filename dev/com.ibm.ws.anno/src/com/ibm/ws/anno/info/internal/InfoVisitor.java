@@ -132,7 +132,7 @@ public class InfoVisitor extends ClassVisitor {
         private List<AnnotationInfoImpl>[] paramAnnotations;
 
         public InfoMethodVisitor() {
-            super(Opcodes.ASM7);
+            super(Opcodes.ASM8);
         }
 
         @SuppressWarnings("unchecked")
@@ -220,7 +220,7 @@ public class InfoVisitor extends ClassVisitor {
         private List<AnnotationInfoImpl> annotations;
 
         public InfoFieldVisitor() {
-            super(Opcodes.ASM7);
+            super(Opcodes.ASM8);
         }
 
         void setFieldInfo(FieldInfoImpl fii) {
@@ -286,7 +286,7 @@ public class InfoVisitor extends ClassVisitor {
     //
 
     public InfoVisitor(InfoStoreImpl infoStore, String externalName) {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
 
         this.infoStore = infoStore;
         this.externalName = externalName;

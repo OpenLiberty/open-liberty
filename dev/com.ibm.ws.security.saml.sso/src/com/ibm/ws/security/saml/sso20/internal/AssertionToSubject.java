@@ -50,8 +50,7 @@ public class AssertionToSubject {
     SsoRequest samlRequest = null;
 
     static public final String KEY_USER_RESOLVER = "userResolver";
-    static ConcurrentServiceReferenceMap<String, UserCredentialResolver> activatedUserResolverRef =
-                    new ConcurrentServiceReferenceMap<String, UserCredentialResolver>(KEY_USER_RESOLVER);
+    static ConcurrentServiceReferenceMap<String, UserCredentialResolver> activatedUserResolverRef = new ConcurrentServiceReferenceMap<String, UserCredentialResolver>(KEY_USER_RESOLVER);
     static final String fixedStr = "_ibm";
 
     public AssertionToSubject(SsoRequest samlRequest, SsoConfig ssoConfig, Saml20Token token) {
@@ -93,10 +92,10 @@ public class AssertionToSubject {
             if (user == null) {
                 //when the attribute can not find a value.
                 throw new SamlException("SAML20_ATTRIBUTE_ERR",
-                                //SAML20_NO_USER_IN_SAML=CWWKS5069E: No user Id was defined in the SAML attributes.
+                                //SAML20_NO_USER_IN_SAML=CWWKS5069E: No name Id was defined in the SAML attributes.
                                 null, // cause
                                 false, // FFDC is not handled yet
-                                new Object[] { "user name" });
+                                new Object[] { "NameID" });
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "user from Token Attributes:" + user);
@@ -108,7 +107,7 @@ public class AssertionToSubject {
                             //SAML20_NO_VALUE_FOUND_FROM_SAML=CWWKS5071E: No [{0}] was found in the SAML token.
                             null, // cause
                             false, // FFDC is handled
-                            new Object[] { "user name" });
+                            new Object[] { "NameID" });
         }
         return user;
     }
@@ -126,11 +125,9 @@ public class AssertionToSubject {
             try {
                 userid = userIdResolver.mapSAMLAssertionToUser(token);
             } catch (UserIdentityException e) {
-                throw new SamlException(
-                                "SAML20_CANNOT_RESOLVE_ASSERTION",
+                throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
-                                e,
-                                false, // ffdc is not hanlded yet
+                                e, false, // ffdc is not hanlded yet
                                 new Object[] { e.getMessage() });
             }
         }
@@ -199,11 +196,9 @@ public class AssertionToSubject {
             try {
                 realm = userIdResolver.mapSAMLAssertionToRealm(token);
             } catch (UserIdentityException e) {
-                throw new SamlException(
-                                "SAML20_CANNOT_RESOLVE_ASSERTION",
+                throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
-                                e,
-                                new Object[] { e.getMessage() });
+                                e, new Object[] { e.getMessage() });
             }
         }
         return realm;
@@ -237,10 +232,10 @@ public class AssertionToSubject {
                                 // SAML20_NO_UNIQUE_ID_IN_SAML=CWWKS5070E: No unique Id was defined in the SAML attributes.
                                 null, // cause
                                 false, // FFDC is not handled yet
-                                new Object[] { "unique user name" });
+                                new Object[] { "unique nameID" });
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "uniaueUserId from Token Attributes:" + uid);
+                Tr.debug(tc, "unique nameId from Token Attributes:" + uid);
             }
         }
         if (uid == null) {
@@ -249,18 +244,17 @@ public class AssertionToSubject {
                             //SAML20_NO_VALUE_FOUND_FROM_SAML=CWWKS5071E: No [{0}] was found in the SAML token.
                             null, // cause
                             false, // FFDC is not handled yet
-                            new Object[] { "unique user name" });
+                            new Object[] { "unique nameID" });
         }
         // work with tfim, tfim has to define
-        //    realmIdentifier="com.ibm.wsspi.security.cred.realm" 
+        //    realmIdentifier="com.ibm.wsspi.security.cred.realm"
         //     in order for its unique User ID to be the unique
         String prefix = "user:" + realm + "/";
         if (!uid.startsWith(prefix)) {
             int userIndex = uid.indexOf("/");
             if (uid.startsWith("user:") && userIndex > 0) {
                 uid = prefix + uid.substring(userIndex + 1);
-            }
-            else {
+            } else {
                 uid = prefix + uid;
             }
         }
@@ -281,11 +275,9 @@ public class AssertionToSubject {
             try {
                 uid = userIdResolver.mapSAMLAssertionToUserUniqueID(token);
             } catch (UserIdentityException e) {
-                throw new SamlException(
-                                "SAML20_CANNOT_RESOLVE_ASSERTION",
+                throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
-                                e,
-                                new Object[] { e.getMessage() });
+                                e, new Object[] { e.getMessage() });
             }
         }
         return uid;
@@ -303,7 +295,7 @@ public class AssertionToSubject {
         String name = this.ssoConfig.getGroupIdentifier();
         if (name != null) {
             // to work with tfim, the SP configuration has to define
-            //    realmIdentifier="com.ibm.wsspi.security.cred.realm" 
+            //    realmIdentifier="com.ibm.wsspi.security.cred.realm"
             //     in order for its unique User ID to be the unique
             String idpRealmPrefix = "group:" + realm + "/";
 
@@ -332,7 +324,7 @@ public class AssertionToSubject {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "UserRegistry:" + reg);
         }
-        // strip off the prefix of "group:<idpDefineRealm>/" from the idpGroup if matches 
+        // strip off the prefix of "group:<idpDefineRealm>/" from the idpGroup if matches
         if (origGroup != null && origGroup.startsWith(origRealmPrefix)) {
             origGroup = origGroup.substring(origRealmPrefix.length());
         } else if (origGroup != null && origGroup.startsWith("group:")) {
@@ -398,11 +390,9 @@ public class AssertionToSubject {
             try {
                 groups = userIdResolver.mapSAMLAssertionToGroups(token);
             } catch (UserIdentityException e) {
-                throw new SamlException(
-                                "SAML20_CANNOT_RESOLVE_ASSERTION",
+                throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
-                                e,
-                                new Object[] { e.getMessage() });
+                                e, new Object[] { e.getMessage() });
             }
         }
         return groups;
@@ -428,7 +418,7 @@ public class AssertionToSubject {
         String name = this.ssoConfig.getGroupIdentifier();
         if (name != null && !name.isEmpty()) {
             // to work with tfim, the SP configuration has to define
-            //    realmIdentifier="com.ibm.wsspi.security.cred.realm" 
+            //    realmIdentifier="com.ibm.wsspi.security.cred.realm"
             //     in order for its unique User ID to be the unique
             String idpRealmPrefix = "group:" + realm + "/";
             List<Saml20Attribute> attributes = this.token.getSAMLAttributes();

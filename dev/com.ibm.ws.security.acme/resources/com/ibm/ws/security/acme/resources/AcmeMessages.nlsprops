@@ -23,7 +23,10 @@
 # The term "certificate authority" is in reference to SSL/TLS certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
-CWPKI2001E=CWPKI2001E: The ACME certificate authority at the {0} URI responded that the authorization challenge failed for the {1} domain. The challenge status is {2}.  The error is {3}.
+FILE_NOT_READABLE=the file is not readable
+FILE_NOT_WRITABLE=the file is not writable
+
+CWPKI2001E=CWPKI2001E: The ACME certificate authority at the {0} URI responded that the authorization challenge failed for the {1} domain. The challenge status is {2}.  The error is ''{3}''.
 CWPKI2001E.explanation=The challenge status indicated that the authorization challenge request failed and a certificate cannot be created.
 CWPKI2001E.useraction=Review the status message and error for details on the failure.
 
@@ -31,7 +34,7 @@ CWPKI2002E=CWPKI2002E: The ACME service polling timed out while checking for a s
 CWPKI2002E.explanation=The certificate authority challenge request was not validated in the configured time and a certificate cannot be created.
 CWPKI2002E.useraction=Review the configured certificate authority URI. Verify that the URI can be successfully accessed by the calling server. Verify that the calling server can receive a response from the certificate authority. Review the status code. Some certificate authorities might require a longer timeout.
 
-CWPKI2003E=CWPKI2003E: The ACME certificate authority at the {0} URI responded that the certificate order failed for the {1} domains. The order status is {2}. The error is {3}.
+CWPKI2003E=CWPKI2003E: The ACME certificate authority at the {0} URI responded that the certificate order failed for the {1} domains. The order status is {2}. The error is ''{3}''.
 CWPKI2003E.explanation=The order status indicated that the authorization order request failed and a certificate cannot be created.
 CWPKI2003E.useraction=Review the status message and error for details on the failure.
 
@@ -45,53 +48,53 @@ CWPKI2005E.useraction=Select a certificate authority that provides a supported c
 
 CWPKI2006I=CWPKI2006I: The ACME certificate authority at the {0} URI provided the following terms of service: {1}
 CWPKI2006I.explanation=The certificate authority provides terms of service.
-CWPKI2006I.useraction= Review the provided terms of service.
+CWPKI2006I.useraction=Review the provided terms of service.
 
-CWPKI2007I=CWPKI2007I: The ACME service installed a certificate that is signed by the ACME certificate authority at the {0} URI. The expiration date is {1}.
+CWPKI2007I=CWPKI2007I: The ACME service installed a certificate with a {0} serial number that is signed by the ACME certificate authority at the {1} URI. The expiration date is {2}.
 CWPKI2007I.explanation=The ACME service successfully retrieved and installed a certificate from the configured certificate authority.
 CWPKI2007I.useraction=No action is required.
 
-CWPKI2008E=CWPKI2008E: The ACME certificate authority directory URI must be a valid URI. The URI received was null or empty. The URI received was '{0}'.
+CWPKI2008E=CWPKI2008E: The ACME certificate authority directory URI must be a valid URI. The URI received was null or empty. The URI received was ''{0}''.
 CWPKI2008E.explanation=The certificate authority directory URI was not configured correctly.
 CWPKI2008E.useraction=Enter a valid ACME certificate authority directory URI in the configuration.
 
-CWPKI2009E=CWPKI2009E: The challenge request to the ACME certificate authority at the {0} URI failed. The error is {1}.
+CWPKI2009E=CWPKI2009E: The challenge request to the ACME certificate authority at the {0} URI failed. The error is ''{1}''.
 CWPKI2009E.explanation=The challenge request failed and a certificate cannot be created.
 CWPKI2009E.useraction=Review the error message for details on the failure.
 
-CWPKI2010E=CWPKI2010E: The challenge update to the ACME certificate authority at the {0} URI failed.The error is {1}.
+CWPKI2010E=CWPKI2010E: The challenge update to the ACME certificate authority at the {0} URI failed. The error is ''{1}''.
 CWPKI2010E.explanation=The challenge update failed and a certificate cannot be updated.
 CWPKI2010E.useraction=Review the error message for details on the failure.
 
-CWPKI2011E=CWPKI2011E: The ACME service failed to create the certificate order for the ACME certificate authority at the {0} URI. The error is {1}.
+CWPKI2011E=CWPKI2011E: The ACME service failed to create the certificate order for the ACME certificate authority at the {0} URI. The error is ''{1}''.
 CWPKI2011E.explanation=The certificate order creation failed and a signed certificate cannot be requested.
 CWPKI2011E.useraction=Review the error message for details on the failure.
 
-CWPKI2012E=CWPKI2012E: The ACME service failed to sign the certificate signing request for the ACME certificate authority at the {0} URI. The error is {1}.
+CWPKI2012E=CWPKI2012E: The ACME service failed to sign the certificate signing request for the ACME certificate authority at the {0} URI. The error is ''{1}''.
 CWPKI2012E.explanation=The certificate order was created, but signing the request failed and a signed certificate cannot be requested.
 CWPKI2012E.useraction=Review the error message for details on the failure.
 
-CWPKI2013E=CWPKI2013E: The certificate signing request was created and signed, but the order request to the ACME certificate authority at the {0} URI failed. The error is {1}.
+CWPKI2013E=CWPKI2013E: The certificate signing request was created and signed, but the order request to the ACME certificate authority at the {0} URI failed. The error is ''{1}''.
 CWPKI2013E.explanation=The certificate order was created and signed, but ordering the certificate from the certificate authority failed.
 CWPKI2013E.useraction=Review the error message for details on the failure.
 
-CWPKI2014E=CWPKI2014E: The certificate signing request for the ACME certificate authority at the {0} URI was created and signed, but encoding the request failed. The error is {1}.
+CWPKI2014E=CWPKI2014E: The certificate signing request for the ACME certificate authority at the {0} URI was created and signed, but encoding the request failed. The error is ''{1}''.
 CWPKI2014E.explanation=Encoding the certificate signing request failed and a signed certificate cannot be created.
 CWPKI2014E.useraction=Review the error message for details on the failure.
 
-CWPKI2015E=CWPKI2015E: The ACME service certificate order status request from the ACME certificate authority at the {0} URI failed. The error is {1}.
+CWPKI2015E=CWPKI2015E: The ACME service certificate order status request from the ACME certificate authority at the {0} URI failed. The error is ''{1}''.
 CWPKI2015E.explanation=An order is completed asynchronously by the certificate authority. The ACME service received an error while checking on the status of the order. A signed certificate cannot be requested.
 CWPKI2015E.useraction=Review the error message for details on the failure.
 
-CWPKI2016E=CWPKI2016E: The ACME service request for an existing account from the ACME certificate authority at the {0} URI failed. The error is {1}.
+CWPKI2016E=CWPKI2016E: The ACME service request for an existing account from the ACME certificate authority at the {0} URI failed. The error is ''{1}''.
 CWPKI2016E.explanation=An existing account was not found or another error occurred. Changes cannot be made to the account or certificate.
 CWPKI2016E.useraction=Review the error message for details on the failure. Verify that the URI can be successfully accessed by the calling server. Verify that the calling server can receive a response from the certificate authority.
 
-CWPKI2017E=CWPKI2017E: The ACME request for the terms of service from the ACME certificate authority at the {0} URI failed. The error is {1}.
+CWPKI2017E=CWPKI2017E: The ACME request for the terms of service from the ACME certificate authority at the {0} URI failed. The error is ''{1}''.
 CWPKI2017E.explanation=The terms of service for the ACME certificate authority cannot be logged. 
 CWPKI2017E.useraction=Review the error message for details on the failure. Visit the ACME certificate authority website to review the terms of service.
 
-CWPKI2018E=CWPKI2018E: The user account could not be created on the ACME certificate authority at the {0} URI. The error is {1}.
+CWPKI2018E=CWPKI2018E: The user account could not be created on the ACME certificate authority at the {0} URI. The error is ''{1}''.
 CWPKI2018E.explanation=The user account creation request failed.
 CWPKI2018E.useraction=Review the error message for details on the failure.
 
@@ -99,23 +102,23 @@ CWPKI2019I=CWPKI2019I: The account URL provided by the ACME certificate authorit
 CWPKI2019I.explanation=The account was successfully created.
 CWPKI2019I.useraction=No action is required.
 
-CWPKI2020E=CWPKI2020E: The ACME service could not read the domain key file for the ACME certificate authority account at the {0} URI. The file location is {1}. The error is {2}.
+CWPKI2020E=CWPKI2020E: The ACME service could not read the domain key file for the ACME certificate authority domain. The file location is {0}. The error is ''{1}''.
 CWPKI2020E.explanation=The domain key file for the certificate authority account could not be opened. This can occur if file permissions are incorrect or if the file does not exist.
 CWPKI2020E.useraction=Review the error message for details on the failure. Verify that the file location is correct and the server has read file permissions.
 
-CWPKI2021E=CWPKI2021E: The ACME service could not read the account key file for the ACME certificate authority account at the {0} URI. The file location is {1}. The error is {2}.
+CWPKI2021E=CWPKI2021E: The ACME service could not read the account key file for the ACME certificate authority account. The file location is {0}. The error is ''{1}''.
 CWPKI2021E.explanation=The account key file for the certificate authority account could not be opened. This can occur if file permissions are incorrect or if the file does not exist.
 CWPKI2021E.useraction=Review the error message for details on the failure. Verify the file location is correct and the server has read file permissions.
 
-CWPKI2022E=CWPKI2022E: The ACME service could not write to the domain key file for the ACME certificate authority account at the {0} URI. The file location is {1}. The error is {2}.
+CWPKI2022E=CWPKI2022E: The ACME service could not write to the domain key file for the ACME certificate authority domain. The file location is {0}. The error is ''{1}''.
 CWPKI2022E.explanation=The domain keys could not be stored in the domain key file. This can occur if the file permissions are incorrect or the file does not exist.
 CWPKI2022E.useraction=Review the error message for details on the failure. Verify the file location is correct and  the server has write file permissions.
 
-CWPKI2023E=CWPKI2023E: Failed to write the account key file for the ACME certificate authority account at the {0} URI. The file location is {1}. The error is {2}.
+CWPKI2023E=CWPKI2023E: The ACME service could not write to the account key file for the ACME certificate authority account. The file location is {0}. The error is ''{1}''.
 CWPKI2023E.explanation=The account keys could not be stored in the account key file. This can occur if the file permissions are incorrect or the file does not exist.
 CWPKI2023E.useraction=Review the error message for details on the failure. Verify the file location is correct and the server has write file permissions.
 
-CWPKI2024E=CWPKI2024E: The ACME service failed to revoke the requested certificate for the ACME certificate authority at the {0} URI. The certificate is serial number {1}. The error is {2}.
+CWPKI2024E=CWPKI2024E: The ACME service failed to revoke the requested certificate for the ACME certificate authority at the {0} URI. The certificate is serial number {1}. The error is ''{2}''.
 CWPKI2024E.explanation=A certificate revoke request failed. The certificate might not be revoked and could still be in use.
 CWPKI2024E.useraction=Review the error message for details on the failure.
 
@@ -127,42 +130,74 @@ CWPKI2026W=CWPKI2026W: The ACME service received a certificate revoke request, b
 CWPKI2026W.explanation=The certificate revoke request failed because the account was not found.
 CWPKI2026W.useraction=Review the certificate authority URI. Review the keystore file to verify that the certificate exists.
 
-CWPKI2027E=CWPKI2027E: The {0} file path for the ACME service is null or empty. The path provided is '{1}'.
+CWPKI2027E=CWPKI2027E: The {0} file path for the ACME service is null or empty. The path provided is ''{1}''.
 CWPKI2027E.explanation=The file path was null or empty and cannot be used for the domain and account keys.
 CWPKI2027E.useraction=Provide a valid file path in the configuration.
 
-CWPKI2028E=CWPKI2028E: The ACME service could not create a new session to connect to the ACME certificate authority at the {0} URI. The error is {1}.
+CWPKI2028E=CWPKI2028E: The ACME service could not create a new session to connect to the ACME certificate authority at the {0} URI. The error is ''{1}''.
 CWPKI2028E.explanation=The certificate authority could not be contacted and a signed certificate cannot be requested.
 CWPKI2028E.useraction=Review the error message for details on the failure. Review the configured certificate authority URI. Verify that the URI can be successfully accessed by the calling server. Verify that the calling server can receive a response from the certificate authority.
 
-CWPKI2029E=CWPKI2029E: The ACME service could not access the keystore at the {0} file path to find the {1} alias certificate. The error is {2}.
+CWPKI2029E=CWPKI2029E: The ACME service could not access the keystore at the {0} file path to find the {1} alias certificate. The error is ''{2}''.
 CWPKI2029E.explanation=The keystore could not be accessed while checking for an existing certificate. The request to fetch a new certificate will not be completed because the keystore cannot be accessed.
 CWPKI2029E.useraction=Review the error message for details on the failure. Verify the file location is correct and the server has write file permissions.
 
-CWPKI2030E=CWPKI2030E: The ACME service could not install a certificate under the {0} alias into the {2} keystore. The error is {2}.
+CWPKI2030E=CWPKI2030E: The ACME service could not install a certificate under the {0} alias into the {1} keystore. The error is ''{2}''.
 CWPKI2030E.explanation=The ACME service received a new certificate from the certificate authority but the certificate cannot be installed locally.
 CWPKI2030E.useraction=Review the error message for details on the failure.
 
-CWPKI2031E=CWPKI2031E: The {0} certificate subject name in the default certificate with the {1} serial number is an invalid distinguished name. The error is {2}.
+CWPKI2031E=CWPKI2031E: The {0} certificate subject name in the default certificate with the {1} serial number is an invalid distinguished name. The error is ''{2}''.
 CWPKI2031E.explanation=The certificate subject name must be formatted as a distinguished name as defined by RFC 2253, similar to a distinguished name that is used in an LDAP server.
 CWPKI2031E.useraction=Review the error message for details on the failure. Revoke or remove the invalid certificate.
 
-CWPKI2032E=CWPKI2032E: The certificate subject alternative names in the default certificate with the {1} serial number could not be parsed. The error is {2}.
+CWPKI2032E=CWPKI2032E: The certificate subject alternative names in the default certificate with the {0} serial number could not be parsed. The error is ''{1}''.
 CWPKI2032E.explanation=The certificate is an invalid DER-encoded certificate or contains unsupported DER features.
 CWPKI2032E.useraction=Review the error message for details on the failure. Revoke or remove the invalid certificate.
 
-CWPKI2033E=CWPKI2033E: The ACME service could not find the certificate for the {0} alias in the {1} keystore. The error is {2}.
+CWPKI2033E=CWPKI2033E: The ACME service could not find the certificate for the {0} alias in the {1} keystore. The error is ''{2}''.
 CWPKI2033E.explanation=A certificate authority signed certificate is stored in the default keystore and replaces any existing default certificate, but keystore or default certificate could not be accessed.
 CWPKI2033E.useraction=Review the error message for details on the failure.
 
-CWPKI2034E=CWPKI2034E: The ACME service could not create a keystore in the {1} directory path. The error is {2}.
+CWPKI2034E=CWPKI2034E: The ACME service could not create a keystore instance. The error is ''{0}''.
 CWPKI2034E.explanation=The ACME service fetched a new certificate, but creating or initializing a keystore for storing the certificate failed.
-CWPKI2034E.useraction=Review the error message for details on the failure. Verify the directory location is correct and the server has write file permissions.
+CWPKI2034E.useraction=Review the error message for details on the failure.
 
-CWPKI2035E=CWPKI2035E: The ACME service could not store the signed certificate in the {1) keystore. The error is {2}.
+CWPKI2035E=CWPKI2035E: The ACME service could not store the signed certificate in the {0} keystore. The error is ''{1}''.
 CWPKI2035E.explanation=The certificate was successfully retrieved from the certificate authority, but it cannot be stored locally.
 CWPKI2035E.useraction=Review the error message for details on the failure. Verify the keystore file location is correct and the server has write file permissions.
 
 CWPKI2036E=CWPKI2036E: The ACME service timed out waiting for the web authorization application to start. The application is required to complete a certificate request with an ACME certificate authority. The service waited for {0} minutes.
 CWPKI2036E.explanation=The application used to complete a certificate request did not start in the expected time frame. A signed certificate cannot be requested.
 CWPKI2036E.useraction=Review the log for earlier messages or errors.
+
+CWPKI2037E=CWPKI2037E: The domains for the ACME service were either null or empty.
+CWPKI2037E.explanation=The domains were either null or empty and cannot be used.
+CWPKI2037E.useraction=Provide at least one non-null, non-empty domain in the configuration.
+
+CWPKI2038W=CWPKI2038W: The ACME service was unable to revoke the certificate with serial number {0}. The error is ''{1}.''
+CWPKI2038W.explanation=The ACME service attempted to revoke the certificate, but was unable to.
+CWPKI2038W.useraction=Review the error message for details on the failure. The certificate will need to be revoked manually.
+
+CWPKI2039E=CWPKI2039E: The ''{0}'' distinguished name (DN) defined by subjectDN contains a ''{1}'' cn relative distinguished name (RDN) value that does not match any of the defined domains.
+CWPKI2039E.explanation=If the cn RDN value is included in the DN, it must match one of the defined domains.
+CWPKI2039E.useraction=Provide either a subjectDN attribute value with a cn RDN value that matches one of the defined domains or a subjectDN attribute value that does not have the cn RDN included.
+
+CWPKI2040E=CWPKI2040E: The cn relative distinguished name (RDN) was not the first RDN in the subjectDN configuration attribute.
+CWPKI2040E.explanation=If the cn RDN is defined, it must be the first RDN in the subjectDN configuration attribute.
+CWPKI2040E.useraction=Provide a subjectDN attribute value that either defines the cn attribute as the first RDN, or does not contain the cn attribute. If the cn attribute is not defined, the first defined domain is used as the cn RDN value.
+
+CWPKI2041E=CWPKI2041E: The ''{0}'' relative distinguished name (RDN) type in the subjectDN configuration attribute is not supported. The following RDN types are supported: cn, o, ou, c, st, l.
+CWPKI2041E.explanation=The subjectDN attribute value contains an RDN that is not supported.
+CWPKI2041E.useraction=Provide a subjectDN attribute value that does not contain unsupported RDN types. The following RDN types are supported: cn, o, ou, c, st, l.
+
+CWPKI2042E=CWPKI2042E: The ''{0}'' subjectDN attribute value is not a valid distinguished name. The error is ''{1}''.
+CWPKI2042E.explanation=The subjectDN attribute must be a valid distinguished name.
+CWPKI2042E.useraction=Provide a valid distinguished name as the subjectDN attribute value.
+
+CWPKI2043E=CWPKI2043E: The ''{0}'' value is not a valid relative distinguished name (RDN). The error is ''{1}''.
+CWPKI2043E.explanation=The ACME service was not able to create an RDN from the specified value.
+CWPKI2043E.useraction=Ensure the the domain included in the value is a valid RDN value.
+
+CWPKI2044E=CWPKI2044E: The certificate is not an X.509 certificate. The certificate type is {0}.
+CWPKI2044E.explanation=The ACME service expects all certificates in the certificate chain to be X.509 certificates.
+CWPKI2044E.useraction=Ensure that all the certificates in the certificate chain are X.509 certificates and try again.

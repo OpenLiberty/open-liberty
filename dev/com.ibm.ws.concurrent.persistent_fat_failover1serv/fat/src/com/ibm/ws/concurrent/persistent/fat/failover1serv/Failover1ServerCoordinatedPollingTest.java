@@ -88,7 +88,8 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
             "javax.transaction.xa.XAException", // rollback/abort path
             "javax.persistence.PersistenceException", // caused by RollbackException
             "javax.persistence.ResourceException", // connection error event on retry
-            "java.lang.IllegalStateException" // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.IllegalStateException", // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.NullPointerException" // can happen when task execution overlaps removal of executor
     })
     @Test
     public void testMultipleInstancesCompeteToRunManyLateTasksPC() throws Exception {
@@ -249,7 +250,7 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
     // If scheduled task execution happens to be attempted while persistentExecutors are being removed, it might fail.
     // This is expected. After the configuration update completes, tasks will be able to run again successfully
     // and pass the test.
-    @AllowedFFDC("java.lang.IllegalStateException")
+    @AllowedFFDC({ "java.lang.IllegalStateException", "java.lang.NullPointerException" })
     @Test
     public void testMultipleInstancesCompeteToRunOneLateTaskPC() throws Exception {
         // Schedule on the only instance that is currently able to run tasks

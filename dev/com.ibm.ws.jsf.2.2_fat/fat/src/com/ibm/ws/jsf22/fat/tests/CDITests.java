@@ -174,7 +174,6 @@ public class CDITests extends CDITestBase {
         String msgToSearchFor1 = "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
         String msgToSearchFor2 = "MyFaces CDI support enabled";
 
-        // Use the SharedServer to verify a response.
         this.verifyResponse("CDITests", "index.xhtml", jsfCDIServer, "Hello Worldy world");
 
         // Check the trace.log to see if the proper InjectionProvider is being used.
@@ -204,7 +203,6 @@ public class CDITests extends CDITestBase {
     @SkipForRepeat("JSF-2.3")
     @Test
     public void testBeanInjection() throws Exception {
-        // Use the SharedServer to verify a response.
         this.verifyResponse("CDITests", "TestBean.jsf", jsfCDIServer,
                             ":TestBean:", "class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.TestBeanFieldBean",
                             "class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean",

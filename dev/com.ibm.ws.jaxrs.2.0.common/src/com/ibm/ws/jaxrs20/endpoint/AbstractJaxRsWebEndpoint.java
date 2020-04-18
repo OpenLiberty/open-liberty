@@ -18,9 +18,11 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BadRequestException;
 
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
+import org.apache.cxf.transport.http.InvalidCharsetException;
 import org.apache.cxf.transport.servlet.BaseUrlHelper;
 
 import com.ibm.websphere.ras.Tr;
@@ -133,6 +135,9 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
             updateDestination(request);
             destination.invoke(servletConfig, servletConfig.getServletContext(), request, response);
         } catch (IOException e) {
+            if (e instanceof InvalidCharsetException) {
+                throw new BadRequestException(e);
+            }
             throw new ServletException(e);
         } catch (JaxRsRuntimeException ex) {
             throw new ServletException(ex.getCause());

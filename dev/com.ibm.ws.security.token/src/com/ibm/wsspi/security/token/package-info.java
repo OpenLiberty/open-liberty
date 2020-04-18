@@ -9,11 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.3
+ * @version 1.4
  */
-@org.osgi.annotation.versioning.Version("1.3")
+@org.osgi.annotation.versioning.Version("1.4")
 @TraceOptions(traceGroup = "Token", messageBundle = "com.ibm.ws.security.token.internal.resources.TokenMessages")
 package com.ibm.wsspi.security.token;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-

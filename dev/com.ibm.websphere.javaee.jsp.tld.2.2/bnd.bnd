@@ -14,6 +14,8 @@ bVersion=1.2
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsp.tld.2.2
 
+jakartaeeMe: true
+
 Export-Package: \
     org.apache.taglibs.standard.tag.common.core;version="1.0.0", \
     org.apache.taglibs.standard.tag.common.xml;version="1.0.0", \
