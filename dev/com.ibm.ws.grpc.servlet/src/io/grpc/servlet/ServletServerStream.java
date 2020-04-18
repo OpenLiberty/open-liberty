@@ -26,6 +26,7 @@ import static java.util.logging.Level.WARNING;
 
 import com.google.common.io.BaseEncoding;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.grpc.Attributes;
@@ -178,7 +179,7 @@ final class ServletServerStream extends AbstractServerStream {
     }
 
     @Override
-    public void write(byte[] src, int srcIndex, int length) {
+    public void write(@Sensitive byte[] src, int srcIndex, int length) {
       System.arraycopy(src, srcIndex, bytes, index, length);
       index += length;
     }

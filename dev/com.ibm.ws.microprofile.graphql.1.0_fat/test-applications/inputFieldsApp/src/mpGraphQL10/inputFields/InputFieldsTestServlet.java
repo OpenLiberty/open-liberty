@@ -121,8 +121,14 @@ public class InputFieldsTestServlet extends FATServlet {
         GraphQLClient client = builder.build(GraphQLClient.class);
         GraphQLOperation graphQLOperation = new GraphQLOperation();
         graphQLOperation.setOperationName("createWidget");
-        graphQLOperation.setQuery("mutation createWidget ($widget: WidgetInput) {" + System.lineSeparator() +
-                                  "  createWidget(widget: $widget) {" + System.lineSeparator() +
+        graphQLOperation.setQuery("mutation createWidget {" + System.lineSeparator() +
+                                  "  createWidget(widget:{" + System.lineSeparator() + 
+                                  "    name: \"Earbuds\"" + System.lineSeparator() +
+                                  "    qty: 20" + System.lineSeparator() +
+                                  "    weight: 1.2" + System.lineSeparator() +
+                                  "    qty2: 30" + System.lineSeparator() +
+                                  "    shippingWeight2: 1.5" + System.lineSeparator() +
+                                  "  }) {" + System.lineSeparator() +
                                   "    name," + System.lineSeparator() +
                                   "    quantity," + System.lineSeparator() +
                                   "    weight," + System.lineSeparator() +
@@ -130,15 +136,6 @@ public class InputFieldsTestServlet extends FATServlet {
                                   "    weight2," + System.lineSeparator() +
                                   "  }" + System.lineSeparator() +
                                   "}");
-        graphQLOperation.setVariables("{" + System.lineSeparator() +
-                                      "  \"widget\": {" + System.lineSeparator() +
-                                      "    \"name\": \"Earbuds\"," + System.lineSeparator() +
-                                      "    \"qty\": 20," + System.lineSeparator() +
-                                      "    \"weight\": 1.2," + System.lineSeparator() +
-                                      "    \"qty2\": 30," + System.lineSeparator() +
-                                      "    \"shippingWeight2\": 1.5" + System.lineSeparator() +
-                                      "  }" + System.lineSeparator() +
-                                      "}");
         WidgetQueryResponse response = client.allWidgets(graphQLOperation);
         LOG.info("Mutation Response: " + response);
         WidgetClientObject widget = response.getData().getCreateWidget();

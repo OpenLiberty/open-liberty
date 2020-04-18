@@ -61,6 +61,7 @@ public class BasicQueryTestServlet extends FATServlet {
         builder = RestClientBuilder.newBuilder()
                         .property("com.ibm.ws.jaxrs.client.receive.timeout", "120000")
                         .property("com.ibm.ws.jaxrs.client.connection.timeout", "120000")
+                        .register(LoggingFilter.class)
                         .baseUri(baseUri);
     }
 
@@ -161,7 +162,7 @@ public class BasicQueryTestServlet extends FATServlet {
         List<Error> errors = response.getErrors();
         assertEquals(1, errors.size());
         Error e = errors.get(0);
-        assertTrue(e.getMessage().contains("Internal Server Error"));
+        assertTrue(e.getMessage().contains("Server Error"));
     }
 
     @Test

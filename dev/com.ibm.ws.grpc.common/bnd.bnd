@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: gRPC Common Components 1.0
-Bundle-SymbolicName: com.ibm.ws.grpc.common.1.0
+Bundle-SymbolicName: com.ibm.ws.grpc.common
 Bundle-Description: gRPC Common Components, version 1.0
 
 Import-Package: !sun.*,\

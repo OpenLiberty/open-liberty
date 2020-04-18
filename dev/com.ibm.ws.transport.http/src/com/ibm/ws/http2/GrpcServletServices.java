@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class GrpcServletServices {
 
-    private static final Map<String, String> servletGrpcServices = new HashMap<String, String>();
+    private static final Map<String, ServiceInformation> servletGrpcServices = new HashMap<String, ServiceInformation>();
 
     /**
      * Register an a gRPC service with its application
@@ -26,11 +26,11 @@ public class GrpcServletServices {
      * @param String gRPC service name
      * @param String contextRoot for the app
      */
-    public static synchronized void addServletGrpcService(String service, String contextRoot) {
+    public static synchronized void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
         if (servletGrpcServices.containsKey(service)) {
             throw new RuntimeException("duplicate gRPC service added: " + service);
         } else {
-            servletGrpcServices.put(service, contextRoot);
+            servletGrpcServices.put(service, new ServiceInformation(contextRoot, clazz));
         }
     }
 
@@ -48,14 +48,32 @@ public class GrpcServletServices {
      *
      * @return HashMap<String service, String contextRoot> or null if the set is empty
      */
-    public static synchronized Map<String, String> getServletGrpcServices() {
+    public static synchronized Map<String, ServiceInformation> getServletGrpcServices() {
         if (servletGrpcServices.isEmpty()) {
             return null;
         }
         return servletGrpcServices;
     }
 
-    public static synchronized void destroy() {
+    public static void destroy() {
         servletGrpcServices.clear();
+    }
+
+    public static class ServiceInformation {
+        String contextRoot;
+        Class<?> clazz;
+
+        ServiceInformation(String root, Class<?> c) {
+            contextRoot = root;
+            clazz = c;
+        }
+
+        public String getContextRoot() {
+            return contextRoot;
+        }
+
+        public Class<?> getServiceClass() {
+            return clazz;
+        }
     }
 }

@@ -21,6 +21,7 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.grpc.InternalLogId;
 import io.grpc.Status;
 import io.grpc.servlet.ServletServerStream.ServletTransportState;
@@ -168,7 +169,9 @@ final class AsyncServletOutputStreamWriter {
 
   private void runOrBufferActionItem(ActionItem actionItem) throws IOException {
     WriteState curState = writeState.get();
-    if (curState.readyAndEmpty) { // write to the outputStream directly
+    // TODO: Liberty currently needs to check isReady() BEFORE doing the write, as it puts context on the
+    // thread during that call.  We should get rid of that requirement.
+    if (curState.readyAndEmpty && outputStream.isReady()) { // write to the outputStream directly
       actionItem.run();
       if (!outputStream.isReady()) {
         logger.log(FINEST, "[{0}] the servlet output stream becomes not ready", logId);

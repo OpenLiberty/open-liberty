@@ -20,12 +20,12 @@ import org.junit.runners.Suite.SuiteClasses;
                 BasicQueryTest.class,
                 BasicQueryWithConfigTest.class,
                 DefaultValueTest.class,
-                DeprecationTest.class,
+                //DeprecationTest.class, // Deprecation behavior was removed from the 1.0 spec
                 GraphQLInterfaceTest.class,
                 IfaceTest.class,
                 IgnoreTest.class,
                 InputFieldsTest.class,
-                MetricsTest.class,
+                //MetricsTest.class, // temporary - Metrics module being replaced in SmallRye
                 OutputFieldsTest.class,
                 TypesTest.class,
                 VoidQueryTest.class
