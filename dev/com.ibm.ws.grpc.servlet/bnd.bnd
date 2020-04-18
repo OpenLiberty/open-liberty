@@ -17,7 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.grpc.servlet.1.0
 Bundle-Description: gRPC Servlet, version 1.0
 
 -dsannotations: \
-  com.ibm.ws.grpc.servlet.GrpcServletContainerInitializer
+  com.ibm.ws.grpc.servlet.GrpcServerComponent
 
 Import-Package: !sun.*,\
   !com.google.code.gson,\
@@ -40,16 +40,18 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.kernel.feature;version=latest,\
   com.ibm.ws.adaptable.module;version=latest,\
   com.ibm.ws.app.manager.lifecycle;version=latest,\
   com.ibm.ws.resource;version=latest,\
   com.ibm.ws.anno;version=latest,\
   com.ibm.ws.logging.core,\
-  com.ibm.ws.grpc.common.1.0;version=latest,\
+  com.ibm.ws.grpc.common;version=latest,\
   com.ibm.ws.transport.http;version=latest,\
   com.ibm.ws.webcontainer,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
-  com.google.guava:guava;version=27.0.1
+  com.google.guava:guava;version=27.0.1,\
+  com.ibm.ws.security.authorization.util
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \
