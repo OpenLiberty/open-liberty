@@ -11,7 +11,7 @@
 <server>
 
 	<featureManager>
-	    <feature>concurrent-1.0</feature>
+	    <feature>concurrent-2.0</feature>
 	    <feature>jdbc-4.1</feature>
 	    <feature>servlet-3.1</feature>
 	    <feature>componenttest-1.0</feature>

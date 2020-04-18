@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.ejb.EJBException;
 import javax.ejb.EJBTransactionRequiredException;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +32,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 import ejb.ConcurrentBMT;
 import ejb.ConcurrentCMT;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @SuppressWarnings("serial")
 public class ConcurrentFATServlet extends FATServlet {
