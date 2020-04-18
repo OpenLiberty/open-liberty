@@ -3,7 +3,7 @@
     <feature>componenttest-1.0</feature>
     <feature>mpRestClient-1.2</feature>
     <feature>mpGraphQL-1.0</feature>
-    <feature>mpMetrics-1.1</feature>
+    <feature>mpMetrics-2.3</feature>
     <feature>jaxrsClient-2.1</feature>
     <feature>jsonp-1.1</feature>
     <feature>jsonb-1.0</feature>
