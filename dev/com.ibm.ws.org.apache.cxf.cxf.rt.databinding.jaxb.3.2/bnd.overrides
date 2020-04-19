@@ -27,12 +27,14 @@ Import-Package: \
 !org.springframework.*,\
 !javax.validation.*, \
 !org.apache.aries.*,\
-!org.apache.cxf.transport.https,\
+org.apache.cxf.transport.https,\
 !org.osgi.service.blueprint.*,\
 javax.xml.bind;version=!,\
 javax.xml.bind.annotation;version=!,\
 javax.xml.bind.annotation.adapters;version=!,\
 javax.xml.bind.attachment;version=!,\
+org.apache.cxf.binding.xml,\
+org.apache.cxf.binding.xml.wsdl11, \
 *
 
 Export-Package: \
