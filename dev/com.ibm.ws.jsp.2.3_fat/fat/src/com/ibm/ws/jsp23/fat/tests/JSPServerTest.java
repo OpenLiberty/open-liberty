@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,6 +26,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -43,6 +50,7 @@ public class JSPServerTest extends LoggingTest {
     private static final String PI44611_APP_NAME = "PI44611";
     private static final String PI59436_APP_NAME = "PI59436";
 
+    private static final Logger LOG = Logger.getLogger(JSPServerTest.class.getName());
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
@@ -74,7 +82,7 @@ public class JSPServerTest extends LoggingTest {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer();
+            SHARED_SERVER.getLibertyServer().stopServer("nonesuch[.]jsp"); //allow the file not found error for the JSP file not found test
         }
     }
 
@@ -676,6 +684,36 @@ public class JSPServerTest extends LoggingTest {
     @Test
     public void testPI59436() throws Exception {
         this.verifyResponse(createWebBrowserForTestCase(), "/PI59436/PI59436.jsp", "Test passed.");
+    }
+
+    /**
+     * This test verifies a stack no longer appears in JSPG0036E message on remote
+     * request, assumes url is not using localhost.
+     *
+     * @throws Exception
+     */
+    // No need to run against cdi-2.0 since this test does not use CDI at all.
+    @SkipForRepeat("CDI-2.0")
+    @Mode(TestMode.FULL)
+    @Test
+    public void testJSPErrMsgUpdate() throws Exception {
+
+        WebConversation wc = new WebConversation();
+        String message = SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKT0016I.*TestJSP2[.]3");
+        LOG.info("message is: " + message);
+        int hostIndex = message.indexOf("http://") + 7;
+        int portIndex = message.indexOf(":", hostIndex);
+        String hostName = message.substring(hostIndex, portIndex);
+        LOG.info("hostName: " + hostName);
+        WebRequest request = new GetMethodWebRequest("http://" + hostName + ":" + SHARED_SERVER.getLibertyServer().getHttpDefaultPort() + "/TestJSP2.3/nonesuch.jsp");
+        wc.setExceptionsThrownOnErrorStatus(false);
+        WebResponse response = wc.getResponse(request);
+        String responseString = response.getText();
+        LOG.info("Response: " + responseString);
+        LOG.info("Response Code: " + response.getResponseCode());
+        assertTrue(responseString.contains("JSPG0036E: Failed to find resource"));
+        assertTrue(!responseString.contains("at com.ibm.ws.jsp"));
+
     }
 
     /*
