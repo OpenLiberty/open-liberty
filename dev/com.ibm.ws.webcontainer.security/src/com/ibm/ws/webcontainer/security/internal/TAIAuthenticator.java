@@ -360,7 +360,7 @@ public class TAIAuthenticator implements WebAuthenticator {
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
             if (addLtpaCookieToResponse) {
                 ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
-                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE);
+                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE);
             }
         } catch (AuthenticationException e) {
             authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
@@ -393,14 +393,14 @@ public class TAIAuthenticator implements WebAuthenticator {
         //Check for SSO SAML disable LTPA property in the subject
         Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getHashtableFromSubject(subject, samlSsoDisableLtpaCookie);
         if (hashtable != null) { // found the SSO SAML disable LTPA property so do not add cookie to the response
-            hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
+            hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, Boolean.TRUE);
             subject.getPublicCredentials().add(hashtable);
             return false;
         }
         //Check for TAI disableLtpaCookie property
         if (isDisableLtpaCookie(taiId)) {
             hashtable = new Hashtable<String, Object>();
-            hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
+            hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, Boolean.TRUE);
             subject.getPublicCredentials().add(hashtable);
             return false;
         }
