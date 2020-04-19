@@ -99,7 +99,6 @@ public class LibertyServiceImpl extends ServiceImpl {
         if (features == null || features.length == 0) {
             features = getWebServiceFeaturesOnPortComponentRef(serviceEndpointInterface);
         }
-
         T clientProxy = super.createPort(portName, epr, serviceEndpointInterface, features);
 
         Client client = ClientProxy.getClient(clientProxy);
@@ -144,7 +143,6 @@ public class LibertyServiceImpl extends ServiceImpl {
                 requestContext.putAll(portProps);
             }
 
-//            Commented out to be solved later by replacing LoggingFeature (cxf/rt/features/logging)
 //            if (null != wsrProps && Boolean.valueOf(wsrProps.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
 //                List<Interceptor<? extends Message>> inInterceptors = client.getInInterceptors();
 //                inInterceptors.add(new LoggingInInterceptor());

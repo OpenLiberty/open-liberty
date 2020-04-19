@@ -12,6 +12,8 @@ package com.ibm.ws.jaxws.metadata.builder;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +62,13 @@ public class HandlerChainInfoBuilder {
 
     static {
         try {
-            context = JAXBUtils.newInstance(PortComponentHandlerType.class);
+            //context = JAXBUtils.newInstance(PortComponentHandlerType.class);
+            context = AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
+                @Override
+                public JAXBContext run() throws Exception {
+                    return JAXBUtils.newInstance(PortComponentHandlerType.class);
+                }
+            });
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

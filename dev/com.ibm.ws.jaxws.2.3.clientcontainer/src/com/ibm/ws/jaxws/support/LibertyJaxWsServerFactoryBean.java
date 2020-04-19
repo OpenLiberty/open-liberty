@@ -72,4 +72,5 @@ public class LibertyJaxWsServerFactoryBean extends JaxWsServerFactoryBean {
         }
         return HandlerChainInfoBuilder.sortHandlers(handlers);
     }
+
 }

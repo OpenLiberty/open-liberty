@@ -16,12 +16,9 @@ import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InstanceInterceptor;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptException;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptorContext;
 import com.ibm.wsspi.injectionengine.InjectionException;
-import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.injectionengine.InjectionTarget;
+import com.ibm.wsspi.injectionengine.ReferenceContext;
 
-/**
- *
- */
 public class ReferenceContextInjectionInstanceInterceptor implements InstanceInterceptor {
 
     private final Map<Class<?>, ReferenceContext> referenceContextMap;
@@ -35,9 +32,7 @@ public class ReferenceContextInjectionInstanceInterceptor implements InstanceInt
         try {
             Object instance = ctx.getInstance();
             ReferenceContext referenceContext = referenceContextMap.get(instance.getClass());
-
             if (referenceContext != null) {
-
                 InjectionTarget[] injectionTargets = referenceContext.getInjectionTargets(instance.getClass());
 
                 if (injectionTargets == null || injectionTargets.length == 0) {
@@ -48,6 +43,7 @@ public class ReferenceContextInjectionInstanceInterceptor implements InstanceInt
                     injectionTarget.inject(instance, null);
                 }
             }
+
         } catch (InjectionException e) {
             throw new InterceptException(e);
         }

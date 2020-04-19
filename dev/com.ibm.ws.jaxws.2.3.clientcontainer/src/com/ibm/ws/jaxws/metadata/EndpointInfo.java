@@ -46,6 +46,8 @@ public class EndpointInfo implements Serializable {
 
     private QName wsdlService;
 
+    private QName wsdlBinding;
+
     private HandlerChainsInfo handlerChainsInfo;
 
     private boolean configuredInWebXml = false;
@@ -197,6 +199,20 @@ public class EndpointInfo implements Serializable {
      */
     public void setWsdlService(QName wsdlService) {
         this.wsdlService = wsdlService;
+    }
+
+    /**
+     * @return the wsdlBinding
+     */
+    public QName getWsdlBinding() {
+        return wsdlBinding;
+    }
+
+    /**
+     * @param wsdlBinding the wsdl:binding to set
+     */
+    public void setWsdlBinding(QName wsdlBinding) {
+        this.wsdlBinding = wsdlBinding;
     }
 
     /**
