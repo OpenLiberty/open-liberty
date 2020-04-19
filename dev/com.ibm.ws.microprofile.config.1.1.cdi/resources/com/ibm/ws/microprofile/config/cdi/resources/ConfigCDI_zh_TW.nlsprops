@@ -48,11 +48,15 @@ property.not.found.CWMCG5004E=CWMCG5004E: \u627e\u4e0d\u5230 "{0}" \u914d\u7f6e\
 property.not.found.CWMCG5004E.explanation=\u5728\u4efb\u4f55\u914d\u7f6e\u7684\u4f86\u6e90\u4e2d\u90fd\u627e\u4e0d\u5230\u6307\u540d\u7684\u5167\u5bb9\u3002
 property.not.found.CWMCG5004E.useraction=\u8acb\u78ba\u5b9a\u5167\u5bb9\u5b58\u5728\u65bc\u5176\u4e2d\u4e00\u500b\u300c\u914d\u7f6e\u4f86\u6e90\u300d\u3002
 
-#The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: \u672a\u89e3\u6790\u300c\u89c0\u5bdf\u7a0b\u5f0f\u300d\u65b9\u6cd5 {0} \u7684 InjectionPoint \u76f8\u4f9d\u95dc\u4fc2\u3002\u932f\u8aa4\uff1a{1}\u3002
 unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=\u672a\u89e3\u6790\u6ce8\u5165\u7684 ConfigProperty\u3002\u627e\u4e0d\u5230\u6307\u540d\u7684\u5167\u5bb9\uff0c\u6216\u662f\u672a\u89e3\u6790\u6240\u9700\u985e\u578b\u7684\u300c\u8f49\u63db\u5668\u300d\u3002
 unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u8a0a\u606f\u548c FFDC \u65e5\u8a8c\uff0c\u4f86\u5224\u5b9a\u539f\u56e0\u3002\u8acb\u78ba\u4fdd\u5167\u5bb9\u5b58\u5728\u65bc\u5176\u4e2d\u4e00\u500b\u300c\u914d\u7f6e\u4f86\u6e90\u300d\uff0c\u800c\u4e14\u5df2\u914d\u7f6e\u6240\u9700\u7684\u300c\u8f49\u63db\u5668\u300d\u3002
 
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: \u672a\u5c0d\u300c\u89c0\u5bdf\u7a0b\u5f0f\u300dBean \u8655\u7406 InjectionPoint \u76f8\u4f9d\u95dc\u4fc2\uff1a{0}\u3002
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=\u767c\u751f\u672a\u77e5\u7684\u932f\u8aa4\u3002 \u7121\u6cd5\u9069\u7576\u5730\u8655\u7406\u300c\u89c0\u5bdf\u7a0b\u5f0f\u300d\u65b9\u6cd5\u3002
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u8a0a\u606f\u548c FFDC \u65e5\u8a8c\uff0c\u4f86\u5224\u5b9a\u539f\u56e0\u3002
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message

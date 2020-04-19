@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+
+src: \
+    src/main/java, \
+    src/main/resources
+
+test.project: true
+instrument.disabled: true
+publish.wlp.jar.disabled: true
+
+bVersion=1.0
+
+
+
+# Specify bundles to be added to the classpath of a VM used in testing. 
+# Entries in the -testpath instruction enable the Eclipse Package Explorer 
+# to resolve compile dependencies for test classes. The instruction is not
+# required to build Spring Boot test artifacts. Each entry requies a 
+# corresponding entry in file cnf/oss_depenendcies.maven.
+# Ref: https://bndtools.org/manual/packageexplorer.html
+-testpath: \
+	org.springframework:spring-core;strategy=exact;version=5.2.4.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=5.2.4.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=5.2.4.RELEASE, \
+	org.springframework:spring-web;strategy=exact;version=5.2.4.RELEASE, \
+	org.springframework:spring-webmvc;strategy=exact;version=5.2.4.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;version=2.2.5.RELEASE, \
+	org.springframework.boot:spring-boot;version=2.2.5.RELEASE, \
+	org.springframework.security:spring-security-web;strategy=exact;version=5.2.2.RELEASE, \
+	org.springframework.security:spring-security-config;strategy=exact;version=5.2.2.RELEASE, \
+	org.springframework.security:spring-security-core;strategy=exact;version=5.2.2.RELEASE, \
+	com.ibm.websphere.javaee.servlet.4.0

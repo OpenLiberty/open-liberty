@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -331,12 +331,10 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) {
-    }
+    public void applicationStarted(ApplicationInfo appInfo) {}
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {
-    }
+    public void applicationStopping(ApplicationInfo appInfo) {}
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
@@ -859,11 +857,9 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Reference(name = REFERENCE_APP_COORD)
-    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
-    }
+    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
 
-    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
-    }
+    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
 
     @Override
     public void registerJPAExPcBindingContextAccessor(JPAExPcBindingContextAccessor accessor) {
@@ -996,7 +992,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
 
                 JPAIntrospection.beginApplicationVisit(appName, appl);
                 try {
-                    appl.introspect(out);
+                    appl.introspect();
                 } finally {
                     JPAIntrospection.endApplicationVisit();
                 }

@@ -12,16 +12,6 @@
     configfailurepolicy="continue" parallel="false">
     <test name="tck-package-org.eclipse.microprofile.graphql.tck">
         <packages>
-            <!-- This disables tests that fail on ZOS. See https://github.com/eclipse/microprofile-rest-client/issues/146 for details -->
-            <method-selectors>
-                <method-selector>
-                    <script language="beanshell">
-                    <![CDATA[
-                        ! (method.getName().contains("testInvokesPostOperation") || method.getName().contains("testInvokesPutOperation"))
-                    ]]>
-                    </script>
-                </method-selector>
-            </method-selectors>
             <package name="org.eclipse.microprofile.graphql.tck.*"></package>
         </packages>
     </test>

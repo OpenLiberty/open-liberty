@@ -20,6 +20,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.junit.Test;
+
 // import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
 import com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean;
 import com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness;
@@ -125,7 +127,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
             bean = (ComplexNoInterfaceBean) ivContext.lookup("ejblocal:" + beanInterface);
             fail("Ambiguous No-Interface short default found");
         } catch (NamingException nex) {
-            // TODO: Enable when AmbiguousEJBReferenceException support is added
+            // TODO: Enable when AmbiguousEJBReferenceException support is added (#11441)
             // Throwable cause = nex.getCause();
             // if (cause instanceof AmbiguousEJBReferenceException) {
             // svLogger.info("lookup of short default failed as expected : " +
@@ -215,7 +217,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      *
      * For configurations with multiple interfaces, all interfaces are tested. <p>
      **/
-    //@Test
+    @Test
     public void testNoInterfaceComponentIdBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
@@ -312,7 +314,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      * local interfaces, just the simple name is used. The No-Interface
      * view is considered a 'local' interface.
      **/
-    //@Test
+    @Test
     public void testNoInterfaceSimpleBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
@@ -401,7 +403,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      *
      * For configurations with multiple interfaces, all interfaces are tested. <p>
      **/
-    //@Test
+    @Test
     public void testNoInterfaceCustomBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";

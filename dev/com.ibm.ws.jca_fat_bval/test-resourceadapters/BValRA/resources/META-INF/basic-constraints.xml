@@ -1,0 +1,73 @@
+<constraint-mappings                                                                                                                                     
+   xmlns="http://jboss.org/xml/ns/javax/validation/mapping"                                                                                              
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"                                                                                                 
+   xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd">                                                     
+   <default-package>                                                                                                                                     
+       com.ibm.bval.jca.adapter                                                                                                                           
+   </default-package>                                                                                                                                    
+   <bean class="ManagedConnectionFactoryImpl" ignore-annotations="false">                                                                                 
+       <field name="xmlBValIntValue">                                                                                                                    
+           <!--                                                                                                                                          
+               @Min(0)                                                                                                                                   
+           -->                                                                                                                                           
+           <constraint                                                                                                                                   
+               annotation="javax.validation.constraints.Min">                                                                                            
+               <message>ManagedConnectionFactoryImpl.xmlBValIntValue must be >= 0. [dropins/BValRA.rar/META-INF/basic-constraints.xml]</message>     
+                <element name="value">0</element>                                                                                                        
+            </constraint>                                                                                                                                
+       </field>                                                                                                                                          
+   </bean>                                                                                                                                               
+                                                                                                                                                         
+   <bean class="ActivationSpecImpl" ignore-annotations="false">                                                                                           
+       <field name="xmlBValIntValue">                                                                                                                    
+           <!--                                                                                                                                          
+               @Min(0)                                                                                                                                   
+           -->                                                                                                                                           
+           <constraint                                                                                                                                   
+               annotation="javax.validation.constraints.Min">                                                                                            
+               <message>ActivationSpecImpl.xmlBValIntValue must be >= 0. [dropins/BValRA.rar/META-INF/basic-constraints.xml]</message>               
+                <element name="value">0</element>                                                                                                        
+            </constraint>                                                                                                                                
+       </field>                                                                                                                                          
+   </bean>                                                                                                                                               
+                                                                                                                                                         
+   <bean class="ResourceAdapterImpl" ignore-annotations="false">                                                                                          
+       <field name="xmlBValIntValue">                                                                                                                    
+           <!--                                                                                                                                          
+               @Min(0)                                                                                                                                   
+           -->                                                                                                                                           
+           <constraint                                                                                                                                   
+               annotation="javax.validation.constraints.Min">                                                                                            
+               <message>ResourceAdapterImpl.xmlBValIntValue must be >= 0. [dropins/BValRA.rar/META-INF/basic-constraints.xml]</message>              
+                <element name="value">0</element>                                                                                                        
+            </constraint>                                                                                                                                
+       </field>                                                                                                                                          
+   </bean>                                                                                                                                               
+                                                                                                                                                          
+   <bean class="InteractionSpecImpl" ignore-annotations="false">                                                                                                    
+       <field name="xmlBValIntValue">                                                                                                                    
+           <!--                                                                                                                                          
+               @Min(0)                                                                                                                                   
+           -->                                                                                                                                           
+           <constraint                                                                                                                                   
+               annotation="javax.validation.constraints.Min">                                                                                            
+               <message>InteractionSpecImpl.xmlBValIntValue must be >= 0. [dropins/BValRA.rar/META-INF/basic-constraints.xml]</message>                        
+                <element name="value">0</element>                                                                                                        
+            </constraint>                                                                                                                                
+       </field>                                                                                                                                          
+   </bean>                                                                                                                                               
+                                                                                                                                                          
+   <bean class="ConnectionSpecImpl" ignore-annotations="false">                                                                                                    
+       <field name="xmlBValIntValue">                                                                                                                    
+           <!--                                                                                                                                          
+               @Min(0)                                                                                                                                   
+           -->                                                                                                                                           
+           <constraint                                                                                                                                   
+               annotation="javax.validation.constraints.Min">                                                                                            
+               <message>ConnectionSpecImpl.xmlBValIntValue must be >= 0. [dropins/BValRA.rar/META-INF/basic-constraints.xml]</message>                        
+                <element name="value">0</element>                                                                                                        
+            </constraint>                                                                                                                                
+       </field>                                                                                                                                          
+   </bean>                                                                                                                                               
+                                                                                                                                                         
+</constraint-mappings>                                                                                                                                   

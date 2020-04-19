@@ -13,6 +13,7 @@ package com.ibm.ws.jsonb.fat;
 import static com.ibm.ws.jsonb.fat.FATSuite.CDI_APP;
 import static com.ibm.ws.jsonb.fat.FATSuite.JSONB_APP;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,6 +27,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -36,6 +38,7 @@ import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.JohnzonTestServlet;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once cdi-3.0 is available, https://github.com/OpenLiberty/open-liberty/issues/11633
 public class JSONBContainerTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonb.container.fat")

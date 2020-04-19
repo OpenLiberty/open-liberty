@@ -101,14 +101,18 @@ public class PropertyService extends Properties {
      * Vendor properties of type String that use the ibm:type="password" type.
      */
     private static final List<String> PASSWORD_PROPS = Arrays.asList(DataSourceDef.password.name(),
+                                                                     //DataSourceDefinition requires url to be all lowercase
+                                                                     DataSourceDef.url.name(), 
                                                                      "accessToken",
                                                                      "apiKey",
+                                                                     "connectionProperties",
+                                                                     "connectionFactoryProperties",
                                                                      "keyStoreSecret",
                                                                      "trustStorePassword",
                                                                      "sslTrustStorePassword",
                                                                      "sslKeyStorePassword",
-                                                                     "connectionProperties",
-                                                                     "connectionFactoryProperties"
+                                                                     //Server config will parse URL to all uppercase
+                                                                     "URL" 
                                                                      );
 
     /**
@@ -165,14 +169,14 @@ public class PropertyService extends Properties {
     public static final Map<?, ?> hidePasswords(Map<?, ?> map) {
         map = new HashMap<Object, Object>(map);
 
-        for (@SuppressWarnings("rawtypes")
-        Map.Entry entry : map.entrySet())
+        for (@SuppressWarnings("rawtypes") Map.Entry entry : map.entrySet()) {
             if (entry.getKey() instanceof String && PropertyService.isPassword((String) entry.getKey()))
                 entry.setValue("******");
             else if(entry.getKey() instanceof String && entry.getValue() instanceof String && ((String) entry.getKey()).toLowerCase().contains("url"))
                 entry.setValue(filterURL((String) entry.getValue()));
             else if (entry.getKey() instanceof String && entry.getValue() instanceof String && ((String) entry.getKey()).toLowerCase().contains("connectionproperties"))
                 entry.setValue(filterConnectionProperties((String) entry.getValue()));
+        }
         return map;
     }
     

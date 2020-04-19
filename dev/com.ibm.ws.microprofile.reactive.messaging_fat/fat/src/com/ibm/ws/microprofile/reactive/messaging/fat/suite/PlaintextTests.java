@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.Network;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
@@ -55,7 +56,10 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 public class PlaintextTests {
 
     @ClassRule
-    public static KafkaContainer kafkaContainer = new KafkaContainer();
+    public static Network network = Network.newNetwork();
+
+    @ClassRule
+    public static KafkaContainer kafkaContainer = new KafkaContainer().withNetwork(network);
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

@@ -231,7 +231,6 @@ public class JSFServerTest {
     public void testFaceletsResourceResolverAnnotation() throws Exception {
         String msgToSearchFor = "FaceletsResourceResolver annotation worked, using custom ResourceResolver";
 
-        // Use the SharedServer to verify a response.
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfTestServer1, "JSF22FaceletsResourceResolverAnnotation", "index.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);

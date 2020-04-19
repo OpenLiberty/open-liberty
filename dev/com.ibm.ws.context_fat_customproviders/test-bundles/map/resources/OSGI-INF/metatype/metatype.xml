@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012,2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate factoryPid="test.map.context">
+  <Object ocdref="test.map.context" />
+ </Designate>
+
+ <OCD id="test.map.context" ibm:extendsAlias="!mapContext" ibm:extends="com.ibm.wsspi.threadcontext.config" name="mapContext" description="Map context">
+  <AD id="map"                   type="String"  default="Snapshot" name="map" description="Determines how map context is captured and applied to contextual operations.">
+   <Option value="Snapshot" label="Use a copy of the requesting thread's map context."/>
+   <Option value="Empty"    label="Use an empty map context."/>
+  </AD>
+  <AD id="threadContextProvider" type="String"  default="test.map.context.provider" ibm:final="true" name="internal" description="internal use only"/>
+ </OCD>
+
+</metatype:MetaData>

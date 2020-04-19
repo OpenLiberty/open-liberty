@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -780,10 +780,13 @@ public class SSLUtils {
                     WsByteBuffer tempBuffer = allocateByteBuffer(size, false);
                     copyBuffer(netBuffer, tempBuffer, netBuffer.remaining());
                     tempBuffer.flip();
-                    netBuffer.release(); //TODO: maybe port tWAS APAR PI07526
+                    netBuffer.release();
                     netBuffer = tempBuffer;
-                    // TODO: this path is broken since we cannot tell the caller
-                    // that we are changing netBuffer
+
+                    if (handshakeCallback != null) {
+                        handshakeCallback.updateNetBuffer(netBuffer);
+                    }
+
                     if (bTrace && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Had to grow the netBuf: " + getBufferTraceInfo(netBuffer));
                     }

@@ -18,6 +18,7 @@ import java.lang.annotation.Target;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -26,6 +27,7 @@ public @interface SkipForRepeat {
     public static final String NO_MODIFICATION = EmptyAction.ID;
     public static final String EE7_FEATURES = EE7FeatureReplacementAction.ID;
     public static final String EE8_FEATURES = EE8FeatureReplacementAction.ID;
+    public static final String EE9_FEATURES = JakartaEE9Action.ID;
 
     String[] value();
 

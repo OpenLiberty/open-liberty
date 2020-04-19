@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,8 @@ public class SpnegoConfigImpl implements SpnegoConfig {
 
     public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
 
+    public static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
+
     public static final String LOCAL_HOST = "localhost";
     public static final String HTTP_LOCAL_HOST = "HTTP/localhost";
     public static final String[] localhost = { LOCAL_HOST };
@@ -84,6 +86,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
     private ErrorPageConfig errorPageConfig = null;
     private final SpnGssCredential spnGssCredential = new SpnGssCredential();
     private Krb5DefaultFile krb5DefaultFile = null;
+    private boolean disableLtpaCookie;
 
     public SpnegoConfigImpl(WsLocationAdmin locationAdmin, Map<String, Object> props) {
         this.locationAdmin = locationAdmin;
@@ -131,6 +134,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
         includeClientGSSCredentialInSubject = (Boolean) props.get(KEY_INCLUDE_CLIENT_GSS_CREDENTIAL_IN_SUBJECT);
         servicePrincipalNames = resolveServicePrincipalNames((String) props.get(KEY_SERVICE_PRINCIPAL_NAMES));
         includeCustomCacheKeyInSubject = (Boolean) props.get(KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT);
+        disableLtpaCookie = (Boolean) props.get(KEY_DISABLE_LTPA_COOKIE);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "id: " + id);
             Tr.debug(tc, "authFilterRef: " + authFilterRef);
@@ -149,6 +153,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
             Tr.debug(tc, "trimKerberosRealmNameFromPrincipal: " + trimKerberosRealmNameFromPrincipal);
             Tr.debug(tc, "includeClientGSSCredentialInSubject: " + includeClientGSSCredentialInSubject);
             Tr.debug(tc, "includeCustomCacheKeyInSubject: " + includeCustomCacheKeyInSubject);
+            Tr.debug(tc, "disableLtpaCookie: " + disableLtpaCookie);
         }
     }
 
@@ -351,5 +356,10 @@ public class SpnegoConfigImpl implements SpnegoConfig {
         }
 
         return host;
+    }
+
+    @Override
+    public boolean isDisableLtpaCookie() {
+        return disableLtpaCookie;
     }
 }

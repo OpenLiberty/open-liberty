@@ -42,7 +42,7 @@ Subsystem-Name: JavaServer Pages 2.3
  com.ibm.ws.jsp, \
  com.ibm.ws.jsp.jstl.facade
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
- com.ibm.websphere.javaee.jsp.tld.2.2; location:=dev/api/spec/
+ com.ibm.websphere.javaee.jsp.tld.2.2.jakarta; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
 kind=ga
 edition=core

@@ -1679,7 +1679,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
-     * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
+     * When the mpContextPropagation-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ManagedExecutorService and
      * javax.enterprise.concurrent.ManagedScheduledExecutorService are also implementations of
      * org.eclipse.microprofile.context.ManagedExecutor
@@ -1697,7 +1697,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
-     * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
+     * When the mpContextPropagation-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ContextService is also an implementation of
      * org.eclipse.microprofile.context.ThreadContext
      */

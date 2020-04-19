@@ -1,0 +1,29 @@
+<!--
+    Copyright (c) 2014, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>jca-1.7</feature>
+      <feature>jndi-1.0</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>servlet-3.1</feature>
+      <feature>jms-2.0</feature>
+      <feature>jmsMdb-3.2</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <resourceAdapter id="ATVNone_RA" location="${server.config.dir}/connectors/fvtra.rar" autoStart="true"/>
+
+    <application location="${server.config.dir}/apps/ClassLoadingApp.ear"> 
+        <classloader classProviderRef="ATVNone_RA" />
+    </application>
+
+</server>

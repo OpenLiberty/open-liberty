@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,13 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Gy\u0151z\u0151dj\u00f6n meg r
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Nem adhat\u00f3 meg egy {0} jaasLoginContext bejegyz\u00e9s JAAS konfigur\u00e1ci\u00f3s bejegyz\u00e9sk\u00e9nt a server.xml f\u00e1jlban \u00e9s/vagy a jaas.conf f\u00e1jlban.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=A fut\u00e1si k\u00f6rnyezet egy alap\u00e9rtelmezett Krb5LoginModule konfigur\u00e1ci\u00f3t \u00e9s a server.xml f\u00e1jlban l\u00e9v\u0151 SPNEGO konfigur\u00e1ci\u00f3t haszn\u00e1lja.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=T\u00e1vol\u00edtsa el a jaasLoginContext bejegyz\u00e9st a server.xml f\u00e1jlb\u00f3l, vagy hagyja, hogy a fut\u00e1si k\u00f6rnyezet az alap\u00e9rtelmezett bejegyz\u00e9st haszn\u00e1lja.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: A(z) {0} JAAS egy\u00e9ni bejelentkez\u00e9si modul nincs bet\u00f6ltve, mert a(z) {1} konfigur\u00e1ci\u00f3s elem a libraryRef \u00e9s classProviderRef attrib\u00fatumokat egyar\u00e1nt megadja.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Csak egy attrib\u00fatumot, a libraryRef vagy a classProviderRef \u00e9rt\u00e9k\u00e9t lehet megadni annak a m\u0171term\u00e9knek a megjel\u00f6l\u00e9s\u00e9re, amelyb\u0151l a JAAS egy\u00e9ni bejelentkez\u00e9si modul bet\u00f6ltend\u0151.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=T\u00e1vol\u00edtsa el vagy a libraryRef attrib\u00fatumot, vagy az classProviderRef attrib\u00fatumot, azt, amelyik nem tartalmazza a JAAS egy\u00e9ni bejelentkez\u00e9si modul oszt\u00e1lyt.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: A(z) {0} JAAS egy\u00e9ni bejelentkez\u00e9si modul nem tal\u00e1lhat\u00f3, mert a(z) {1} konfigur\u00e1ci\u00f3s elem nem hat\u00e1rozza meg a libraryRef vagy classProviderRef attrib\u00fatumot.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Pontosan egy attrib\u00fatumot, a libraryRef vagy a classProviderRef \u00e9rt\u00e9k\u00e9t lehet megadni annak a m\u0171term\u00e9knek a megjel\u00f6l\u00e9s\u00e9re, amelyb\u0151l a JAAS egy\u00e9ni bejelentkez\u00e9si modul bet\u00f6ltend\u0151.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Adja meg vagy a libraryRef, vagy a classProviderRef attrib\u00fatumot annak a helynek a meghat\u00e1roz\u00e1s\u00e1ra, ahonnan a JAAS egy\u00e9ni bejelentkez\u00e9si modul bet\u00f6ltend\u0151. 
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: A(z) {0} JAAS egy\u00e9ni bejelentkez\u00e9si modul oszt\u00e1ly nem tal\u00e1lhat\u00f3 a(z) {1} {2} m\u0171term\u00e9kben.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=A megadott alkalmaz\u00e1s vagy er\u0151forr\u00e1s-illeszt\u0151 nem tartalmazza a k\u00e9rt JAAS egy\u00e9ni bejelentkez\u00e9si modul oszt\u00e1lyt, vagy a JAAS egy\u00e9ni bejelentkez\u00e9si modul oszt\u00e1ly jelen van az alkalmaz\u00e1sban, de olyan helyen, amelyb\u0151l nem t\u00f6lthet\u0151 be.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a be\u00e1ll\u00edtott JAAS egy\u00e9ni bejelentkez\u00e9si modul oszt\u00e1ly \u00e9s annak csomagneve helyes.  Ha meg van adva alkalmaz\u00e1s, akkor a bejelentkez\u00e9si modul oszt\u00e1lyt az alkalmaz\u00e1snak tartalmaznia kell vagy egy fels\u0151 szint\u0171 JAR f\u00e1jlban, vagy egy er\u0151forr\u00e1s-illeszt\u0151 modulban.

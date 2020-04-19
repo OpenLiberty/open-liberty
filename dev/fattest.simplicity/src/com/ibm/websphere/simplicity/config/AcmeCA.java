@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlElement;
  * Configuration for acmeCA-2.0 feature.
  */
 public class AcmeCA extends ConfigElement {
-    private Boolean acceptTermsOfService;
 
     private List<String> accountContact;
 
@@ -32,7 +31,7 @@ public class AcmeCA extends ConfigElement {
 
     private String challengeRetryWait; // Duration
 
-    private String country;
+    private String subjectDN;
 
     private String directoryURI;
 
@@ -40,26 +39,11 @@ public class AcmeCA extends ConfigElement {
 
     private String domainKeyFile;
 
-    private String locality;
-
     private Integer orderRetries;
 
     private String orderRetryWait; // Duration
 
-    private String organization;
-
-    private String organizationalUnit;
-
-    private String state;
-
     private String validFor; // Duration
-
-    /**
-     * @return the acceptTermsOfService
-     */
-    public Boolean getAcceptTermsOfService() {
-        return acceptTermsOfService;
-    }
 
     /**
      * @return the accountContact
@@ -79,7 +63,7 @@ public class AcmeCA extends ConfigElement {
      * @return the acmeTransportConfig
      */
     public AcmeTransportConfig getAcmeTransportConfig() {
-        return (acmeTransportConfig == null) ? (acmeTransportConfig = new AcmeTransportConfig()) : acmeTransportConfig;
+        return acmeTransportConfig;
     }
 
     /**
@@ -94,13 +78,6 @@ public class AcmeCA extends ConfigElement {
      */
     public String getChallengeRetryWait() {
         return challengeRetryWait;
-    }
-
-    /**
-     * @return the country
-     */
-    public String getCountry() {
-        return country;
     }
 
     /**
@@ -121,14 +98,7 @@ public class AcmeCA extends ConfigElement {
      * @return the domain
      */
     public List<String> getDomain() {
-        return (domain == null) ? (domain = new ArrayList<String>()) : domain;
-    }
-
-    /**
-     * @return the locality
-     */
-    public String getLocality() {
-        return locality;
+        return domain;
     }
 
     /**
@@ -146,24 +116,10 @@ public class AcmeCA extends ConfigElement {
     }
 
     /**
-     * @return the organization
+     * @return the subjectDN
      */
-    public String getOrganization() {
-        return organization;
-    }
-
-    /**
-     * @return the organizationalUnit
-     */
-    public String getOrganizationalUnit() {
-        return organizationalUnit;
-    }
-
-    /**
-     * @return the state
-     */
-    public String getState() {
-        return state;
+    public String getSubjectDN() {
+        return subjectDN;
     }
 
     /**
@@ -171,14 +127,6 @@ public class AcmeCA extends ConfigElement {
      */
     public String getValidFor() {
         return validFor;
-    }
-
-    /**
-     * @param acceptTermsOfService the acceptTermsOfService to set
-     */
-    @XmlElement(name = "acceptTermsOfService")
-    public void setAcceptTermsOfService(Boolean acceptTermsOfService) {
-        this.acceptTermsOfService = acceptTermsOfService;
     }
 
     /**
@@ -192,7 +140,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param accountKeyFile the accountKeyFile to set
      */
-    @XmlElement(name = "accountKeyFile")
+    @XmlAttribute(name = "accountKeyFile")
     public void setAccountKeyFile(String accountKeyFile) {
         this.accountKeyFile = accountKeyFile;
     }
@@ -208,7 +156,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param challengeRetries the challengeRetries to set
      */
-    @XmlElement(name = "challengeRetries")
+    @XmlAttribute(name = "challengeRetries")
     public void setChallengeRetries(Integer challengeRetries) {
         this.challengeRetries = challengeRetries;
     }
@@ -216,17 +164,9 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param challengeRetryWait the challengeRetryWait to set
      */
-    @XmlElement(name = "challengeRetryWait")
+    @XmlAttribute(name = "challengeRetryWait")
     public void setChallengeRetryWait(String challengeRetryWait) {
         this.challengeRetryWait = challengeRetryWait;
-    }
-
-    /**
-     * @param country the country to set
-     */
-    @XmlElement(name = "country")
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     /**
@@ -240,7 +180,7 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param directoryURI the directoryURI to set
      */
-    @XmlElement(name = "directoryURI")
+    @XmlAttribute(name = "directoryURI")
     public void setDirectoryURI(String directoryURI) {
         this.directoryURI = directoryURI;
     }
@@ -254,17 +194,9 @@ public class AcmeCA extends ConfigElement {
     }
 
     /**
-     * @param locality the locality to set
-     */
-    @XmlElement(name = "locality")
-    public void setLocality(String locality) {
-        this.locality = locality;
-    }
-
-    /**
      * @param orderRetries the orderRetries to set
      */
-    @XmlElement(name = "orderRetries")
+    @XmlAttribute(name = "orderRetries")
     public void setOrderRetries(Integer orderRetries) {
         this.orderRetries = orderRetries;
     }
@@ -272,39 +204,23 @@ public class AcmeCA extends ConfigElement {
     /**
      * @param orderRetryWait the orderRetryWait to set
      */
-    @XmlElement(name = "orderRetryWait")
+    @XmlAttribute(name = "orderRetryWait")
     public void setOrderRetryWait(String orderRetryWait) {
         this.orderRetryWait = orderRetryWait;
     }
 
     /**
-     * @param organization the organization to set
+     * @param subjectDN the subjectDN to set
      */
-    @XmlElement(name = "organization")
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
-    /**
-     * @param organizationalUnit the organizationalUnit to set
-     */
-    @XmlElement(name = "organizationalUnit")
-    public void setOrganizationalUnit(String organizationalUnit) {
-        this.organizationalUnit = organizationalUnit;
-    }
-
-    /**
-     * @param state the state to set
-     */
-    @XmlElement(name = "state")
-    public void setState(String state) {
-        this.state = state;
+    @XmlAttribute(name = "subjectDN")
+    public void setSubjectDN(String subjectDN) {
+        this.subjectDN = subjectDN;
     }
 
     /**
      * @param validFor the validFor to set
      */
-    @XmlElement(name = "validFor")
+    @XmlAttribute(name = "validFor")
     public void setValidFor(String validFor) {
         this.validFor = validFor;
     }
@@ -315,9 +231,6 @@ public class AcmeCA extends ConfigElement {
 
         sb.append(getClass().getSimpleName()).append("{ ");
 
-        if (acceptTermsOfService != null) {
-            sb.append("acceptTermsOfService=\"").append(acceptTermsOfService).append("\" ");;
-        }
         if (accountContact != null) {
             sb.append("accountContact=\"").append(accountContact).append("\" ");;
         }
@@ -333,9 +246,6 @@ public class AcmeCA extends ConfigElement {
         if (challengeRetryWait != null) {
             sb.append("challengeRetryWait=\"").append(challengeRetryWait).append("\" ");;
         }
-        if (country != null) {
-            sb.append("country=\"").append(country).append("\" ");;
-        }
         if (directoryURI != null) {
             sb.append("directoryURI=\"").append(directoryURI).append("\" ");;
         }
@@ -345,23 +255,14 @@ public class AcmeCA extends ConfigElement {
         if (domain != null) {
             sb.append("domain=\"").append(domain).append("\" ");;
         }
-        if (locality != null) {
-            sb.append("locality=\"").append(locality).append("\" ");;
-        }
         if (orderRetries != null) {
             sb.append("orderRetries=\"").append(orderRetries).append("\" ");;
         }
         if (orderRetryWait != null) {
             sb.append("orderRetryWait=\"").append(orderRetryWait).append("\" ");;
         }
-        if (organization != null) {
-            sb.append("organization=\"").append(organization).append("\" ");;
-        }
-        if (organizationalUnit != null) {
-            sb.append("organizationalUnit=\"").append(organizationalUnit).append("\" ");;
-        }
-        if (state != null) {
-            sb.append("state=\"").append(state).append("\" ");;
+        if (subjectDN != null) {
+            sb.append("subjectDN=\"").append(subjectDN).append("\" ");;
         }
         if (validFor != null) {
             sb.append("validFor=\"").append(validFor).append("\" ");;

@@ -124,7 +124,6 @@ Include-Resource: \
     resources/end_session_logout.html, \
     resources/end_session_error.html, \
     WEB-CONTENT=resources/WEB-CONTENT, \
-    WEB-CONTENT/common/lib=lib/jquery/jquery-3.2.0, \
     WEB-CONTENT/common/fonts=lib/fonts
 
 -buildpath: \

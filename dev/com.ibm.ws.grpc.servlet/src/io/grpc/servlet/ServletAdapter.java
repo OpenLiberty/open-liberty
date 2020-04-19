@@ -24,6 +24,8 @@ import static java.util.logging.Level.FINEST;
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.grpc.servlet.GrpcServerComponent;
+import com.ibm.ws.grpc.servlet.GrpcServletUtils;
 
 import io.grpc.Attributes;
 import io.grpc.ExperimentalApi;
@@ -37,6 +39,7 @@ import io.grpc.internal.GrpcUtil;
 import io.grpc.internal.ReadableBuffers;
 import io.grpc.internal.ServerTransportListener;
 import io.grpc.internal.StatsTraceContext;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -120,10 +123,23 @@ public final class ServletAdapter {
     InternalLogId logId = InternalLogId.allocate(ServletAdapter.class, null);
     logger.log(FINE, "[{0}] RPC started", logId);
 
+    String method = req.getRequestURI().substring(1); // remove the leading "/"
+
+    // Liberty change: remove application context root from path 
+    // then perform authentication/authorization
+    method = GrpcServletUtils.translateLibertyPath(method);
+    boolean libertyAuth = true;
+    if (GrpcServerComponent.isSecurityEnabled()) {
+      libertyAuth = GrpcServletUtils.doServletAuth(req, resp, method);
+    }
+
     AsyncContext asyncCtx = req.startAsync(req, resp);
 
-    String method = req.getRequestURI().substring(1); // remove the leading "/"
-    Metadata headers = getHeaders(req);
+    if (logger.isLoggable(FINEST)) {
+        logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
+    }
+
+    Metadata headers = getHeaders(req, libertyAuth);
 
     if (logger.isLoggable(FINEST)) {
       logger.log(FINEST, "[{0}] method: {1}", new Object[] {logId, method});
@@ -161,7 +177,7 @@ public final class ServletAdapter {
     asyncCtx.addListener(new GrpcAsycListener(stream, logId));
   }
 
-  private static Metadata getHeaders(HttpServletRequest req) {
+  private static Metadata getHeaders(HttpServletRequest req, boolean libertyAuth) {
     Enumeration<String> headerNames = req.getHeaderNames();
     checkNotNull(
         headerNames, "Servlet container does not allow HttpServletRequest.getHeaderNames()");
@@ -183,6 +199,10 @@ public final class ServletAdapter {
         }
       }
     }
+
+    // liberty change: add result of authorization to headers
+    GrpcServletUtils.addLibertyAuthHeader(byteArrays, req, libertyAuth);
+
     return InternalMetadata.newMetadata(byteArrays.toArray(new byte[][]{}));
   }
 

@@ -1,0 +1,5 @@
+bundles
+dist
+/*.log*
+/lib
+/logs

@@ -268,7 +268,7 @@ public class OAuth20EndpointServices {
                     revoke(oauth20Provider, request, response);
                 }
                 break;
-            case coverage_map:
+            case coverage_map: // non-spec extension
                 coverageMapServices.handleEndpointRequest(oauth20Provider, request, response);
                 break;
             case registration:
@@ -395,6 +395,7 @@ public class OAuth20EndpointServices {
             throw new OidcServerException("403", OIDCConstants.ERROR_ACCESS_DENIED, HttpServletResponse.SC_FORBIDDEN);
         }
         return true;
+
     }
 
     void serveClientMetatypeRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -766,6 +767,11 @@ public class OAuth20EndpointServices {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
         }
 
+        if (provider.isTrackOAuthClients()) {
+            OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
+            clientTracker.trackOAuthClient(clientId);
+        }
+
         consent.handleConsent(provider, request, prompt, clientId);
         getExternalClaimsFromWSSubject(request, options);
         oauthResult = provider.processAuthorization(request, response, options);
@@ -817,6 +823,7 @@ public class OAuth20EndpointServices {
         OAuthResult result = clientAuthorization.validateAndHandle2LegsScope(provider, request, response, clientId);
         if (result.getStatus() == OAuthResult.STATUS_OK) {
             result = provider.processTokenRequest(clientId, request, response);
+
         }
         if (result.getStatus() != OAuthResult.STATUS_OK) {
             OAuth20TokenRequestExceptionHandler handler = new OAuth20TokenRequestExceptionHandler();

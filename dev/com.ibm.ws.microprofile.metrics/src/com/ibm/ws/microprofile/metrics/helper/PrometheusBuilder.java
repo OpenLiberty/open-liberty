@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics.helper;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Counting;
@@ -34,8 +37,10 @@ public class PrometheusBuilder {
 
     private static final String QUANTILE = "quantile";
 
+    private static Set<String> improperGaugeSet = new HashSet<String>();
+
     @FFDCIgnore({ IllegalStateException.class })
-    public static void buildGauge(StringBuilder builder, String name, Gauge<?> gauge, String description, Double conversionFactor, String tags, String appendUnit) {
+    public static void buildGauge(StringBuilder builder, String name, Gauge<?> gauge, String description, Double conversionFactor, String appendUnit, String tags) {
         // Skip non number values
         Number gaugeValNumber = null;
         Object gaugeValue = null;
@@ -46,7 +51,10 @@ public class PrometheusBuilder {
             return;
         }
         if (!Number.class.isInstance(gaugeValue)) {
-            Tr.event(tc, "Skipping Prometheus output for Gauge: " + name + " of type " + gauge.getValue().getClass());
+            if (!improperGaugeSet.contains(name)) {
+                Tr.event(tc, "Skipping Prometheus output for Gauge: " + name + " of type " + gauge.getValue().getClass());
+                improperGaugeSet.add(name);
+            }
             return;
         }
         gaugeValNumber = (Number) gaugeValue;

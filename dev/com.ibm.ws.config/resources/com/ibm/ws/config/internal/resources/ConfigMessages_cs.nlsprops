@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -474,8 +474,12 @@ warning.supplied.config.not.valid.explanation= Atribut konfigurace ozna\u010den\
 warning.supplied.config.not.valid.useraction=Aktualizujte konfiguraci serveru, abyste odebrali chybnou hodnotu atributu.
 
 variables.in.id.not.supported=CWWKG0104W: Atribut ID s hodnotou {1} pro prvek konfigurace {0} mus\u00ed m\u00edt pevnou hodnotu. Prom\u011bnn\u00e9 v atributu ID nebudou nahrazeny.
-variables.in.id.not.supported.explanation= Hodnoty prom\u011bnn\u00fdch nejsou povoleny v atributech ID. V\u0161echny prom\u011bnn\u00e9 v atributech ID budou zpracov\u00e1v\u00e1ny jako liter\u00e1lov\u00e9 \u0159et\u011bzce. 
-variables.in.id.not.supported.useraction= Odeberte prom\u011bnnou z hodnoty atributu ID.
+variables.in.id.not.supported.explanation=Hodnoty prom\u011bnn\u00fdch nejsou povoleny v atributech ID. V\u0161echny prom\u011bnn\u00e9 v atributech ID budou zpracov\u00e1v\u00e1ny jako liter\u00e1lov\u00e9 \u0159et\u011bzce. 
+variables.in.id.not.supported.useraction=Odeberte prom\u011bnnou z hodnoty atributu ID.
+
+error.root.must.be.server=CWWKG0105E: Dokument typu Konfigurace {0} mus\u00ed za\u010d\u00ednat prvkem [{1}].
+error.root.must.be.server.explanation=Konfigurace mus\u00ed b\u00fdt obsa\u017eena bu\u010f v prvku serveru, nebo v prvku klienta. 
+error.root.must.be.server.useraction=P\u0159idejte server nebo prvek klienta jako ko\u0159en konfigura\u010dn\u00edho souboru. 
 
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

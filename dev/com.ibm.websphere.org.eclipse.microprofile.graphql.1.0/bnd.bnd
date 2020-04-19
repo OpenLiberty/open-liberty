@@ -18,7 +18,7 @@ Export-Package: \
   org.eclipse.microprofile.graphql;version=1.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.graphql:microprofile-graphql-api;1.0.0.20191203;EXACT}
+  @${repo;org.eclipse.microprofile.graphql:microprofile-graphql-api;1.0.1;EXACT}
 
 
 WS-TraceGroup: GraphQL

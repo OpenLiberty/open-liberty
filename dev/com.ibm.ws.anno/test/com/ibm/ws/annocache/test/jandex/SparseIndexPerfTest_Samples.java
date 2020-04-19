@@ -92,47 +92,49 @@ public class SparseIndexPerfTest_Samples {
     }
 
     public static class TimeStats {
-    	public final String indexPath;
-    	public final long numClasses;
+        public final String indexPath;
+        public final long numClasses;
 
-    	public final int iterations;
-    	public final long totalDuration;
-    	public final long minDuration;
-    	public final long maxDuration;
+        public final int iterations;
+        public final long totalDuration;
+        public final long minDuration;
+        public final long maxDuration;
 
-    	public TimeStats(
-    		String indexPath, long numClasses,
-    		int iterations,
-    		long totalDuration, long minDuration, long maxDuration) {
+        public TimeStats(
+            String indexPath, long numClasses,
+            int iterations,
+            long totalDuration, long minDuration, long maxDuration) {
 
-    		this.indexPath = indexPath;
-    		this.numClasses = numClasses;
+            this.indexPath = indexPath;
+            this.numClasses = numClasses;
 
-    		this.iterations = iterations;
-    		this.totalDuration = totalDuration;
-    		this.minDuration = minDuration;
-    		this.maxDuration = maxDuration;
-    	}
+            this.iterations = iterations;
+            this.totalDuration = totalDuration;
+            this.minDuration = minDuration;
+            this.maxDuration = maxDuration;
+        }
     }
 
-    public static List<TimeStats> fullTimeStats = new ArrayList<TimeStats>();
-    public static List<TimeStats> sparseTimeStats = new ArrayList<TimeStats>();
+    public static TimeStats fullTimeStats;
+    public static TimeStats sparseTimeStats;
 
     @AfterClass
     public static void summarizeTimes() {
-    	int numStats = fullTimeStats.size();
-    	for ( int statNo = 0; statNo < numStats; statNo++ ) {
-    		TimeStats fullStats = fullTimeStats.get(statNo);
-    		TimeStats sparseStats = sparseTimeStats.get(statNo);
+        if ( fullTimeStats == null ) {
+            System.out.println("Full times were not collected");
+        } else {
+            System.out.println("Full times");
+            System.out.println("  Path [ " + fullTimeStats.indexPath + " ]");
+            System.out.println("  Classes [ " + fullTimeStats.numClasses + " ]");
+        }
 
-    		System.out.println("Case [ " + statNo + " ] [ " + fullStats.indexPath + " ]");
-    		System.out.println("  Classes [ " + fullStats.numClasses + " ]");
-
-    		long sparseAvg = (sparseStats.totalDuration / sparseStats.iterations) / JandexTestUtils.NANOS_IN_MICRO;
-    		long fullAvg = (fullStats.totalDuration / fullStats.iterations) / JandexTestUtils.NANOS_IN_MICRO;
-    		System.out.println("  Sparse [ " + sparseAvg + " (micro) ] [ " + (sparseAvg * 100 / fullAvg) + " % ]");
-    		System.out.println("  Full   [ " + fullAvg  + " (micro) ]");
-    	}
+        if ( sparseTimeStats == null ) {
+            System.out.println("Sparse times were not collected");
+        } else {
+            System.out.println("Sparse times");
+            System.out.println("  Path [ " + sparseTimeStats.indexPath + " ]");
+            System.out.println("  Classes [ " + sparseTimeStats.numClasses + " ]");
+        }
     }
 
     @Test
@@ -186,12 +188,10 @@ public class SparseIndexPerfTest_Samples {
             iterations,
             heapStats);
 
-        TimeStats timeStats = new TimeStats(
-            	testData.indexPath, testData.indexSize,
-            	iterations,
-            	totalDuration, minDuration, maxDuration);
-
-        fullTimeStats.add(timeStats);
+        fullTimeStats = new TimeStats(
+            testData.indexPath, testData.indexSize,
+            iterations,
+            totalDuration, minDuration, maxDuration);
     }
 
     @Test
@@ -245,12 +245,10 @@ public class SparseIndexPerfTest_Samples {
             heapStats);
         
 
-        TimeStats timeStats = new TimeStats(
-            	testData.indexPath, testData.indexSize,
-            	iterations,
-            	totalDuration, minDuration, maxDuration);
-
-        sparseTimeStats.add(timeStats);
+        sparseTimeStats = new TimeStats(
+            testData.indexPath, testData.indexSize,
+            iterations,
+            totalDuration, minDuration, maxDuration);
     }
 
     public void displayTimes(

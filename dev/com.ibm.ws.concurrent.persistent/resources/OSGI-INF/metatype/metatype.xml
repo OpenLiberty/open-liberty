@@ -26,7 +26,7 @@
   <AD id="enableTaskExecution"               type="Boolean" default="true" name="%enableTaskExecution" description="%enableTaskExecution.desc"/>
   <AD id="initialPollDelay"                  type="String"  default="0" ibm:type="duration" name="%initialPollDelay" description="%initialPollDelay.desc"/>
   <AD id="jndiName"                          type="String"  required="false" ibm:unique="jndiName" name="internal" description="internal use only"/>
-  <AD id="missedTaskThreshold"               type="String"  ibm:beta="true" default="-1" ibm:type="duration(s)" name="%missedTaskThreshold" description="%missedTaskThreshold.desc"/>
+  <AD id="missedTaskThreshold"               type="String"  default="-1" ibm:type="duration(s)" name="%missedTaskThreshold" description="%missedTaskThreshold.desc"/>
   <AD id="pollInterval"                      type="String"  required="false" ibm:type="duration" name="%pollInterval" description="%pollInterval.desc"/>
   <AD id="pollSize"                          type="Integer" required="false" min="1" name="%pollSize" description="%pollSize.desc"/>
   <AD id="retryInterval"                     type="String"  required="false" ibm:type="duration" name="%retryInterval" description="%retryInterval.desc"/>

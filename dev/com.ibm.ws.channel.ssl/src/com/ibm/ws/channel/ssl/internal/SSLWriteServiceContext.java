@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2008 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -244,7 +244,7 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                 if (forceQueue) {
                     // Error must be returned on a separate thread.
                     queuedWork.setErrorParameters(getConnLink().getVirtualConnection(),
-                                                this, userCallback, exceptionInRequest);
+                                                  this, userCallback, exceptionInRequest);
 
                     EventEngine events = SSLChannelProvider.getEventService();
                     if (null == events) {
@@ -325,7 +325,7 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                             Tr.debug(tc, "Unable to complete SSLhandshake, " + e);
                         }
                         callback.error(getConnLink().getVirtualConnection(), this, e);
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                             Tr.exit(tc, "writeAsynch: null");
                         }
                         return null;
@@ -354,7 +354,7 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                 // with the close logic. so no FFDC here.
                 if (closeCalled) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Cannot write, the link was already closed; vc=" +this.getVCHash());
+                        Tr.debug(tc, "Cannot write, the link was already closed; vc=" + this.getVCHash());
                     }
                     return null;
                 } else {
@@ -362,12 +362,12 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                     if (original instanceof IOException) {
                         ioe = (IOException) original;
                     }
-                    ioe = new IOException("writeAsynch failed with exception: " +original.getMessage());
+                    ioe = new IOException("writeAsynch failed with exception: " + original.getMessage());
                     boolean fireHere = true;
                     if (forceQueue) {
                         // Error must be returned on a separate thread.
                         queuedWork.setErrorParameters(getConnLink().getVirtualConnection(),
-                                                    this, userCallback, ioe);
+                                                      this, userCallback, ioe);
                         EventEngine events = SSLChannelProvider.getEventService();
                         if (null != events) {
                             // fire an event to continue this queued work
@@ -525,6 +525,8 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
         private WsByteBuffer netBuffer;
         /** Decrypted data buffer... used for unwrap calls in handshake */
         private WsByteBuffer decryptedNetBuffer;
+        /** allow other code to tell this class if they changed netBuffer */
+        private WsByteBuffer updatedNetBuffer = null;
 
         /**
          * Constructor.
@@ -533,6 +535,17 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
          */
         public MyHandshakeCompletedCallback(TCPWriteRequestContext _writeContext) {
             this.writeContext = _writeContext;
+        }
+
+        @Override
+        public void updateNetBuffer(WsByteBuffer newBuffer) {
+            netBuffer = newBuffer;
+            updatedNetBuffer = newBuffer;
+        }
+
+        @Override
+        public WsByteBuffer getUpdatedNetBuffer() {
+            return updatedNetBuffer;
         }
 
         /**
@@ -653,13 +666,24 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                                                  null,
                                                  hsCallback,
                                                  false);
+
+            if ((hsCallback != null) && (hsCallback.getUpdatedNetBuffer() != null)) {
+                netBuffer = hsCallback.getUpdatedNetBuffer();
+            }
+
         } catch (IOException e) {
             // Release buffers used in the handshake.
+            if ((hsCallback != null) && (hsCallback.getUpdatedNetBuffer() != null)) {
+                netBuffer = hsCallback.getUpdatedNetBuffer();
+            }
             netBuffer.release();
             decryptedNetBuffer.release();
             throw e;
         } catch (ReadOnlyBufferException robe) {
             // Release buffers used in the handshake.
+            if ((hsCallback != null) && (hsCallback.getUpdatedNetBuffer() != null)) {
+                netBuffer = hsCallback.getUpdatedNetBuffer();
+            }
             netBuffer.release();
             decryptedNetBuffer.release();
             throw new IOException("Caught exception during handshake: " + robe.getMessage(), robe);

@@ -532,6 +532,156 @@ public class AutoExtractTest extends AbstractAppManagerTest {
         }
     }
 
+    /**
+     * Test that a war file application defined in server.xml is not re-extracted on a server restart if the app didn't change.
+     */
+    @Test
+    public void testNoAutoExtractOnRestartWar() throws Exception {
+        try {
+            final String method = testName.getMethodName();
+
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, TEST_WAR_APPLICATION);
+
+            server.setServerConfigurationFile("/autoExpand/definedWarServer.xml");
+            server.startServer(method + ".log");
+
+            // Pause to make sure the server is ready to install apps
+            assertNotNull("The server never reported that it was ready to install web apps.",
+                          server.waitForStringInLog("CWWKZ0058I:"));
+
+            //install file
+
+            // Pause for application to start properly and server to say it's listening on ports
+            final int httpDefaultPort = server.getHttpDefaultPort();
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+            assertNotNull("The application testWarApplication did not appear to have started.",
+                          server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+            assertNotNull("The server did not report that the app was being extracted",
+                          server.waitForStringInLog("CWWKZ0133I.* testWarApplication"));
+
+            URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+            //check application is installed
+            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            BufferedReader br = HttpUtils.getConnectionStream(con);
+            String line = br.readLine();
+            assertTrue("The response did not contain the \'Test servlet\'",
+                       line.contains("test servlet is running."));
+            con.disconnect();
+
+            server.copyFileToLibertyServerRoot(server.pathToAutoFVTTestFiles, APPS_DIR + "/expanded/" + TEST_WAR_APPLICATION, "test.file");
+            url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/test.file");
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+            //check application is installed
+            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            br = HttpUtils.getConnectionStream(con);
+            line = br.readLine();
+            assertTrue("The response did not contain the \'This is a test update\' actual: " + line,
+                       line.contains("This is a test update"));
+            con.disconnect();
+
+            server.setMarkToEndOfLog();
+
+            server.stopServer();
+            server.startServer(method + ".start2.log", false);
+
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+            assertNotNull("The application testWarApplication did not appear to have started.",
+                          server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+            //check application is installed
+            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            br = HttpUtils.getConnectionStream(con);
+            line = br.readLine();
+            assertTrue("The response did not contain the \'This is a test update\' actual: " + line,
+                       line.contains("This is a test update"));
+            con.disconnect();
+
+        } finally {
+            //if we failed to delete file before, try to delete it now.
+            pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
+            server.removeAllInstalledAppsForValidation();
+            // Ignore warning that happens because we deleted the app with it still defined in server.xml
+            server.stopServer(COULD_NOT_FIND_APP_WARNING);
+        }
+    }
+
+    @Test
+    public void testNoAutoExtractOnRestartEar() throws Exception {
+        try {
+            final String method = testName.getMethodName();
+
+            //install file
+
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, APP_J2EE_EAR);
+
+            server.setServerConfigurationFile("/autoExpand/definedEarServer.xml");
+            server.startServer(method + ".log");
+
+            // Pause to make sure the server is ready to install apps
+            assertNotNull("The server never reported that it was ready to install web apps.",
+                          server.waitForStringInLog("CWWKZ0058I:"));
+
+            // Pause for application to start properly and server to say it's listening on ports
+            final int httpDefaultPort = server.getHttpDefaultPort();
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+            assertNotNull("The web application app-j2ee did not appear to have started.",
+                          server.waitForStringInLog("CWWKZ0001I.* app-j2ee"));
+            assertNotNull("The server did not report that the app was being extracted",
+                          server.waitForStringInLog("CWWKZ0133I.* app-j2ee"));
+
+            URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/test-web/DummyServlet");
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+
+            //check application is installed
+            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            BufferedReader br = HttpUtils.getConnectionStream(con);
+            String line = br.readLine();
+            assertTrue("The response did not contain the phrase \'For testing this servlet\'",
+                       line.contains("For testing this servlet"));
+            con.disconnect();
+
+            server.copyFileToLibertyServerRoot(server.pathToAutoFVTTestFiles, APPS_DIR + "/expanded/" + APP_J2EE_EAR + "/test-web.war", "test.file");
+            url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/test-web/test.file");
+
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            br = HttpUtils.getConnectionStream(con);
+            line = br.readLine();
+            assertTrue("The response did not contain the phrase \'This is a test update\', actual: " + line,
+                       line.contains("This is a test update"));
+            con.disconnect();
+
+            server.setMarkToEndOfLog();
+
+            // restart the server, but don't clear the workarea
+            server.stopServer();
+            server.startServer(method + ".start2.log", false);
+
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+            assertNotNull("The application testWarApplication did not appear to have started.",
+                          server.waitForStringInLog("CWWKZ0001I.* app-j2ee"));
+
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            br = HttpUtils.getConnectionStream(con);
+            line = br.readLine();
+            assertTrue("The response did not contain the phrase \'This is a test update\', actual: " + line,
+                       line.contains("This is a test update"));
+            con.disconnect();
+        } finally {
+            //if we failed to delete file before, try to delete it now.
+            pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
+            server.removeAllInstalledAppsForValidation();
+            server.stopServer(COULD_NOT_FIND_APP_WARNING);
+        }
+    }
+
     /*
      * (non-Javadoc)
      *

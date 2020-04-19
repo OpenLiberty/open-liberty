@@ -32,7 +32,9 @@ Import-Package: !sun.*,\
   !org.jboss.*,\
   *
 
-Export-Package: io.grpc.netty.shaded.io.*
+Export-Package: \
+  com.ibm.ws.grpc.client.* ,\
+  io.grpc.netty.shaded.io.*
 
 javac.args.release: current
 
@@ -40,7 +42,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 # include the service providers
 Include-Resource: \
-  @${repo;io.grpc:grpc-netty-shaded}!/META-INF/**
+  META-INF=@src/META-INF
 
 # expose the service providers to be consumed by grpc-common bundle
 Service-Component: \
@@ -51,15 +53,16 @@ Service-Component: \
     properties:="resources=${app-resources}"
     
 app-resources= \
-  META-INF/services/io.grpc.ManagedChannelProvider | \
-  META-INF/services/io.grpc.ServerProvider
+  META-INF/services/io.grpc.ManagedChannelProvider
     
-Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ServerProvider,\
-  osgi.serviceloader;osgi.serviceloader=io.grpc.ManagedChannelProvider
+Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ManagedChannelProvider
   
 instrument.disabled: true
 
 -buildpath: \
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.ws.grpc.common;version=latest,\
+  com.ibm.ws.webcontainer,\
   io.grpc:grpc-netty-shaded;version=1.27.0
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

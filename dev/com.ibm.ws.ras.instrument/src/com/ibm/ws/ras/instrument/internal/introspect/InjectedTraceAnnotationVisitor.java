@@ -26,15 +26,15 @@ public class InjectedTraceAnnotationVisitor extends AnnotationVisitor {
     private boolean visitedValueArray = false;
 
     public InjectedTraceAnnotationVisitor() {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
     }
 
     public InjectedTraceAnnotationVisitor(AnnotationVisitor av) {
-        super(Opcodes.ASM7, av);
+        super(Opcodes.ASM8, av);
     }
 
     public <T extends RasMethodAdapter> InjectedTraceAnnotationVisitor(AnnotationVisitor av, Class<T> currentMethodVisitor) {
-        super(Opcodes.ASM7, av);
+        super(Opcodes.ASM8, av);
         this.currentMethodVisitor = currentMethodVisitor;
     }
 
@@ -54,7 +54,7 @@ public class InjectedTraceAnnotationVisitor extends AnnotationVisitor {
 
     private class ValueArrayVisitor extends AnnotationVisitor {
         private ValueArrayVisitor(AnnotationVisitor av) {
-            super(Opcodes.ASM7, av);
+            super(Opcodes.ASM8, av);
         }
 
         @Override

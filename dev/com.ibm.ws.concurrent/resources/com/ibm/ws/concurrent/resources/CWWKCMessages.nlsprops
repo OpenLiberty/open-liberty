@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: The configuration element {0} contains an unrecognized attribute {1}.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Update the application to avoid invokin
 CWWKC1130.xprop.value.invalid=CWWKC1130E: A task submitted to managed executor {0} contains an execution property {1} with value {2} that is not valid for managed executors.
 CWWKC1130.xprop.value.invalid.explanation=Some execution property values are not valid for managed executors, but might be valid for other resource types such as context service or managed thread factory.
 CWWKC1130.xprop.value.invalid.useraction=Update the application to omit the execution property or set it to a valid value.
+
+CWWKC1156.not.supported=CWWKC1156E: The requested operation is not available as a static method on the managed executor implementation of CompletableFuture. Use the following operation instead: {0}.
+CWWKC1156.not.supported.explanation=The managed executor implementation of CompletableFuture does not provide static method equivalents to the static methods of CompletableFuture.
+CWWKC1156.not.supported.useraction=Update the application to use the method that is recommended in the message in place of the requested operation.

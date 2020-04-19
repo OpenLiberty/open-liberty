@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.ws.jpa.management;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -247,7 +246,7 @@ public class JPAScopeInfo {
         }
     }
 
-    void doIntrospect(PrintWriter out) {
+    void doIntrospect() {
         final Map<String, JPAPxmlInfo> pxmlsInfoCopy = new HashMap<String, JPAPxmlInfo>();
         synchronized (pxmlsInfo) {
             pxmlsInfoCopy.putAll(pxmlsInfo);
@@ -258,8 +257,7 @@ public class JPAScopeInfo {
 
             JPAIntrospection.beginPXmlInfoVisit(value);
             try {
-                out.println();
-                value.doIntrospect(out);
+                value.doIntrospect();
             } finally {
                 JPAIntrospection.endPXmlInfoVisit();
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,10 +33,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
-import javax.enterprise.concurrent.AbortedException;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
-import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -47,6 +43,10 @@ import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
+import jakarta.enterprise.concurrent.AbortedException;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/ConcurrentPolicyFATServlet")

@@ -399,7 +399,9 @@ public class Solicited {
             throw wtafe;
         }
         // expect to return a form to redirect to the idp by the browser
-        return TAIResult.create(HttpServletResponse.SC_FORBIDDEN); //
+        //return TAIResult.create(HttpServletResponse.SC_FORBIDDEN); //
+        // change to 401 because admincenter intercepts 403
+        return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED); 
     }
 
     /**

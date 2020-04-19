@@ -138,6 +138,20 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
   }
+  
+  /*
+   * Copy the InMemoryLdapServer truststore into test servers.
+   */
+  servers = [
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.ssl',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ad.ssl'
+  ]
+  servers.each { server ->
+    copy { 
+      from project(':com.ibm.ws.com.unboundid').file('resources/truststore.p12')
+      into new File(autoFvtDir,'publish/servers/' + server)
+    }
+  }
 
   /*
    * Copy the WIM API WAR into test servers.

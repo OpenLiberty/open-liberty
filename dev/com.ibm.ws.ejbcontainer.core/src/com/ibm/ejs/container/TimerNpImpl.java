@@ -280,6 +280,10 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable {
         return ivDestroyed;
     }
 
+    long getIvExpiration() {
+        return ivExpiration;
+    }
+
     /**
      * Registers the timer with the TimerService (so that it will be found by
      * getTimers) and either schedules the timer for execution or places it
