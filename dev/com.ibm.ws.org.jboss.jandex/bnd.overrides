@@ -5,7 +5,7 @@ Bundle-Name: jandex
 Bundle-SymbolicName: com.ibm.ws.org.jboss.jandex
 
 Export-Package:\
-	org.jboss.jandex;version="2.0.3.Final"
+	org.jboss.jandex;version="2.1.2.Final"
 
 Include-Resource:\
-        @${repo;org.jboss.jandex;2.0.3.Final}!/!META-INF/*
+        @${repo;org.jboss.jandex;2.1.2.Final}!/!META-INF/*
