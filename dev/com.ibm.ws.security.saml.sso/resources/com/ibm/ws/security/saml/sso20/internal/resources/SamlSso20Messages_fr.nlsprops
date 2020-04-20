@@ -52,7 +52,7 @@ SAML20_NO_SUCH_ACS_PROVIDER.useraction=V\u00e9rifiez dans le fichier server.xml 
 
 # Do not translate "id"
 SAML20_SP_ID_ATTRIBUTE_EMPTY=CWWKS5006E: Un fournisseur de services SAML Web SSO version 2.0 a \u00e9t\u00e9 configur\u00e9 avec un attribut d'ID vide. L'attribut d'ID pour les fournisseurs de services SAML Web SSO ne doit pas \u00eatre vide.
-SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=L'attribut d'ID pour les fournisseurs de services SAML Web SSO identifie de mani\u00e8re unique chaque fournisseur de services. L'attribut d'ID est utilis\u00e9 pour la cr\u00e9ation des informations de construction requises pour une op\u00e9ration correcte de SAML Web SSO, comme la g\u00e9n\u00e9ration d'URL de fournisseur de service valides.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=L'attribut d'ID pour les fournisseurs de services SAML Web SSO identifie de mani\u00e8re unique chaque fournisseur de services. L'attribut d'ID est utilis\u00e9 pour la cr\u00e9ation des informations de construction requises pour une op\u00e9ration correcte de SAML Web SSO, comme la g\u00e9n\u00e9ration d'URL de fournisseur de services valides.
 SAML20_SP_ID_ATTRIBUTE_EMPTY.useraction=Consultez le fichier server.xml afin de vous assurer que tous les fournisseurs de services SAML Web SSO sont configur\u00e9s avec une valeur d'attribut d'ID non vide.
 
 SAML20_SERVER_INTERNAL_LOG_ERROR=CWWKS5007E: Une erreur interne du serveur s''est produite lors du traitement de la demande SAML de connexion unique Web (Web SSO) [{0}]. Motif :[{1}], Trace de pile : [{2}].
@@ -224,7 +224,7 @@ SAML20_NO_INRESPONSETO.useraction=Contactez l'administrateur du fournisseur d'id
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: L''assertion SAML ne contient pas d''attribut [{0}].  Un attribut [{0}] est obligatoire.  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: L''assertion SAML ne contient pas d''\u00e9l\u00e9ment [{0}].  Un \u00e9l\u00e9ment [{0}] est n\u00e9cessaire.  
 SAML20_ATTRIBUTE_ERR.explanation=L'assertion SAML ne contient pas l'attribut requis par le module d'ex\u00e9cution.
 SAML20_ATTRIBUTE_ERR.useraction=L'attribut requis doit \u00eatre ajout\u00e9 \u00e0 l'assertion SAML.  Contactez l'administrateur du fournisseur d'identit\u00e9 pour v\u00e9rifier que celui-ci est configur\u00e9 correctement ou configurez le fournisseur de services ou l'intercepteur de relations de confiance afin de d\u00e9finir une valeur pour l'attribut.
 
@@ -338,6 +338,5 @@ LOGOUT_CANNOT_PERFORM_SLO.explanation=Plusieurs instances de fournisseur de serv
 LOGOUT_CANNOT_PERFORM_SLO.useraction=Assurez-vous que l'application de d\u00e9connexion est associ\u00e9e \u00e0 un seul fournisseur de services. Par exemple, un fournisseur de services par application.
 
 LOGOUT_CANNOT_FIND_SAMLTOKEN=CWWKS5218E: Le service de d\u00e9connexion ne peut pas finaliser la demande de d\u00e9connexion unique SAML car il ne peut pas localiser la session de s\u00e9curit\u00e9 utilisateur.
-LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=Le fournisseur de services ne peut pas localiser la session de s\u00e9curit\u00e9 utilisateur pour cr\u00e9er le message de demande de d\u00e9connexion unique SAML. \
-L'utilisateur a \u00e9t\u00e9 d\u00e9connect\u00e9 du fournisseur de services, mais il a peut-\u00eatre encore une session de s\u00e9curit\u00e9 active avec le fournisseur d'identit\u00e9.
+LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=Le fournisseur de services ne peut pas localiser la session de s\u00e9curit\u00e9 utilisateur pour cr\u00e9er le message de demande de d\u00e9connexion unique SAML. L'utilisateur a \u00e9t\u00e9 d\u00e9connect\u00e9 du fournisseur de services, mais il a peut-\u00eatre encore une session de s\u00e9curit\u00e9 active avec le fournisseur d'identit\u00e9.
 LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Pensez \u00e0 impl\u00e9menter la d\u00e9connexion initi\u00e9e par le fournisseur d'identit\u00e9 et redirigez l'utilisateur vers le fournisseur d'identit\u00e9 pour se d\u00e9connecter, en particulier si la d\u00e9connexion du fournisseur de services \u00e9choue ou est incompl\u00e8te. 

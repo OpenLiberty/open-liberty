@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,31 +22,31 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: L''elemento di configurazione {0} contiene un attributo non riconosciuto {1}.
-CWWKC1000.unrecognized.property.explanation=In un servizio contesto \u00e8 configurata una propriet\u00e0 non riconosciuta.
+CWWKC1000.unrecognized.property.explanation=Su un servizio di contesto \u00e8 configurata una propriet\u00e0 non riconosciuta.
 CWWKC1000.unrecognized.property.useraction=Rimuovere o correggere la propriet\u00e0 non riconosciuta.
 
 # Moved from com.ibm.ws.context
 CWWKC1001.context.providers.unavailable=CWWKC1001E: Il contesto thread configurato {0} non \u00e8 disponibile per l''elemento di configurazione {1}.
-CWWKC1001.context.providers.unavailable.explanation=Il server delle applicazioni non \u00e8 in grado di trovare i provider del tipo specificato del contesto thread.
-CWWKC1001.context.providers.unavailable.useraction=Assicurarsi che i provider del contesto thread richiesto siano abilitati.
+CWWKC1001.context.providers.unavailable.explanation=Il server delle applicazioni non \u00e8 in grado di trovare i provider di contesto del thread dei tipi specificati.
+CWWKC1001.context.providers.unavailable.useraction=Assicurarsi che i provider di contesto del thread richiesti siano abilitati.
 
 # Moved from com.ibm.ws.context
 CWWKC1002.provider.cardinality.violation=CWWKC1002E: L''elemento di configurazione {0} non pu\u00f2 avere pi\u00f9 di un sottoelemento del tipo {1}.
-CWWKC1002.provider.cardinality.violation.explanation=Al massimo, in un servizio contesto \u00e8 possibile configurare un elemento di ciascun tipo di provider di contesto.
+CWWKC1002.provider.cardinality.violation.explanation=In un servizio di contesto \u00e8 possibile configurare al massimo un elemento per ogni tipo di provider di contesto.
 CWWKC1002.provider.cardinality.violation.useraction=Rimuovere gli elementi provider di contesto duplicati dalla configurazione del servizio di contesto.
 
 # Moved from com.ibm.ws.context
 CWWKC1020.baseContextRef.infinite=CWWKC1020E: L''attributo baseContextRef dell''elemento di configurazione {0} causa una catena infinita di dipendenze.
-CWWKC1020.baseContextRef.infinite.explanation=\u00c8 presente una catena infinita di dipendenze in quanto baseContextRef punta di nuovo direttamente o indirettamente alla stessa istanza del servizio di contesto.
+CWWKC1020.baseContextRef.infinite.explanation=Una catena infinita di dipendenze esiste perch\u00e9 baseContextRef punta direttamente o indirettamente sempre alla stess a istanza di servizio di contesto.
 CWWKC1020.baseContextRef.infinite.useraction=Aggiornare la configurazione del servizio di contesto per interrompere la catena infinita di dipendenze.
 
 CWWKC1100.resource.unavailable=CWWKC1100E: La risorsa {0} non \u00e8 disponibile.
-CWWKC1100.resource.unavailable.explanation=Una risorsa potrebbe diventare non disponibile a causa dell'arresto del server o a causa di una modifica della configurazione della risorsa stessa o di un altro servizio da cui essa dipende.
-CWWKC1100.resource.unavailable.useraction=Verificare la configurazione della risorsa e le risorse da cui essa dipende.
+CWWKC1100.resource.unavailable.explanation=Una risorsa potrebbe diventare non disponibile a causa dello spegnimento del server o di una modifica di configurazione a se stessa o a un altro servizio da cui dipende.
+CWWKC1100.resource.unavailable.useraction=Verificare la configurazione della risorsa e di tutte le risorse da cui dipende.
 
 CWWKC1110.task.canceled=CWWKC1110I: L''attivit\u00e0 {0}, che \u00e8 stata inoltrata al servizio executor {1}, \u00e8 stata annullata.
 CWWKC1110.task.canceled.explanation=L'esecuzione dell'attivit\u00e0 \u00e8 stata annullata.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Aggiornare l'applicazione per evitare d
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Un''attivit\u00e0 inoltrata all''executor gestito {0} contiene una propriet\u00e0 di esecuzione {1} con valore {2}, che non \u00e8 valido per gli executor gestiti.
 CWWKC1130.xprop.value.invalid.explanation=Alcuni valori della propriet\u00e0 di esecuzione non sono validi per gli executor gestiti, ma potrebbero essere validi per altri tipi di risorsa, come il servizio di contesto o il factory del thread gestito.
 CWWKC1130.xprop.value.invalid.useraction=Aggiornare l'applicazione per omettere la propriet\u00e0 di esecuzione o impostarla su un valore valido.
+
+CWWKC1156.not.supported=CWWKC1156E: L''operazione richiesta non \u00e8 disponibile come metodo statico sull''implementazione executor gestito di CompletableFuture. Utilizzare invece la seguente operazione: {0}.
+CWWKC1156.not.supported.explanation=L'implementazione dell'executor gestito di CompletableFuture non fornisce metodi statici equivalenti ai metodi statici di CompletableFuture.
+CWWKC1156.not.supported.useraction=Aggiornare l'applicazione per utilizzare il metodo consigliato nel messaggio al posto dell'operazione richiesta.

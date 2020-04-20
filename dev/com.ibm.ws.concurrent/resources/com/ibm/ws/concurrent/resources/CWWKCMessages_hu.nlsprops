@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: A(z) {0} konfigur\u00e1ci\u00f3s elem fel nem ismert {1} attrib\u00fatumot tartalmaz.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Az alkalmaz\u00e1st friss\u00edt\u00e9s
 CWWKC1130.xprop.value.invalid=CWWKC1130E: A(z) {0} fel\u00fcgyelt v\u00e9grehajt\u00f3nak elk\u00fcld\u00f6tt feladat {1} v\u00e9grehajt\u00e1si tulajdons\u00e1got tartalmaz {2} \u00e9rt\u00e9kkel, ami fel\u00fcgyelt v\u00e9grehajt\u00f3k eset\u00e9ben nem \u00e9rv\u00e9nyes.
 CWWKC1130.xprop.value.invalid.explanation=Bizonyos v\u00e9grehajt\u00e1si tulajdons\u00e1gok fel\u00fcgyelt v\u00e9grehajt\u00f3k eset\u00e9ben nem \u00e9rv\u00e9nyesek, de m\u00e1s er\u0151forr\u00e1st\u00edpusok eset\u00e9ben (p\u00e9ld\u00e1ul kontextus szolg\u00e1ltat\u00e1s vagy fel\u00fcgyelt sz\u00e1lgy\u00e1r) \u00e9rv\u00e9nyesek lehetnek.
 CWWKC1130.xprop.value.invalid.useraction=Az alkalmaz\u00e1st friss\u00edtve hagyja ki a v\u00e9grehajt\u00e1si tulajdons\u00e1got vagy \u00e1ll\u00edtsa azt be \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.
+
+CWWKC1156.not.supported=CWWKC1156E: A k\u00e9rt m\u0171velet nem \u00e9rhet\u0151 el statikus m\u00f3dszerk\u00e9nt a CompletableFuture fel\u00fcgyelt v\u00e9grehajt\u00f3 megval\u00f3s\u00edt\u00e1s\u00e1n. Haszn\u00e1lja ehelyett a k\u00f6vetkez\u0151 m\u0171veletet: {0}.
+CWWKC1156.not.supported.explanation=A CompletableFuture fel\u00fcgyelt v\u00e9grehajt\u00f3 megval\u00f3s\u00edt\u00e1s nem biztos\u00edt a CompletableFuture statikus m\u00f3dszereivel egyen\u00e9rt\u00e9k\u0171 statikus m\u00f3dszereket.
+CWWKC1156.not.supported.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy a met\u00f3dus az \u00fczenetben javasolt m\u0171veletet haszn\u00e1lja a k\u00e9rt m\u0171velet helyett.

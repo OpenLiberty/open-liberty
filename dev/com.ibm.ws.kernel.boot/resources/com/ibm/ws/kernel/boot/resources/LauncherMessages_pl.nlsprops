@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -565,15 +565,12 @@ czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Zainicjowano procedur\u0119 uruchamiania serwera {0} \
 (ID procesu: {1}), jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
-z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
 kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
-warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, \
-czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Nie mo\u017cna zatrzyma\u0107 serwera {0}, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
-z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
 error.serverStopCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, mo\u017cna go zatrzyma\u0107 \
 z poziomu konsoli operatora.  W przeciwnym razie proces serwera mo\u017cna zatrzyma\u0107 z poziomu pow\u0142oki.
 
@@ -653,8 +650,7 @@ error.zosProcStart.start.length.useraction=Skr\u00f3\u0107 nazw\u0119 serwera i 
 info.addProductExtension=CWWKE0108I: Rozszerzenie \
 produktu {0} zosta\u0142o programowo w\u0142\u0105czone. Identyfikator produktu rozszerzenia \
 to {1}. Miejsce instalacji rozszerzenia produktu to {2}.
-info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.  \
-Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
+info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
 com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
@@ -948,6 +944,10 @@ error.package.extension.useraction=Je\u015bli podajesz opcj\u0119 --include=runn
 error.package.usr.jar=CWWKE0951E: Nazwa pliku archiwum nie mo\u017ce ko\u0144czy\u0107 si\u0119 rozszerzeniem nazwy pliku .jar, gdy u\u017cywana jest opcja usr.
 error.package.usr.jar.explanation=Opcja --archive nie mo\u017ce ko\u0144czy\u0107 si\u0119 rozszerzeniem nazwy pliku .jar, gdy okre\u015blona jest opcja --include=usr.
 error.package.usr.jar.useraction=Podaj nazw\u0119 pliku przy u\u017cyciu opcji --archive z rozszerzeniem nazwy pliku innym ni\u017c .jar, gdy jest u\u017cywana opcja --include=usr.
+
+error.missing.version.files=CWWKE0952E: Nie mo\u017cna odczyta\u0107 informacji o wersji z katalogu {0}.
+error.missing.version.files.explanation=Katalog zawieraj\u0105cy pliki z informacjami o wersji nie istnieje lub bie\u017c\u0105cy u\u017cytkownik nie mo\u017ce go odczyta\u0107.
+error.missing.version.files.useraction=Upewnij si\u0119, \u017ce katalog istnieje i bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107. 
 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.

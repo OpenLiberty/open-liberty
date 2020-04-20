@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: El elemento de configuraci\u00f3n {0} contiene un atributo no reconocido {1}.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Actualice la aplicaci\u00f3n para evita
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Una tarea enviada al ejecutor gestionado {0} contiene una propiedad de ejecuci\u00f3n {1} con el valor {2}, que no es v\u00e1lido para los ejecutores gestionados.
 CWWKC1130.xprop.value.invalid.explanation=Algunos valores de propiedad de ejecuci\u00f3n no son v\u00e1lidos para ejecutores gestionados, pero pueden ser v\u00e1lidos para otros tipos de recursos, como f\u00e1brica de hebras gestionadas o servicio de contexto.
 CWWKC1130.xprop.value.invalid.useraction=Actualice la aplicaci\u00f3n para omitir la propiedad de ejecuci\u00f3n o establ\u00e9zcala en un valor v\u00e1lido.
+
+CWWKC1156.not.supported=CWWKC1156E: La operaci\u00f3n solicitada no est\u00e1 disponible como un m\u00e9todo est\u00e1tico en la implementaci\u00f3n de ejecutor gestionado de CompletableFuture. Utilice la operaci\u00f3n siguiente en su lugar: {0}.
+CWWKC1156.not.supported.explanation=La implementaci\u00f3n del ejecutor gestionado de CompletableFuture no proporciona equivalentes del m\u00e9todo est\u00e1tico a los m\u00e9todos est\u00e1ticos de CompletableFuture.
+CWWKC1156.not.supported.useraction=Actualice la aplicaci\u00f3n para que utilice el m\u00e9todo que se recomienda en el mensaje en lugar de la operaci\u00f3n solicitada.
