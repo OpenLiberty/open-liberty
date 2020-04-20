@@ -12,26 +12,20 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
 
-import org.junit.Assert;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
+import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
 import componenttest.topology.impl.LibertyServer;
@@ -50,7 +44,6 @@ public class CDI12ExtensionTest extends LoggingTest {
 
     private static LibertyServer server;
 
-
     /*
      * (non-Javadoc)
      *
@@ -63,34 +56,29 @@ public class CDI12ExtensionTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        JavaArchive multipleWarEmbeddedJar = ShrinkWrap.create(JavaArchive.class,"multipleWarEmbeddedJar.jar")
-                        .addClass("com.ibm.ws.cdi.lib.MyEjb")
-                        .add(new FileAsset(new File("test-applications/multipleWarEmbeddedJar.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
+        JavaArchive multipleWarEmbeddedJar = ShrinkWrap.create(JavaArchive.class,
+                                                               "multipleWarEmbeddedJar.jar").addClass("com.ibm.ws.cdi.lib.MyEjb").add(new FileAsset(new File("test-applications/multipleWarEmbeddedJar.jar/resources/META-INF/beans.xml")),
+                                                                                                                                      "/META-INF/beans.xml");
 
-        WebArchive multipleWarNoBeans = ShrinkWrap.create(WebArchive.class, "multipleWarNoBeans.war")
-                        .addClass("test.multipleWarNoBeans.TestServlet");
+        WebArchive multipleWarNoBeans = ShrinkWrap.create(WebArchive.class, "multipleWarNoBeans.war").addClass("test.multipleWarNoBeans.TestServlet");
 
-        WebArchive multipleWar = ShrinkWrap.create(WebArchive.class, "multipleWar1.war")
-                        .addClass("test.multipleWar1.TestServlet")
-                        .addClass("test.multipleWar1.MyBean")
-                        .add(new FileAsset(new File("test-applications/multipleWar1.war/resources/WEB-INF/ejb-jar.xml")), "/WEB-INF/ejb-jar.xml")
-                        .add(new FileAsset(new File("test-applications/multipleWar1.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
-                        .addAsLibrary(multipleWarEmbeddedJar);
+        WebArchive multipleWar = ShrinkWrap.create(WebArchive.class,
+                                                   "multipleWar1.war").addClass("test.multipleWar1.TestServlet").addClass("test.multipleWar1.MyBean").add(new FileAsset(new File("test-applications/multipleWar1.war/resources/WEB-INF/ejb-jar.xml")),
+                                                                                                                                                          "/WEB-INF/ejb-jar.xml").add(new FileAsset(new File("test-applications/multipleWar1.war/resources/WEB-INF/beans.xml")),
+                                                                                                                                                                                      "/WEB-INF/beans.xml").addAsLibrary(multipleWarEmbeddedJar);
 
-        EnterpriseArchive multipleWars = ShrinkWrap.create(EnterpriseArchive.class,"multipleWars2.ear")
-                        .add(new FileAsset(new File("test-applications/multipleWars2.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(multipleWar)
-                        .addAsModule(multipleWarNoBeans);
+        EnterpriseArchive multipleWars = ShrinkWrap.create(EnterpriseArchive.class,
+                                                           "multipleWars2.ear").add(new FileAsset(new File("test-applications/multipleWars2.ear/resources/META-INF/application.xml")),
+                                                                                    "/META-INF/application.xml").addAsModule(multipleWar).addAsModule(multipleWarNoBeans);
 
-        WebArchive helloWorldExtensionTest = ShrinkWrap.create(WebArchive.class, "helloWorldExtensionTest.war")
-                        .addClass("cdi12.helloworld.extension.test.HelloWorldExtensionTestServlet")
-                        .addClass("cdi12.helloworld.extension.test.HelloWorldExtensionBean")
-                        .add(new FileAsset(new File("test-applications/helloWorldExtensionTest.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        WebArchive helloWorldExtensionTest = ShrinkWrap.create(WebArchive.class,
+                                                               "helloWorldExtensionTest.war").addClass("cdi12.helloworld.extension.test.HelloWorldExtensionTestServlet").addClass("cdi12.helloworld.extension.test.HelloWorldExtensionBean").add(new FileAsset(new File("test-applications/helloWorldExtensionTest.war/resources/WEB-INF/beans.xml")),
+                                                                                                                                                                                                                                                 "/WEB-INF/beans.xml");
 
-        EnterpriseArchive helloWorldExension = ShrinkWrap.create(EnterpriseArchive.class,"helloWorldExension.ear")
-                        .add(new FileAsset(new File("test-applications/helloWorldExension.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(helloWorldExtensionTest)
-                        .addAsManifestResource(new FileAsset(new File("test-applications/helloWorldExtensionTest.war/resources/META-INF/permissions.xml")), "permissions.xml");
+        EnterpriseArchive helloWorldExension = ShrinkWrap.create(EnterpriseArchive.class,
+                                                                 "helloWorldExension.ear").add(new FileAsset(new File("test-applications/helloWorldExension.ear/resources/META-INF/application.xml")),
+                                                                                               "/META-INF/application.xml").addAsModule(helloWorldExtensionTest).addAsManifestResource(new FileAsset(new File("test-applications/helloWorldExtensionTest.war/resources/META-INF/permissions.xml")),
+                                                                                                                                                                                       "permissions.xml");
 
         /**
          * Install the user feature and the bundle
@@ -149,7 +137,7 @@ public class CDI12ExtensionTest extends LoggingTest {
             server.stopServer();
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
-        server.uninstallUserBundle(INSTALL_USERBUNDLE);
-        server.uninstallUserFeature(INSTALL_USERFEATURE);
+        //server.uninstallUserBundle(INSTALL_USERBUNDLE);
+        //server.uninstallUserFeature(INSTALL_USERFEATURE);
     }
 }
