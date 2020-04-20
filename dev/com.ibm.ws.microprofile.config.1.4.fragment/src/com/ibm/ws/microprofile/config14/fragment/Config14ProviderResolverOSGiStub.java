@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config14.fragment;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import javax.management.ServiceNotFoundException;
 
 import org.eclipse.microprofile.config.Config;
@@ -61,13 +64,17 @@ public class Config14ProviderResolverOSGiStub extends ConfigProviderResolver {
      * @return the bundle context
      */
     static BundleContext getBundleContext() {
-        BundleContext context = null; //we'll return null if not running inside an OSGi framework (e.g. unit test) or framework is shutting down
+        BundleContext context;
         if (FrameworkState.isValid()) {
             Bundle bundle = FrameworkUtil.getBundle(Config14ProviderResolverOSGiStub.class);
 
             if (bundle != null) {
-                context = bundle.getBundleContext();
+                context = AccessController.doPrivileged((PrivilegedAction<BundleContext>) () -> bundle.getBundleContext());
+            } else {
+                throw new RuntimeException("OSGi Bundle not found!");
             }
+        } else {
+            throw new RuntimeException("OSGi Framework not valid");
         }
         return context;
     }
@@ -102,7 +109,7 @@ public class Config14ProviderResolverOSGiStub extends ConfigProviderResolver {
 
         T service = null;
         if (ref != null) {
-            service = bundleContext.getService(ref);
+            service = AccessController.doPrivileged((PrivilegedAction<T>) () -> bundleContext.getService(ref));
         }
 
         if (service == null) {

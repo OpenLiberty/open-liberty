@@ -24,7 +24,7 @@ public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
     }
 
     @Override
-    protected void setStaticInstance(ConfigProviderResolver instance) {
+    protected void initialize(ConfigProviderResolver instance) {
         //NO-OP ... this version relies purely on the ServiceLoader mechanism
     }
 }
