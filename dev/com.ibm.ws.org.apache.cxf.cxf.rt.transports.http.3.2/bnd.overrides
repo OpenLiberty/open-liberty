@@ -19,9 +19,9 @@ Export-Package: \
 Import-Package: \
   !org.apache.aries.*,\
   !org.springframework.*,\
-  !javax.wsdl.*,\
-  !org.apache.cxf.ws.policy.*,\
-  !org.apache.cxf.wsdl,\
+  javax.wsdl.*;resolution:=optional, \
+  org.apache.cxf.ws.policy.*;resolution:=optional, \
+  org.apache.cxf.wsdl;resolution:=optional, \
   !org.osgi.service.blueprint.*,\
   com.ibm.ws.cxf.client.*,\
   *
