@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+-include= jar:${fileuri;${repo;org.eclipse.microprofile.config:microprofile-config-api;2.0.0.SNAPSHOT}}!/META-INF/MANIFEST.MF
+
 
 Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.config.1.4; singleton:=true
 
@@ -24,7 +26,7 @@ Export-Package: \
   org.eclipse.microprofile.config.spi;version=1.4
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.config:microprofile-config-api;1.4;EXACT}
+  @${repo;org.eclipse.microprofile.config:microprofile-config-api;2.0.0.SNAPSHOT;EXACT}
 
 
 WS-TraceGroup: APPCONFIG
