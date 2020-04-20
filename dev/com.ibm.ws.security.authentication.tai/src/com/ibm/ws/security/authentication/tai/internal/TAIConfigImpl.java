@@ -12,12 +12,15 @@ package com.ibm.ws.security.authentication.tai.internal;
 
 import java.util.Map;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.tai.TAIConfig;
 
 /**
  * Represents security configurable options for trustAssociation element
  */
 public class TAIConfigImpl implements TAIConfig {
+    private static final TraceComponent tc = Tr.register(TAIConfigImpl.class);
     // trustAssociation element attributes
     static final String KEY_INVOKE_FOR_UNPROTECTED_URI = "invokeForUnprotectedURI";
     static final String KEY_INVOKE_FOR_FORM_LOGIN = "invokeForFormLogin";
@@ -43,6 +46,11 @@ public class TAIConfigImpl implements TAIConfig {
         invokeForFormLogin = (Boolean) props.get(KEY_INVOKE_FOR_FORM_LOGIN);
         failOverToAppAuthType = (Boolean) props.get(KEY_FAIL_OVER_TO_APP_AUTH_TYPE);
         disableLtpaCookie = (Boolean) props.get(KEY_DISABLE_LTPA_COOKIE);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "TrustAssociation element (TAI) configuration:  ");
+            Tr.debug(tc, "  invokeForUnprotectedURI=" + invokeForUnprotectedURI + " invokeForFormLogin=" + invokeForFormLogin + " failOverToAppAuthType=" + failOverToAppAuthType
+                         + " disableLtpaCookie=" + disableLtpaCookie);
+        }
     }
 
     /** {@inheritDoc} */

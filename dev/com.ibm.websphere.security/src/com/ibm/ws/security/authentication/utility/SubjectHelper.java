@@ -44,7 +44,10 @@ public class SubjectHelper {
      */
     private static final String INTERNAL_DISABLE_SSO_LTPA_COOKIE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cookie";
 
-    private static final String[] disableSsoLtpaCookie = new String[] { INTERNAL_DISABLE_SSO_LTPA_COOKIE };
+    // SSO SAML property for disable LTPA cookie
+    private final static String DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER = "com.ibm.ws.saml.spcookie.session.not.on.or.after";
+
+    private static final String[] disableSsoLtpaCookieProps = new String[] { INTERNAL_DISABLE_SSO_LTPA_COOKIE, DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER };
 
     /**
      * Check whether the subject is un-authenticated or not.
@@ -409,11 +412,15 @@ public class SubjectHelper {
 
     public boolean isDisableLtpaCookie(final Subject subject) {
         SubjectHelper subjectHelper = new SubjectHelper();
-        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie);
-        if (hashtable != null && (Boolean) hashtable.get(INTERNAL_DISABLE_SSO_LTPA_COOKIE))
-            return true;
-        else
-            return false;
+        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookieProps);
+        if (hashtable != null) {
+            if (hashtable.get(DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER) != null ||
+                (Boolean) hashtable.get(INTERNAL_DISABLE_SSO_LTPA_COOKIE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

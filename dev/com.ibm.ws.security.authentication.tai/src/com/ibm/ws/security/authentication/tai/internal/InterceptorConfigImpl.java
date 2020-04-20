@@ -134,8 +134,12 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
             invokeAfterSSO = (Boolean) props.get(TAIConfig.KEY_INVOKE_AFTER_SSO);
             disableLtpaCookie = (Boolean) props.get(TAIConfig.KEY_DISABLE_LTPA_COOKIE);
             pid = (String) props.get(CFG_KEY_PROPERTIES_PID);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Shared library interceptor config:  ");
+                Tr.debug(tc, "  invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO + " disableLtpaCookie=" + disableLtpaCookie);
+            }
             processProperties();
-            initializeInterceptor();
+            initInterceptor();
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Skipping TAI that is not enable: " + props);
@@ -181,7 +185,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "effective interceptor properties: " + properties.toString());
+            Tr.debug(tc, "Effective share library interceptor properties: " + properties.toString());
         }
 
     }
@@ -211,7 +215,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
         return properties;
     }
 
-    private void initializeInterceptor() {
+    private void initInterceptor() {
         try {
             interceptorInstance = loadInterceptor();
             int initResult = interceptorInstance.initialize(properties);
@@ -222,11 +226,12 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
             }
         } catch (Exception e) {
             Tr.error(tc, "SEC_TAI_INIT_CLASS_LOAD_ERROR", e.getMessage());
-        } finally {
-            if (taiService != null) {
-                taiService.initializeSharedLibraryAndUserFeature();
-            }
         }
+//        finally {
+//            if (taiService != null) {
+//                taiService.initTAIs();
+//            }
+//        }
     }
 
     private TrustAssociationInterceptor loadInterceptor() throws Exception {
@@ -314,7 +319,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
     public void configurationEvent(ConfigurationEvent event) {
         if (event.getType() == ConfigurationEvent.CM_UPDATED && event.getPid().equals(pid)) {
             processProperties();
-            initializeInterceptor();
+            initInterceptor();
         }
 
     }

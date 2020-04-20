@@ -21,12 +21,17 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
  * This class process the TAI's properties as a Liberty feature.
  * Support properties are invokeBeforeSSO, invokeAfterSSO and disableLtpaCookie
  */
-public class TAIUserFeatureUtil {
-    private static final TraceComponent tc = Tr.register(TAIUserFeatureUtil.class);
+public class TAIUtil {
+    private static final TraceComponent tc = Tr.register(TAIUtil.class);
 
     private boolean invokeBeforeSSO = false;
     private boolean invokeAfterSSO = false;
     private boolean disableLtpaCookie = false;
+
+    public TAIUtil(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
+                   String interceptorId) {
+        processUserFetaureTaiProps(interceptorServiceRef, interceptorId);
+    }
 
     /**
      * This method will process the TAI's properties as a Liberty feature.
@@ -35,7 +40,7 @@ public class TAIUserFeatureUtil {
      * @param interceptorServiceRef
      * @param interceptorId
      */
-    public void processProps(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
+    public void processUserFetaureTaiProps(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                              String interceptorId) {
         invokeBeforeSSO = false;
         invokeAfterSSO = false;
@@ -51,7 +56,7 @@ public class TAIUserFeatureUtil {
             disableLtpaCookie = (Boolean) disableLtpaCookieProp;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "User feature TAI properties of " + interceptorId);
+            Tr.debug(tc, "User feature interceptor properties of " + interceptorId);
             Tr.debug(tc, "beforeSsoProp=" + beforeSsoProp + " afterSsoProp=" + afterSsoProp + " disableLtpaCookieProp=" + disableLtpaCookieProp);
         }
 
@@ -73,7 +78,7 @@ public class TAIUserFeatureUtil {
             invokeAfterSSO = (Boolean) afterSsoProp;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Resolve the user feature TAI properties:  ");
+            Tr.debug(tc, "User feature interceptor properties:  ");
             Tr.debug(tc, "  invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO + " disableLtpaCookie=" + disableLtpaCookie);
         }
     }
