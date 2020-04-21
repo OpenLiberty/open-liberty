@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2017 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,20 +18,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadFactory;
 
-import javax.enterprise.concurrent.ContextService;
-import javax.enterprise.concurrent.ManagedTask;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import test.threadfactory.ContextualThread;
-import test.threadfactory.CurrentThreadExecutor;
-
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
+
+import test.threadfactory.ContextualThread;
+import test.threadfactory.CurrentThreadExecutor;
 
 /**
  * This a fake thread factory implementation that demonstrates how to use the context service,
@@ -53,7 +50,8 @@ public class ThreadFactoryImpl implements ThreadFactory {
         // that we capture from component activate!
         Map<String, String> executionProperties = new LinkedHashMap<String, String>();
         executionProperties.put("com.ibm.ws.concurrent.TASK_OWNER", "myThreadFactory");
-        executionProperties.put(ManagedTask.IDENTITY_NAME, "contextualized executor");
+        executionProperties.put("jakarta.enterprise.concurrent.IDENTITY_NAME", "contextualized executor");
+        executionProperties.put("javax.enterprise.concurrent.IDENTITY_NAME", "contextualized executor");
         ThreadContextDescriptor capturedThreadContext = contextSvc.captureThreadContext(executionProperties);
         capturedThreadContext.set("com.ibm.ws.classloader.context.provider",
                                   classloaderContextProvider.captureThreadContext(executionProperties, null));
@@ -75,8 +73,19 @@ public class ThreadFactoryImpl implements ThreadFactory {
     public Thread newThread(Runnable r) {
         Map<String, String> executionProperties = new LinkedHashMap<String, String>();
         executionProperties.put("com.ibm.ws.concurrent.TASK_OWNER", "myThreadFactory");
-        executionProperties.put(ManagedTask.IDENTITY_NAME, r.getClass().getName());
-        r = ((ContextService) contextSvc).createContextualProxy(r, executionProperties, Runnable.class);
+        executionProperties.put("jakarta.enterprise.concurrent.IDENTITY_NAME", r.getClass().getName());
+        executionProperties.put("javax.enterprise.concurrent.IDENTITY_NAME", r.getClass().getName());
+        try {
+            // Reflectively invoke:
+            // r = ((ContextService) contextSvc).createContextualProxy(r, executionProperties, Runnable.class);
+            r = (Runnable) contextSvc.getClass()
+                            .getMethod("createContextualProxy", Object.class, Map.class, Class.class)
+                            .invoke(contextSvc, r, executionProperties, Runnable.class);
+        } catch (RuntimeException x) {
+            throw x;
+        } catch (Exception x) {
+            throw new RuntimeException(x);
+        }
         return new ContextualThread(id, r);
     }
 
