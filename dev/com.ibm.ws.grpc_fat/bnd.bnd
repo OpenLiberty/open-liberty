@@ -36,7 +36,7 @@ tested.features:\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.ws.grpc.client.1.0;version=latest,\
-	com.ibm.ws.grpc.common.1.0;version=latest,\
+	com.ibm.ws.grpc.common;version=latest,\
 	com.ibm.ws.grpc.servlet.1.0;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.google.protobuf;version=latest,\

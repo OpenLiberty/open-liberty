@@ -564,7 +564,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     private boolean isDisableLtpaCookie(Subject subject) {
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie);
-        if (hashtable != null && (boolean) hashtable.get(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE))
+        if (hashtable != null && (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE))
             return true;
         else
             return false;
