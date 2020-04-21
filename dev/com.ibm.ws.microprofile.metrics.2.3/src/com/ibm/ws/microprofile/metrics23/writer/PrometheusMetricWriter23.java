@@ -66,7 +66,10 @@ public class PrometheusMetricWriter23 extends PrometheusMetricWriter implements 
             double conversionFactor = conversionAppendEntry.getValue();
             String appendUnit = conversionAppendEntry.getKey();
 
-            if (metricMetadata.getTypeRaw().equals(MetricType.COUNTER)) {
+            //If current metadata that we are parsing does not have a matching metric... skip
+            if (currentMetricMap.isEmpty()) {
+                continue;
+            } else if (metricMetadata.getTypeRaw().equals(MetricType.COUNTER)) {
                 PrometheusBuilder.buildCounter(builder, metricNamePrometheus, description, currentMetricMap);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.CONCURRENT_GAUGE)) {
                 PrometheusBuilder.buildConcurrentGauge(builder, metricNamePrometheus, description, currentMetricMap);
