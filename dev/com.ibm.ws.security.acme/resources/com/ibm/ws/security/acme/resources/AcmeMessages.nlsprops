@@ -50,7 +50,7 @@ CWPKI2006I=CWPKI2006I: The ACME certificate authority at the {0} URI provided th
 CWPKI2006I.explanation=The certificate authority provides terms of service.
 CWPKI2006I.useraction=Review the provided terms of service.
 
-CWPKI2007I=CWPKI2007I: The ACME service installed a certificate with a {0} serial number that is signed by the ACME certificate authority at the {1} URI. The expiration date is {2}.
+CWPKI2007I=CWPKI2007I: The ACME service installed a certificate with the {0} serial number that is signed by the ACME certificate authority at the {1} URI. The expiration date is {2}.
 CWPKI2007I.explanation=The ACME service successfully retrieved and installed a certificate from the configured certificate authority.
 CWPKI2007I.useraction=No action is required.
 
@@ -201,3 +201,8 @@ CWPKI2043E.useraction=Ensure the the domain included in the value is a valid RDN
 CWPKI2044E=CWPKI2044E: The certificate is not an X.509 certificate. The certificate type is {0}.
 CWPKI2044E.explanation=The ACME service expects all certificates in the certificate chain to be X.509 certificates.
 CWPKI2044E.useraction=Ensure that all the certificates in the certificate chain are X.509 certificates and try again.
+
+# {2} is a time stamp
+CWPKI2045W=CWPKI2045W: The certificate with {0} serial number that is signed by the ACME certificate authority at the {1} URI is not valid until {2}.
+CWPKI2045W.explanation=The valid period on the certificate is in the future. SSL/TLS requests fail until the current date and time are within the range that is specified by the valid period on the certificate.
+CWPKI2045W.useraction=Update the local time on the server if the time is incorrect.
