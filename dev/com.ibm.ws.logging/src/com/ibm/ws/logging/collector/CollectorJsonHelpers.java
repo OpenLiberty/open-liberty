@@ -318,7 +318,7 @@ public class CollectorJsonHelpers {
         String tempStartFields = startAuditJsonFields;
 
         if (tempStartFields != null) {
-            jsonBuilder.addFields(tempStartFields);
+            jsonBuilder.addPreformatted(tempStartFields);
         } else {
             //@formatter:off
             jsonBuilder.addField(AuditData.getTypeKeyJSON(), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
@@ -336,7 +336,7 @@ public class CollectorJsonHelpers {
         String tempStartFields = startMessageJsonFields;
 
         if (tempStartFields != null)
-            jsonBuilder.addFields(tempStartFields);
+            jsonBuilder.addPreformatted(tempStartFields);
         else {
             //@formatter:off
             jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), CollectorConstants.MESSAGES_LOG_EVENT_TYPE, false, false)
@@ -354,7 +354,7 @@ public class CollectorJsonHelpers {
         String tempStartFields = startTraceJsonFields;
 
         if (tempStartFields != null)
-            jsonBuilder.addFields(tempStartFields);
+            jsonBuilder.addPreformatted(tempStartFields);
         else {
             //@formatter:off
             jsonBuilder.addField(LogTraceData.getTypeKeyJSON(false), CollectorConstants.TRACE_LOG_EVENT_TYPE, false, false)
@@ -372,7 +372,7 @@ public class CollectorJsonHelpers {
         String tempStartFields = startFFDCJsonFields;
 
         if (tempStartFields != null)
-            jsonBuilder.addFields(tempStartFields);
+            jsonBuilder.addPreformatted(tempStartFields);
         else {
             //@formatter:off
             jsonBuilder.addField(FFDCData.getTypeKeyJSON(), CollectorConstants.FFDC_EVENT_TYPE, false, false)
@@ -390,7 +390,7 @@ public class CollectorJsonHelpers {
         String tempStartFields = startAccessLogJsonFields;
 
         if (tempStartFields != null)
-            jsonBuilder.addFields(tempStartFields);
+            jsonBuilder.addPreformatted(tempStartFields);
         else {
             //@formatter:off
             jsonBuilder.addField(AccessLogData.getTypeKeyJSON(), CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false)
