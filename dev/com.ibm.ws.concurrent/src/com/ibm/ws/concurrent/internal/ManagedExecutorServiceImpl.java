@@ -37,7 +37,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -74,6 +73,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutor.class, //
+                       jakarta.enterprise.concurrent.ManagedExecutorService.class, //
                        javax.enterprise.concurrent.ManagedExecutorService.class, //
                        ResourceFactory.class, ApplicationRecycleComponent.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),

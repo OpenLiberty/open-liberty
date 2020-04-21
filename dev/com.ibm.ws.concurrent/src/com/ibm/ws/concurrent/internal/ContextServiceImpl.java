@@ -79,7 +79,9 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, javax.enterprise.concurrent.ContextService.class, //
+           service = { ResourceFactory.class, //
+                       jakarta.enterprise.concurrent.ContextService.class, //
+                       javax.enterprise.concurrent.ContextService.class, //
                        ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
            property = { "creates.objectClass=jakarta.enterprise.concurrent.ContextService",
                         "creates.objectClass=javax.enterprise.concurrent.ContextService",
