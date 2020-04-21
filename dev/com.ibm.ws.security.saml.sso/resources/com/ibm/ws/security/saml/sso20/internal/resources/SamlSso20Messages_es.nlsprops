@@ -28,15 +28,15 @@ POST_LOGOUT_PAGE_FAILURE_TEXT=Es posible que no se haya cerrado la sesi\u00f3n c
 #Message prefix block: CWWKS5000 - CWWKS5099
 SAML20_CONFIG_PROCESSED=CWWKS5000I: La configuraci\u00f3n de SAML Web SSO Versi\u00f3n 2.0 [{0}] se ha procesado satisfactoriamente.
 SAML20_CONFIG_PROCESSED.explanation=La configuraci\u00f3n de SAML Web SSO Versi\u00f3n 2.0 se ha procesado satisfactoriamente.
-SAML20_CONFIG_PROCESSED.useraction=No se requiere ninguna acci\u00f3n. 
+SAML20_CONFIG_PROCESSED.useraction=No se requiere ninguna acci\u00f3n.
 
 SAML20_CONFIG_MODIFIED=CWWKS5001I: La configuraci\u00f3n de SAML Web SSO Versi\u00f3n 2.0 [{0}] se ha procesado satisfactoriamente.
 SAML20_CONFIG_MODIFIED.explanation=La configuraci\u00f3n de SAML Web SSO Versi\u00f3n 2.0 se ha procesado satisfactoriamente.
-SAML20_CONFIG_MODIFIED.useraction=No se requiere ninguna acci\u00f3n. 
+SAML20_CONFIG_MODIFIED.useraction=No se requiere ninguna acci\u00f3n.
 
 SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: El punto final de SAML Web SSO Versi\u00f3n 2.0 se ha activado.
 SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=El punto final de SAML Web SSO Versi\u00f3n 2.0 se ha activado.
-SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=No se requiere ninguna acci\u00f3n. 
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=No se requiere ninguna acci\u00f3n.
 
 # web RequestFilter
 SAML20_INVALID_ACS_URL=CWWKS5003E: El punto final solicitado de [{0}] no est\u00e1 soportado en este proveedor de servicios (SP) de inicio de sesi\u00f3n \u00fanico (SSO) en web de SAML. 
@@ -52,12 +52,12 @@ SAML20_NO_SUCH_ACS_PROVIDER.useraction=Compruebe el archivo server.xml para ver 
 
 # Do not translate "id"
 SAML20_SP_ID_ATTRIBUTE_EMPTY=CWWKS5006E: Se ha configurado un proveedor de servicios SAML Web SSO Versi\u00f3n 2.0 con un atributo de id vac\u00edo. El atributo de id para los proveedores de servicios SAML Web SSO no deben estar vac\u00edos.
-SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=El atributo de id para los proveedores de servicios SAML Web SSO service identifica de forma exclusiva cada proveedor de servicios. El atributo de id se utiliza para construir la informaci\u00f3n necesaria para la correcta operaci\u00f3n SSO web de SAML, como por ejemplo, la generaci\u00f3n de URL del proveedor de servicios v\u00e1lidos.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=El atributo de id para los proveedores de servicios SAML Web SSO identifica de forma exclusiva cada proveedor de servicios. El atributo de id se utiliza para construir la informaci\u00f3n necesaria para la correcta operaci\u00f3n SSO web de SAML, como por ejemplo, la generaci\u00f3n de URL del proveedor de servicios v\u00e1lidos.
 SAML20_SP_ID_ATTRIBUTE_EMPTY.useraction=Compruebe el archivo server.xml para asegurarse de que todos los proveedores de servicios SAML Web SSO se hayan configurado con un valor de atributo id que no est\u00e1 vac\u00edo.
 
 SAML20_SERVER_INTERNAL_LOG_ERROR=CWWKS5007E: Se ha producido un error interno del servidor al procesar la solicitud de inicio de sesi\u00f3n \u00fanico (SSO) en web de SAML [{0}]. Causa:[{1}], StackTrace: [{2}].
 SAML20_SERVER_INTERNAL_LOG_ERROR.explanation=Mientras se procesaba una solicitud de inicio de sesi\u00f3n \u00fanico en web de SAML, un error de servidor interno. 
-SAML20_SERVER_INTERNAL_LOG_ERROR.useraction=Compruebe si hay errores en los archivos de registro del servidor y aseg\u00farese de que la configuraci\u00f3n sea correcta. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+SAML20_SERVER_INTERNAL_LOG_ERROR.useraction=Compruebe si hay errores en los archivos de registro del servidor y aseg\u00farese de que la configuraci\u00f3n sea correcta. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 SAML20_SP_BAD_SAML_RESPONSE_ERROR=CWWKS5008E: La respuesta de SAML del proveedor de identidad (IdP) [{0}] tiene un c\u00f3digo de estado distinto de Satisfactorio.  C\u00f3digo de estado: [{1}]. Mensaje de estado: [{2}].
 SAML20_SP_BAD_SAML_RESPONSE_ERROR.explanation=Parece que el IdP tiene un problema al emitir una respuesta de SAML. La raz\u00f3n del problema aparece en el mensaje.
@@ -90,7 +90,7 @@ SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Aseg\u00farese de que el valor de UR
 
 SAML20_CONFIG_DEACTIVATED=CWWKS5016I: La configuraci\u00f3n de SAML Web SSO Versi\u00f3n 2.0 [{0}] se ha desactivado satisfactoriamente.
 SAML20_CONFIG_DEACTIVATED.explanation=La configuraci\u00f3n de SAML Web SSO Versi\u00f3n 2.0 se ha desactivado satisfactoriamente.
-SAML20_CONFIG_DEACTIVATED.useraction=No se requiere ninguna acci\u00f3n. 
+SAML20_CONFIG_DEACTIVATED.useraction=No se requiere ninguna acci\u00f3n.
 
 # CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
 # {0} = Error message text
@@ -108,7 +108,7 @@ SAML20_IDP_METADATA_PARSE_ERROR.explanation=El archivo de metadatos indicado no 
 SAML20_IDP_METADATA_PARSE_ERROR.useraction=Aseg\u00farese de que el archivo de metadatos est\u00e9 en el formato XML y espacio de nombres correctos.  Adem\u00e1s, consulte la acci\u00f3n del usuario para la causa que se muestra en el mensaje.
 
 # {2} = Cause of the error
-SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: El archivo de metadatos (IdP) [{0}] de proveedor de identidad del proveedor de servicios (SP) [{1}] no existe o no es accesible. [{2}]
+SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: El archivo de metadatos (IdP) [{0}] de proveedor de identidad del proveedor de servicios (SP) [{1}] no existe o no es accesible. [{2}]  
 SAML20_NO_IDP_METADATA_ERROR.explanation=El archivo de metadatos del IdP indicado no existe o no es accesible. 
 SAML20_NO_IDP_METADATA_ERROR.useraction=Aseg\u00farese de que el archivo de metadatos del IdP exista y sea accesible.
 
@@ -127,13 +127,13 @@ SAML20_CACHED_DATA_NOT_FOUND=CWWKS5033E: La aserci\u00f3n SAML con clave de memo
 SAML20_CACHED_DATA_NOT_FOUND.explanation=No se puede acceder al recurso protegido debido a un error interno. Es posible que ya se haya accedido a los datos de la memoria cach\u00e9 y se hayan eliminado.  
 SAML20_CACHED_DATA_NOT_FOUND.useraction=Compruebe los registros de servidor para ver informaci\u00f3n adicional.
 
-ACCESS_FILE_INFO_ERROR=CWWKS5036E: El archivo [{0}] no se ha cargado. [{1}]
+ACCESS_FILE_INFO_ERROR=CWWKS5036E: El archivo [{0}] no se ha cargado. [{1}] 
 ACCESS_FILE_INFO_ERROR.explanation=El archivo indicado no existe o no es accesible.  La raz\u00f3n del error se muestra en el mensaje.
 ACCESS_FILE_INFO_ERROR.useraction=Aseg\u00farese de que el archivo exista y que la aplicaci\u00f3n tenga acceso al archivo.  Adem\u00e1s, consulte la acci\u00f3n del usuario para la causa del error.
 
 SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: El archivo de metadatos (IdP) [{1}] de proveedor de identidad del proveedor de servicios (SP) [{0}] se ha modificado.
 SAML20_IDP_METADATA_FILE_CHANGED.explanation=El archivo de metadatos del IdP se ha actualizado con los nuevos datos de configuraci\u00f3n para el IdP; el proveedor de servicios (SP) volver\u00e1 a cargar el archivo.
-SAML20_IDP_METADATA_FILE_CHANGED.useraction=No se requiere ninguna acci\u00f3n. 
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=No se requiere ninguna acci\u00f3n.
 
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: El atributo InResponseTo [{0}] no est\u00e1 permitido en una respuesta de SAML no solicitada.
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=La respuesta de SAML no solicitada contiene un atributo InResponseTo.  Esta condici\u00f3n no est\u00e1 permitida.
@@ -222,7 +222,7 @@ SAML20_NO_INRESPONSETO.useraction=P\u00f3ngase en contacto con el administrador 
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: La aserci\u00f3n SAML no contiene un atributo [{0}].  Se necesita un atributo [{0}].  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: La aserci\u00f3n SAML no contiene un elemento [{0}].  Es necesario un elemento [{0}].  
 SAML20_ATTRIBUTE_ERR.explanation=En la aserci\u00f3n SAML falta un atributo necesario para el tiempo de ejecuci\u00f3n.
 SAML20_ATTRIBUTE_ERR.useraction=El atributo necesario debe a\u00f1adirse a la aserci\u00f3n SAML.  P\u00f3ngase en contacto con el administrador de proveedor de identidad (IdP) para asegurarse de que el IDP est\u00e1 configurado correctamente o configure el proveedor de servicios (SP) o el TAI para definir un valor para el atributo.
 
@@ -287,7 +287,7 @@ RS_SAML_RESPONSE_NOT_SUPPORTED.useraction=Aseg\u00farese de que la aserci\u00f3n
 # Message prefix block: CWWKS5200 - CWWKS5209
 RS_SAML_SERVER_INTERNAL_LOG_ERROR=CWWKS5201E: Se ha producido un error interno al procesar el inicio de sesi\u00f3n \u00fanico para web de SAML para la propagaci\u00f3n entrante [{0}]. Causa:[{1}], StackTrace: [{2}].
 RS_SAML_SERVER_INTERNAL_LOG_ERROR.explanation=Se ha producido un error interno de servidor al procesar una solicitud de propagaci\u00f3n entrante para un inicio de sesi\u00f3n \u00fanico para web de SAML. 
-RS_SAML_SERVER_INTERNAL_LOG_ERROR.useraction=Compruebe si hay errores en los archivos de registro del servidor y aseg\u00farese de que la configuraci\u00f3n sea correcta. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.useraction=Compruebe si hay errores en los archivos de registro del servidor y aseg\u00farese de que la configuraci\u00f3n sea correcta. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 RS_SAML_TRUSTED_ISSUERS_ERROR=CWWKS5205E: Los trustedIssuers [{0}] definidos en la configuraci\u00f3n pkixTrustEngine no son utilizados por el inicio de sesi\u00f3n \u00fanico para web de SAML para la propagaci\u00f3n entrante [{1}] y no se tendr\u00e1n en cuenta.
 RS_SAML_TRUSTED_ISSUERS_ERROR.explanation=Los trustedIssuers de pkixTrustEngine s\u00f3lo son utilizados por el inicio de sesi\u00f3n \u00fanico para web de SAML. No se tienen en cuenta en el inicio de sesi\u00f3n \u00fanico para web de SAML para la propagaci\u00f3n entrante. 
@@ -296,9 +296,9 @@ RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=Elimine los trustedIssuers de pkixTrust
 # 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
 SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: El atributo inboundPropagation est\u00e1 establecido en [{0}] en la configuraci\u00f3n de samlWebSso20 [{2}]. Los atributos [{1}] se ignorar\u00e1n durante el proceso.
 SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=La configuraci\u00f3n samlWebSso20 se ha establecido para procesar la propagaci\u00f3n de entrada de la se\u00f1al SAML o SAML Web SSO, pero no los dos. Los atributos mencionados se ignoran al manejar las solicitudes web con la configuraci\u00f3n SAML especificada.
-SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=No se requiere ninguna acci\u00f3n. 
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=No se requiere ninguna acci\u00f3n.
 
-SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: La aserci\u00f3n SAML entrante no es v\u00e1lida  [{0}].
+SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: La aserci\u00f3n SAML entrante no es v\u00e1lida [{0}].
 SAML_BAD_INBOUND_SAML_TOKEN.explanation=La aserci\u00f3n SAML, contenida en la cabecera de la solicitud HTTP, no es v\u00e1lida y no se puede analizar debidamente.
 SAML_BAD_INBOUND_SAML_TOKEN.useraction=Aseg\u00farese de que se cree debidamente una aserci\u00f3n SAML v\u00e1lida.
 

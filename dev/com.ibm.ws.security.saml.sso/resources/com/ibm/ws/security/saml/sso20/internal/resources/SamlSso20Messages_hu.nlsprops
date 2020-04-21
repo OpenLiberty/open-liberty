@@ -32,11 +32,11 @@ SAML20_CONFIG_PROCESSED.useraction=Nincs teend\u0151.
 
 SAML20_CONFIG_MODIFIED=CWWKS5001I: A SAML Web SSO 2.0 v\u00e1ltozat [{0}] konfigur\u00e1ci\u00f3 feldolgoz\u00e1sa siker\u00fclt.
 SAML20_CONFIG_MODIFIED.explanation=A SAML Web SSO 2.0 v\u00e1ltozat konfigur\u00e1ci\u00f3 feldolgoz\u00e1sa siker\u00fclt.
-SAML20_CONFIG_MODIFIED.useraction=Nincs teend\u0151. \
+SAML20_CONFIG_MODIFIED.useraction=Nincs teend\u0151.
 
 SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: A SAML Web SSO 2.0 v\u00e1ltozat v\u00e9gpont szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
 SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=A SAML Web SSO 2.0 v\u00e1ltozat v\u00e9gpont szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
-SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nincs teend\u0151. \
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nincs teend\u0151.
 
 # web RequestFilter
 SAML20_INVALID_ACS_URL=CWWKS5003E: A k\u00e9rt [{0}] v\u00e9gpont nem t\u00e1mogatott ebben a SAML webes egypontos bejelentkez\u00e9s (SSO) szolg\u00e1ltat\u00f3ban (SP). 
@@ -90,7 +90,7 @@ SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3
 
 SAML20_CONFIG_DEACTIVATED=CWWKS5016I: A SAML Web SSO 2.0 v\u00e1ltozat [{0}] konfigur\u00e1ci\u00f3 deaktiv\u00e1l\u00e1sa siker\u00fclt.
 SAML20_CONFIG_DEACTIVATED.explanation=A SAML Web SSO 2.0 v\u00e1ltozat konfigur\u00e1ci\u00f3 deaktiv\u00e1l\u00e1sa siker\u00fclt.
-SAML20_CONFIG_DEACTIVATED.useraction=Nincs teend\u0151. \
+SAML20_CONFIG_DEACTIVATED.useraction=Nincs teend\u0151.
 
 # CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
 # {0} = Error message text
@@ -133,7 +133,7 @@ ACCESS_FILE_INFO_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a
 
 SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: A(z) [{0}] szolg\u00e1ltat\u00f3 (SP) [{1}] azonoss\u00e1gszolg\u00e1ltat\u00f3 (IdP) metaadat f\u00e1jlja m\u00f3dos\u00edtva lett.
 SAML20_IDP_METADATA_FILE_CHANGED.explanation=Az IdP metaadat f\u00e1jl friss\u00edtve lett az IdP \u00faj konfigur\u00e1ci\u00f3s adataival; a szolg\u00e1ltat\u00f3 (SP) \u00fajra be fogja t\u00f6lteni a f\u00e1jlt.
-SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nincs teend\u0151. \
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nincs teend\u0151.
 
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: A(z) [{0}] InResponseTo attrib\u00fatum nem enged\u00e9lyezett egy nem k\u00e9rt SAML v\u00e1laszban.
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=A nem k\u00e9rt SAML v\u00e1lasz tartalmaz egy InResponseTo attrib\u00fatumot.  Ez a felt\u00e9tel nem megengedett.
@@ -222,7 +222,7 @@ SAML20_NO_INRESPONSETO.useraction=L\u00e9pjen kapcsolatba az IdP adminisztr\u00e
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: A SAML igazol\u00e1s nem tartalmaz [{0}] attrib\u00fatumot.  A(z) [{0}] attrib\u00fatumot k\u00f6telez\u0151 megadni.  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: A SAML igazol\u00e1s nem tartalmaz [{0}] elemet.  Egy [{0}] elem megad\u00e1sa k\u00f6telez\u0151.  
 SAML20_ATTRIBUTE_ERR.explanation=A SAML igazol\u00e1sb\u00f3l hi\u00e1nyzik egy attrib\u00fatum, amit a fut\u00e1si k\u00f6rnyezet megk\u00f6vetel.
 SAML20_ATTRIBUTE_ERR.useraction=A k\u00f6telez\u0151 attrib\u00fatumot hozz\u00e1 kell adni a SAML igazol\u00e1shoz.  L\u00e9pjen kapcsolatba az azonoss\u00e1gszolg\u00e1ltat\u00f3 (IdP) adminisztr\u00e1tor\u00e1val, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az IdP helyesen van konfigur\u00e1lva, vagy az attrib\u00fatum \u00e9rt\u00e9k\u00e9nek meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben \u00e1ll\u00edtsa be a szolg\u00e1ltat\u00f3t (SP), illetve a TAI elfog\u00f3t.
 
@@ -296,7 +296,7 @@ RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=T\u00e1vol\u00edtsa el a trustedIssuers
 # 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
 SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: Az inboundPropagation attrib\u00fatum [{0}] \u00e9rt\u00e9kre van be\u00e1ll\u00edtva a(z) [{2}] samlWebSso20 konfigur\u00e1ci\u00f3j\u00e1ban. A(z) [{1}] attrib\u00fatumok a feldolgoz\u00e1s sor\u00e1n figyelmen k\u00edv\u00fcl maradnak.
 SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=A samlWebSso20 konfigur\u00e1ci\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy vagy a SAML token bej\u00f6v\u0151 terjeszt\u00e9s\u00e9t dolgozza fel, vagy a SAML Web SSO szolg\u00e1ltat\u00e1st, de a kett\u0151t ne. A felsorolt attrib\u00fatumok a webes k\u00e9r\u00e9sek megadott SAML konfigur\u00e1ci\u00f3val t\u00f6rt\u00e9n\u0151 kezel\u00e9sekor figyelmen k\u00edv\u00fcl maradnak.
-SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nincs teend\u0151. \
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nincs teend\u0151.
 
 SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: A bej\u00f6v\u0151 SAML igazol\u00e1s nem \u00e9rv\u00e9nyes: [{0}].
 SAML_BAD_INBOUND_SAML_TOKEN.explanation=A HTTP k\u00e9r\u00e9s fejl\u00e9c\u00e9ben tartalmazott SAML igazol\u00e1s nem \u00e9rv\u00e9nyes, \u00e9s nem dolgozhat\u00f3 fel megfelel\u0151en.
@@ -310,8 +310,7 @@ ERROR_HANDLING_LOGOUT_REQUEST.explanation=A szolg\u00e1ltat\u00e1s hib\u00e1t \u
 ERROR_HANDLING_LOGOUT_REQUEST.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
 
 LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE=CWWKS5211E: A SAML egypontos kijelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tudja feldolgozni a k\u00e9r\u00e9st, mert a szolg\u00e1ltat\u00e1s nem tal\u00e1lja a k\u00e9r\u00e9sben megadott SAML szolg\u00e1ltat\u00f3t (SP).
-LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.explanation=A SAML egypontos kijelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tal\u00e1lja a k\u00e9r\u00e9sben megadott SAML szolg\u00e1ltat\u00f3 (SP) egypontos bejelentkez\u00e9s (SSO) szolg\u00e1ltat\u00e1s\u00e1t. \
-Lehets\u00e9ges, hogy a szolg\u00e1ltat\u00f3 le van tiltva, illetve hi\u00e1nyzik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.explanation=A SAML egypontos kijelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tal\u00e1lja a k\u00e9r\u00e9sben megadott SAML szolg\u00e1ltat\u00f3 (SP) egypontos bejelentkez\u00e9s (SSO) szolg\u00e1ltat\u00e1s\u00e1t. Lehets\u00e9ges, hogy a szolg\u00e1ltat\u00f3 le van tiltva, illetve hi\u00e1nyzik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
 LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a megadott szolg\u00e1ltat\u00f3n\u00e9vvel egyez\u0151 SAML szolg\u00e1ltat\u00f3 (SP) be legyen \u00e1ll\u00edtva \u00e9s enged\u00e9lyezett legyen. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
 
 LOGOUT_REQUEST_MISSING_SSO_REQUEST=CWWKS5212E: A SAML egypontos kijelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tudja feldolgozni a k\u00e9r\u00e9st, mert a szolg\u00e1ltat\u00e1s nem tal\u00e1lja a SAML egypontos bejelentkez\u00e9si (SSO) k\u00e9r\u00e9s inform\u00e1ci\u00f3it.
