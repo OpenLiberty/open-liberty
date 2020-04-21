@@ -15,9 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,10 +40,12 @@ import componenttest.topology.impl.LibertyServer;
  * Tests to execute on the jspServer that use HttpUnit/HttpClient
  */
 
+@SkipForRepeat("CDI-2.0")
 @RunWith(FATRunner.class)
 public class JSPTests {
     private static final Logger LOG = Logger.getLogger(JSPTests.class.getName());
-    private static final String JSP23_APP_NAME = "TestJSP2.3";
+    private static final String TestEL_APP_NAME = "TestEL";
+    private static final String TestServlet_APP_NAME = "TestServlet";
     private static final String PI44611_APP_NAME = "PI44611";
     private static final String PI59436_APP_NAME = "PI59436";
 
@@ -56,12 +55,14 @@ public class JSPTests {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server,
-                                      JSP23_APP_NAME + ".war",
+                                      TestEL_APP_NAME + ".war",
+                                      "com.ibm.ws.jsp23.fat.testel.beans",
+                                      "com.ibm.ws.jsp23.fat.testel.servlets");
+        
+        ShrinkHelper.defaultDropinApp(server,
+                                      TestServlet_APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testjsp23.beans",
-                                      "com.ibm.ws.jsp23.fat.testjsp23.interceptors",
-                                      "com.ibm.ws.jsp23.fat.testjsp23.listeners",
-                                      "com.ibm.ws.jsp23.fat.testjsp23.servlets",
-                                      "com.ibm.ws.jsp23.fat.testjsp23.tagHandler");
+                                      "com.ibm.ws.jsp23.fat.testjsp23.servlets");
 
         ShrinkHelper.defaultDropinApp(server, PI44611_APP_NAME + ".war");
 
@@ -93,12 +94,11 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void sampleTest() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "SimpleTestServlet");
+        String url = JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, "SimpleTestServlet");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -116,12 +116,11 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30StaticFieldsAndMethods() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "EL30StaticFieldsAndMethodsTests.jsp");
+        String url = JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, "EL30StaticFieldsAndMethodsTests.jsp");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -155,12 +154,11 @@ public class JSPTests {
      */
     @Test
     @ExpectedFFDC("javax.el.MethodNotFoundException")
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30MethodNotFoundException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "EL30MethodNotFoundException.jsp");
+        String url = JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, "EL30MethodNotFoundException.jsp");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -170,7 +168,7 @@ public class JSPTests {
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
 
-        assertTrue("The response did not contain: javax.el.MethodNotFoundException", response.getText().contains("javax.el.MethodNotFoundException"));
+        assertTrue("The response did not contain: javax.el.MethodNotFoundException", response.getText().contains("el.MethodNotFoundException"));
     }
 
     /**
@@ -181,12 +179,11 @@ public class JSPTests {
     @Test
     @ExpectedFFDC("javax.el.PropertyNotFoundException")
     @Mode(TestMode.FULL)
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30PropertyNotFoundException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "EL30PropertyNotFoundException.jsp");
+        String url = JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, "EL30PropertyNotFoundException.jsp");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -195,7 +192,7 @@ public class JSPTests {
 
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
-        assertTrue("The response did not contain: javax.el.PropertyNotFoundException", response.getText().contains("javax.el.PropertyNotFoundException"));
+        assertTrue("The response did not contain: javax.el.PropertyNotFoundException", response.getText().contains("el.PropertyNotFoundException"));
     }
 
     /**
@@ -206,12 +203,11 @@ public class JSPTests {
     @Test
     @ExpectedFFDC("javax.el.PropertyNotWritableException")
     @Mode(TestMode.FULL)
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30PropertyNotWritableException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "EL30PropertyNotWritableException.jsp");
+        String url = JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, "EL30PropertyNotWritableException.jsp");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -220,7 +216,7 @@ public class JSPTests {
 
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
-        assertTrue("The response did not contain: javax.el.PropertyNotWritableException", response.getText().contains("javax.el.PropertyNotWritableException"));
+        assertTrue("The response did not contain: javax.el.PropertyNotWritableException", response.getText().contains("el.PropertyNotWritableException"));
     }
 
     /**
@@ -235,12 +231,11 @@ public class JSPTests {
     @Test
     @ExpectedFFDC("javax.el.PropertyNotWritableException")
     @Mode(TestMode.FULL)
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30AssignmentOperatorException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "EL30AssignmentOperatorException.jsp");
+        String url = JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, "EL30AssignmentOperatorException.jsp");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -249,7 +244,7 @@ public class JSPTests {
 
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
-        assertTrue("The response did not contain: javax.el.PropertyNotWritableException", response.getText().contains("javax.el.PropertyNotWritableException"));
+        assertTrue("The response did not contain: javax.el.PropertyNotWritableException", response.getText().contains("el.PropertyNotWritableException"));
     }
 
     /**
@@ -263,7 +258,6 @@ public class JSPTests {
     @ExpectedFFDC("javax.el.ELException")
     @AllowedFFDC("java.security.PrivilegedActionException")
     @Mode(TestMode.FULL)
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30ReservedWords() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -298,7 +292,7 @@ public class JSPTests {
      * @throws Exception
      */
     private void reservedWordsHelperMethod(WebConversation wc, String path, String expectedString) throws Exception {
-        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, path));
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, path));
         WebResponse response = wc.getResponse(request);
 
         LOG.info("Response: " + response.getText());
@@ -319,7 +313,7 @@ public class JSPTests {
      * @throws Exception
      */
     private void nonReservedWordsHelperMethod(WebConversation wc, String path, String expectedString) throws Exception {
-        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, path));
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, TestEL_APP_NAME, path));
         WebResponse response = wc.getResponse(request);
 
         LOG.info("Response: " + response.getText());
@@ -336,9 +330,8 @@ public class JSPTests {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testServlet() throws Exception {
-        this.verifyStringInResponse(JSP23_APP_NAME, "SimpleTestServlet", "Hello World");
+        this.verifyStringInResponse(TestEL_APP_NAME, "SimpleTestServlet", "Hello World");
     }
 
     /**
@@ -347,7 +340,6 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL22Operators() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -386,7 +378,7 @@ public class JSPTests {
                                         "<b>Test 33:</b> EL 2.2 Conditional Operator (A?B:C) (Expected: 2): 2",
                                         "<b>Test 34:</b> EL 2.2 Conditional Operator (A?B:C) (Expected: 3): 3" };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "EL22Operators.jsp", expectedInResponse);
+        this.verifyStringsInResponse(TestEL_APP_NAME, "EL22Operators.jsp", expectedInResponse);
     }
 
     /**
@@ -395,7 +387,6 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30Operators() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -411,7 +402,7 @@ public class JSPTests {
                                         "<b>Test 10:</b> EL 3.0 Assignment Operator (Expected:3): 3",
                                         "<b>Test 11:</b> EL 3.0 Semi-colon Operator (Expected:8): 8" };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "EL30Operators.jsp?testString1=1&testString2=2", expectedInResponse);
+        this.verifyStringsInResponse(TestEL_APP_NAME, "EL30Operators.jsp?testString1=1&testString2=2", expectedInResponse);
     }
 
     /**
@@ -420,7 +411,6 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30LambdaExpressions() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -441,7 +431,7 @@ public class JSPTests {
                                         "<b>Nested2_EL3.0_Test 15:</b> --> 2468"
         };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "EL30Lambda.jsp", expectedInResponse);
+        this.verifyStringsInResponse(TestEL_APP_NAME, "EL30Lambda.jsp", expectedInResponse);
     }
 
     /**
@@ -451,7 +441,6 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testServlet31RequestResponse() throws Exception {
         String[] expectedInResponse = { "JSP to test Servlet 3.1 Request and Response",
                                         "Testing BASIC_AUTH static field from HttpServletRequest (Expected: BASIC): BASIC",
@@ -459,8 +448,8 @@ public class JSPTests {
                                         "Testing request.getParameter method (Expected: John): John",
                                         "Testing request.getParameter method (Expected: Smith): Smith",
                                         "Testing request.getQueryString method (Expected: firstName=John&lastName=Smith): firstName=John&lastName=Smith",
-                                        "Testing request.getContextPath method (Expected: /TestJSP2.3): /TestJSP2.3",
-                                        "Testing request.getRequestURI method (Expected: /TestJSP2.3/Servlet31RequestResponseTest.jsp): /TestJSP2.3/Servlet31RequestResponseTest.jsp",
+                                        "Testing request.getContextPath method (Expected: /TestServlet): /TestServlet",
+                                        "Testing request.getRequestURI method (Expected: /TestServlet/Servlet31RequestResponseTest.jsp): /TestServlet/Servlet31RequestResponseTest.jsp",
                                         "Testing request.getMethod method (Expected: GET): GET",
                                         "Testing request.getContentLengthLong method (Expected: -1): -1",
                                         "Testing request.getProtocol method (Expected: HTTP/1.1): HTTP/1.1",
@@ -472,7 +461,7 @@ public class JSPTests {
                                         "Testing response.containsHeader method (Expected: true): true",
                                         "Testing response.isCommitted method (Expected: false): false" };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "Servlet31RequestResponseTest.jsp?firstName=John&lastName=Smith", expectedInResponse);
+        this.verifyStringsInResponse(TestServlet_APP_NAME, "Servlet31RequestResponseTest.jsp?firstName=John&lastName=Smith", expectedInResponse);
     }
 
     /**
@@ -482,7 +471,6 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testMethodExpressionInvocations() throws Exception {
         String[] expectedInResponse = { "Get Parent Name Using Value Expression (Expected: \"John Smith Sr.\"): John Smith Sr.",
                                         "Get Child Name Using Value Expression (Expected: \"John Smith Jr.\"): John Smith Jr.",
@@ -491,7 +479,7 @@ public class JSPTests {
                                         "Get Child Name Using Method Expression (Expected: \"Steven Johnson Jr.\"): Steven Johnson Jr.",
                                         "Get Object Representation Using Method Expression: toString method of object with current parent name Steven Johnson Sr." };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "EL30InvocationMethodExpressions.jsp", expectedInResponse);
+        this.verifyStringsInResponse(TestEL_APP_NAME, "EL30InvocationMethodExpressions.jsp", expectedInResponse);
     }
 
     /**
@@ -502,7 +490,6 @@ public class JSPTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testOperatorPrecedence() throws Exception {
         String[] expectedInResponse = { "<b>Test 1:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
                                         "<b>Test 2:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
@@ -531,7 +518,7 @@ public class JSPTests {
                                         "<b>Test 25:</b> EL 3.0 Assignment (=) and Semi-colon (;) operators with lambda operator (->) (Expected:5): 5",
                                         "<b>Test 26:</b> EL 3.0 Assignment (=) and Semi-colon (;) operators with lambda operator (->) (Expected:11): 11" };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "EL30OperatorPrecedences.jsp", expectedInResponse);
+        this.verifyStringsInResponse(TestEL_APP_NAME, "EL30OperatorPrecedences.jsp", expectedInResponse);
     }
 
     /**
@@ -541,12 +528,11 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30CoercionRules() throws Exception {
         String[] expectedInResponse = { "Testing Coercion of a Value X to Type Y.",
                                         "Test if X is null and Y is not a primitive type and also not a String, return null (Expected:true): true" };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "EL30CoercionRules.jsp", expectedInResponse);
+        this.verifyStringsInResponse(TestEL_APP_NAME, "EL30CoercionRules.jsp", expectedInResponse);
     }
 
     /**
@@ -557,51 +543,50 @@ public class JSPTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30ListCollectionObjectOperations() throws Exception {
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=filter",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=filter",
                                     "Filter: [4, 3, 5, 3]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=map",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=map",
                                     "Map: [3, 6, 5, 4, 7, 5, 3]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=flatMap",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=flatMap",
                                     "FlatMap: [1, 4, 3, 2, 5, 3, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=distinct",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=distinct",
                                     "Distinct: [1, 4, 3, 2, 5]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=sorted",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=sorted",
                                     "Sorted in Decreasing: [5, 4, 3, 3, 2, 1, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=forEach",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=forEach",
                                     "ForEach: 1432531");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=peek",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=peek",
                                     "Debug Peek: 144322531[4, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=iterator",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=iterator",
                                     "Iterator: 1 4 3 2 5 3 1");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=limit",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=limit",
                                     "Limit: [1, 4, 3]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=substream",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=substream",
                                     "Substream: [3, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=toArray",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=toArray",
                                     "ToArray: [1, 4, 3, 2, 5, 3, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=toList",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=toList",
                                     "ToList: [1, 4, 3, 2, 5, 3, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=reduce",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=reduce",
                                     "Reduce: 5");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=max",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=max",
                                     "Max: 5");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=min",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=min",
                                     "Min: 1");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=average",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=average",
                                     "Average: 2.7142857142857144");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=sum",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=sum",
                                     "Sum: 19");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=count",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=count",
                                     "Count: 7");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=anyMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=anyMatch",
                                     "AnyMatch: true");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=allMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=allMatch",
                                     "AllMatch: false");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=noneMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=noneMatch",
                                     "NoneMatch: true");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=findFirst",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=findFirst",
                                     "FindFirst: 1");
     }
 
@@ -612,51 +597,50 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30SetCollectionObjectOperations() throws Exception {
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=filter",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=filter",
                                     "Filter: [4, 3, 5]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=map",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=map",
                                     "Map: [3, 6, 5, 7, 4]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "/EL30CollectionObjectOperations.jsp?testSetCollectionOperations=flatMap",
+        this.verifyStringInResponse(TestEL_APP_NAME, "/EL30CollectionObjectOperations.jsp?testSetCollectionOperations=flatMap",
                                     "FlatMap: [1, 4, 3, 2, 5, 3, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=distinct",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=distinct",
                                     "Distinct: [1, 4, 3, 5, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=sorted",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=sorted",
                                     "Sorted in Decreasing: [5, 4, 3, 2, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=forEach",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=forEach",
                                     "ForEach: 14352");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=peek",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=peek",
                                     "Debug Peek: 1443522[4, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=iterator",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=iterator",
                                     "Iterator: 1 4 3 5 2");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=limit",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=limit",
                                     "Limit: [1, 4, 3]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=substream",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=substream",
                                     "Substream: [3, 5]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=toArray",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=toArray",
                                     "ToArray: [1, 4, 3, 5, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=toList",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=toList",
                                     "ToList: [1, 4, 3, 5, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=reduce",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=reduce",
                                     "Reduce: 5");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=max",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=max",
                                     "Max: 5");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=min",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=min",
                                     "Min: 1");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=average",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=average",
                                     "Average: 3.0");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=sum",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=sum",
                                     "Sum: 15");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=count",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=count",
                                     "Count: 5");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=anyMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=anyMatch",
                                     "AnyMatch: true");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=allMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=allMatch",
                                     "AllMatch: false");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=noneMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=noneMatch",
                                     "NoneMatch: true");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=findFirst",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=findFirst",
                                     "FindFirst: 1");
     }
 
@@ -668,51 +652,50 @@ public class JSPTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30MapCollectionObjectOperations() throws Exception {
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=filter",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=filter",
                                     "Filter: [4, 3, 5, 3]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=map",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=map",
                                     "Map: [3, 6, 5, 4, 7, 5, 3]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=flatMap",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=flatMap",
                                     "FlatMap: [1, 4, 3, 2, 5, 3, 1, 1, 4, 3, 2, 5, 3, 1, 1, 4, 3, 2, 5, 3, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=distinct",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=distinct",
                                     "Distinct: [1, 4, 3, 2, 5]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=sorted",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=sorted",
                                     "Sorted in Decreasing: [5, 4, 3, 3, 2, 1, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=forEach",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=forEach",
                                     "ForEach: 1432531");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=peek",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=peek",
                                     "Debug Peek: 144322531[4, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=iterator",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=iterator",
                                     "Iterator: 1 4 3 2 5 3 1");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=limit",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=limit",
                                     "Limit: [1, 4, 3]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=substream",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=substream",
                                     "Substream: [3, 2]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=toArray",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=toArray",
                                     "ToArray: [1, 4, 3, 2, 5, 3, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=toList",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=toList",
                                     "ToList: [1, 4, 3, 2, 5, 3, 1]");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=reduce",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=reduce",
                                     "Reduce: 5");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=max",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=max",
                                     "Max: 5");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=min",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=min",
                                     "Min: 1");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=average",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=average",
                                     "Average: 2.7142857142857144");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=sum",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=sum",
                                     "Sum: 19");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=count",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=count",
                                     "Count: 7");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=anyMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=anyMatch",
                                     "AnyMatch: true");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=allMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=allMatch",
                                     "AllMatch: false");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=noneMatch",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=noneMatch",
                                     "NoneMatch: true");
-        this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=findFirst",
+        this.verifyStringInResponse(TestEL_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=findFirst",
                                     "FindFirst: 1");
     }
 
@@ -723,7 +706,7 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
+    @SkipForRepeat("EE9_FEATURES") // Test needs to handle jakarta in response 
     public void testJSP23ResolutionVariableProperties() throws Exception {
         String[] expectedInResponse = { "class org.apache.el.stream.StreamELResolverImpl",
                                         "class javax.el.StaticFieldELResolver",
@@ -738,221 +721,7 @@ public class JSPTests {
                                         "Testing StreamELResolver with distinct method (Expected: [1, 4, 3, 2, 5]): [1, 4, 3, 2, 5]",
                                         "Testing StreamELResolver with filter method (Expected: [4, 3, 5, 3]): [4, 3, 5, 3]" };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "ResolutionVariablesPropertiesServlet", expectedInResponse);
-    }
-
-    /**
-     * Test Tag Handlers with CDI.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testTag1() throws Exception {
-        // Each entry in the array is an expected output in the response
-        String[] expectedInResponse = {
-                                        "<b>Test 1:</b> Test Start",
-                                        "<b>Test 2:</b> Message: DependentBean Hit SessionBean Hit RequestBean Hit ...constructor injection OK ...interceptor OK",
-        };
-
-        this.verifyStringsInResponse(JSP23_APP_NAME, "Tag1.jsp", expectedInResponse);
-    }
-
-    /**
-     * Test Tag Handlers with CDI Method Injection.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testTag2() throws Exception {
-        // Each entry in the array is an expected output in the response
-        String[] expectedInResponse = {
-                                        "<b>Test 1:</b> Test Start",
-                                        "<b>Test 2:</b> Message: BeanCounters are OK"
-        };
-
-        this.verifyStringsInResponse(JSP23_APP_NAME, "Tag2.jsp", expectedInResponse);
-    }
-
-    /**
-     * Test the tag library event listeners injected using CDI.
-     * Constructor injection.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testTagLibraryEventListenerCI() throws Exception {
-        final int iterations = 5;
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        DefaultHttpClient client2 = new DefaultHttpClient(); //Used to test @SessionScoped
-
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "TagLibraryEventListenerCI.jsp?increment=true");
-        LOG.info("url: " + url);
-
-        HttpGet getMethod = new HttpGet(url);
-        HttpResponse response;
-
-        for (int i = 1; i <= iterations; i++) {
-            String[] expectedInResponse = {
-                                            "<li>TestConstructorInjection index: " + i + "</li>",
-                                            "<li>TestConstructorInjectionRequest index: " + 1 + "</li>",
-                                            "<li>TestConstructorInjectionApplication index: " + i + "</li>",
-                                            "<li>TestConstructorInjectionSession index: " + i + "</li>"
-            };
-            response = client.execute(getMethod);
-            assertEquals("Expected " + 200 + " status code was not returned!",
-                         200, response.getStatusLine().getStatusCode());
-
-            String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-            LOG.info("Response content: " + content);
-            org.apache.http.util.EntityUtils.consume(response.getEntity());
-
-            for (String expectedResponse : expectedInResponse) {
-                assertTrue("The response did not contain: " + expectedResponse, content.contains(expectedResponse));
-            }
-        }
-
-        //Testing if a new TestConstructorInjectionSession was injected when another session is used
-        String[] expectedInResponse = {
-                                        "<li>TestConstructorInjection index: " + (iterations + 1) + "</li>",
-                                        "<li>TestConstructorInjectionRequest index: " + 1 + "</li>",
-                                        "<li>TestConstructorInjectionApplication index: " + (iterations + 1) + "</li>",
-                                        "<li>TestConstructorInjectionSession index: " + 1 + "</li>"
-        };
-
-        response = client2.execute(getMethod);
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getStatusLine().getStatusCode());
-
-        String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-        LOG.info("Response content: " + content);
-        org.apache.http.util.EntityUtils.consume(response.getEntity());
-
-        for (String expectedResponse : expectedInResponse) {
-            assertTrue("The response did not contain: " + expectedResponse, content.contains(expectedResponse));
-        }
-    }
-
-    /**
-     * Test the tag library event listeners injected using CDI.
-     * Field injection.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testTagLibraryEventListenerFI() throws Exception {
-        final int iterations = 5;
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        DefaultHttpClient client2 = new DefaultHttpClient(); //Used to test @SessionScoped
-
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "TagLibraryEventListenerFI.jsp?increment=true");
-        LOG.info("url: " + url);
-
-        HttpGet getMethod = new HttpGet(url);
-        HttpResponse response;
-
-        for (int i = 1; i <= iterations; i++) {
-            String[] expectedInResponse = {
-                                            "<li>TestFieldInjection index: " + i + "</li>",
-                                            "<li>TestFieldInjectionRequest index: " + 1 + "</li>",
-                                            "<li>TestFieldInjectionApplication index: " + i + "</li>",
-                                            "<li>TestFieldInjectionSession index: " + i + "</li>"
-            };
-
-            response = client.execute(getMethod);
-            assertEquals("Expected " + 200 + " status code was not returned!",
-                         200, response.getStatusLine().getStatusCode());
-
-            String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-            LOG.info("Response content: " + content);
-            org.apache.http.util.EntityUtils.consume(response.getEntity());
-
-            for (String expectedResponse : expectedInResponse) {
-                assertTrue("The expected response String was not found" + expectedResponse, content.contains(expectedResponse));
-            }
-        }
-
-        //Testing if a new TestFieldInjectionSession was injected when another session is used
-        String[] expectedInResponse = {
-                                        "<li>TestFieldInjection index: " + (iterations + 1) + "</li>",
-                                        "<li>TestFieldInjectionRequest index: " + 1 + "</li>",
-                                        "<li>TestFieldInjectionApplication index: " + (iterations + 1) + "</li>",
-                                        "<li>TestFieldInjectionSession index: " + 1 + "</li>"
-        };
-
-        response = client2.execute(getMethod);
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getStatusLine().getStatusCode());
-
-        String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-        LOG.info("Response content: " + content);
-        org.apache.http.util.EntityUtils.consume(response.getEntity());
-
-        for (String expectedResponse : expectedInResponse) {
-            assertTrue("The response did not contain: " + expectedResponse, content.contains(expectedResponse));
-        }
-    }
-
-    /**
-     * Test the tag library event listeners injected using CDI.
-     * Method injection.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testTagLibraryEventListenerMI() throws Exception {
-        final int iterations = 5;
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        DefaultHttpClient client2 = new DefaultHttpClient(); //Used to test @SessionScoped
-
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "TagLibraryEventListenerMI.jsp?increment=true");
-        LOG.info("url: " + url);
-
-        HttpGet getMethod = new HttpGet(url);
-        HttpResponse response;
-
-        for (int i = 1; i <= iterations; i++) {
-            String[] expectedInResponse = {
-                                            "<li>TestMethodInjection index: " + i + "</li>",
-                                            "<li>TestMethodInjectionRequest index: " + 1 + "</li>",
-                                            "<li>TestMethodInjectionApplication index: " + i + "</li>",
-                                            "<li>TestMethodInjectionSession index: " + i + "</li>"
-            };
-
-            response = client.execute(getMethod);
-            assertEquals("Expected " + 200 + " status code was not returned!",
-                         200, response.getStatusLine().getStatusCode());
-
-            String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-            LOG.info("Response content: " + content);
-            org.apache.http.util.EntityUtils.consume(response.getEntity());
-
-            for (String expectedResponse : expectedInResponse) {
-                assertTrue("The response did not contain: " + expectedResponse, content.contains(expectedResponse));
-            }
-        }
-
-        //Testing if a new TestMethodInjectionSession was injected when another session is used
-        String[] expectedInResponse = {
-                                        "<li>TestMethodInjection index: " + (iterations + 1) + "</li>",
-                                        "<li>TestMethodInjectionRequest index: " + 1 + "</li>",
-                                        "<li>TestMethodInjectionApplication index: " + (iterations + 1) + "</li>",
-                                        "<li>TestMethodInjectionSession index: " + 1 + "</li>"
-        };
-
-        response = client2.execute(getMethod);
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getStatusLine().getStatusCode());
-
-        String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-        LOG.info("Response content: " + content);
-        org.apache.http.util.EntityUtils.consume(response.getEntity());
-
-        for (String expectedResponse : expectedInResponse) {
-            assertTrue("The response did not contain: " + expectedResponse, content.contains(expectedResponse));
-        }
+        this.verifyStringsInResponse(TestEL_APP_NAME, "ResolutionVariablesPropertiesServlet", expectedInResponse);
     }
 
     /**
@@ -963,7 +732,6 @@ public class JSPTests {
      */
     @Mode(TestMode.FULL)
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testPI44611() throws Exception {
         this.verifyStringInResponse(PI44611_APP_NAME, "PI44611.jsp", "Test passed!");
     }
@@ -976,7 +744,6 @@ public class JSPTests {
      */
     @Mode(TestMode.FULL)
     @Test
-    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testPI59436() throws Exception {
         this.verifyStringInResponse(PI59436_APP_NAME, "PI59436.jsp", "Test passed.");
     }

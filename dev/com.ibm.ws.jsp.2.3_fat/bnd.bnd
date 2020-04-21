@@ -13,7 +13,8 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/TestJSP2.3.war/src,\
+    test-applications/TestInjection.war/src,\
+    test-applications/TestEL.war/src
 
 fat.project: true
 
@@ -22,7 +23,10 @@ fat.project: true
 tested.features:\
     jsp-2.2,\
     servlet-4.0,\
-    cdi-2.0
+    cdi-2.0,\
+    el-4.0,\
+    servlet-5.0,\
+    jsp-3.0,\
 
 
 -buildpath: \

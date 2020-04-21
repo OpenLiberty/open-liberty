@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-dependencies {
-    requiredLibs 'commons-codec:commons-codec:1.11',
-      'commons-codec:commons-codec:1.6',
-      'commons-logging:commons-logging:1.1.3',
-      'net.sf.jtidy:jtidy:9.3.8',
-      'org.apache.httpcomponents:httpclient:4.1.2',
-      'org.apache.httpcomponents:httpcore:4.1.2',
-      'httpunit:httpunit:1.5.4'
-    }
-    
-addRequiredLibraries.dependsOn addJakartaTransformer
+package com.ibm.ws.jsp23.fat.testinjection.beans;
+
+/**
+ *
+ */
+public class Pojo1 {
+
+    public static int counter = 0;
+
+}
