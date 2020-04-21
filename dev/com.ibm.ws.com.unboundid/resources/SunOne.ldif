@@ -8,6 +8,25 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 ################################################################################
+dn: dc=rtp,dc=raleigh,dc=ibm,dc=com
+dc: rtp
+objectclass: domain
+objectclass: top
+
+dn: ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+ou: users
+objectClass: organizationalUnit
+objectClass: top
+
+dn: cn=vmmgroup1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+nsRoleDN: cn=vmm_nestedGrp, ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: vmmgroup1
+objectclass: nssimpleroledefinition
+objectclass: nsmanagedroledefinition
+objectclass: top
+objectclass: ldapsubentry
+objectclass: nsroledefinition
+description: LDAP group vmmgroup1 for testing
 
 dn: uid=noNSUID,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
 sn: noNSUIDSN
@@ -33,15 +52,6 @@ title: Test Persona
 userPassword:: e1NIQX1QMVlCMmhUK0lpbk8vMjlZaUltcFpKaGVwWUE9
 uid: persona1
 
-dn: dc=rtp,dc=raleigh,dc=ibm,dc=com
-dc: rtp
-objectclass: domain
-objectclass: top
-
-dn: ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
-ou: users
-objectClass: organizationalUnit
-objectClass: top
 
 dn: cn=vmm_nestedGrp,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
 cn: vmm_nestedGrp
@@ -51,16 +61,6 @@ objectclass: top
 objectclass: ldapsubentry
 objectclass: nsroledefinition
 description: LDAP group vmm_nestedGrp for testing
-
-dn: cn=vmmgroup1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
-nsRoleDN: cn=vmm_nestedGrp, ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
-cn: vmmgroup1
-objectclass: nssimpleroledefinition
-objectclass: nsmanagedroledefinition
-objectclass: top
-objectclass: ldapsubentry
-objectclass: nsroledefinition
-description: LDAP group vmmgroup1 for testing
 
 dn: cn=vmmgroup2,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
 nsRoleDN: cn=vmm_nestedGrp, ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com

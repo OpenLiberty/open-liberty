@@ -20,6 +20,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -34,6 +37,7 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.schema.Schema;
+import com.unboundid.ldif.LDIFReader;
 import com.unboundid.util.ssl.KeyStoreKeyManager;
 import com.unboundid.util.ssl.SSLUtil;
 import com.unboundid.util.ssl.TrustAllTrustManager;
@@ -98,7 +102,37 @@ public class InMemoryLDAPServer {
         configs.add(insecure);
         config.setListenerConfigs(configs);
 
-        Schema schema = null;
+        Schema schema = Schema.getDefaultStandardSchema();
+        /*
+         * Load the Oracle data LDIF. This contains users and groups that were originally
+         * in the ApacheDS Oracle stand-alone LDAP instance.
+         */
+        ArrayList<String> schemaFiles = new ArrayList<String>();
+        final String path = "resources";
+        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+
+        final JarFile jar = new JarFile(jarFile);
+        final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+        while (entries.hasMoreElements()) {
+            final String name = entries.nextElement().getName();
+            if (name.startsWith(path + "/instances/SunOne/partitions/schema") && name.endsWith(".ldif")) { //filter according to the path
+                System.out.println("file: " + name);
+                schemaFiles.add(name);
+            }
+        }
+        for (String filename : schemaFiles) {
+            System.out.println("Adding file to schema: /" + filename);
+            LDIFReader ldifreader = new LDIFReader(extractResourceToFile("/" + filename, "sundata", "ldif").getAbsolutePath());
+            Entry entry = ldifreader.readEntry();
+            System.out.println("Entry: " + entry.getAttributes());
+            Schema temp = new Schema(entry);
+            schema = Schema.mergeSchemas(schema, temp);
+            ldifreader.close();
+//            InputStream in = getClass().getResourceAsStream(filename);
+//            Schema wimschema = Schema.getSchema(in);
+//            schema = Schema.mergeSchemas(schema, wimschema);
+        }
+        jar.close();
         if (useWimSchema) {
             InputStream in = getClass().getResourceAsStream("/resources/wimschema.ldif");
             Schema wimschema = Schema.getSchema(in);
