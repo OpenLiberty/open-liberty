@@ -14,29 +14,18 @@ instrument.ffdc: false
 
 cxfVersion=3.3.3
 
-app-resources= \
-  META-INF/services/javax.xml.ws.spi.Provider
-
-# the Service-Component in app-resources.bnd uses "${Bundle-SymbolicName}_${bVersion}.ResourceProvider"
-# however this bundle symbolic name is com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2, and this ds config need
-# the name not contains "-".
-Service-Component: \
-  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws_3_2.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=optional; \
-    properties:="resources=${app-resources}"
-
-
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
-   META-INF=resources/META-INF
+  @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
+  META-INF=resources/META-INF
    
--buildpath: org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\
+-buildpath: \
+  org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core

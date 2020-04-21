@@ -16,23 +16,24 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2
 
 
 Import-Package: \
-com.ibm.wsspi.classloading, \
-org.apache.cxf.bindings.soap.*,\
-!com.ctc.wstx.*,\
-!org.codehaus.stax2.*,\
-!com.sun.msv.*,\
-!com.sun.xml.bind.marshaller,\
-!com.sun.xml.fastinfoset.stax.*,\
-!org.apache.log4j.*,\
-!net.sf.cglib.proxy.*,\
-!org.springframework.*,\
-!javax.validation.*, \
-!org.apache.aries.*,\
-!org.apache.cxf.transport.https,\
-!org.osgi.service.blueprint.*,\
-javax.xml.bind.*;version=!,\
-javax.xml.ws.*;version="[2.3,3)", \
-*
+  javax.wsdl.*, \
+  com.ibm.wsspi.classloading, \
+  !com.ctc.wstx.*,\
+  !org.codehaus.stax2.*,\
+  !com.sun.msv.*,\
+  !com.sun.xml.bind.marshaller,\
+  !com.sun.xml.fastinfoset.stax.*,\
+  !org.apache.log4j.*,\
+  !net.sf.cglib.proxy.*,\
+  !org.springframework.*,\
+  !javax.validation.*, \
+  !org.apache.aries.*,\
+  !org.apache.cxf.transport.https,\
+  !org.osgi.service.blueprint.*,\
+  javax.xml.bind.*;version=!,\
+  javax.xml.ws.*;version="[2.3,3)", \
+  org.apache.cxf.*;version="[3.2.4,4)",\
+  *
 
 DynamicImport-Package: com.ibm.ws.jaxws.client
 

@@ -10,8 +10,8 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-policy;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+instrument.classesExcludes: org/apache/cxf/ws/policy/PolicyDataEngineImpl.class
 instrument.ffdc: false
-
 cxfVersion=2.6.2
 
 Include-Resource: \
@@ -21,7 +21,7 @@ Include-Resource: \
   @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/NOTICE, \
   @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
   @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
-  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/org/apache/cxf/**
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/org/apache/cxf/**, \
   @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/schemas/**, \
   com/ibm/ws=${bin}/com/ibm/ws, \
   org/apache/cxf=${bin}/org/apache/cxf
