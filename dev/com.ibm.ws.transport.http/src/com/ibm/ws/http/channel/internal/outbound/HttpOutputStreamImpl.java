@@ -224,7 +224,8 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
         // There's an H2 timing window where the server could be working on a response, it gets interrupted,
         // the frame that comes in has an error, and the connection gets shutdown and all resources
-        // including the response are cleaned up.  Then we come back here after the interruption. Handle this case.
+        // including the response are cleaned up.  Then we come back here after the interruption.
+        // Handle this case.
 
         if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl) &&
             ((HttpInboundServiceContextImpl) isc).isH2Connection() &&
