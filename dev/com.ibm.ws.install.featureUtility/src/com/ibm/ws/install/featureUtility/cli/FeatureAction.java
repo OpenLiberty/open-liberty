@@ -30,8 +30,8 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-    installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "name..."),
-    installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose", "name..."),
+    installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "--acceptLicense", "name..."),
+    installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose","--acceptLicense", "name..."),
     viewSettings(new ViewSettingsAction(),"", -1, "--viewValidationMessages"),
     find(new FindAction(), "", -1),
     help(new FeatureHelpAction(),"", 0);

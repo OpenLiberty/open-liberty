@@ -267,28 +267,20 @@ public abstract class FeatureUtilityToolTest {
         }
     }
 
-    public static String getWlpEdition() throws IOException {
+    public static String getClosedLibertyWlpEdition() throws IOException {
         File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
         Log.info(c, "getWlpEdition", "wlpVersionPropFile exists : " + wlpVersionPropFile.exists());
+        if(!wlpVersionPropFile.exists()) return null;
+
         
         wlpVersionPropFile.setReadable(true);
-
-        FileInputStream fIn2 = null;
         Properties wlpProps = new Properties();
-        String wlpEdition;
-        try {
-            fIn2 = new FileInputStream(wlpVersionPropFile);
+        String wlpEdition = null;
+        try(FileInputStream fIn2 = new FileInputStream(wlpVersionPropFile)){
             wlpProps.load(fIn2);
             wlpEdition = wlpProps.getProperty("com.ibm.websphere.productEdition");
             Log.info(c, "getWlpEdition", "com.ibm.websphere.productEdition : " + wlpEdition);
-        } finally {
-        	try {
-            	assert fIn2 != null;
-            	fIn2.close();
-        	} catch (IOException e) {
-            	// ignore we are trying to close.
-        	}
-    	}
+        }
         return wlpEdition;
     }
 

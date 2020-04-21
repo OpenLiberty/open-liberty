@@ -114,85 +114,95 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
     /**
-     * Test the licenseAcceptance for a base feature
+     * Test the licenseAcceptance for a base feature. Note that this test case will only be run on an Open Liberty wlp.
+     * It will be skipped for Closed Liberty wlps.
      * @throws Exception
      */
     @Test
     public void testBaseLicenseAccept() throws Exception {
         final String METHOD_NAME = "testBaseLicenseAccept";
         Log.entering(c, METHOD_NAME);
-        if (!FeatureUtilityToolTest.isClosedLiberty) {
-        	replaceWlpProperties("20.0.0.4");
-            copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-            
-            copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-            		"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
-            
-            copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-            		"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
-            
-            copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
-            		"../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
-            
-            copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
-            		"../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
-            
-            writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-            String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense" };
 
-            ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-            String edition = getWlpEdition();
-            assertTrue("Should be edition Base", (edition.contains("BASE")));
-
-            deleteProps(METHOD_NAME);
-            deleteRepo(METHOD_NAME);
-            deleteFeaturesAndLafilesFolders(METHOD_NAME);
-        } else {
-        	assertTrue("wlp is already CL", true);
+        if(FeatureUtilityToolTest.isClosedLiberty){
+            Log.info(c, METHOD_NAME,"Wlp is already Closed liberty. This test case will not be run.");
+            Log.exiting(c, METHOD_NAME);
+            return;
         }
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
+
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense" };
+
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        String edition = getClosedLibertyWlpEdition();
+        assertTrue("Edition should be found in the WebSphereApplicationServer.properties file", edition != null);
+        assertTrue("Should be edition Base", (edition.contains("BASE")));
+
+        deleteProps(METHOD_NAME);
+        deleteRepo(METHOD_NAME);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
         Log.exiting(c, METHOD_NAME);
     }
     
     /**
      * Test the licenseAcceptance by providing both a base and ND feature, the resulting wlp should be
      * of version ND.
+     * Note that this test case will only be run on an Open Liberty wlp.
+     *      * It will be skipped for Closed Liberty wlps.
      * @throws Exception
      */
     @Test
     public void testMultiFeatureLicenseAccept() throws Exception {
         final String METHOD_NAME = "testMultiFeatureLicenseAccept";
         Log.entering(c, METHOD_NAME);
-        if (!FeatureUtilityToolTest.isClosedLiberty) {
-        	replaceWlpProperties("20.0.0.4");
-            copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-            
-            copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-            		"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
-            
-            copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-            		"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
-            
-            copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
-            		"../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
-            
-            copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
-            		"../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
-            
-            writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-            String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
 
-            ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-            String edition = getWlpEdition();
-            assertTrue("Should be edition ND", (edition.contains("ND")));
-            
-
-            deleteProps(METHOD_NAME);
-            deleteRepo(METHOD_NAME);
-            deleteFeaturesAndLafilesFolders(METHOD_NAME);
-
-        } else {
-        	assertTrue("wlp is already CL", true);
+        if(FeatureUtilityToolTest.isClosedLiberty){
+            Log.info(c, METHOD_NAME,"Wlp is already Closed liberty. This test case will not be run.");
+            Log.exiting(c, METHOD_NAME);
+            return;
         }
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
+
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
+
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        String edition = getClosedLibertyWlpEdition();
+        assertTrue("Edition should be found in the WebSphereApplicationServer.properties file", edition != null);
+        assertTrue("Should be edition ND", (edition.contains("ND")));
+
+
+        deleteProps(METHOD_NAME);
+        deleteRepo(METHOD_NAME);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
         Log.exiting(c, METHOD_NAME);
     }
     
