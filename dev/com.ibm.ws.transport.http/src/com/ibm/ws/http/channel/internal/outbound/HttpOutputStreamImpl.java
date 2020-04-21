@@ -26,7 +26,6 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -227,17 +226,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         // the frame that comes in has an error, and the connection gets shutdown and all resources
         // including the response are cleaned up.  Then we come back here after the interruption. Handle this case.
 
-        String upgraded = null;
-        if (null != vc) {
-            upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
-        }
-        if ((upgraded != null) && (upgraded.compareToIgnoreCase("true") == 0) &&
+        if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl) &&
+            ((HttpInboundServiceContextImpl) isc).isH2Connection() &&
             (null == this.isc.getResponse())) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "validate response is cleaned up hc: " + this.hashCode() + " details: " + this);
             }
 
-            throw new IOException("H2 Response already cleared on error condition");
+            throw new IOException("H2 Response already destroyed on error condition");
 
         }
 
