@@ -39,6 +39,7 @@ src: src/
   @${repo;io.smallrye:smallrye-graphql-schema-model;1.0.1},\
   @${repo;io.smallrye:smallrye-graphql-servlet;1.0.1},\
   com/ibm/ws=${bin}/com/ibm/ws,\
+  io/smallrye/graphql=${bin}/io/smallrye/graphql,\
   META-INF=resources/META-INF
 
 Service-Component: \
@@ -67,4 +68,5 @@ Service-Component: \
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.org.jboss.jandex;version=latest,\
+  com.ibm.ws.org.jboss.logging;version=latest,\
   com.ibm.ws.webcontainer;version=latest
