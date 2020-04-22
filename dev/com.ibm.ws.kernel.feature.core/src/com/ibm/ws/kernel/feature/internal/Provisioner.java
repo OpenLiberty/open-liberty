@@ -586,8 +586,8 @@ public class Provisioner {
         Collections.sort(bundlesToUninstall, Collections.reverseOrder(BundleInstallStatus.sortByStartLevel));
         for (Bundle bundleToUninstall : bundlesToUninstall) {
             try {
-                bundleToUninstall.uninstall();
                 installStatus.addBundleRemovedDelta(bundleToUninstall);
+                bundleToUninstall.uninstall();
             } catch (IllegalStateException e) {
                 // ok: bundle already uninstalled or the framework is stopping,
                 // determine if we should continue on to the next:
