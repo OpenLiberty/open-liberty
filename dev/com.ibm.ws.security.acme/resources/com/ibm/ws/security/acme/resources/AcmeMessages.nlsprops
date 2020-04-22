@@ -154,9 +154,9 @@ CWPKI2032E=CWPKI2032E: The certificate subject alternative names in the default 
 CWPKI2032E.explanation=The certificate is an invalid DER-encoded certificate or contains unsupported DER features.
 CWPKI2032E.useraction=Review the error message for details on the failure. Revoke or remove the invalid certificate.
 
-CWPKI2033E=CWPKI2033E: The ACME service could not find the certificate for the {0} alias in the {1} keystore. The error is ''{2}''.
-CWPKI2033E.explanation=A certificate authority signed certificate is stored in the default keystore and replaces any existing default certificate, but keystore or default certificate could not be accessed.
-CWPKI2033E.useraction=Review the error message for details on the failure.
+#CWPKI2033E=CWPKI2033E: The ACME service could not find the certificate for the {0} alias in the {1} keystore. The error is ''{2}''.
+#CWPKI2033E.explanation=A certificate authority signed certificate is stored in the default keystore and replaces any existing default certificate, but keystore or default certificate could not be accessed.
+#CWPKI2033E.useraction=Review the error message for details on the failure.
 
 CWPKI2034E=CWPKI2034E: The ACME service could not create a keystore instance. The error is ''{0}''.
 CWPKI2034E.explanation=The ACME service fetched a new certificate, but creating or initializing a keystore for storing the certificate failed.
