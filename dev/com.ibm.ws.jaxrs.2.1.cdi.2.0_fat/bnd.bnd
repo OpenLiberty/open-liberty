@@ -16,7 +16,8 @@ src: \
   test-applications/atinjectapp/src,\
   test-applications/interceptorapp/src,\
   test-applications/contextandclient/src,\
-  test-applications/resourceinfoatstartup/src
+  test-applications/resourceinfoatstartup/src,\
+  test-applications/provider/src
 
 fat.project: true
 
