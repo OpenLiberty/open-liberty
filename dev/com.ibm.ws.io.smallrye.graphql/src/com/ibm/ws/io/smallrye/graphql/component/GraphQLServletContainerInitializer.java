@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
@@ -37,14 +39,16 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 import graphql.schema.GraphQLSchema;
 
-import io.smallrye.graphql.bootstrap.SmallRyeGraphQLBootstrap;
-import io.smallrye.graphql.bootstrap.index.IndexInitializer;
-import io.smallrye.graphql.bootstrap.type.SchemaTypeCreateException;
+import io.smallrye.graphql.bootstrap.Bootstrap;
 import io.smallrye.graphql.execution.ExecutionService;
-import io.smallrye.graphql.execution.GraphQLConfig;
-import io.smallrye.graphql.servlet.SmallRyeGraphQLExecutionServlet;
-import io.smallrye.graphql.servlet.SmallRyeGraphQLSchemaServlet;
+import io.smallrye.graphql.schema.SchemaBuilder;
+import io.smallrye.graphql.schema.model.Schema;
+import io.smallrye.graphql.servlet.ExecutionServlet;
+import io.smallrye.graphql.servlet.GraphQLConfig;
+import io.smallrye.graphql.servlet.IndexInitializer;
+import io.smallrye.graphql.servlet.SchemaServlet;
 
+import org.eclipse.microprofile.graphql.ConfigKey;
 import org.osgi.service.component.annotations.Component;
 import org.jboss.jandex.IndexView;
 
@@ -52,7 +56,7 @@ import org.jboss.jandex.IndexView;
 public class GraphQLServletContainerInitializer implements ServletContainerInitializer {
     private static final TraceComponent tc = Tr.register(GraphQLServletContainerInitializer.class);
 
-    @FFDCIgnore({SchemaTypeCreateException.class})
+    @FFDCIgnore({Throwable.class})
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "onStartup", new Object[] {classes, ctx, ctx.getServletContextName(), ctx.getContextPath()});
@@ -103,36 +107,69 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
             }
         }
 
-        IndexInitializer indexInitializer = new IndexInitializer();
-        IndexView index = indexInitializer.createIndex(webinfClassesUrl);
-        GraphQLSchema schema = null;
+        
+        GraphQLSchema graphQLSchema = null;
         try {
-            schema = SmallRyeGraphQLBootstrap.bootstrap(index);
-        } catch (SchemaTypeCreateException ex) {
+            IndexInitializer indexInitializer = new IndexInitializer();
+            IndexView index = indexInitializer.createIndex(webinfClassesUrl);
+            Schema schema = SchemaBuilder.build(index);
+            graphQLSchema = Bootstrap.bootstrap(schema);
+        } catch (Throwable t) {
             Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
-            throw new ServletException(ex);
+            throw new ServletException(t);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "SmallRye GraphQL initialized");
         }
 
-        ctx.setAttribute(SmallRyeGraphQLSchemaServlet.SCHEMA_PROP, schema);
-        GraphQLConfig config = new GraphQLConfig();
-        config.setPrintDataFetcherException(true);
-        config.setDefaultErrorMessage("Server Error");
-        config.setBlackList(Arrays.asList("**empty**"));
-        config.setWhiteList(Arrays.asList("**empty**"));
-        ExecutionService executionService = new ExecutionService(config, schema);
-        executionService.init();
+        ctx.setAttribute(SchemaServlet.SCHEMA_PROP, graphQLSchema);
+
+        GraphQLConfig config = new GraphQLConfig() {
+            public String getDefaultErrorMessage() {
+                return ConfigFacade.getOptionalValue(ConfigKey.DEFAULT_ERROR_MESSAGE, String.class)
+                                   .orElse("Server Error");
+            }
+
+            public boolean isPrintDataFetcherException() {
+                return ConfigFacade.getOptionalValue("mp.graphql.printDataFetcherException", boolean.class)
+                                   .orElse(false);
+            }
+
+            public List<String> getBlackList() {
+                return ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, List.class)
+                                   .orElse(Collections.EMPTY_LIST);
+            }
+
+            public List<String> getWhiteList() {
+                return ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, List.class)
+                                   .orElse(Collections.EMPTY_LIST);
+            }
+
+            public boolean isAllowGet() {
+                return ConfigFacade.getOptionalValue("mp.graphql.allowGet", boolean.class)
+                                   .orElse(false);
+            }
+
+            public boolean isMetricsEnabled() {
+                return ConfigFacade.getOptionalValue("smallrye.graphql.metrics.enabled", boolean.class)
+                                   .orElse(false);
+            }
+        };
+        //config.setPrintDataFetcherException(true);
+        //config.setDefaultErrorMessage("Server Error");
+        //config.setBlackList(Arrays.asList("**empty**"));
+        //config.setWhiteList(Arrays.asList("**empty**"));
+        ExecutionService executionService = new ExecutionService(config, graphQLSchema);
+        //executionService.init();
         
         String path = "/" + ConfigFacade.getOptionalValue("mp.graphql.contextpath", String.class)
                                         .filter(s -> {return s.replaceAll("/", "").length() > 0;})
                                         .orElse("graphql");
-        SmallRyeGraphQLExecutionServlet execServlet = new SmallRyeGraphQLExecutionServlet(executionService, config);
-        ServletRegistration.Dynamic execServletReg = ctx.addServlet("SmallRyeGraphQLExecutionServlet", execServlet);
+        ExecutionServlet execServlet = new ExecutionServlet(executionService, config);
+        ServletRegistration.Dynamic execServletReg = ctx.addServlet("ExecutionServlet", execServlet);
         execServletReg.addMapping(path + "/*");
-        ServletRegistration.Dynamic schemaServletReg = ctx.addServlet("SmallRyeGraphQLSchemaServlet", new SmallRyeGraphQLSchemaServlet());
+        ServletRegistration.Dynamic schemaServletReg = ctx.addServlet("SchemaServlet", new SchemaServlet());
         schemaServletReg.addMapping(path + "/schema.graphql");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
