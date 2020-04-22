@@ -130,7 +130,7 @@ public class InputFieldsTestServlet extends FATServlet {
                                   "    shippingWeight2: 1.5" + System.lineSeparator() +
                                   "  }) {" + System.lineSeparator() +
                                   "    name," + System.lineSeparator() +
-                                  "    quantity," + System.lineSeparator() +
+                                  "    qty," + System.lineSeparator() +
                                   "    weight," + System.lineSeparator() +
                                   "    qty2," + System.lineSeparator() +
                                   "    weight2," + System.lineSeparator() +
@@ -151,7 +151,7 @@ public class InputFieldsTestServlet extends FATServlet {
         graphQLOperation.setQuery("query allWidgets {" + System.lineSeparator() +
                        "  allWidgets {" + System.lineSeparator() +
                        "    name," + System.lineSeparator() +
-                       "    quantity" + System.lineSeparator() +
+                       "    qty" + System.lineSeparator() +
                        "  }" + System.lineSeparator() +
                        "}");
 

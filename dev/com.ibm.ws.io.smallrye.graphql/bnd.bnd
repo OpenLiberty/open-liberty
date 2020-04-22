@@ -34,9 +34,12 @@ src: src/
 -dsannotations: com.ibm.ws.io.smallrye.graphql.component.*
 
 -includeresource: \
-  @${repo;io.smallrye:smallrye-graphql;1.0.1.20200402}!/!META-INF/beans.xml,\
-  @${repo;io.smallrye:smallrye-graphql-servlet;1.0.1.20200402},\
+  @${repo;io.smallrye:smallrye-graphql;1.0.1}!/!META-INF/beans.xml,\
+  @${repo;io.smallrye:smallrye-graphql-schema-builder;1.0.1},\
+  @${repo;io.smallrye:smallrye-graphql-schema-model;1.0.1},\
+  @${repo;io.smallrye:smallrye-graphql-servlet;1.0.1},\
   com/ibm/ws=${bin}/com/ibm/ws,\
+  io/smallrye/graphql=${bin}/io/smallrye/graphql,\
   META-INF=resources/META-INF
 
 Service-Component: \
@@ -44,11 +47,13 @@ Service-Component: \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
-    properties:="resources=META-INF/services/io.smallrye.graphql.cdi.CDIDelegate"
+    properties:="resources=META-INF/services/io.smallrye.graphql.lookup.LookupService"
 
 -buildpath: \
-  io.smallrye:smallrye-graphql;strategy=exact;version=1.0.1.20200402,\
-  io.smallrye:smallrye-graphql-servlet;strategy=exact;version=1.0.1.20200402,\
+  io.smallrye:smallrye-graphql;strategy=exact;version=1.0.1,\
+  io.smallrye:smallrye-graphql-schema-builder;strategy=exact;version=1.0.1,\
+  io.smallrye:smallrye-graphql-schema-model;strategy=exact;version=1.0.1,\
+  io.smallrye:smallrye-graphql-servlet;strategy=exact;version=1.0.1,\
   com.ibm.websphere.javaee.annotation.1.3;version=latest, \
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
@@ -63,4 +68,5 @@ Service-Component: \
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.org.jboss.jandex;version=latest,\
+  com.ibm.ws.org.jboss.logging;version=latest,\
   com.ibm.ws.webcontainer;version=latest

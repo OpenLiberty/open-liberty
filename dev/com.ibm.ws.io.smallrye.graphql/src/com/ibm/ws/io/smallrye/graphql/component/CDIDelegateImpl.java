@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.io.smallrye.graphql.component;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,25 +18,24 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.context.spi.CreationalContext;
 
-import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import io.smallrye.graphql.lookup.LookupService;
 
-import io.smallrye.graphql.cdi.CDIDelegate;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
-public class CDIDelegateImpl implements CDIDelegate {
+public class CDIDelegateImpl implements LookupService {
     private static Logger LOG = Logger.getLogger(CDIDelegateImpl.class.getName());
 
     @Override
-    public Class<?> getClassFromCDI(Class<?> declaringClass) {
-        return getInstanceFromCDI(declaringClass).getClass();
+    public String getName() {
+        return "Liberty CDIDelegateImpl";
     }
 
     @Override
-    public Object getInstanceFromCDI(Class<?> declaringClass) {
+    public Class<?> getClass(Class<?> declaringClass) {
+        return getInstance(declaringClass).getClass();
+    }
+
+    @Override
+    public Object getInstance(Class<?> declaringClass) {
         BeanManager manager = GraphQLExtension.getBeanManager();
         Bean bean = getBeanFromCDI(declaringClass);
         CreationalContext creationalContext = manager.createCreationalContext(bean);
