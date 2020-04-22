@@ -34,7 +34,7 @@ fat.test.databases: true
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.concurrent.persistent;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1,\
-	org.testcontainers:database-commons;version=1.12.3,\
-	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:jdbc;version=1.14.0,\
+	org.testcontainers:testcontainers;version=1.14.0
 	

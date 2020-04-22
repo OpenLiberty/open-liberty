@@ -59,7 +59,6 @@ public class SSLRecoveryTest extends FATServletClient {
                                     .withDatabaseName(POSTGRES_DB)
                                     .withUsername(POSTGRES_USER)
                                     .withPassword(POSTGRES_PASS)
-                                    .withExposedPorts(5432)
                                     .withConfigOption("ssl", "on")
                                     .withConfigOption("max_prepared_transactions", "2")
                                     .withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt")
