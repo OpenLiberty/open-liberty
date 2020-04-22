@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -329,7 +329,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * activated and when changes to our configuration have occurred.
      *
      * @param componentContext
-     *            the OSGi DS context
+     *                             the OSGi DS context
      */
     @Activate()
     protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
@@ -439,7 +439,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * implementation is stopped.
      *
      * @param componentContext
-     *            the OSGi DS context
+     *                             the OSGi DS context
      */
     @Deactivate()
     @FFDCIgnore(InterruptedException.class)
@@ -478,7 +478,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * reference required by activator, inject directly.
      *
      * @param locationService
-     *            a location service
+     *                            a location service
      */
     @Reference(name = "locationService", service = WsLocationAdmin.class)
     protected void setLocationService(WsLocationAdmin locationService) {
@@ -491,9 +491,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * deactivate. Do nothing.
      *
      * @param locationService
-     *            a location service
+     *                            a location service
      */
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     public WsLocationAdmin getLocationService() {
         return locationService;
@@ -525,7 +526,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      *
      */
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {}
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
 
     /**
      * Inject a <code>EventAdmin</code> service instance.
@@ -540,7 +542,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetEventAdminService(EventAdmin eventAdminService) {}
+    protected void unsetEventAdminService(EventAdmin eventAdminService) {
+    }
 
     /**
      * Inject a <code>RegionDigraph</code> service instance.
@@ -562,13 +565,14 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetDigraph(RegionDigraph digraph) {}
+    protected void unsetDigraph(RegionDigraph digraph) {
+    }
 
     /**
      * Inject an <code>ExecutorService</code> service instance.
      *
      * @param executorService
-     *            an executor service
+     *                            an executor service
      */
     @Reference(name = "executorService", service = ExecutorService.class)
     protected void setExecutorService(ExecutorService executorService) {
@@ -579,9 +583,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Remove the <code>ExecutorService</code> service instance.
      *
      * @param executorService
-     *            an executor service
+     *                            an executor service
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
@@ -598,7 +603,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {}
+    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {
+    }
 
     @Override
     public void updated(Dictionary<String, ?> configuration) throws ConfigurationException {
@@ -744,10 +750,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
                     //register a service that can be looked up for server start.
                     // Need a two phase approach, since ports will be opened for listening on the first phase
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {}, new Hashtable<String, Object>());
+                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    }, new Hashtable<String, Object>());
 
                     // components which needed to wait till ports were opened for listening need to wait till Phase2
-                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {}, new Hashtable<String, Object>());
+                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {
+                    }, new Hashtable<String, Object>());
 
                     break;
                 default:
@@ -868,9 +876,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      *
      * @param provisioningMode
      * @param preInstalledFeatures
-     * @param deletedAutoFeatures - The list of deleted AutoFeatures.This is used to trace which auto features have been deleted.
+     * @param deletedAutoFeatures       - The list of deleted AutoFeatures.This is used to trace which auto features have been deleted.
      * @param deletedPublicAutoFeatures - The list of deleted Public AutoFeatures.This is used to issue to the console which public
-     *            auto features have been deleted.
+     *                                      auto features have been deleted.
      */
     private void writeUpdateMessages(ProvisioningMode provisioningMode, Set<String> preInstalledFeatures, Set<String> deletedAutoFeatures,
                                      Set<String> deletedPublicAutoFeatures) {
@@ -1242,10 +1250,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      * Update installed features and bundles
      *
-     * @param locService Location service used to resolve resources (feature definitions or bundles)
-     * @param provisioner Provisioner for installing/starting bundles
+     * @param locService           Location service used to resolve resources (feature definitions or bundles)
+     * @param provisioner          Provisioner for installing/starting bundles
      * @param preInstalledFeatures
-     * @param newFeatureSet New/revised list of active features
+     * @param newFeatureSet        New/revised list of active features
      * @return true if no errors occurred during the update, false otherwise
      */
     @FFDCIgnore(Throwable.class)
@@ -1400,6 +1408,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         provisioner.resolveBundles(bundleContext, installedBundles);
 
         if (featureChange.featureBundlesResolved != null) {
+            Map<String, Object> props = new HashMap<String, Object>(1);
+            props.put(RuntimeUpdateNotification.INSTALLED_BUNDLES_IN_UPDATE, installStatus.getBundlesAddedDelta());
+            props.put(RuntimeUpdateNotification.REMOVED_BUNDLES_IN_UPDATE, installStatus.getBundlesRemovedDelta());
+            featureChange.featureBundlesResolved.setProperties(props);
             featureChange.featureBundlesResolved.setResult(true);
             RuntimeUpdateNotification featureBundlesProcessed = runtimeUpdateManager.getNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_PROCESSED);
             if (featureBundlesProcessed != null) {
@@ -1462,7 +1474,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * and the unsatisfied java version dependency.
      *
      * @param installedBundles A list of the currently installed bundles
-     * @param features A list of the currently installed features
+     * @param features         A list of the currently installed features
      */
     private void analyzeUnresolvedBundles(List<Bundle> installedBundles, Set<String> features) {
 
@@ -1590,7 +1602,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Find which features include the given bundle
      *
      * @param features The feature list to scan for this bundle
-     * @param b1 The bundle to look for in features
+     * @param b1       The bundle to look for in features
      * @return List of features this bundle is included in
      */
     public Set<String> findIncludingFeatures(Set<String> features, Bundle b1) {
@@ -1800,10 +1812,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Issues appropriate diagnostics & messages for this environment.
      *
      * @param listName
-     *            the name of the feature that was installed
+     *                          the name of the feature that was installed
      * @param installStatus
-     *            Status object holding any warnings or exceptions that occurred
-     *            during bundle installation
+     *                          Status object holding any warnings or exceptions that occurred
+     *                          during bundle installation
      * @return true if no exceptions occurred during bundle installation, false otherwise.
      */
     protected boolean checkInstallStatus(BundleInstallStatus installStatus) throws IllegalStateException {
@@ -1917,8 +1929,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * and issue appropriate diagnostics & messages for this environment.
      *
      * @param bundleStatus
-     *            Status object holding any exceptions that occurred
-     *            during bundle start or stop/uninstall
+     *                         Status object holding any exceptions that occurred
+     *                         during bundle start or stop/uninstall
      * @return true if no exceptions occurred while stating bundles, false otherwise.
      */
     protected boolean checkBundleStatus(BundleLifecycleStatus bundleStatus) {
@@ -1972,7 +1984,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * necessarily know that it's ours..).
      *
      * @param level
-     *            StartLevel to change to
+     *                  StartLevel to change to
      * @return BundleStartStatus containing any exceptions encountered
      *         during the StartLevel change operation.
      */

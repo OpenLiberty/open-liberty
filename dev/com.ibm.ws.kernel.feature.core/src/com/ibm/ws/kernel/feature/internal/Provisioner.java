@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,6 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryHolder;
 import com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository;
-import com.ibm.ws.kernel.provisioning.LibertyBootRuntime;
 import com.ibm.ws.kernel.provisioning.packages.SharedPackageInspector.PackageType;
 import com.ibm.ws.kernel.service.util.ResolutionReportHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -93,7 +92,6 @@ public class Provisioner {
     private static final TraceComponent tc = Tr.register(Provisioner.class);
     public static final String BUNDLE_LOC_FEATURE_TAG = "feature@";
     static final String BUNDLE_LOC_REFERENCE_TAG = "reference:";
-    private final String BUNDLE_LOC_FILE_REFERENCE_TAG = BUNDLE_LOC_REFERENCE_TAG + "file:";
     private static final String BUNDLE_LOC_PROD_EXT_TAG = "productExtension:";
 
     private static final String REGION_EXTENSION_PREFIX = "liberty.extension.";
@@ -272,11 +270,8 @@ public class Provisioner {
                     // Get the product name for which the bundles are being installed.
                     String productName = bundleRepositoryHolder.getFeatureType();
 
-                    if (libertyBoot) {
-                        bundle = installLibertyBootBundle(productName, fr, fwkWiring);
-                    } else {
-                        bundle = installFeatureBundle(urlString, productName, bundleRepositoryHolder, fr);
-                    }
+                    bundle = installFeatureBundle(urlString, productName, bundleRepositoryHolder, fr);
+
                     if (bundle == null) {
                         return true;
                     }
@@ -305,6 +300,7 @@ public class Provisioner {
                             }
                             level = newLevel;
                             bsl.setStartLevel(level);
+
                         }
 
                         installStatus.addBundleToStart(bundle);
@@ -344,32 +340,12 @@ public class Provisioner {
                 return new File(URI.create(location));
             }
 
-            private Bundle installLibertyBootBundle(String productName, FeatureResource fr, FrameworkWiring fwkWiring) throws BundleException, IOException {
-                //getting the LibertyBootRuntime instance and installing the boot bundle
-                LibertyBootRuntime libertyBoot = featureManager.getLibertyBoot();
-                if (libertyBoot == null) {
-                    throw new IllegalStateException("No LibertBootRuntime service available!");
-                }
-
-                Bundle bundle = libertyBoot.installBootBundle(fr.getSymbolicName(), fr.getVersionRange(), BUNDLE_LOC_FEATURE_TAG);
-                if (bundle == null) {
-                    installStatus.addMissingBundle(fr);
-                    return null;
-                }
-
-                Region productRegion = getProductRegion(productName);
-                Region current = featureManager.getDigraph().getRegion(bundle);
-                if (!productRegion.equals(current)) {
-                    current.removeBundle(bundle);
-                    productRegion.addBundle(bundle);
-                }
-                return bundle;
-            }
-
             private Bundle installFeatureBundle(String urlString, String productName, BundleRepositoryHolder bundleRepositoryHolder,
                                                 FeatureResource fr) throws BundleException, IOException {
                 Bundle bundle = fetchInstalledBundle(urlString, productName);
+
                 if (bundle == null) {
+
                     ContentBasedLocalBundleRepository lbr = bundleRepositoryHolder.getBundleRepository();
                     // Try to find the file, hopefully using the cached path
                     File bundleFile = lbr.selectBundle(urlString, fr.getSymbolicName(), fr.getVersionRange());
@@ -404,6 +380,9 @@ public class Provisioner {
                     if (ActivationType.PARALLEL.equals(fr.getActivationType())) {
                         bundle.adapt(Module.class).setParallelActivation(true);
                     }
+
+                    installStatus.addBundleAddedDelta(bundle);
+
                 }
                 return bundle;
             }
@@ -608,6 +587,7 @@ public class Provisioner {
         for (Bundle bundleToUninstall : bundlesToUninstall) {
             try {
                 bundleToUninstall.uninstall();
+                installStatus.addBundleRemovedDelta(bundleToUninstall);
             } catch (IllegalStateException e) {
                 // ok: bundle already uninstalled or the framework is stopping,
                 // determine if we should continue on to the next:
