@@ -28,7 +28,6 @@ import java.util.Dictionary;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -751,11 +750,11 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     //register a service that can be looked up for server start.
                     // Need a two phase approach, since ports will be opened for listening on the first phase
                     bundleContext.registerService(ServerStarted.class, new ServerStarted() {
-                    }, new Hashtable<String, Object>());
+                    }, null);
 
                     // components which needed to wait till ports were opened for listening need to wait till Phase2
                     bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {
-                    }, new Hashtable<String, Object>());
+                    }, null);
 
                     break;
                 default:

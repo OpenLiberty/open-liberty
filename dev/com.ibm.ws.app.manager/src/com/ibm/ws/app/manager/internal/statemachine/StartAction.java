@@ -43,7 +43,7 @@ class StartAction implements Action {
     private final AtomicLong _startTime = new AtomicLong();
     private final ApplicationMonitor _appMonitor;
     private final boolean _update;
-    private boolean cancelled = false;
+    private volatile boolean cancelled = false;
     private final AtomicReference<Future<?>> _slowMessageAction = new AtomicReference<Future<?>>();
     private final CompletionListener<Boolean> _listener = new CompletionListener<Boolean>() {
         @SuppressWarnings("deprecation")
@@ -166,7 +166,6 @@ class StartAction implements Action {
     @Override
     public void cancel() {
         this.cancelled = true;
-        //      _callback.set(null);
         stopSlowStartMessage();
     }
 }
