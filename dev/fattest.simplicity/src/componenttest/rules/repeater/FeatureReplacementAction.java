@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.ibm.websphere.simplicity.config.ClientConfiguration;
 import com.ibm.websphere.simplicity.config.ClientConfigurationFactory;
@@ -74,7 +75,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeature the feature to be removed
-     * @param addFeature the feature to add
+     * @param addFeature    the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
         this(addFeature);
@@ -87,7 +88,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeatures the features to remove
-     * @param addFeatures the features to add
+     * @param addFeatures    the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
         this(addFeatures);
@@ -102,7 +103,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * By default features are added even if there was not another version already there
      *
-     * @param removeFeatures the features to remove
      * @param addFeatures the features to add
      */
     public FeatureReplacementAction(Set<String> addFeatures) {
@@ -127,10 +127,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Add features to the set to be added
      *
      * @param addFeatures the features to be added
-     * @return this
      */
     public FeatureReplacementAction addFeatures(Set<String> addFeatures) {
-        this.addFeatures.addAll(addFeatures);
+        addFeatures.forEach(this::addFeature);
         return this;
     }
 
@@ -140,10 +139,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * ...to be clear, this is not the opposite of addFeatures()
      *
      * @param removeFeatures the features to be removed. Wildcards are supported.
-     * @return this
      */
     public FeatureReplacementAction removeFeatures(Set<String> removeFeatures) {
-        this.removeFeatures.addAll(removeFeatures);
+        removeFeatures.forEach(this::removeFeature);
         return this;
     }
 
@@ -151,10 +149,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Add a feature to the set to be added
      *
      * @param addFeature the feature to be added
-     * @return this
      */
     public FeatureReplacementAction addFeature(String addFeature) {
-        this.addFeatures.add(addFeature);
+        this.addFeatures.add(addFeature.toLowerCase());
         return this;
     }
 
@@ -164,10 +161,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * ...to be clear, this is not the opposite of addFeature()
      *
      * @param removeFeature the feature to be removed. Wildcards are supported.
-     * @return this
      */
     public FeatureReplacementAction removeFeature(String removeFeature) {
-        this.removeFeatures.add(removeFeature);
+        this.removeFeatures.add(removeFeature.toLowerCase());
         return this;
     }
 
@@ -324,6 +320,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
             Set<String> features = isServerConfig ? //
                             serverConfig.getFeatureManager().getFeatures() : //
                             clientConfig.getFeatureManager().getFeatures();
+            // Convert feature set to all lowercase to prevent case sensitivity issues
+            Set<String> intermediateFeatures = new TreeSet<>(features);
+            features.clear();
+            for (String f : intermediateFeatures)
+                features.add(f.toLowerCase());
 
             Log.info(c, m, "Original features:  " + features);
             if (forceAddFeatures) {
