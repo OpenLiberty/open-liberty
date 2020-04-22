@@ -1,174 +1,492 @@
 /*
- * Copyright (c) 2012, 2020 Oracle and/or its affiliates and others.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0, which is available at
- * http://www.eclipse.org/legal/epl-2.0.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the
- * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
- * version 2 with the GNU Classpath Exception, which is available at
- * https://www.gnu.org/software/classpath/license.html.
- *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package jakarta.el;
 
-import static java.lang.reflect.Modifier.isAbstract;
-import static java.lang.reflect.Modifier.isInterface;
-import static java.lang.reflect.Modifier.isPublic;
-
-import java.util.ArrayList;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Handles imports of class names and package names. An imported package name implicitly imports all the classes in the
- * package. A class that has been imported can be used without its package name. The name is resolved to its full
- * (package and class) name at evaluation time.
+ * @since EL 3.0
  */
 public class ImportHandler {
 
-    private Map<String, String> classNameMap = new HashMap<>();
-    private Map<String, Class<?>> classMap = new HashMap<>();
-    private Map<String, String> staticNameMap = new HashMap<>();
-    private HashSet<String> notAClass = new HashSet<>();
-    private List<String> packages = new ArrayList<>();
+    private static final Map<String,Set<String>> standardPackages = new HashMap<>();
 
-    {
+    static {
+        // Servlet 5.0
+        Set<String> servletClassNames = new HashSet<>();
+        // Interfaces
+        servletClassNames.add("AsyncContext");
+        servletClassNames.add("AsyncListener");
+        servletClassNames.add("Filter");
+        servletClassNames.add("FilterChain");
+        servletClassNames.add("FilterConfig");
+        servletClassNames.add("FilterRegistration");
+        servletClassNames.add("FilterRegistration.Dynamic");
+        servletClassNames.add("ReadListener");
+        servletClassNames.add("Registration");
+        servletClassNames.add("Registration.Dynamic");
+        servletClassNames.add("RequestDispatcher");
+        servletClassNames.add("Servlet");
+        servletClassNames.add("ServletConfig");
+        servletClassNames.add("ServletContainerInitializer");
+        servletClassNames.add("ServletContext");
+        servletClassNames.add("ServletContextAttributeListener");
+        servletClassNames.add("ServletContextListener");
+        servletClassNames.add("ServletRegistration");
+        servletClassNames.add("ServletRegistration.Dynamic");
+        servletClassNames.add("ServletRequest");
+        servletClassNames.add("ServletRequestAttributeListener");
+        servletClassNames.add("ServletRequestListener");
+        servletClassNames.add("ServletResponse");
+        servletClassNames.add("SessionCookieConfig");
+        servletClassNames.add("SingleThreadModel");
+        servletClassNames.add("WriteListener");
+        // Classes
+        servletClassNames.add("AsyncEvent");
+        servletClassNames.add("GenericFilter");
+        servletClassNames.add("GenericServlet");
+        servletClassNames.add("HttpConstraintElement");
+        servletClassNames.add("HttpMethodConstraintElement");
+        servletClassNames.add("MultipartConfigElement");
+        servletClassNames.add("ServletContextAttributeEvent");
+        servletClassNames.add("ServletContextEvent");
+        servletClassNames.add("ServletInputStream");
+        servletClassNames.add("ServletOutputStream");
+        servletClassNames.add("ServletRequestAttributeEvent");
+        servletClassNames.add("ServletRequestEvent");
+        servletClassNames.add("ServletRequestWrapper");
+        servletClassNames.add("ServletResponseWrapper");
+        servletClassNames.add("ServletSecurityElement");
+        // Enums
+        servletClassNames.add("DispatcherType");
+        servletClassNames.add("SessionTrackingMode");
+        // Exceptions
+        servletClassNames.add("ServletException");
+        servletClassNames.add("UnavailableException");
+        standardPackages.put("jakarta.servlet", servletClassNames);
+
+        // Servlet 5.0
+        Set<String> servletHttpClassNames = new HashSet<>();
+        // Interfaces
+        servletHttpClassNames.add("HttpServletMapping");
+        servletHttpClassNames.add("HttpServletRequest");
+        servletHttpClassNames.add("HttpServletResponse");
+        servletHttpClassNames.add("HttpSession");
+        servletHttpClassNames.add("HttpSessionActivationListener");
+        servletHttpClassNames.add("HttpSessionAttributeListener");
+        servletHttpClassNames.add("HttpSessionBindingListener");
+        servletHttpClassNames.add("HttpSessionContext");
+        servletHttpClassNames.add("HttpSessionIdListener");
+        servletHttpClassNames.add("HttpSessionListener");
+        servletHttpClassNames.add("HttpUpgradeHandler");
+        servletHttpClassNames.add("Part");
+        servletHttpClassNames.add("PushBuilder");
+        servletHttpClassNames.add("WebConnection");
+        // Classes
+        servletHttpClassNames.add("Cookie");
+        servletHttpClassNames.add("HttpFilter");
+        servletHttpClassNames.add("HttpServlet");
+        servletHttpClassNames.add("HttpServletRequestWrapper");
+        servletHttpClassNames.add("HttpServletResponseWrapper");
+        servletHttpClassNames.add("HttpSessionBindingEvent");
+        servletHttpClassNames.add("HttpSessionEvent");
+        servletHttpClassNames.add("HttpUtils");
+        // Enums
+        servletHttpClassNames.add("MappingMatch");
+        standardPackages.put("jakarta.servlet.http", servletHttpClassNames);
+
+        // JSP 3.0
+        Set<String> servletJspClassNames = new HashSet<>();
+        //Interfaces
+        servletJspClassNames.add("HttpJspPage");
+        servletJspClassNames.add("JspApplicationContext");
+        servletJspClassNames.add("JspPage");
+        // Classes
+        servletJspClassNames.add("ErrorData");
+        servletJspClassNames.add("JspContext");
+        servletJspClassNames.add("JspEngineInfo");
+        servletJspClassNames.add("JspFactory");
+        servletJspClassNames.add("JspWriter");
+        servletJspClassNames.add("PageContext");
+        servletJspClassNames.add("Exceptions");
+        servletJspClassNames.add("JspException");
+        servletJspClassNames.add("JspTagException");
+        servletJspClassNames.add("SkipPageException");
+        standardPackages.put("jakarta.servlet.jsp", servletJspClassNames);
+
+        Set<String> javaLangClassNames = new HashSet<>();
+        // Taken from Java 14 EA27 Javadoc
+        // Interfaces
+        javaLangClassNames.add("Appendable");
+        javaLangClassNames.add("AutoCloseable");
+        javaLangClassNames.add("CharSequence");
+        javaLangClassNames.add("Cloneable");
+        javaLangClassNames.add("Comparable");
+        javaLangClassNames.add("Iterable");
+        javaLangClassNames.add("ProcessHandle");
+        javaLangClassNames.add("ProcessHandle.Info");
+        javaLangClassNames.add("Readable");
+        javaLangClassNames.add("Runnable");
+        javaLangClassNames.add("StackWalker.StackFrame");
+        javaLangClassNames.add("System.Logger");
+        javaLangClassNames.add("Thread.UncaughtExceptionHandler");
+        //Classes
+        javaLangClassNames.add("Boolean");
+        javaLangClassNames.add("Byte");
+        javaLangClassNames.add("Character");
+        javaLangClassNames.add("Character.Subset");
+        javaLangClassNames.add("Character.UnicodeBlock");
+        javaLangClassNames.add("Class");
+        javaLangClassNames.add("ClassLoader");
+        javaLangClassNames.add("ClassValue");
+        javaLangClassNames.add("Compiler");
+        javaLangClassNames.add("Double");
+        javaLangClassNames.add("Enum");
+        javaLangClassNames.add("Enum.EnumDesc");
+        javaLangClassNames.add("Float");
+        javaLangClassNames.add("InheritableThreadLocal");
+        javaLangClassNames.add("Integer");
+        javaLangClassNames.add("Long");
+        javaLangClassNames.add("Math");
+        javaLangClassNames.add("Module");
+        javaLangClassNames.add("ModuleLayer");
+        javaLangClassNames.add("ModuleLayer.Controller");
+        javaLangClassNames.add("Number");
+        javaLangClassNames.add("Object");
+        javaLangClassNames.add("Package");
+        javaLangClassNames.add("Process");
+        javaLangClassNames.add("ProcessBuilder");
+        javaLangClassNames.add("ProcessBuilder.Redirect");
+        javaLangClassNames.add("Record");
+        javaLangClassNames.add("Runtime");
+        javaLangClassNames.add("Runtime.Version");
+        javaLangClassNames.add("RuntimePermission");
+        javaLangClassNames.add("SecurityManager");
+        javaLangClassNames.add("Short");
+        javaLangClassNames.add("StackTraceElement");
+        javaLangClassNames.add("StackWalker");
+        javaLangClassNames.add("StrictMath");
+        javaLangClassNames.add("String");
+        javaLangClassNames.add("StringBuffer");
+        javaLangClassNames.add("StringBuilder");
+        javaLangClassNames.add("System");
+        javaLangClassNames.add("System.LoggerFinder");
+        javaLangClassNames.add("Thread");
+        javaLangClassNames.add("ThreadGroup");
+        javaLangClassNames.add("ThreadLocal");
+        javaLangClassNames.add("Throwable");
+        javaLangClassNames.add("Void");
+        //Enums
+        javaLangClassNames.add("Character.UnicodeScript");
+        javaLangClassNames.add("ProcessBuilder.Redirect.Type");
+        javaLangClassNames.add("StackWalker.Option");
+        javaLangClassNames.add("System.Logger.Level");
+        javaLangClassNames.add("Thread.State");
+        //Exceptions
+        javaLangClassNames.add("ArithmeticException");
+        javaLangClassNames.add("ArrayIndexOutOfBoundsException");
+        javaLangClassNames.add("ArrayStoreException");
+        javaLangClassNames.add("ClassCastException");
+        javaLangClassNames.add("ClassNotFoundException");
+        javaLangClassNames.add("CloneNotSupportedException");
+        javaLangClassNames.add("EnumConstantNotPresentException");
+        javaLangClassNames.add("Exception");
+        javaLangClassNames.add("IllegalAccessException");
+        javaLangClassNames.add("IllegalArgumentException");
+        javaLangClassNames.add("IllegalCallerException");
+        javaLangClassNames.add("IllegalMonitorStateException");
+        javaLangClassNames.add("IllegalStateException");
+        javaLangClassNames.add("IllegalThreadStateException");
+        javaLangClassNames.add("IndexOutOfBoundsException");
+        javaLangClassNames.add("InstantiationException");
+        javaLangClassNames.add("InterruptedException");
+        javaLangClassNames.add("LayerInstantiationException");
+        javaLangClassNames.add("NegativeArraySizeException");
+        javaLangClassNames.add("NoSuchFieldException");
+        javaLangClassNames.add("NoSuchMethodException");
+        javaLangClassNames.add("NullPointerException");
+        javaLangClassNames.add("NumberFormatException");
+        javaLangClassNames.add("ReflectiveOperationException");
+        javaLangClassNames.add("RuntimeException");
+        javaLangClassNames.add("SecurityException");
+        javaLangClassNames.add("StringIndexOutOfBoundsException");
+        javaLangClassNames.add("TypeNotPresentException");
+        javaLangClassNames.add("UnsupportedOperationException");
+        //Errors
+        javaLangClassNames.add("AbstractMethodError");
+        javaLangClassNames.add("AssertionError");
+        javaLangClassNames.add("BootstrapMethodError");
+        javaLangClassNames.add("ClassCircularityError");
+        javaLangClassNames.add("ClassFormatError");
+        javaLangClassNames.add("Error");
+        javaLangClassNames.add("ExceptionInInitializerError");
+        javaLangClassNames.add("IllegalAccessError");
+        javaLangClassNames.add("IncompatibleClassChangeError");
+        javaLangClassNames.add("InstantiationError");
+        javaLangClassNames.add("InternalError");
+        javaLangClassNames.add("LinkageError");
+        javaLangClassNames.add("NoClassDefFoundError");
+        javaLangClassNames.add("NoSuchFieldError");
+        javaLangClassNames.add("NoSuchMethodError");
+        javaLangClassNames.add("OutOfMemoryError");
+        javaLangClassNames.add("StackOverflowError");
+        javaLangClassNames.add("ThreadDeath");
+        javaLangClassNames.add("UnknownError");
+        javaLangClassNames.add("UnsatisfiedLinkError");
+        javaLangClassNames.add("UnsupportedClassVersionError");
+        javaLangClassNames.add("VerifyError");
+        javaLangClassNames.add("VirtualMachineError");
+        //Annotation Types
+        javaLangClassNames.add("Deprecated");
+        javaLangClassNames.add("FunctionalInterface");
+        javaLangClassNames.add("Override");
+        javaLangClassNames.add("SafeVarargs");
+        javaLangClassNames.add("SuppressWarnings");
+        standardPackages.put("java.lang", javaLangClassNames);
+
+    }
+
+    private Map<String,Set<String>> packageNames = new ConcurrentHashMap<>();
+    private Map<String,String> classNames = new ConcurrentHashMap<>();
+    private Map<String,Class<?>> clazzes = new ConcurrentHashMap<>();
+    private Map<String,Class<?>> statics = new ConcurrentHashMap<>();
+
+
+    public ImportHandler() {
         importPackage("java.lang");
     }
 
-    /**
-     * Import a static field or method.
-     *
-     * @param name The static member name, including the full class name, to be imported
-     * @throws ELException if the name does not include a ".".
-     */
-    public void importStatic(String name) throws ELException {
-        int i = name.lastIndexOf('.');
-        if (i <= 0) {
-            throw new ELException("The name " + name + " is not a full static member name");
+
+    public void importStatic(String name) throws jakarta.el.ELException {
+        int lastPeriod = name.lastIndexOf('.');
+
+        if (lastPeriod < 0) {
+            throw new ELException(Util.message(
+                    null, "importHandler.invalidStaticName", name));
         }
 
-        String memberName = name.substring(i + 1);
-        String className = name.substring(0, i);
+        String className = name.substring(0, lastPeriod);
+        String fieldOrMethodName = name.substring(lastPeriod + 1);
 
-        staticNameMap.put(memberName, className);
-    }
+        Class<?> clazz = findClass(className, true);
 
-    /**
-     * Import a class.
-     *
-     * @param name The full class name of the class to be imported
-     * @throws ELException if the name does not include a ".".
-     */
-    public void importClass(String name) throws ELException {
-        int i = name.lastIndexOf('.');
-        if (i <= 0) {
-            throw new ELException("The name " + name + " is not a full class name");
+        if (clazz == null) {
+            throw new ELException(Util.message(
+                    null, "importHandler.invalidClassNameForStatic",
+                    className, name));
         }
 
-        String className = name.substring(i + 1);
+        boolean found = false;
 
-        classNameMap.put(className, name);
+        for (Field field : clazz.getFields()) {
+            if (field.getName().equals(fieldOrMethodName)) {
+                int modifiers = field.getModifiers();
+                if (Modifier.isStatic(modifiers) &&
+                        Modifier.isPublic(modifiers)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            for (Method method : clazz.getMethods()) {
+                if (method.getName().equals(fieldOrMethodName)) {
+                    int modifiers = method.getModifiers();
+                    if (Modifier.isStatic(modifiers) &&
+                            Modifier.isPublic(modifiers)) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!found) {
+            throw new ELException(Util.message(null,
+                    "importHandler.staticNotFound", fieldOrMethodName,
+                    className, name));
+        }
+
+        Class<?> conflict = statics.get(fieldOrMethodName);
+        if (conflict != null) {
+            throw new ELException(Util.message(null,
+                    "importHandler.ambiguousStaticImport", name,
+                    conflict.getName() + '.' +  fieldOrMethodName));
+        }
+
+        statics.put(fieldOrMethodName, clazz);
     }
 
-    /**
-     * Import all the classes in a package.
-     *
-     * @param packageName The package name to be imported
-     */
-    public void importPackage(String packageName) {
-        packages.add(packageName);
+
+    public void importClass(String name) throws jakarta.el.ELException {
+        int lastPeriodIndex = name.lastIndexOf('.');
+
+        if (lastPeriodIndex < 0) {
+            throw new ELException(Util.message(
+                    null, "importHandler.invalidClassName", name));
+        }
+
+        String unqualifiedName = name.substring(lastPeriodIndex + 1);
+        String currentName = classNames.putIfAbsent(unqualifiedName, name);
+
+        if (currentName != null && !currentName.equals(name)) {
+            // Conflict. Same unqualifiedName, different fully qualified names
+            throw new ELException(Util.message(null,
+                    "importHandler.ambiguousImport", name, currentName));
+        }
     }
 
-    /**
-     * Resolve a class name.
-     *
-     * @param name The name of the class (without package name) to be resolved.
-     * @return If the class has been imported previously, with {@link #importClass} or {@link #importPackage}, then its
-     * Class instance. Otherwise <code>null</code>.
-     * @throws ELException if the class is abstract or is an interface, or not public.
-     */
-    public Class<?> resolveClass(String name) {
-        String className = classNameMap.get(name);
+
+    public void importPackage(String name) {
+        // Import ambiguity is handled at resolution, not at import
+        // Whether the package exists is not checked,
+        // a) for sake of performance when used in JSPs (BZ 57142),
+        // b) java.lang.Package.getPackage(name) is not reliable (BZ 57574),
+        // c) such check is not required by specification.
+        Set<String> preloaded = standardPackages.get(name);
+        if (preloaded == null) {
+            packageNames.put(name, Collections.emptySet());
+        } else {
+            packageNames.put(name, preloaded);
+        }
+    }
+
+
+    public java.lang.Class<?> resolveClass(String name) {
+        if (name == null || name.contains(".")) {
+            return null;
+        }
+
+        // Has it been previously resolved?
+        Class<?> result = clazzes.get(name);
+
+        if (result != null) {
+            if (NotFound.class.equals(result)) {
+                return null;
+            } else {
+                return result;
+            }
+        }
+
+        // Search the class imports
+        String className = classNames.get(name);
         if (className != null) {
-            return resolveClassFor(className);
-        }
-
-        for (String packageName : packages) {
-            String fullClassName = packageName + "." + name;
-            Class<?> c = resolveClassFor(fullClassName);
-            if (c != null) {
-                classNameMap.put(name, fullClassName);
-                return c;
+            Class<?> clazz = findClass(className, true);
+            if (clazz != null) {
+                clazzes.put(name, clazz);
+                return clazz;
             }
         }
 
-        return null;
+        // Search the package imports - note there may be multiple matches
+        // (which correctly triggers an error)
+        for (Map.Entry<String,Set<String>> entry : packageNames.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                // Standard package where we know all the class names
+                if (!entry.getValue().contains(name)) {
+                    // Requested name isn't in the list so it isn't in this
+                    // package so move on to next package. This allows the
+                    // class loader look-up to be skipped.
+                    continue;
+                }
+            }
+            className = entry.getKey() + '.' + name;
+            Class<?> clazz = findClass(className, false);
+            if (clazz != null) {
+                if (result != null) {
+                    throw new ELException(Util.message(null,
+                            "importHandler.ambiguousImport", className,
+                            result.getName()));
+                }
+                result = clazz;
+            }
+        }
+        if (result == null) {
+            // Cache NotFound results to save repeated calls to findClass()
+            // which is relatively slow
+            clazzes.put(name, NotFound.class);
+        } else {
+            clazzes.put(name, result);
+        }
+
+        return result;
     }
 
-    /**
-     * Resolve a static field or method name.
-     *
-     * @param name The name of the member(without package and class name) to be resolved.
-     * @return If the field or method has been imported previously, with {@link #importStatic}, then the class object
-     * representing the class that declares the static field or method. Otherwise <code>null</code>.
-     * @throws ELException if the class is not public, or is abstract or is an interface.
+
+    public java.lang.Class<?> resolveStatic(String name) {
+        return statics.get(name);
+    }
+
+
+    private Class<?> findClass(String name, boolean throwException) {
+        Class<?> clazz;
+        ClassLoader cl = Util.getContextClassLoader();
+        String path = name.replace('.', '/') + ".class";
+        try {
+            /* Given that findClass() has to be called for every imported
+             * package and that getResource() is a lot faster then loadClass()
+             * for resources that don't exist, the overhead of the getResource()
+             * for the case where the class does exist is a lot less than the
+             * overhead we save by not calling loadClass().
+             */
+            if (cl.getResource(path) == null) {
+                return null;
+            }
+        } catch (ClassCircularityError cce) {
+            // May happen under a security manager. Ignore it and try loading
+            // the class normally.
+        }
+        try {
+            clazz = cl.loadClass(name);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+
+        // Class must be public, non-abstract, not an interface and (for
+        // Java 9+) in an exported package
+        JreCompat jreCompat = JreCompat.getInstance();
+        int modifiers = clazz.getModifiers();
+        if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers) ||
+                Modifier.isInterface(modifiers) || !jreCompat.isExported(clazz)) {
+            if (throwException) {
+                throw new ELException(Util.message(
+                        null, "importHandler.invalidClass", name));
+            } else {
+                return null;
+            }
+        }
+
+        return clazz;
+    }
+
+
+    /*
+     * Marker class used because null values are not permitted in a
+     * ConcurrentHashMap.
      */
-    public Class<?> resolveStatic(String name) {
-        String className = staticNameMap.get(name);
-        if (className != null) {
-            Class<?> c = resolveClassFor(className);
-            if (c != null) {
-                return c;
-            }
-        }
-
-        return null;
-    }
-
-    private Class<?> resolveClassFor(String className) {
-        Class<?> c = classMap.get(className);
-        if (c != null) {
-            return c;
-        }
-
-        c = getClassFor(className);
-        if (c != null) {
-            checkModifiers(c.getModifiers());
-            classMap.put(className, c);
-        }
-
-        return c;
-    }
-
-    private Class<?> getClassFor(String className) {
-        if (!notAClass.contains(className)) {
-            try {
-                return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-                // Some operating systems have case-insensitive path names. An example is Windows if className is
-                // attempting to be resolved from a wildcard import a java.lang.NoClassDefFoundError may be thrown as
-                // the expected case for the type likely doesn't match. See 
-                // https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8024775 and 
-                // https://bugs.openjdk.java.net/browse/JDK-8133522.
-            } catch (ClassNotFoundException | NoClassDefFoundError ex) {
-                notAClass.add(className);
-            }
-        }
-
-        return null;
-    }
-
-    private void checkModifiers(int modifiers) {
-        if (isAbstract(modifiers) || isInterface(modifiers) || !isPublic((modifiers))) {
-            throw new ELException("Imported class must be public, and cannot be abstract or an interface");
-        }
+    private static class NotFound {
     }
 }

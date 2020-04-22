@@ -1,80 +1,89 @@
 /*
- * Copyright (c) 2012, 2020 Oracle and/or its affiliates and others.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0, which is available at
- * http://www.eclipse.org/legal/epl-2.0.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the
- * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
- * version 2 with the GNU Classpath Exception, which is available at
- * https://www.gnu.org/software/classpath/license.html.
- *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package jakarta.el;
 
 /**
- * Resolves a bean by its known name. This class can be extended to return a bean object given its name, to set a value
- * to an existing bean, or to create a bean with the value.
+ * Base implementation that provides a minimal default implementation that is
+ * intended to be extended by application developers.
  *
- * @see BeanNameELResolver
- *
- * @since Jakarta Expression Language 3.0
+ * @since EL 3.0
  */
 public abstract class BeanNameResolver {
 
     /**
-     * Returns whether the given name is resolved by the BeanNameResolver
+     * Can this resolver resolve the given bean name?
      *
-     * @param beanName The name of the bean.
-     * @return true if the name is resolved by this BeanNameResolver; false otherwise.
+     * @param beanName The bean name to resolve
+     *
+     * @return This default implementation always returns <code>false</code>
      */
     public boolean isNameResolved(String beanName) {
         return false;
     }
 
+
     /**
-     * Returns the bean known by its name.
+     * Returns the named bean.
      *
-     * @param beanName The name of the bean.
-     * @return The bean with the given name. Can be <code>null</code>.
+     * @param beanName The bean name to return
      *
+     * @return This default implementation always returns <code>null</code>
      */
     public Object getBean(String beanName) {
         return null;
     }
 
+
     /**
-     * Sets a value to a bean of the given name. If the bean of the given name does not exist and if {@link #canCreateBean}
-     * is <code>true</code>, one is created with the given value.
+     * Sets a value of a bean of the given name. If the named bean does not
+     * exist and {@link #canCreateBean} returns <code>true</code> then a bean
+     * is created with the given value.
      *
-     * @param beanName The name of the bean
-     * @param value The value to set the bean to. Can be <code>null</code>.
-     * @throws PropertyNotWritableException if the bean cannot be modified or created.
+     * @param beanName The name of the bean to be set/create
+     * @param value    The value of the bean to set/create
+     *
+     * @throws PropertyNotWritableException if the bean is read only
      */
-    public void setBeanValue(String beanName, Object value) throws PropertyNotWritableException {
+    public void setBeanValue(String beanName, Object value)
+            throws PropertyNotWritableException {
         throw new PropertyNotWritableException();
     }
 
+
     /**
-     * Indicates if the bean of the given name is read-only or writable
+     * Is the named bean read-only?
      *
-     * @param beanName The name of the bean
-     * @return <code>true</code> if the bean can be set to a new value. <code>false</code> otherwise.
+     * @param beanName The name of the bean of interest
+     *
+     * @return <code>true</code> if the bean is read only, otherwise
+     *         <code>false</code>
      */
     public boolean isReadOnly(String beanName) {
         return true;
     }
 
+
     /**
-     * Allow creating a bean of the given name if it does not exist.
+     * Is it permitted to create a bean of the given name?
      *
-     * @param beanName The name of the bean
-     * @return <code>true</code> if bean creation is supported <code>false</code> otherwise.
+     * @param beanName The name of the bean of interest
+     *
+     * @return <code>true</code> if the bean may be created, otherwise
+     *         <code>false</code>
      */
     public boolean canCreateBean(String beanName) {
         return false;

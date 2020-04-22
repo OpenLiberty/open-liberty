@@ -1,55 +1,55 @@
 /*
- * Copyright (c) 2012, 2020 Oracle and/or its affiliates and others.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0, which is available at
- * http://www.eclipse.org/legal/epl-2.0.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the
- * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
- * version 2 with the GNU Classpath Exception, which is available at
- * https://www.gnu.org/software/classpath/license.html.
- *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package jakarta.el;
 
 /**
- * The listener interface for receiving notification when a Jakarta Expression Language expression is evaluated.
- *
- * @since Jakarta Expression Language 3.0
+ * @since EL 3.0
  */
 public abstract class EvaluationListener {
 
     /**
-     * Receives notification before a Jakarta Expression Language expression is evaluated
+     * Fired before the evaluation of the expression.
      *
-     * @param context The ELContext
-     * @param expression The Jakarta Expression Language expression string to be evaluated
+     * @param context    The EL context in which the expression will be
+     *                   evaluated
+     * @param expression The expression that will be evaluated
      */
     public void beforeEvaluation(ELContext context, String expression) {
+        // NO-OP
     }
 
     /**
-     * Receives notification after a Jakarta Expression Language expression is evaluated
+     * Fired after the evaluation of the expression.
      *
-     * @param context The ELContext
-     * @param expression The Jakarta Expression Language expression string to be evaluated
+     * @param context    The EL context in which the expression was evaluated
+     * @param expression The expression that was evaluated
      */
     public void afterEvaluation(ELContext context, String expression) {
+        // NO-OP
     }
 
     /**
-     * Receives notification when the (base, property) pair is resolved
+     * Fired after a property has been resolved.
      *
-     * @param context The ELContext
-     * @param base The base object
-     * @param property The property object
+     * @param context  The EL context in which the property was resolved
+     * @param base     The base object on which the property was resolved
+     * @param property The property that was resolved
      */
     public void propertyResolved(ELContext context, Object base, Object property) {
+        // NO-OP
     }
-
 }
