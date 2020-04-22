@@ -14,6 +14,7 @@ IBM-API-Package: io.opentracing;  type="third-party",\
           com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:=2.0, \
           com.ibm.websphere.appserver.mpConfig-1.3; ibm.tolerates:=1.4
 -bundles=com.ibm.ws.require.java8, \
+         com.ibm.ws.jaxrs.defaultexceptionmapper, \
          com.ibm.ws.opentracing.1.2, \
          com.ibm.ws.opentracing.1.2.cdi, \
          com.ibm.ws.io.opentracing.opentracing-util.0.31.0, \
