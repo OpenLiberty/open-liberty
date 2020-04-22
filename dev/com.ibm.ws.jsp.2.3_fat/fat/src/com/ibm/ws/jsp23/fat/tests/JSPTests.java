@@ -40,14 +40,12 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Tests to execute on the jspServer that use HttpUnit.
+ * Tests to execute on the jspServer that use HttpUnit/HttpClient
  */
 
-// No need to run against cdi-2.0 since these tests don't use CDI at all.
-@SkipForRepeat("CDI-2.0")
 @RunWith(FATRunner.class)
-public class JSPServerHttpUnit {
-    private static final Logger LOG = Logger.getLogger(JSPServerHttpUnit.class.getName());
+public class JSPTests {
+    private static final Logger LOG = Logger.getLogger(JSPTests.class.getName());
     private static final String JSP23_APP_NAME = "TestJSP2.3";
     private static final String PI44611_APP_NAME = "PI44611";
     private static final String PI59436_APP_NAME = "PI59436";
@@ -69,7 +67,7 @@ public class JSPServerHttpUnit {
 
         ShrinkHelper.defaultDropinApp(server, PI59436_APP_NAME + ".war");
 
-        server.startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
+        server.startServer(JSPTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -95,6 +93,7 @@ public class JSPServerHttpUnit {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void sampleTest() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -117,6 +116,7 @@ public class JSPServerHttpUnit {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30StaticFieldsAndMethods() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -155,6 +155,7 @@ public class JSPServerHttpUnit {
      */
     @Test
     @ExpectedFFDC("javax.el.MethodNotFoundException")
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30MethodNotFoundException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -180,6 +181,7 @@ public class JSPServerHttpUnit {
     @Test
     @ExpectedFFDC("javax.el.PropertyNotFoundException")
     @Mode(TestMode.FULL)
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30PropertyNotFoundException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -204,6 +206,7 @@ public class JSPServerHttpUnit {
     @Test
     @ExpectedFFDC("javax.el.PropertyNotWritableException")
     @Mode(TestMode.FULL)
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30PropertyNotWritableException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -232,6 +235,7 @@ public class JSPServerHttpUnit {
     @Test
     @ExpectedFFDC("javax.el.PropertyNotWritableException")
     @Mode(TestMode.FULL)
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30AssignmentOperatorException() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -259,6 +263,7 @@ public class JSPServerHttpUnit {
     @ExpectedFFDC("javax.el.ELException")
     @AllowedFFDC("java.security.PrivilegedActionException")
     @Mode(TestMode.FULL)
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30ReservedWords() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -330,9 +335,8 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes horribly wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testServlet() throws Exception {
         this.verifyStringInResponse(JSP23_APP_NAME, "SimpleTestServlet", "Hello World");
     }
@@ -342,9 +346,8 @@ public class JSPServerHttpUnit {
      *
      * @throws Exception
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL22Operators() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -391,9 +394,8 @@ public class JSPServerHttpUnit {
      *
      * @throws Exception
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30Operators() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -417,9 +419,8 @@ public class JSPServerHttpUnit {
      *
      * @throws Exception
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30LambdaExpressions() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -449,9 +450,8 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testServlet31RequestResponse() throws Exception {
         String[] expectedInResponse = { "JSP to test Servlet 3.1 Request and Response",
                                         "Testing BASIC_AUTH static field from HttpServletRequest (Expected: BASIC): BASIC",
@@ -481,9 +481,8 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testMethodExpressionInvocations() throws Exception {
         String[] expectedInResponse = { "Get Parent Name Using Value Expression (Expected: \"John Smith Sr.\"): John Smith Sr.",
                                         "Get Child Name Using Value Expression (Expected: \"John Smith Jr.\"): John Smith Jr.",
@@ -501,10 +500,9 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testOperatorPrecedence() throws Exception {
         String[] expectedInResponse = { "<b>Test 1:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
                                         "<b>Test 2:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
@@ -542,9 +540,8 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30CoercionRules() throws Exception {
         String[] expectedInResponse = { "Testing Coercion of a Value X to Type Y.",
                                         "Test if X is null and Y is not a primitive type and also not a String, return null (Expected:true): true" };
@@ -558,10 +555,9 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30ListCollectionObjectOperations() throws Exception {
         this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testListCollectionOperations=filter",
                                     "Filter: [4, 3, 5, 3]");
@@ -615,9 +611,8 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30SetCollectionObjectOperations() throws Exception {
         this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testSetCollectionOperations=filter",
                                     "Filter: [4, 3, 5]");
@@ -671,10 +666,9 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testEL30MapCollectionObjectOperations() throws Exception {
         this.verifyStringInResponse(JSP23_APP_NAME, "EL30CollectionObjectOperations.jsp?testMapCollectionOperations=filter",
                                     "Filter: [4, 3, 5, 3]");
@@ -728,9 +722,8 @@ public class JSPServerHttpUnit {
      * @throws Exception
      *                       if something goes wrong
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testJSP23ResolutionVariableProperties() throws Exception {
         String[] expectedInResponse = { "class org.apache.el.stream.StreamELResolverImpl",
                                         "class javax.el.StaticFieldELResolver",
@@ -968,11 +961,9 @@ public class JSPServerHttpUnit {
      *
      * @throws Exception
      */
-
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testPI44611() throws Exception {
         this.verifyStringInResponse(PI44611_APP_NAME, "PI44611.jsp", "Test passed!");
     }
@@ -983,10 +974,9 @@ public class JSPServerHttpUnit {
      *
      * @throws Exception
      */
-    // No need to run against cdi-2.0 since this test does not use CDI at all.
-    @SkipForRepeat("CDI-2.0")
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
     public void testPI59436() throws Exception {
         this.verifyStringInResponse(PI59436_APP_NAME, "PI59436.jsp", "Test passed.");
     }
