@@ -103,10 +103,10 @@ Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
   @${repo;org.eclipse.persistence.antlr;3.2.0.v201302191141;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.asm;7.2.0.v201911121248;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.asm;7.3.1.v202004011257;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.core;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20200108-cc2fb8c;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20200421-cf583f2;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
@@ -121,9 +121,9 @@ instrument.classesExcludes: \
 
 -buildpath: \
     org.eclipse.persistence.core;version=2.6.8.WAS;strategy=exact,\
-	org.eclipse.persistence.jpa;version=2.6.8.WAS;strategy=exact,\
-	com.ibm.ws.javax.j2ee:persistence;version=2.1,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
-	com.ibm.ws.logging.core;version=latest
+    org.eclipse.persistence.jpa;version=2.6.8.WAS;strategy=exact,\
+    com.ibm.ws.javax.j2ee:persistence;version=2.1,\
+    com.ibm.websphere.org.osgi.core,\
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+    com.ibm.ws.logging.core;version=latest

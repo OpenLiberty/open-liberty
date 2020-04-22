@@ -21,10 +21,11 @@ import com.ibm.ws.jpa.spec10.Inheritance_EJB;
 import com.ibm.ws.jpa.spec10.Inheritance_Web;
 import com.ibm.ws.jpa.spec10.TestOLGH10310_EJB;
 import com.ibm.ws.jpa.spec10.TestOLGH10310_Web;
+import com.ibm.ws.jpa.spec10.TestOLGH11795_EJB;
+import com.ibm.ws.jpa.spec10.TestOLGH11795_Web;
 
 /**
  * Test cases for functionality introduced with JPA 1.0.
- *
  */
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -33,7 +34,9 @@ import com.ibm.ws.jpa.spec10.TestOLGH10310_Web;
                 Inheritance_EJB.class,
                 Inheritance_Web.class,
                 TestOLGH10310_Web.class,
-                TestOLGH10310_EJB.class
+                TestOLGH10310_EJB.class,
+                TestOLGH11795_Web.class,
+                TestOLGH11795_EJB.class
 })
 public class JPA10FATSuite {
 
