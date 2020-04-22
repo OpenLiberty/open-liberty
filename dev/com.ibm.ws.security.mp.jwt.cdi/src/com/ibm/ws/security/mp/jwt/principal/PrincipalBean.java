@@ -13,6 +13,7 @@ package com.ibm.ws.security.mp.jwt.principal;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.context.SubjectManager;
 
 /**
@@ -40,6 +42,7 @@ public class PrincipalBean implements JsonWebToken {
     private static final TraceComponent tc = Tr.register(PrincipalBean.class);
     Principal principal = null;
     JsonWebToken jsonWebToken = null;
+    String wsPrincipalName = null;
 
     public PrincipalBean() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -58,6 +61,9 @@ public class PrincipalBean implements JsonWebToken {
                 if (!principals.isEmpty()) {
                     principal = principals.iterator().next();
                 }
+                if (principal != null) {
+                    wsPrincipalName = getSecurityNameFromCredential(subject); // do this if JsonWebToken is not present, so we can match the behavior of server running w/ javaee-8.0 features
+                }   
             }
         }
 
@@ -70,6 +76,40 @@ public class PrincipalBean implements JsonWebToken {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "PrincipalBean", principal);
         }
+    }
+
+    /**
+     * @param subject
+     * @param principalName
+     * @return
+     */
+    private String getSecurityNameFromCredential(Subject subject) {
+        String securityName = null;
+        WSCredential wsCredential = null;
+        wsCredential = getWSCredential(subject);
+        if (wsCredential != null) {
+            try {
+                securityName = wsCredential.getSecurityName();
+            } catch (Exception e) {
+
+            }
+        }
+        return securityName;
+
+    }
+
+    /**
+     * @param subject
+     * @return
+     */
+    private WSCredential getWSCredential(Subject subject) {
+        WSCredential wsCredential = null;
+        Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+        Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+        if (wsCredentialsIterator.hasNext()) {
+            wsCredential = wsCredentialsIterator.next();
+        }
+        return wsCredential;
     }
 
     /** {@inheritDoc} */
@@ -98,8 +138,13 @@ public class PrincipalBean implements JsonWebToken {
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        if (principal != null)
-            return principal.getName();
+        if (principal != null) {
+            if (jsonWebToken != null) {
+                return principal.getName();
+            } else {
+                return wsPrincipalName;
+            }
+        }
         return null;
     }
 
