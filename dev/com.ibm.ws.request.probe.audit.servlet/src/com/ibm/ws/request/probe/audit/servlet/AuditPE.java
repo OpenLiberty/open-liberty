@@ -748,11 +748,10 @@ public class AuditPE implements ProbeExtension {
         String accessLevel = (String) varargs[9];
         String errorMessage = (String) varargs[10];
 		// Case where WS-CD may have this field but OL may not. This check will make
-		// sure there is no IndexOutOfBoundsException. Since methodName the last
-		// argument, the size of varargs should be at least 12 for us to get the value
-		// of the methodName
+		// sure there is no IndexOutOfBoundsException. The size of varargs should be
+		// at least 12 for us to get the value of the methodName
 		String methodName = null;
-		if (varargs.length == 12) {
+		if (varargs.length >= 12) {
 			methodName = (String) varargs[11];
 		}
 		// Case where WS-CD may have these fields but OL may not. This check will make
