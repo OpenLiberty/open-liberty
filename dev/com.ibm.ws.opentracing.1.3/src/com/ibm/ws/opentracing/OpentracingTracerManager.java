@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.opentracing;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -37,28 +38,7 @@ public class OpentracingTracerManager {
      *
      * <p>Static: Each application gets exactly one tracer.</p>
      */
-    private static final Map<String, Tracer> applicationTracers = new HashMap<String, Tracer>();
-
-    private static class ApplicationTracersLock {
-        // EMPTY
-    }
-
-    private static final ApplicationTracersLock applicationTracersLock = new ApplicationTracersLock();
-
-    @Trivial
-    private static Tracer getTracer(String appName) {
-        return applicationTracers.get(appName);
-    }
-
-    @Trivial
-    private static Tracer putTracer(String appName, Tracer tracer) {
-        return applicationTracers.put(appName, tracer);
-    }
-
-    @Trivial
-    private static Tracer removeTracer(String appName, Tracer tracer) {
-        return applicationTracers.remove(appName);
-    }
+    private static final Map<String, Tracer> applicationTracers = new ConcurrentHashMap<String, Tracer>();
 
     @Trivial
     private static Tracer ensureTracer(String appName) {
@@ -67,24 +47,16 @@ public class OpentracingTracerManager {
             Tr.entry(tc, methodName, appName);
         }
 
-        Tracer tracer;
-        String tracerCase;
+        Tracer tracer = applicationTracers.get(appName);
+        boolean found = true;
 
-        synchronized (applicationTracersLock) {
-            tracer = getTracer(appName);
-            if (tracer == null) {
-                tracer = createJaegerTracer(appName);
-                if (tracer == null) {
-                    tracer = createTracer(appName);
-                }
-                putTracer(appName, tracer);
-                tracerCase = "newly created";
-            } else {
-                tracerCase = "previously created";
-            }
+        if (tracer == null) {
+            found = false;
+            tracer = applicationTracers.computeIfAbsent(appName, TracerCreator.INSTANCE);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            String tracerCase = found ? "previously created" : "newly created or previously created if lost race condition";
             Tr.exit(tc, methodName + " (" + tracerCase + ")", OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
@@ -92,6 +64,20 @@ public class OpentracingTracerManager {
 
     private static Tracer createJaegerTracer(String appName) {
         return JaegerTracerFactory.createJaegerTracer(appName);
+    }
+
+    @Trivial
+    private static class TracerCreator implements Function<String, Tracer> {
+        static TracerCreator INSTANCE = new TracerCreator();
+
+        @Override
+        public Tracer apply(String appName) {
+            Tracer tracer = createJaegerTracer(appName);
+            if (tracer == null) {
+                tracer = createTracer(appName);
+            }
+            return tracer;
+        }
     }
 
     /**
@@ -107,7 +93,6 @@ public class OpentracingTracerManager {
     private static Tracer createTracer(String appName) {
         return OpentracingUserFeatureAccessService.getTracerInstance(appName);
     }
-
     // Open tracing context pass through ...
 
     /**
@@ -184,7 +169,6 @@ public class OpentracingTracerManager {
         // Rely on 'initialValue' to supply a non-null open tracing context.
         // There is currently no code which clears the context.
     }
-
     // Raw open tracing context storage ...
 
     /** <p>Storage for the open tracing context variable.</p> */
