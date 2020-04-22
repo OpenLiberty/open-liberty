@@ -327,6 +327,11 @@ public class InstallKernelMap implements Map {
         return data.get(key);
     }
 
+    /**
+     * Searches through the json files in the SINGLE_JSON_FILE property of this map for the query specified by ACTION_FIND
+     * @return a list of features matching the query in the following format:
+     *         <Type> : <shortName> : <fullName>
+     */
     private Set<String> findFeatures() {
         Set<String> returnedFeatures = new LinkedHashSet<>();
         List<File> jsons = (List<File>) get("single.json.file");
@@ -382,10 +387,6 @@ public class InstallKernelMap implements Map {
             updateProgress(individualSize);
             progressBar.manuallyUpdate();
             fine("Finished processing " + jsonFile.getName());
-        }
-        info("We found the following features:");
-        for(String result : returnedFeatures){
-            info(result);
         }
 
         return returnedFeatures;

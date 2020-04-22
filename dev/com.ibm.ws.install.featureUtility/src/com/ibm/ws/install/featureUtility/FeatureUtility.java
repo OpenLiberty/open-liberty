@@ -41,6 +41,7 @@ import com.ibm.ws.install.internal.MavenRepository;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 //import com.sun.org.apache.xpath.internal.operations.Bool;
 
@@ -323,14 +324,23 @@ public class FeatureUtility {
         return openLibertyVersion;
     }
 
-    public List<String> findFeatures(){
-        // algorithm to find features
+    public Set<String> findFeatures(){
         String query = String.join(" ", featuresToInstall);
         map.put("action.find", query);
-        map.get("action.result");
+        Set<String> features = (Set<String>) map.get("action.result");
 
-        return null;
+        if(features.isEmpty()){
+            info(NLS.getMessage("tool.find.no.feature"));
+        }
+        else {
+            // display the features
+            for (String feature : features){
+                info(feature);
+            }
+        }
+        return features;
     }
+
 
     /**
      * Resolves and installs the features
