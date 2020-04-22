@@ -17,6 +17,7 @@
 		<properties infinispan.client.hotrod.auth_password="pass"/> <!-- set in users.properties -->
 		<properties infinispan.client.hotrod.auth_realm="default"/>
 		<properties infinispan.client.hotrod.sasl_mechanism="PLAIN"/>
+		<properties infinispan.client.hotrod.client_intelligence="BASIC"/> <!-- prevent client from using internal/unreachable docker IP addresses -->
     </httpSessionCache>
 
     <application location="sessionCacheApp.war">

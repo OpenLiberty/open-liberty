@@ -21,6 +21,7 @@ import java.security.PrivilegedAction;
 import java.io.ObjectStreamConstants;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -172,7 +173,7 @@ public class CacheHashMap extends BackedHashMap {
                 
                 sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
             } else {
-                sessionMetaCache = getInfinispanRemoteCache(metaCacheName, cachingProviderClass);
+                initInfinispanRemoteCache(metaCacheName, cachingProviderClass);
             }
             
             boolean create;
@@ -221,7 +222,7 @@ public class CacheHashMap extends BackedHashMap {
                 
                 sessionAttributeCache = cacheStoreService.cacheManager.getCache(attrCacheName, String.class, byte[].class);
             } else {
-                sessionAttributeCache = getInfinispanRemoteCache(attrCacheName, cachingProviderClass);
+                initInfinispanRemoteCache(attrCacheName, cachingProviderClass);
             }
             
             if (create = sessionAttributeCache == null) {
@@ -273,7 +274,7 @@ public class CacheHashMap extends BackedHashMap {
      * @return Cache created or existing from the remote Infinispan server.
      * 
      */
-    private Cache getInfinispanRemoteCache(String cacheName, Class<?> cachingProviderClass) throws Exception {
+    private void initInfinispanRemoteCache(String cacheName, Class<?> cachingProviderClass) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         
         // Get RemoteCacheManager cm field from remote JCacheManager
@@ -316,13 +317,9 @@ public class CacheHashMap extends BackedHashMap {
         Object remoteCache = remoteCacheManagerAdmin.getClass()
                         .getMethod("getOrCreateCache", String.class, cachingProviderClass.getClassLoader().loadClass("org.infinispan.commons.configuration.BasicConfiguration"))
                         .invoke(remoteCacheManagerAdmin, cacheName, xMlStringConfiguration);
-
+        
         if (trace && tc.isDebugEnabled())
             tcReturn(tcRemoteCacheManagerAdmin, "getOrCreateCache", remoteCache);
-    
-        // Refresh JCacheManager
-        cacheStoreService.cacheManager = cacheStoreService.cachingProvider.getCacheManager(cacheStoreService.cacheManager.getURI(), cacheStoreService.cacheManager.getClassLoader(), cacheStoreService.cacheManager.getProperties());
-        return cacheStoreService.cacheManager.getCache(cacheName);
     }
 
     /**
