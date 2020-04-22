@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=The following URL is not valid: {0}. Only HTTP, HTTPS
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=The URL protocol for the following repository is not supported: {0}. Supported protocols are HTTP, HTTPS, and file. Ensure that the URL is specified correctly.
 MSG_VALIDATION_INVALID_HOST=The following proxy server host is not valid: {0}. Specify a valid HTTP proxy server host name. The http:// prefix is not required.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=No features were found.
+
 VALIDATION_INVALID_VALUE=Unsupported value
 VALIDATION_INVALID_KEY=Unsupported property name
 VALIDATION_EMPTY_KEY=Empty property name

@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.InstallKernel;
 import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
@@ -330,7 +331,7 @@ public class FeatureUtility {
         Set<String> features = (Set<String>) map.get("action.result");
 
         if(features.isEmpty()){
-            info(NLS.getMessage("tool.find.no.feature"));
+            info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_NO_FEATURES_FOUND"));
         }
         else {
             // display the features
@@ -530,8 +531,12 @@ public class FeatureUtility {
      */
     private String extractFeature(String filename) {
         String[] split = filename.split("-");
+        if(split.length > 1){
+            return split[0] + "-" + split[1];
+        }
 
-        return split[0] + "-" + split[1];
+        return filename;
+
 
     }
 

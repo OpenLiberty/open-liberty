@@ -27,8 +27,10 @@ import com.ibm.ws.install.InstallKernelFactory;
 import com.ibm.ws.install.InstallKernelInteractive;
 import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
+import com.ibm.ws.install.internal.ArchiveUtils;
 import com.ibm.ws.install.internal.InstallKernelImpl;
 import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
@@ -50,11 +52,12 @@ public class InstallFeatureAction implements ActionHandler {
         private List<String> featureNames;
         private String fromDir;
         private String toDir;
+        private File esaFile;
         private Boolean noCache;
         private Boolean acceptLicense;
         private ProgressBar progressBar;
 
-        @Override 
+        @Override
         public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
                 if(args.getPositionalArguments().isEmpty()){
                         FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", FeatureAction.getEnum(args.getAction()).toString() }));
@@ -103,6 +106,9 @@ public class InstallFeatureAction implements ActionHandler {
 
                 String arg = argList.get(0);
                 try {
+                    if(isValidEsa(arg)){
+                        return esaInstallInit(arg);
+                    }
                 	Collection<String> assetIds = new HashSet<String>(argList);
                 	checkAssetsNotInstalled(new ArrayList<String>(assetIds));
                 	return assetInstallInit(assetIds);
@@ -115,6 +121,27 @@ public class InstallFeatureAction implements ActionHandler {
                 }
 
         }
+
+        private boolean isValidEsa(String fileName) {
+                return ArchiveUtils.ArchiveFileType.ESA.isType(fileName);
+        }
+
+        private ReturnCode esaInstallInit(String esaPath) {
+                esaFile = new File(esaPath);
+                try {
+                        String feature = InstallUtils.getFeatureName(esaFile);
+//                        Set<String> features = new HashSet<String>();
+//                        features.add(feature);
+                        featureNames.add(feature);
+//                        installKernel.resolve(feature, esaFile, repoType);
+//                        featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
+                } catch (InstallException e) {
+                        logger.log(Level.SEVERE, e.getMessage(), e);
+                        return FeatureUtilityExecutor.returnCode(e.getRc());
+                }
+                return ReturnCode.OK;
+        }
+
         private ReturnCode validateFromDir(String fromDir) {
                 if (fromDir == null) {
                         return ReturnCode.OK;
@@ -148,7 +175,7 @@ public class InstallFeatureAction implements ActionHandler {
         private ExitCode install() {
         	try {
             	featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                	.setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).build();
+                	.setFeaturesToInstall(featureNames).setNoCache(noCache).setEsaFile(esaFile).setlicenseAccepted(acceptLicense).build();
             	featureUtility.installFeatures();
         	} catch (InstallException e) {
             	logger.log(Level.SEVERE, e.getMessage(), e);

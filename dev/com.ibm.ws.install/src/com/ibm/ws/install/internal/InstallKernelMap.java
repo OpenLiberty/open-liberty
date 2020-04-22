@@ -1440,9 +1440,10 @@ public class InstallKernelMap implements Map {
      * The found artifacts can be accessed using key: foundArtifacts
      * The missing artifacts can be accessed using key: missingArtifacts
      * The missing artifact indexees can be accessed using key: missingArtifactIndexes
+     * TODO maybe make this return an object
      *
      * @param rootDir            the local maven repository
-     * @param artifacts          a list of artifacts in the form groupId:artifactId:version
+     * @param artifacts          a list of artifacts in the form groupId:artifactId:version or esa file
      * @param openLibertyVersion open liberty runtime version
      * @param extension          file extension
      * @return a map containing the found and not found artifacts.
@@ -1456,15 +1457,21 @@ public class InstallKernelMap implements Map {
 
         for (String artifact : artifacts) {
             fine("Processing artifact: " + artifact);
-            String groupId = artifact.split(":")[0];
-            String artifactName = artifact.split(":")[1];
-            File groupDir = new File(rootDir, groupId.replace(".", "/"));
-            if (!groupDir.exists()) {
-                missingArtifactIndexes.add(index);
-                continue;
+            Path artifactPath;
+            if(isValidEsa(artifact)){
+                artifactPath = Paths.get(artifact);
+            } else {
+                String groupId = artifact.split(":")[0];
+                String artifactName = artifact.split(":")[1];
+                File groupDir = new File(rootDir, groupId.replace(".", "/"));
+                if (!groupDir.exists()) {
+                    missingArtifactIndexes.add(index);
+                    continue;
+                }
+
+                String artifactFileName = artifactName + "-" + openLibertyVersion + extension;
+                artifactPath = Paths.get(groupDir.getAbsolutePath().toString(), artifactName, openLibertyVersion, artifactFileName);
             }
-            String artifactFileName = artifactName + "-" + openLibertyVersion + extension;
-            Path artifactPath = Paths.get(groupDir.getAbsolutePath().toString(), artifactName, openLibertyVersion, artifactFileName);
 
             if (Files.isRegularFile(artifactPath)) {
                 foundArtifacts.add(artifactPath.toFile());
@@ -1494,6 +1501,10 @@ public class InstallKernelMap implements Map {
             index += 1;
         }
 
+    }
+
+    private boolean isValidEsa(String fileName) {
+        return ArchiveUtils.ArchiveFileType.ESA.isType(fileName);
     }
 
     /**
