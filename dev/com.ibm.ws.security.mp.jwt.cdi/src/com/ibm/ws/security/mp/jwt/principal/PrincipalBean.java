@@ -27,6 +27,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.cred.WSCredential;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.context.SubjectManager;
 
 /**
@@ -95,7 +96,6 @@ public class PrincipalBean implements JsonWebToken {
             }
         }
         return securityName;
-
     }
 
     /**
@@ -103,13 +103,8 @@ public class PrincipalBean implements JsonWebToken {
      * @return
      */
     private WSCredential getWSCredential(Subject subject) {
-        WSCredential wsCredential = null;
-        Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
-        Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
-        if (wsCredentialsIterator.hasNext()) {
-            wsCredential = wsCredentialsIterator.next();
-        }
-        return wsCredential;
+        SubjectHelper subjectHelper = new SubjectHelper();
+        return subjectHelper.getWSCredential(subject);
     }
 
     /** {@inheritDoc} */
