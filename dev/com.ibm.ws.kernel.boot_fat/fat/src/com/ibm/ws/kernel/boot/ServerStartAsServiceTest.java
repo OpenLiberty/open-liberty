@@ -130,23 +130,35 @@ public class ServerStartAsServiceTest {
         final String METHOD_NAME = "testWinServiceLifeCycleUsingWLP_OUTPUT_DIR";
         Log.entering(c, METHOD_NAME);
 
-        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME_3);
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME_3, LibertyServerFactory.WinServiceOption.ON);
+        try {
 
-        String logDir = "WLP_OUTPUT_DIR=" + server.getInstallRoot() + File.separator + "tmpLogs";
-        Log.info(c, METHOD_NAME, "creating /etc/server.env");
-        createServerEnvFile(logDir, server.getInstallRoot());
+            Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME_3);
+            server = LibertyServerFactory.getLibertyServer(SERVER_NAME_3, LibertyServerFactory.WinServiceOption.ON);
 
-        Log.info(c, METHOD_NAME, "calling server.startServer()");
-        server.startServer();
+            String logDir = "WLP_OUTPUT_DIR=" + server.getServerRoot() + File.separator + "tempLogs" + File.separator;
+            server.setLogsRoot(server.getServerRoot() + File.separator + "tempLogs" + File.separator + SERVER_NAME_3 + File.separator + "logs" + File.separator);
+            Log.info(c, METHOD_NAME, "creating /etc/server.env");
+            String serverEnvCreate = createServerEnvFile(logDir, server.getInstallRoot());
 
-        Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
-        server.waitForStringInLog("CWWKF0011I");
+            Log.info(c, METHOD_NAME, "server.env location = " + serverEnvCreate);
+            assertTrue("the server.env file was not created.", serverEnvCreate.contains("server.env"));
 
-        assertTrue("the server should have been started", server.isStarted());
+            Log.info(c, METHOD_NAME, "calling server.startServer()");
+            server.startServer(true, false);
 
-        Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_3);
-        server.stopServer();
+            Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
+            server.waitForStringInLog("CWWKF0011I");
+
+            assertTrue("the server should have been started", server.isStarted());
+
+            Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_3);
+            server.stopServer();
+
+        } finally {
+            Log.info(c, METHOD_NAME, "deleting /etc/server.env ");
+            String serverEnvDelete = deleteServerEnvFile(server.getInstallRoot());
+            assertTrue("the server.env file was not deleted.", serverEnvDelete.contains("server.env"));
+        }
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -187,9 +199,11 @@ public class ServerStartAsServiceTest {
      * @param wlpDir
      * @throws IOException
      */
-    private void createServerEnvFile(String value, String wlpDir) throws IOException {
+    private String createServerEnvFile(String value, String wlpDir) throws IOException {
         File wlpEtcDir = new File(wlpDir, "etc");
         File serverEnvFile = new File(wlpEtcDir, "server.env");
+
+        String serverEnv = serverEnvFile.getAbsolutePath();
 
         if (!wlpEtcDir.exists()) {
             wlpEtcDir.mkdirs();
@@ -204,6 +218,24 @@ public class ServerStartAsServiceTest {
                 fos.close();
             }
         }
+
+        return serverEnv;
     }
 
+    /**
+     * Deletes the server.env file
+     *
+     * @param wlpDir
+     * @throws IOException
+     */
+    private String deleteServerEnvFile(String wlpDir) throws IOException {
+        File wlpEtcDir = new File(wlpDir, "etc");
+        File serverEnvFile = new File(wlpEtcDir, "server.env");
+
+        String serverEnv = serverEnvFile.getAbsolutePath();
+
+        serverEnvFile.delete();
+
+        return serverEnv;
+    }
 }
