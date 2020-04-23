@@ -1,0 +1,12 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: product1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.product1; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: test.wab1; version="[1,2)",
+ test.wab2; version="[1,2)",
+ test.wab3; version="[1,2)",
+ product1; version="[1,2)",
+ com.ibm.wsspi.appserver.webBundle-1.0; type=osgi.subsystem.feature,
+ com.ibm.websphere.appserver.servlet-3.0; type=osgi.subsystem.feature; ibm.tolerates:=3.1
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
