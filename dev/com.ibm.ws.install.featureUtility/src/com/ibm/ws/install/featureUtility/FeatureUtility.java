@@ -53,7 +53,7 @@ public class FeatureUtility {
 
     private final InstallKernelMap map;
     private File fromDir;
-    private final File esaFile;
+    private final List<File> esaFiles;
     private final Boolean noCache;
     private Boolean isDownload;
     private Boolean isBasicInit;
@@ -84,7 +84,7 @@ public class FeatureUtility {
         jsonsRequired.addAll(Arrays.asList("io.openliberty.features", "com.ibm.websphere.appserver.features"));
         
 
-        this.esaFile = builder.esaFile;
+        this.esaFiles = builder.esaFiles;
         this.noCache = builder.noCache;
         this.licenseAccepted = builder.licenseAccepted;
 
@@ -159,8 +159,8 @@ public class FeatureUtility {
             map.put("features.to.resolve", featuresToInstall);
 
         }
-        if (esaFile != null) {
-            map.put("individual.esas", Arrays.asList(esaFile));
+        if (esaFiles != null && !esaFiles.isEmpty()) {
+            map.put("individual.esas", esaFiles);
             map.put("install.individual.esas", true);
         }
 
@@ -654,7 +654,7 @@ public class FeatureUtility {
         File fromDir;
         Collection<String> featuresToInstall;
         Collection<String> jsons;
-        File esaFile;
+        List<File> esaFiles;
         boolean noCache;
         boolean licenseAccepted;
 
@@ -663,8 +663,8 @@ public class FeatureUtility {
             return this;
         }
 
-        public FeatureUtilityBuilder setEsaFile(File esaFile) {
-            this.esaFile = esaFile;
+        public FeatureUtilityBuilder setEsaFiles(List<File> esaFiles) {
+            this.esaFiles = esaFiles;
             return this;
         }
         

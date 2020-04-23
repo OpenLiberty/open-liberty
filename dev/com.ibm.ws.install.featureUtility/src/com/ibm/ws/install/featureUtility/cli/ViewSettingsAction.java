@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.featureUtility.cli;
 import java.io.File;
 import java.io.PrintStream;
@@ -110,7 +120,7 @@ public class ViewSettingsAction implements ActionHandler {
                     PasswordUtil.decode(pass);
                     pass = PropertiesUtils.CmdlineConstants.HIDDEN_PASSWORD;
                 } catch (InvalidPasswordDecodingException ipde) {
-                    warningDetail = PropertiesUtils.getMessage("MSG_PASSWORD_NOT_ENCODED");
+                    warningDetail = PropertiesUtils.getMessage("MSG_PASSWORD_NOT_ENCODED_PROXY");
                     pass = PropertiesUtils.CmdlineConstants.HIDDEN_PASSWORD;
                 } catch (UnsupportedCryptoAlgorithmException ucae) {
                     throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.CONNECTION_FAILED);

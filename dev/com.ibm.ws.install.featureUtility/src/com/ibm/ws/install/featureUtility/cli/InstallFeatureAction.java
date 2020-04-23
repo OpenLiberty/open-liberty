@@ -53,6 +53,7 @@ public class InstallFeatureAction implements ActionHandler {
         private String fromDir;
         private String toDir;
         private File esaFile;
+        private List<File> esaFiles;
         private Boolean noCache;
         private Boolean acceptLicense;
         private ProgressBar progressBar;
@@ -79,6 +80,7 @@ public class InstallFeatureAction implements ActionHandler {
                 this.logger = InstallLogUtils.getInstallLogger();
                 this.installKernel = InstallKernelFactory.getInteractiveInstance();
                 this.featureNames = new ArrayList<String>();
+                this.esaFiles = new ArrayList<>();
 
                 this.argList = args.getPositionalArguments();
                 this.fromDir = args.getOption("from");
@@ -104,14 +106,12 @@ public class InstallFeatureAction implements ActionHandler {
 
                 progressBar.setMethodMap(methodMap);
 
-                String arg = argList.get(0);
+                rc = handleFeatureArguments(argList);
+                if(rc != ReturnCode.OK){
+                        return rc;
+                }
                 try {
-                    if(isValidEsa(arg)){
-                        return esaInstallInit(arg);
-                    }
-                	Collection<String> assetIds = new HashSet<String>(argList);
-                	checkAssetsNotInstalled(new ArrayList<String>(assetIds));
-                	return assetInstallInit(assetIds);
+                        checkAssetsNotInstalled(new ArrayList<>(featureNames));
                 } catch (InstallException e) {
                 	logger.log(Level.SEVERE, e.getMessage(), e);
                     return FeatureUtilityExecutor.returnCode(e.getRc());
@@ -119,7 +119,24 @@ public class InstallFeatureAction implements ActionHandler {
                 	logger.log(Level.SEVERE, e.getMessage(), e);
                 	return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
                 }
+                return rc;
+        }
 
+        // determine if args are feature shortnames or esa files
+        private ExitCode handleFeatureArguments(List<String> args){
+                ExitCode rc = ReturnCode.OK;
+                for(String arg : args){
+                        if(isValidEsa(arg)){
+                                rc = esaInstallInit(arg);
+                        } else {
+                                rc = assetInstallInit(arg);
+                        }
+                        if(rc != ReturnCode.OK){
+                                return rc;
+                        }
+
+                }
+                return rc;
         }
 
         private boolean isValidEsa(String fileName) {
@@ -127,7 +144,7 @@ public class InstallFeatureAction implements ActionHandler {
         }
 
         private ReturnCode esaInstallInit(String esaPath) {
-                esaFile = new File(esaPath);
+
                 try {
                         String feature = InstallUtils.getFeatureName(esaFile);
 //                        Set<String> features = new HashSet<String>();
@@ -140,6 +157,22 @@ public class InstallFeatureAction implements ActionHandler {
                         return FeatureUtilityExecutor.returnCode(e.getRc());
                 }
                 return ReturnCode.OK;
+        }
+
+
+        private ExitCode assetInstallInit(String assetId) {
+                featureNames.add(assetId);
+                return ReturnCode.OK;
+        }
+
+        private ExitCode assetInstallInit(Collection<String> assetIds) {
+                featureNames.addAll(assetIds);
+                return ReturnCode.OK;
+        }
+
+        // call the install kernel to verify we are installing at least 1 new asset
+        private void checkAssetsNotInstalled(List<String> assetIds) throws InstallException {
+                installKernel.checkAssetsNotInstalled(assetIds);
         }
 
         private ReturnCode validateFromDir(String fromDir) {
@@ -161,21 +194,11 @@ public class InstallFeatureAction implements ActionHandler {
                 return ReturnCode.OK;
         }
 
-        private ExitCode assetInstallInit(Collection<String> assetIds) {
-                featureNames.addAll(assetIds);
-                return ReturnCode.OK;
-        }
-
-        // call the install kernel to verify we are installing at least 1 new asset
-        private void checkAssetsNotInstalled(List<String> assetIds) throws InstallException {
-        	installKernel.checkAssetsNotInstalled(assetIds);
-        }
-
 
         private ExitCode install() {
         	try {
             	featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                	.setFeaturesToInstall(featureNames).setNoCache(noCache).setEsaFile(esaFile).setlicenseAccepted(acceptLicense).build();
+                	.setFeaturesToInstall(featureNames).setNoCache(noCache).setEsaFiles(esaFiles).setlicenseAccepted(acceptLicense).build();
             	featureUtility.installFeatures();
         	} catch (InstallException e) {
             	logger.log(Level.SEVERE, e.getMessage(), e);
