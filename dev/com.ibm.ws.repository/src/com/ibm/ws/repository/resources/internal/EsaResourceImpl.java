@@ -232,17 +232,12 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String minJava11 = "Java SE 11, Java SE 13";
-        String minJava8 = "Java SE 8, Java SE 11, Java SE 13";
-        String minJava7 = "Java SE 7, Java SE 8, Java SE 11, Java SE 13";
+        String minJava11 = "Java SE 11, Java SE 14";
+        String minJava8 = "Java SE 8, Java SE 11, Java SE 14";
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe
-        if (minVersion.equals("1.6.0") || minVersion.equals("1.7.0")) {
-            reqs.setVersionDisplayString(minJava7);
-            return;
-        }
-        if (minVersion.equals("1.8.0")) {
+        if (minVersion.equals("1.6.0") || minVersion.equals("1.7.0") || minVersion.equals("1.8.0")) {
             reqs.setVersionDisplayString(minJava8);
             return;
         }
