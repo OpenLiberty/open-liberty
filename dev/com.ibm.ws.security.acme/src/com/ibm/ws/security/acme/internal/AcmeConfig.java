@@ -12,6 +12,7 @@
 package com.ibm.ws.security.acme.internal;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -530,11 +531,17 @@ public class AcmeConfig {
 			throw new AcmeCaException(Tr.formatMessage(tc, messageId, path, cause));
 		}
 
-		File parentDir = file.getParentFile();
-		if (!file.exists() && parentDir != null && !parentDir.canWrite()) {
-			String messageId = AcmeConstants.DOMAIN_TYPE.equals(type) ? "CWPKI2022E" : "CWPKI2023E";
-			String cause = Tr.formatMessage(tc, "FILE_NOT_WRITABLE");
-			throw new AcmeCaException(Tr.formatMessage(tc, messageId, path, cause));
+		if (!file.exists()) {
+			File parentFile = file;
+			while ((parentFile = parentFile.getParentFile()) != null) {
+				if (parentFile.exists() && !parentFile.canWrite()) {
+					String messageId = AcmeConstants.DOMAIN_TYPE.equals(type) ? "CWPKI2022E" : "CWPKI2023E";
+					String cause = Tr.formatMessage(tc, "FILE_NOT_WRITABLE");
+					throw new AcmeCaException(Tr.formatMessage(tc, messageId, path, cause));
+				} else if (parentFile.exists()) {
+					break;
+				}
+			}
 		}
 	}
 }

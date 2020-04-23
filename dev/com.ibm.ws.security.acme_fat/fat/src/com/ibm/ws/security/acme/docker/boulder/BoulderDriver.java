@@ -9,20 +9,20 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.acme.docker.pebble;
+package com.ibm.ws.security.acme.docker.boulder;
 
 import com.ibm.ws.security.acme.docker.AbstractCADriver;
 
 /**
- * Driver to start a Pebble ACME CA Server environment from within a stand-alone
- * JVM.
+ * Driver to start a Boulder ACME CA Server environment from within a
+ * stand-alone JVM.
  */
-public class PebbleDriver extends AbstractCADriver {
+public class BoulderDriver extends AbstractCADriver {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println("\n\n");
 
-		PebbleDriver driver = new PebbleDriver();
+		BoulderDriver driver = new BoulderDriver();
 
 		/*
 		 * Start the Pebble environment.
@@ -48,9 +48,9 @@ public class PebbleDriver extends AbstractCADriver {
 	@Override
 	protected void initialize() {
 		/*
-		 * Startup the pebble server.
+		 * Startup the Boulder server.
 		 */
-		System.out.println("Starting Pebble ACME CA server environment...");
-		caContainer = new PebbleContainer();
+		System.out.println("Starting Boulder ACME CA server environment...");
+		caContainer = new BoulderContainer();
 	}
 }
