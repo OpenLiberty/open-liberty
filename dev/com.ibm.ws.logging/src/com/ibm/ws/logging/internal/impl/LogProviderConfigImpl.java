@@ -108,9 +108,6 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Mapping to use for json.fields */
     protected volatile String jsonFields = "";
 
-    /** Boolean to check if omission of jsonFields is allowed (for beta) */
-    protected volatile Boolean omitJsonFields = false;
-
     /** List of sources to route to console.log / console */
     protected volatile Collection<String> consoleSource = Arrays.asList(LoggingConstants.DEFAULT_CONSOLE_SOURCE);
 
@@ -158,9 +155,6 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         jsonFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_FIELD_MAPPINGS),
                                                        jsonFields);
-        //beta for omitting json field mappings
-        omitJsonFields = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_OMIT_JSON_FIELD_MAPPINGS),
-                                                            omitJsonFields);
 
         consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
                                                                  LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_SOURCE),
@@ -405,10 +399,6 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
     public String getjsonFields() {
         return jsonFields;
-    }
-
-    public Boolean getOmitJsonFields() {
-        return omitJsonFields;
     }
 
     public Collection<String> getConsoleSource() {

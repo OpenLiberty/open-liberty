@@ -327,7 +327,7 @@ public class BaseTraceService implements TrService {
             BaseTraceFormatter.useIsoDateFormat = isoDateFormat;
         }
 
-        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
+        applyJsonFields(trConfig.getjsonFields());
         initializeWriters(trConfig);
         if (hideMessageids.size() > 0) {
             String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
@@ -472,7 +472,7 @@ public class BaseTraceService implements TrService {
         }
     }
 
-    public static void applyJsonFields(String value, Boolean omitJsonFields) {
+    public static void applyJsonFields(String value) {
 
         if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
             AccessLogData.resetJsonLoggingNameAliases();
@@ -503,14 +503,14 @@ public class BaseTraceService implements TrService {
         for (String pair : keyValuePairs) //iterate over the pairs
         {
             pair = pair.trim();
-            if (pair.endsWith(":") && omitJsonFields) //omitJsonFields beta guard
+            if (pair.endsWith(":"))
                 pair = pair + OMIT_FIELDS_STRING;
 
             String[] entry = pair.split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
 
             //!pair.endsWith(":") for beta guard for entry length 2 because ie. message:type: will rename message to type
-            if (entry.length == 2 && !pair.endsWith(":")) {//if the mapped value is intended for all event types
+            if (entry.length == 2) {//if the mapped value is intended for all event types
                 entry[1] = entry[1].trim();
                 //add properties to all the hashmaps and trim whitespaces
                 if (LogTraceList.contains(entry[0])) {
