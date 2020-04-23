@@ -111,6 +111,10 @@ public class PrometheusMetricWriter implements OutputWriter {
                     currentMetricMap.put(metricEntry.getKey(), metricEntry.getValue());
                 }
             }
+            //If current metadata that we are parsing does not have a matching metric... skip
+            if (currentMetricMap.isEmpty()) {
+                continue;
+            }
 
             String description = (!metricMetadata.getDescription().isPresent()
                                   || metricMetadata.getDescription().get().trim().isEmpty()) ? "" : Tr.formatMessage(tc, locale, metricMetadata.getDescription().get());
@@ -123,10 +127,7 @@ public class PrometheusMetricWriter implements OutputWriter {
             double conversionFactor = conversionAppendEntry.getValue();
             String appendUnit = conversionAppendEntry.getKey();
 
-            //If current metadata that we are parsing does not have a matching metric... skip
-            if (currentMetricMap.isEmpty()) {
-                continue;
-            } else if (metricMetadata.getTypeRaw().equals(MetricType.COUNTER)) {
+            if (metricMetadata.getTypeRaw().equals(MetricType.COUNTER)) {
                 PrometheusBuilder.buildCounter(builder, metricNamePrometheus, description, currentMetricMap);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.CONCURRENT_GAUGE)) {
                 PrometheusBuilder.buildConcurrentGauge(builder, metricNamePrometheus, description, currentMetricMap);
