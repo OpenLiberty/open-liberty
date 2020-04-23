@@ -21,4 +21,9 @@
        <actions>resolve</actions>
    </permission>
 
+   <permission>
+       <class-name>com.ibm.websphere.security.WebSphereRuntimePermission</class-name>
+       <name>accessServletContext</name>
+   </permission>
+
 </permissions>

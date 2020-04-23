@@ -57,7 +57,6 @@ public class MYSCL implements ServletContextListener {
         try {
             context.createListener(MYHSAL3.class);
         } catch (ServletException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         System.out.println("MYSCL Created a HttpSessionAttributeListener3: MYHSAL3 class");

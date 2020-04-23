@@ -30,7 +30,6 @@ public class ReadParameterFilter implements Filter {
      * Default constructor.
      */
     public ReadParameterFilter() {
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -38,7 +37,6 @@ public class ReadParameterFilter implements Filter {
      */
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
     }
 
     /**
@@ -62,7 +60,6 @@ public class ReadParameterFilter implements Filter {
      */
     @Override
     public void init(FilterConfig fConfig) throws ServletException {
-        // TODO Auto-generated method stub
     }
 
 }

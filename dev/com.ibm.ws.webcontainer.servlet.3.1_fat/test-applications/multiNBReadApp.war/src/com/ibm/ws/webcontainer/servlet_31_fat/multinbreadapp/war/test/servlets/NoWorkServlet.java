@@ -33,7 +33,6 @@ public class NoWorkServlet extends HttpServlet {
      */
     public NoWorkServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**

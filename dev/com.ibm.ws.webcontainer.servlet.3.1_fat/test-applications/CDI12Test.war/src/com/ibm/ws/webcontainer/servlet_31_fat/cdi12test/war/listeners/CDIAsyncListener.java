@@ -64,7 +64,6 @@ public class CDIAsyncListener implements AsyncListener {
     @Override
     @OnCompleteType
     public void onComplete(AsyncEvent arg0) throws IOException {
-        // TODO Auto-generated method stub
 
         PrintWriter out = arg0.getSuppliedResponse().getWriter();
 
@@ -111,7 +110,6 @@ public class CDIAsyncListener implements AsyncListener {
      */
     @Override
     public void onError(AsyncEvent arg0) throws IOException {
-        // TODO Auto-generated method stub
 
     }
 
@@ -171,7 +169,6 @@ public class CDIAsyncListener implements AsyncListener {
      */
     @Override
     public void onTimeout(AsyncEvent arg0) throws IOException {
-        // TODO Auto-generated method stub
 
     }
 

@@ -44,7 +44,6 @@ public class ReadPostDataFromNBInputStreamFilter implements Filter {
      * Default constructor.
      */
     public ReadPostDataFromNBInputStreamFilter() {
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -52,7 +51,6 @@ public class ReadPostDataFromNBInputStreamFilter implements Filter {
      */
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
     }
 
     /**
@@ -77,7 +75,6 @@ public class ReadPostDataFromNBInputStreamFilter implements Filter {
      */
     @Override
     public void init(FilterConfig fConfig) throws ServletException {
-        // TODO Auto-generated method stub
     }
 
     private AsyncContext setupAsyncListener(ServletRequest req, ServletResponse res) {

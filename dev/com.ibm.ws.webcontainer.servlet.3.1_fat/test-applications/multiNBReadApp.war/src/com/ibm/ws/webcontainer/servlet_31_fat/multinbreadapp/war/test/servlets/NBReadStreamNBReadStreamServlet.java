@@ -45,7 +45,6 @@ public class NBReadStreamNBReadStreamServlet extends HttpServlet {
      */
     public NBReadStreamNBReadStreamServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**

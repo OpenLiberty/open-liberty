@@ -41,7 +41,6 @@ public class CDIDynamicInitializer implements ServletContainerInitializer {
         registerListener(servletContext);
     }
 
-    //
 
     public static final String SERVLET_DYNAMIC_NAME = "CDIDynamicServlet";
     public static final String SERVLET_DYNAMIC_MAPPING = "/CDIDynamicServlet";
@@ -64,7 +63,6 @@ public class CDIDynamicInitializer implements ServletContainerInitializer {
         servletContext.addListener(CDIDynamicListener.class);
     }
 
-    //
 
     public static void verifyRegistration(HttpServletRequest servletRequest, HttpServletResponse servletResponse, PrintWriter responseWriter) {
         verifyServletRegistration(servletRequest, servletResponse, responseWriter);

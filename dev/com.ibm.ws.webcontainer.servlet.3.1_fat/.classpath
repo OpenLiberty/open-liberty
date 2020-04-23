@@ -1,198 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="bin/main" path="fat/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestServletMappingAnno.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestServletMapping.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestServlet31.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestServlet31.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestServlet31AltVHost1.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestServlet31AltVHost2.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/LibertyReadWriteListenerTest.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/LibertyReadListenerFilterTest.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/LibertyWriteListenerFilterTest.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestMetadataComplete.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestMetadataComplete.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/SingletonStore.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestMetadataCompleteExcludedFragment.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/SessionIdListener.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/SessionIdListenerAddListener.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/ServletContextCreateListener.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestProgrammaticListenerAddition.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/TestHttpSessionAttrListener.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12Test.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12Test.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2NoInjection.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2.jar/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2Injection.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2Counter.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2Currency.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2Upgrade.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2Dynamic.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/CDI12TestV2Listeners.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/FormLogin_ReadListener.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="test-applications/multiNBReadApp.war/src">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="resources">
-		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7/"/>
-	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry kind="output" path="bin/default"/>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/TestServletMappingAnno.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestServletMapping.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestServlet31.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestServlet31.jar/src"/>
+	<classpathentry kind="src" path="test-applications/TestServlet31AltVHost1.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestServlet31AltVHost2.war/src"/>
+	<classpathentry kind="src" path="test-applications/LibertyReadWriteListenerTest.war/src"/>
+	<classpathentry kind="src" path="test-applications/LibertyReadListenerFilterTest.war/src"/>
+	<classpathentry kind="src" path="test-applications/LibertyWriteListenerFilterTest.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestMetadataComplete.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestMetadataComplete.jar/src"/>
+	<classpathentry kind="src" path="test-applications/SingletonStore.jar/src"/>
+	<classpathentry kind="src" path="test-applications/TestMetadataCompleteExcludedFragment.jar/src"/>
+	<classpathentry kind="src" path="test-applications/SessionIdListener.jar/src"/>
+	<classpathentry kind="src" path="test-applications/SessionIdListenerAddListener.war/src"/>
+	<classpathentry kind="src" path="test-applications/ServletContextCreateListener.war/src"/>
+	<classpathentry kind="src" path="test-applications/TestProgrammaticListenerAddition.jar/src"/>
+	<classpathentry kind="src" path="test-applications/TestHttpSessionAttrListener.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12Test.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12Test.jar/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2NoInjection.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2.jar/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2Injection.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2Counter.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2Currency.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2Upgrade.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2Dynamic.war/src"/>
+	<classpathentry kind="src" path="test-applications/CDI12TestV2Listeners.war/src"/>
+	<classpathentry kind="src" path="test-applications/FormLogin_ReadListener.war/src"/>
+	<classpathentry kind="src" path="test-applications/multiNBReadApp.war/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
