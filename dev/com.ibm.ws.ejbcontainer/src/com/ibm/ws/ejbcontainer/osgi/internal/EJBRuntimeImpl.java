@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -262,6 +262,12 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         EJBPersistentTimerRuntime ejbPersistentTimerRuntime = ejbPersistentTimerRuntimeServiceRef.getService();
         if (ejbPersistentTimerRuntime != null) {
             ejbPersistentTimerRuntime.serverStopping();
+        }
+
+        CountDownLatch remoteLatch = remoteFeatureLatch;
+        if (remoteLatch != null) {
+            remoteFeatureLatch = null;
+            remoteLatch.countDown();
         }
     }
 
@@ -534,7 +540,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         this.j2eeNameFactory = ref;
     }
 
-    protected void unsetJ2EENameFactory(J2EENameFactory ref) {}
+    protected void unsetJ2EENameFactory(J2EENameFactory ref) {
+    }
 
     @Reference
     protected void setMetaDataService(MetaDataService ref) {
@@ -1377,9 +1384,11 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                         "(containerToType=com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd)" +
                         "(containerToType=com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd)" +
                         ")")
-    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {}
+    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {
+    }
 
-    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {}
+    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {
+    }
 
     @Override
     public boolean isRemoteUsingPortableServer() {
@@ -1532,14 +1541,14 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     protected void setEJBRemoteRuntime(ServiceReference<EJBRemoteRuntime> ref) {
         this.ejbRemoteRuntimeServiceRef.setReference(ref);
 
-        // bind any Remote interfaces to COS Naming for beans already started
-        bindAllRemoteInterfacesToContextRoot();
-
         CountDownLatch remoteLatch = remoteFeatureLatch;
         if (remoteLatch != null) {
-            remoteLatch.countDown();
             remoteFeatureLatch = null;
+            remoteLatch.countDown();
         }
+
+        // bind any Remote interfaces to COS Naming for beans already started
+        bindAllRemoteInterfacesToContextRoot();
     }
 
     protected void unsetEJBRemoteRuntime(ServiceReference<EJBRemoteRuntime> ref) {
@@ -1676,7 +1685,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     protected void setLibertyFeature(ServiceReference<LibertyFeature> feature) {
         // If the remote runtime hasn't come up yet, but remote is configured,
         // then create a latch to support a pause in starting remote EJBs.
-        if (ejbRemoteRuntimeServiceRef.getReference() == null) {
+        if (remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
             String featureName = (String) feature.getProperty("ibm.featureName");
             if (featureName != null && featureName.startsWith("ejbRemote")) {
                 remoteFeatureLatch = new CountDownLatch(1);
@@ -1691,8 +1700,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (remoteLatch != null) {
             String featureName = (String) feature.getProperty("ibm.featureName");
             if (featureName != null && featureName.startsWith("ejbRemote")) {
-                remoteLatch.countDown();
                 remoteFeatureLatch = null;
+                remoteLatch.countDown();
             }
         }
     }
