@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -23,12 +24,19 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.context.app.ContextServiceTestServlet;
 
 @RunWith(FATRunner.class)
 public class ContextServiceTest extends FATServletClient {
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
+                    .andWith(new JakartaEE9Action());
+
     @Server("com.ibm.ws.context.fat.customproviders")
     @TestServlet(servlet = ContextServiceTestServlet.class, path = "contextbvt/ContextServiceTestServlet")
     public static LibertyServer server;
@@ -47,6 +55,9 @@ public class ContextServiceTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+                          "CWNEN0046W.*javax", // TODO temporarily ignore until transformer supports deployment descriptors
+                          "CWNEN0047W.*javax" // TODO temporarily ignore until transformer supports deployment descriptors
+        );
     }
 }
