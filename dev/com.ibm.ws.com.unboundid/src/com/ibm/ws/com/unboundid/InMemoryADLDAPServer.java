@@ -39,13 +39,4 @@ public class InMemoryADLDAPServer extends InMemoryLDAPServer {
         Log.info(c, "setupLdapServer", "Adding " + entriesAdded + " changes to LDAP Server");
     }
 
-    /**
-     * @param listenerName - The name of the listener for which to retrieve the listen port. It may be null in order to obtain the listen port for the first active listener.
-     * @return The configured listen port for the specified listener, or -1 if there is no such listener or the listener is not active.
-     */
-    @Override
-    public int getListenPort(String listenerName) {
-        return super.getListenPort(listenerName);
-    }
-
 }

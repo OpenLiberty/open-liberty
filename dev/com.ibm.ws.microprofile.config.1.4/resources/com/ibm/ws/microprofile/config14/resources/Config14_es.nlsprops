@@ -32,7 +32,7 @@ no.such.element.CWMCG0300E=CWMCG0300E: No se ha encontrado la propiedad {0} en l
 no.such.element.CWMCG0300E.explanation=La propiedad solicitada no exist\u00eda en ninguno de los or\u00edgenes de configuraci\u00f3n configurados.
 no.such.element.CWMCG0300E.useraction=A\u00f1ada la propiedad a uno de los or\u00edgenes de configuraci\u00f3n existentes o a\u00f1ada un nuevo origen de configuraci\u00f3n que contenga la propiedad.
 
-failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: No se ha podido planificar la invalidaci\u00f3n de memoria cach\u00e9 de MicroProfile Config. La excepci\u00f3n es {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: La invalidaci\u00f3n de memoria cach\u00e9 de MicroProfile Config no se puede planificar. La excepci\u00f3n es {0}
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Es posible que los cambios realizados en MicroProfile Config no se reflejen en la aplicaci\u00f3n.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
 

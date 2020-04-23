@@ -1,0 +1,20 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>json-1.0</feature>
+    </featureManager>
+    
+    <application type="war" id="jackson" name="jackson" location="jackson.war">
+        <classloader apiTypeVisibility="spec,ibm-api,third-party"/>
+    </application>
+
+  	<include location="../fatTestPorts.xml"/>
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  	
+
+</server>

@@ -619,7 +619,7 @@ public class XMLConfigParser {
             String normalIncludePath = resolvePath(includePath);
             return wsLocationAdmin.resolveResource(normalIncludePath);
         } else {
-            String normalIncludePath = resolvePath(includePath);
+            String normalIncludePath = PathUtils.normalize(resolvePath(includePath));
             if (PathUtils.pathIsAbsolute(normalIncludePath)) {
                 // includePath is absolute - resolve includePath as is
                 return wsLocationAdmin.resolveResource(normalIncludePath);

@@ -18,6 +18,8 @@ Bundle-Description: facade to provide a classloader for our internal jstl classe
 
 Provide-Capability: com.ibm.ws.jsp.jstl.facade
 
+jakartaeeMe: true
+
 Import-Package: \
   javax.el;version="[2.2.0,4.0.0)", \
   javax.servlet.jsp;version="[2.2,3.0)", \

@@ -13,7 +13,6 @@ package com.ibm.ws.security.acme;
 import java.io.File;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -33,10 +32,15 @@ public interface AcmeProvider {
 	 *            The path to generate the new keystore.
 	 * @param password
 	 *            The password for the generated keystore and certificate.
+	 * @param keyStoreType
+	 *            The keystore type.
+	 * @param keyStoreProvider
+	 *            the keystore provider.
 	 * @see DefaultSSLCertificateCreator#createDefaultSSLCertificate(String,
 	 *      String, int, String, int, String, List)
 	 */
-	public File createDefaultSSLCertificate(String filePath, String password) throws CertificateException;
+	public File createDefaultSSLCertificate(String filePath, String password, String keyStoreType,
+			String keyStoreProvider) throws CertificateException;
 
 	/**
 	 * Get the HTTP-01 challenge authorization for the specified challenge

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2019 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -110,9 +110,11 @@
   <AD id="databaseName"         required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"           required="false" type="String"  name="%serverName" description="%serverName.desc"/>
   <AD id="portNumber"           required="false" type="Integer" name="%portNumber" description="%portNumber.desc"/>
-  <AD id="URL"                  required="false" type="String"  name="%URL" description="%URL.desc"/>
+  <AD id="URL"                  required="false" type="String"  ibm:obscure="true" name="%URL" description="%URL.desc"/>
   <AD id="user"                 required="false" type="String"  name="%user" description="%user.desc"/>
   <AD id="password"             required="false" type="String"  ibm:type="password" name="%password" description="%password.desc"/>
+  <!-- If using generic properties and user provides oracle connectionProperties then make sure it is not traced as it could container passwords -->
+  <AD id="connectionProperties" required="false" type="String"  ibm:obscure="true" name="internal" description="internal use only"/>
  </OCD>
 
  <!-- DataDirect Connect for JDBC (sqlserver) properties -->
@@ -1244,9 +1246,9 @@
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
   <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumber.desc"/>
-  <AD id="URL"                                required="false" type="String"  name="%URL" description="%URL.oracle.desc"/>
+  <AD id="URL"                                required="false" type="String"  name="%URL" ibm:obscure="true" description="%URL.oracle.desc"/>
   <!-- Advanced properties for properties.oracle -->
-  <AD id="connectionProperties"               ibmui:group="Advanced" required="false" type="String"  name="%connectionProperties" description="%connectionProperties.desc"/>
+  <AD id="connectionProperties"               ibmui:group="Advanced" required="false" type="String"  ibm:obscure="true" name="%connectionProperties" description="%connectionProperties.desc"/>
   <AD id="loginTimeout"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" min="0" name="%loginTimeout" description="%loginTimeout.desc"/>
   <AD id="networkProtocol"                    ibmui:group="Advanced" required="false" type="String"  name="%networkProtocol" description="%networkProtocol.desc"/>
   <AD id="ONSConfiguration"                   ibmui:group="Advanced" required="false" type="String"  name="%ONSConfiguration" description="%ONSConfiguration.desc"/>
@@ -1272,13 +1274,13 @@
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
   <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumber.desc"/>
-  <AD id="URL"                                required="false" type="String"  name="%URL" description="%URL.oracle.desc"/>
+  <AD id="URL"                                required="false" type="String"  ibm:obscure="true" name="%URL" description="%URL.oracle.desc"/>
   <!-- Advanced properties for properties.oracle.ucp -->
   <AD id="abandonedConnectionTimeout"         ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%abandonedConnectionTimeout" description="%abandonedConnectionTimeout.desc" />
   <AD id="connectionFactoryProperties"        ibmui:group="Advanced" required="false" type="String"  name="%connectionFactoryProperties" description="%connectionFactoryProperties.desc"/>
   <AD id="connectionHarvestMaxCount"          ibmui:group="Advanced" required="false" type="Integer" name="%connectionHarvestMaxCount" description="%connectionHarvestMaxCount.desc"/>
   <AD id="connectionHarvestTriggerCount"      ibmui:group="Advanced" required="false" type="Integer" name="%connectionHarvestTriggerCount" description="%connectionHarvestTriggerCount.desc"/>
-  <AD id="connectionProperties"               ibmui:group="Advanced" required="false" type="String"  name="%connectionProperties" description="%connectionProperties.desc"/>
+  <AD id="connectionProperties"               ibmui:group="Advanced" required="false" type="String"  ibm:obscure="true" name="%connectionProperties" description="%connectionProperties.desc"/>
   <AD id="connectionWaitTimeout"              ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%connectionWaitTimeout" description="%connectionWaitTimeout.desc"/>
   <AD id="fastConnectionFailoverEnabled"      ibmui:group="Advanced" required="false" type="Boolean" name="%fastConnectionFailoverEnabled" description="%fastConnectionFailoverEnabled.desc"/>
   <AD id="initialPoolSize"                    ibmui:group="Advanced" required="false" type="Integer" name="%initialPoolSize" description="%initialPoolSize.desc"/>

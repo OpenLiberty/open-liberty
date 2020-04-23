@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -276,6 +277,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     @Override
     public Response toResponse(Throwable exception) {
         Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", exception);
+        if (exception instanceof WebApplicationException) {
+            return Response.fromResponse(((WebApplicationException) exception).getResponse()).header(EXCEPTION_KEY, exception).build();
+        }
         return Response.serverError().header(EXCEPTION_KEY, exception).build();
     }
+
 }

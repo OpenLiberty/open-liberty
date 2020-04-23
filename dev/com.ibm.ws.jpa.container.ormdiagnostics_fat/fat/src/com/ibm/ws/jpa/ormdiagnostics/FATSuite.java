@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,20 +16,27 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jpa.ormdiagnostics.tests.TestBasicLibertyDump;
-import com.ibm.ws.jpa.ormdiagnostics.tests.TestEARLibertyDump;
-import com.ibm.ws.jpa.ormdiagnostics.tests.TestEnhancementErrorLogging;
+import com.ibm.ws.jpa.ormdiagnostics.tests.TestEnhancementError_WAR;
+import com.ibm.ws.jpa.ormdiagnostics.tests.TestExample_EAR;
+import com.ibm.ws.jpa.ormdiagnostics.tests.TestExample_WAR;
+import com.ibm.ws.jpa.ormdiagnostics.tests.TestLooseConfig_EAR;
+import com.ibm.ws.jpa.ormdiagnostics.tests.TestLooseConfig_WAR;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                TestBasicLibertyDump.class,
-                TestEARLibertyDump.class,
-                TestEnhancementErrorLogging.class
+                TestEnhancementError_WAR.class,
+                TestExample_EAR.class,
+                TestExample_WAR.class,
+                TestLooseConfig_WAR.class,
+                TestLooseConfig_EAR.class,
+                componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
+    public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
+                                                "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES())

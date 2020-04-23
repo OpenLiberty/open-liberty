@@ -28,15 +28,15 @@ POST_LOGOUT_PAGE_FAILURE_TEXT=\u00c9 poss\u00edvel que voc\u00ea n\u00e3o esteja
 #Message prefix block: CWWKS5000 - CWWKS5099
 SAML20_CONFIG_PROCESSED=CWWKS5000I: A configura\u00e7\u00e3o do SAML Web SSO Vers\u00e3o 2.0 [{0}] foi processada com sucesso.
 SAML20_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o do SAML Web SSO Vers\u00e3o 2.0 foi processada com sucesso.
-SAML20_CONFIG_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+SAML20_CONFIG_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 SAML20_CONFIG_MODIFIED=CWWKS5001I: A configura\u00e7\u00e3o do SAML Web SSO Vers\u00e3o 2.0 [{0}] foi processada com sucesso.
 SAML20_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o do SAML Web SSO Vers\u00e3o 2.0 foi processada com sucesso.
-SAML20_CONFIG_MODIFIED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+SAML20_CONFIG_MODIFIED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: O trabalho de terminal do SAML Web SSO Vers\u00e3o 2.0 est\u00e1 ativado.
 SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=O trabalho de terminal do SAML Web SSO Vers\u00e3o 2.0 est\u00e1 ativado.
-SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 # web RequestFilter
 SAML20_INVALID_ACS_URL=CWWKS5003E: O terminal solicitado de [{0}] n\u00e3o \u00e9 suportado neste provedor de servi\u00e7os (SP) do SAML Web Single Sign-On (SSO) (SP). 
@@ -70,7 +70,7 @@ SAML20_SP_BAD_SAML_RESPONSE_ERROR.explanation=O IdP parece ter um problema ao em
 SAML20_SP_BAD_SAML_RESPONSE_ERROR.useraction=Revise o c\u00f3digo de status e as mensagens opcionais e certifique-se de que o Provedor de Identidade e esse Provedor de Servi\u00e7os estejam configurados adequadamente.
 
 SAML20_SP_NO_ASSERTION_ERROR=CWWKS5009E: A resposta SAML do Fornecedor de Identidade [{0}] n\u00e3o cont\u00e9m uma asser\u00e7\u00e3o.
-SAML20_SP_NO_ASSERTION_ERROR.explanation=A resposta SAML emitida pelo IdP indicado deve conter uma asser\u00e7\u00e3o.   A resposta SAML recebida do IdP n\u00e3o cont\u00e9m uma asser\u00e7\u00e3o.  Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+SAML20_SP_NO_ASSERTION_ERROR.explanation=A resposta SAML emitida pelo IdP indicado deve conter uma asser\u00e7\u00e3o.   A resposta SAML recebida do IdP n\u00e3o cont\u00e9m uma asser\u00e7\u00e3o.  Esta condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
 SAML20_SP_NO_ASSERTION_ERROR.useraction=Certifique-se de que o IdP esteja configurado corretamente e que o usu\u00e1rio tenha efetuado login corretamente no IdP.
 
 SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: A resposta SAML cont\u00e9m uma vers\u00e3o de Asser\u00e7\u00e3o SAML [{0}] que n\u00e3o \u00e9 suportada pelo tempo de execu\u00e7\u00e3o. A vers\u00e3o requerida \u00e9 2.0.
@@ -99,7 +99,7 @@ SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Certifique-se de que o valor da URL 
 
 SAML20_CONFIG_DEACTIVATED=CWWKS5016I: A configura\u00e7\u00e3o do SAML Web SSO Vers\u00e3o 2.0 [{0}] foi desativada com sucesso.
 SAML20_CONFIG_DEACTIVATED.explanation=A configura\u00e7\u00e3o do SAML Web SSO Vers\u00e3o 2.0 foi desativada com sucesso.
-SAML20_CONFIG_DEACTIVATED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+SAML20_CONFIG_DEACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 # CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
 # {0} = Error message text
@@ -144,7 +144,7 @@ ACCESS_FILE_INFO_ERROR.useraction=Assegure-se de que o arquivo exista e de que o
 SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: O arquivo de metadados do provedor de identidade (IdP) [{1}] para o provedor de servi\u00e7os (SP) [{0}] foi modificado.
 SAML20_IDP_METADATA_FILE_CHANGED.explanation=O arquivo de metadados do IdP foi atualizado com novos dados de configura\u00e7\u00e3o para o IdP; o provedor de servi\u00e7os (SP) recarregar\u00e1 \
 o arquivo.
-SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: O atributo InResponseTo [{0}] n\u00e3o \u00e9 permitido em uma resposta SAML \
 n\u00e3o solicitada.
@@ -251,8 +251,7 @@ InResponseTo correto.
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: A asser\u00e7\u00e3o SAML n\u00e3o cont\u00e9m um atributo [{0}].  Um \
-atributo [{0}] \u00e9 necess\u00e1rio.  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: A asser\u00e7\u00e3o SAML n\u00e3o cont\u00e9m um elemento [{0}].  Um elemento [{0}] \u00e9 necess\u00e1rio.  
 SAML20_ATTRIBUTE_ERR.explanation=Na asser\u00e7\u00e3o SAML est\u00e1 faltando um atributo necess\u00e1rio \
 pelo tempo de execu\u00e7\u00e3o.
 SAML20_ATTRIBUTE_ERR.useraction=O atributo requerido deve ser inclu\u00eddo na asser\u00e7\u00e3o SAML.  Entre em contato com o administrador do provedor de identidade (IdP) para certificar-se de que o IdP esteja \
@@ -372,7 +371,7 @@ configura\u00e7\u00e3o de samlWebSso20 [{2}]. Os atributos [{1}] ser\u00e3o igno
 SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=A configura\u00e7\u00e3o samlWebSso20 \u00e9 definida para processar a \
 propaga\u00e7\u00e3o de entrada do token SAML ou SAML Web SSO, mas n\u00e3o ambos. Os atributos listados s\u00e3o ignorados quando solicita\u00e7\u00f5es da web \
 s\u00e3o manipuladas com a configura\u00e7\u00e3o SAML especificada.
-SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: A asser\u00e7\u00e3o SAML de entrada n\u00e3o \u00e9 v\u00e1lida [{0}].
 SAML_BAD_INBOUND_SAML_TOKEN.explanation=A asser\u00e7\u00e3o SAML, que est\u00e1 contida no cabe\u00e7alho da solicita\u00e7\u00e3o de HTTP, n\u00e3o \u00e9 v\u00e1lida e n\u00e3o pode ser analisada de forma adequada.

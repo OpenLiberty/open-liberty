@@ -18,13 +18,14 @@ instrument.disabled: true
 publish.wlp.jar.disabled: true
 
 -buildpath: \
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.tx.util;version=latest,\
-	com.ibm.ws.recoverylog;version=latest,\
-	com.ibm.ws.resource;version=latest,\
-	com.ibm.websphere.javaee.connector.1.6;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest, \
-	com.ibm.websphere.org.osgi.service.component;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.kernel.service;version=latest, \
-	com.ibm.ws.classloading;version=latest
+ com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+ com.ibm.ws.logging.core,\
+ com.ibm.tx.util;version=latest,\
+ com.ibm.ws.recoverylog;version=latest,\
+ com.ibm.ws.resource;version=latest,\
+ com.ibm.websphere.javaee.connector.1.6;version=latest,\
+ com.ibm.websphere.org.osgi.core;version=latest, \
+ com.ibm.websphere.org.osgi.service.component;version=latest, \
+ com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+ com.ibm.ws.kernel.service;version=latest, \
+ com.ibm.ws.classloading;version=latest

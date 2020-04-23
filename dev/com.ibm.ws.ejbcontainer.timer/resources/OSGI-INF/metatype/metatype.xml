@@ -42,7 +42,7 @@
             default="(service.pid=${nonPersistentContextServiceRef})" 
             name="internal" description="internal use only"/>
 
-        <AD id="missedPersistentTimerAction" type="String" ibm:beta="true" required="false"
+        <AD id="missedPersistentTimerAction" type="String" required="false"
             name="%missedPersistentTimerAction" description="%missedPersistentTimerAction.desc">
             <Option value="ALL"  label="%missedPersistentTimerAction.ALL"/>
             <Option value="ONCE" label="%missedPersistentTimerAction.ONCE"/>

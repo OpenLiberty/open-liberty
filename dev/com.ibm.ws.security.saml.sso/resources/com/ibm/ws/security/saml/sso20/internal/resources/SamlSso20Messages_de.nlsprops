@@ -223,7 +223,7 @@ SAML20_NO_INRESPONSETO.useraction=Wenden Sie sich an den Identit\u00e4tsprovider
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: Die SAML-Zusicherung enth\u00e4lt kein Attribut [{0}]. Ein Attribut [{0}] ist erforderlich. 
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: Die SAML-Zusicherung enth\u00e4lt kein Element [{0}]. Ein Element [{0}] ist erforderlich. 
 SAML20_ATTRIBUTE_ERR.explanation=In der SAML-Zusicherung fehlt ein von der Laufzeitumgebung ben\u00f6tigtes Attribut.
 SAML20_ATTRIBUTE_ERR.useraction=Das erforderliche Attribut muss der SAML-Zusicherung hinzugef\u00fcgt werden. Wenden Sie sich an den Identit\u00e4tsprovideradministrator, um sicherzustellen, dass der Identit\u00e4tsprovider ordnungsgem\u00e4\u00df konfiguriert ist, oder konfigurieren Sie den Service-Provider (SP) oder den TAI, um einen Wert f\u00fcr das Attribut zu definieren.
 

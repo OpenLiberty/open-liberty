@@ -8,7 +8,6 @@ singleton=true
   com.ibm.websphere.appserver.jakarta.concurrency-2.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.1 
 -bundles=\
-  com.ibm.ws.concurrent.mp.1.0,\
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.websphere.javaee.concurrent.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0", \
   com.ibm.ws.resource, \

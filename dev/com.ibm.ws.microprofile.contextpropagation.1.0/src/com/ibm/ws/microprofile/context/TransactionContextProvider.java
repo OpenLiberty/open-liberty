@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,11 @@
 package com.ibm.ws.microprofile.context;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
-
-import javax.enterprise.concurrent.ManagedTask;
+import java.util.TreeMap;
 
 import org.eclipse.microprofile.context.ThreadContext;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.contextpropagation.ContextOp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -31,12 +27,15 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Trivial
 @SuppressWarnings("deprecation")
 public class TransactionContextProvider extends ContainerContextProvider {
-    private static final TraceComponent tc = Tr.register(TransactionContextProvider.class);
-
     /**
      * Map with execution property that instructs the transaction context to propagate transactions for serial use.
      */
-    private static final Map<String, String> PROPAGATE_TX_FOR_SERIAL_USE = Collections.singletonMap(ManagedTask.TRANSACTION, "PROPAGATE");
+    private static final Map<String, String> PROPAGATE_TX_FOR_SERIAL_USE = new TreeMap<String, String>();
+    static {
+        // Including both keys. It's not worth it to compute the EE spec/version here given that this class is not an OSGi service component.
+        PROPAGATE_TX_FOR_SERIAL_USE.put("jakarta.enterprise.concurrent.TRANSACTION", "PROPAGATE");
+        PROPAGATE_TX_FOR_SERIAL_USE.put("java.enterprise.concurrent.TRANSACTION", "PROPAGATE");
+    }
 
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> transactionContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("TransactionContextProvider");
 

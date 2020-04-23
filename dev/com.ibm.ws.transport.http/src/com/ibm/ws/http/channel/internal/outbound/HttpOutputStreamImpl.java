@@ -222,6 +222,22 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
             throw new IOException("Stream is closed");
         }
+        // There's an H2 timing window where the server could be working on a response, it gets interrupted,
+        // the frame that comes in has an error, and the connection gets shutdown and all resources
+        // including the response are cleaned up.  Then we come back here after the interruption.
+        // Handle this case.
+
+        if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl) &&
+            ((HttpInboundServiceContextImpl) isc).isH2Connection() &&
+            (null == this.isc.getResponse())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "validate response is cleaned up hc: " + this.hashCode() + " details: " + this);
+            }
+
+            throw new IOException("H2 Response already destroyed on error condition");
+
+        }
+
         if (null == this.output) {
             setBufferSize(32768);
         }

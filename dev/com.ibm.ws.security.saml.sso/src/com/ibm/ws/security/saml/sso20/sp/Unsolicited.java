@@ -114,6 +114,8 @@ public class Unsolicited {
         }
 
         // expect to return a form to redirect to the idp by the browser
-        return TAIResult.create(HttpServletResponse.SC_FORBIDDEN);
+        // due to admin center intercepting 403, send 401.
+        //return TAIResult.create(HttpServletResponse.SC_FORBIDDEN);
+        return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED); 
     }
 }

@@ -39,7 +39,7 @@ public class BasicQueryWithConfigTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp(APP_NAME, "mpGraphQL10.basicQuery")
                                      .addAsManifestResource(new StringAsset(
-                                             "org.eclipse.microprofile.graphql.contextpath=hello"),
+                                             "mp.graphql.contextpath=hello"),
                                          "microprofile-config.properties");
         ShrinkHelper.exportDropinAppToServer(server, war);
         server.startServer();

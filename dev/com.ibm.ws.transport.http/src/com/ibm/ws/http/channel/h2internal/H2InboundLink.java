@@ -67,18 +67,15 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
     LINK_STATUS linkStatus = LINK_STATUS.INIT;
     private ScheduledFuture<?> closeFuture = null;
     private H2ConnectionTimeout connTimeout = null;
-    Object linkStatusSync = new Object() {
-    };
+    Object linkStatusSync = new Object() {};
 
     READ_LINK_STATUS readLinkStatus = READ_LINK_STATUS.NOT_READING;
-    Object readLinkStatusSync = new Object() {
-    };
+    Object readLinkStatusSync = new Object() {};
 
     private int configuredInactivityTimeout = 0; // in milleseconds;
     private long lastWriteTime = 0;
     private int OutstandingWriteCount = 0;
-    private final Object OutstandingWriteCountSync = new Object() {
-    };
+    private final Object OutstandingWriteCountSync = new Object() {};
     private final int closeWaitForWritesWatchDogTimer = 5000;
     private final int closeWaitForReadWatchDogTimer = 5000;
     private final int STREAM_CLOSE_DELAY = 2000;
@@ -88,16 +85,13 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
     private int highestLocalStreamId = -1; // this moves to 0 when the connection stream is established
     private int goawayPromisedStreamId = 0; // keeps track of the ID used for a GOAWAY promised-stream-id
     private int openPushStreams = 0;
-    private final Object streamOpenCloseSync = new Object() {
-    };
+    private final Object streamOpenCloseSync = new Object() {};
     private int activeClientStreams = 0;
-    private final Object streamCounterSync = new Object() {
-    };
+    private final Object streamCounterSync = new Object() {};
 
     boolean connection_preface_sent = false; // empty SETTINGS frame has been sent
     boolean connection_preface_string_rcvd = false; // MAGIC string has been received
-    public volatile CountDownLatch initLock = new CountDownLatch(1) {
-    };
+    public volatile CountDownLatch initLock = new CountDownLatch(1) {};
 
     volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us
@@ -144,8 +138,7 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
     private boolean continuationFrameExpected = false;
     private boolean writeContinuationFrameExpected = false;
 
-    private final Object oneTimeEntrySync = new Object() {
-    };
+    private final Object oneTimeEntrySync = new Object() {};
     private boolean oneTimeEntry = false;
 
     private final H2RateState rateState = new H2RateState();
@@ -565,8 +558,7 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
 
         // A seperate thread for doing the callback without going to the TCP Channel for more data
 
-        protected AsyncCallback() {
-        }
+        protected AsyncCallback() {}
 
         @Override
         public void run() {
@@ -1134,7 +1126,7 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
         synchronized (linkStatusSync) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "close(vc,e): :linkstatus: is: " + linkStatus + " :close: H2InboundLink hc: " + this.hashCode());
+                Tr.debug(tc, "close(vc,e): :linkstatus: is: " + linkStatus + " :close: H2InboundLink hc: " + this.hashCode() + "exception: " + e);
             }
 
             if ((linkStatus == LINK_STATUS.CLOSING) || (linkStatus == LINK_STATUS.GOAWAY_SENDING)

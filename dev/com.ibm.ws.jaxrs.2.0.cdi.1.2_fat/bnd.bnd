@@ -27,7 +27,7 @@ src: \
 
 fat.project: true
 
-# These features get added programatically
+# These features get added programmatically
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,9 +39,8 @@ public class TransactionContextImpl implements ThreadContext {
     /**
      * Fields to serialize
      */
-    private static final ObjectStreamField[] serialPersistentFields =
-                    new ObjectStreamField[] {
-                    };
+    private static final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[] {
+    };
 
     /**
      * Unit of work that was on the thread of execution prior to invoking the contextual task.
@@ -82,7 +81,7 @@ public class TransactionContextImpl implements ThreadContext {
             } catch (com.ibm.ws.uow.embeddable.SystemException e) {
             }
 
-            // begin a local transaction.     
+            // begin a local transaction.
             LocalTransactionCurrent ltCurrent = EmbeddableTransactionManagerFactory.getLocalTransactionCurrent();
             ltCurrent.begin();
         }
@@ -102,7 +101,6 @@ public class TransactionContextImpl implements ThreadContext {
                     try {
                         EmbeddableWebSphereTransactionManager tm = EmbeddableTransactionManagerFactory.getTransactionManager();
                         tm.rollback();
-                        exception = new Exception("Global transaction rolled back.");
                     } catch (Exception e) {
                         exception = e;
                     }
@@ -125,7 +123,7 @@ public class TransactionContextImpl implements ThreadContext {
                     break;
             }
 
-            // Resume the original transaction.    
+            // Resume the original transaction.
             try {
                 if (suspendedUOW != null) {
                     UOWManager uowManager = UOWManagerFactory.getUOWManager();
@@ -145,9 +143,9 @@ public class TransactionContextImpl implements ThreadContext {
 
     /**
      * Reads and deserializes the input object.
-     * 
+     *
      * @param in The object to deserialize.
-     * 
+     *
      * @throws IOException
      * @throws ClassNotFoundException
      */
@@ -158,17 +156,15 @@ public class TransactionContextImpl implements ThreadContext {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder sb = new StringBuilder(100)
-                        .append(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode()))
-                        .append(" suspend=").append(suspendTranOfExecutionThread);
+        StringBuilder sb = new StringBuilder(100).append(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())).append(" suspend=").append(suspendTranOfExecutionThread);
         return sb.toString();
     }
 
     /**
      * Serialized the given object.
-     * 
+     *
      * @param outStream The stream to write the serialized data.
-     * 
+     *
      * @throws IOException
      */
     private void writeObject(ObjectOutputStream outStream) throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ class StartAction implements Action {
     private final AtomicLong _startTime = new AtomicLong();
     private final ApplicationMonitor _appMonitor;
     private final boolean _update;
+    private volatile boolean cancelled = false;
     private final AtomicReference<Future<?>> _slowMessageAction = new AtomicReference<Future<?>>();
     private final CompletionListener<Boolean> _listener = new CompletionListener<Boolean>() {
         @SuppressWarnings("deprecation")
@@ -59,10 +60,12 @@ class StartAction implements Action {
                     AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName(), TimestampUtils.getElapsedTime(_startTime.get()));
                     callback.changed();
                 } else {
-                    String key = _update ? "APPLICATION_NOT_UPDATED" : "APPLICATION_NOT_STARTED";
-                    NotificationHelper.broadcastChange(_config.getMBeanNotifier(), _config.getMBeanName(), _update ? "application.update" : "application.start", Boolean.FALSE,
-                                                       AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName()));
-                    AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName());
+                    if (!cancelled) {
+                        String key = _update ? "APPLICATION_NOT_UPDATED" : "APPLICATION_NOT_STARTED";
+                        NotificationHelper.broadcastChange(_config.getMBeanNotifier(), _config.getMBeanName(), _update ? "application.update" : "application.start", Boolean.FALSE,
+                                                           AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName()));
+                        AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName());
+                    }
                     callback.failed(null);
                 }
             } else {
@@ -136,19 +139,21 @@ class StartAction implements Action {
             ApplicationMonitoringInformation ami = handler.setUpApplicationMonitoring(_aii);
             _aii.setApplicationMonitoringInformation(ami);
             _appMonitor.addApplication(_aii);
+
             @SuppressWarnings("unchecked")
             Future<Boolean> result = handler.install(_aii);
             if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, "Handler install called, result: " + result);
             }
             _monitor.onCompletion(result, _listener);
+
         } catch (Throwable t) {
             _listener.failedCompletion(null, t);
         }
     }
 
     /**
-     * 
+     *
      */
     private void stopSlowStartMessage() {
         Future<?> slow = _slowMessageAction.getAndSet(null);
@@ -160,7 +165,7 @@ class StartAction implements Action {
     /** {@inheritDoc} */
     @Override
     public void cancel() {
-        _callback.set(null);
+        this.cancelled = true;
         stopSlowStartMessage();
     }
 }

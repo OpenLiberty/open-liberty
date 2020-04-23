@@ -144,7 +144,7 @@ public class ConsoleFormatTest {
      * This test sets the "consoleFormat" attribute to an invalid value and verifies if the appropriate warning message is displayed
      * and checks that the default format is applied.
      */
-    //@Test
+    @Test
     public void testInvalidConsoleFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -169,7 +169,7 @@ public class ConsoleFormatTest {
      * This test sets the "consoleFormat" attribute to the deprecated basic console format and verifies if the appropriate warning message is displayed
      * and checks that the default format is applied.
      */
-    //@Test
+    @Test
     public void testDeprecatedBasicConsoleFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -223,7 +223,7 @@ public class ConsoleFormatTest {
      * This test sets the "consoleFormat" attribute to an invalid format in the bootstrap.properties and starts the server and verifies the correct default dev format in the
      * console.log file.
      */
-    //@Test
+    @Test
     public void testInvalidConsoleFormatSetInBootstrapProperties() throws Exception {
         // Get the bootstrap.properties file and store the original content
         RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();

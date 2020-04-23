@@ -36,6 +36,7 @@ WS-TraceGroup: MPJWT
     com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest,\
+    com.ibm.websphere.security;version=latest, \
     com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.security;version=latest,\

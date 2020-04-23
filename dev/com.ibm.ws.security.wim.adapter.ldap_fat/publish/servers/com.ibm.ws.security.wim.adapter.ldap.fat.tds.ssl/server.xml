@@ -65,10 +65,6 @@
         <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
         <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
       </ldapCache>
-      <failoverServers name="failoverLdapServers">
-		   <server host="${ldap.server.7.name}" port="${ldap.server.7.ssl.port}"/>
-		   <server host="${ldap.server.8.name}" port="${ldap.server.8.ssl.port}"/>
-        </failoverServers>
 	</ldapRegistry> 
 
     <federatedRepository>
@@ -86,7 +82,7 @@
     <sslDefault sslRef="DefaultSSLSettings" />
 	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" />
 	<keyStore id="LDAPKeyStore" location="${server.config.dir}/LdapSSLKeyStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
-	<keyStore id="LDAPTrustStore" location="${server.config.dir}/LdapSSLTrustStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
+	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
 	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
 	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="default" />

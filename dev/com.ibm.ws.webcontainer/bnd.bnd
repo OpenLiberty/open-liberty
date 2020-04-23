@@ -160,6 +160,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.disabled: true
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.threading,\

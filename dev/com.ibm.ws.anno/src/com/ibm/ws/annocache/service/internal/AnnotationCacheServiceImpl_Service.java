@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,8 +111,8 @@ public class AnnotationCacheServiceImpl_Service implements AnnotationCacheServic
         }
 
         String osgiWorkPath = osgiWorkFile.getAbsolutePath();
-        if ( logger.isLoggable(Level.INFO)) { // INFO is temporary
-            logger.logp(Level.INFO, CLASS_NAME, methodName, "OSGi Work Path [ {0} ]", osgiWorkPath);
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "OSGi Work Path [ {0} ]", osgiWorkPath);
         }
         return osgiWorkPath;
     }

@@ -1,0 +1,59 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/helloworld/src,\
+  test-applications/jsonp/src,\
+  test-applications/thirdpartylib/src
+
+fat.project: true
+
+# These features get added programatically
+tested.features: \
+  jaxrs-2.1,\
+  cdi-2.0,\
+  appsecurity-3.0
+
+-buildpath: \
+  com.ibm.websphere.javaee.annotation.1.2,\
+  com.ibm.websphere.javaee.jaxb.2.2,\
+  com.ibm.websphere.javaee.jaxws.2.2,\
+  com.ibm.websphere.javaee.cdi.1.2,\
+  com.ibm.websphere.javaee.ejb.3.2,\
+  com.ibm.websphere.javaee.jaxrs.2.0,\
+  com.ibm.websphere.javaee.jsonp.1.0,\
+  com.ibm.websphere.javaee.servlet.3.1,\
+  com.ibm.websphere.javaee.validation.1.1,\
+  com.ibm.ws.cdi.interfaces;version=latest,\
+  com.ibm.ws.componenttest:provider.api;version=1.0.0,\
+  com.ibm.ws.jaxrs.2.0.common;version=latest,\
+  javax.activation:activation;version=1.1,\
+  javax.jws:jsr181-api;version=latest,\
+  org.mock-server:mockserver-client-java;version=3.10.7,\
+  org.mock-server:mockserver-core;version=3.10.7.IBM20191022,\
+  org.mock-server:mockserver-netty;version=3.10.7,\
+  com.ibm.json4j,\
+  commons-httpclient:commons-httpclient;version=3.1,\
+  org.apache.httpcomponents:httpclient;version=4.3.1,\
+  org.apache.httpcomponents:httpcore;version=4.3.1,\
+  org.apache.httpcomponents:httpmime;version=4.3.1,\
+  org.apache.wink:wink-client;version=1.4,\
+  org.apache.wink:wink-client-apache-httpclient;version=1.4,\
+  org.apache.wink:wink-common;version=1.4,\
+  org.json:json;version=20080701,\
+  com.fasterxml.jackson.core:jackson-annotations;version=2.4.1,\
+  com.fasterxml.jackson.core:jackson-core;version=2.4.1,\
+  com.fasterxml.jackson.core:jackson-databind;version=2.4.1,\
+  com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;version=2.4.1,\
+  com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;version=2.4.1	

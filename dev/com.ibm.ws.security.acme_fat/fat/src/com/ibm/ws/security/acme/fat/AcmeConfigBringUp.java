@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.acme.docker.ChalltestsrvContainer;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
@@ -54,7 +53,7 @@ public class AcmeConfigBringUp extends FATServletClient {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		server.stopServer();
+		server.stopServer("CWPKI2016E");
 	}
 
 	@Test
@@ -112,7 +111,7 @@ public class AcmeConfigBringUp extends FATServletClient {
 			 * Send the POST request and process the response.
 			 */
 			try (final CloseableHttpResponse response = httpclient.execute(httpPost)) {
-				AcmeFatUtils.logHttpResponse(ChalltestsrvContainer.class, methodName, httpPost, response);
+				AcmeFatUtils.logHttpResponse(AcmeConfigBringUp.class, methodName, httpPost, response);
 
 				StatusLine statusLine = response.getStatusLine();
 				if (statusLine.getStatusCode() != expectCode) {

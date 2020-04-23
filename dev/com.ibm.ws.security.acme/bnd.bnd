@@ -51,10 +51,14 @@ Include-Resource: \
     @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
     org=${bin}/org
 
+instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
+
 -dsannotations: \
     com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet, \
     com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler, \
-    com.ibm.ws.security.acme.internal.AcmeProviderImpl
+    com.ibm.ws.security.acme.internal.AcmeConfigService, \
+    com.ibm.ws.security.acme.internal.AcmeProviderImpl, \
+    com.ibm.ws.security.acme.internal.AcmeApplicationStateListener
 
 # TODO Determine effect of using SLF4J 1.7.7 vs 1.7.26, which is used by Acme4J 2.7.
 -buildpath: \

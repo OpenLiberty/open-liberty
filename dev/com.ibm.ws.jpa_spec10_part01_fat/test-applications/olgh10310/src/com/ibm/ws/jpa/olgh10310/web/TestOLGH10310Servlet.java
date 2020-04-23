@@ -54,24 +54,24 @@ public class TestOLGH10310Servlet extends JPATestServlet {
     }
 
     @Test
-    public void jpa_spec21_olgh10310_testOverrideColumnAggregateObjectMapping_AMJTA_Web() throws Exception {
-        final String testName = "jpa21_olgh10310_testOverrideColumnAggregateObjectMapping_AMJTA_Web";
+    public void jpa_spec10_olgh10310_testOverrideColumnAggregateObjectMapping_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_olgh10310_testOverrideColumnAggregateObjectMapping_AMJTA_Web";
         final String testMethod = "testOverrideColumnAggregateObjectMapping";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_spec21_olgh10310_testOverrideColumnAggregateObjectMapping_AMRL_Web() throws Exception {
-        final String testName = "jpa21_olgh10310_testOverrideColumnAggregateObjectMapping_AMRL_Web";
+    public void jpa_spec10_olgh10310_testOverrideColumnAggregateObjectMapping_AMRL_Web() throws Exception {
+        final String testName = "jpa_spec10_olgh10310_testOverrideColumnAggregateObjectMapping_AMRL_Web";
         final String testMethod = "testOverrideColumnAggregateObjectMapping";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_spec21_olgh10310_testOverrideColumnAggregateObjectMapping_CMTS_Web() throws Exception {
-        final String testName = "jpa21_olgh10310_testOverrideColumnAggregateObjectMapping_CMTS_Web";
+    public void jpa_spec10_olgh10310_testOverrideColumnAggregateObjectMapping_CMTS_Web() throws Exception {
+        final String testName = "jpa_spec10_olgh10310_testOverrideColumnAggregateObjectMapping_CMTS_Web";
         final String testMethod = "testOverrideColumnAggregateObjectMapping";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

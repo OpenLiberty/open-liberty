@@ -63,8 +63,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef = null;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {
-    }
+    public JTMConfigurationProvider() {}
 
     /*
      * Called by DS to activate service
@@ -642,4 +641,47 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return num.intValue();
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryTime() {
+        Number num = (Number) _props.get("lightweightTransientErrorRetryTime");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryAttempts() {
+        Number num = (Number) _props.get("lightweightTransientErrorRetryAttempts");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     */
+    @Override
+    public int getStandardTransientErrorRetryTime() {
+        Number num = (Number) _props.get("standardTransientErrorRetryTime");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getStandardTransientErrorRetryAttempts() {
+        Number num = (Number) _props.get("standardTransientErrorRetryAttempts");
+        return num.intValue();
+    }
 }

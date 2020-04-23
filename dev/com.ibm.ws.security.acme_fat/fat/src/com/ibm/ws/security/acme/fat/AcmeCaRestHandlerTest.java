@@ -33,18 +33,21 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.acme.docker.PebbleContainer;
+import com.ibm.ws.security.acme.docker.CAContainer;
+import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 /**
  * Test the {@link AcmeCaRestHandler} REST endpoint.
@@ -65,15 +68,16 @@ public class AcmeCaRestHandlerTest {
 	private static final String UNAUTHORIZED_USER = "unauthorized";
 	private static final String UNAUTHORIZED_PASS = "unauthorizedpass";
 
+	@ClassRule
+	public static CAContainer pebble = new PebbleContainer();
+
+	static {
+		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+	}
+
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		ORIGINAL_CONFIG = server.getServerConfiguration();
-
-		/*
-		 * Configure mock DNS server.
-		 */
-		AcmeFatUtils.configureDnsForDomains(DOMAINS);
-		AcmeFatUtils.checkPortOpen(PebbleContainer.HTTP_PORT, 60000);
 	}
 
 	@After
@@ -98,11 +102,12 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSSLToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -114,7 +119,7 @@ public class AcmeCaRestHandlerTest {
 
 			Log.info(this.getClass(), methodName, "Performing PUT #1");
 			performPut(204, ADMIN_USER, ADMIN_PASS);
-			AcmeFatUtils.waitForAcmeToReplaceCertificate(server);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			Log.info(this.getClass(), methodName, "Performing GET #2");
@@ -123,7 +128,6 @@ public class AcmeCaRestHandlerTest {
 			String serial1 = getLeafSerialFromHtml(html1);
 			String serial2 = getLeafSerialFromHtml(html2);
 			assertThat("Certificates should have been different.", serial2, not(equalTo(serial1)));
-
 		} finally {
 			/*
 			 * Stop the server.
@@ -145,11 +149,12 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSSLToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -199,11 +204,12 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, ORIGINAL_CONFIG, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, DOMAINS);
 
 		try {
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSSLToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*

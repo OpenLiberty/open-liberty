@@ -52,6 +52,12 @@ public class JCAFVTServlet extends HttpServlet {
      */
     public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
 
+    /**
+     * This state is used by certain tests to determine whether a Servlet instance,
+     * and thus the application as a whole, survives a config update.
+     */
+    private String state = "NEW";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String test = request.getParameter("test");
@@ -71,6 +77,24 @@ public class JCAFVTServlet extends HttpServlet {
             x.printStackTrace(out);
             out.println("</pre>");
         }
+    }
+
+    public void requireNewServletInstance(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if (!"NEW".equals(state))
+            throw new Exception("It appears that the existing servlet instance was used, meaning the app was not restarted. State: " + state);
+    }
+
+    public void requireServletInstanceStillActive(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if (!"SERVLET_INSTANCE_STILL_ACTIVE".equals(state))
+            throw new Exception("It appears that a different servlet instance was used, meaning the app was restarted. State: " + state);
+    }
+
+    public void resetState(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        state = "NEW";
+    }
+
+    public void setServletInstanceStillActive(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        state = "SERVLET_INSTANCE_STILL_ACTIVE";
     }
 
     /**

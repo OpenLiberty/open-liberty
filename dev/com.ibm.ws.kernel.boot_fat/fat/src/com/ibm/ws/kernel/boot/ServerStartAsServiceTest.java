@@ -13,6 +13,8 @@ package com.ibm.ws.kernel.boot;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,6 +40,7 @@ public class ServerStartAsServiceTest {
 
     private static final String SERVER_NAME_1 = "ServerStartAsServiceTest1";
     private static final String SERVER_NAME_2 = "ServerStartAsServiceTest2";
+    private static final String SERVER_NAME_3 = "ServerStartAsServiceTest3";
 
     private static LibertyServer server;
 
@@ -117,6 +120,38 @@ public class ServerStartAsServiceTest {
     }
 
     /**
+     * Test Liberty Server to Register, Start, Stop and Unregister as a Windows Service with
+     * the WLP_OUTPUT_DIR variable being set in server.env file.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testWinServiceLifeCycleUsingWLP_OUTPUT_DIR() throws Exception {
+        final String METHOD_NAME = "testWinServiceLifeCycleUsingWLP_OUTPUT_DIR";
+        Log.entering(c, METHOD_NAME);
+
+        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME_3);
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME_3, LibertyServerFactory.WinServiceOption.ON);
+
+        String logDir = "WLP_OUTPUT_DIR=" + server.getInstallRoot() + File.separator + "tmpLogs";
+        Log.info(c, METHOD_NAME, "creating /etc/server.env");
+        createServerEnvFile(logDir, server.getInstallRoot());
+
+        Log.info(c, METHOD_NAME, "calling server.startServer()");
+        server.startServer();
+
+        Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
+        server.waitForStringInLog("CWWKF0011I");
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_3);
+        server.stopServer();
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
      * This method is used to get a connection stream from an HTTP connection. It
      * gives the output from the webpage that it gets from the connection
      *
@@ -143,6 +178,32 @@ public class ServerStartAsServiceTest {
         con.setUseCaches(false);
         con.setRequestMethod("GET");
         return con;
+    }
+
+    /**
+     * Create the <wlp.install.root>/etc/server.env file
+     *
+     * @param value
+     * @param wlpDir
+     * @throws IOException
+     */
+    private void createServerEnvFile(String value, String wlpDir) throws IOException {
+        File wlpEtcDir = new File(wlpDir, "etc");
+        File serverEnvFile = new File(wlpEtcDir, "server.env");
+
+        if (!wlpEtcDir.exists()) {
+            wlpEtcDir.mkdirs();
+        }
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(serverEnvFile);
+            fos.write(value.getBytes());
+        } finally {
+            if (fos != null) {
+                fos.close();
+            }
+        }
     }
 
 }

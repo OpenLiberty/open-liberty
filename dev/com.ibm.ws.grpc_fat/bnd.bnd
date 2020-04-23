@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+fat.minimum.java.level: 11
+
+src: \
+	fat/src,\
+	test-applications/app1/src
+
+fat.project: true
+
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, servlet-4.0 is added programatically at runtime by the RepeatTests rule.
+tested.features:\
+	servlet-4.0
+
+# To define a global minimum java level for the FAT, use the following property.
+# If unspecified, the default value is ${javac.source}
+# fat.minimum.java.level: 1.8
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.ws.grpc.client.1.0;version=latest,\
+	com.ibm.ws.grpc.common;version=latest,\
+	com.ibm.ws.grpc.servlet.1.0;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.google.protobuf;version=latest,\
+	commons-logging:commons-logging;version=1.1.3

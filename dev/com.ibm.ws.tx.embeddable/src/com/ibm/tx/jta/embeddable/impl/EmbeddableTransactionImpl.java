@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,6 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.xa.Xid;
 
-import com.ibm.ejs.ras.Tr;
-import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -34,6 +32,8 @@ import com.ibm.tx.remote.DistributableTransaction;
 import com.ibm.tx.remote.TRANSACTION_ROLLEDBACK;
 import com.ibm.tx.remote.TransactionWrapper;
 import com.ibm.tx.util.TMHelper;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.uow.UOWSynchronizationRegistry;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
@@ -631,11 +631,10 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
         _timedOut = true; // mark
 
-        if (initial) // initial timeout
-        {
-            _rollbackOnly = true;
+        abortTransactionParticipants();
 
-            abortTransactionParticipants();
+        if (initial) { // initial timeout
+            _rollbackOnly = true;
 
             // inactivity timeout may have happened ... check status
             if (_status.getState() == TransactionState.STATE_ACTIVE) {
@@ -649,8 +648,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
                     rollbackResources();
                 }
             }
-        } else if (_activeAssociations <= 0) // off server ... do the rollback
-        {
+        } else if (_activeAssociations <= 0) { // off server ... do the rollback
             final EmbeddableTranManagerSet tranManager = (EmbeddableTranManagerSet) TransactionManagerFactory.getTransactionManager();
 
             boolean resumed = false;
@@ -680,8 +678,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
                     }
                 }
             }
-        } else // on server ... just re-schedule timeout
-        {
+        } else { // on server ... just re-schedule timeout
             _rollbackOnly = true; // for the case of server quiesce?
             // inactivity timeout may have happened ... check status
             if (_status.getState() == TransactionState.STATE_ACTIVE) {

@@ -23,6 +23,12 @@ fat.project: true
 
 -sub: *.bnd
 
+tested.features: servlet-5.0,\
+				 jsonpContainer-2.0,\
+				 jsonbContainer-2.0,\
+				 jsonb-2.0,\
+				 jsonp-2.0
+
 -buildpath: \
 	com.ibm.wsspi.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
@@ -30,7 +36,7 @@ fat.project: true
 	org.apache.johnzon:johnzon-core;version=1.1.0,\
 	org.apache.johnzon:johnzon-jsonb;version=1.1.0,\
 	org.apache.johnzon:johnzon-mapper;version=1.1.0,\
-	org.eclipse:yasson;version=1.0.6,\
+	org.eclipse:yasson;version=1.0.7,\
 	org.glassfish:javax.json;version=1.1,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\

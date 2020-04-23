@@ -255,6 +255,8 @@ public class FeatureManagerTest {
 
                     allowing(mockBundleContext).getDataFile("feature.fix.cache");
                     will(returnValue(File.createTempFile("feature.fix.cache", null)));
+
+                    allowing(featureBundlesResolved).setProperties(with(any(Map.class)));
                 }
             });
             fm.activate(mockComponentContext, new HashMap<String, Object>());

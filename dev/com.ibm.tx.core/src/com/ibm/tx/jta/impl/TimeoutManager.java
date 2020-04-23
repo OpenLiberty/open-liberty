@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2010 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,18 +19,16 @@ import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.alarm.Alarm;
 import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.tx.util.alarm.AlarmManager;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * This class records state for timing out transactions, and runs a thread
  * which performs occasional checks to time out transactions.
  */
-public class TimeoutManager
-{
+public class TimeoutManager {
     private static final TraceComponent tc = Tr.register(
-                                                         TimeoutManager.class
-                                                         , TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+                                                         TimeoutManager.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     /**
      * Constants which define the types of timeout possible.
@@ -50,24 +48,22 @@ public class TimeoutManager
      * If the type is none, the timeout for the transaction is
      * cancelled, otherwise the current timeout for the transaction is modified
      * to be of the new type and duration.
-     * 
-     * @param localTID The local identifier for the transaction.
+     *
+     * @param localTID    The local identifier for the transaction.
      * @param timeoutType The type of timeout to establish.
-     * @param seconds The length of the timeout.
-     * 
+     * @param seconds     The length of the timeout.
+     *
      * @return Indicates success of the operation.
      */
-    public static void setTimeout(TransactionImpl tran, int timeoutType, int seconds)
-    {
+    public static void setTimeout(TransactionImpl tran, int timeoutType, int seconds) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setTimeout",
                      new Object[] { tran, timeoutType, seconds });
 
-        switch (timeoutType)
-        {
-        // If the new type is active or in_doubt, then create a new TimeoutInfo
-        // if
-        // necessary, and set up the type and interval.
+        switch (timeoutType) {
+            // If the new type is active or in_doubt, then create a new TimeoutInfo
+            // if
+            // necessary, and set up the type and interval.
             case TimeoutManager.ACTIVE_TIMEOUT:
             case TimeoutManager.IN_DOUBT_TIMEOUT:
             case TimeoutManager.REPEAT_TIMEOUT:
@@ -83,17 +79,14 @@ public class TimeoutManager
             // For any other type, remove the timeout if there is one.
             default:
                 info = tran.getTimeoutInfo();
-                if (null != info)
-                {
+                if (null != info) {
                     tran.setTimeoutInfo(null);
                     info.cancelAlarm();
-                }
-                else
-                {
+                } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc,
                                  "Failed to find existing timeout for transaction: "
-                                                 + tran);
+                                     + tran);
                 }
 
                 break;
@@ -106,8 +99,7 @@ public class TimeoutManager
     /**
      * This class records information for a timeout for a transaction.
      */
-    public static class TimeoutInfo implements AlarmListener
-    {
+    public static class TimeoutInfo implements AlarmListener {
         protected final TransactionImpl _tran;
         protected final int _duration;
         protected final int _timeoutType; // = TimeoutManager.NO_TIMEOUT;
@@ -115,8 +107,7 @@ public class TimeoutManager
 
         private final AlarmManager _alarmManager = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager();
 
-        protected TimeoutInfo(TransactionImpl tran, int duration, int type)
-        {
+        protected TimeoutInfo(TransactionImpl tran, int duration, int type) {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "TimeoutInfo", tran);
 
@@ -136,24 +127,20 @@ public class TimeoutManager
          * the transaction completion code.
          */
         @Override
-        public void alarm(Object alarmContext)
-        {
+        public void alarm(Object alarmContext) {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "alarm", _tran);
 
-            switch (_timeoutType)
-            {
-            // If active, then attempt to roll the transaction back.
+            switch (_timeoutType) {
+                // If active, then attempt to roll the transaction back.
                 case TimeoutManager.ACTIVE_TIMEOUT:
                     if (tc.isEventEnabled())
                         Tr.event(tc, "Transaction timeout", _tran);
-                    Tr.info(tc, "WTRN0006_TRANSACTION_HAS_TIMED_OUT", new Object[]
-                    { _tran.getTranName(), new Integer(_duration) });
+                    Tr.info(tc, "WTRN0006_TRANSACTION_HAS_TIMED_OUT", new Object[] { _tran.getTranName(), new Integer(_duration) });
 
                     final Thread thread = _tran.getMostRecentThread();
 
-                    if (thread != null)
-                    {
+                    if (thread != null) {
                         final StackTraceElement[] stack = thread.getStackTrace();
 
                         final StringWriter writer = new StringWriter();
@@ -161,8 +148,7 @@ public class TimeoutManager
 
                         printWriter.println();
 
-                        for (StackTraceElement element : stack)
-                        {
+                        for (StackTraceElement element : stack) {
                             printWriter.println("\t" + element);
                         }
 
@@ -180,7 +166,7 @@ public class TimeoutManager
 
                 // If in doubt, then replay_completion needs to be driven.
                 // This is done by telling the TransactionImpl to act as
-                // if in recovery.  
+                // if in recovery.
                 case TimeoutManager.IN_DOUBT_TIMEOUT:
                     // Remove the pending timer entry.  Do this here as the recover code
                     // may be called without using the timer.  We need to remove it first
@@ -199,13 +185,11 @@ public class TimeoutManager
                 Tr.exit(tc, "alarm");
         }
 
-        public void cancelAlarm()
-        {
+        public void cancelAlarm() {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "cancelAlarm", _alarm);
 
-            if (_alarm != null)
-            {
+            if (_alarm != null) {
                 _alarm.cancel();
                 _alarm = null;
             }
@@ -213,24 +197,23 @@ public class TimeoutManager
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "cancelAlarm");
         }
-    }
 
-    protected static String getThreadId(Thread thread)
-    {
-        final StringBuffer buffer = new StringBuffer();
-
-        // pad the HexString ThreadId so that it is always 8 characters long
-        String tid = Long.toHexString(thread.getId());
-
-        int length = tid.length();
-
-        for (int i = length; i < 8; ++i)
-        {
-            buffer.append('0');
+        @Override
+        public String toString() {
+            switch (_timeoutType) {
+                case NO_TIMEOUT:
+                    return "CANCEL/NO_TIMEOUT " + _duration;
+                case ACTIVE_TIMEOUT:
+                    return "ACTIVE_TIMEOUT " + _duration;
+                case IN_DOUBT_TIMEOUT:
+                    return "IN_DOUBT_TIMEOUT " + _duration;
+                case REPEAT_TIMEOUT:
+                    return "REPEAT_TIMEOUT " + _duration;
+                case INACTIVITY_TIMEOUT:
+                    return "INACTIVITY_TIMEOUT " + _duration;
+                default:
+                    return "INVALID_TIMEOUT (" + _timeoutType + ") " + _duration;
+            }
         }
-
-        buffer.append(tid);
-
-        return buffer.toString();
     }
 }
