@@ -622,13 +622,26 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     public List<String> getExpectedFFDCAnnotationFromTest(FrameworkMethod m) {
 
         ArrayList<String> annotationListPerClass = new ArrayList<String>();
+
         ExpectedFFDC ffdc = m.getAnnotation(ExpectedFFDC.class);
         if (ffdc != null) {
-            String[] exceptionClasses = ffdc.value();
-            for (String exceptionClass : exceptionClasses) {
-                annotationListPerClass.add(exceptionClass);
+            if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+                for (String repeatAction : ffdc.repeatAction()) {
+                    if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                        String[] exceptionClasses = ffdc.value();
+                        for (String exceptionClass : exceptionClasses) {
+                            annotationListPerClass.add(exceptionClass);
+                        }
+                    }
+                }
+            } else {
+                String[] exceptionClasses = ffdc.value();
+                for (String exceptionClass : exceptionClasses) {
+                    annotationListPerClass.add(exceptionClass);
+                }
             }
         }
+
         return annotationListPerClass;
 
     }
@@ -636,32 +649,41 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private Set<String> getAllowedFFDCAnnotationFromTest(FrameworkMethod m) {
 
         Set<String> annotationListPerClass = new HashSet<String>();
-        AllowedFFDC methodFFDC = m.getAnnotation(AllowedFFDC.class);
-        if (methodFFDC != null) {
-            String[] exceptionClasses = methodFFDC.value();
-            for (String exceptionClass : exceptionClasses) {
-                annotationListPerClass.add(exceptionClass);
-            }
-        }
 
+        // Method
+        Set<AllowedFFDC> ffdcs = new HashSet<AllowedFFDC>();
+        ffdcs.add(m.getAnnotation(AllowedFFDC.class));
+
+        // Declaring Class
         Class<?> declaringClass = m.getMethod().getDeclaringClass();
-        AllowedFFDC servletFFDC = declaringClass.getAnnotation(AllowedFFDC.class);
-        if (servletFFDC != null) {
-            String[] exceptionClasses = servletFFDC.value();
-            for (String exceptionClass : exceptionClasses) {
-                annotationListPerClass.add(exceptionClass);
-            }
-        }
+        ffdcs.add(declaringClass.getAnnotation(AllowedFFDC.class));
+
+        // Test Class
         Class<?> testClass = getTestClass().getJavaClass();
         if (!declaringClass.equals(testClass)) {
-            AllowedFFDC classFFDC = testClass.getAnnotation(AllowedFFDC.class);
-            if (classFFDC != null) {
-                String[] exceptionClasses = classFFDC.value();
-                for (String exceptionClass : exceptionClasses) {
-                    annotationListPerClass.add(exceptionClass);
+            ffdcs.add(testClass.getAnnotation(AllowedFFDC.class));
+        }
+
+        for (AllowedFFDC ffdc : ffdcs) {
+            if (ffdc != null) {
+                if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+                    for (String repeatAction : ffdc.repeatAction()) {
+                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                            String[] exceptionClasses = ffdc.value();
+                            for (String exceptionClass : exceptionClasses) {
+                                annotationListPerClass.add(exceptionClass);
+                            }
+                        }
+                    }
+                } else {
+                    String[] exceptionClasses = ffdc.value();
+                    for (String exceptionClass : exceptionClasses) {
+                        annotationListPerClass.add(exceptionClass);
+                    }
                 }
             }
         }
+
         return annotationListPerClass;
 
     }
