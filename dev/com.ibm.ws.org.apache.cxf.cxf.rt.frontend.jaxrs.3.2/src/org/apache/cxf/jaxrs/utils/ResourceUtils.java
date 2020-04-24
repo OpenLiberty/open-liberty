@@ -76,7 +76,6 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.i18n.BundleUtils;
-import org.apache.cxf.common.jaxb.JAXBUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
@@ -917,8 +916,9 @@ public final class ResourceUtils {
             m = new MessageImpl();
         }
         @SuppressWarnings("unchecked")
-        MultivaluedMap<String, String> templateValues =
-            (MultivaluedMap<String, String>)m.get(URITemplate.TEMPLATE_PARAMETERS);
+        //Liberty code change start
+        MultivaluedMap<String, String> templateValues = (MultivaluedMap<String, String>)((MessageImpl) m).getTemplateParameters();
+        //Liberty code change end
         Object[] values = new Object[params.length];
         for (int i = 0; i < params.length; i++) {
             if (AnnotationUtils.getAnnotation(anns[i], Context.class) != null) {

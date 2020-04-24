@@ -55,7 +55,7 @@ unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=\u30b5\u30fc\u3
 
 # The InjectionPoint dependency was not resolved for the Observer bean: {0}.
 unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: Observer Bean \u306e InjectionPoint \u4f9d\u5b58\u95a2\u4fc2\u304c\u51e6\u7406\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f: {0}\u3002
-unable.to.process.observer.injection.point.CWMCG5006E.explanation=\u4e0d\u660e\u306a\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002Observer \u30e1\u30bd\u30c3\u30c9\u3092\u9069\u5207\u306b\u51e6\u7406\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=\u4e0d\u660e\u306a\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 Observer \u30e1\u30bd\u30c3\u30c9\u3092\u9069\u5207\u306b\u51e6\u7406\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
 unable.to.process.observer.injection.point.CWMCG5006E.useraction=\u30b5\u30fc\u30d0\u30fc\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u304a\u3088\u3073 FFDC \u30ed\u30b0\u3092\u8abf\u3079\u3066\u539f\u56e0\u3092\u5224\u5225\u3057\u3066\u304f\u3060\u3055\u3044\u3002
 
 

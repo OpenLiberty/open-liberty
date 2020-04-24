@@ -53,6 +53,10 @@ public class PrometheusMetricWriter23 extends PrometheusMetricWriter implements 
                     currentMetricMap.put(metricEntry.getKey(), metricEntry.getValue());
                 }
             }
+            //If current metadata that we are parsing does not have a matching metric... skip
+            if (currentMetricMap.isEmpty()) {
+                continue;
+            }
 
             //Get Description
             String description = (!metricMetadata.getDescription().isPresent()

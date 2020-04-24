@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ error.bootPropsURI.useraction=Opravte identifik\u00e1tor URI pro vlastnosti zav\
 # {0} is the path to the missing Java dump file
 error.missingDumpFile=CWWKE0009E: Syst\u00e9m nem\u016f\u017ee naj\u00edt n\u00e1sleduj\u00edc\u00ed soubor a tento soubor nebude zahrnut v archivu v\u00fdpis\u016f pam\u011bti serveru: {0}
 error.missingDumpFile.explanation=Syst\u00e9m je nakonfigurov\u00e1n, aby vy\u017eadoval vytv\u00e1\u0159en\u00ed v\u00fdpis\u016f pam\u011bti v prost\u0159ed\u00ed Java a jejich shroma\u017e\u010fov\u00e1n\u00ed v archivu v\u00fdpis\u016f serveru. Po\u017eadovan\u00fd v\u00fdpis \
-pam\u011bti prost\u0159ed\u00ed Java nelze v syst\u00e9mu soubor\u016f v uveden\u00e9m um\u00edst\u011bn\u00ed nal\u00e9zt a nebude shrom\u00e1\u017ed\u011bn v archivu v\u00fdpis\u016f pam\u011bti serveru.
+pam\u011bti prost\u0159ed\u00ed Java nelze v syst\u00e9mu soubor\u016f v uveden\u00e9m um\u00edst\u011bn\u00ed nal\u00e9zt a nebude shrom\u00e1\u017ed\u011bn v archivu v\u00fdpis\u016f serveru.
 error.missingDumpFile.useraction=Zkontrolujte protokoly serveru, console.log a messages.log, p\u0159\u00edpadn\u011b oboj\u00ed a zjist\u011bte, zda jsou po\u017eadovan\u00e9 v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java dostupn\u00e9 v jin\u00e9m \
 um\u00edst\u011bn\u00ed, p\u0159\u00edpadn\u011b pro\u010d se v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java nezda\u0159ily. Pokuste se v\u0161echny chyb\u011bj\u00edc\u00ed v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java z\u00edskat a shrom\u00e1\u017edit ru\u010dn\u011b. Informace pro ur\u010dov\u00e1n\u00ed p\u0159\u00ed\u010din probl\u00e9m\u016f naleznete na \
 webov\u00e9 str\u00e1nce podpory produktu WebSphere Application Server, kde jsou i informace o ru\u010dn\u00edm generov\u00e1n\u00ed soubor\u016f javacore: \
@@ -194,7 +194,7 @@ error.rasProviderResolve.explanation=Nelze nal\u00e9zt zadan\u00fd prost\u0159ed
 error.rasProviderResolve.useraction=Zkontrolujte, zda existuje prost\u0159edek poskytovatele protokolu a m\u016f\u017ee jej p\u0159e\u010d\u00edst aktu\u00e1ln\u00ed u\u017eivatel.
 
 error.frameworkRestart=CWWKE0040E: Bal\u00edky platformy nemohly b\u00fdt rozpozn\u00e1ny proti mezipam\u011bti. Restartujte server s vy\u010di\u0161t\u011bn\u00edm spu\u0161t\u011bn\u00ed.
-error.frameworkRestart.explanation=Bal\u00edky platformy nemohly b\u00fdt rozpozn\u00e1ny proti mezipam\u011bti platformy. Tento probl\u00e9m lze norm\u00e1ln\u011b vy\u0159e\u0161it pomoc\u00ed vy\u010di\u0161t\u011bn\u00ed spu\u0161t\u011bn\u00ed.
+error.frameworkRestart.explanation=Bal\u00edky platformy nemohly b\u00fdt rozpozn\u00e1ny proti mezipam\u011bti platformy. Tento probl\u00e9m lze norm\u00e1ln\u011b vy\u0159e\u0161it pomoc\u00ed \u010dist\u00e9ho restartu.
 error.frameworkRestart.useraction=Restartujte server s volbou --clean nebo vyma\u017ete mezipam\u011b\u0165.
 
 info.frameworkRestart=CWWKE0041I: Mezipam\u011b\u0165 platformy je nesynchronizovan\u00e1. Prob\u00edh\u00e1 restart r\u00e1mce.
@@ -222,11 +222,11 @@ error.noAttachAPI.explanation=Po\u017eadovan\u00e1 funkce vy\u017eaduje Java Att
 error.noAttachAPI.useraction=Zadejte um\u00edst\u011bn\u00ed Java Attach API v cest\u011b CLASSPATH.
 
 error.shutdownClientException=CWWKE0047E: Agent pro obsluhu proces\u016f byl zastaven s neo\u010dek\u00e1vanou v\u00fdjimkou {0}.
-error.shutdownClientException.explanation=Zadan\u00e1 v\u00fdjimka zabr\u00e1nila spr\u00e1vn\u00e9mu spu\u0161t\u011bn\u00ed agenta pro obsluhu proces\u016f.
+error.shutdownClientException.explanation=Zadan\u00e1 v\u00fdjimka zabr\u00e1nila spr\u00e1vn\u00e9mu spu\u0161t\u011bn\u00ed agenta \u0159\u00edzen\u00ed proces\u016f.
 error.shutdownClientException.useraction=Vy\u0159e\u0161te v\u00fdjimku a potom akci zopakujte.
 
 warning.serverNotFound=CWWKE0048W: Nebyla nalezena spu\u0161t\u011bn\u00e1 instance serveru s n\u00e1zvem {0} a adres\u00e1\u0159 serveru {1}.
-warning.serverNotFound.explanation=Agent pro obsluhu proces\u016f nemohl nal\u00e9zt spu\u0161t\u011bnou instanci zadan\u00e9ho serveru.
+warning.serverNotFound.explanation=Agent \u0159\u00edzen\u00ed proces\u016f nemohl nal\u00e9zt spu\u0161t\u011bnou instanci zadan\u00e9ho serveru.
 warning.serverNotFound.useraction=Zkontrolujte, zda je spu\u0161t\u011bn\u00e1 instance zadan\u00e9ho serveru a zda je spu\u0161t\u011bn\u00e1 pod stejnou implementac\u00ed prost\u0159ed\u00ed JRE.
 
 error.stopServerError=CWWKE0049E: Server {0} nebylo mo\u017en\u00e9 zastavit. 
@@ -242,7 +242,7 @@ error.packageServerError.explanation=Nelze zabalit ur\u010den\u00fd server.
 error.packageServerError.useraction=Vyhledejte dal\u0161\u00ed informace v protokolech serveru. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, naleznete informace t\u00fdkaj\u00edc\u00ed se ur\u010den\u00ed probl\u00e9mu na str\u00e1nce podpory pro server WebSphere Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
 
 error.serverCommand.init=CWWKE0052E: Nezda\u0159ilo se inicializovat listener p\u0159\u00edkaz\u016f serveru z d\u016fvodu v\u00fdjimky I/O {0}.
-error.serverCommand.init.explanation=P\u0159i inicializaci listeneru p\u0159\u00edkaz\u016f serveru do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+error.serverCommand.init.explanation=P\u0159i inicializaci modulu listener p\u0159\u00edkaz\u016f serveru do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
 error.serverCommand.init.useraction=P\u0159ezkoumejte protokoly serveru, abyste zjistili v\u00edce informac\u00ed o p\u0159\u00ed\u010din\u00e1ch, pro\u010d se p\u0159\u00edkaz nezda\u0159il. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, naleznete informace t\u00fdkaj\u00edc\u00ed se ur\u010den\u00ed probl\u00e9mu na str\u00e1nce podpory pro server WebSphere Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
 
 warning.unrecognized.command=CWWKE0053W: Nezn\u00e1m\u00fd p\u0159\u00edkaz {0}.
@@ -330,7 +330,7 @@ warn.package.invalid.looseFile.useraction=Zajist\u011bte, aby soubor existoval a
 # {1} The name of a base resource
 warn.ifix.resource.ignored=CWWKE0071W: Prozat\u00edmn\u00ed oprava {0} se ignoruje, proto\u017ee neexistuje z\u00e1kladn\u00ed verze {1}.
 warn.ifix.resource.ignored.explanation=Prost\u0159edek prozat\u00edmn\u00ed opravy byl nalezen, ale z\u00e1kladn\u00ed prost\u0159edek, na kter\u00fd se tato prozat\u00edmn\u00ed oprava pou\u017e\u00edv\u00e1, nebyl instalov\u00e1n.
-warn.ifix.resource.ignored.useraction=Z\u00edskejte prozat\u00edmn\u00ed opravu pro nainstalovanou \u00farove\u0148 opravn\u00e9 sady nebo aktualizujte na odpov\u00eddaj\u00edc\u00ed \u00farove\u0148 opravn\u00e9 sady nebo odstra\u0148te prost\u0159edek opravn\u00e9 sady.
+warn.ifix.resource.ignored.useraction=Z\u00edskejte prozat\u00edmn\u00ed opravu pro nainstalovanou \u00farove\u0148 opravn\u00e9 sady nebo aktualizujte na odpov\u00eddaj\u00edc\u00ed \u00farove\u0148 opravn\u00e9 sady nebo odstra\u0148te prost\u0159edek prozat\u00edmn\u00ed opravy.
 
 # {0} The invalid BLST specification string
 error.blst.spec.invalid=CWWKE0072E: \u0158et\u011bzec specifikace BLST {0} je neplatn\u00fd. Specifikace mus\u00ed m\u00edt formu: <symbolick\u00fd-n\u00e1zev>;version="<rozsah-verz\u00ed>".
@@ -364,7 +364,7 @@ error.minify.unable.to.determine.features.explanation=Server nelze zabalit s pou
 error.minify.unable.to.determine.features.useraction=Ov\u011b\u0159te konfiguraci serveru a skute\u010dnost, zda lze server zastavit a spustit. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.minify.missing.manifest=CWWKE0079E: Balen\u00ed serveru {0} se nezda\u0159ilo z d\u016fvodu chyb\u011bj\u00edc\u00edho souboru typu manifest na serveru.
-error.minify.missing.manifest.explanation=Nelze vytvo\u0159it bal\u00edk serveru, proto\u017ee chyb\u00ed soubor typu manifest serveru.
+error.minify.missing.manifest.explanation=Nelze vytvo\u0159it bal\u00edk serveru, proto\u017ee chyb\u00ed soubor typu manifest na serveru.
 error.minify.missing.manifest.useraction=Zkontrolujte spr\u00e1vnost instalace produktu. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.unable.load.property=CWWKE0080E: Nelze na\u010d\u00edst vlastnost {0} ze souboru {1}.
@@ -373,7 +373,7 @@ error.unable.load.property.useraction=Ov\u011b\u0159te, zda vlastnost s t\u00edm
 
 unable.to.package.missing.file=CWWKE0081E: Nelze vytvo\u0159it bal\u00edk serveru {0} s po\u017eadovan\u00fdm filtrem opera\u010dn\u00edch syst\u00e9m\u016f {1} kv\u016fli chyb\u011bj\u00edc\u00edmu prost\u0159edku {2}.
 unable.to.package.missing.file.explanation=Po\u017eadavek na vytvo\u0159en\u00ed bal\u00edku serveru s po\u017eadovan\u00fdm filtrem opera\u010dn\u00edch syst\u00e9m\u016f nebyl proveden kv\u016fli chyb\u011bj\u00edc\u00edmu prost\u0159edku.
-unable.to.package.missing.file.useraction=Ov\u011b\u0159te, zda ze serveru, jeho\u017e bal\u00edk se vytv\u00e1\u0159\u00ed, byl odebr\u00e1n obsah po\u017eadovan\u00e9ho opera\u010dn\u00edho syst\u00e9mu p\u0159edchoz\u00ed operac\u00ed vytvo\u0159en\u00ed bal\u00edku v souladu s volbou --include=minify. Je-li tomu tak, zopakujte vytvo\u0159en\u00ed bal\u00edku pro server, kter\u00fd nebyl zmen\u0161en p\u0159edchoz\u00ed operac\u00ed vytvo\u0159en\u00ed bal\u00edku. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support. 
+unable.to.package.missing.file.useraction=Ujist\u011bte se, zda ze serveru, jeho\u017e bal\u00edk se vytv\u00e1\u0159\u00ed, byl odebr\u00e1n obsah po\u017eadovan\u00e9ho opera\u010dn\u00edho syst\u00e9mu p\u0159edchoz\u00ed operac\u00ed vytvo\u0159en\u00ed bal\u00edku v souladu s volbou --include=minify. Je-li tomu tak, zopakujte vytvo\u0159en\u00ed bal\u00edku pro server, kter\u00fd nebyl zmen\u0161en p\u0159edchoz\u00ed operac\u00ed vytvo\u0159en\u00ed bal\u00edku. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support. 
 
 error.unable.to.package=CWWKE0082E: Nelze vytvo\u0159it bal\u00edk serveru {0} kv\u016fli v\u00fdjimce I/O {1}.
 error.unable.to.package.explanation=Do\u0161lo k v\u00fdjimce IOException p\u0159i balen\u00ed po\u017eadovan\u00e9ho obsahu Liberty.
@@ -396,19 +396,19 @@ warning.serverStartedCommandPortDisabled.explanation=P\u0159\u00edkazov\u00fd po
 warning.serverStartedCommandPortDisabled.useraction=Ru\u010dn\u011b zkontrolujte protokoly serveru, zda se server \u00fasp\u011b\u0161n\u011b spustil.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Pro server {0} bylo zah\u00e1jeno spu\u0161t\u011bn\u00ed serveru s ID procesu {1}, ale nen\u00ed mo\u017en\u00e9 sd\u011blit, zda bylo toto spu\u0161t\u011bn\u00ed dokon\u010deno, proto\u017ee je port p\u0159\u00edkazu serveru vypnut\u00fd.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Port p\u0159\u00edkazu serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. Port p\u0159\u00edkazu byl pro tento server explicitn\u011b vypnut, proto nen\u00ed mo\u017en\u00e9 sd\u011blit, zda server spu\u0161t\u011bn\u00ed dokon\u010dil.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port byl pro tento server explicitn\u011b vypnut, proto nen\u00ed mo\u017en\u00e9 sd\u011blit, zda server spu\u0161t\u011bn\u00ed dokon\u010dil.
 warning.serverStartedWithPIDCommandPortDisabled.useraction=Ru\u010dn\u011b zkontrolujte protokoly serveru, zda se server \u00fasp\u011b\u0161n\u011b spustil.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Server {0} nelze zastavit, proto\u017ee je port p\u0159\u00edkazu serveru vypnut.
-error.serverStopCommandPortDisabled.explanation=Port p\u0159\u00edkazu serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. Port p\u0159\u00edkazu byl pro tento server vypnut, proto ho nen\u00ed mo\u017en\u00e9 z tohoto skriptu zastavit. Uv\u011bdomte si, \u017ee port p\u0159\u00edkazu se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
+error.serverStopCommandPortDisabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port byl pro tento server vypnut, proto ho nen\u00ed mo\u017en\u00e9 z tohoto skriptu zastavit. Uv\u011bdomte si, \u017ee p\u0159\u00edkazov\u00fd port se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
 error.serverStopCommandPortDisabled.useraction=Je-li server spu\u0161t\u011bn jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS, nelze ho zastavit z konzoly oper\u00e1tora. Jinak je mo\u017en\u00e9 proces serveru zastavit ze shellu.
 
 warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: V\u00fdpis pam\u011bti serveru {0} je dokon\u010den v {1}. N\u011bkter\u00e9 informace nelze z\u00edskat, proto\u017ee je port p\u0159\u00edkazu serveru vypnut, co\u017e br\u00e1n\u00ed p\u0159\u00edm\u00e9 komunikaci s b\u011b\u017e\u00edc\u00edm serverem.
-warning.serverDumpCompleteCommandPortDisabled.explanation=Port p\u0159\u00edkazu serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. Port p\u0159\u00edkazu serveru byl pro tento server vypnut, proto nelze z\u00edskat n\u011bkter\u00e9 \u010d\u00e1sti v\u00fdpisu pam\u011bti serveru, kter\u00e9 vy\u017eaduj\u00ed p\u0159\u00edmou komunikaci se serverem. Uv\u011bdomte si, \u017ee port p\u0159\u00edkazu se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
-warning.serverDumpCompleteCommandPortDisabled.useraction=Je-li server spu\u0161t\u011bn\u00fd jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS, nelze z konzoly oper\u00e1tora po\u017eadovat \u00fapln\u00fd v\u00fdpis pam\u011bti serveru. Podrobnosti z\u00edsk\u00e1te v Informa\u010dn\u00edm centru.
+warning.serverDumpCompleteCommandPortDisabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port serveru byl pro tento server vypnut, proto nelze z\u00edskat n\u011bkter\u00e9 \u010d\u00e1sti v\u00fdpisu serveru, kter\u00e9 vy\u017eaduj\u00ed p\u0159\u00edmou komunikaci se serverem. Uv\u011bdomte si, \u017ee p\u0159\u00edkazov\u00fd port se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
+warning.serverDumpCompleteCommandPortDisabled.useraction=Je-li server spu\u0161t\u011bn\u00fd jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS, nelze z konzoly oper\u00e1tora po\u017eadovat \u00fapln\u00fd v\u00fdpis serveru. Podrobnosti z\u00edsk\u00e1te v Informa\u010dn\u00edm centru.
 
 error.serverJavaDumpCommandPortDisabled=CWWKE0091E: V\u00fdpis pam\u011bti serveru {0} nelze po\u0159\u00eddit, proto\u017ee je vypnut port p\u0159\u00edkazu serveru.
-error.serverJavaDumpCommandPortDisabled.explanation=Port p\u0159\u00edkazu serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. Port p\u0159\u00edkazu je pro tento server vypnut, proto nelze prov\u00e9st po\u017eadovan\u00fd v\u00fdpis pam\u011bti. Uv\u011bdomte si, \u017ee port p\u0159\u00edkazu se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
+error.serverJavaDumpCommandPortDisabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port je pro tento server vypnut, proto nelze prov\u00e9st po\u017eadovan\u00fd v\u00fdpis pam\u011bti. Uv\u011bdomte si, \u017ee p\u0159\u00edkazov\u00fd port se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
 error.serverJavaDumpCommandPortDisabled.useraction=Je-li server spu\u0161t\u011bn\u00fd jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS, nelze z konzoly oper\u00e1tora po\u017eadovat tento v\u00fdpis pam\u011bti. Podrobnosti z\u00edsk\u00e1te v Informa\u010dn\u00edm centru.
 
 info.javadump.zos.system.created=CWWKE0092I: \u017d\u00e1dost syst\u00e9mov\u00e9ho v\u00fdpisu pam\u011bti transakc\u00ed Java (SYSTDUMP) je dokon\u010dena.
@@ -432,11 +432,11 @@ warn.packageRuntime.include.unknownOption.explanation=Volba byla ignorov\u00e1na
 warn.packageRuntime.include.unknownOption.useraction=Zopakujte p\u0159\u00edkaz s pou\u017eit\u00edm platn\u00fdch voleb. Zkuste pou\u017e\u00edt p\u0159\u00edkaz --help, kter\u00fdm vyp\u00ed\u0161ete seznam platn\u00fdch voleb.
 
 audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Tento produkt je licencov\u00fd pro \u00fa\u010dely v\u00fdvoje, s omezen\u00fdm produk\u010dn\u00edm pou\u017eit\u00edm. \u00dapln\u00e9 licen\u010dn\u00ed podm\u00ednky lze zobrazit zde: {0}
-audit.licenseRestriction.base_ilan.ilan.explanation=Tento produkt je licencov\u00fd pro \u00fa\u010dely v\u00fdvoje, s omezen\u00fdm produk\u010dn\u00edm pou\u017eit\u00edm. Chcete-li se dozv\u011bd\u011bt, jak je tento term\u00edn definov\u00e1n a jak\u00e1 jsou produk\u010dn\u00ed omezen\u00ed tohoto pou\u017e\u00edv\u00e1n\u00ed, p\u0159e\u010dt\u011bte si soubory s licencemi k produktu.
+audit.licenseRestriction.base_ilan.ilan.explanation=Tento produkt je licencovan\u00fd pro \u00fa\u010dely v\u00fdvoje, s omezen\u00fdm produk\u010dn\u00edm pou\u017eit\u00edm. Chcete-li se dozv\u011bd\u011bt, jak je tento term\u00edn definov\u00e1n a jak\u00e1 jsou produk\u010dn\u00ed omezen\u00ed tohoto pou\u017e\u00edv\u00e1n\u00ed, p\u0159e\u010dt\u011bte si soubory s licencemi k produktu.
 audit.licenseRestriction.base_ilan.ilan.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 audit.licenseRestriction.developers.ilan=CWWKE0101I: Tento produkt je licencov\u00fd pro \u00fa\u010dely v\u00fdvoje. \u00dapln\u00e9 licen\u010dn\u00ed podm\u00ednky lze zobrazit zde: {0}
-audit.licenseRestriction.developers.ilan.explanation=Tento produkt je licencov\u00fd pro \u00fa\u010dely v\u00fdvoje. Chcete-li se dozv\u011bd\u011bt, jak je tento term\u00edn definov\u00e1n a jak\u00e1 jsou omezen\u00ed tohoto pou\u017e\u00edv\u00e1n\u00ed, p\u0159e\u010dt\u011bte si soubory s licencemi k produktu.
+audit.licenseRestriction.developers.ilan.explanation=Tento produkt je licencovan\u00fd pro \u00fa\u010dely v\u00fdvoje. Chcete-li se dozv\u011bd\u011bt, jak je tento term\u00edn definov\u00e1n a jak\u00e1 jsou omezen\u00ed tohoto pou\u017e\u00edv\u00e1n\u00ed, p\u0159e\u010dt\u011bte si soubory s licencemi k produktu.
 audit.licenseRestriction.developers.ilan.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 error.create.unknownJavaLevel=CWWKE0102E: Syst\u00e9m nen\u00ed schopen ze syst\u00e9mov\u00fdch vlastnost\u00ed ur\u010dit \u00farove\u0148 specifikace Java. Hodnota nen\u00ed ur\u010dena nebo nen\u00ed ur\u010dena spr\u00e1vn\u011b. Syst\u00e9mov\u00e9 vlastnosti obsahuj\u00ed n\u00e1sleduj\u00edc\u00ed hodnotu pro java.specification.level: {0}
@@ -448,7 +448,7 @@ error.create.java8serverenv.explanation=Proces, kter\u00fd se pokou\u0161\u00ed 
 error.create.java8serverenv.useraction=Ujist\u011bte se, \u017ee m\u00e1te p\u0159\u00edstup pro z\u00e1pis k adres\u00e1\u0159i serveru i dostate\u010dn\u00e9 m\u00edsto na disku. Mus\u00edte se ujistit, \u017ee proces serveru m\u00e1 k tomuto souboru p\u0159\u00edstup pro \u010dten\u00ed.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Tento produkt je betaverze a nelze jej pou\u017e\u00edt v produk\u010dn\u00edm prost\u0159ed\u00ed. \u00dapln\u00e9 licen\u010dn\u00ed podm\u00ednky lze zobrazit zde: {0}
-audit.licenseRestriction.early_access.ilar.explanation=Tento produkt je betaverza a mus\u00ed b\u00fdt pou\u017eit v souladu s podm\u00ednkami beta licence.
+audit.licenseRestriction.early_access.ilar.explanation=Tento produkt je betaverze a mus\u00ed b\u00fdt pou\u017eit v souladu s podm\u00ednkami beta licence.
 audit.licenseRestriction.early_access.ilar.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 error.zosProcStart.create.pidfile=CWWKE0105E: Je mo\u017en\u00e9, \u017ee p\u0159ed vytvo\u0159en\u00edm souboru PID se nezda\u0159ilo spu\u0161t\u011bn\u00ed serveru {0} pomoc\u00ed procedury z/OS STC {1}. Pro ov\u011b\u0159en\u00ed zkontrolujte v\u00fdstup STC.
@@ -479,11 +479,11 @@ error.clientNameCharacter=CWWKE0900E: Uveden\u00fd n\u00e1zev klienta obsahuje n
 Platn\u00e9 znaky: alfanumerick\u00e9 Unicode (nap\u0159. \
 0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.). \
 N\u00e1zev klienta nesm\u00ed za\u010d\u00ednat poml\u010dkou (-) nebo te\u010dkou (.).
-error.clientNameCharacter.explanation=V n\u00e1zvu klienta byl pou\u017eit neplatn\u00fd znak.
+error.clientNameCharacter.explanation=Ve jm\u00e9nu klienta byl pou\u017eit neplatn\u00fd znak.
 error.clientNameCharacter.useraction=K p\u0159ejmenov\u00e1n\u00ed klienta pou\u017e\u00edvejte pouze platn\u00e9 znaky: alfanumerick\u00e9 znaky Unicode (nap\u0159. 0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.).
 
 warning.singleClient=CWWKE0901W: Na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku lze zadat pouze jednoho klienta. N\u00e1sledn\u00e9 n\u00e1zvy se budou ignorovat (klient={0}, ignorov\u00e1no={1}).
-warning.singleClient.explanation=Na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku m\u016f\u017eete zadat pouze jednoho klienta. Zpracoval se prvn\u00ed n\u00e1zev klienta, zb\u00fdvaj\u00edc\u00ed n\u00e1zvy se ignorovaly.
+warning.singleClient.explanation=Na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku m\u016f\u017eete zadat pouze jednoho klienta. Zpracovalo se prvn\u00ed jm\u00e9no klienta, zb\u00fdvaj\u00edc\u00ed jm\u00e9na se ignorovala.
 warning.singleClient.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Tomuto varov\u00e1n\u00ed p\u0159edejdete zad\u00e1n\u00edm pouze jednoho klienta.
 
 # {0} The client name
@@ -495,11 +495,11 @@ error.creatingNewClient.useraction=Zkontrolujte a vy\u0159e\u0161te v\u00fdjimku
 
 error.noExistingClient=CWWKE0903E: Uveden\u00fd klient {0} neexistuje. Pomoc\u00ed volby --create vytvo\u0159te nov\u00e9ho klienta. Cesta ke klientovi: {1}
 error.noExistingClient.explanation=Uveden\u00fd klient neexistuje, proto na n\u011bm nelze prov\u00e9st \u017e\u00e1dnou akci.
-error.noExistingClient.useraction=Zkontroluje n\u00e1zev klienta, nebo vytvo\u0159te klienta s uveden\u00fdm n\u00e1zvem a zopakujte p\u0159\u00edkaz.
+error.noExistingClient.useraction=Zkontroluje jm\u00e9no klienta, nebo vytvo\u0159te klienta s uveden\u00fdm n\u00e1zvem a zopakujte p\u0159\u00edkaz.
 
 error.clientDirExists=CWWKE0904E: Nebylo mo\u017en\u00e9 vytvo\u0159it klienta s n\u00e1zvem {0}, proto\u017ee adres\u00e1\u0159 klienta {1} ji\u017e existuje.
 error.clientDirExists.explanation=Adres\u00e1\u0159 klienta nesm\u00ed p\u0159i vytv\u00e1\u0159en\u00ed klienta existovat.
-error.clientDirExists.useraction=Bu\u010f zvolte nov\u00fd n\u00e1zev klienta, nebo odstra\u0148te adres\u00e1\u0159. Pak znovu spus\u0165te p\u0159\u00edkaz.
+error.clientDirExists.useraction=Bu\u010f zvolte nov\u00e9 jm\u00e9no klienta, nebo odstra\u0148te adres\u00e1\u0159. Pak znovu spus\u0165te p\u0159\u00edkaz.
 
 # {0} The client name
 # {1} The client directory path
@@ -554,7 +554,7 @@ warning.zOS.java.security.permdenied1.useraction=Ov\u011b\u0159te, zda je operac
 
 warning.zOS.java.security.permdenied2=CWWKE0915W: Aktu\u00e1ln\u00ed z\u00e1sada zabezpe\u010den\u00ed Java 2 ohl\u00e1sila potenci\u00e1ln\u00ed naru\u0161en\u00ed opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku: {0} 
 warning.zOS.java.security.permdenied2.explanation=Metoda checkPermission() spr\u00e1vce zabezpe\u010den\u00ed Java zp\u016fsobila v\u00fdjimku SecurityException. Volaj\u00edc\u00ed z\u00e1sobn\u00edku vol\u00e1n\u00ed nem\u00e1 po\u017eadovan\u00e1 opr\u00e1vn\u011bn\u00ed.
-warning.zOS.java.security.permdenied2.useraction=Ov\u011b\u0159te, zda je operace, o jej\u00ed\u017e proveden\u00ed se pokou\u0161\u00edte, povolena, a to prozkoum\u00e1n\u00edm v\u0161ech aplika\u010dn\u00edch k\u00f3d\u016f a soubor\u016f z\u00e1sad zabezpe\u010den\u00ed Java 2. Je mo\u017en\u00e9, \u017ee budou nutn\u00e1 dal\u0161\u00ed opr\u00e1vn\u011bn\u00ed. 
+warning.zOS.java.security.permdenied2.useraction=Ov\u011b\u0159te, zda je operace, o jej\u00ed\u017e proveden\u00ed se pokou\u0161\u00edte, povolena, a to prozkoum\u00e1n\u00edm v\u0161ech aplika\u010dn\u00edch k\u00f3d\u016f a soubor\u016f z\u00e1sad zabezpe\u010den\u00ed Java 2. Je mo\u017en\u00e9, \u017ee budou nutn\u00e1 dal\u0161\u00ed opr\u00e1vn\u011bn\u00ed.  
 
 error.client.runner.missing=CWWKE0916E: CWWKE0916E: Funkce klienta nebyla povolena. Zkontrolujte chybov\u00e9 zpr\u00e1vy.
 error.client.runner.missing.explanation=Funkce klienta nebyla povolena nebo p\u0159i na\u010d\u00edt\u00e1n\u00ed funkce do\u0161lo k chyb\u011b.
@@ -690,7 +690,7 @@ warning.server.status.invalid.targets.explanation=U\u017eivatel vydal po\u017ead
 warning.server.status.invalid.targets.useraction=Ur\u010dete v c\u00edlov\u00e9 volb\u011b seznam komponent, kter\u00e9 maj\u00ed zkontrolovat stav. Chcete-li zkontrolovat v\u0161echny komponenty na serveru, kter\u00e9 lze pozastavit, zadejte po\u017eadavek na stav bez c\u00edlov\u00e9 volby.
 
 warning.package.root.invalid=CWWKE0947W: Volba --server-root s pr\u00e1zdn\u00fdm argumentem nen\u00ed povolena, kdy\u017e jsou nainstalov\u00e1na roz\u0161\u00ed\u0159en\u00ed produktu. Pou\u017eije se v\u00fdchoz\u00ed argument wlp.
-warning.package.root.invalid.explanation=U\u017eivatel provedl po\u017eadavek na bal\u00edk s volbou --server-root ur\u010duj\u00edc\u00ed, \u017ee byly zji\u0161t\u011bny pr\u00e1zdn\u00fd argument a roz\u0161\u00ed\u0159en\u00ed produktu. Pou\u017eije se v\u00fdchoz\u00ed ko\u0159en serveru wlp.
+warning.package.root.invalid.explanation=U\u017eivatel provedl po\u017eadavek na bal\u00edk s volbou --server-root ur\u010duj\u00edc\u00ed, \u017ee byly zji\u0161t\u011bny pr\u00e1zdn\u00fd argument a roz\u0161\u00ed\u0159en\u00ed produktu. Pou\u017eije se v\u00fdchoz\u00ed ko\u0159enov\u00fd adres\u00e1\u0159 serveru wlp.
 warning.package.root.invalid.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 warning.package.root.invalid.runnable=CWWKE0948W: Volba --server-root s --include=runnable nen\u00ed povolenou kombinac\u00ed. V\u00fdchoz\u00ed argument wlp je pou\u017eit pro ko\u0159enov\u00fd adres\u00e1\u0159 serveru.
@@ -704,6 +704,10 @@ error.package.extension.useraction=P\u0159i ur\u010den\u00ed --include=runnable 
 error.package.usr.jar=CWWKE0951E: N\u00e1zev archivn\u00edho souboru nesm\u00ed kon\u010dit p\u0159\u00edponou souboru .jar, je-li pou\u017eita volba usr.
 error.package.usr.jar.explanation=Volba --archive mus\u00ed kon\u010dit p\u0159\u00edponou souboru .jar, je-li ur\u010deno --include=usr.
 error.package.usr.jar.useraction=Zadejte n\u00e1zev souboru pro --archive s p\u0159\u00edponou souboru jinou ne\u017e p\u0159\u00edponu souboru .jar, je-li zad\u00e1na volba --include=usr.
+
+error.missing.version.files=CWWKE0952E: Informace o verzi nelze \u010d\u00edst z adres\u00e1\u0159e {0}.
+error.missing.version.files.explanation=Adres\u00e1\u0159, kter\u00fd obsahuje soubory s informacemi o verzi bu\u010f neexistuje, nebo jej nem\u016f\u017ee p\u0159e\u010d\u00edst aktu\u00e1ln\u00ed u\u017eivatel.
+error.missing.version.files.useraction=Zkontrolujte, zda adres\u00e1\u0159 existuje a m\u016f\u017ee jej p\u0159e\u010d\u00edst aktu\u00e1ln\u00ed u\u017eivatel. 
 
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.

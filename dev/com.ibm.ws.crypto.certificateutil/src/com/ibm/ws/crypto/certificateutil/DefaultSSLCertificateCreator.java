@@ -82,10 +82,22 @@ public interface DefaultSSLCertificateCreator {
     });
 
     /**
+     * Self-signed certificate creator type.
+     */
+    public static final String TYPE_SELF_SIGNED = "SELF-SIGNED";
+
+    /**
+     * ACME certificate creator type.
+     */
+    public static final String TYPE_ACME = "ACME";
+
+    /**
      * Creates a default SSL certificate.
      *
      * @param filePath The valid, complete path on the file system of the keystore to create. e.g. /tmp/key.p12
      * @param password Minimum 6 characters
+     * @param keyStoreType Keystore type
+     * @param keyStoreProvider Keystore provider
      * @param validity Minimum 365 days (?)
      * @param subjectDN The subjectDN. Use {@link DefaultSubjectDN} to construct the default value.
      * @param keySize The size of the certificate key. Default is 2048.
@@ -95,7 +107,7 @@ public interface DefaultSSLCertificateCreator {
      * @throws CertificateException if the certificate could not be created
      * @throws IllegalArgumentException if an argument violates the minimum required value or if the value is otherwise considered invalid
      */
-    File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+    File createDefaultSSLCertificate(String filePath, String password, String keyStoreType, String keyStoreProvider, int validity, String subjectDN, int keySize, String sigAlg,
                                      List<String> extInfo) throws CertificateException;
 
     /**
@@ -109,4 +121,10 @@ public interface DefaultSSLCertificateCreator {
      */
     void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, String password) throws CertificateException;
 
+    /**
+     * Get the {@link DefaultSSLCertificateCreator} type.
+     *
+     * @return The type.
+     */
+    String getType();
 }

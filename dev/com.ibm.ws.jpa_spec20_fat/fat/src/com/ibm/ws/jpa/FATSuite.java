@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH9018_WEB.class,
                 TestOLGH9339_EJB.class,
                 TestOLGH9339_WEB.class,
+                TestOLGH10515_EJB.class,
+                TestOLGH10515_WEB.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {

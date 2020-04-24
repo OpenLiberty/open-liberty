@@ -111,6 +111,10 @@ public class PrometheusMetricWriter implements OutputWriter {
                     currentMetricMap.put(metricEntry.getKey(), metricEntry.getValue());
                 }
             }
+            //If current metadata that we are parsing does not have a matching metric... skip
+            if (currentMetricMap.isEmpty()) {
+                continue;
+            }
 
             String description = (!metricMetadata.getDescription().isPresent()
                                   || metricMetadata.getDescription().get().trim().isEmpty()) ? "" : Tr.formatMessage(tc, locale, metricMetadata.getDescription().get());

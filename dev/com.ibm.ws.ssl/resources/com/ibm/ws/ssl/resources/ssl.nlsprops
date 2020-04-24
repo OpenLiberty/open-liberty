@@ -549,9 +549,13 @@ ssl.create.certificate.end=CWPKI0803A: SSL certificate created in {0} seconds. S
 ssl.create.certificate.end.explanation=The SSL certificate was generated in the amount of time specified.
 ssl.create.certificate.end.useraction=No action is required.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: SSL certificate creation error. Unable to create SSL key file: {0}
+ssl.create.certificate.error=CWPKI0804E: SSL certificate creation error. {0}
 ssl.create.certificate.error.explanation=The SSL certificate could not be created at the specified location.
 ssl.create.certificate.error.useraction=Ensure the location is accessible by the server process. Any FFDCs may indicate a fatal error in generating or loading the keys.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Unable to create SSL key file: {0}
+ssl.create.certificate.error.reason2=The error is: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: A password is required for the default keystore is missing.
 ssl.default.keystore.config.error.explanation=The keystore configuration does not specify a password for the default keystore.

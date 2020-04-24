@@ -87,7 +87,7 @@ public class MessageContextImpl implements MessageContext {
         if (keyValue.equals("WRITE-" + Message.ATTACHMENTS)) {
             // Liberty Change Start - #5049
             if (m.getExchange().getOutMessage() != null) {
-                return m.getExchange().getOutMessage().get(Message.ATTACHMENTS);
+                return ((MessageImpl) m.getExchange().getOutMessage()).getAttachments();
             }
             // Liberty Change End
         }
@@ -300,7 +300,6 @@ public class MessageContextImpl implements MessageContext {
         } catch (IOException ex) {
             throw ExceptionUtils.toInternalServerErrorException(ex, null);
         }
-
 
         Collection<org.apache.cxf.message.Attachment> childAttachments = inMessage.getAttachments();
         if (childAttachments == null) {

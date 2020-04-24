@@ -74,14 +74,15 @@ SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: Odezva SAML obsahuje deklaraci SAML verz
 SAML20_SP_BAD_VERSION_ERROR.explanation=Odezva SAML obsahuje verzi deklarace, kterou poskytovatel slu\u017eeb nepodporuje. Podporovan\u00e1 verze je uvedena ve zpr\u00e1v\u011b.
 SAML20_SP_BAD_VERSION_ERROR.useraction=Ujist\u011bte se, \u017ee je poskytovatel identit nakonfigurov\u00e1n na deklarace verze 2.0.
 
-SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: IssueInstant [{0}] v odezv\u011b SAML je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} sekund.
+SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: IssueInstant [{0}] v odezv\u011b SAML je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} \
+sekund.
 SAML20_RESPONSE_BAD_ISSUE_TIME.explanation=Odezva SAML je zad\u00e1na mimo p\u0159ijateln\u00e9 \u010dasov\u00e9 obdob\u00ed. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace.
 SAML20_RESPONSE_BAD_ISSUE_TIME.useraction=Ujist\u011bte se, \u017ee jsou datum a \u010das v poskytovateli identit synchronizovan\u00e9 s t\u00edmto poskytovatelem slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML \
 nebo zvy\u0161te hodnotu posunu hodin.
 
 SAML20_RESPONSE_BAD_DESTINATION=CWWKS5012E: M\u00edsto ur\u010den\u00ed [{0}] v odezv\u011b SAML je neplatn\u00e9. O\u010dek\u00e1van\u00e9 m\u00edsto ur\u010den\u00ed je. [{1}].
 SAML20_RESPONSE_BAD_DESTINATION.explanation=M\u00edsto ur\u010den\u00ed v odezv\u011b SAML mus\u00ed odpov\u00eddat adrese URL poskytovatele slu\u017eeb.
-SAML20_RESPONSE_BAD_DESTINATION.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP. 
+SAML20_RESPONSE_BAD_DESTINATION.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.   
 
 RS_EMPTY_SAML_ASSERTION=CWWKS5013E: Z\u00e1hlav\u00ed nazvan\u00e9 [{0}] mus\u00ed obsahovat platnou deklaraci SAML, ale takov\u00e1 deklarace v po\u017eadavku HTTP neexistuje, nebo se jedn\u00e1 o pr\u00e1zdn\u00fd \u0159et\u011bzec.
 RS_EMPTY_SAML_ASSERTION.explanation=V uveden\u00e9m z\u00e1hlav\u00ed v po\u017eadavku HTTP je t\u0159eba nastavit platnou deklaraci SAML. 
@@ -114,7 +115,7 @@ SAML20_IDP_METADATA_PARSE_ERROR.useraction=Ujist\u011bte se, \u017ee je soubor m
 zpr\u00e1v\u011b.
 
 # {2} = Cause of the error
-SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: Soubor metadat [{0}] poskytovatele identit (IdP) v poskytovateli slu\u017eeb (SP) [{1}] neexistuje nebo k n\u011bmu nelze p\u0159istupovat. [ {2} ]  
+SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: Soubor metadat [{0}] poskytovatele identit (IdP) v poskytovateli slu\u017eeb (SP) [{1}] neexistuje nebo k n\u011bmu nelze p\u0159istupovat. [{2}]  
 SAML20_NO_IDP_METADATA_ERROR.explanation=Uveden\u00fd soubor metadat poskytovatele identit neexistuje nebo k n\u011bmu nelze z\u00edskat p\u0159\u00edstup. 
 SAML20_NO_IDP_METADATA_ERROR.useraction=Ujist\u011bte se, \u017ee soubor metadat IdP existuje a lze k n\u011bmu p\u0159istupovat.
 
@@ -133,7 +134,7 @@ SAML20_CACHED_DATA_NOT_FOUND=CWWKS5033E: Nebyla nalezena deklarace SAML s kl\u00
 SAML20_CACHED_DATA_NOT_FOUND.explanation=K chr\u00e1n\u011bn\u00e9m prost\u0159edku nelze p\u0159istupovat kv\u016fli intern\u00ed chyb\u011b. Mo\u017en\u00e1 ji\u017e k dat\u016fm v mezipam\u011bti n\u011bkdo z\u00edskal p\u0159\u00edstup a byla odebr\u00e1na. 
 SAML20_CACHED_DATA_NOT_FOUND.useraction=Dal\u0161\u00ed informace naleznete v protokolech serveru.
 
-ACCESS_FILE_INFO_ERROR=CWWKS5036E: Soubor [{0}] se nena\u010detl. [ {1} ] 
+ACCESS_FILE_INFO_ERROR=CWWKS5036E: Soubor [{0}] se nena\u010detl. [{1}] 
 ACCESS_FILE_INFO_ERROR.explanation=Uveden\u00fd soubor neexistuje nebo nen\u00ed p\u0159\u00edstupn\u00fd. P\u0159\u00ed\u010dina chyby je uvedena ve zpr\u00e1v\u011b.
 ACCESS_FILE_INFO_ERROR.useraction=Zkontrolujte, zda soubor existuje a aplikace k n\u011bmu m\u00e1 p\u0159\u00edstup. Tak\u00e9 v\u011bnujte pozornost akci u\u017eivatele odpov\u00eddaj\u00edc\u00ed p\u0159\u00ed\u010din\u011b chyby.
 
@@ -168,7 +169,7 @@ SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.explanation=Deklarace SAML obsahuje 
 SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.useraction=Ujist\u011bte se, \u017ee jsou metadata poskytovatele identit (IdP) aktu\u00e1ln\u00ed.
 
 # {0} = Message text for cause of the failure
-SAML20_ASSERTION_SIGNATURE_FAIL_ERR=CWWKS5049E: Podpis deklarace SAML nen\u00ed d\u016fv\u011bryhodn\u00fd nebo je neplatn\u00fd. [ {0} ]
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR=CWWKS5049E: Podpis deklarace SAML nen\u00ed d\u016fv\u011bryhodn\u00fd nebo je neplatn\u00fd. [{0}]
 SAML20_ASSERTION_SIGNATURE_FAIL_ERR.explanation=Deklarace SAML obsahuje podpis, kter\u00fd nen\u00ed platn\u00fd, nebo je podeps\u00e1n s pomoc\u00ed ned\u016fv\u011bryhodn\u00e9ho certifik\u00e1tu podepsan\u00e9ho. P\u0159\u00ed\u010dina chyby je uvedena ve zpr\u00e1v\u011b.
 SAML20_ASSERTION_SIGNATURE_FAIL_ERR.useraction=M\u016f\u017ee j\u00edt o chybu konfigurace. Ujist\u011bte se, \u017ee jsou metadata poskytovatele identit (IdP) \u0159\u00e1dn\u011b aktualizov\u00e1na a nakonfigurov\u00e1na. Tak\u00e9 v\u011bnujte \
 pozornost akci u\u017eivatele odpov\u00eddaj\u00edc\u00ed p\u0159\u00ed\u010din\u011b chyby zobrazen\u00e9 ve zpr\u00e1v\u011b.
@@ -198,7 +199,8 @@ SAML20_SUBJECT_NO_REC_MATCH_ERR=CWWKS5055E: P\u0159\u00edjemce [{0}] v deklaraci
 SAML20_SUBJECT_NO_REC_MATCH_ERR.explanation=Atribut Recipient prvku SubjectConfirmationData mus\u00ed b\u00fdt nastaven na adresu URL ACS.
 SAML20_SUBJECT_NO_REC_MATCH_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP.
 
-SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: Atribut NotBefore [{0}] je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} sekund.
+SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: Atribut NotBefore [{0}] je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} \
+sekund.
 SAML20_SUBJECT_NOBEFORE_ERR.explanation=Deklarace SAML byla p\u0159ijata d\u0159\u00edve, ne\u017e umo\u017e\u0148uje nastaven\u00ed podm\u00ednky NotBefore v deklaraci. Tato situace nen\u00ed povolena. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace.
 SAML20_SUBJECT_NOBEFORE_ERR.useraction=Prove\u010fte synchronizaci hodin poskytovatele slu\u017eeb (SP) SAML a poskytovatele identit (IdP), nebo zvy\u0161te hodnotu posunu hodin.
 
@@ -214,7 +216,8 @@ SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: Hodnota [{0}] prvku Audience v deklaraci
 SAML20_AUDIENCE_UNKNOWN_ERR.explanation=Prvek Audience mus\u00ed b\u00fdt nastaven na hodnotu EntityID poskytovatele slu\u017eeb.
 SAML20_AUDIENCE_UNKNOWN_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP.
 
-SAML20_SESSION_ERR=CWWKS5062E: Atribut SessionNotOnOrAfter [{0}] je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} sekund.
+SAML20_SESSION_ERR=CWWKS5062E: Atribut SessionNotOnOrAfter [{0}] je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} \
+sekund.
 SAML20_SESSION_ERR.explanation=Deklarace SAML byla p\u0159ijata v \u010dase, kter\u00fd je v r\u00e1mci deklarace ur\u010den\u00fd nastaven\u00edm SessionNotOnOrAfter prvku AuthnStatement, nebo pozd\u011bji. Tato situace nen\u00ed povolena. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace nebo byla deklarace z\u00edsk\u00e1na a p\u0159eposl\u00e1na neautorizovanou aplikac\u00ed.
 SAML20_SESSION_ERR.useraction=Prove\u010fte synchronizaci hodin poskytovatele slu\u017eeb (SP) SAML a poskytovatele identit (IdP), nebo zvy\u0161te hodnotu posunu hodin.
 
@@ -228,12 +231,12 @@ SAML20_NO_BEARER_FOUND.explanation= Deklarace mus\u00ed obsahovat metodu potvrze
 SAML20_NO_BEARER_FOUND.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.
 
 SAML20_NO_INRESPONSETO=CWWKS5067E: Odezva SAML [{0}] obsahuje atribut InResponseTo [{1}], kter\u00fd je neplatn\u00fd. O\u010dek\u00e1van\u00e1 hodnota atributu InResponseTo je [{2}].
-SAML20_NO_INRESPONSETO.explanation=Uveden\u00e1 odezva SAML m\u00e1 neplatnou hodnotu atributu InResponseTo. 
+SAML20_NO_INRESPONSETO.explanation=Uveden\u00e1 odezva SAML m\u00e1 neplatnou hodnotu atributu InResponseTo.  
 SAML20_NO_INRESPONSETO.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP, a bylo tak mo\u017en\u00e9 spr\u00e1vnou hodnotu atributu InResponseTo vynechat.
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: Deklarace SAML neobsahuje atribut [{0}]. Atribut [{0}] je povinn\u00fd. 
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: Deklarace SAML neobsahuje prvek [{0}]. Prvek [{0}] je povinn\u00fd. 
 SAML20_ATTRIBUTE_ERR.explanation=V deklaraci SAML chyb\u00ed atribut vy\u017eadovan\u00fd b\u011bhov\u00fdm prost\u0159ed\u00edm.
 SAML20_ATTRIBUTE_ERR.useraction=Tento povinn\u00fd atribut je t\u0159eba do deklarace SAML p\u0159idat. Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP, nebo \
 nakonfigurujte poskytovatele slu\u017eby (SP), p\u0159\u00edpadn\u011b TAI, aby definovali hodnotu tohoto atributu.

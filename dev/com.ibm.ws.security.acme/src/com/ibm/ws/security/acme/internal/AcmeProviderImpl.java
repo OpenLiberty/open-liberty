@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
@@ -50,11 +51,11 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
-import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
+import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
 
 /**
@@ -128,7 +129,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 */
 		List<X509Certificate> existingCertChain = null;
 		if (keyStore == null) {
-			existingCertChain = getConfiguredDefaultCertificate();
+			existingCertChain = getConfiguredDefaultCertificateChain();
 		} else {
 			try {
 				existingCertChain = convertToX509CertChain(keyStore.getCertificateChain(DEFAULT_ALIAS));
@@ -173,7 +174,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 			 */
 			if (existingCertChain != null) {
 				try {
-					revoke(existingCertChain.get(0));
+					revoke(existingCertChain);
 				} catch (AcmeCaException e) {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
 						Tr.debug(tc, "Failed to revoke the certificate.", existingCertChain);
@@ -184,11 +185,10 @@ public class AcmeProviderImpl implements AcmeProvider {
 			/*
 			 * Finally, log a message indicate the new certificate has been
 			 * installed.
-			 * 
-			 * TODO Use CWPKI0803A?
 			 */
 			Tr.audit(tc, "CWPKI2007I", acmeCertificate.getCertificate().getSerialNumber().toString(16),
-					acmeConfig.getDirectoryURI(), acmeCertificate.getCertificate().getNotAfter().toInstant().toString());
+					acmeConfig.getDirectoryURI(),
+					acmeCertificate.getCertificate().getNotAfter().toInstant().toString());
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "Previous certificate requested from ACME CA server is still valid.");
@@ -205,13 +205,15 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * Revoke a certificate using an existing account on the ACME server. If the
 	 * account key pair cannot be found, we will fail.
 	 * 
-	 * @param certificate
-	 *            The certificate to revoke.
+	 * @param certificateChain
+	 *            The certificate chain with the leaf certificate to revoke.
 	 * @throws AcmeCaException
 	 *             If there was an error revoking the certificate.
 	 */
 	@FFDCIgnore({ AcmeCaException.class })
-	public void revoke(X509Certificate certificate) throws AcmeCaException {
+	public void revoke(List<X509Certificate> certificateChain) throws AcmeCaException {
+		X509Certificate certificate = getLeafCertificate(certificateChain);
+
 		try {
 			getAcmeClient().revoke(certificate);
 		} catch (AcmeCaException e) {
@@ -277,8 +279,9 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * 5. TODO More?
 		 * </pre>
 		 */
-		return isExpired(existingCertChain.get(0)) || isRevoked(existingCertChain)
-				|| hasWrongDomains(existingCertChain.get(0)) || hasWrongSubjectRDNs(existingCertChain.get(0));
+		return existingCertChain == null || existingCertChain.isEmpty() || isExpired(existingCertChain)
+				|| isRevoked(existingCertChain) || hasWrongDomains(existingCertChain)
+				|| hasWrongSubjectRDNs(existingCertChain);
 	}
 
 	/**
@@ -317,32 +320,40 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 */
 	private List<X509Certificate> convertToX509CertChain(Certificate[] certChain) throws AcmeCaException {
 		List<X509Certificate> x509Chain = new ArrayList<X509Certificate>();
-		for (Certificate cert : certChain) {
-			if (cert instanceof X509Certificate) {
-				x509Chain.add((X509Certificate) cert);
-			} else {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2044E", cert.getType()));
+		if (certChain != null) {
+			for (Certificate cert : certChain) {
+				if (cert instanceof X509Certificate) {
+					x509Chain.add((X509Certificate) cert);
+				} else {
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2044E", cert.getType()));
+				}
 			}
 		}
 		return x509Chain;
 	}
 
 	/**
-	 * Determine if the certificate has domains that no longer match the domains
-	 * configured for the ACME feature. We will check that the certificate
-	 * subjects common name (CN) and that the subject alternative DNSNames
-	 * match.
+	 * Determine if the leaf certificate has domains that no longer match the
+	 * domains configured for the ACME feature. We will check that the
+	 * certificate subjects common name (CN) and that the subject alternative
+	 * DNSNames match.
 	 * 
-	 * @param certificate
-	 *            The certificate to check.
-	 * @return True if the certificate's domains do not match those that are
-	 *         configured, false otherwise.
+	 * @param certificateChain
+	 *            The certificate chain to check.
+	 * @return True if the leaf certificate's domains do not match those that
+	 *         are configured, false otherwise.
 	 * @throws AcmeCaException
-	 *             If there was an issue checking the certificate's domains.
+	 *             If there was an issue checking the leaf certificate's
+	 *             domains.
 	 */
-	private boolean hasWrongDomains(X509Certificate certificate) throws AcmeCaException {
-		String methodName = "hasWrongDomains(Certificate)";
+	private boolean hasWrongDomains(List<X509Certificate> certificateChain) throws AcmeCaException {
+		String methodName = "hasWrongDomains(List<X509Certificate>)";
 		boolean hasWrongDomains = false;
+
+		X509Certificate certificate = getLeafCertificate(certificateChain);
+		if (certificate == null) {
+			return false;
+		}
 
 		/*
 		 * The common name better match one of the domains.
@@ -425,21 +436,27 @@ public class AcmeProviderImpl implements AcmeProvider {
 	}
 
 	/**
-	 * Check if the certificate's subject RDNs match the configured subjectDN.
+	 * Check if the leaf certificate's subject RDNs match the configured
+	 * subjectDN.
 	 * 
 	 * <p/>
 	 * Note that this isn't the best check. It is possible that the ACME CA
 	 * server may not even honor the RDN's (beside the required CN).
 	 * 
-	 * @param certificate
-	 *            The certificate to check.
-	 * @return whether the certificate's subject RDNs match the configured
+	 * @param certificateChain
+	 *            The certificate chain to check.
+	 * @return whether the leaf certificate's subject RDNs match the configured
 	 *         subjectDN.
 	 * @throws AcmeCaException
 	 */
-	private boolean hasWrongSubjectRDNs(X509Certificate certificate) throws AcmeCaException {
-		String methodName = "hasWrongSubjectRDNs(X509Certificate)";
+	private boolean hasWrongSubjectRDNs(List<X509Certificate> certificateChain) throws AcmeCaException {
+		String methodName = "hasWrongSubjectRDNs(List<X509Certificate>)";
 		boolean hasWrongSubjectRDNs = false;
+
+		X509Certificate certificate = getLeafCertificate(certificateChain);
+		if (certificate == null) {
+			return false;
+		}
 
 		List<Rdn> configuredRdns = acmeConfig.getSubjectDN();
 		List<Rdn> certRdns;
@@ -490,13 +507,18 @@ public class AcmeProviderImpl implements AcmeProvider {
 	}
 
 	/**
-	 * Is the existing certificate expired or nearly expired?
+	 * Is the existing leaf certificate expired or nearly expired?
 	 * 
-	 * @param certificate
-	 *            The certificate to check.
-	 * @return true if the certificate is expired or nearly expiring.
+	 * @param certificateChain
+	 *            The certificate chain to check.
+	 * @return true if the leaf certificate is expired or nearly expiring.
 	 */
-	private boolean isExpired(X509Certificate certificate) {
+	private boolean isExpired(List<X509Certificate> certificateChain) {
+		X509Certificate certificate = getLeafCertificate(certificateChain);
+		if (certificateChain == null) {
+			return false;
+		}
+
 		/*
 		 * Certificates not after date.
 		 */
@@ -539,7 +561,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		// PKIXParameters params = new PKIXParameters(keystore);
 		// params.setRevocationEnabled(true);
 		//
-		// if (!Boolean.valueOf(Security.getProperty("oscp.enabled"))) {
+		// if (!Boolean.valueOf(Security.getProperty("ocsp.enabled"))) {
 		// Tr.warning(tc,
 		// "ABCDEFGH: OCSP certificate revocation checking is not enabled.
 		// Certificate revocate checking will be limited to CRLs only.");
@@ -594,14 +616,32 @@ public class AcmeProviderImpl implements AcmeProvider {
 	}
 
 	/**
+	 * Get the leaf certificate from the certificate chain.
+	 * 
+	 * @param certificateChain
+	 *            The certificate chain.
+	 * @return The leaf certificate.
+	 */
+	private static X509Certificate getLeafCertificate(List<X509Certificate> certificateChain) {
+		if (certificateChain != null && !certificateChain.isEmpty()) {
+			return certificateChain.get(0);
+		}
+		return null;
+	}
+
+	/**
 	 * Get the current certificate for the default alias from the default
 	 * keystore.
 	 * 
 	 * @return The {@link X509Certificate} chain that is stored under the
-	 *         default alias in the default keystore.
+	 *         default alias in the default keystore or null if it does not
+	 *         exist.
 	 * @throws AcmeCaException
+	 *             if there was an error getting the configured default cert
+	 *             chain
 	 */
-	private List<X509Certificate> getConfiguredDefaultCertificate() throws AcmeCaException {
+	@FFDCIgnore({ CertificateException.class })
+	private List<X509Certificate> getConfiguredDefaultCertificateChain() throws AcmeCaException {
 		/*
 		 * Get our existing certificate.
 		 */
@@ -610,24 +650,13 @@ public class AcmeProviderImpl implements AcmeProvider {
 					DEFAULT_ALIAS);
 			return convertToX509CertChain(certChain);
 		} catch (KeyStoreException | CertificateException e) {
-			throw new AcmeCaException(
-					Tr.formatMessage(tc, "CWPKI2033E", DEFAULT_ALIAS, DEFAULT_KEY_STORE, e.getMessage()), e);
+			return null;
 		}
 	}
 
-	/**
-	 * Create the default keystore and populate the default alias with a
-	 * certificate requested from the ACME CA server.
-	 * 
-	 * @param filePath
-	 *            The path to generate the new keystore.
-	 * @param password
-	 *            The password for the generated keystore and certificate.
-	 * @throws CertificateException
-	 *             if there was an error creating the certificate.
-	 */
 	@Override
-	public File createDefaultSSLCertificate(String filePath, @Sensitive String password) throws CertificateException {
+	public File createDefaultSSLCertificate(String filePath, @Sensitive String password, String keyStoreType,
+			String keyStoreProvider) throws CertificateException {
 		/*
 		 * If we make it in here, Liberty is asking us to generate the default
 		 * certificate. We need to not only generate the certificate but also
@@ -641,20 +670,6 @@ public class AcmeProviderImpl implements AcmeProvider {
 			throw new CertificateException(e.getMessage(), e);
 		}
 
-		/*
-		 * Determine the keystore type we will use. This is the same behavior
-		 * that the self-signed certificate generation uses.
-		 *
-		 * TODO Update the interface to take store type and remove this code.
-		 */
-		String setKeyStoreType = null;
-		if (filePath.lastIndexOf(".") != -1) {
-			setKeyStoreType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
-		}
-		if (setKeyStoreType == null || setKeyStoreType.equalsIgnoreCase("p12")) {
-			setKeyStoreType = DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE;
-		}
-
 		try {
 
 			/*
@@ -665,36 +680,74 @@ public class AcmeProviderImpl implements AcmeProvider {
 			/*
 			 * Create a new keystore instance.
 			 */
-			KeyStore keyStore = null;
-			try {
-				keyStore = KeyStore.getInstance(setKeyStoreType);
-				keyStore.load(null, password.toCharArray());
-				keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(), password.toCharArray(),
-						convertChainToArray(acmeCertificate.getCertificateChain()));
-			} catch (KeyStoreException | NoSuchAlgorithmException | IOException ee) {
-				throw new CertificateException(Tr.formatMessage(tc, "CWPKI2034E", ee.getMessage()), ee);
-			}
+			File file = createKeyStore(filePath, acmeCertificate, password, keyStoreType, keyStoreProvider);
 
-			File file = new File(filePath);
-
-			try {
-				/*
-				 * Write the store to a file.
-				 */
-
-				if (file.getParentFile() != null && !file.getParentFile().exists()) {
-					file.getParentFile().mkdirs();
-				}
-				FileOutputStream fos = new FileOutputStream(file);
-				keyStore.store(fos, password.toCharArray());
-
-			} catch (KeyStoreException | NoSuchAlgorithmException | IOException e) {
-				throw new CertificateException(Tr.formatMessage(tc, "CWPKI2035E", file.getName(), e.getMessage()), e);
-			}
+			/*
+			 * Finally, log a message indicate the new certificate has been
+			 * installed and return the file.
+			 */
+			Tr.audit(tc, "CWPKI2007I", acmeCertificate.getCertificate().getSerialNumber().toString(16),
+					acmeConfig.getDirectoryURI(),
+					acmeCertificate.getCertificate().getNotAfter().toInstant().toString());
 			return file;
 		} catch (AcmeCaException ace) {
+			createKeyStore(filePath, null, password, keyStoreType, keyStoreProvider);
+
 			throw new CertificateException(ace.getMessage(), ace);
 		}
+	}
+
+	/**
+	 * Create the keystore instance and return a file that points to the
+	 * keystore.
+	 * 
+	 * @param filePath
+	 *            The path to the keystore to create.
+	 * @param acmeCertificate
+	 *            The {@link AcmeCertificate} instance to insert into the
+	 *            keystore. If null, the keystore will be empty.
+	 * @param password
+	 *            The passsword for the keystore.
+	 * @param type
+	 *            The keystore type.
+	 * @param provider
+	 *            The keystore provider.
+	 * @return The keystore file.
+	 * @throws CertificateException
+	 *             If there was an issue creating the keystore.
+	 */
+	private File createKeyStore(String filePath, AcmeCertificate acmeCertificate, @Sensitive String password,
+			String type, String provider) throws CertificateException {
+		/*
+		 * Create a new keystore instance.
+		 */
+		KeyStore keyStore;
+		try {
+			keyStore = JSSEProviderFactory.getInstance().getKeyStoreInstance(type, provider);
+			keyStore.load(null, password.toCharArray());
+			if (acmeCertificate != null) {
+				keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(), password.toCharArray(),
+						convertChainToArray(acmeCertificate.getCertificateChain()));
+			}
+		} catch (KeyStoreException | NoSuchAlgorithmException | IOException | NoSuchProviderException ee) {
+			throw new CertificateException(Tr.formatMessage(tc, "CWPKI2034E", ee.getMessage()), ee);
+		}
+
+		/*
+		 * Write the store to a file.
+		 */
+		File file = new File(filePath);
+		try {
+			if (file.getParentFile() != null && !file.getParentFile().exists()) {
+				file.getParentFile().mkdirs();
+			}
+			FileOutputStream fos = new FileOutputStream(file);
+			keyStore.store(fos, password.toCharArray());
+
+		} catch (KeyStoreException | NoSuchAlgorithmException | IOException e) {
+			throw new CertificateException(Tr.formatMessage(tc, "CWPKI2035E", file.getName(), e.getMessage()), e);
+		}
+		return file;
 	}
 
 	/*

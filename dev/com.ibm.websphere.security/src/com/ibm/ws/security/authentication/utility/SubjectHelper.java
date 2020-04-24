@@ -418,8 +418,6 @@ public class SubjectHelper {
                 return true;
             }
         }
-
         return false;
     }
-
 }

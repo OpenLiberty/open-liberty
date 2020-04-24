@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -44,155 +44,155 @@ info.bootstrapChange.explanation=Este mensaje es meramente informativo.
 info.bootstrapChange.useraction=No se requiere ninguna acci\u00f3n.
 
 error.badLocation=CWWKE0004E: El sistema no ha podido resolver las ubicaciones para la instalaci\u00f3n del servidor.
-error.badLocation.explanation=No se ha encontrado una instalaci\u00f3n del servidor en una ubicaci\u00f3n especificada.
-error.badLocation.useraction=Vuelva a instalar o reparar el perfil Liberty. Si el problema persiste, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
+error.badLocation.explanation=No se ha podido encontrar una instalaci\u00f3n de servidor en una ubicaci\u00f3n especificada.
+error.badLocation.useraction=Vuelva a instalar o repare el perfil de Liberty. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
 
 error.unableToLaunch=CWWKE0005E: El entorno de ejecuci\u00f3n no se ha podido iniciar.
-error.unableToLaunch.explanation=Ha surgido un problema que ha impedido que se iniciara el entorno de ejecuci\u00f3n.
+error.unableToLaunch.explanation=Se ha encontrado un problema que ha impedido el inicio del entorno de ejecuci\u00f3n.
 error.unableToLaunch.useraction=Revise los registros disponibles para identificar el problema y resolverlo.
 
 error.enableIIOPTransport=CWWKE0006E: Habilite la caracter\u00edstica orb para el soporte ORB.
-error.enableIIOPTransport.explanation=El soporte ORB (Object Request Broker) requiere la caracter\u00edstica orb.
-error.enableIIOPTransport.useraction=Habilite la caracter\u00edstica orb para habilitar el soporte ORB.
+error.enableIIOPTransport.explanation=El soporte de intermediario para solicitudes de objetos (ORB, del ingl\u00e9s Object Request Broker) requiere la caracter\u00edstica orb.
+error.enableIIOPTransport.useraction=Habilite la caracter\u00edstica orb para habilitar el soporte de ORB.
  
 error.cannotConvertEbcdicToAscii=CWWKE0007E: El sistema no ha podido convertir satisfactoriamente el siguiente archivo de EBCDIC a ASCII: {0}
-error.cannotConvertEbcdicToAscii.explanation=Al procesar el archivo especificado se ha producido un error que ha impedido que el sistema pudiera convertir del formato EBCDIC a ASCII. La versi\u00f3n EBCDIC del archivo permanece intacta.
-error.cannotConvertEbcdicToAscii.useraction=Convierta manualmente el archivo si desea verlo en un sistema basado en ASCII.  No es necesaria ninguna acci\u00f3n si el servicio de soporte de IBM procesar\u00e1 este archivo.
+error.cannotConvertEbcdicToAscii.explanation=Al procesar el archivo especificado, se ha producido un error que imped\u00eda que el sistema convirtiera del formato EBCDIC a ASCII. La versi\u00f3n EBCDIC del archivo permanece intacta.
+error.cannotConvertEbcdicToAscii.useraction=Convierta manualmente el archivo si desea verlo en un sistema ASCII.  No se requiere ninguna acci\u00f3n si el soporte de IBM procesa este archivo.
 
 error.bootPropsURI=CWWKE0008E: El URI de propiedades de arranque no tiene el formato correcto. uri={0}, motivo={1}
-error.bootPropsURI.explanation=Hay un error en el URI del archivo de propiedades de arranque especificado.
-error.bootPropsURI.useraction=Corrija el URI de las propiedades de arranque y vuelva a intentar el mandato.
+error.bootPropsURI.explanation=Existe un error en el URI para el archivo de propiedades de programa de arranque especificado.
+error.bootPropsURI.useraction=Corrija el URI para las propiedades de programa de arranque e intente de nuevo el mandato.
 
 # {0} is the path to the missing Java dump file
 error.missingDumpFile=CWWKE0009E: El sistema no puede encontrar el archivo siguiente por lo que no se incluir\u00e1 en el archivo de volcado del servidor: {0}
-error.missingDumpFile.explanation=El sistema est\u00e1 configurado para solicitar que se realicen volcados Java y se recopilen en el archivo de volcado del servidor. El volcado Java solicitado no se puede encontrar en el sistema de archivos en la ubicaci\u00f3n indicada y no se recopilar\u00e1 en el archivo de volcado del servidor.
-error.missingDumpFile.useraction=Compruebe los registros del servidor, los archivos console.log y messages.log, o ambas cosas, para determinar si los volcados Java solicitados est\u00e1n disponibles en otra ubicaci\u00f3n o para determinar por qu\u00e9 ha fallado el volcado Java. Intente obtener y recopilar los volcados Java que faltan manualmente. Busque en la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server Support los datos relativos a c\u00f3mo generar javacores manualmente: http://www.ibm.com/software/webservers/appserv/was/support
+error.missingDumpFile.explanation=El sistema est\u00e1 configurado para solicitar que los volcados de Java se tomen y se recopilen en el archivo de volcado del servidor. El volcado de Java solicitado no se puede encontrar en el sistema de archivos en la ubicaci\u00f3n indicada y no se recopilar\u00e1 en el archivo de volcado del servidor.
+error.missingDumpFile.useraction=Compruebe los registros de servidor, console.log y messages.log, o los dos, para determinar si los volcados de Java solicitados est\u00e1n disponibles en otra ubicaci\u00f3n o determinar porqu\u00e9 ha fallado el volcado de Java. Intente adquirir y recopilar los volcados de Java que falten manualmente. Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server para obtener informaci\u00f3n sobre como generar manualmente los javacores: http://www.ibm.com/software/webservers/appserv/was/support
 
 error.badConfigRoot=CWWKE0010E: El archivo server.xml necesario debe existir y ser legible. V\u00eda de acceso: {0} Raz\u00f3n: {1}
-error.badConfigRoot.explanation=El archivo server.xml no se puede leer o no existe.
-error.badConfigRoot.useraction=Aseg\u00farese de que el archivo server.xml existe y de que el usuario actual puede leerlo.
+error.badConfigRoot.explanation=No se puede leer el archivo server.xml o no existe.
+error.badConfigRoot.useraction=Aseg\u00farese de que exista el archivo server.xml y que lo pueda leer el usuario actual.
 
 error.archiveTarget=CWWKE0011E: El par\u00e1metro --archive necesita un argumento: --archive="<archivo que se va a archivar>"
-error.archiveTarget.explanation=No se ha proporcionado un argumento necesario.
-error.archiveTarget.useraction=Proporcione el argumento correcto y vuelva a intentar el mandato. Intente utilizar --help para obtener una descripci\u00f3n de los argumentos para la opci\u00f3n proporcionada.
+error.archiveTarget.explanation=No se ha suministrado un argumento necesario.
+error.archiveTarget.useraction=Suministre el argumento correcto y vuelva a intentar el mandato. Intente utilizar --help para obtener una descripci\u00f3n de los argumentos para la opci\u00f3n suministrada.
 
 error.serverNameCharacter=CWWKE0012E: El nombre de servidor especificado contiene un car\u00e1cter que no es v\u00e1lido (nombre={0}). \
 Los caracteres v\u00e1lidos son: alfanum\u00e9ricos Unicode (por ejemplo, \
 0-9, a-z, A-Z), signo de subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.). \
 Un nombre de servidor no puede empezar por un gui\u00f3n (-) o un punto (.).
-error.serverNameCharacter.explanation=Un car\u00e1cter que no es v\u00e1lido se ha utilizado en el nombre de servidor.
-error.serverNameCharacter.useraction=Cambie el nombre del servidor utilizando s\u00f3lo caracteres v\u00e1lidos: alfanum\u00e9ricos Unicode (por ejemplo, 0-9, a-z, A-Z), signo de subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.).
+error.serverNameCharacter.explanation=Se ha utilizado un car\u00e1cter que no es v\u00e1lido en el nombre de servidor.
+error.serverNameCharacter.useraction=Cambie el nombre del servidor utilizando solo caracteres v\u00e1lidos: Unicode alfanum\u00e9rico (es decir, 0-9, a-z, A-Z), signo de subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.).
 
 error.unknownArgument=CWWKE0013E: Opci\u00f3n desconocida: {0}
 error.unknownArgument.explanation=La opci\u00f3n especificada no se ha reconocido.
 error.unknownArgument.useraction=Vuelva a intentar el mandato utilizando opciones v\u00e1lidas. Intente utilizar --help para obtener una lista de opciones v\u00e1lidas.
 
 error.bootPropsStream=CWWKE0014E: El sistema no ha podido abrir o leer las propiedades de arranque especificadas. V\u00eda de acceso: {0} Raz\u00f3n: {1}
-error.bootPropsStream.explanation=El archivo bootstrap.properties no se puede leer o no existe.
-error.bootPropsStream.useraction=Aseg\u00farese de que el archivo especificado existe y de que el usuario actual puede leerlo.
+error.bootPropsStream.explanation=No se puede leer el archivo bootstrap.properties o no existe.
+error.bootPropsStream.useraction=Aseg\u00farese de que exista el archivo especificado y que lo pueda leer el usuario actual.
 
 error.platformBundleException=CWWKE0015E: Se ha producido un error interno al iniciar el servidor. 
 error.platformBundleException.explanation=Se ha encontrado al menos una excepci\u00f3n al instalar o iniciar el servidor. 
-error.platformBundleException.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.platformBundleException.useraction=Compruebe que el producto se haya instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.secPermission=CWWKE0016E: El archivo JAR de programa de arranque requiere la configuraci\u00f3n de seguridad AllPermission para iniciar el entorno de ejecuci\u00f3n y la infraestructura OSGi ({0}).
-error.secPermission.explanation=Los permisos de seguridad de Java 2 no son suficientes para que el archivo JAR de programa de arranque inicie el entorno de ejecuci\u00f3n y la infraestructura OSGi.
-error.secPermission.useraction=Aseg\u00farese de que se haya otorgado al archivo JAR de programa de arranque privilegios AllPermission en el archivo de pol\u00edtica de seguridad de Java 2.
+error.secPermission.explanation=Los permisos de seguridad Java 2 son insuficientes para que el archivo JAR de programa de arranque inicie el entorno de ejecuci\u00f3n y el marco de trabajo OSGi.
+error.secPermission.useraction=Aseg\u00farese de que al archivo JAR de programa de arranque se le hayan concedido los privilegios AllPermission en el archivo de pol\u00edtica de seguridad Java 2.
 
 # CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
 
 error.unknownException=CWWKE0018E: Se ha producido una excepci\u00f3n al iniciar el entorno de ejecuci\u00f3n: {0}
-error.unknownException.explanation=La excepci\u00f3n ha impedido que se inicie el servidor.
-error.unknownException.useraction=Resuelva la excepci\u00f3n, si es posible, y vuelva a intentar la acci\u00f3n. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.unknownException.explanation=La excepci\u00f3n ha impedido que se iniciara el servidor.
+error.unknownException.useraction=Resuelva la excepci\u00f3n, si es posible, y vuelva a intentar la acci\u00f3n. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.frameworkDef=CWWKE0019E: La definici\u00f3n de infraestructura necesaria no se ha especificado.
-error.frameworkDef.explanation=A la instalaci\u00f3n del servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
-error.frameworkDef.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.frameworkDef.explanation=A la instalaci\u00f3n de servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
+error.frameworkDef.useraction=Compruebe que el producto se haya instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.frameworkDefFile=CWWKE0020E: La definici\u00f3n de infraestructura especificada ({0}) no existe.
 error.frameworkDefFile.explanation=No se ha encontrado el archivo de definici\u00f3n de infraestructura.
-error.frameworkDefFile.useraction=Aseg\u00farese de que el recurso de definici\u00f3n de infraestructura existe y de que el usuario actual puede leerlo.
+error.frameworkDefFile.useraction=Aseg\u00farese de que exista el recurso de definici\u00f3n de infraestructura y que lo pueda leer el usuario actual.
 
 error.frameworkJarFile=CWWKE0021E: El paquete de infraestructura especificado ({0}) no existe.
-error.frameworkJarFile.explanation=No se ha podido encontrar el artefacto del paquete de infraestructura especificado.
-error.frameworkJarFile.useraction=Aseg\u00farese de que el recurso existe y de que el usuario actual puede leerlo.
+error.frameworkJarFile.explanation=No se ha podido encontrar el artefacto de paquete de infraestructura especificado.
+error.frameworkJarFile.useraction=Aseg\u00farese de que exista el recurso y que lo pueda leer el usuario actual.
 
 error.kernelDef=CWWKE0022E: No se ha especificado la definici\u00f3n de kernel necesaria.
-error.kernelDef.explanation=A la instalaci\u00f3n del servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
-error.kernelDef.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.kernelDef.explanation=A la instalaci\u00f3n de servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
+error.kernelDef.useraction=Compruebe que el producto se haya instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.kernelDefFile=CWWKE0023E: La definici\u00f3n de kernel especificada ({0}) no existe.
 error.kernelDefFile.explanation=No se ha podido encontrar la definici\u00f3n de kernel especificada.
-error.kernelDefFile.useraction=Aseg\u00farese de que el recurso de definici\u00f3n de kernel existe y de que el usuario actual puede leerlo.
+error.kernelDefFile.useraction=Aseg\u00farese de que exista el recurso de definici\u00f3n de kernel y que lo pueda leer el usuario actual.
 
 error.specifiedLocation=CWWKE0025E: El valor de {0} debe hacer referencia a un directorio. \
 El valor especificado hace referencia a un recurso de archivo existente. \
 Valor: {1}
-error.specifiedLocation.explanation=La ubicaci\u00f3n proporcionada hace referencia a un archivo existente en vez de a un directorio.
+error.specifiedLocation.explanation=La ubicaci\u00f3n suministrada hace referencia a un archivo existente de un directorio.
 error.specifiedLocation.useraction=Cambie la ubicaci\u00f3n especificada a un directorio y vuelva a intentar la acci\u00f3n.
 
 warning.noPlatformCache=CWWKE0026W: El sistema no ha podido escribir en el archivo de memoria cach\u00e9 de la plataforma ({0}). Excepci\u00f3n: {1}
-warning.noPlatformCache.explanation=No se ha podido escribir en el archivo de memoria cach\u00e9 de la plataforma especificado.
-warning.noPlatformCache.useraction=Compruebe y resuelva la excepci\u00f3n, y repita la acci\u00f3n.
+warning.noPlatformCache.explanation=No se ha podido grabar el archivo de memoria cach\u00e9 de plataforma especificado.
+warning.noPlatformCache.useraction=Compruebe y resuelva la excepci\u00f3n y vuelva a intentar la acci\u00f3n.
 
 warning.singleServer=CWWKE0027W: En la l\u00ednea de mandatos s\u00f3lo se puede especificar un servidor; los nombres posteriores se ignorar\u00e1n (servidor={0}, ignorados={1}).
-warning.singleServer.explanation=En la l\u00ednea de mandatos s\u00f3lo puede especificar un servidor. El primer nombre de servidor se ha procesado; los nombres restantes se han ignorado.
-warning.singleServer.useraction=No se requiere ninguna acci\u00f3n. Especifique \u00fanicamente un servidor para evitar este aviso.
+warning.singleServer.explanation=Debe especificar solo un servidor en la l\u00ednea de mandatos. Se ha procesado el primer nombre de servidor; se han pasado por alto los nombres restantes.
+warning.singleServer.useraction=No se requiere ninguna acci\u00f3n. Especifique solo un servidor para impedir este aviso.
   
 error.serverAlreadyRunning=CWWKE0029E: Ya se est\u00e1 ejecutando una instancia del servidor {0}.
-error.serverAlreadyRunning.explanation=Est\u00e1 intentando iniciar un servidor que ya se est\u00e1 ejecutando.
-error.serverAlreadyRunning.useraction=Detenga la instancia del servidor existente antes de intentar iniciar el servidor, o inicie otro servidor.
+error.serverAlreadyRunning.explanation=Intenta intentar un servidor que ya est\u00e1 en ejecuci\u00f3n.
+error.serverAlreadyRunning.useraction=Detenga la instancia de servidor existente antes de intentar iniciar el servidor o inicie otro servidor.
 
 # {0} The server name
 # {1} The server directory path
 # {2} The exception thrown when trying to create
 error.creatingNewServer=CWWKE0030E: Se ha producido una excepci\u00f3n al crear el servidor {0}. V\u00eda de acceso de servidor: {1} Raz\u00f3n: {2}
 error.creatingNewServer.explanation=No se ha podido crear el servidor especificado.
-error.creatingNewServer.useraction=Compruebe y resuelva la excepci\u00f3n; repita la acci\u00f3n para crear el servidor.
+error.creatingNewServer.useraction=Compruebe y resuelva la excepci\u00f3n y vuelva a intentar crear el servidor.
 
 error.noExistingServer=CWWKE0031E: El servidor especificado {0} no existe; utilice la opci\u00f3n --crear para crear un nuevo servidor. v\u00eda de acceso de servidor: {1}
-error.noExistingServer.explanation=El servidor especificado no existe, por lo que no se puede realizar ninguna acci\u00f3n en \u00e9l.
-error.noExistingServer.useraction=Compruebe el nombre del servidor o cree un servidor con el nombre especificado y vuelva a intentar el mandato.
+error.noExistingServer.explanation=No existe el servidor especificado, de modo que no se puede realizar ninguna acci\u00f3n sobre \u00e9l.
+error.noExistingServer.useraction=Compruebe el nombre del servidor o cree un servidor con el nombre especificado, luego vuelva a intentar el mandato.
 
 ## No longer used
 error.bundleInstallException=CWWKE0032E: Se han producido una o m\u00e1s excepciones al instalar los paquetes de la plataforma.
-error.bundleInstallException.explanation=Se ha encontrado al menos una excepci\u00f3n al instalar los paquetes de la plataforma.
-error.bundleInstallException.useraction=Revise los registros para identificar y resolver las excepciones, y vuelva a intentar instalar los paquetes.
+error.bundleInstallException.explanation=Se ha encontrado al menos una excepci\u00f3n al instalar los paquetes de plataforma.
+error.bundleInstallException.useraction=Revise los registros para identificar y resolver las excepciones, luego vuelva a intentar instalar los paquetes.
 
 error.missingBundleException=CWWKE0033E: No se han podido encontrar los paquetes de la plataforma.
-error.missingBundleException.explanation=No se ha podido encontrar uno o m\u00e1s paquetes de la plataforma.
-error.missingBundleException.useraction=Aseg\u00farese de que los recursos de la plataforma existen y de que el usuario actual puede leerlos.
+error.missingBundleException.explanation=No se han podido encontrar uno o varios paquetes de plataforma.
+error.missingBundleException.useraction=Aseg\u00farese de que existan los recursos de plataforma y que los pueda leer el usuario actual.
 
 error.noStartedBundles=CWWKE0034E: No se han instalado paquetes. Verifique la imagen de instalaci\u00f3n.
-error.noStartedBundles.explanation=La imagen de instalaci\u00f3n puede estar incompleta.
+error.noStartedBundles.explanation=Es posible que la imagen de instalaci\u00f3n est\u00e9 incompleta.
 error.noStartedBundles.useraction=Verifique la instalaci\u00f3n y vuelva a intentar instalar los paquetes.
 
 error.initLog=CWWKE0035E: Ha habido un problema con el archivo de registro inicial especificado. logPath={0}
-error.initLog.explanation=La ubicaci\u00f3n del archivo de registro inicial no se ha especificado correctamente, o el archivo no era legible.
+error.initLog.explanation=La ubicaci\u00f3n del archivo de registro inicial no se ha especificado correctamente o el archivo no era legible.
 error.initLog.useraction=Compruebe la ubicaci\u00f3n y el estado del archivo de registro inicial.
 
 audit.kernelUpTime=CWWKE0036I: El servidor {0} se ha detenido despu\u00e9s de {1}.
-audit.kernelUpTime.explanation=El kernel se ha detenido despu\u00e9s del intervalo especificado (en segundos). Este intervalo es relativo al inicio de la plataforma.
+audit.kernelUpTime.explanation=El kernel se ha detenido despu\u00e9s del intervalo especificado (en segundos). Este intervalo es relativo al instante en que se inici\u00f3 la plataforma.
 audit.kernelUpTime.useraction=No se requiere ninguna acci\u00f3n.
 
 error.unknown.console.protocol=CWWKE0037E: {0} no es un protocolo de consola soportado. En su lugar se utilizar\u00e1 el protocolo telnet. 
-error.unknown.console.protocol.explanation=El protocolo especificado no est\u00e1 soportado, por lo tanto, el sistema utiliza en su lugar el protocolo por omisi\u00f3n (telnet).
-error.unknown.console.protocol.useraction=No se requiere ninguna acci\u00f3n para utilizar el protocolo por omisi\u00f3n. De lo contrario, modifique la configuraci\u00f3n para utilizar un protocolo soportado.
+error.unknown.console.protocol.explanation=No se admite el protocolo especificado, de modo que el sistema utiliza el protocolo predeterminado (telnet) en su lugar.
+error.unknown.console.protocol.useraction=No se requiere ninguna acci\u00f3n para utilizar el protocolo predeterminado. De lo contrario, modifique la configuraci\u00f3n para utilizar un protocolo admitido.
 
 error.rasProvider=CWWKE0038E: No se ha especificado el proveedor de registros necesario.
-error.rasProvider.explanation=A la instalaci\u00f3n del servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
-error.rasProvider.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.rasProvider.explanation=A la instalaci\u00f3n de servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
+error.rasProvider.useraction=Compruebe que el producto se haya instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.rasProviderResolve=CWWKE0039E: No existe el archivo JAR o el paquete ({0}) del proveedor de registros especificado.
 error.rasProviderResolve.explanation=No se ha podido encontrar el recurso del proveedor de registros especificado.
-error.rasProviderResolve.useraction=Aseg\u00farese de que el recurso del proveedor de registros existe y de que el usuario actual puede leerlo.
+error.rasProviderResolve.useraction=Aseg\u00farese de que exista el recurso del proveedor de registros y que lo pueda leer el usuario actual.
 
 error.frameworkRestart=CWWKE0040E: Los paquetes de la plataforma no se han podido resolver en la memoria cach\u00e9. Reinicie el servidor con un inicio limpio.
-error.frameworkRestart.explanation=Los paquetes de la plataforma no se han podido resolver en la memoria cach\u00e9 de la plataforma. Normalmente, este problema puede resolverse con un reinicio limpio.
-error.frameworkRestart.useraction=Reinicie el servidor utilizando la opci\u00f3n --limpiar para borrar la memoria cach\u00e9.
+error.frameworkRestart.explanation=No se han podido resolver los paquetes de plataforma con la memoria cach\u00e9 de plataforma. Este problema normalmente s puede resolver con un reinicio limpio.
+error.frameworkRestart.useraction=Reinicie el servidor utilizando la opci\u00f3n --clean para borrar la memoria cach\u00e9.
 
 info.frameworkRestart=CWWKE0041I: La memoria cach\u00e9 de la plataforma no est\u00e1 sincronizada. Reinicie la infraestructura.
-info.frameworkRestart.explanation=La infraestructura se ha reiniciado porque la memoria cach\u00e9 de la plataforma no estaba sincronizada.
+info.frameworkRestart.explanation=Se ha reiniciado la infraestructura porque la memoria cach\u00e9 de plataforma estaba sin sincronizar.
 info.frameworkRestart.useraction=No se requiere ninguna acci\u00f3n.
 
 error.badVersion=CWWKE0042E: La versi\u00f3n de Java correcta no se est\u00e1 ejecutando. El entorno de ejecuci\u00f3n requiere Java 8 o una versi\u00f3n superior.
@@ -200,32 +200,32 @@ error.badVersion.explanation=O bien es est\u00e1 ejecutando una versi\u00f3n de 
 error.badVersion.useraction= Actualice la versi\u00f3n Java a Java 8, o ajuste la variable del sistema JAVA_HOME para se\u00f1alar a Java 8.
 
 error.unsupportedLaunch=CWWKE0043E: La ubicaci\u00f3n de inicio no es un archivo local. ({0})
-error.unsupportedLaunch.explanation=El entorno de ejecuci\u00f3n debe iniciarse desde un archivo local, por ejemplo un archivo JAR.
-error.unsupportedLaunch.useraction=Verifique que el mandato utilizado est\u00e1 utilizando el mandato java -jar <localJarFile> para iniciar el entorno de tiempo de ejecuci\u00f3n. 
+error.unsupportedLaunch.explanation=Se debe iniciar el entorno de ejecuci\u00f3n desde un archivo local, por ejemplo, un archivo JAR.
+error.unsupportedLaunch.useraction=Verifique que el mandato utilizado utiliza el mandato java -jar <localJarFile> para iniciar el entorno de ejecuci\u00f3n. 
 
 error.serverDirPermission=CWWKE0044E: No hay permiso de escritura para el directorio del servidor {0}
-error.serverDirPermission.explanation=Para poder iniciar el servidor, se debe poder escribir en el directorio del servidor.
-error.serverDirPermission.useraction=Verifique que tiene acceso de escritura al directorio del servidor y al \u00e1rea de trabajo.
+error.serverDirPermission.explanation=Se debe poder grabar en el directorio de servidor para que se inicie el servidor.
+error.serverDirPermission.useraction=Verifique que tiene acceso de escritura para acceder al directorio de servidor y al \u00e1rea de trabajo.
 
 error.serverDirExists=CWWKE0045E: No ha sido posible crear el servidor llamado {0} porque el directorio del servidor {1} ya existe.
-error.serverDirExists.explanation=El directorio del servidor no debe existir todav\u00eda al crear un servidor.
-error.serverDirExists.useraction=Elija un nuevo nombre de servidor o suprima el directorio y, a continuaci\u00f3n, vuelva a ejecutar el mandato.
+error.serverDirExists.explanation=El directorio de servidor no debe existir ya al crear un servidor.
+error.serverDirExists.useraction=O bien elija un nuevo nombre de servidor o suprima el directorio, luego vuelva a ejecutar el mandato.
 
 error.noAttachAPI=CWWKE0046E: No se ha podido encontrar una implementaci\u00f3n de la API de Java Attach.
-error.noAttachAPI.explanation=La funci\u00f3n solicitada requiere la API de Java Attach, y no se ha podido encontrar una implementaci\u00f3n.
-error.noAttachAPI.useraction=Especifique la ubicaci\u00f3n de la API de Java Attach en la CLASSPATH.
+error.noAttachAPI.explanation=La funci\u00f3n solicitada requiere la API de Java Attach y no se ha podido encontrar una implementaci\u00f3n.
+error.noAttachAPI.useraction=Especifique la ubicaci\u00f3n de la API de Java Attach en la variable CLASSPATH.
 
 error.shutdownClientException=CWWKE0047E: El agente del control de procesos se ha detenido con una excepci\u00f3n inesperada {0}
-error.shutdownClientException.explanation=La excepci\u00f3n especificada ha impedido que el agente de control de procesos se ejecute correctamente.
+error.shutdownClientException.explanation=La excepci\u00f3n especificada ha impedido que el agente de control de procesos se ejecutara correctamente.
 error.shutdownClientException.useraction=Resuelva la excepci\u00f3n y vuelva a intentar la acci\u00f3n.
 
 warning.serverNotFound=CWWKE0048W: No se ha podido encontrar una instancia en ejecuci\u00f3n del servidor con el nombre {0} y el directorio del servidor {1}.
 warning.serverNotFound.explanation=El agente de control de procesos no ha podido encontrar una instancia en ejecuci\u00f3n del servidor especificado.
-warning.serverNotFound.useraction=Compruebe que una instancia del servidor especificado se est\u00e9 ejecutando y que lo haga bajo la misma implementaci\u00f3n de JRE.
+warning.serverNotFound.useraction=Compruebe que est\u00e1 en ejecuci\u00f3n una instancia del servidor especificado y que est\u00e9 en ejecuci\u00f3n bajo la misma implementaci\u00f3n de JRE.
 
 error.stopServerError=CWWKE0049E: El servidor {0} no se ha podido detener. 
-error.stopServerError.explanation=Se ha encontrado una instancia en ejecuci\u00f3n del servidor especificado, pero no ha concluido correctamente en respuesta a un mandato de detenci\u00f3n. 
-error.stopServerError.useraction=Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n sobre el motivo por el cual el servidor no ha concluido correctamente.
+error.stopServerError.explanation=Se ha encontrado una instancia en ejecuci\u00f3n del servidor especificado, pero no se ha concluido correctamente en respuesta a un mandato de detenci\u00f3n. 
+error.stopServerError.useraction=Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n sobre porqu\u00e9 el servidor no se ha concluido correctamente.
 
 error.invalid.directory=CWWKE0050E: No se ha podido inicializar la escucha del mandato de servidor. El directorio del servidor {0} no es v\u00e1lido.
 error.invalid.directory.explanation=El directorio no existe o no es legible.
@@ -233,19 +233,19 @@ error.invalid.directory.useraction=Revise la configuraci\u00f3n.
 
 error.packageServerError=CWWKE0051E: El servidor {0} no se ha podido empaquetar.
 error.packageServerError.explanation=No se ha podido empaquetar el servidor especificado.
-error.packageServerError.useraction=Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n. Si el problema persiste, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server en http://www.ibm.com/software/webservers/appserv/was/support/.
+error.packageServerError.useraction=Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server en http://www.ibm.com/software/webservers/appserv/was/support/.
 
 error.serverCommand.init=CWWKE0052E: No se ha podido inicializar la escucha del mandato de servidor debido a una excepci\u00f3n de E/S {0}
-error.serverCommand.init.explanation=Se ha producido una excepci\u00f3n inesperada al inicializar la escucha del mandato de servidor.
-error.serverCommand.init.useraction=Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n sobre por qu\u00e9 ha fallado el mandato. Si el problema persiste, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server en http://www.ibm.com/software/webservers/appserv/was/support/.
+error.serverCommand.init.explanation=Se ha producido una excepci\u00f3n inesperada al inicializar la escucha de mandatos de servidor.
+error.serverCommand.init.useraction=Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n sobre porqu\u00e9 ha fallado el mandato. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server en http://www.ibm.com/software/webservers/appserv/was/support/.
 
 warning.unrecognized.command=CWWKE0053W: No se ha reconocido el mandato {0}
-warning.unrecognized.command.explanation=Se ha ignorado el mandato porque no se ha reconocido.
-warning.unrecognized.command.useraction=Utilice la acci\u00f3n de ayuda para verificar que est\u00e1 intentando un mandato v\u00e1lido con opciones v\u00e1lidas. Si el problema persiste, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server en http://www.ibm.com/software/webservers/appserv/was/support/.
+warning.unrecognized.command.explanation=Se ha pasado por alto el mandato porque no se ha reconocido.
+warning.unrecognized.command.useraction=Utilice la acci\u00f3n de ayuda para verificar que intenta un mandato v\u00e1lido con opciones v\u00e1lidas. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server en http://www.ibm.com/software/webservers/appserv/was/support/.
 
 error.fileNotFound=CWWKE0054E: No se puede abrir el archivo {0}. 
 error.fileNotFound.explanation=Se ha producido una excepci\u00f3n FileNotFoundException al intentar abrir el archivo. 
-error.fileNotFound.useraction=Compruebe que la v\u00eda de acceso existe y tiene acceso de escritura y suficiente espacio en disco.
+error.fileNotFound.useraction=Compruebe que existe la v\u00eda de acceso y que tiene acceso de grabaci\u00f3n y suficiente espacio de disco.
 
 # {0} The date the server was shutdown. 
 # Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
@@ -256,14 +256,14 @@ info.stop.request.received.useraction=No se requiere ninguna acci\u00f3n.
 
 error.unableZipDir=CWWKE0056E: No se puede comprimir el directorio debido a una excepci\u00f3n de E/S {0}. 
 error.unableZipDir.explanation=Se ha producido una excepci\u00f3n de E/S.
-error.unableZipDir.useraction=Vuelva a intentar la operaci\u00f3n. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.unableZipDir.useraction=Vuelva a intentar la operaci\u00f3n. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 info.introspect.request.received=CWWKE0057I: Solicitud de introspecci\u00f3n recibida. El servidor tiene el estado de volcado.
 info.introspect.request.received.explanation=Este mensaje es meramente informativo.
 info.introspect.request.received.useraction=No se requiere ninguna acci\u00f3n.
 
 warn.packageServer.include.unknownOption=CWWKE0058W: No se puede utilizar la opci\u00f3n --include={0}, se utilizar\u00e1 --include=all en su lugar.
-warn.packageServer.include.unknownOption.explanation=La opci\u00f3n se ha ignorado porque no se ha reconocido.
+warn.packageServer.include.unknownOption.explanation=La opci\u00f3n se ha omitido porque no se ha reconocido.
 warn.packageServer.include.unknownOption.useraction=Vuelva a intentar el mandato utilizando opciones v\u00e1lidas. Intente utilizar --help para obtener una lista de opciones v\u00e1lidas.
 
 warn.unableWriteFile=CWWKE0059W: No se puede escribir en el archivo {0} debido a una excepci\u00f3n de E/S {1}. 
@@ -313,7 +313,7 @@ info.javadump.created.explanation=Este mensaje es meramente informativo.
 info.javadump.created.useraction=No se requiere ninguna acci\u00f3n.
 
 warn.javadump.unsupported=CWWKE0069W: No se admite el tipo de volcado Java {0}.
-warn.javadump.unsupported.explanation=Se ha solicitado un volcado, pero el JVM del servidor no admite el tipo de volcado.
+warn.javadump.unsupported.explanation=Se ha solicitado un volcado, pero la JVM del servidor no admite el tipo de volcado.
 warn.javadump.unsupported.useraction=No se requiere ninguna acci\u00f3n.
 
 warn.package.invalid.looseFile=CWWKE0070W: El archivo suelto {0} no es v\u00e1lido.
@@ -333,33 +333,33 @@ error.blst.spec.invalid.useraction=Especifique el nombre-simb\u00f3lico y rango-
 
 # {0} The BLST filename
 error.blst.failed.to.resolve=CWWKE0073E: No se ha podido resolver el archivo BLST para {0}.
-error.blst.failed.to.resolve.explanation=No se ha podido localizar el archivo BLST indicado. A la instalaci\u00f3n del servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
+error.blst.failed.to.resolve.explanation=No se ha podido localizar el archivo BLST indicado. A la instalaci\u00f3n de servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
 error.blst.failed.to.resolve.useraction=Especifique un archivo BLST que pueda resolverse en el archivo bootstrap.properties del servidor.
 
 error.platform.dir.not.found=CWWKE0074E: No se ha podido localizar el directorio de la plataforma.
-error.platform.dir.not.found.explanation=No se ha podido localizar el directorio de la plataforma. A la instalaci\u00f3n del servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
-error.platform.dir.not.found.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.platform.dir.not.found.explanation=No se ha podido localizar el directorio de la plataforma. A la instalaci\u00f3n de servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
+error.platform.dir.not.found.useraction=Compruebe que el producto se haya instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.unknown.kernel.version=CWWKE0075E: No se ha podido leer el rango de versiones del kernel desde el manifiesto del programa de arranque.
-error.unknown.kernel.version.explanation=El rango de versiones del kernel no se ha podido leer. A la instalaci\u00f3n del servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
-error.unknown.kernel.version.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.unknown.kernel.version.explanation=El rango de versiones del kernel no se ha podido leer. A la instalaci\u00f3n de servidor le faltan archivos necesarios y no se ha podido iniciar el servidor.
+error.unknown.kernel.version.useraction=Compruebe que el producto se haya instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 # Messages for minify.. 
 error.minify.unable.to.start.server=CWWKE0076E: No se puede consultar el servidor {0} para determinar las caracter\u00edsticas que deben conservarse.
 error.minify.unable.to.start.server.explanation=El servidor indicado no ha podido consultarse para determinar las caracter\u00edsticas que deben conservarse durante el empaquetado. El archivo de paquete resultante puede no ser v\u00e1lido.
-error.minify.unable.to.start.server.useraction=Compruebe que el servidor indicado pueda iniciarse y vuelva a intentar el paquete. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.minify.unable.to.start.server.useraction=Compruebe que el servidor indicado pueda iniciarse y vuelva a intentar el paquete. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.minify.unable.to.stop.server=CWWKE0077E: No se ha podido detener el servidor {0} iniciado para determinar las caracter\u00edsticas que deben conservarse.
 error.minify.unable.to.stop.server.explanation=El servidor indicado se ha consulta para las caracter\u00edsticas actualmente configuradas, pero no se ha concluido como se ha solicitado.
-error.minify.unable.to.stop.server.useraction=Compruebe que el servidor especificado pueda iniciarse y detenerse, y vuelva a intentar la operaci\u00f3n del paquete. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.minify.unable.to.stop.server.useraction=Compruebe que el servidor especificado pueda iniciarse y detenerse, y vuelva a intentar la operaci\u00f3n del paquete. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.minify.unable.to.determine.features=CWWKE0078E: No se han podido determinar las caracter\u00edsticas que deben conservarse para el servidor {0}.
 error.minify.unable.to.determine.features.explanation=El servidor no ha podido empaquetarse con las opciones seleccionadas, ya que no ha sido posible determinar las caracter\u00edsticas configuradas para el servidor.
-error.minify.unable.to.determine.features.useraction=Compruebe la configuraci\u00f3n del servidor y verifique que el servidor puede iniciarse y detenerse. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.minify.unable.to.determine.features.useraction=Compruebe la configuraci\u00f3n del servidor y verifique que el servidor puede iniciarse y detenerse. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.minify.missing.manifest=CWWKE0079E: El empaquetado del servidor {0} ha fallado porque falta un manifiesto de servidor.
 error.minify.missing.manifest.explanation=El servidor no ha podido empaquetarse porque faltaba el manifiesto del servidor.
-error.minify.missing.manifest.useraction=Compruebe que el producto se ha instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.minify.missing.manifest.useraction=Compruebe que el producto se haya instalado correctamente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.unable.load.property=CWWKE0080E: No se puede cargar la propiedad {0} en el archivo {1}.
 error.unable.load.property.explanation=La propiedad no se ha podido encontrar en el archivo de propiedades especificado.
@@ -367,11 +367,11 @@ error.unable.load.property.useraction=Aseg\u00farese de que el nombre de propied
 
 unable.to.package.missing.file=CWWKE0081E: No se ha podido empaquetar el servidor {0} con el filtro de sistema operativo solicitado {1} debido a que falta el recurso {2}.
 unable.to.package.missing.file.explanation=La petici\u00f3n de empaquetar el servidor con el filtro de sistema operativo solicitado se ha impedido debido a que falta un recurso.
-unable.to.package.missing.file.useraction=Confirme si una operaci\u00f3n de empaquetado anterior que especificaba --include=minify ha eliminado el contenido del sistema operativo solicitado del servidor que se est\u00e1 empaquetando. Si es as\u00ed, vuelva a intentar el paquete en un servidor que una operaci\u00f3n de empaquetado anterior no haya reducido. Si el problema persiste, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
+unable.to.package.missing.file.useraction=Confirme si una operaci\u00f3n de empaquetado anterior que especificaba --include=minify ha eliminado el contenido del sistema operativo solicitado del servidor que se est\u00e1 empaquetando. Si es as\u00ed, vuelva a intentar el paquete en un servidor que una operaci\u00f3n de empaquetado anterior no haya reducido. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
 
 error.unable.to.package=CWWKE0082E: No se ha podido empaquetar el servidor {0} debido a una excepci\u00f3n de E/S {1}.
 error.unable.to.package.explanation=Se ha producido una excepci\u00f3n de E/S al empaquetar el contenido de Liberty necesario.
-error.unable.to.package.useraction=Vuelva a intentar la operaci\u00f3n de empaquetado en un servidor instalado recientemente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+error.unable.to.package.useraction=Vuelva a intentar la operaci\u00f3n de empaquetado en un servidor instalado recientemente. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.os.without.include=CWWKE0083E: El par\u00e1metro --os s\u00f3lo se puede utilizar con --include=minify.
 error.os.without.include.explanation=El par\u00e1metro --os est\u00e1 destinado a utilizarse en combinaci\u00f3n con --include=minify para especificar a qu\u00e9 sistemas operativos debe darse soporte durante una operaci\u00f3n de empaquetado.
@@ -422,7 +422,7 @@ warning.unableToPackageLooseConfigFileMissingPath.explanation=El archivo XML de 
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Modifique las v\u00edas de acceso en el archivo XML de la aplicaci\u00f3n de configuraci\u00f3n flexible para que apunte a la ubicaci\u00f3n correcta que contiene los archivos de la aplicaci\u00f3n. 
 
 warn.packageRuntime.include.unknownOption=CWWKE0099W: No se puede utilizar la opci\u00f3n --include={0}, se utilizar\u00e1 --include=wlp en su lugar.
-warn.packageRuntime.include.unknownOption.explanation=La opci\u00f3n se ha ignorado porque no se ha reconocido.
+warn.packageRuntime.include.unknownOption.explanation=La opci\u00f3n se ha omitido porque no se ha reconocido.
 warn.packageRuntime.include.unknownOption.useraction=Vuelva a intentar el mandato utilizando opciones v\u00e1lidas. Intente utilizar --help para obtener una lista de opciones v\u00e1lidas.
 
 audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Este producto tiene licencia para el desarrollo y uso limitado en producci\u00f3n. Los t\u00e9rminos completos de la licencia pueden verse aqu\u00ed: {0}
@@ -512,7 +512,7 @@ audit.launchTime.client.explanation=Este mensaje es meramente informativo.
 audit.launchTime.client.useraction=No se requiere ninguna acci\u00f3n.
 
 audit.kernelUpTime.client=CWWKE0908I: El cliente {0} se ha detenido despu\u00e9s de {1}.
-audit.kernelUpTime.client.explanation=El kernel se ha detenido despu\u00e9s del intervalo especificado (en segundos). Este intervalo es relativo al inicio de la plataforma.
+audit.kernelUpTime.client.explanation=El kernel se ha detenido despu\u00e9s del intervalo especificado (en segundos). Este intervalo es relativo al instante en que se inici\u00f3 la plataforma.
 audit.kernelUpTime.client.useraction=No se requiere ninguna acci\u00f3n.
 
 # {0} The server name 
@@ -579,10 +579,8 @@ warning.java.security.permdenied.quickmsg.explanation=checkPermission() del gest
 warning.java.security.permdenied.quickmsg.useraction=Compruebe que la operaci\u00f3n que se ha intentado y actualice el archivo de pol\u00edtica de permisos para el paquete o aplicaci\u00f3n seg\u00fan sea necesario.
 
 error.package.missingLibExtractDir=CWWKE0922E: El mandato de paquete no se puede completar porque falta el directorio lib/extract en la instalaci\u00f3n.
-error.package.missingLibExtractDir.explanation=El directorio lib/extract contiene metadatos y clases de autoextracci\u00f3n necesarias para que se \
-complete el mandato de paquete.  Si falta este directorio, podr\u00eda indicar que la instalaci\u00f3n de WebSphere Liberty Profile era incompleta o que se suprimi\u00f3 el directorio.
-error.package.missingLibExtractDir.useraction=Vuelva a instalar WebSphere Liberty Profile y aseg\u00farese de que el directorio lib/extract exista en el \
-directorio WLP_HOME.
+error.package.missingLibExtractDir.explanation=El directorio lib/extract contiene metadatos y clases de autoextracci\u00f3n necesarias para que se complete el mandato de paquete.  Si falta este directorio, podr\u00eda indicar que la instalaci\u00f3n de WebSphere Liberty Profile era incompleta o que se suprimi\u00f3 el directorio.
+error.package.missingLibExtractDir.useraction=Vuelva a instalar WebSphere Liberty Profile y aseg\u00farese de que el directorio lib/extract exista en el directorio WLP_HOME.
 
 
 
@@ -658,7 +656,7 @@ info.server.resume.request.completed.useraction=No se requiere ninguna acci\u00f
 
 info.envProductExtension=CWWKE0940I: La extensi\u00f3n de producto {0} tiene un identificador de producto de {1} y una ubicaci\u00f3n de instalaci\u00f3n de producto de {2}. Esta extensi\u00f3n de producto se ha habilitado especificando la variable de entorno WLP_PRODUCT_EXT_DIR. 
 info.envProductExtension.explanation= La variable de entorno WLP_PRODUCT_EXT_DIR apunta a la ubicaci\u00f3n de la extensi\u00f3n de producto. Se ha encontrado el servidor y utiliza la extensi\u00f3n de producto.
-info.envProductExtension.useraction=No es necesaria ninguna acci\u00f3n.
+info.envProductExtension.useraction=No se requiere ninguna acci\u00f3n.
 
 warning.variable.invalid=CWWKE0941W: La declaraci\u00f3n de variable {0} especificada en server.env no es v\u00e1lida porque contiene caracteres no alfanum\u00e9ricos en el nombre de variable. El valor no se utilizar\u00e1.
 warning.variable.invalid.explanation=S\u00f3lo se permiten caracteres alfanum\u00e9ricos en los nombres de variable especificados en el archivo server.env.
@@ -699,6 +697,11 @@ error.package.extension.useraction=Proporcione un nombre de archivo para --archi
 error.package.usr.jar=CWWKE0951E: El nombre del archivo de archivado no debe finalizar con la extensi\u00f3n de archivo .jar cuando la se utiliza la opci\u00f3n usr.
 error.package.usr.jar.explanation=La opci\u00f3n --archive no debe finalizar con una extensi\u00f3n de archivo .jar cuando se especifica --include=usr.
 error.package.usr.jar.useraction=Proporcione un nombre de archivo para --archive con una extensi\u00f3n de archivo distinta de .jar file cuando se especifique --include=usr.
+
+error.missing.version.files=CWWKE0952E: La informaci\u00f3n de versi\u00f3n no se puede leer en el directorio {0}.
+error.missing.version.files.explanation=El directorio que contiene archivos de informaci\u00f3n de versi\u00f3n no existe o bien el usuario actual no lo puede leer.
+error.missing.version.files.useraction=Aseg\u00farese de que el directorio existe y que el usuario actual lo puede leer.
+
 
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.

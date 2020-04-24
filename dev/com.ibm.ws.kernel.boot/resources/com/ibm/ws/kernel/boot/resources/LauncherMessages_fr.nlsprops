@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,18 +33,21 @@
 
 audit.launchTime=CWWKE0001I: Le serveur {0} a \u00e9t\u00e9 lanc\u00e9.
 audit.launchTime.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-audit.launchTime.useraction=Aucune action n'est requise.
+audit.launchTime.useraction=Aucune action n'est \
+requise.
 
 audit.kernelStartTime=CWWKE0002I: Noyau d\u00e9marr\u00e9 apr\u00e8s {0}
-audit.kernelStartTime.explanation=Le noyau (kernel) a \u00e9t\u00e9 d\u00e9marr\u00e9. L'intervalle (en secondes) est d\u00e9fini par rapport au moment o\u00f9 la plate-forme a \u00e9t\u00e9 lanc\u00e9e.
-audit.kernelStartTime.useraction=Aucune action n'est requise.
+audit.kernelStartTime.explanation=Le noyau a \u00e9t\u00e9 d\u00e9marr\u00e9. L'intervalle (en secondes) est d\u00e9fini par rapport au moment o\u00f9 la plate-forme a \u00e9t\u00e9 lanc\u00e9e.
+audit.kernelStartTime.useraction=Aucune action n'est \
+requise.
 
 info.bootstrapChange=CWWKE0003I: Les emplacements d'amor\u00e7age ont chang\u00e9, de sorte que le serveur devra \u00eatre red\u00e9marr\u00e9 proprement.
 info.bootstrapChange.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-info.bootstrapChange.useraction=Aucune action n'est requise.
+info.bootstrapChange.useraction=Aucune action n'est \
+requise.
 
 error.badLocation=CWWKE0004E: Le syst\u00e8me n'a pas pu r\u00e9soudre les emplacements d'installation de serveur.
-error.badLocation.explanation=Une installation de serveur n'a pas \u00e9t\u00e9 trouv\u00e9e \u00e0 un emplacement sp\u00e9cifi\u00e9.
+error.badLocation.explanation=Une installation de serveur est introuvable \u00e0 un emplacement sp\u00e9cifi\u00e9.
 error.badLocation.useraction=R\u00e9installez ou r\u00e9parez le profil Liberty. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support. 
 
 error.unableToLaunch=CWWKE0005E: L'environnement d'ex\u00e9cution n'a pas pu \u00eatre lanc\u00e9.
@@ -99,7 +102,7 @@ error.secPermission=CWWKE0016E: Le fichier JAR d''amor\u00e7age n\u00e9cessite l
 s\u00e9curit\u00e9 AllPermission afin de permettre le lancement de l''environnement d''ex\u00e9cution et \
 du framework OSGi ({0}).
 error.secPermission.explanation=Les droits Java 2 Security sont insuffisants pour permettre au fichier JAR d'amor\u00e7age de lancer l'environnement d'ex\u00e9cution et l'infrastructure OSGi.
-error.secPermission.useraction=Assurez-vous que le fichier JAR d'amor\u00e7age (bootstrap) a re\u00e7u les privil\u00e8ges AllPermission dans le fichier de r\u00e8gles Java 2 Security.
+error.secPermission.useraction=Assurez-vous que le fichier JAR d'amor\u00e7age a re\u00e7u les privil\u00e8ges AllPermission dans le fichier de r\u00e8gles Java 2 Security.
 
 # CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
 
@@ -112,11 +115,11 @@ error.frameworkDef.explanation=Des fichiers requis pour l'installation du serveu
 error.frameworkDef.useraction=V\u00e9rifiez que le produit a \u00e9t\u00e9 correctement install\u00e9. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.frameworkDefFile=CWWKE0020E: La d\u00e9finition de framework sp\u00e9cifi\u00e9e ({0}) n''existe pas.
-error.frameworkDefFile.explanation=Le fichier de d\u00e9finition de l'infrastructure n'a pas \u00e9t\u00e9 trouv\u00e9.
+error.frameworkDefFile.explanation=Le fichier de d\u00e9finition de l'infrastructure est introuvable.
 error.frameworkDefFile.useraction=Assurez-vous que la ressource de d\u00e9finition de l'infrastructure existe et qu'elle peut \u00eatre lue par l'utilisateur en cours.
 
 error.frameworkJarFile=CWWKE0021E: Le bundle de framework sp\u00e9cifi\u00e9 ({0}) n''existe pas.
-error.frameworkJarFile.explanation=L'artefact sp\u00e9cifi\u00e9 pour le bundle de l'infrastructure n'a pas \u00e9t\u00e9 trouv\u00e9.
+error.frameworkJarFile.explanation=L'artefact sp\u00e9cifi\u00e9 pour le bundle de l'infrastructure est introuvable.
 error.frameworkJarFile.useraction=Assurez-vous que la ressource existe et qu'elle peut \u00eatre lue par l'utilisateur en cours.
 
 error.kernelDef=CWWKE0022E: La d\u00e9finition du noyau requis n'a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9e.
@@ -124,7 +127,7 @@ error.kernelDef.explanation=Des fichiers requis pour l'installation du serveur s
 error.kernelDef.useraction=V\u00e9rifiez que le produit a \u00e9t\u00e9 correctement install\u00e9. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.kernelDefFile=CWWKE0023E: La d\u00e9finition de noyau sp\u00e9cifi\u00e9e ({0}) n''existe pas.
-error.kernelDefFile.explanation=La d\u00e9finition sp\u00e9cifi\u00e9e pour le noyau (kernel) est introuvable.
+error.kernelDefFile.explanation=La d\u00e9finition sp\u00e9cifi\u00e9e pour le noyau est introuvable.
 error.kernelDefFile.useraction=Assurez-vous que la ressource de d\u00e9finition du noyau existe et qu'elle peut \u00eatre lue par l'utilisateur en cours.
 
 error.specifiedLocation=CWWKE0025E: La valeur {0} doit d\u00e9signer un r\u00e9pertoire. \
@@ -162,7 +165,7 @@ error.bundleInstallException.explanation=Au moins une exception a \u00e9t\u00e9 
 error.bundleInstallException.useraction=Examinez les journaux pour identifier et r\u00e9soudre les exceptions, puis essayez \u00e0 nouveau d'installer les bundles.
 
 error.missingBundleException=CWWKE0033E: Impossible de trouver les bundles de plateforme.
-error.missingBundleException.explanation=Un ou plusieurs bundles de plateforme n'ont pas \u00e9t\u00e9 trouv\u00e9s.
+error.missingBundleException.explanation=Un ou plusieurs bundles de plateforme sont introuvables.
 error.missingBundleException.useraction=Assurez-vous que les ressources de plateforme existent et qu'elles peuvent \u00eatre lues par l'utilisateur en cours.
 
 error.noStartedBundles=CWWKE0034E: Aucun bundle n'a \u00e9t\u00e9 install\u00e9 ; v\u00e9rifiez l'image d'installation.
@@ -175,7 +178,8 @@ error.initLog.useraction=V\u00e9rifiez l'emplacement et l'\u00e9tat du fichier j
 
 audit.kernelUpTime=CWWKE0036I: Le serveur {0} a \u00e9t\u00e9 arr\u00eat\u00e9 apr\u00e8s {1}.
 audit.kernelUpTime.explanation=Le noyau s'est arr\u00eat\u00e9 apr\u00e8s l'intervalle sp\u00e9cifi\u00e9 (en secondes). Cet intervalle est d\u00e9fini par rapport au moment o\u00f9 la plate-forme a \u00e9t\u00e9 lanc\u00e9e.
-audit.kernelUpTime.useraction=Aucune action n'est requise.
+audit.kernelUpTime.useraction=Aucune action n'est \
+requise.
 
 error.unknown.console.protocol=CWWKE0037E: {0} n''est pas un protocole de console pris en charge. Le protocole telnet sera utilis\u00e9 \u00e0 la place. 
 error.unknown.console.protocol.explanation=Le protocole sp\u00e9cifi\u00e9 n'\u00e9tant pas pris en charge, le syst\u00e8me utilisera \u00e0 la place le protocole par d\u00e9faut (telnet).
@@ -195,10 +199,11 @@ error.frameworkRestart.useraction=Red\u00e9marrez le serveur avec l'option --cle
 
 info.frameworkRestart=CWWKE0041I: Le cache de la plateforme n'est plus synchronis\u00e9. Red\u00e9marrage du framework.
 info.frameworkRestart.explanation=L'infrastructure a \u00e9t\u00e9 red\u00e9marr\u00e9e car le cache de la plateforme \u00e9tait d\u00e9synchronis\u00e9.
-info.frameworkRestart.useraction=Aucune action n'est requise.
+info.frameworkRestart.useraction=Aucune action n'est \
+requise.
 
 error.badVersion=CWWKE0042E: La version de Java en cours d'ex\u00e9cution n'est pas correcte. L'environnement d'ex\u00e9cution requiert Java 8 ou version ult\u00e9rieure.
-error.badVersion.explanation=Soit une version non prise en charge de Java est ex\u00e9cut\u00e9e, soit la variable syst\u00e8me JAVA_HOME pointe sur une ancienne version de Java.
+error.badVersion.explanation=Une version de Java non prise en charge est ex\u00e9cut\u00e9e ou la variable syst\u00e8me JAVA_HOME pointe vers une ancienne version de Java.
 error.badVersion.useraction= Mettez \u00e0 niveau la version de Java vers Java 8 ou ajustez la variable syst\u00e8me JAVA_HOME pour qu'elle pointe vers Java 8.
 
 error.unsupportedLaunch=CWWKE0043E: L''emplacement de lancement n''est pas un fichier local. ({0})
@@ -254,7 +259,8 @@ error.fileNotFound.useraction=V\u00e9rifiez que le chemin existe, que vous y ave
 # Note {0,time,short} tells the message formatter to expand
 info.stop.request.received=CWWKE0055I: Arr\u00eat du serveur demand\u00e9 le {0,date,full} \u00e0 {0,time,short}. Le serveur {1} est en cours d''arr\u00eat.
 info.stop.request.received.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-info.stop.request.received.useraction=Aucune action n'est requise.
+info.stop.request.received.useraction=Aucune action n'est \
+requise.
 
 error.unableZipDir=CWWKE0056E: Impossible de compresser le r\u00e9pertoire en raison d''une exception d''E-S {0}. 
 error.unableZipDir.explanation=Une exception IOException s'est produite.
@@ -262,7 +268,8 @@ error.unableZipDir.useraction=Faites une nouvelle tentative. Si le probl\u00e8me
 
 info.introspect.request.received=CWWKE0057I: Demande d'introspection re\u00e7ue. Le serveur prend un clich\u00e9 (dump) de son \u00e9tat.
 info.introspect.request.received.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-info.introspect.request.received.useraction=Aucune action n'est requise.
+info.introspect.request.received.useraction=Aucune action n'est \
+requise.
 
 warn.packageServer.include.unknownOption=CWWKE0058W: Impossible d''utiliser l''option --include={0}, --include=all sera utilis\u00e9 \u00e0 la place.
 warn.packageServer.include.unknownOption.explanation=L'option a \u00e9t\u00e9 ignor\u00e9e car elle n'a pas \u00e9t\u00e9 reconnue.
@@ -276,7 +283,7 @@ warn.unableWriteFile.useraction=Faites une nouvelle tentative. Si l'erreur persi
 # {1} The name of a base jar file
 warn.ifix.ignored=CWWKE0060W: Le fichier JAR de l''iFix {0} est ignor\u00e9 car le fichier JAR de base {1} n''existe pas.
 warn.ifix.ignored.explanation=Un fichier JAR de correctif temporaire a \u00e9t\u00e9 trouv\u00e9, mais le fichier JAR de base auquel ce correctif temporaire est cens\u00e9 \u00eatre appliqu\u00e9 n'est pas install\u00e9.
-warn.ifix.ignored.useraction=Procurez-vous un correctif temporaire correspondant au niveau de fixpack install\u00e9, ou bien mettez \u00e0 jour l'installation pour la porter au niveau de fixpack appropri\u00e9e. Sinon, supprimez le fichier JAR de correctif temporaire.
+warn.ifix.ignored.useraction=Procurez-vous un correctif temporaire correspondant au niveau de groupe de correctifs install\u00e9, ou bien mettez \u00e0 jour l'installation pour la porter au niveau de groupe de correctifs appropri\u00e9e. Sinon, supprimez le fichier JAR de correctif temporaire.
 
 warn.fileEncodingNotFound=CWWKE0061W: L''identificateur de jeu de caract\u00e8res cod\u00e9s z/OS correspondant \u00e0 l''encodage {0} n''existe pas. Les fichiers texte ne seront pas balis\u00e9s. 
 warn.fileEncodingNotFound.explanation=Les fichiers texte ne sont pas balis\u00e9s avec l'encodage sp\u00e9cifi\u00e9.
@@ -297,7 +304,7 @@ error.loadNativeLibrary.useraction=V\u00e9rifiez que le chemin existe et recomme
 # {0} The server name
 # {1} The server directory path
 error.creatingNewServerExists=CWWKE0065E: Une exception s''est produite lors de la cr\u00e9ation du serveur {0}. Une activit\u00e9 externe a \u00e9t\u00e9 d\u00e9tect\u00e9 au niveau du chemin de serveur ({1}), la cr\u00e9ation du serveur a \u00e9t\u00e9 arr\u00eat\u00e9e.
-error.creatingNewServerExists.explanation=Le serveur sp\u00e9cifi\u00e9  ne peut pas \u00eatre cr\u00e9\u00e9 car une autre application effectuait des op\u00e9rations de fichier dans le nouveau r\u00e9pertoire de serveur.
+error.creatingNewServerExists.explanation=Le serveur sp\u00e9cifi\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 car une autre application effectuait des op\u00e9rations de fichier dans le nouveau r\u00e9pertoire de serveur.
 error.creatingNewServerExists.useraction=Recherchez pourquoi il n'y avait pas d'activit\u00e9 de fichier dans le r\u00e9pertoire de serveur en dehors de la commande de cr\u00e9ation, puis supprimez le r\u00e9pertoire de serveur et essayer de le recr\u00e9er.
 
 # {0} The server name
@@ -308,15 +315,18 @@ error.creatingNewServerMkDirFail.useraction=Assurez-vous que l'espace disque est
 
 info.javadump.request.received=CWWKE0067I: Demande de clich\u00e9 Java re\u00e7ue.
 info.javadump.request.received.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-info.javadump.request.received.useraction=Aucune action n'est requise.
+info.javadump.request.received.useraction=Aucune action n'est \
+requise.
 
 info.javadump.created=CWWKE0068I: Clich\u00e9 Java cr\u00e9\u00e9 : {0}
 info.javadump.created.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-info.javadump.created.useraction=Aucune action n'est requise.
+info.javadump.created.useraction=Aucune action n'est \
+requise.
 
 warn.javadump.unsupported=CWWKE0069W: Le clich\u00e9 Java de type {0} n''est pas pris en charge.
 warn.javadump.unsupported.explanation=Un clich\u00e9 a \u00e9t\u00e9 demand\u00e9, mais le serveur JVM ne prend pas en charge ce type de clich\u00e9.
-warn.javadump.unsupported.useraction=Aucune action n'est requise.
+warn.javadump.unsupported.useraction=Aucune action n'est \
+requise.
 
 warn.package.invalid.looseFile=CWWKE0070W: Le fichier {0} n''est pas valide.
 warn.package.invalid.looseFile.explanation= Fichier introuvable ou de format incorrect.
@@ -331,7 +341,7 @@ warn.ifix.resource.ignored.useraction=Procurez-vous un correctif temporaire pour
 # {0} The invalid BLST specification string
 error.blst.spec.invalid=CWWKE0072E: La cha\u00eene de sp\u00e9cification BLST {0} n''est pas valide. La sp\u00e9cification doit \u00eatre au format suivant : <symbolic-name>;version="<version-range>".
 error.blst.spec.invalid.explanation=La cha\u00eene de sp\u00e9cification du fichier BLST n'est pas conforme \u00e0 la syntaxe requise. Le serveur n'est pas d\u00e9marr\u00e9.
-error.blst.spec.invalid.useraction=Sp\u00e9cifiez les param\u00e8tres symbolic-name et version-range du fichier BLST au format suivant : <symbolic-name>;version="<version-range>". Le param\u00e8tre symbolic-name doit \u00eatre un jeton OSGi valide. Le param\u00e8tre version-range doit \u00eatre une plage de versions OSGi valide. De plus, cette derni\u00e8re doit contenir \u00e0 la fois une limite inf\u00e9rieure et sup\u00e9rieure, qui peut \u00eatre inclusive ou exclusive, et ne pas contenir de qualificatif.
+error.blst.spec.invalid.useraction=Sp\u00e9cifiez les param\u00e8tres symbolic-name et version-range du fichier BLST au format suivant : <nom-symbolique>;version="<plage-versions>". Le param\u00e8tre symbolic-name doit \u00eatre un jeton OSGi valide. Le param\u00e8tre version-range doit \u00eatre une plage de versions OSGi valide. De plus, cette derni\u00e8re doit contenir \u00e0 la fois une limite inf\u00e9rieure et sup\u00e9rieure, qui peut \u00eatre inclusive ou exclusive, et ne pas contenir de qualificatif.
 
 # {0} The BLST filename
 error.blst.failed.to.resolve=CWWKE0073E: Impossible de r\u00e9soudre le fichier BLST pour {0}.
@@ -348,12 +358,12 @@ error.unknown.kernel.version.useraction=V\u00e9rifiez que le produit a \u00e9t\u
 
 # Messages for minify.. 
 error.minify.unable.to.start.server=CWWKE0076E: Impossible d''interroger le serveur {0} pour d\u00e9terminer les fonctions \u00e0 conserver.
-error.minify.unable.to.start.server.explanation=Le serveur nomm\u00e9 n'a pas pu \u00eatre interrog\u00e9 pour d\u00e9terminer les fonctions \u00e0 conserver lors du l'empaquetage. L'archive de package obtenue est peut-\u00eatre incorrecte.
-error.minify.unable.to.start.server.useraction=Assurez-vous que le serveur nomm\u00e9 peut \u00eatre d\u00e9marr\u00e9, puis renouvelez la tentative d'empaquetage. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+error.minify.unable.to.start.server.explanation=Le serveur nomm\u00e9 n'a pas pu \u00eatre interrog\u00e9 pour d\u00e9terminer les fonctions \u00e0 conserver lors du conditionnement. L'archive de package obtenue est peut-\u00eatre incorrecte.
+error.minify.unable.to.start.server.useraction=Assurez-vous que le serveur nomm\u00e9 peut \u00eatre d\u00e9marr\u00e9, puis renouvelez la tentative de conditionnement. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.minify.unable.to.stop.server=CWWKE0077E: Impossible d''arr\u00eater le serveur {0} pour d\u00e9terminer les fonctions \u00e0 conserver.
 error.minify.unable.to.stop.server.explanation=Le serveur nomm\u00e9 a \u00e9t\u00e9 interrog\u00e9 pour d\u00e9terminer les fonctions actuellement configur\u00e9es, mais il n'a pas \u00e9t\u00e9 arr\u00eat\u00e9 comme demand\u00e9.
-error.minify.unable.to.stop.server.useraction=Assurez-vous que le serveur nomm\u00e9 peut \u00eatre d\u00e9marr\u00e9 et arr\u00eat\u00e9, puis renouvelez la tentative d'empaquetage. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+error.minify.unable.to.stop.server.useraction=Assurez-vous que le serveur nomm\u00e9 peut \u00eatre d\u00e9marr\u00e9 et arr\u00eat\u00e9, puis renouvelez la tentative de conditionnement. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.minify.unable.to.determine.features=CWWKE0078E: Impossible de d\u00e9terminer les fonctions \u00e0 conserver pour le serveur {0}.
 error.minify.unable.to.determine.features.explanation=Le serveur ne peut pas \u00eatre empaquet\u00e9 avec les options s\u00e9lectionn\u00e9es car il n'a pas \u00e9t\u00e9 possible de d\u00e9terminer les fonctions configur\u00e9es qui lui sont associ\u00e9es.
@@ -368,15 +378,15 @@ error.unable.load.property.explanation=La propri\u00e9t\u00e9 est introuvable da
 error.unable.load.property.useraction=Assurez-vous que le nom de propri\u00e9t\u00e9 existe et qu'il est correctement orthographi\u00e9.
 
 unable.to.package.missing.file=CWWKE0081E: Impossible d''empaqueter le serveur {0} avec le filtre de syst\u00e8me d''exploitation demand\u00e9 {1} car la ressource {2} est manquante.
-unable.to.package.missing.file.explanation=La demande d'empaquetage du serveur avec le filtre de syst\u00e8me d'exploitation demand\u00e9 n'a pas pu \u00eatre ex\u00e9cut\u00e9e en raison d'une ressource manquante.
-unable.to.package.missing.file.useraction=V\u00e9rifiez si le contenu de syst\u00e8me d'exploitation demand\u00e9 a \u00e9t\u00e9 retir\u00e9 du serveur en cours d'empaquetage par une op\u00e9ration d'empaquetage pr\u00e9c\u00e9dente avec l'option --include=minify sp\u00e9cifi\u00e9e. Si tel est le cas, renouvelez la tentative d'empaquetage d'un serveur qui n'a pas \u00e9t\u00e9 r\u00e9duit par une op\u00e9ration d'empaquetage pr\u00e9c\u00e9dente. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support. 
+unable.to.package.missing.file.explanation=La demande de conditionnement du serveur avec le filtre de syst\u00e8me d'exploitation demand\u00e9 n'a pas pu \u00eatre ex\u00e9cut\u00e9e en raison d'une ressource manquante.
+unable.to.package.missing.file.useraction=V\u00e9rifiez si le contenu de syst\u00e8me d'exploitation demand\u00e9 a \u00e9t\u00e9 retir\u00e9 du serveur en cours de conditionnement par une op\u00e9ration de conditionnement pr\u00e9c\u00e9dente avec l'option --include=minify sp\u00e9cifi\u00e9e. Si tel est le cas, renouvelez la tentative de conditionnement d'un serveur qui n'a pas \u00e9t\u00e9 r\u00e9duit par une op\u00e9ration de conditionnement pr\u00e9c\u00e9dente. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support. 
 
 error.unable.to.package=CWWKE0082E: Impossible d''empaqueter le serveur {0} en raison de l''exception d''E-S {1}.
-error.unable.to.package.explanation=Une exception d'E-S s'est produite lors de l'empaquetage du contenu Liberty requis.
-error.unable.to.package.useraction=Renouvelez l'op\u00e9ration d'empaquetage sur un serveur qui vient d'\u00eatre install\u00e9. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+error.unable.to.package.explanation=Une exception d'E-S s'est produite lors du conditionnement du contenu Liberty requis.
+error.unable.to.package.useraction=Renouvelez l'op\u00e9ration de conditionnement sur un serveur qui vient d'\u00eatre install\u00e9. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.os.without.include=CWWKE0083E: Le param\u00e8tre --os ne peut \u00eatre utilis\u00e9 qu'avec --include=minify.
-error.os.without.include.explanation=Le param\u00e8tre --os est destin\u00e9 \u00e0 \u00eatre utilis\u00e9 conjointement avec --include=minify pour sp\u00e9cifier les syst\u00e8mes d'exploitation \u00e0 prendre en charge au cours d'une op\u00e9ration d'empaquetage.
+error.os.without.include.explanation=Le param\u00e8tre --os est destin\u00e9 \u00e0 \u00eatre utilis\u00e9 conjointement avec --include=minify pour sp\u00e9cifier les syst\u00e8mes d'exploitation \u00e0 prendre en charge au cours d'une op\u00e9ration de conditionnement.
 error.os.without.include.useraction=Consultez la documentation et retirez le param\u00e8tre --os ou ajoutez --include=minify dans la commande et renouvelez l'op\u00e9ration.
 
 audit.system.exit=CWWKE0084I: Le serveur {0} est en cours d''arr\u00eat car l''unit\u00e9 d''ex\u00e9cution {1} ({2}) a appel\u00e9 la m\u00e9thode {3} : {4}
@@ -388,28 +398,29 @@ audit.jvm.shutdown.explanation=Le serveur a intercept\u00e9 une demande d'arr\u0
 audit.jvm.shutdown.useraction=Si l'arr\u00eat du serveur \u00e9tait inattendu, d\u00e9terminez si un signal d'arr\u00eat a \u00e9t\u00e9 envoy\u00e9 au processus serveur.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Le d\u00e9marrage du serveur a \u00e9t\u00e9 lanc\u00e9 pour le serveur {0}, mais il est impossible de d\u00e9terminer s''il s''est achev\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-warning.serverStartedCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
+warning.serverStartedCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
 warning.serverStartedCommandPortDisabled.useraction=V\u00e9rifiez manuellement les fichiers journaux du serveur pour v\u00e9rifier que son d\u00e9marrage a abouti.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Le d\u00e9marrage du serveur a \u00e9t\u00e9 lanc\u00e9 pour le serveur {0} avec l''ID de processus {1}, mais il est impossible de d\u00e9terminer s''il s''est achev\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
 warning.serverStartedWithPIDCommandPortDisabled.useraction=V\u00e9rifiez manuellement les fichiers journaux du serveur pour v\u00e9rifier que son d\u00e9marrage a abouti.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Le serveur {0} n''a pas pu \u00eatre arr\u00eat\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-error.serverStopCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, ce serveur ne peut pas \u00eatre arr\u00eat\u00e9 via ce script.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+error.serverStopCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, ce serveur ne peut pas \u00eatre arr\u00eat\u00e9 via ce script.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 error.serverStopCommandPortDisabled.useraction=S'il s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, le serveur peut \u00eatre arr\u00eat\u00e9 depuis la console de l'op\u00e9rateur.  Sinon, le processus du serveur peut \u00eatre arr\u00eat\u00e9 depuis un shell.
 
 warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: La prise de clich\u00e9 (dump) du serveur {0} est termin\u00e9e dans {1}.  Certaines informations n''ont pas pu \u00eatre obtenues car le port de commande serveur est d\u00e9sactiv\u00e9, ce qui emp\u00eache une communication directe avec le serveur en cours d''ex\u00e9cution.
-warning.serverDumpCompleteCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, certaines parties du clich\u00e9 du serveur qui requi\u00e8rent une communication directe avec le serveur n'ont pas pu \u00eatre obtenues.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+warning.serverDumpCompleteCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, certaines parties du clich\u00e9 du serveur qui requi\u00e8rent une communication directe avec le serveur n'ont pas pu \u00eatre obtenues.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 warning.serverDumpCompleteCommandPortDisabled.useraction=Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, un clich\u00e9 complet du serveur peut \u00eatre demand\u00e9 depuis la console de l'op\u00e9rateur.  Pour plus d'informations, voir le Centre de documentation.
 
 error.serverJavaDumpCommandPortDisabled=CWWKE0091E: Le clich\u00e9 {0} du serveur n''a pas pu \u00eatre captur\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-error.serverJavaDumpCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 pour ce serveur, le clich\u00e9 demand\u00e9 n'a pas pu \u00eatre captur\u00e9.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+error.serverJavaDumpCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 pour ce serveur, le clich\u00e9 demand\u00e9 n'a pas pu \u00eatre captur\u00e9.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 error.serverJavaDumpCommandPortDisabled.useraction=Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, ce clich\u00e9 peut \u00eatre demand\u00e9 depuis la console de l'op\u00e9rateur.  Pour plus d'informations, voir le Centre de documentation.
 
 info.javadump.zos.system.created=CWWKE0092I: La demande de clich\u00e9 de transaction Java System Transaction Dump (SYSTDUMP) a abouti.
 info.javadump.zos.system.created.explanation=Ce message est fourni \u00e0 titre d'information uniquement. Veuillez consulter le journal du syst\u00e8me pour plus de d\u00e9tails sur le nom et le volume du jeu de donn\u00e9es qui contient la sortie du clich\u00e9 syst\u00e8me Java.
-info.javadump.zos.system.created.useraction=Aucune action n'est requise.
+info.javadump.zos.system.created.useraction=Aucune action n'est \
+requise.
 
 warn.fingerprintUnableToMkDirs=CWWKE0093W: Le serveur n''a pas pu cr\u00e9er l''emplacement {0} lors de la tentative d''\u00e9criture du fichier {1}. 
 warn.fingerprintUnableToMkDirs.explanation=L'op\u00e9ration de cr\u00e9ation du r\u00e9pertoire n'a pas abouti. Le disque est peut-\u00eatre satur\u00e9 ou le serveur ne dispose pas de droits d'acc\u00e8s en \u00e9criture \u00e0 l'emplacement.
@@ -429,11 +440,13 @@ warn.packageRuntime.include.unknownOption.useraction=Relancez la commande en uti
 
 audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Ce produit est conc\u00e9d\u00e9 sous licence pour une utilisation en d\u00e9veloppement et une utilisation en production limit\u00e9e. Les dispositions compl\u00e8tes du contrat de licence sont accessibles ici : {0}
 audit.licenseRestriction.base_ilan.ilan.explanation=Ce produit est conc\u00e9d\u00e9 sous licence pour une utilisation en d\u00e9veloppement et une utilisation en production limit\u00e9e. Pour voir la d\u00e9finition de l'utilisation en d\u00e9veloppement et comprendre les limitations produit, lisez les fichiers licence du produit.
-audit.licenseRestriction.base_ilan.ilan.useraction=Aucune action n'est requise.
+audit.licenseRestriction.base_ilan.ilan.useraction=Aucune action n'est \
+requise.
 
 audit.licenseRestriction.developers.ilan=CWWKE0101I: Ce produit est conc\u00e9d\u00e9 sous licence pour une utilisation en d\u00e9veloppement. Les dispositions compl\u00e8tes du contrat de licence sont accessibles ici : {0}
 audit.licenseRestriction.developers.ilan.explanation=Ce produit est conc\u00e9d\u00e9 sous licence pour une utilisation en d\u00e9veloppement. Pour voir la d\u00e9finition de l'utilisation en d\u00e9veloppement et comprendre les limitations, lisez les fichiers licence du produit.
-audit.licenseRestriction.developers.ilan.useraction=Aucune action n'est requise.
+audit.licenseRestriction.developers.ilan.useraction=Aucune action n'est \
+requise.
 
 error.create.unknownJavaLevel=CWWKE0102E: Le syst\u00e8me ne parvient pas \u00e0 d\u00e9terminer me niveau de sp\u00e9cification Java \u00e0 partir des propri\u00e9t\u00e9s syst\u00e8me.  La valeur n''est pas sp\u00e9cifi\u00e9e ou elle est sp\u00e9cifi\u00e9e de mani\u00e8re incorrecte.  Les propri\u00e9t\u00e9s syst\u00e8me contiennent la valeur suivante pour java.specification.level : {0}
 error.create.unknownJavaLevel.explanation=Le processus qui essaie de cr\u00e9er le serveur n'a pas pu d\u00e9terminer le niveau de Java utilis\u00e9.  Ce niveau est obligatoire afin de d\u00e9terminer les param\u00e8tres optimaux pour le serveur.
@@ -445,7 +458,8 @@ error.create.java8serverenv.useraction=V\u00e9rifiez que vous disposez d'un acc\
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Ce produit est en version b\u00eata et ne peut pas \u00eatre utilis\u00e9 en production. Les dispositions compl\u00e8tes du contrat de licence sont accessibles ici : {0}
 audit.licenseRestriction.early_access.ilar.explanation=Ce produit est en version b\u00eata et doit \u00eatre utilis\u00e9 conform\u00e9ment aux conditions de la licence b\u00eata.
-audit.licenseRestriction.early_access.ilar.useraction=Aucune action n'est requise.
+audit.licenseRestriction.early_access.ilar.useraction=Aucune action n'est \
+requise.
 
 error.zosProcStart.create.pidfile=CWWKE0105E: Le d\u00e9marrage du serveur {0} \u00e0 l''aide de la proc\u00e9dure STC z/OS {1} peut avoir \u00e9chou\u00e9 avant la cr\u00e9ation du fichier PID. Consultez la sortie STC.
 error.zosProcStart.create.pidfile.explanation=Le fichier PID de ce serveur n'a pas \u00e9t\u00e9 cr\u00e9\u00e9 dans le d\u00e9lai imparti. Il n'a pas \u00e9t\u00e9 possible de v\u00e9rifier le statut de d\u00e9marrage du serveur.
@@ -461,7 +475,8 @@ error.zosProcStart.start.length.useraction=Utilisez des noms de serveur et de pr
 
 info.addProductExtension=CWWKE0108I: L''extension de produit {0} a \u00e9t\u00e9 activ\u00e9e \u00e0 l''aide d''un programme. L''identificateur de produit de l''extension de produit est {1}. L''emplacement d''installation de l''extension de produit est {2}.
 info.addProductExtension.explanation= Ce message est fourni \u00e0 titre d'information uniquement. L'extension de produit a \u00e9t\u00e9 ajout\u00e9e par un appel du SPI com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
-info.addProductExtension.useraction=Aucune action n'est requise.
+info.addProductExtension.useraction=Aucune action n'est \
+requise.
 
 # CWWKE0109W removed because it's no longer used - do not reuse 
 
@@ -511,16 +526,19 @@ error.creatingNewClientMkDirFail.useraction=Assurez-vous que l'espace disque est
 
 audit.launchTime.client=CWWKE0907I: Le client {0} a \u00e9t\u00e9 lanc\u00e9.
 audit.launchTime.client.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-audit.launchTime.client.useraction=Aucune action n'est requise.
+audit.launchTime.client.useraction=Aucune action n'est \
+requise.
 
 audit.kernelUpTime.client=CWWKE0908I: Le client {0} a \u00e9t\u00e9 arr\u00eat\u00e9 apr\u00e8s {1}.
 audit.kernelUpTime.client.explanation=Le noyau s'est arr\u00eat\u00e9 apr\u00e8s l'intervalle sp\u00e9cifi\u00e9 (en secondes). Cet intervalle est d\u00e9fini par rapport au moment o\u00f9 la plate-forme a \u00e9t\u00e9 lanc\u00e9e.
-audit.kernelUpTime.client.useraction=Aucune action n'est requise.
+audit.kernelUpTime.client.useraction=Aucune action n'est \
+requise.
 
 # {0} The server name 
 info.java2security.started=CWWKE0909I: Le serveur {0} a d\u00e9marr\u00e9 avec la s\u00e9curit\u00e9 Java 2 activ\u00e9e
 info.java2security.started.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
-info.java2security.started.useraction=Aucune action n'est requise.
+info.java2security.started.useraction=Aucune action n'est \
+requise.
 
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: Echec de la d\u00e9finition du gestionnaire de s\u00e9curit\u00e9 par d\u00e9faut en raison de l''exception : {0}.  Cette situation survient si le gestionnaire de s\u00e9curit\u00e9 a d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini et que sa m\u00e9thode checkPermission ne permet pas son remplacement.
@@ -590,19 +608,23 @@ error.package.missingLibExtractDir.useraction=R\u00e9installez WebSphere Liberty
 
 info.server.pause.all.request.received=CWWKE0923I: Une demande a \u00e9t\u00e9 re\u00e7ue pour mise en pause de tous les composants pouvant l'\u00eatre sur le serveur.
 info.server.pause.all.request.received.explanation=Un utilisateur a \u00e9mis une demande de mise en pause de tous les composants pouvant l'\u00eatre. Le serveur va tenter de mettre en pause ces composants. 
-info.server.pause.all.request.received.useraction=Aucune action n'est requise.
+info.server.pause.all.request.received.useraction=Aucune action n'est \
+requise.
 
 info.server.pause.request.received=CWWKE0924I: Une demande a \u00e9t\u00e9 re\u00e7ue pour mise en pause des composants suivants sur le serveur : {0}
-info.server.pause.request.received.explanation=Un utilisateur a \u00e9mis une demande de mise en pause de composants sp\u00e9cifiques sur le serveur. Le serveur va tenter de mettre en pause ces composants 
-info.server.pause.request.received.useraction=Aucune action n'est requise.
+info.server.pause.request.received.explanation=Un utilisateur a \u00e9mis une demande de mise en pause de composants sp\u00e9cifiques sur le serveur. Le serveur va tenter de mettre en pause ces composants. 
+info.server.pause.request.received.useraction=Aucune action n'est \
+requise.
 
 info.server.resume.all.request.received=CWWKE0925I: Une demande a \u00e9t\u00e9 re\u00e7ue pour reprise de l'op\u00e9ration de tous les composants mis en pause sur le serveur.
 info.server.resume.all.request.received.explanation=Un utilisateur a \u00e9mise une demande de reprise de l'op\u00e9ration de tous les composants mis en pause sur le serveur. Le serveur va tenter de reprendre l'op\u00e9ration de ces composants.
-info.server.resume.all.request.received.useraction=Aucune action n'est requise.
+info.server.resume.all.request.received.useraction=Aucune action n'est \
+requise.
 
 info.server.resume.request.received=CWWKE0926I: Une demande a \u00e9t\u00e9 re\u00e7ue pour reprise de l''op\u00e9ration des composants suivants sur le serveur : {0}
 info.server.resume.request.received.explanation=Un utilisateur a \u00e9mis une demande de reprise d'op\u00e9ration de composants sp\u00e9cifiques sur le serveur. Le serveur va tenter de reprendre l'op\u00e9ration de ces composants s'ils \u00e9taient en pause.
-info.server.resume.request.received.useraction=Aucune action n'est requise.
+info.server.resume.request.received.useraction=Aucune action n'est \
+requise.
 
 error.pause.request.failed=CWWKE0927E: Une demande de mise en pause a \u00e9t\u00e9 re\u00e7ue, mais l'infrastructure de mise en pause de composants n'est pas disponible. Impossible de traiter la demande. 
 error.pause.request.failed.explanation=Un utilisateur a \u00e9mis une demande de mise en pause. Toutefois, la demande n'a pas pu \u00eatre trait\u00e9e. Il se peut que le serveur soit encore en cours d'initialisation ou d'arr\u00eat.
@@ -621,12 +643,12 @@ error.server.resume.failed.explanation=Le serveur a trait\u00e9 une demande de r
 error.server.resume.failed.useraction=Consultez les journaux du serveur pour plus d'informations sur les erreurs affectant les composants o\u00f9 l'op\u00e9ration a \u00e9chou\u00e9.
 
 warning.server.pause.invalid.targets=CWWKE0931W: Une demande de mise en pause de composants sp\u00e9cifiques a \u00e9t\u00e9 re\u00e7ue, mais la liste de composants sur l'option de cible est vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.pause.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de mise en pause en indiquant une liste vide sur l'option de cible. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.pause.invalid.targets.useraction=Sp\u00e9cifiez dans l'option de cible une liste de composants \u00e0 mettre en pause. Pour mettre en pause tous les composants pouvant l'\u00eatre sur le serveur, lancez une demande de mise en pause en omettant l'option de cible.
+warning.server.pause.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de mise en pause en indiquant une liste vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.pause.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target une liste de composants \u00e0 mettre en pause. Pour mettre en pause tous les composants pouvant l'\u00eatre sur le serveur, lancez une demande de mise en pause en omettant l'option target.
 
 warning.server.resume.invalid.targets=CWWKE0932W: Une demande de reprise d'op\u00e9ration de composants sp\u00e9cifiques a \u00e9t\u00e9 re\u00e7ue, mais la liste de composants dans l'option de cible \u00e9tait vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.resume.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de reprise d'op\u00e9ration en indiquant une liste vide sur l'option de cible. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.resume.invalid.targets.useraction=Sp\u00e9cifiez dans l'option de cible une liste de composants dont reprendre l'op\u00e9ration. Pour reprendre l'op\u00e9ration de tous les composants en pause sur le serveur, lancez une commande de reprise d'op\u00e9ration en omettant l'option de cible.
+warning.server.resume.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de reprise d'op\u00e9ration en indiquant une liste vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.resume.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target une liste de composants dont reprendre l'op\u00e9ration. Pour reprendre l'op\u00e9ration de tous les composants en pause sur le serveur, lancez une commande de reprise d'op\u00e9ration en omettant l'option target.
 
 warning.server.pause.no.targets=CWWKE0933W: Une demande de mise en pause a \u00e9t\u00e9 re\u00e7ue, mais aucun composant pouvant \u00eatre mis en pause n'a \u00e9t\u00e9 identifi\u00e9 sur le serveur. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
 warning.server.pause.no.targets.explanation=Le serveur a trait\u00e9 une demande de mise en pause, mais aucun composant pouvant \u00eatre mis en pause n'a \u00e9t\u00e9 identifi\u00e9 sur le serveur. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
@@ -650,15 +672,18 @@ warning.server.status.missing.targets.useraction=V\u00e9rifiez que les noms des 
 
 info.server.pause.request.completed=CWWKE0938I: Une demande de mise en pause a \u00e9t\u00e9 ex\u00e9cut\u00e9e.
 info.server.pause.request.completed.explanation=Une demande de mise en pause a \u00e9t\u00e9 ex\u00e9cut\u00e9e.
-info.server.pause.request.completed.useraction=Aucune action n'est requise.
+info.server.pause.request.completed.useraction=Aucune action n'est \
+requise.
 
 info.server.resume.request.completed=CWWKE0939I: Une demande de reprise d'op\u00e9ration a abouti.
 info.server.resume.request.completed.explanation=Une demande de reprise d'op\u00e9ration a abouti.
-info.server.resume.request.completed.useraction=Aucune action n'est requise.
+info.server.resume.request.completed.useraction=Aucune action n'est \
+requise.
 
 info.envProductExtension=CWWKE0940I: L''extension de produit {0} a l''identificateur de produit {1} et l''emplacement d''installation de produit {2}. Cette extension de produit a \u00e9t\u00e9 activ\u00e9e en sp\u00e9cifiant la variable d''environnement WLP_PRODUCT_EXT_DIR. 
 info.envProductExtension.explanation= La variable d'environnement WLP_PRODUCT_EXT_DIR pointe vers l'emplacement de l'extension de produit. Le serveur a trouv\u00e9 l'extension de produit et l'utilise.
-info.envProductExtension.useraction=Aucune action n'est requise.
+info.envProductExtension.useraction=Aucune action n'est \
+requise.
 
 warning.variable.invalid=CWWKE0941W: La d\u00e9claration de variable {0} sp\u00e9cifi\u00e9e dans server.env n''est pas valide vu qu''elle contient des caract\u00e8res non alphanum\u00e9riques dans le nom de la variable. Cette valeur ne sera pas utilis\u00e9e.
 warning.variable.invalid.explanation=Seuls les caract\u00e8res alphanum\u00e9riques sont admis dans les noms de variables sp\u00e9cifi\u00e9s dans le fichier server.env.
@@ -680,13 +705,18 @@ error.server.resume.command.port.disabled=CWWKE0945E: Une demande de reprise a \
 error.server.resume.command.port.disabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution. Le port de commande est d\u00e9sactiv\u00e9 pour ce serveur ; par cons\u00e9quent, la demande de reprise n'a pas pu \u00eatre trait\u00e9e. Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 error.server.resume.command.port.disabled.useraction=Activez le port de commande pour ce serveur. Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, cette reprise peut aussi \u00eatre demand\u00e9e depuis la console op\u00e9rateur.
 
-warning.server.status.invalid.targets=CWWKE0946W: Une demande de statut a \u00e9t\u00e9 re\u00e7ue pour des composants sp\u00e9cifiques, mais la liste des composants dans l'option target est vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.status.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de statut avec une liste de cibles vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.status.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target la liste des composants pour lesquels v\u00e9rifier le statut. Pour v\u00e9rifier le statut cumul\u00e9 de tous les composants pouvant \u00eatre mis en pause sur le serveur, \u00e9mettez la demande de statut sans l'option target.
+warning.server.status.invalid.targets=CWWKE0946W: Une demande de statut \
+a \u00e9t\u00e9 re\u00e7ue pour des composants sp\u00e9cifiques, mais la liste des composants dans l'option target est vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.status.invalid.targets.explanation=Un utilisateur a \u00e9mis \
+une demande de statut avec une liste de cibles vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.status.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target la liste des composants pour lesquels v\u00e9rifier le statut. Pour v\u00e9rifier le \
+statut cumul\u00e9 de tous les composants pouvant \u00eatre mis en pause sur le serveur, \u00e9mettez la \
+demande de statut sans l'option target.
 
 warning.package.root.invalid=CWWKE0947W: L'option --server-root associ\u00e9e \u00e0 un argument vide n'est pas admise lorsque des extensions de produit sont install\u00e9es. L'argument par d\u00e9faut de wlp sera utilis\u00e9.
-warning.package.root.invalid.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root sp\u00e9cifiant un argument vide alors que des extensions de produit ont \u00e9t\u00e9 d\u00e9tect\u00e9es. La racine de serveur par d\u00e9faut de wlp sera utilis\u00e9e.
-warning.package.root.invalid.useraction=Aucune action n'est requise.
+warning.package.root.invalid.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root sp\u00e9cifiant un argument vide alors que des extensions de produit ont \u00e9t\u00e9 d\u00e9tect\u00e9es. La racine du serveur par d\u00e9faut de wlp sera utilis\u00e9e.
+warning.package.root.invalid.useraction=Aucune action n'est \
+requise.
 
 warning.package.root.invalid.runnable=CWWKE0948W: La combinaison de l'option --server-root et de --include=runnable n'est pas autoris\u00e9e. L'argument par d\u00e9faut wlp sera utilis\u00e9 pour la racine du serveur.
 warning.package.root.invalid.runnable.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root et --include=runnable alors que cette combinaison n'est pas autoris\u00e9e. La racine du serveur par d\u00e9faut wlp sera utilis\u00e9e.
@@ -700,6 +730,10 @@ error.package.extension.useraction=Indiquez un nom de fichier pour --archive don
 error.package.usr.jar=CWWKE0951E: Le nom du fichier archive ne doit pas se terminer par l'extension de fichier .jar si l'option usr est utilis\u00e9e.
 error.package.usr.jar.explanation=L'option --archive ne doit pas se terminer par l'extension de fichier .jar lorsque --include=usr est sp\u00e9cifi\u00e9.
 error.package.usr.jar.useraction=Indiquez pour --archive un nom de fichier dont l'extension est diff\u00e9rente de .jar lorsque --include=usr est sp\u00e9cifi\u00e9.
+
+error.missing.version.files=CWWKE0952E: Les informations de version ne peuvent pas \u00eatre lues depuis le r\u00e9pertoire {0}.
+error.missing.version.files.explanation=Le r\u00e9pertoire contenant les fichiers d'informations de version n'existe pas ou ne peut pas \u00eatre lu par l'utilisateur en cours.
+error.missing.version.files.useraction=Assurez-vous que le r\u00e9pertoire existe et qu'il peut \u00eatre lu par l'utilisateur en cours. 
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.

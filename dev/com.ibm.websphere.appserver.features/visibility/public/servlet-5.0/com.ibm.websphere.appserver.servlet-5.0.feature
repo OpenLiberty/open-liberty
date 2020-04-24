@@ -33,7 +33,7 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.ws.webcontainer.spiadapter.collaborator, \
  com.ibm.websphere.webcontainer.async
 Subsystem-Category: JavaEE8Application
--features=com.ibm.websphere.appserver.injection-1.0, \
+-features=com.ibm.websphere.appserver.injection-2.0, \
  com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \

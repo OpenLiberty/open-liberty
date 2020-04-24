@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
             <artifactId>microprofile-fault-tolerance-tck</artifactId>
-            <version>2.0.3</version>
+            <version>2.0.4-RC1</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile.apis</groupId>
@@ -135,7 +135,7 @@
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
-			<org.eclipse.microprofile.fault.tolerance.tck.timeout.multiplier>4.0</org.eclipse.microprofile.fault.tolerance.tck.timeout.multiplier>
+			<org.eclipse.microprofile.fault.tolerance.tck.timeout.multiplier>6.0</org.eclipse.microprofile.fault.tolerance.tck.timeout.multiplier>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>

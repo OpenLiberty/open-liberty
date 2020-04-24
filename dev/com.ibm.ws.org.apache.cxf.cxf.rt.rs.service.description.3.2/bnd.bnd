@@ -11,6 +11,13 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-service-description;3.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-rs-service-description;3.3.0}!/!META-INF/*
+   @${repo;org.apache.cxf:cxf-rt-rs-service-description;3.3.0}!/!META-INF/*, \
+   org/apache/cxf=${bin}/org/apache/cxf
 
--buildpath: org.apache.cxf:cxf-rt-rs-service-description;version=3.3.0
+-buildpath: \
+	org.apache.cxf:cxf-rt-rs-service-description;version=3.3.0,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3
