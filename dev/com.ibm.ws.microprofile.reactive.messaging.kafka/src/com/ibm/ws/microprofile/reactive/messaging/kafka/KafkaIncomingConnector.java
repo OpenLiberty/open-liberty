@@ -86,49 +86,53 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
         // Extract our config
         String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
 
-        Optional<String> groupID = config.getOptionalValue(KafkaConnectorConstants.GROUP_ID, String.class);
-        if (!groupID.isPresent()) {
-            String msg = Tr.formatMessage(tc, "kafka.groupid.not.set.CWMRX1005E", ConnectorFactory.INCOMING_PREFIX + channelName + "." + KafkaConnectorConstants.GROUP_ID);
-            throw new IllegalArgumentException(msg);
+        try {
+            Optional<String> groupID = config.getOptionalValue(KafkaConnectorConstants.GROUP_ID, String.class);
+            if (!groupID.isPresent()) {
+                String msg = Tr.formatMessage(tc, "kafka.groupid.not.set.CWMRX1005E", ConnectorFactory.INCOMING_PREFIX + channelName + "." + KafkaConnectorConstants.GROUP_ID);
+                throw new IllegalArgumentException(msg);
+            }
+
+            String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
+            int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
+            int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
+
+            // Configure our defaults
+            Map<String, Object> consumerConfig = new HashMap<>();
+            // Default behaviour is that connector handles commit in response to ack()
+            consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false");
+            //default the key and value deserializers to String
+            consumerConfig.put(KafkaConnectorConstants.KEY_DESERIALIZER, KafkaConnectorConstants.STRING_DESERIALIZER);
+            consumerConfig.put(KafkaConnectorConstants.VALUE_DESERIALIZER, KafkaConnectorConstants.STRING_DESERIALIZER);
+
+            // Pass the rest of the config directly through to the kafkaConsumer
+            consumerConfig.putAll(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
+                                               .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
+                                               .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
+
+            boolean enableAutoCommit = "true".equalsIgnoreCase((String) consumerConfig.get(KafkaConnectorConstants.ENABLE_AUTO_COMMIT));
+
+            // Create the kafkaConsumer
+            KafkaConsumer<String, Object> kafkaConsumer = this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
+
+            PartitionTrackerFactory partitionTrackerFactory = new PartitionTrackerFactory();
+            partitionTrackerFactory.setExecutor(executor);
+            partitionTrackerFactory.setAdapterFactory(kafkaAdapterFactory);
+            partitionTrackerFactory.setAutoCommitEnabled(enableAutoCommit);
+
+            if (enableAutoCommit) {
+                unackedLimit = 0;
+            }
+
+            // Create our connector around the kafkaConsumer
+            KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, partitionTrackerFactory, kafkaConsumer, this.executor,
+                                                                     topic, unackedLimit);
+            kafkaInputs.add(kafkaInput);
+
+            return kafkaInput.getPublisher();
+        } catch (Exception e) {
+            throw new KafkaConnectorException(Tr.formatMessage(tc, "kafka.create.incoming.error.CWMRX1007E", channelName, e.getMessage()), e);
         }
-
-        String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
-        int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
-        int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
-
-        // Configure our defaults
-        Map<String, Object> consumerConfig = new HashMap<>();
-        // Default behaviour is that connector handles commit in response to ack()
-        consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false");
-        //default the key and value deserializers to String
-        consumerConfig.put(KafkaConnectorConstants.KEY_DESERIALIZER, KafkaConnectorConstants.STRING_DESERIALIZER);
-        consumerConfig.put(KafkaConnectorConstants.VALUE_DESERIALIZER, KafkaConnectorConstants.STRING_DESERIALIZER);
-
-        // Pass the rest of the config directly through to the kafkaConsumer
-        consumerConfig.putAll(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
-                                           .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
-                                           .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
-
-        boolean enableAutoCommit = "true".equalsIgnoreCase((String) consumerConfig.get(KafkaConnectorConstants.ENABLE_AUTO_COMMIT));
-
-        // Create the kafkaConsumer
-        KafkaConsumer<String, Object> kafkaConsumer = this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
-
-        PartitionTrackerFactory partitionTrackerFactory = new PartitionTrackerFactory();
-        partitionTrackerFactory.setExecutor(executor);
-        partitionTrackerFactory.setAdapterFactory(kafkaAdapterFactory);
-        partitionTrackerFactory.setAutoCommitEnabled(enableAutoCommit);
-
-        if (enableAutoCommit) {
-            unackedLimit = 0;
-        }
-
-        // Create our connector around the kafkaConsumer
-        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, partitionTrackerFactory, kafkaConsumer, this.executor,
-                                                                 topic, unackedLimit);
-        kafkaInputs.add(kafkaInput);
-
-        return kafkaInput.getPublisher();
     }
 
 }

@@ -22,6 +22,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -352,7 +353,17 @@ public class AcmeClient {
 		 * certificate.
 		 */
 		Certificate certificate = order.getCertificate();
-		return new AcmeCertificate(domainKeyPair, certificate.getCertificate(), certificate.getCertificateChain());
+
+		/*
+		 * Check whether the notBefore time is in the future. This might happen if the
+		 * time on the local system is off.
+		 */
+		X509Certificate x509Cert = certificate.getCertificate();
+		if (x509Cert.getNotBefore().after(Calendar.getInstance().getTime())) {
+			Tr.warning(tc, "CWPKI2045W", x509Cert.getSerialNumber().toString(16), acmeConfig.getDirectoryURI(),
+					x509Cert.getNotBefore().toInstant().toString());
+		}
+		return new AcmeCertificate(domainKeyPair, x509Cert, certificate.getCertificateChain());
 	}
 
 	/**
@@ -688,6 +699,10 @@ public class AcmeClient {
 	@FFDCIgnore(AcmeException.class)
 	public void revoke(X509Certificate certificate) throws AcmeCaException {
 
+		if (certificate == null) {
+			return;
+		}
+
 		/*
 		 * Load the account key file.
 		 */
@@ -712,7 +727,7 @@ public class AcmeClient {
 			 */
 			Login login = new Login(acct.getLocation(), accountKeyPair, session);
 			try {
-				Certificate.revoke(login, certificate, RevocationReason.UNSPECIFIED);
+				Certificate.revoke(login, certificate, RevocationReason.SUPERSEDED);
 			} catch (AcmeException e) {
 				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", acmeConfig.getDirectoryURI(),
 						certificate.getSerialNumber().toString(16), e.getMessage()), e);

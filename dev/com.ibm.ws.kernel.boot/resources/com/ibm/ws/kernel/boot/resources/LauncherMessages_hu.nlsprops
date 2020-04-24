@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,16 +32,16 @@
 # ---------- ERROR msgs ----------------------------
 
 audit.launchTime=CWWKE0001I: A(z) {0} kiszolg\u00e1l\u00f3 elindult.
-audit.launchTime.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-audit.launchTime.useraction=Semmit sem kell tennie.
+audit.launchTime.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+audit.launchTime.useraction=Nincs teend\u0151.
 
 audit.kernelStartTime=CWWKE0002I: A kernel {0} ut\u00e1n elindult.
 audit.kernelStartTime.explanation=A kernel el lett ind\u00edtva. A m\u00e1sodpercekben megadott id\u0151tartam a platform ind\u00edt\u00e1s\u00e1hoz van viszony\u00edtva.
-audit.kernelStartTime.useraction=Semmit sem kell tennie.
+audit.kernelStartTime.useraction=Nincs teend\u0151.
 
 info.bootstrapChange=CWWKE0003I: A rendszerbet\u00f6lt\u00e9si helyek megv\u00e1ltoztak, \u00edgy a kiszolg\u00e1l\u00f3 tiszta ind\u00edt\u00e1ssal lesz elind\u00edtva.
-info.bootstrapChange.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-info.bootstrapChange.useraction=Semmit sem kell tennie.
+info.bootstrapChange.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+info.bootstrapChange.useraction=Nincs teend\u0151.
 
 error.badLocation=CWWKE0004E: A rendszer nem tudta feloldani a kiszolg\u00e1l\u00f3telep\u00edt\u00e9s helyeit.
 error.badLocation.explanation=Egy kiszolg\u00e1l\u00f3telep\u00edt\u00e9s nem tal\u00e1lhat\u00f3 a megadott helyen.
@@ -173,7 +173,7 @@ error.initLog.useraction=Ellen\u0151rizze a kezdeti napl\u00f3f\u00e1jl hely\u00
 
 audit.kernelUpTime=CWWKE0036I: A(z) {0} kiszolg\u00e1l\u00f3 le\u00e1llt {1} eltelt\u00e9vel.
 audit.kernelUpTime.explanation=A kernel a (m\u00e1sodpercekben) megadott id\u0151tartam ut\u00e1n le\u00e1llt. Ez az id\u0151tartam a platform ind\u00edt\u00e1s\u00e1hoz k\u00e9pest van megadva.
-audit.kernelUpTime.useraction=Semmit sem kell tennie.
+audit.kernelUpTime.useraction=Nincs teend\u0151.
 
 error.unknown.console.protocol=CWWKE0037E: {0} nem egy t\u00e1mogatott konzol protokoll. Helyette a telnet protokoll ker\u00fcl felhaszn\u00e1l\u00e1sra. 
 error.unknown.console.protocol.explanation=A megadott protokoll nem t\u00e1mogatott, \u00edgy a rendszer az alap\u00e9rtelmezett (telnet) protokollt haszn\u00e1lja helyette.
@@ -193,11 +193,11 @@ error.frameworkRestart.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t
 
 info.frameworkRestart=CWWKE0041I: A platform gyors\u00edt\u00f3t\u00e1r nincs szinkroniz\u00e1lva. Keretrendszer \u00fajraind\u00edt\u00e1sa.
 info.frameworkRestart.explanation=A keretrendszer \u00fajra lett ind\u00edtva, mert a platform gyors\u00edt\u00f3t\u00e1r nem volt szinkroniz\u00e1lva.
-info.frameworkRestart.useraction=Semmit sem kell tennie.
+info.frameworkRestart.useraction=Nincs teend\u0151.
 
 error.badVersion=CWWKE0042E: Nem a megfelel\u0151 Java v\u00e1ltozat fut. A fut\u00e1si k\u00f6rnyezet Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel.
 error.badVersion.explanation=Egy nem t\u00e1mogatott Java v\u00e1ltozat fut, vagy a JAVA_HOME rendszerv\u00e1ltoz\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy egy r\u00e9gebbi Java v\u00e1ltozatra mutat.
-error.badVersion.useraction= Friss\u00edtse a Java v\u00e1ltozatot a Java 8 v\u00e1ltozatra, vagy \u00e1ll\u00edtsa be a JAVA_HOME rendszerv\u00e1ltoz\u00f3t \u00fagy, hogy Java 8 fut\u00e1si k\u00f6rnyezetre mutasson.
+error.badVersion.useraction= Friss\u00edtse a Java v\u00e1ltozatot a Java 8-as v\u00e1ltozatra, vagy \u00e1ll\u00edtsa be a JAVA_HOME rendszerv\u00e1ltoz\u00f3t \u00fagy, hogy Java 8 fut\u00e1si k\u00f6rnyezetre mutasson.
 
 error.unsupportedLaunch=CWWKE0043E: Az ind\u00edt\u00e1si hely nem egy helyi f\u00e1jl. ({0})
 error.unsupportedLaunch.explanation=A fut\u00e1si k\u00f6rnyezetet egy helyi f\u00e1jlb\u00f3l kell elind\u00edtani, p\u00e9ld\u00e1ul egy JAR f\u00e1jlb\u00f3l.
@@ -251,16 +251,16 @@ error.fileNotFound.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u
 # Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
 # Note {0,time,short} tells the message formatter to expand
 info.stop.request.received=CWWKE0055I: A kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00e9relem ker\u00fclt kiad\u00e1sra {0,date,full} napon {0,time,short} id\u0151pontban. A(z) {1} kiszolg\u00e1l\u00f3 le\u00e1ll.
-info.stop.request.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-info.stop.request.received.useraction=Semmit sem kell tennie.
+info.stop.request.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+info.stop.request.received.useraction=Nincs teend\u0151.
 
 error.unableZipDir=CWWKE0056E: A k\u00f6nyvt\u00e1r I/O kiv\u00e9tel ({0}) miatt nem t\u00f6m\u00f6r\u00edthet\u0151. 
 error.unableZipDir.explanation=IOException kiv\u00e9tel t\u00f6rt\u00e9nt.
 error.unableZipDir.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
 
 info.introspect.request.received=CWWKE0057I: \u00d6nelemz\u00e9si k\u00e9r\u00e9s \u00e9rkezett. A kiszolg\u00e1l\u00f3 \u00e1llapotki\u00edrat\u00e1st v\u00e9gez.
-info.introspect.request.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-info.introspect.request.received.useraction=Semmit sem kell tennie.
+info.introspect.request.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+info.introspect.request.received.useraction=Nincs teend\u0151.
 
 warn.packageServer.include.unknownOption=CWWKE0058W: Nem haszn\u00e1lhat\u00f3 az --include={0} be\u00e1ll\u00edt\u00e1s, helyette az --include=all ker\u00fcl felhaszn\u00e1l\u00e1sra.
 warn.packageServer.include.unknownOption.explanation=A be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl maradt, mert nem ismerhet\u0151 fel.
@@ -305,16 +305,16 @@ error.creatingNewServerMkDirFail.explanation=A megadott kiszolg\u00e1l\u00f3 nem
 error.creatingNewServerMkDirFail.useraction=Miel\u0151tt \u00fajra megk\u00eds\u00e9reln\u00e9 a kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1s\u00e1t, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy elegend\u0151 lemezter\u00fclet \u00e1ll rendelkez\u00e9sre a kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1s\u00e1hoz, valamint hogy az adott hely \u00edr\u00e1si enged\u00e9lyei megfelel\u0151ek.
 
 info.javadump.request.received=CWWKE0067I: Java ki\u00edrat\u00e1si k\u00e9r\u00e9s \u00e9rkezett.
-info.javadump.request.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-info.javadump.request.received.useraction=Semmit sem kell tennie.
+info.javadump.request.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+info.javadump.request.received.useraction=Nincs teend\u0151.
 
 info.javadump.created=CWWKE0068I: L\u00e9trej\u00f6tt a Java ki\u00edrat\u00e1s: {0}
-info.javadump.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-info.javadump.created.useraction=Semmit sem kell tennie.
+info.javadump.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+info.javadump.created.useraction=Nincs teend\u0151.
 
 warn.javadump.unsupported=CWWKE0069W: A(z) {0} Java ki\u00edrat\u00e1s t\u00edpus nem t\u00e1mogatott.
 warn.javadump.unsupported.explanation=Ki\u00edrat\u00e1st k\u00e9rt, de a kiszolg\u00e1l\u00f3 Java virtu\u00e1lis g\u00e9p nem t\u00e1mogatja a ki\u00edrat\u00e1s t\u00edpus\u00e1t.
-warn.javadump.unsupported.useraction=Semmit sem kell tennie.
+warn.javadump.unsupported.useraction=Nincs teend\u0151.
 
 warn.package.invalid.looseFile=CWWKE0070W: A(z) {0} loose f\u00e1jl \u00e9rv\u00e9nytelen.
 warn.package.invalid.looseFile.explanation= A f\u00e1jl nem tal\u00e1lhat\u00f3 vagy a f\u00e1jl form\u00e1tuma rossz.
@@ -407,7 +407,7 @@ error.serverJavaDumpCommandPortDisabled.useraction=Ha a kiszolg\u00e1l\u00f3 z/O
 
 info.javadump.zos.system.created=CWWKE0092I: A Java rendszertranzakci\u00f3s ki\u00edrat\u00e1s (SYSTDUMP) k\u00e9sz.
 info.javadump.zos.system.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l. A Java rendszerki\u00edrat\u00e1s kimenet\u00e9t tartalmaz\u00f3 adathalmaz nev\u00e9r\u0151l \u00e9s k\u00f6tet\u00e9r\u0151l r\u00e9szletek\u00e9rt tanulm\u00e1nyozza a rendszernapl\u00f3t.
-info.javadump.zos.system.created.useraction=Semmit sem kell tennie.
+info.javadump.zos.system.created.useraction=Nincs teend\u0151.
 
 warn.fingerprintUnableToMkDirs=CWWKE0093W: A kiszolg\u00e1l\u00f3 nem tudta l\u00e9trehozni a(z) {0} helyet, amikor megk\u00eds\u00e9relte a(z) {1} f\u00e1jl \u00edr\u00e1s\u00e1t. 
 warn.fingerprintUnableToMkDirs.explanation=A k\u00f6nyvt\u00e1rl\u00e9trehoz\u00e1si m\u0171velet nem siker\u00fclt. El\u0151fordulhat, hogy a lemez vagy a kiszolg\u00e1l\u00f3 tele van, vagy a kiszolg\u00e1l\u00f3 nem rendelkezik enged\u00e9llyel, hogy a helyre \u00edrjon.
@@ -427,11 +427,11 @@ warn.packageRuntime.include.unknownOption.useraction=Pr\u00f3b\u00e1lja meg \u00
 
 audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Ez a term\u00e9klicenc fejleszt\u00e9si haszn\u00e1latra vonatkozik, valamint korl\u00e1tozott \u00e9les haszn\u00e1latra. A teljes licencfelt\u00e9telek itt tekinthet\u0151k meg: {0}
 audit.licenseRestriction.base_ilan.ilan.explanation=Ez a term\u00e9klicenc fejleszt\u00e9si haszn\u00e1latra \u00e9s korl\u00e1tozott term\u00e9khaszn\u00e1latra jogos\u00edt fel. A fejleszt\u00e9si haszn\u00e1lat meghat\u00e1roz\u00e1s\u00e1t \u00e9s az \u00e9les korl\u00e1toz\u00e1sok le\u00edr\u00e1s\u00e1t a term\u00e9k licencf\u00e1jljai tartalmazz\u00e1k.
-audit.licenseRestriction.base_ilan.ilan.useraction=Semmit sem kell tennie.
+audit.licenseRestriction.base_ilan.ilan.useraction=Nincs teend\u0151.
 
 audit.licenseRestriction.developers.ilan=CWWKE0101I: Ez a term\u00e9klicenc fejleszt\u00e9si haszn\u00e1latra vonatkozik. A teljes licencfelt\u00e9telek itt tekinthet\u0151k meg: {0}
 audit.licenseRestriction.developers.ilan.explanation=Ez a term\u00e9klicenc fejleszt\u00e9si haszn\u00e1latra vonatkozik. A fejleszt\u00e9si haszn\u00e1lat meghat\u00e1roz\u00e1s\u00e1t \u00e9s a korl\u00e1toz\u00e1sok le\u00edr\u00e1s\u00e1t a term\u00e9k licencf\u00e1jljai tartalmazz\u00e1k.
-audit.licenseRestriction.developers.ilan.useraction=Semmit sem kell tennie.
+audit.licenseRestriction.developers.ilan.useraction=Nincs teend\u0151.
 
 error.create.unknownJavaLevel=CWWKE0102E: A rendszer nem k\u00e9pes meghat\u00e1rozni a Java specifik\u00e1ci\u00f3 szintj\u00e9t a rendszertulajdons\u00e1gokb\u00f3l.  Az \u00e9rt\u00e9k nincs megadva vagy hib\u00e1san lett megadva.  A rendszertulajdons\u00e1gok a java.specification.level al\u00e1bbi \u00e9rt\u00e9k\u00e9t tartalmazz\u00e1k: {0}
 error.create.unknownJavaLevel.explanation=A kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1s\u00e1t megk\u00eds\u00e9rl\u0151 folyamat nem tudta meg\u00e1llap\u00edtani a haszn\u00e1latban l\u00e9v\u0151 Java szintj\u00e9t.  Erre a szintre a kiszolg\u00e1l\u00f3 optim\u00e1lis be\u00e1ll\u00edt\u00e1sainak meghat\u00e1roz\u00e1s\u00e1hoz van sz\u00fcks\u00e9g.
@@ -443,7 +443,7 @@ error.create.java8serverenv.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, h
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Ez a term\u00e9k b\u00e9ta v\u00e1ltozat \u00e9s nem haszn\u00e1lhat\u00f3 \u00e9les k\u00f6rnyezetben. A teljes licencfelt\u00e9telek itt tekinthet\u0151k meg: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Ez a term\u00e9k b\u00e9ta v\u00e1ltozat \u00e9s a b\u00e9ta licenc felt\u00e9teleinek megfelel\u0151en kell haszn\u00e1lni.
-audit.licenseRestriction.early_access.ilar.useraction=Semmit sem kell tennie.
+audit.licenseRestriction.early_access.ilar.useraction=Nincs teend\u0151.
 
 error.zosProcStart.create.pidfile=CWWKE0105E: Lehets\u00e9ges, hogy a(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa a(z) {1} z/OS STC elj\u00e1r\u00e1ssal meghi\u00fasult, miel\u0151tt a PID f\u00e1jl l\u00e9trehoz\u00e1sra ker\u00fclt volna. Meger\u0151s\u00edt\u00e9s\u00e9rt ellen\u0151rizze az STC kimenetet.
 error.zosProcStart.create.pidfile.explanation=A kiszolg\u00e1l\u00f3 PID f\u00e1jlja nem ker\u00fclt l\u00e9trehoz\u00e1sra a v\u00e1rakoz\u00e1si id\u0151tartamom bel\u00fcl. A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1si \u00e1llapot\u00e1t nem siker\u00fclt ellen\u0151rizni.
@@ -457,10 +457,9 @@ error.zosProcStart.start.length=CWWKE0107E: A(z) {0} z/OS STC elj\u00e1r\u00e1st
 error.zosProcStart.start.length.explanation=Az elj\u00e1r\u00e1sn\u00e9v, kiszolg\u00e1l\u00f3n\u00e9v \u00e9s az ind\u00edt\u00e1si param\u00e9terek, melyeket megadott, hogy a kiszolg\u00e1l\u00f3t egy elind\u00edtott feladatk\u00e9nt ind\u00edtsa el, meghaladt\u00e1k az MVS konzol parancsokra vonatkoz\u00f3 maxim\u00e1lis hosszt.
 error.zosProcStart.start.length.useraction=R\u00f6vid\u00edtse le a kiszolg\u00e1l\u00f3nevet \u00e9s az elj\u00e1r\u00e1snevet, hogy az MVS ind\u00edt\u00e1si parancs 126 karaktern\u00e9l kevesebb legyen.
 
-info.addProductExtension=CWWKE0108I: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny a programk\u00f3d \u00e1ltal enged\u00e9lyezett.  \
-A term\u00e9kb\u0151v\u00edtm\u00e9ny term\u00e9kazonos\u00edt\u00f3ja: {1}. A term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si helye: {2}.
+info.addProductExtension=CWWKE0108I: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny a programk\u00f3d \u00e1ltal enged\u00e9lyezett. A term\u00e9kb\u0151v\u00edtm\u00e9ny term\u00e9kazonos\u00edt\u00f3ja: {1}. A term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si helye: {2}.
 info.addProductExtension.explanation= Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l. A term\u00e9kb\u0151v\u00edtm\u00e9ny a com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension SPI h\u00edv\u00e1sa k\u00f6vetkezt\u00e9ben lett felv\u00e9ve.
-info.addProductExtension.useraction=Semmit sem kell tennie.
+info.addProductExtension.useraction=Nincs teend\u0151.
 
 # CWWKE0109W removed because it's no longer used - do not reuse 
 
@@ -509,17 +508,17 @@ error.creatingNewClientMkDirFail.explanation=A megadott \u00fcgyf\u00e9l l\u00e9
 error.creatingNewClientMkDirFail.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van elegend\u0151 lemezter\u00fclet az \u00fcgyf\u00e9l l\u00e9trehoz\u00e1s\u00e1hoz, valamint hogy a hely \u00edrhat\u00f3, majd pr\u00f3b\u00e1lkozzon \u00fajra. 
 
 audit.launchTime.client=CWWKE0907I: A(z) {0} \u00fcgyf\u00e9l el lett ind\u00edtva.
-audit.launchTime.client.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-audit.launchTime.client.useraction=Semmit sem kell tennie.
+audit.launchTime.client.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+audit.launchTime.client.useraction=Nincs teend\u0151.
 
 audit.kernelUpTime.client=CWWKE0908I: A(z) {0} \u00fcgyf\u00e9l {1} ut\u00e1n le lett \u00e1ll\u00edtva.
 audit.kernelUpTime.client.explanation=A kernel a (m\u00e1sodpercekben) megadott id\u0151tartam ut\u00e1n le\u00e1llt. Ez az id\u0151tartam a platform ind\u00edt\u00e1s\u00e1hoz k\u00e9pest van megadva.
-audit.kernelUpTime.client.useraction=Semmit sem kell tennie.
+audit.kernelUpTime.client.useraction=Nincs teend\u0151.
 
 # {0} The server name 
 info.java2security.started=CWWKE0909I: A(z) {0} kiszolg\u00e1l\u00f3 enged\u00e9lyezett Java 2 biztons\u00e1ggal elindult
-info.java2security.started.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-info.java2security.started.useraction=Semmit sem kell tennie.
+info.java2security.started.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+info.java2security.started.useraction=Nincs teend\u0151.
 
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: A k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem siker\u00fclt be\u00e1ll\u00edtani az alap\u00e9rtelmezett biztons\u00e1gkezel\u0151t: {0}.  Ez akkor fordulhat el\u0151, ha a biztons\u00e1gkezel\u0151 m\u00e1r be\u00e1ll\u00edt\u00e1sra ker\u00fclt, checkPermission met\u00f3dusa pedig nem enged\u00e9lyezi annak cser\u00e9j\u00e9t.
@@ -589,19 +588,19 @@ error.package.missingLibExtractDir.useraction=Telep\u00edtse \u00fajra a WebSphe
 
 info.server.pause.all.request.received=CWWKE0923I: K\u00e9r\u00e9s \u00e9rkezett az \u00f6sszes sz\u00fcneteltethet\u0151 \u00f6sszetev\u0151 v\u00e1rakoztat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3n.
 info.server.pause.all.request.received.explanation=Egy felhaszn\u00e1l\u00f3 k\u00e9r\u00e9st adott ki az \u00f6sszes sz\u00fcneteltethet\u0151 \u00f6sszetev\u0151 v\u00e1rakoztat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3n. A kiszolg\u00e1l\u00f3 meg fogja k\u00eds\u00e9relni az \u00f6sszetev\u0151k sz\u00fcneteltet\u00e9s\u00e9t. 
-info.server.pause.all.request.received.useraction=Nem kell semmit tennie.
+info.server.pause.all.request.received.useraction=Nincs teend\u0151.
 
 info.server.pause.request.received=CWWKE0924I: K\u00e9r\u00e9s \u00e9rkezett a k\u00f6vetkez\u0151 \u00f6sszetev\u0151k v\u00e1rakoztat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3n: {0}
 info.server.pause.request.received.explanation=Egy felhaszn\u00e1l\u00f3 k\u00e9r\u00e9st adott ki egyes \u00f6sszetev\u0151k v\u00e1rakoztat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3n. A kiszolg\u00e1l\u00f3 meg fogja k\u00eds\u00e9relni az \u00f6sszetev\u0151k sz\u00fcneteltet\u00e9s\u00e9t. 
-info.server.pause.request.received.useraction=Nem kell semmit tennie.
+info.server.pause.request.received.useraction=Nincs teend\u0151.
 
 info.server.resume.all.request.received=CWWKE0925I: K\u00e9r\u00e9s \u00e9rkezett az \u00f6sszes v\u00e1rakoztatott \u00f6sszetev\u0151 folytat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3n.
 info.server.resume.all.request.received.explanation=Egy felhaszn\u00e1l\u00f3 k\u00e9r\u00e9st adott ki az \u00f6sszes v\u00e1rakoztatott \u00f6sszetev\u0151 folytat\u00e1s\u00e1sra a kiszolg\u00e1l\u00f3n. A kiszolg\u00e1l\u00f3 meg fogja k\u00eds\u00e9relni az \u00f6sszetev\u0151k folytat\u00e1s\u00e1t.
-info.server.resume.all.request.received.useraction=Nem kell semmit tennie.
+info.server.resume.all.request.received.useraction=Nincs teend\u0151.
 
 info.server.resume.request.received=CWWKE0926I: K\u00e9r\u00e9s \u00e9rkezett a k\u00f6vetkez\u0151 \u00f6sszetev\u0151k folytat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3n: {0}
 info.server.resume.request.received.explanation=Egy felhaszn\u00e1l\u00f3 k\u00e9r\u00e9st adott ki egyes \u00f6sszetev\u0151k folytat\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3n. A kiszolg\u00e1l\u00f3 meg fogja k\u00eds\u00e9relni az \u00f6sszetev\u0151k folytat\u00e1s\u00e1t, amennyiben v\u00e1rakoznak.
-info.server.resume.request.received.useraction=Nem kell semmit tennie.
+info.server.resume.request.received.useraction=Nincs teend\u0151.
 
 error.pause.request.failed=CWWKE0927E: V\u00e1rakoztat\u00e1si k\u00e9r\u00e9s \u00e9rkezett, de az \u00f6sszetev\u0151k v\u00e1rakoztat\u00e1s\u00e1t lehet\u0151v\u00e9 tev\u0151 infrastrukt\u00fara nem \u00e1ll rendelkez\u00e9sre. A k\u00e9r\u00e9s nem feldolgozhat\u00f3. 
 error.pause.request.failed.explanation=Egy felhaszn\u00e1l\u00f3 sz\u00fcneteltet\u00e9si k\u00e9r\u00e9st adott ki. A k\u00e9r\u00e9st azonban nem lehetett feldolgozni. Lehet, hogy a kiszolg\u00e1l\u00f3 m\u00e9g inicializ\u00e1l vagy \u00e9ppen le\u00e1ll.
@@ -649,15 +648,15 @@ warning.server.status.missing.targets.useraction=Ellen\u0151rizze, hogy a megado
 
 info.server.pause.request.completed=CWWKE0938I: Egy v\u00e1rakoztat\u00e1si k\u00e9r\u00e9s v\u00e9grehajt\u00e1sra ker\u00fclt.
 info.server.pause.request.completed.explanation=Egy v\u00e1rakoztat\u00e1si k\u00e9r\u00e9s v\u00e9grehajt\u00e1sra ker\u00fclt.
-info.server.pause.request.completed.useraction=Nem kell semmit tennie.
+info.server.pause.request.completed.useraction=Nincs teend\u0151.
 
 info.server.resume.request.completed=CWWKE0939I: Egy folytat\u00e1si k\u00e9r\u00e9s v\u00e9grehajt\u00e1sra ker\u00fclt.
 info.server.resume.request.completed.explanation=Egy folytat\u00e1si k\u00e9r\u00e9s v\u00e9grehajt\u00e1sra ker\u00fclt.
-info.server.resume.request.completed.useraction=Nem kell semmit tennie.
+info.server.resume.request.completed.useraction=Nincs teend\u0151.
 
 info.envProductExtension=CWWKE0940I: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny term\u00e9kazonos\u00edt\u00f3ja {1} \u00e9s term\u00e9ktelep\u00edt\u00e9si helye {2}. Ez a term\u00e9kb\u0151v\u00edtm\u00e9ny a WLP_PRODUCT_EXT_DIR k\u00f6rnyezeti v\u00e1ltoz\u00f3 megad\u00e1s\u00e1val lett enged\u00e9lyezve. 
 info.envProductExtension.explanation= A WLP_PRODUCT_EXT_DIR k\u00f6rnyezeti v\u00e1ltoz\u00f3 a term\u00e9kb\u0151v\u00edtm\u00e9ny hely\u00e9re mutat. A kiszolg\u00e1l\u00f3 megtal\u00e1lta \u00e9s haszn\u00e1lja a term\u00e9kb\u0151v\u00edtm\u00e9nyt.
-info.envProductExtension.useraction=Nem kell semmit tennie.
+info.envProductExtension.useraction=Nincs teend\u0151.
 
 warning.variable.invalid=CWWKE0941W: A server.env f\u00e1jlban megadott {0} v\u00e1ltoz\u00f3deklar\u00e1ci\u00f3 \u00e9rv\u00e9nytelen, mert a v\u00e1ltoz\u00f3 neve nem alfanumerikus karaktereket tartalmaz. Az \u00e9rt\u00e9k nem ker\u00fcl felhaszn\u00e1l\u00e1sra.
 warning.variable.invalid.explanation=A server.env f\u00e1jlban megadott v\u00e1ltoz\u00f3nevek csak alfanumerikus karaktereket tartalmazhatnak.
@@ -698,6 +697,10 @@ error.package.extension.useraction=Adjon meg .jar f\u00e1jlkiterjeszt\u00e9s\u01
 error.package.usr.jar=CWWKE0951E: Az arch\u00edv f\u00e1jl neve nem v\u00e9gz\u0151dhet .jar f\u00e1jlkiterjeszt\u00e9sre az usr param\u00e9ter haszn\u00e1lata eset\u00e9n.
 error.package.usr.jar.explanation=Az --archive param\u00e9ter nem v\u00e9gz\u0151dhet .jar f\u00e1jlkiterjeszt\u00e9sre, ha az --include=usr param\u00e9ter meg van adva.
 error.package.usr.jar.useraction=Az --archive param\u00e9terben megadott f\u00e1jln\u00e9vhez adjon meg nem .jar f\u00e1jlkiterjeszt\u00e9ssel rendelkez\u0151 f\u00e1jlnevet, ha az --include=usr param\u00e9ter meg van adva.
+
+error.missing.version.files=CWWKE0952E: A verzi\u00f3inform\u00e1ci\u00f3k nem olvashat\u00f3k ki a(z) {0} k\u00f6nyvt\u00e1rb\u00f3l.
+error.missing.version.files.explanation=A verzi\u00f3inform\u00e1ci\u00f3s f\u00e1jlokat tartalmaz\u00f3 k\u00f6nyvt\u00e1r vagy nem l\u00e9tezik, vagy nem olvashat\u00f3 az aktu\u00e1lis felhaszn\u00e1l\u00f3 \u00e1ltal.
+error.missing.version.files.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6nyvt\u00e1r l\u00e9tezik \u00e9s az aktu\u00e1lis felhaszn\u00e1l\u00f3nak van hozz\u00e1 olvas\u00e1si enged\u00e9lye. 
 
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.

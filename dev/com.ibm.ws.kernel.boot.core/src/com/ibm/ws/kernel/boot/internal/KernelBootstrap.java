@@ -534,7 +534,6 @@ public class KernelBootstrap {
         final String[] headerFieldValues = { "liberty_message", serverHostName, wlpUserDir, serverName, consoleLogHeader, datetime, sequenceNumber };
 
         final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
-        Boolean omitJsonFields = Boolean.valueOf(System.getenv("WLP_LOGGING_OMIT_JSON_FIELD_MAPPINGS"));
 
         //bootstrap fieldMappings should take precedence
         String bsFieldMappings = bootProps.get("com.ibm.ws.logging.json.field.mappings");
@@ -545,13 +544,13 @@ public class KernelBootstrap {
             String[] keyValuePairs = fieldMappings.split(",");
             for (String pair : keyValuePairs) {
                 pair = pair.trim();
-                if (pair.endsWith(":") && omitJsonFields) //omitJsonFields beta guard
+                if (pair.endsWith(":"))
                     pair = pair + OMIT_FIELDS_STRING;
 
                 String[] entry = pair.split(":");
                 entry[0] = entry[0].trim();
 
-                if (entry.length == 2 && !pair.endsWith(":")) {
+                if (entry.length == 2) {
                     entry[1] = entry[1].trim();
                     if (headerFieldNames.contains(entry[0]))
                         headerFieldNames.set(headerFieldNames.indexOf(entry[0]), entry[1]);

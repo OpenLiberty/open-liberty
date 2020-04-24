@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: Das Konfigurationselement {0} enth\u00e4lt das nicht erkannte Attribut {1}.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Aktualisieren Sie die Anwendung so, das
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Eine an das verwaltete Steuerprogramm {0} \u00fcbergebene Task enth\u00e4lt die Ausf\u00fchrungseigenschaft {1} mit dem Wert {2}, der f\u00fcr verwaltete Steuerprogramme nicht g\u00fcltig ist.
 CWWKC1130.xprop.value.invalid.explanation=Einige Ausf\u00fchrungseigenschaftswerte sind f\u00fcr verwaltete Steuerprogramme nicht g\u00fcltig, k\u00f6nnen aber f\u00fcr andere Ressourcentypen wie Kontextservices und verwaltete Thread-Factorys g\u00fcltig sein.
 CWWKC1130.xprop.value.invalid.useraction=Aktualisieren Sie die Anwendung und lassen Sie die Ausf\u00fchrungseigenschaft weg oder setzen Sie die Eigenschaft auf einen g\u00fcltigen Wert.
+
+CWWKC1156.not.supported=CWWKC1156E: Die angeforderte Operation ist nicht als statische Methode in der ManagedExecutor-Implementierung von CompletableFuture verf\u00fcgbar. Verwenden Sie stattdessen die folgende Operation: {0}.
+CWWKC1156.not.supported.explanation=Die ManagedExecutor-Implementierung CompletableFuture bietet keine statischen Methoden\u00e4quivalente zu den statischen Methoden von CompletableFuture.
+CWWKC1156.not.supported.useraction=Aktualisieren Sie die Anwendung, um die Methode zu verwenden, die in der Nachricht anstelle der angeforderten Operation empfohlen wird.

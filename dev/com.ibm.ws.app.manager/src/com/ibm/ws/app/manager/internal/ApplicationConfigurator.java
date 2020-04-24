@@ -945,7 +945,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             synchronized (this) {
                 final UpdateEpisodeState episode = joinEpisode();
                 if (episode != null) {
-                    episode.createAppForceRestartDependency(notification.getFuture());
+                    episode.createAppForceRestartDependency(notification.getFuture(), updateManager.getNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED));
                 }
             }
         }
@@ -1040,6 +1040,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             // have a registered app handler for
             throw new RuntimeException("unregisterAppHandler: appType=" + appType + ": appTypeSupport == null");
         }
+
         typeSupport.setHandler(null);
         Collection<NamedApplication> appsUsingHandler = new HashSet<NamedApplication>();
         for (NamedApplication app : _appFromName.values()) {
@@ -1051,6 +1052,12 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         if (!appsUsingHandler.isEmpty()) {
             final UpdateEpisodeState episode = joinEpisode();
             if (episode != null) {
+                if (_tc.isDebugEnabled()) {
+                    Tr.debug(_tc, "app type: ", appType);
+                }
+                if (appType.equals("rar")) {
+                    episode.removeRarsStartedDependency();
+                }
                 episode.unsetAppHandler(appsUsingHandler);
                 episode.dropReference();
             }
@@ -1451,19 +1458,29 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             });
         }
 
+        /**
+         * If we unset the RAR handler, remove the dependency on waiting for RARs to start
+         */
+        public void removeRarsStartedDependency() {
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, "Removing rar start deps");
+            }
+            rarsHaveStarted.setResult(true);
+        }
+
         public void deactivate() {
             if (!appsStarting.isDone()) {
                 appsStarting.setResult(true);
             }
         }
 
-        public void createAppForceRestartDependency(Future<Boolean> appForceRestart) {
+        public void createAppForceRestartDependency(Future<Boolean> appForceRestart, RuntimeUpdateNotification runtimeUpdateNotification) {
             _futureMonitor.onCompletion(appForceRestart, new CompletionListener<Boolean>() {
                 @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (result) {
                         synchronized (ApplicationConfigurator.this) {
-                            restartApps(_appFromName.values());
+                            restartApps(_appFromName.values(), runtimeUpdateNotification);
                         }
                     } else {
                         dropReference();
@@ -1691,7 +1708,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
                     ApplicationDependency startedFuture = null;
                     if (isRARApp) {
-                        startedFuture = createDependency("resolves when the " + appConfig.getLabel() + " has started");
+                        startedFuture = createDependency("resolves when the RAR " + appConfig.getLabel() + " has started");
                         rarAppsStartedFutures.add(startedFuture);
                     }
                     asm.setAppHandler(null);
@@ -1700,7 +1717,12 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             }
         }
 
-        void restartApps(Collection<NamedApplication> apps) {
+        /**
+         * restartApps will restart all applications in response to an AppForceRestart directive on a feature
+         *
+         * @param featureUpdatesComplete
+         */
+        void restartApps(Collection<NamedApplication> apps, RuntimeUpdateNotification featureUpdatesComplete) {
             for (NamedApplication app : apps) {
                 if (!app.isConfigured()) {
                     // skip apps which haven't been configured yet, they can't be using
@@ -1712,6 +1734,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                     ApplicationConfig appConfig = app.getConfig();
                     final boolean isRARApp = "rar".equals(appConfig.getType());
                     final Collection<ApplicationDependency> appStartingFutures = new LinkedList<ApplicationDependency>();
+                    ApplicationDependency featuresComplete = new ApplicationDependency(_futureMonitor, featureUpdatesComplete.getFuture(), "Resolves when feature updates are complete after AppForceRestart");
+                    appStartingFutures.add(featuresComplete);
                     if (isRARApp) {
                         appStartingFutures.add(_appManagerRARSupportDependency);
                         appStartingFutures.add(appsStarting);
@@ -1732,7 +1756,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
                     ApplicationDependency startedFuture = null;
                     if (isRARApp) {
-                        startedFuture = createDependency("resolves when the " + appConfig.getLabel() + " has started");
+                        startedFuture = createDependency("resolves when the RAR App" + appConfig.getLabel() + " has started");
                         rarAppsStartedFutures.add(startedFuture);
                     }
 
@@ -1785,7 +1809,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
                         ApplicationDependency startedFuture = null;
                         if (isRARApp) {
-                            startedFuture = createDependency("resolves when the " + appConfig.getLabel() + " has started");
+                            startedFuture = createDependency("resolves when the RAR " + appConfig.getLabel() + " has started");
                             rarAppsStartedFutures.add(startedFuture);
                         }
 

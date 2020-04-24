@@ -60,6 +60,16 @@ kafka.library.not.present.CWMRX1006E=CWMRX1006E: Classes from the kafka-clients 
 kafka.library.not.present.CWMRX1006E.explanation=Applications that use the Reactive Messaging Kafka Client must provide the kafka-clients JAR file and its dependencies. They can provide this file and its dependencies either by packaging it as a library within the application or by providing it as a shared library.
 kafka.library.not.present.CWMRX1006E.useraction=Package the kafka-clients JAR file and its dependencies as libraries in your application or as a shared library. The kafka-clients JAR file can be downloaded from the Apache Kafka website or from Maven Central.
 
+# A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E.explanation=An error that occurred when the Kafka connector was set up for an incoming reactive messaging channel prevents normal operation of MicroProfile Reactive Messaging.
+kafka.create.incoming.error.CWMRX1007E.useraction=Review the error message, server message.log, and FFDC logs to identify the problem.
+
+# A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=An error that occurred when the Kafka connector was set up for an outgoing reactive messaging channel prevents normal operation of MicroProfile Reactive Messaging.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Review the error message, server message.log, and FFDC logs to identify the problem.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

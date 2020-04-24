@@ -97,7 +97,7 @@ public class CollectorJsonUtils_JSON {
         //@formatter:on
 
         if (tags != null) {
-            jsonBuilder.addField("\"ibm_tags\":", CollectorJsonHelpers.jsonifyTags(tags), false, false);
+            jsonBuilder.addPreformattedField("ibm_tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
         return jsonBuilder.build().toString();
@@ -140,7 +140,7 @@ public class CollectorJsonUtils_JSON {
         //@formatter:on
 
         if (tags != null) {
-            jsonBuilder.addField("\"ibm_tags\":", CollectorJsonHelpers.jsonifyTags(tags), false, false);
+            jsonBuilder.addPreformattedField("ibm_tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
         return jsonBuilder.build().toString();
@@ -212,9 +212,9 @@ public class CollectorJsonUtils_JSON {
             }
         }
 
-        //append tags like a string
+        //append tags with preformatted string field value
         if (tags != null) {
-            jsonBuilder.addField("\"ibm_tags\":", CollectorJsonHelpers.jsonifyTags(tags), false, false);
+            jsonBuilder.addPreformattedField("ibm_tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
         return jsonBuilder.build().toString();
@@ -260,18 +260,12 @@ public class CollectorJsonUtils_JSON {
                     }
 
                 } //There shouldn't be any list items from Audit's Generic Data object
+
             }
 
         }
 
         return jsonBuilder.build().toString();
-    }
-
-    private static StringBuilder addTagNameForVersion(StringBuilder sb) {
-
-        sb.append(",\"ibm_tags\":");
-
-        return sb;
     }
 
 }

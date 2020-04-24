@@ -399,19 +399,20 @@ public class AcmeFatUtils {
 	 * @param server
 	 *            The server to check.
 	 */
-	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+	public static final void waitForSSLToCreateKeystore(LibertyServer server) {
 		assertNotNull("ACME did not create a new certificate.",
 				server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
 	}
 
 	/**
-	 * Wait for the ACME service to report that the certificate has been
-	 * replaced.
+	 * Wait for the ACME service to report that a new certificate has been
+	 * created.
 	 * 
 	 * @param server
+	 *            The server to check.
 	 */
-	public static final void waitForAcmeToReplaceCertificate(LibertyServer server) {
-		assertNotNull("ACME did not replace the certificate.", server.waitForStringInLog("CWPKI2007I"));
+	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+		assertNotNull("ACME did not create the certificate.", server.waitForStringInLog("CWPKI2007I"));
 	}
 
 	/**
@@ -490,7 +491,7 @@ public class AcmeFatUtils {
 		 * Generate the new keystore with the self-signed certificate.
 		 */
 		KeytoolSSLCertificateCreator creator = new KeytoolSSLCertificateCreator();
-		certFile = creator.createDefaultSSLCertificate(filePath, SELF_SIGNED_KEYSTORE_PASSWORD,
+		certFile = creator.createDefaultSSLCertificate(filePath, SELF_SIGNED_KEYSTORE_PASSWORD, "PKCS12", null,
 				DefaultSSLCertificateCreator.DEFAULT_VALIDITY, "cn=localhost",
 				DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG, null);
 

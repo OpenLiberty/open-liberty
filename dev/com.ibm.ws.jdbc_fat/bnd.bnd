@@ -32,6 +32,7 @@ fat.test.databases: true
 
 -buildpath: \
 	fattest.databases;version=latest,\
+	org.slf4j:slf4j-api;version=1.7.7,\
 	com.ibm.ws.componenttest,\
 	com.ibm.websphere.javaee.annotation.1.1,\
 	com.ibm.websphere.javaee.transaction.1.1,\

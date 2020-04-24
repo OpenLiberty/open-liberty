@@ -3,16 +3,16 @@ bVersion=1.0
 
 Bundle-Name: weld OSGi bundle
 Bundle-SymbolicName: com.ibm.ws.org.jboss.weld3
-Bundle-Description: Weld OSGi Bundle, version 3.1.1.Final
+Bundle-Description: Weld OSGi Bundle, version 3.1.4.Final
 Implementation-Title: Weld OSGi Bundle
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.html
-Implementation-Version: 3.1.1.Final
+Implementation-Version: 3.1.4.Final
 Embed-Dependency: *; scope=compile; inline=true
 Specification-Title: JSR-365 Contexts and Dependency Injection for Java
 Specification-Version: 2.0
 DynamicImport-Package: *
 Export-Package: !org.jboss.weld.environment.se.*, \
- org.jboss.*;version="3.1.1.Final", \
+ org.jboss.*;version="3.1.4.Final", \
  org.jboss.weldx.transaction;version="1.0.16"
 Private-Package: org.jboss.weld.environment.se.*
 Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";re\
@@ -76,7 +76,7 @@ Service-Component: \
         |org.jboss.weld.util.collections"
 
 Include-Resource: \
-  @${repo;org.jboss.weld:weld-osgi-bundle;[3.1.1.Final,3.2)}!/!META-INF/maven/*,\
-  @${repo;org.jboss.weld.se:weld-se-core;[3.1.1.Final,3.2)}!/!META-INF/maven/*
+  @${repo;org.jboss.weld:weld-osgi-bundle;[3.1.4.Final,3.2)}!/!META-INF/maven/*,\
+  @${repo;org.jboss.weld.se:weld-se-core;[3.1.4.Final,3.2)}!/!META-INF/maven/*
 
 

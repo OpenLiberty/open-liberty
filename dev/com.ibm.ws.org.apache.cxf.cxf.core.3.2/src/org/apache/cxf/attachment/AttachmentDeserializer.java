@@ -43,6 +43,7 @@ import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 
 public class AttachmentDeserializer {
@@ -132,7 +133,9 @@ public class AttachmentDeserializer {
     }
 
     protected void initializeRootMessage() throws IOException {
-        contentType = (String) message.get(Message.CONTENT_TYPE);
+        //Liberty code change start
+        contentType = (String) ((MessageImpl) message).getContentType();
+        //Liberty code change end
 
         if (contentType == null) {
             throw new IllegalStateException("Content-Type can not be empty!");
@@ -164,7 +167,9 @@ public class AttachmentDeserializer {
             if (!StringUtils.isEmpty(val)) {
                 String cs = HttpHeaderHelper.findCharset(val);
                 if (!StringUtils.isEmpty(cs)) {
-                    message.put(Message.ENCODING, HttpHeaderHelper.mapCharset(cs));
+                    //Liberty code change start
+                    ((MessageImpl) message).setEncoding(HttpHeaderHelper.mapCharset(cs));
+                    //Liberty code change end
                 }
             }
             val = AttachmentUtil.getHeader(ih, "Content-Transfer-Encoding");

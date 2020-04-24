@@ -865,11 +865,13 @@ public class WSKeyStore extends Properties {
 
                         if (create || name.endsWith(LibertyConstants.DEFAULT_KEY_STORE_FILE)) {
 
+                            boolean acmeFailure = false;
                             long start = System.currentTimeMillis();
                             Tr.info(tc, "ssl.create.certificate.start");
 
                             File parentFile = kFile.getParentFile();
                             if (parentFile == null || parentFile.isDirectory() || parentFile.mkdirs()) {
+                                DefaultSSLCertificateCreator certCreator = null;
                                 try {
                                     String serverName = cfgSvc.getServerName();
                                     List<String> san = null;
@@ -877,8 +879,8 @@ public class WSKeyStore extends Properties {
                                         san = createCertSANInfo(genKeyHostName);
                                     }
                                     // Call Certificate factory to go create the certificate
-                                    DefaultSSLCertificateCreator certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
-                                    certCreator.createDefaultSSLCertificate(keyStoreLocation, password, DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
+                                    certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
+                                    certCreator.createDefaultSSLCertificate(keyStoreLocation, password, type, provider, DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                                             new DefaultSubjectDN(genKeyHostName, serverName).getSubjectDN(),
                                                                             DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG,
                                                                             san);
@@ -888,8 +890,17 @@ public class WSKeyStore extends Properties {
                                     Tr.error(tc, "ssl.create.certificate.password.error");
                                     throw e;
                                 } catch (CertificateException e) {
-                                    Tr.error(tc, "ssl.create.certificate.error", keyStoreLocation);
-                                    throw e;
+                                    Tr.error(tc, "ssl.create.certificate.error", Tr.formatMessage(tc, "ssl.create.certificate.error.reason2", e.getMessage()));
+
+                                    /*
+                                     * Don't throw exception for ACME failures. We need the the keystore configuration
+                                     * to be available so that updates to ACME configuration can still generate the certificate in the keystore. If we throw the exception, the
+                                     * keystore configuration dosn't exist and ACME can't generate it.
+                                     */
+                                    acmeFailure = DefaultSSLCertificateCreator.TYPE_ACME.equals(certCreator.getType());
+                                    if (!acmeFailure) {
+                                        throw e;
+                                    }
                                 }
 
                                 JSSEProvider jsseProvider = JSSEProviderFactory.getInstance();
@@ -901,11 +912,13 @@ public class WSKeyStore extends Properties {
                                 // load the keystore
                                 ks1.load(is, password.toCharArray());
                             } else {
-                                Tr.error(tc, "ssl.create.certificate.error", keyStoreLocation);
+                                Tr.error(tc, "ssl.create.certificate.error", Tr.formatMessage(tc, "ssl.create.certificate.error.reason1", keyStoreLocation));
                                 throw new SSLException("KeyStore \"" + keyStoreLocation + "\" could not be created.");
                             }
 
-                            Tr.audit(tc, "ssl.create.certificate.end", TimestampUtils.getElapsedTime(start), keyStoreLocation);
+                            if (!acmeFailure) {
+                                Tr.audit(tc, "ssl.create.certificate.end", TimestampUtils.getElapsedTime(start), keyStoreLocation);
+                            }
                         } else {
                             throw new SSLException("KeyStore \"" + keyStoreLocation + "\" does not exist.");
                         }
@@ -1081,7 +1094,7 @@ public class WSKeyStore extends Properties {
             }
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Exception initializing KeyStore; " + e);
+                Tr.debug(tc, "Exception initializing KeyStore; " + e, e);
             throw e;
         }
 

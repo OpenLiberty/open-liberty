@@ -500,7 +500,7 @@ public class ClientAuthentication {
         } catch (OAuth20MissingParameterException e) {
             throw e;
         } catch (Exception e1) {
-            Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName);
+            Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName); // CWOAU0074E
             throw new OidcServerException("invalid_resource_owner_credential", OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_BAD_REQUEST, e1);
         }
         return valid;
@@ -530,13 +530,32 @@ public class ClientAuthentication {
             return null;
         }
         accessToken = assertTokenIsUsedByAllowedClient(accessToken, clientAuthnData, provider);
-        if (accessToken != null && accessToken.getGrantType().equals(OAuth20Constants.APP_PASSWORD)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "checkAppPassword has found access token " + accessToken);
-            }
-            return accessToken;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "checkAppPassword obtained access token: " + accessToken);
         }
-        return null;
+        // returning null will produce CWWKS0074E
+        if (accessToken == null) {
+            return null;
+        }
+        if (accessToken.getGrantType().equals(OAuth20Constants.APP_PASSWORD)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "checkAppPassword obtained access token for an app password " + accessToken);
+            }
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "checkAppPassword access token is not for app password, return null");
+            }
+            return null;
+        }
+        if (!accessToken.getUsername().equals(userName)) { // username of request had to match username of app-pw.
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "UserName from token request: " + userName +
+                        " does not match userName of app password: " + accessToken.getUsername() + ", return null");
+            }
+            return null;
+        }
+
+        return accessToken;
 
     }
 

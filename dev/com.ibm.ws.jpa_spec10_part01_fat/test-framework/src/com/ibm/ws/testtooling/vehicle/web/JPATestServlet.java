@@ -16,14 +16,19 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64.Decoder;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +47,62 @@ public abstract class JPATestServlet extends FATServlet {
     private static final long serialVersionUID = -4038309130483462162L;
 
     private static int portNumber = 0;
+
+    public final static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    public final static ObjectName fatServerInfoMBeanObjectName;
+
+    static {
+        ObjectName on = null;
+        try {
+            on = new ObjectName("WebSphereFAT:name=ServerInfo");
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            fatServerInfoMBeanObjectName = on;
+        }
+    }
+
+    protected Set<String> getInstalledFeatures() {
+        HashSet<String> retVal = new HashSet<String>();
+
+        try {
+            Set<String> instFeatureSet = (Set<String>) mbeanServer.getAttribute(fatServerInfoMBeanObjectName, "InstalledFeatures");
+            if (instFeatureSet != null) {
+                retVal.addAll(instFeatureSet);
+            }
+        } catch (Throwable t) {
+        }
+        return retVal;
+    }
+
+    protected boolean isUsingJPA20Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.0");
+    }
+
+    protected boolean isUsingJPA21Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.1");
+    }
+
+    protected boolean isUsingJPA22Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.2");
+    }
+
+    protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.1"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.1");
+    }
+
+    protected boolean isUsingJPA22ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.2"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.2");
+    }
 
     protected final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
     protected String testClassName;
