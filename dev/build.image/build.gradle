@@ -357,6 +357,7 @@ if (isAutomatedBuild) {
 
 // Generate checksums
 task genChecksums() {
+  enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("iFix")
   dependsOn parent.subprojects.assemble
   doLast {
  	generateChecksums(ant)
@@ -482,7 +483,7 @@ publishing {
             version project.version
             artifact zipOpenLibertyDev
         }
-        if (isAutomatedBuild) {
+        if (isAutomatedBuild && !rootProject.userProps["ghe.build.type"].contains("iFix")) {
             openLibertyAll(MavenPublication) {
                 artifactId 'openliberty-all'
                 version project.version
