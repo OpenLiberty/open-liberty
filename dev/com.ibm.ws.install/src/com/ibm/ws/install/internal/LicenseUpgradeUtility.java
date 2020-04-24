@@ -187,14 +187,14 @@ public class LicenseUpgradeUtility {
         // Prompt for word-wrapped display of license agreement & information
         boolean view;
 
-        SelfExtract.wordWrappedOut(SelfExtract.format("showAgreement", "--viewLicenseAgreement"));
+        //SelfExtract.wordWrappedOut(SelfExtract.format("showAgreement", "--viewLicenseAgreement"));
         view = SelfExtract.getResponse(SelfExtract.format("promptAgreement"), "", "xX");
         if (view) {
             SelfExtract.wordWrappedOut(getStrFromFile(laFilePath));
             System.out.println();
         }
 
-        SelfExtract.wordWrappedOut(SelfExtract.format("showInformation", "--viewLicenseInfo"));
+        //SelfExtract.wordWrappedOut(SelfExtract.format("showInformation", "--viewLicenseInfo"));
         view = SelfExtract.getResponse(SelfExtract.format("promptInfo"), "", "xX");
         if (view) {
             SelfExtract.wordWrappedOut(getStrFromFile(liFilePath));
