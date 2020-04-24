@@ -405,7 +405,6 @@ public class TAIAuthenticator implements WebAuthenticator {
     }
 
     private boolean isAddLtpaCookieToResp(Subject subject, SubjectHelper subjectHelper, String taiId) {
-
         //Check for SSO SAML disable LTPA property in the subject
         Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getHashtableFromSubject(subject, samlSsoDisableLtpaCookie);
         if (hashtable != null) { // found the SSO SAML disable LTPA property so do not add cookie to the response
