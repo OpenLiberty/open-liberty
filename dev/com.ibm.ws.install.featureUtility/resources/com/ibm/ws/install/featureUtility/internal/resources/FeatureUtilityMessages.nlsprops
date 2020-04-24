@@ -27,6 +27,7 @@ MSG_DEFAULT_REPO_USEAGE_LABEL=Use Default Repository:
 MSG_DEFAULT_REPO_NAME_LABEL=Default Assets Repository:
 MSG_DEFAULT_REPO_NAME=Maven Central Repository
 MSG_CONFIG_REPO_LABEL=Configured Repositories
+MSG_MAVEN_LOCAL_REPO=Maven Local Repository
 MSG_NO_CONFIG_REPO=No repositories configured
 MSG_UNSPECIFIED=<Unspecified>
 MSG_PASSWORD_NOT_ENCODED_PROXY=The password for this proxy is not encoded. To encode the password, run the securityUtility encode action with the --encoding option set to a supported encoding type. The supported types are xor (default), aes, and hash.

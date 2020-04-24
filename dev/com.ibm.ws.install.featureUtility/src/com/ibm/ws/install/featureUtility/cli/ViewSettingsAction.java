@@ -11,6 +11,7 @@
 package com.ibm.ws.install.featureUtility.cli;
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -21,6 +22,7 @@ import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.RepositoryConfigValidationResult;
+import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.props.PropertiesUtils;
 import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.MavenRepository;
@@ -102,8 +104,24 @@ public class ViewSettingsAction implements ActionHandler {
 
     }
 
+    private void showLocalRepository(){
+        StringBuffer sb = new StringBuffer();
+        String featureLocalRepo = FeatureUtilityProperties.getFeatureLocalRepo();
+        if(featureLocalRepo == null){
+            featureLocalRepo = Paths.get(System.getProperty("user.home"), ".m2", "repository", "").toString();
+        }
+        sb.append(PropertiesUtils.getMessage("FIELD_LOCATION") + " " + featureLocalRepo).append(InstallUtils.NEWLINE);
+        sb.append(InstallUtils.NEWLINE);
+
+        System.out.println(PropertiesUtils.getMessage("MSG_MAVEN_LOCAL_REPO"));
+        System.out.println(PropertiesUtils.CmdlineConstants.DASHES);
+
+        System.out.print(sb.toString());
+    }
+
     private void showRepositories() throws InstallException {
         StringBuffer sb = new StringBuffer();
+
         for (MavenRepository repo : FeatureUtilityProperties.getMirrorRepositories()) {
             String r = repo.getName();
             String url = repo.getRepositoryUrl();
@@ -247,6 +265,7 @@ public class ViewSettingsAction implements ActionHandler {
     private void showSettings() throws InstallException {
         showHeader();
         showValidationResults();
+        showLocalRepository();
         showRepositories();
         showProxyInfo();
 
