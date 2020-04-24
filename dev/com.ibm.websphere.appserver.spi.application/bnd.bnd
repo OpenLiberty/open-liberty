@@ -15,9 +15,9 @@ Bundle-Name: WebSphere Application Manager SPI
 Bundle-Description: WebSphere Application Manager SPI, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.spi.application
 
-Import-Package: com.ibm.wsspi.application.handler
+Import-Package: com.ibm.wsspi.application,com.ibm.wsspi.application.handler
 
-Export-Package: com.ibm.wsspi.application.handler
+Export-Package: com.ibm.wsspi.application,com.ibm.wsspi.application.handler
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.application/pom.xml=com.ibm.websphere.appserver.spi.application.pom}
 
