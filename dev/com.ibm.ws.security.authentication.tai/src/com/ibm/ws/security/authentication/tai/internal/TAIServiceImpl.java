@@ -28,9 +28,11 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 
 /**
  * TAI service handle the following scenarios:
- * 1) One or more shared library interceptors.
- * 2) One or more user feature interceptors.
- * 3) One or more shared library interceptors and one or more user feature interceptors.
+ * 1) One or more shared library interceptors with TAI configured in server.xml
+ * 2) One or more user feature interceptors with TAI configured in server.xml
+ * 3) One or more shared library interceptors and one or more user feature interceptors with TAI configured in server.xml.
+ *
+ * The TAIServiceImpl service will not be available if there is no trustAssociation configuration in server.xml file
  */
 public class TAIServiceImpl implements TAIService {
     private static final TraceComponent tc = Tr.register(TAIServiceImpl.class);
@@ -46,18 +48,18 @@ public class TAIServiceImpl implements TAIService {
     private final Map<String, TrustAssociationInterceptor> invokeAfterSSOTais = new LinkedHashMap<String, TrustAssociationInterceptor>();
     private final Map<String, Boolean> disableLtpaCookieTais = new HashMap<String, Boolean>();
 
-    private final Set<String> orderedOfInterceptorIds = new TreeSet<String>();
+    private final Set<String> orderOfInterceptorIds = new TreeSet<String>();
 
     protected synchronized void setInterceptorService(ServiceReference<TrustAssociationInterceptor> ref) {
         String id = getComponentId(ref);
-        orderedOfInterceptorIds.add(id);
+        orderOfInterceptorIds.add(id);
         interceptorServiceRef.putReference(id, ref);
-        initTAIs(id);
+        initTAI(id);
     }
 
     protected synchronized void unsetInterceptorService(ServiceReference<TrustAssociationInterceptor> ref) {
         String id = getComponentId(ref);
-        orderedOfInterceptorIds.remove(id);
+        orderOfInterceptorIds.remove(id);
         interceptorServiceRef.removeReference(id, ref);
         clearTaiMaps(id);
     }
@@ -69,88 +71,87 @@ public class TAIServiceImpl implements TAIService {
 
     protected synchronized void modified(Map<String, Object> props) {
         taiConfig = new TAIConfigImpl(props);
-        clearTaiMaps();
-        initTAIs();
     }
 
     protected synchronized void deactivate(ComponentContext cc) {
         interceptorServiceRef.deactivate(cc);
+        orderOfInterceptorIds.clear();
         clearTaiMaps();
     }
 
-    void initTAIs() {
-        for (String id : orderedOfInterceptorIds) {
-            initTAIs(id);
+    void initAllTAIs(String newTaiId) {
+        if (newTaiId != null) {
+            orderOfInterceptorIds.add(newTaiId);
         }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "invokeBeforeSSOTais " + invokeBeforeSSOTais.toString());
-            Tr.debug(tc, "invokeAfterSSOTais " + invokeAfterSSOTais.toString());
-            Tr.debug(tc, "disableLtpaCookieTais " + disableLtpaCookieTais.toString());
+        clearTaiMaps();
+        for (String id : orderOfInterceptorIds) {
+            initTAI(id);
         }
     }
 
     /**
      * @param id
      */
-    private void initTAIs(String id) {
+    void initTAI(String id) {
         Object interceptor = interceptorServiceRef.getService(id);
-        if (interceptor instanceof InterceptorConfigImpl) {
-            processSharedLibTAI(id, interceptor);
-
-        } else if (interceptor instanceof TrustAssociationInterceptor) {
-            processUserFeatureTAI(id, interceptor);
+        if (interceptor != null) {
+            if (interceptor instanceof InterceptorConfigImpl) {
+                processSharedLibrary(id, (InterceptorConfigImpl) interceptor);
+            } else if (interceptor instanceof TrustAssociationInterceptor) {
+                processUserFeature(id, (TrustAssociationInterceptor) interceptor);
+            }
+            printTaiMap();
+        } else {
+            clearTaiMaps(id);
         }
+    }
 
+    private void printTaiMap() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "invokeBeforeSSOTais " + invokeBeforeSSOTais.toString());
-            Tr.debug(tc, "invokeAfterSSOTais " + invokeAfterSSOTais.toString());
+            Tr.debug(tc, "invokeAfterSSOTais  " + invokeAfterSSOTais.toString());
             Tr.debug(tc, "disableLtpaCookieTais " + disableLtpaCookieTais.toString());
         }
     }
 
     /**
      * @param id
-     * @param interceptor
+     * @param itcConf
      */
-    private void processSharedLibTAI(String id, Object interceptor) {
-        InterceptorConfigImpl itcConf = (InterceptorConfigImpl) interceptor;
+    private void processSharedLibrary(String id, InterceptorConfigImpl itcConf) {
         TrustAssociationInterceptor tai = itcConf.getInterceptorInstance(this);
+        updateTaiMaps(id, tai, itcConf.isInvokeBeforeSSO(), itcConf.isInvokeAfterSSO(), itcConf.isDisableLtpaCookie());
+    }
 
-        if (itcConf.isInvokeBeforeSSO()) {
+    /**
+     * @param id
+     * @param iterceptor
+     */
+    private void processUserFeature(String id, TrustAssociationInterceptor tai) {
+        TAIUtil taiUtil = new TAIUtil(interceptorServiceRef, id);
+        updateTaiMaps(id, tai, taiUtil.isInvokeBeforeSSO(), taiUtil.isInvokeAfterSSO(), taiUtil.isDisableLtpaCookie());
+    }
+
+    /**
+     * @param id
+     * @param tai
+     * @param beforeSso
+     * @param afterSso
+     * @param disableLtpaCookie
+     */
+    private void updateTaiMaps(String id, TrustAssociationInterceptor tai, boolean beforeSso, boolean afterSso, boolean disableLtpaCookie) {
+        if (beforeSso) {
             invokeBeforeSSOTais.put(id, tai);
         }
-        if (itcConf.isInvokeAfterSSO()) {
+        if (afterSso) {
             invokeAfterSSOTais.put(id, tai);
         }
-        if (itcConf.isDisableLtpaCookie()) {
-            disableLtpaCookieTais.put(id, true);
-        }
-    }
-
-    /**
-     * @param interceptorId
-     * @param itc
-     */
-    private void processUserFeatureTAI(String interceptorId, Object interceptor) {
-        TAIUtil taiUtil = new TAIUtil(interceptorServiceRef, interceptorId);
-        //TrustAssociationInterceptor tai = (TrustAssociationInterceptor) interceptor;
-        //taiUtil.processProps(interceptorServiceRef, interceptorId);
-
-        if (taiUtil.isInvokeBeforeSSO()) {
-            invokeBeforeSSOTais.put(interceptorId, (TrustAssociationInterceptor) interceptor);
-        }
-        if (taiUtil.isInvokeAfterSSO()) {
-            invokeAfterSSOTais.put(interceptorId, (TrustAssociationInterceptor) interceptor);
-        }
-        if (taiUtil.isDisableLtpaCookie()) {
-            disableLtpaCookieTais.put(interceptorId, taiUtil.isDisableLtpaCookie());
-        }
+        disableLtpaCookieTais.put(id, true);
     }
 
     @Override
-    public Map<String, TrustAssociationInterceptor> getTais(boolean invokeBeforeSSO) {
-        if (invokeBeforeSSO) {
+    public Map<String, TrustAssociationInterceptor> getTais(boolean beforeSso) {
+        if (beforeSso) {
             return invokeBeforeSSOTais;
         } else {
             return invokeAfterSSOTais;
@@ -198,12 +199,9 @@ public class TAIServiceImpl implements TAIService {
      * Clear a TAI entry map for invokeBeforeSSO, invokeAfterSSO and disableLtapCookie
      */
     private void clearTaiMaps(String entry) {
-        if (invokeBeforeSSOTais.get(entry) != null)
-            invokeBeforeSSOTais.remove(entry);
-        if (invokeAfterSSOTais.get(entry) != null)
-            invokeAfterSSOTais.remove(entry);
-        if (disableLtpaCookieTais.get(entry) != null)
-            disableLtpaCookieTais.remove(entry);
+        invokeBeforeSSOTais.remove(entry);
+        invokeAfterSSOTais.remove(entry);
+        disableLtpaCookieTais.remove(entry);
     }
 
     private String getComponentId(ServiceReference<TrustAssociationInterceptor> ref) {

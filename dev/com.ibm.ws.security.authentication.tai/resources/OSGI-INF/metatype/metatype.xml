@@ -26,7 +26,7 @@
             required="false" type="String" cardinality="2147483647" />
         <AD id="continueAfterUnprotectedURI" name="%continueAfterUnprotectedURI" description="%continueAfterUnprotectedURI.desc"
             required="true" type="Boolean" default="false" />  
-        <AD id="disableLtpaCookie" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
+        <AD id="disableLtpaCookie" ibm:beta="true" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
             required="false" type="Boolean" default="false"/>          
     </OCD>
 
@@ -47,8 +47,8 @@
         <AD id="invokeAfterSSO" name="%invokeAfterSSO" description="%invokeAfterSSO.desc"
             required="true" type="Boolean"
             default="true" />
-        <AD id="disableLtpaCookie" ibm:beta="true" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
-            required="false" type="Boolean" default="false"/>         
+        <AD id="disableLtpaCookie" ibm:beta="true" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/> 
         <AD id="libraryRef" name="%libraryRef" description="%libraryRef.desc"
             ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary"
             required="true" type="String" />            

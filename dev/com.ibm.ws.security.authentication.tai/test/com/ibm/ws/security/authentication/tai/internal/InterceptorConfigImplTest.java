@@ -97,7 +97,6 @@ public class InterceptorConfigImplTest {
         InterceptorConfigImpl interceptorCfg = new InterceptorConfigImpl(props);
         assertFalse("invoke before SSO is false", interceptorCfg.isInvokeBeforeSSO());
         assertFalse("invoke after SSO is false", interceptorCfg.isInvokeAfterSSO());
-        assertFalse("disable ltpa cookie is false", interceptorCfg.isDisableLtpaCookie());
     }
 
     @Test
@@ -122,7 +121,6 @@ public class InterceptorConfigImplTest {
         assertEquals("id is id", KEY_ID, interceptorCfg.getId());
         assertTrue("invoke before SSO is true", interceptorCfg.isInvokeBeforeSSO());
         assertTrue("invoke after SSO is true", interceptorCfg.isInvokeAfterSSO());
-        assertTrue("disable ltpa cookie is true", interceptorCfg.isDisableLtpaCookie());
     }
 
     @Test

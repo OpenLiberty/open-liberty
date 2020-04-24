@@ -38,18 +38,6 @@ public class SubjectHelper {
     private static final TraceComponent tc = Tr.register(SubjectHelper.class);
 
     /**
-     * This key maps to a boolean property in a Subject's private credentials
-     * hashtable. When the property is true, the authentication service will
-     * not put a LTPA cookie in the response and will not use the SSO LTPA cache key to cache the subject.
-     */
-    private static final String INTERNAL_DISABLE_SSO_LTPA_COOKIE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cookie";
-
-    // SSO SAML property for disable LTPA cookie
-    private final static String DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER = "com.ibm.ws.saml.spcookie.session.not.on.or.after";
-
-    private static final String[] disableSsoLtpaCookieProps = new String[] { INTERNAL_DISABLE_SSO_LTPA_COOKIE, DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER };
-
-    /**
      * Check whether the subject is un-authenticated or not.
      *
      * @param subject {@code null} is supported.
@@ -408,16 +396,5 @@ public class SubjectHelper {
             }
         }
         return null;
-    }
-
-    public boolean isDisableLtpaCookie(final Subject subject) {
-        Hashtable<String, ?> hashtable = getHashtableFromSubject(subject, disableSsoLtpaCookieProps);
-        if (hashtable != null) {
-            if (hashtable.get(DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER) != null ||
-                (Boolean) hashtable.get(INTERNAL_DISABLE_SSO_LTPA_COOKIE)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

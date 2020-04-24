@@ -157,59 +157,41 @@ public class TAIAuthenticator implements WebAuthenticator {
         return handleTaiResult(taiResult, taiType, taiId, req, res);
     }
 
-    private void getUserFeatureTAI() {
-        //TAIUtil taiUtil = new TAIUtil();
+    private void getUserFeatureInterceptorWithNoTaiConfigured() {
         Set<String> interceptorIds = interceptorServiceRef.keySet();
         for (String interceptorId : interceptorIds) {
             TrustAssociationInterceptor tai = interceptorServiceRef.getService(interceptorId);
             getProperties(interceptorId, tai);
-//            taiUtil.processUserFetaureTaiProps(interceptorServiceRef, interceptorId);
-//
-//            if (taiUtil.isInvokeBeforeSSO()) {
-//                invokeBeforeSSOTais.put(interceptorId, tai);
-//            }
-//
-//            if (taiUtil.isInvokeAfterSSO()) {
-//                invokeAfterSSOTais.put(interceptorId, tai);
-//            }
-//
-//            if (taiUtil.isDisableLtpaCookie()) {
-//                disableLtpaCookieTais.put(interceptorId, true);
-//            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "invokeBeforeSSOTais " + invokeBeforeSSOTais.toString());
-            Tr.debug(tc, "invokeAfterSSOTais " + invokeAfterSSOTais.toString());
+            Tr.debug(tc, "invokeAfterSSOTais  " + invokeAfterSSOTais.toString());
             Tr.debug(tc, "disableLtpaCookieTais " + disableLtpaCookieTais.toString());
         }
     }
 
     private void getProperties(String interceptorId, TrustAssociationInterceptor interceptor) {
         TAIUtil taiUtil = new TAIUtil(interceptorServiceRef, interceptorId);
-        //TrustAssociationInterceptor tai = (TrustAssociationInterceptor) interceptor;
-        //taiUtil.processProps(interceptorServiceRef, interceptorId);
-
         if (taiUtil.isInvokeBeforeSSO()) {
             invokeBeforeSSOTais.put(interceptorId, interceptor);
         }
         if (taiUtil.isInvokeAfterSSO()) {
             invokeAfterSSOTais.put(interceptorId, interceptor);
         }
-        if (taiUtil.isDisableLtpaCookie()) {
-            disableLtpaCookieTais.put(interceptorId, taiUtil.isDisableLtpaCookie());
-        }
+        disableLtpaCookieTais.put(interceptorId, taiUtil.isDisableLtpaCookie());
     }
 
     /**
-     * @param invokeBeforeSSO
-     * @return
+     * TAIService can handle both shared liberty and user feature interceptors with TAI configured in server.xml
+     * If there is no TAI configured in server.xml, the taiService is not available.
      */
     private Map<String, TrustAssociationInterceptor> getInterceptorServices(boolean invokeBeforeSSO) {
-        if (taiService != null) { //TAIService have both the shared liberty and user feature TAI
+        if (taiService != null) {
             return taiService.getTais(invokeBeforeSSO);
-        } else { // TODO: Do we really need to go this path ???
-            getUserFeatureTAI(); // We only have the user feature TAIs
+        } else {
+            // We only have the user feature interceptors and no TAI configured in server.xml
+            getUserFeatureInterceptorWithNoTaiConfigured();
             if (invokeBeforeSSO)
                 return invokeBeforeSSOTais;
             else

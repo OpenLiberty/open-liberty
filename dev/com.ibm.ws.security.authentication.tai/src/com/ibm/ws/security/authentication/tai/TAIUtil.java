@@ -30,7 +30,7 @@ public class TAIUtil {
 
     public TAIUtil(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                    String interceptorId) {
-        processUserFetaureTaiProps(interceptorServiceRef, interceptorId);
+        processUserFeatureTaiProps(interceptorServiceRef, interceptorId);
     }
 
     /**
@@ -40,7 +40,7 @@ public class TAIUtil {
      * @param interceptorServiceRef
      * @param interceptorId
      */
-    public void processUserFetaureTaiProps(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
+    public void processUserFeatureTaiProps(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                              String interceptorId) {
         invokeBeforeSSO = false;
         invokeAfterSSO = false;

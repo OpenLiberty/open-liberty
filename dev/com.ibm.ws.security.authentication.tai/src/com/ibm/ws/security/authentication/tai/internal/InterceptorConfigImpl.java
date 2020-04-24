@@ -44,15 +44,11 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
  *
  *      <trustAssociation id="myTrustAssociation" invokeForUnprotectedURI="false" failOverToAppAuthType="false" disableLtpaCookie="true">
  *                      <interceptors id="simpleTAI" enabled="true" className="com.ibm.websphere.security.sample.SimpleTAI"
- *                                              invokeBeforeSSO="true" invokeAfterSSO="false" disableLtpaCookie="true" libraryRef="simpleTAI">
+ *                                              invokeBeforeSSO="true" invokeAfterSSO="false" libraryRef="simpleTAI">
  *                                      <properties hostName="machine1" application="test1"/>
  *                      </interceptors>
  *      </trustAssociation>
- *
- *      <library id="simpleTAI">
- *              <fileset dir="${server.config.dir}" includes="simpleTAI.jar"/>
- *      </library>
- **/
+  **/
 
 /**
  * This class will process the interceptor elemement configuration for shared library, load and initialize the shared library TAI.
@@ -135,7 +131,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
             disableLtpaCookie = (Boolean) props.get(TAIConfig.KEY_DISABLE_LTPA_COOKIE);
             pid = (String) props.get(CFG_KEY_PROPERTIES_PID);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Shared library interceptor config:  ");
+                Tr.debug(tc, "Shared liberty interceptor config - interceptors element: ");
                 Tr.debug(tc, "  invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO + " disableLtpaCookie=" + disableLtpaCookie);
             }
             processProperties();
@@ -185,7 +181,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Effective share library interceptor properties: " + properties.toString());
+            Tr.debug(tc, "Effective shared library interceptor properties: " + properties.toString());
         }
 
     }
@@ -226,12 +222,11 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
             }
         } catch (Exception e) {
             Tr.error(tc, "SEC_TAI_INIT_CLASS_LOAD_ERROR", e.getMessage());
+        } finally {
+            if (taiService != null) {
+                taiService.initAllTAIs(id);
+            }
         }
-//        finally {
-//            if (taiService != null) {
-//                taiService.initTAIs();
-//            }
-//        }
     }
 
     private TrustAssociationInterceptor loadInterceptor() throws Exception {
@@ -321,6 +316,5 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
             processProperties();
             initInterceptor();
         }
-
     }
 }

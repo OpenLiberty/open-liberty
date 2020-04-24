@@ -47,7 +47,7 @@ public class TAIConfigImpl implements TAIConfig {
         failOverToAppAuthType = (Boolean) props.get(KEY_FAIL_OVER_TO_APP_AUTH_TYPE);
         disableLtpaCookie = (Boolean) props.get(KEY_DISABLE_LTPA_COOKIE);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "TrustAssociation element (TAI) configuration:  ");
+            Tr.debug(tc, "TAI configuration - trustAssociation element:  ");
             Tr.debug(tc, "  invokeForUnprotectedURI=" + invokeForUnprotectedURI + " invokeForFormLogin=" + invokeForFormLogin + " failOverToAppAuthType=" + failOverToAppAuthType
                          + " disableLtpaCookie=" + disableLtpaCookie);
         }
