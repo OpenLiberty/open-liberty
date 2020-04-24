@@ -98,6 +98,14 @@ installServerFeatures.option-key.--noCache=\
 installServerFeatures.option-desc.--noCache=\
 \tFeatures installed from a remote repository                          \n\
 \t(for example, Maven Central) are not cached locally.
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\
+\tFind features from the repositories.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\
+\ \ \ \ searchString
+find.option-desc.[searchString]=\
+\tUse the search string to find features in the repositories.
 #--------- VIEWSETTINGS ACTION ----------------------------------------#
 viewSettings.desc=\
 \tView the repositories and proxy settings.
