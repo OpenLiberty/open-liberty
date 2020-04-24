@@ -44,6 +44,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.SoapVersion;
@@ -223,7 +227,7 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
             config, engine);
     }
     
-    public void handleMessage(SoapMessage msg, boolean utWithCallbacks, RequestData reqData, 
+    public void handleMessage(SoapMessage msg, boolean utWithCallbacks, final RequestData reqData, 
         WSSConfig config, WSSecurityEngine engine) throws Fault {
         reqData.setWssConfig(config);
 
@@ -297,15 +301,25 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
             if (doTimeLog) {
                 t1 = System.currentTimeMillis();
             }
-            Element elem = WSSecurityUtil.getSecurityHeader(doc.getSOAPPart(), actor);
                  
-            elem = (Element)DOMUtils.getDomElement(elem);
+            final Element elem = (Element)DOMUtils.getDomElement(WSSecurityUtil.getSecurityHeader(doc.getSOAPPart(), actor));
             Node originalNode = null;
             if (elem != null) {
                 originalNode = elem.cloneNode(true);
             }
 
             List<WSSecurityEngineResult> wsResult = engine.processSecurityHeader(elem, reqData);
+//            List<WSSecurityEngineResult> wsResult;
+//            try {
+//                wsResult = AccessController.doPrivileged(new PrivilegedExceptionAction<List<WSSecurityEngineResult>>() {
+//                    @Override
+//                    public List<WSSecurityEngineResult> run() throws WSSecurityException {
+//                        return engine.processSecurityHeader(elem, reqData);
+//                    }
+//                });
+//            } catch (PrivilegedActionException pae) {
+//                throw (WSSecurityException)pae.getException();
+//            }
                  
             importNewDomToSAAJ(doc, elem, originalNode);
             Element header = SAAJUtils.getHeader(doc);
@@ -388,7 +402,7 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
             throw new SoapFault(new Message("SAAJ_EX", LOG), e, version.getSender());
         } finally {
             reqData.clear();
-            reqData = null;
+            //reqData = null;
         }      
     }
     

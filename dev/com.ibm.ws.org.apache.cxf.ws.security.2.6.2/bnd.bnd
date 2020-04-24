@@ -41,13 +41,13 @@ instrument.classesIncludes: \
 
 -buildpath: \
     org.apache.cxf:cxf-rt-ws-security;strategy=exact;version=${cxfVersion}, \
-    com.ibm.ws.org.apache.cxf.cxf.api.2.6.2, \
-    com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2, \
-    com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2, \
-    com.ibm.ws.org.opensaml.opensaml.2.6.1, \
-    com.ibm.ws.org.apache.ws.security.wss4j.1.6.7, \
-    com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2, \
-    com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2, \
-    com.ibm.ws.org.apache.neethi.3.0.2, \
-    com.ibm.ws.net.sf.ehcache.core.2.5.2
+    com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2;version=latest, \
+    com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest, \
+    com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.neethi.3.0.2;version=latest, \
+    com.ibm.ws.net.sf.ehcache.core.2.5.2;version=latest
 

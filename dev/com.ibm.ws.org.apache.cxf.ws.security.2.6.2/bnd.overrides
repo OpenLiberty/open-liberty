@@ -26,11 +26,16 @@ Export-Package: \
 
 Import-Package:  \
   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+  javax.xml.*, \
+  org.apache.ws.*, \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
   net.sf.ehcache.*, \
-  *
+  org.apache.neethi.*, \
+  org.w3c.*, \
+  javax.security.*, \
+  javax.net.*
 
 Archiver-Version:
 Build-Jdk:

@@ -18,7 +18,7 @@ configurations {
 }
 
 dependencies {
-    cxfJar 'org.apache.cxf:cxf-rt-ws-security:2.6.2-ibm-s20180529-1900'
+    cxfJar 'org.apache.cxf:cxf-rt-ws-security:2.6.2'
 }
 
 task extractInjectedClasses(type: Copy) {

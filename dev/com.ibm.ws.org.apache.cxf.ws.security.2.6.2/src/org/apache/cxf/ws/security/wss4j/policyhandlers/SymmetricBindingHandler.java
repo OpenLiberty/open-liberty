@@ -29,6 +29,9 @@ import javax.xml.soap.SOAPMessage;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.common.util.StringUtils;
@@ -262,7 +265,7 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
                         this.addDerivedKeyElement(secondRefList);
                     } else if (!secondEncrParts.isEmpty()) {
                         //Encrypt, get hold of the ref list and add it
-                        secondRefList = ((WSSecEncrypt)encr).encryptForRef(null, secondEncrParts);
+                        secondRefList = encryptForRef((WSSecEncrypt)encr, secondEncrParts);
                         this.addDerivedKeyElement(secondRefList);
                     }
                 }
@@ -490,7 +493,8 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
             Element encrDKTokenElem = null;
             encrDKTokenElem = dkEncr.getdktElement();
             addDerivedKeyElement(encrDKTokenElem);
-            Element refList = dkEncr.encryptForExternalRef(null, encrParts);
+            //Element refList = dkEncr.encryptForExternalRef(null, encrParts);
+            Element refList = encryptForExternalRef(dkEncr, encrParts);
             if (atEnd) {
                 this.insertBeforeBottomUp(refList);
             } else {
@@ -501,6 +505,25 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
             policyNotAsserted(recToken, e);
         }
         return null;
+    }
+    
+    
+    private Element encryptForRef(WSSecEncrypt encr, List<WSEncryptionPart> encrParts) throws PrivilegedActionException {
+        return AccessController.doPrivileged(new PrivilegedExceptionAction<Element>() {
+            @Override
+            public Element run() throws WSSecurityException {
+                return encr.encryptForRef(null, encrParts);
+            }
+        });
+    }
+    
+    private Element encryptForExternalRef(WSSecDKEncrypt dkEncr, List<WSEncryptionPart> encrParts) throws PrivilegedActionException {
+        return AccessController.doPrivileged(new PrivilegedExceptionAction<Element>() {
+            @Override
+            public Element run() throws WSSecurityException {
+                return dkEncr.encryptForExternalRef(null, encrParts);
+            }
+        });
     }
     
     private WSSecBase doEncryption(TokenWrapper recToken,
@@ -599,7 +622,7 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
                     }
                    
                    
-                    Element refList = encr.encryptForRef(null, encrParts);
+                    Element refList = encryptForRef(encr, encrParts);
                     if (atEnd) {
                         this.insertBeforeBottomUp(refList);
                     } else {
@@ -608,7 +631,9 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
                     return encr;
                 } catch (WSSecurityException e) {
                     policyNotAsserted(recToken, e);
-                }    
+                } catch (PrivilegedActionException pae) {
+                    policyNotAsserted(recToken, pae);
+                }       
             }
         }
         return null;
