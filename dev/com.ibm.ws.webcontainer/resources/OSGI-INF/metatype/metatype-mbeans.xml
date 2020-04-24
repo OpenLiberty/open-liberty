@@ -37,8 +37,6 @@
             id="httpEndpointRef" required="false" type="String" default="defaultHttpEndpoint" />
         <AD name="%plugin.connectTimeout.name" description="%plugin.connectTimeout.desc"
             id="connectTimeout" required="false" type="String" ibm:type="duration(s)" default="5s" />
-        <AD name="%plugin.persistTimeoutReduction.name" description="%plugin.persistTimeoutReduction.desc" 
-            id="persistTimeoutReduction" required="false" type="String" ibm:type="duration(s)" default="2s" />
         <AD name="%plugin.serverIOTimeout.name" description="%plugin.serverIOTimeout.desc" 
             id="serverIOTimeout" required="false" type="String" ibm:type="duration(s)" default="900s" />
         <AD name="%plugin.wsServerIOTimeout.name" description="%plugin.wsServerIOTimeout.desc" 
