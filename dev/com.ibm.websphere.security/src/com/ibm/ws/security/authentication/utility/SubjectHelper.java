@@ -411,8 +411,7 @@ public class SubjectHelper {
     }
 
     public boolean isDisableLtpaCookie(final Subject subject) {
-        SubjectHelper subjectHelper = new SubjectHelper();
-        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookieProps);
+        Hashtable<String, ?> hashtable = getHashtableFromSubject(subject, disableSsoLtpaCookieProps);
         if (hashtable != null) {
             if (hashtable.get(DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER) != null ||
                 (Boolean) hashtable.get(INTERNAL_DISABLE_SSO_LTPA_COOKIE)) {
