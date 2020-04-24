@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package test.context.serialization.app;
+package test.context.serialization.web;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -42,7 +42,7 @@ import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
@@ -52,8 +52,14 @@ import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 
+import componenttest.app.FATServlet;
+import test.context.serialization.app.ContextServiceSerializationTestBean;
+import test.context.serialization.app.CurrentThreadExecutor;
+import test.context.serialization.app.TestInvocationHandler;
+
 @SuppressWarnings("serial")
-public class ContextServiceSerializationTestServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/ContextServiceSerializationTestServlet")
+public class ContextServiceSerializationTestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
@@ -107,8 +113,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize default classloader context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -193,8 +199,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize default Java EE metadata context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -223,8 +229,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize default security context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -327,8 +333,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize default transaction context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -365,10 +371,10 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize a classloader context that was serialized previously.
-     * 
-     * @param request HTTP request
+     *
+     * @param request               HTTP request
      * @param serializedContextName The name of the file containing the serialized context.
-     * @param classToLoad The name of the class which should be loaded from the serialized context.
+     * @param classToLoad           The name of the class which should be loaded from the serialized context.
      * @throws Exception if an error occurs.
      */
     private void testDeserializeClassloaderContext(HttpServletRequest request, String serializedContextName, Class<?> classToLoad) throws Exception {
@@ -419,8 +425,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize classloader context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -430,8 +436,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize classloader context that was serialized on v8.5.5.4 from an EJB
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -441,8 +447,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize a contextual proxy that was serialized on v8.5.5.4 and verify the execution properties.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -489,8 +495,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize Java EE metadata context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -536,8 +542,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize Java EE metadata context that was serialized on v8.5.5.4 from a JSP.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -583,8 +589,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize Java EE metadata context that was serialized on v8.5.5.4 from an EJB.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -630,8 +636,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize security context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -855,8 +861,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize transaction context that was serialized on v8.5.5.4.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -897,8 +903,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize and deserialize a contextual proxy of a proxy.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -954,8 +960,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Deserialize and reserialize Java EE metadata context.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -1015,8 +1021,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize classloader context.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -1032,8 +1038,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize Java EE metadata context.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -1049,8 +1055,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize default context.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -1067,8 +1073,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize security context.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -1102,8 +1108,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize transaction context.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -1119,8 +1125,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize Java EE metadata context from within an EJB.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -1130,8 +1136,8 @@ public class ContextServiceSerializationTestServlet extends HttpServlet {
 
     /**
      * Serialize classloader context from within an EJB.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */

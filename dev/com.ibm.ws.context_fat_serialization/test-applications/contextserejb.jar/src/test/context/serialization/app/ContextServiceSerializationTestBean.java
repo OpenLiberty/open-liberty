@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,10 +34,10 @@ import javax.enterprise.concurrent.ContextService;
 public class ContextServiceSerializationTestBean {
 
     /** Name of environment entry to lookup. */
-    static final String ENV_ENTRY_NAME = "java:comp/env/env1";
+    public static final String ENV_ENTRY_NAME = "java:comp/env/env1";
 
     /** Value of environment entry */
-    static final int ENV_ENTRY_VALUE = 23;
+    public static final int ENV_ENTRY_VALUE = 23;
 
     @Resource(lookup = "concurrent/jeeMetadataContextSvc")
     private ContextService jeeMetadataContextSvc;
@@ -46,11 +46,12 @@ public class ContextServiceSerializationTestBean {
     private ContextService classloaderContextSvc;
 
     /** Default constructor. */
-    public ContextServiceSerializationTestBean() {}
+    public ContextServiceSerializationTestBean() {
+    }
 
     /**
      * Serialize the JEE context from within an EJB.
-     * 
+     *
      * @throws IOException
      * @throws FileNotFoundException
      */
@@ -66,8 +67,8 @@ public class ContextServiceSerializationTestBean {
 
     /**
      * Serialize classloader context.
-     * 
-     * @param request HTTP request
+     *
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
