@@ -44,12 +44,8 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, //
-                       jakarta.enterprise.concurrent.ManagedExecutorService.class, //
-                       javax.enterprise.concurrent.ManagedExecutorService.class, //
-                       ResourceFactory.class, ApplicationRecycleComponent.class, //
-                       ScheduledExecutorService.class, //
-                       jakarta.enterprise.concurrent.ManagedScheduledExecutorService.class, //
+           service = { ExecutorService.class, javax.enterprise.concurrent.ManagedExecutorService.class,
+                       ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
                        javax.enterprise.concurrent.ManagedScheduledExecutorService.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
@@ -244,7 +240,6 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         super.setContextService(ref);
     }
 
-    @Override
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.STATIC,
@@ -285,7 +280,6 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         super.unsetContextService(ref);
     }
 
-    @Override
     protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
         super.unsetEEVersion(ref);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1652,7 +1652,7 @@ public class ContextServiceTestServlet extends FATServlet {
             ContextServiceImpl_name.setAccessible(true);
             String name = (String) ContextServiceImpl_name.get(svc2);
             if (!"contextService[DefaultContextService]".equals(name))
-                throw new Exception("Unexpected ContextService given highest ranking: " + svc2 + ". Name is " + name);
+                throw new Exception("Unexpected ContextService given highest ranking: " + svc2);
         } finally {
             bundleContext.ungetService(ref2);
         }
