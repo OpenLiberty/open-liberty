@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.concurrent.ManagedTask;
 
 import org.osgi.service.component.ComponentContext;
 
@@ -57,11 +59,9 @@ public class BufferContextProvider implements ThreadContextProvider {
      */
     @Override
     public ThreadContext captureThreadContext(Map<String, String> execProps, Map<String, ?> threadContextConfig) {
-        // These User Feature bundles don't get transformed from javax to jakarta and so need to be generic and work with either
-        String identityName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
-        if (identityName == null)
-            identityName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
-        BufferContext context = new BufferContext(identityName, execProps.get(WSContextService.TASK_OWNER));
+        BufferContext context = new BufferContext(
+                        execProps.get(ManagedTask.IDENTITY_NAME),
+                        execProps.get(WSContextService.TASK_OWNER));
         String type = execProps.get("test.buffer.context.capture");
         type = type == null ? (String) threadContextConfig.get("buffer") : type;
         if ("Default".equals(type))
@@ -77,11 +77,9 @@ public class BufferContextProvider implements ThreadContextProvider {
      */
     @Override
     public ThreadContext createDefaultThreadContext(Map<String, String> execProps) {
-        // These User Feature bundles don't get transformed from javax to jakarta and so need to be generic and work with either
-        String identityName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
-        if (identityName == null)
-            identityName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
-        return new BufferContext(identityName, execProps.get(WSContextService.TASK_OWNER));
+        return new BufferContext(
+                        execProps.get(ManagedTask.IDENTITY_NAME),
+                        execProps.get(WSContextService.TASK_OWNER));
     }
 
     /**
@@ -92,9 +90,7 @@ public class BufferContextProvider implements ThreadContextProvider {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
         try {
             BufferContext context = (BufferContext) in.readObject();
-            context.identityName = info.getExecutionProperty("javax.enterprise.concurrent.IDENTITY_NAME");
-            if (context.identityName == null)
-                context.identityName = info.getExecutionProperty("jakarta.enterprise.concurrent.IDENTITY_NAME");
+            context.identityName = info.getExecutionProperty(ManagedTask.IDENTITY_NAME);
             context.taskOwner = info.getExecutionProperty(WSContextService.TASK_OWNER);
             return context;
         } finally {
