@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * The AcmeCertCheckerTask runs in the background and periodically checks if the
@@ -103,10 +105,18 @@ public class AcmeCertCheckerTask implements Runnable {
 	 * it continues to run, but is rescheduled on the error schedule.
 	 */
 	@Override
+	@FFDCIgnore(Throwable.class)
 	public void run() {
 
 		boolean isExpired = false, isRevoked = false;
 		List<X509Certificate> currentCert = null;
+		
+		if (FrameworkState.isStopping()) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Server is marked as stopping, cert checker returning.");
+			}
+			return;
+		}
 
 		acmeProviderImpl.acquireWriteLock();
 		try {
@@ -155,6 +165,12 @@ public class AcmeCertCheckerTask implements Runnable {
 			}
 
 		} catch (Throwable t) {
+			if (FrameworkState.isStopping()) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Caught an exception, but server is marked as stopping, cert checker returning.");
+				}
+				return;
+			}
 			try {
 				if (tc.isDebugEnabled()) {
 					Tr.debug(tc, "Requested a new certificate, but request failed.", t);
