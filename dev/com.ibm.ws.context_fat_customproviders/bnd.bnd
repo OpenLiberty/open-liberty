@@ -21,6 +21,8 @@ src: \
 
 fat.project: true
 
+tested.features=concurrent-2.0, servlet-5.0
+
 -sub: *.bnd
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
