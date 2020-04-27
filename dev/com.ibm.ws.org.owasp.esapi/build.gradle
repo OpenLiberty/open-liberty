@@ -1,5 +1,0 @@
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = true
-}

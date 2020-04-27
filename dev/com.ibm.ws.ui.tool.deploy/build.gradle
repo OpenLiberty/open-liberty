@@ -1,6 +1,0 @@
-ant.importBuild 'import.xml'
-
-jar {
-    dependsOn 'compile-js'
-    dependsOn 'post-compile'
-}
