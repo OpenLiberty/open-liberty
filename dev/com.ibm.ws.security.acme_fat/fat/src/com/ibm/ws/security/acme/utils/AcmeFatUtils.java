@@ -11,7 +11,6 @@
 
 package com.ibm.ws.security.acme.utils;
 
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -596,6 +595,30 @@ public class AcmeFatUtils {
 				return certificates;
 			}
 		}
+	}
+
+	/**
+	 * Wait for assertAndGetServerCertificate to complete without errors. If it
+	 * fails until the timeout, run again to throw the exception back to the caller.
+	 * 
+	 * @param server
+	 * @param container
+	 * @param timeout
+	 * @return
+	 * @throws Exception
+	 */
+	public static final <assertAndGetServerCertificate> Certificate[] waitForAcmeCert(LibertyServer server,
+			CAContainer container, long timeout) throws Exception {
+		long startTime = System.currentTimeMillis();
+		while (System.currentTimeMillis() < startTime + timeout) {
+			Log.info(AcmeFatUtils.class, "waitForAcmeCert", "Cert checking to swap from self signed to acme ");
+			try {
+				return assertAndGetServerCertificate(server, container);
+			} catch (Exception e) {
+				Thread.sleep(1000);
+			}
+		}
+		return assertAndGetServerCertificate(server, container);
 	}
 
 	/**

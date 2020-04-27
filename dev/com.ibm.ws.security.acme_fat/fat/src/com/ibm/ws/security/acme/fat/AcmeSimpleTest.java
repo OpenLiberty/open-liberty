@@ -12,11 +12,11 @@ package com.ibm.ws.security.acme.fat;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -406,10 +406,11 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 
 			/*
-			 * Verify that the server is now using a certificate signed by the
-			 * CA.
+			 * Verify that the server is now using a certificate signed by the CA. We may
+			 * need to a wait a short bit at the SSL config completes the update and clears
+			 * the cache.
 			 */
-			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+			Certificate[] certificates1 = AcmeFatUtils.waitForAcmeCert(server, caContainer, 10000);
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: FINISH");
 
 			/***********************************************************************
