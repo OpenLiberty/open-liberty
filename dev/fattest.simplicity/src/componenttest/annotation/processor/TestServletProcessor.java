@@ -85,17 +85,15 @@ public class TestServletProcessor {
         // Infer queryPath from contextRoot() and @WebServlet annotation
         String[] webServletValue = new String[] {};
         String[] webServletUrlPatterns = new String[] {};
-        if (javax.servlet.http.HttpServlet.class.isAssignableFrom(anno.servlet())) {
-            javax.servlet.annotation.WebServlet webServlet = anno.servlet().getAnnotation(javax.servlet.annotation.WebServlet.class);
-            if (webServlet != null) {
-                webServletValue = webServlet.value();
-                webServletUrlPatterns = webServlet.urlPatterns();
-            }
+        javax.servlet.annotation.WebServlet webServlet = anno.servlet().getAnnotation(javax.servlet.annotation.WebServlet.class);
+        if (webServlet != null) {
+            webServletValue = webServlet.value();
+            webServletUrlPatterns = webServlet.urlPatterns();
         } else {
-            jakarta.servlet.annotation.WebServlet webServlet = anno.servlet().getAnnotation(jakarta.servlet.annotation.WebServlet.class);
-            if (webServlet != null) {
-                webServletValue = webServlet.value();
-                webServletUrlPatterns = webServlet.urlPatterns();
+            jakarta.servlet.annotation.WebServlet jakartaServlet = anno.servlet().getAnnotation(jakarta.servlet.annotation.WebServlet.class);
+            if (jakartaServlet != null) {
+                webServletValue = jakartaServlet.value();
+                webServletUrlPatterns = jakartaServlet.urlPatterns();
             }
         }
         if (webServletValue.length == 0 && webServletUrlPatterns.length == 0)
