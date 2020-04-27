@@ -14,6 +14,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 
@@ -104,6 +105,11 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
             props = OSGiConfigUtils.getVariablesFromServerXML(configVariables);
         }
         return props;
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 
 }

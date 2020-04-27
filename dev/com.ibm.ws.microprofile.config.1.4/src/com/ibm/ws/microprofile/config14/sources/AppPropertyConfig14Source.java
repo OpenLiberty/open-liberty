@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config14.sources;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,11 @@ public class AppPropertyConfig14Source extends AppPropertyConfigSource {
 
     public void close() {
         cache.close();
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 
 }

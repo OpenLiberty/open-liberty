@@ -48,7 +48,7 @@ public class PropertiesConfigSource extends InternalConfigSource implements Stat
 
     @Override
     public ConcurrentMap<String, String> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     @Trivial
@@ -88,5 +88,10 @@ public class PropertiesConfigSource extends InternalConfigSource implements Stat
         }
 
         return props;
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 }
