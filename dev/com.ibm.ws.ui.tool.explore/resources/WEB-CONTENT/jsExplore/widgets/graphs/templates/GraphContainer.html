@@ -1,0 +1,19 @@
+<div id="${resourceIdStatsContentPane}">
+  <div class="showGraphsButton_ContentPane" style="text-align:right;" id="${resourceIdShowHideGraphsButtonPane}" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="editBar">
+  </div>
+
+  <div class="showGraphs_saveCancelBar" style="display:none" id="${resourceIdSaveCancelBar}" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="saveCancelBar">
+    <div class="showGraphs_buttonArea" id="${resourceIdSaveCancelButtonArea}" data-dojo-attach-point="saveCancelButtonArea"></div>
+  </div>
+
+  <div id="${resourceIdGraphsPane}" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="graphsPane" style="overflow:auto; display:block; height:calc(100% - 42px); width:100%;">
+    <div style="position:absolute; display:table; height:calc(100% - 56px);">
+     <div style="display: table-cell; vertical-align: middle">
+     <div style="margin-left: auto; margin-right: auto; width:80%">
+      <div class="displayGraph" id="${warningId}" data-dojo-type="jsExplore/widgets/graphs/GraphWarningMessage" data-dojo-attach-point="graphWarningMsg">
+      </div>
+     </div>
+     </div>
+    </div>
+  </div>
+</div>

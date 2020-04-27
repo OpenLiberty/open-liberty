@@ -1,0 +1,38 @@
+<project name="com.ibm.ws.ui.tool.deploy">
+  <import file="../ant_build.js/public_imports/js_imports.xml"/>
+
+  <target name="css-validation-files">
+      <echo>Overriding the default CSS file set! Working around known tool limitations / bugs</echo>
+      <fileset id="css.sources" dir="${basedir}/resources/WEB-CONTENT">
+        <include name="**/*.css"/>
+        <!-- css3 validator doesn't support calc(), it's a bug in css3 validator:
+            https://www.w3.org/Bugs/Public/show_bug.cgi?id=18913
+            css validator doesn't support text-overflow:ellipsis, its a bug in css3 validator:
+            https://www.w3.org/Bugs/Public/show_bug.cgi?id=19476
+            
+            -->
+        <exclude name="**/*ExcludeValidator.css"/>
+      </fileset>
+  </target>
+
+  <target name="post-compile">
+      <antcall target="get-jquery-lib" />
+      <antcall target="get-velocity-lib" />
+      <antcall target="get-dotdotdot-lib" />
+      <copy-font-files font-name="helvetica-neue" font-target-dir="lib/fonts" />
+
+      <copy todir="${basedir}/build/jsShared/utils">
+        <fileset dir="${basedir}/../com.ibm.ws.ui.shared/resources/WEB-CONTENT/jsShared/utils">
+            <include name="apiMsgUtils.js" />
+            <include name="globalization.js" />
+            <include name="imgUtils.js" />
+            <include name="toolData.js" />
+            <include name="userConfig.js" />
+        </fileset>
+      </copy>
+
+      <antcall target="minify-js" />
+      <antcall target="closureDevSetup" />
+  </target>
+
+</project>

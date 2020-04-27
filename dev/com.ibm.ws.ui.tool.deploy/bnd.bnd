@@ -1,0 +1,25 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Admin Center Deploy Tool
+Bundle-SymbolicName: com.ibm.ws.ui.tool.deploy
+Bundle-Description: WebSphere Admin Center Deploy Tool, version ${bVersion}
+
+Web-ContextPath: /ibm/adminCenter/deploy-1.0
+OL-VirtualHost: ${admin.virtual.host}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+
+Include-Resource: \
+  WEB-INF=resources/WEB-INF, \
+  index.jsp=resources/WEB-CONTENT/index.jsp, \
+  feature=resources/WEB-CONTENT/feature, \
+  css=resources/WEB-CONTENT/css, \
+  js/prod.min.js=lib/prod.min.js, \
+  img=resources/WEB-CONTENT/img, \
+  nls=resources/WEB-CONTENT/nls, \
+  lib=lib/jquery, \
+  lib=lib/velocity, \
+  lib=lib/dotdotdot, \
+  fonts=lib/fonts
+  

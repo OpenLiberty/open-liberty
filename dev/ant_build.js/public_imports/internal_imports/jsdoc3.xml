@@ -1,0 +1,63 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="jsdoc3">
+
+  <!-- For information on jsDoc, visit https://github.com/jannon/jsdoc3-ant-task or ui_tools/jsDoc/jsdoc-master/README.md -->
+  <target name="jsdoc">
+    <property name="jsdoc.home.unconverted" location="${basedir}/../ant_build.js/lib/jsdoc3" />
+    <pathconvert targetos="unix" property="jsdoc.home" >
+      <path location="${jsdoc.home.unconverted}" />
+    </pathconvert>
+    <property name="jsdoc.master" value="${jsdoc.home}/master" />
+    <property name="jsdoc3-task-jar" value="${jsdoc.home}/antTask/build/jar/jsdoc3-ant-task-1.0.jar" />
+    <property name="rhino-jar" value="${jsdoc.master}/rhino/js.jar" />
+    <pathconvert targetos="unix" property="basedir.converted" >
+      <path location="${basedir}" />
+    </pathconvert>
+    <property name="jsdoc.src.dir" value="${basedir.converted}/resources/WEB-CONTENT/js/*" />
+    <property name="docs.dir" value="${basedir.converted}/build/docs/jsDoc" />
+    
+    <echo>Running *jsDoc* for the source at ${jsdoc.src.dir} and placing output in ${docs.dir}</echo>
+    <delete dir="${docs.dir}/" failonerror="false" />
+    <mkdir dir="${docs.dir}/" />
+    
+  	<makeurl file="${jsdoc.master}" property="url.jsdoc.master"/>
+  	<makeurl file="${jsdoc.master}/node_modules" property="url.jsdoc.master.node_modules"/>
+  	<makeurl file="${jsdoc.master}/rhino" property="url.jsdoc.master.rhino"/>
+  	<makeurl file="${jsdoc.master}/lib" property="url.jsdoc.master.lib"/>
+  	  	
+    <!--  Execute jsdoc using the ant java task -->
+    <java classname="org.mozilla.javascript.tools.shell.Main" dir="${jsdoc.master}" fork="true">
+      <classpath>
+        <pathelement location="${rhino-jar}"/>
+      </classpath>
+      <arg value="-modules" />
+      <arg value="${url.jsdoc.master.node_modules}" />
+      <arg value="-modules" />
+      <arg value="${url.jsdoc.master.rhino}" />
+      <arg value="-modules" />
+      <arg value="${url.jsdoc.master.lib}" />
+      <arg value="-modules" />
+      <arg value="${url.jsdoc.master}" />
+      <arg value="${jsdoc.master}/jsdoc.js" />
+      <arg value="--dirname=${jsdoc.master}" />
+      <arg value="-d" />
+      <arg value="${docs.dir}" />
+      <arg value="${jsdoc.src.dir}" />
+    </java>
+    
+    <!-- Execute jsdoc using a modified ant task located under lib/jsdoc3/antTask -->
+    <!-- <taskdef name="jsdoc" classname="net.jannon.ant.tasks.JsDoc3" classpath="${jsdoc3-task-jar}:${rhino-jar}"/>
+    <jsdoc jsdochome="${jsdoc.master}" to="${docs.dir}" dir="${jsdoc.src.dir}" /> -->
+
+  </target>
+
+</project>

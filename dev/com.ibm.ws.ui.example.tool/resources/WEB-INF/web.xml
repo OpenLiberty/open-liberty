@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+
+<web-app id="ExampleTool" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>ExampleTool</display-name>
+  <description>ExampleTool</description>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <!-- SERVLET SECURITY CONFIGURATION -->
+  <!-- Everything in the ExampleTool should be protected. -->
+  <security-constraint id="SecurityConstraints_ExampleTool">
+    <display-name>ExampleTool Security Constraint</display-name>
+    <web-resource-collection id="WebResourceCollection_ExampleTool">
+      <web-resource-name>ExampleTool URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Administrator</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_ExampleTool">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-role id="Administrator">
+    <description>Administrator role</description>
+    <role-name>Administrator</role-name>
+  </security-role>
+
+  <login-config id="LoginConfig_all">
+    <realm-name>ExampleTool</realm-name>
+    <auth-method>BASIC</auth-method>
+  </login-config>
+
+</web-app>

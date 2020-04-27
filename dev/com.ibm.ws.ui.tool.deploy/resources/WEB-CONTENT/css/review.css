@@ -1,0 +1,147 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+@import url("reviewExcludeValidator.css");
+
+#review {
+    background-color: #FFFFFF;
+    border-bottom: solid 30px rgba(237, 237, 237, .52);
+    border-top: solid 15px rgba(237, 237, 237, .52);
+    width: 100%;
+    font-family: HelvNeueLight, helvetica, sans-serif;
+}
+
+#reviewContainer {
+    margin-left: calc(50% - 545px);
+    margin-right: calc(50% - 545px);
+}
+
+#reviewComplete {
+    font-size: 20px;
+    color: #5A5A5A;
+    padding-bottom: 10px;
+    width: 382px;
+}
+
+#reviewBanner {
+    margin-left: 60px;
+    margin-right: 30px;
+    margin-top: 37px;
+    font-size: 36px;
+    color: #000000;
+}
+
+#reviewContent {
+    width: 480px;
+    padding: 0;
+    padding-top: 16px;
+    color: #777677;
+    font-size: 30px;
+    list-style-type: none;
+}
+
+#reviewContent div {
+    width: 382px;
+    line-height: 43px;
+    color: #777677;
+}
+
+#reviewContent a {
+    font-family: HelvNeueBold, helvetica, sans-serif;
+    text-decoration: none;
+}
+
+#reviewContent a:hover {
+    border-bottom: 2px solid #4178BE;
+}
+
+#reviewContent a:focus {
+    outline: none;
+    border-bottom: 2px solid #4178BE;
+}
+
+#reviewContent li {
+    margin: 10px;
+}
+
+#reviewTable {
+    width: 934px;
+    margin-left: 60px;
+    margin-top: 50px;
+    margin-bottom: 98px;
+}
+
+#deployButton {
+    display: table;
+    margin-left: 260px;
+    border: solid 4px #4178BE;
+    height: 86px;
+    line-height: 86px;
+    width: 278px;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0px 26px 0px 26px;
+}
+
+#deployButton:hover, #deployButton:focus {
+    background-color: #4178Be;
+}
+
+#deployButton:hover #deployButtonContent, #deployButton:focus #deployButtonContent {
+    color: #FFFFFF;
+}
+
+#deployButton:hover #deployButtonArrow, #deployButton:focus #deployButtonArrow {
+    border: 1px solid #FFFFFF;
+    border-width: 0px 0 3px 3px;
+}
+
+#deployButtonContent {
+    display: table-cell;
+    color: rgb(202, 202, 202);
+    font-size: 24px;
+    color: #4178BE;
+    outline-offset: -5px;
+    font-family: HelvNeueBold, helvetica, sans-serif;
+    letter-spacing: 1px;
+}
+
+#deployButtonArrowContainer {
+    display: table-cell;
+    float: right;
+    margin-right: 5px;
+}
+
+#deployButtonArrow {
+    border: 1px solid #4178BE;
+    border-width: 0px 0 3px 3px;
+    width: 16px;
+    height: 16px;
+    -webkit-transform: rotate(-135deg);
+    -ms-transform: rotate(-135deg);
+    -o-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+
+#deploybutton[disabled] {
+    color: #E0E0E0;
+    border: solid 4px #E0E0E0;
+    background-color: transparent;
+    font-size: 24px;
+}
+
+#deploybutton[disabled] #deployButtonContent {
+    color: #E0E0E0;
+}
+
+#deploybutton[disabled] #deployButtonArrow {
+    border: 1px solid #E0E0E0;
+    border-width: 0px 0 3px 3px;
+}

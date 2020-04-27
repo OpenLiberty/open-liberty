@@ -111,6 +111,7 @@ task initialize {
     dependsOn cleanRepos
     dependsOn copyMavenLibs
     dependsOn updatePluginClasses
+    dependsOn ':ant_build.js:copyBinaryDependencies'
     doLast {
         println "Gradle Initialized"
     }

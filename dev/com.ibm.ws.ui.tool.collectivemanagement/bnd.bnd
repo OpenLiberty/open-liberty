@@ -1,0 +1,18 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Admin Center Collective Management Tool
+Bundle-SymbolicName: com.ibm.ws.ui.tool.collectiveManagement
+Bundle-Description: WebSphere Admin Center Collective Management Tool, version ${bVersion}
+
+Web-ContextPath: /ibm/adminCenter/collectiveManagement-1.0
+OL-VirtualHost: ${admin.virtual.host}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+
+Include-Resource: \
+  WEB-INF=resources/WEB-INF, \
+  images=resources/WEB-CONTENT/images, \
+  index.jsp=resources/WEB-CONTENT/index.jsp, \
+  bidiConfig.jsp=resources/WEB-CONTENT/bidiConfig.jsp, \
+  =lib/dojo-release

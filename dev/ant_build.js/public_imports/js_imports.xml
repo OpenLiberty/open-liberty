@@ -1,0 +1,86 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="ui_imports" basedir="../../com.ibm.ws.ui">
+	<echo> importing libraries </echo>
+	<import file="internal_imports/closure.xml" />
+	<import file="internal_imports/dojo.xml" />
+	<import file="internal_imports/dotdotdot.xml" />
+	<import file="internal_imports/jshint.xml" />
+	<import file="internal_imports/jslint.xml" />
+	<import file="internal_imports/jsdoc3.xml" />
+	<import file="internal_imports/cssValidation.xml" />
+	<import file="internal_imports/d3.xml" />
+	<import file="internal_imports/jquery.xml" />
+	<import file="internal_imports/bootstrap.xml" />
+	<import file="internal_imports/orion.xml" />
+	<import file="internal_imports/svg4everybody.xml" />
+	<import file="internal_imports/velocity.xml" />
+	<import file="internal_imports/fonts.xml" />
+
+	<patternset id="buildtasks.jars">
+		<include name="infra.buildtasks-core_4.0*.jar" />
+		<include name="asm-all-5.0.3.jar" />
+		<include name="org.apache.aries.util-*.jar" />
+		<include name="osgi.core.jar" />
+		<include name="jackson*.jar" />
+		<include name="jsch-*.jar" />
+		<include name="jaxb-*.jar"/>
+	</patternset>
+
+	<path id="buildtasks">
+		<fileset dir="${basedir}/../ant_build.js/lib/buildtasks/">
+			<patternset refid="buildtasks.jars" />
+		</fileset>
+	</path>
+
+	<taskdef resource="com/ibm/aries/buildtasks/buildtasks.properties" classpathref="buildtasks" loaderref="buildtasks_ldr" onerror="fail" />
+
+	<!-- Override the default Sonar target. Our projects require both Java and
+       JavaScript analysis. -->
+	<target name="sonar" description="Invoke Sonar for both java and js">
+		<echo>Running JavaScript Sonar analysis first</echo>
+		<antcall target="sonar_imports.sonar-js" />
+
+		<echo>Running Java Sonar analysis second</echo>
+		<antcall target="sonar_imports.sonar-java" />
+	</target>
+
+	<!-- The compile-js target should run before any dojo builds. This is because the dojo build's errors are
+       extremely poor and do not help to identify where the problems are. By using jshint first, we identify
+       problems earlier and with less cost (as dojo builds are expensive).
+       Note, replaced jslint with jshint as jslint is too strict...
+       Note, disabling jsdoc as we are not currently leveraging its output.-->
+	<target name="compile-js" depends="jshint, css-validation" />
+
+	<target name="compile" depends="compile-js, compile-dojo" />
+
+	<!-- Defines the 'rebuild DOJO' target -->
+	<target name="build-with-dojo" description="Builds the project by recompiling all the javascript (and dojo)" depends="compile-dojo" />
+
+	<!-- Defines the 'rebuild DOH' target -->
+	<target name="build-doh" depends="compile-dojo-doh-nodejs" />
+
+	<!-- Compile our js, dojo, and idx using nodejs if possible, otherwise rhino -->
+	<target name="compile-dojo" depends="dojo-release" />
+
+	<!-- Compile our js, dojo, and idx using rhino -->
+	<target name="compile-dojo-rhino" depends="dojo-release-rhino" />
+
+	<!-- Compile our js, dojo, and idx using nodejs which is much much faster -->
+	<target name="compile-dojo-nodejs" depends="dojo-release-nodejs" />
+
+	<!-- Compile doh using rhino -->
+	<target name="compile-dojo-doh-rhino" depends="dojo-doh" />
+
+	<!-- Compile doh using nodejs which is much much faster -->
+	<target name="compile-dojo-doh-nodejs" depends="dojo-doh-nodejs" />
+
+</project>

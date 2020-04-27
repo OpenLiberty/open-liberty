@@ -1,0 +1,70 @@
+<div class="objectViewHeaderPane">
+
+  <div id="${resourceId}-Icon" class="${resourceIconClass}" style="display: inline-block; vertical-align: top; background-repeat: no-repeat;"
+  data-dojo-attach-point="iconNode"
+  ></div>
+
+  <div class="resourceDetailPane">
+    <div id="${resourceId}-ResourceName" class="${resourceNameClass}">${!resourceName}</div>
+    <div style="margin-top: 0px;">
+      <div id="${resourceId}-ResourceDescriptor" class="resourceDescriptor">${resourceDescriptor}</div>
+      <div id="${resourceId}-ResourceNameQualifier1" class="resourceNameQualifier">${resourceNameQualifier1}</div>
+      <div id="${resourceId}-ResourceNameQualifier2" class="resourceNameQualifier">${resourceNameQualifier2}</div>
+    </div>
+    
+    <div class="ovhpIcons-firstRow">
+      <div class="ovhp-element" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="stateDiv"></div>
+      <div class="ovhp-element maintenanceModeDiv" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="maintenanceModeState"></div>
+      <div class="ovhp-element autoScaledDiv" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="autoScaledLabel"></div>
+    </div>
+    <div id="${resourceId}-HostMaintenanceModeNotificationContainer" style="opacity: 0; display: none; margin-top: 10px;">
+      <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="hostMaintenanceModeNotification">
+      	<svg xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 32 32" height="20" width="20" style="vertical-align: bottom" preserveAspectRatio="xMidYMid meet">
+	        <use xlink:href="images/Liberty-Icon-Stack.svg#infoDL-small"></use>
+	     </svg>
+      	<span class="maintenanceModeLabe">${hostMaintenanceModeNotificationTitle}</span>
+      </div>
+    </div>
+    <div class="ovhpIcons-secondRow">
+ 	  <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="relatedResourceContainer" class="ovhp-element" >
+     	<div data-dojo-attach-point="relatedResourceIcon" class="relatedResourceIcon" style="display: inline;"></div>
+ 	    <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="memberOfButton" style="display: inline;" ></div>
+      </div>
+      <div id="${resourceId}-ServerApiContainer" style="display: none;" class="ovhp-element">
+        <div data-dojo-attach-point="apiDefIcon" id="${resourceId}-ServerApiContainerImg" class="serverApiContainerImg"></div>
+      	<span id="${resourceId}-ServerApiContainerUrlDisabled" class="serverApiContainerUrl serverApiContainerUrlDisabled" style="display: none;">${serverApiMessage}</span>
+      	<a id="${resourceId}-ServerApiContainerUrlEnabled" class="serverApiContainerUrl serverApiContainerUrlEnabled" href="" target="_blank" rel='noreferrer' style="display: none;">${serverApiMessage}</a>
+      </div>
+    </div>
+    <div class="metaDataTitle" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="toggleButtonParent"></div>
+    <div id="${resourceId}-AllTagContainer" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="allTagContainer">
+      <div id="${resourceId}-TagContainer" class="tagContainer">
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="tagIcon" class="tagContainerIconDiv"></div>
+        <div id="${resourceId}-TagPane" class="allTag" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="tagPane"></div>
+      </div>
+      <div class="ownerContactContainer">
+        <div id="${resourceId}-OwnerContainer" style="margin-right: 15px;" class="tagContainerInline">
+          <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="ownerIcon" class="tagContainerIconDiv"></div>
+          <div id="${resourceId}-OwnerTagPane" class="allTag" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="ownerTagPane" style="display: inline-block"></div>
+        </div>
+        <div id="${resourceId}-ContactContainer" class="tagContainerInline">
+          <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="contactIcon" class="tagContainerIconDiv"></div>
+          <div id="${resourceId}-ContactTagPane" class="allTag" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="contactTagPane" style="display: inline-block"></div>
+        </div>
+      </div>
+      
+      <div id="${resourceId}-PortContainer" class="portContainer">
+      	<div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="portIcon" class="tagContainerIconDiv"></div>
+      	<div id="${resourceId}-ServerPort" class="serverPorts allTag" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="serverPortPane" tabindex="0"></div>
+      </div>
+      <div id="${resourceId}-NoteContainer" class="noteContainer">
+      	  <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="notesIcon" class="tagContainerIconDiv"></div>
+	      <div id="${resourceId}-ResourceNote" class="resourceNotes allTag" data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="resourceNotePane" tabindex="0"></div>
+      </div>
+    </div>
+    
+    <div id="${resourceId}-alertPaneContainer" data-dojo-attach-point="alertPaneContainer"></div>
+  </div>
+
+  <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="actionButtonParent"></div>
+</div>

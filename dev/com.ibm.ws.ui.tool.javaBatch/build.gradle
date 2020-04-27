@@ -1,0 +1,7 @@
+ant.importBuild 'import.xml'
+
+jar {
+    dependsOn 'compile-js'
+    dependsOn 'compile-dojo'
+    dependsOn 'post-compile'
+}

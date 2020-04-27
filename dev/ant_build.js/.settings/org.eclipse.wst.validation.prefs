@@ -1,0 +1,9 @@
+DELEGATES_PREFERENCE=delegateValidatorList
+USER_BUILD_PREFERENCE=enabledBuildValidatorList
+USER_MANUAL_PREFERENCE=enabledManualValidatorList
+USER_PREFERENCE=overrideGlobalPreferencestruedisableAllValidationtrueversion1.2.500.v201303130500
+eclipse.preferences.version=1
+override=true
+suspend=true
+vals/org.eclipse.wst.xsl.core.xsl/groups=0107include0207fileext03xslF111contentType134org.eclipse.wst.xml.core.xslsourceT0107exclude0204file114lib/dojo/ibmjsF0204file119lib/dojo/dojo_1.9.3F02
+vf.version=3

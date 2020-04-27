@@ -1,0 +1,321 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+@import url("hostsExcludeValidator.css");
+
+#hostSelection {
+    background-color: #FFFFFF;
+}
+
+#hostSelection input:hover {
+    box-shadow: #7CC7FF 0 0 2px 2px;
+}
+
+#hostSelectionBanner {
+    font-size: 30px;
+    color: #000000;
+    margin-right: 30px;
+    padding-bottom: 11px;
+    font-family: HelvNeueLight, helvetica, sans-serif;
+}
+
+#hostSelectionContent {
+    display: table;
+}
+
+#hostSelectionContentLeft {
+    float: left;
+    max-width: 465px;
+    height: 100%;
+    padding-top: 43px;
+    padding-left: 36px;
+    padding-bottom: 23px;
+}
+
+#hostSelectionContentRight {
+    float: right;
+    height: 100%;
+    padding-top: 30px;
+    padding-left: 37px;
+    padding-right: 37px;
+    padding-bottom: 28px;
+    max-width: 445px;
+}
+
+#selectedHosts {
+    height: 100%;
+}
+
+#searchHostBox {
+    border-bottom: 2px solid #4178BE;
+    padding-bottom: 3px;
+}
+
+#searchHostIconContainer {
+    background-color: transparent;
+    display: inline-block;
+    padding: 7px;
+    margin-left: -35px;
+    outline: none;
+    float: right;
+    position: absolute;
+}
+
+#searchHost:hover+#searchHostIconContainer {
+    background-color: inherit;
+}
+
+/*#searchHostIconContainer.closed {
+  background-color: inherit;
+  margin-left: -40px;
+  outline: none;
+  float: none;
+}*/
+
+#searchHostIcon {
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+}
+
+#searchHost {
+  padding: 12px 40px 0px 12px;  /* use padding-left to keep search string not overflowing to the search icon */
+  min-width: 295px;
+  /* max-width: 75%; */
+  font-size: 14px;
+  color: #434343;
+  display: inline-block;
+  font-family: HelvNeueLight, helvetica, sans-serif;
+  border-top: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-left: 2px solid transparent;
+}
+
+#searchHostFilter {
+    float: right;
+    padding-top: 4px;
+    margin-left: 5px;
+}
+
+#searchNameFilter, #searchTagFilter {
+    display: inline-block;
+    background: none;
+    cursor: pointer;
+    padding: 7px 9px 6px 9px;
+    font-size: 11px;
+    /* border: 1.5px solid #4178BE; */
+    background-color: #E3EBF6;
+    color: #4178BE;
+    width: 70px;
+    /* for button to remain in its original size rather than expanding to fit the translated text */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+    letter-spacing: 1.2px;
+    border: 0;
+}
+
+/* Only applies to the filter that is not selected */
+#searchNameFilter:hover, #searchTagFilter:hover, #searchNameFilter:focus, #searchTagFilter:focus {
+    background-color: #BACEE7;
+}
+
+#searchHostFilter #searchTagFilter:hover, #searchHostFilter #searchNameFilter:hover {
+    box-shadow: #7CC7FF 0 0 2px 2px;
+}
+
+#searchHostFilter #searchTagFilter:focus, #searchHostFilter #searchNameFilter:focus {
+    box-shadow: #5AAAFA 0 0 2px 2px;
+}
+
+#searchNameFilter {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+#searchHostFilter .searchFilterSelected {
+    background-color: #4178BE;
+    color: #FFFFFF;
+    outline: none;
+    box-shadow: none;
+    outline: none;
+}
+
+#searchTagFilter {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+#hostListCount {
+    text-align: right;
+    padding-top: 7px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    background-color: rgba(199, 199, 199, .65);
+    color: #434343;
+    font-size: 12px;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+    letter-spacing: .2px;
+}
+
+.hostListItem {
+    display: block;
+    width: 100%;
+    color: #777677;
+    padding: 18px 0px;
+    outline-color: black;
+    font-size: 14px;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    background-color: #EDEDED;
+    border: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-height: 40px;
+    height: 50px;
+}
+
+.hostListItem:focus {
+    box-shadow: #5AAAFA 0 0 2px 2px;
+    outline: none;
+}
+
+.hostListItem a {
+    vertical-align: middle;
+}
+
+.hostListItem[disabled] {
+    color: grey !important;
+    cursor: no-drop;
+}
+
+#allHosts {
+    height: 100%;
+    margin-top: -20px;
+    border-bottom: 6px solid #4178BE;
+}
+
+#allHostsList {
+    margin-top: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 400px;
+    text-align: left;
+    background-color: #EDEDED;
+}
+
+#hostSearchFooter {
+    font-size: 16px;
+    padding-top: 29px;
+    text-align: center;
+    width: 450px;
+    /* a width is required to wrap around the text to next line */
+    font-family: HelvNeueLight, helvetica, sans-serif;
+}
+
+
+#hostSearchFooter a{
+  text-decoration: none;
+  font-family: HelvNeueRoman, Helvetica, Arial, sans-serif;
+  border-bottom: 2px solid #FFFFFF;
+}
+
+#hostSearchFooter a:hover, #hostSearchFooter a:focus {
+    box-shadow: none;
+    outline: none;
+    border-bottom: 2px solid #4178BE;
+}
+
+#selectedHostsMessage {
+    font-size: 14px;
+    letter-spacing: .1px;
+    color: #777677;
+    padding-top: 10px;
+    padding-right: 65px;
+    padding-bottom: 14px;
+    border-bottom: solid 1px #EDEDED;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+    line-height: 20px;
+}
+
+#selectedHostsList {
+    padding-top: 20px;
+    padding-left: 2px;
+    padding-right: 2px;
+    height: 100%;
+    overflow-y: auto;
+    height: 345px;
+    margin-bottom: 30px;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+    letter-spacing: .1px;
+    color: black;
+}
+
+#selectedHostsList .hostListItem {
+    font-size: 20px;
+    font-family: HelvNeueBold, helvetica, sans-serif;
+    color: #323232;
+    background-color: transparent;
+    border-bottom: 1px solid #EDEDED;
+}
+
+#selectedHostsList .hostListItem a {
+    width: inherit;
+    max-width: calc(100% - 25px);
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+#selectedHostsList .hostListItem svg {
+    height: 22px;
+    width: 22px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+#allHostsList .hostListItem {
+    font-weight: normal;
+    color: #434343;
+    text-indent: 15px;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+}
+
+#allHostsList .hostListItem:last-child {
+    margin-bottom: 0px;
+}
+
+#allHostsList .hostListItem svg {
+    height: 22px;
+    width: 22px;
+    vertical-align: middle;
+    float: left;
+    margin-left: 15px;
+    margin-top: -4px;
+}
+
+#allHostsList .hostListItem:hover, #allHostsList .hostListItem:focus {
+    box-shadow: none;
+  background-color: #FFFFFF;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+#selectedHostsList .hostListItem:hover, #selectedHostsList .hostListItem:focus {
+        box-shadow: none;
+}

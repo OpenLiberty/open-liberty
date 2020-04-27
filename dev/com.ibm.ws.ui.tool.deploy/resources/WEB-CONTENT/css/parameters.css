@@ -1,0 +1,217 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+.parameters {
+    background-color: #FFFFFF;
+    table-layout: fixed;
+    overflow: hidden;
+    padding-bottom: 50px;
+}
+
+.parametersGrayBackground {
+  background: linear-gradient( to right, #FFFFFF 0%, #FFFFFF 50%, #EDEDED 50%, #EDEDED 100% );
+}
+
+.parametersLeftPane {
+    padding-top: 36px;
+    padding-left: 36px;
+    padding-right: 38px;
+    vertical-align: top;
+    display: inline-block;
+    width: 100%;
+    max-width: 450px;
+}
+
+.parameterBanner {
+    color: #000000;
+    font-size: 30px;
+    padding-bottom: 11px;
+    font-family: HelvNeueLight, helvetica, sans-serif;
+}
+
+.parametersDescription {
+    color: #777677;
+    font-size: 14px;
+    letter-spacing: .1px;
+    margin-bottom: 35px;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+}
+
+.parameterToggle {
+    padding-top: 4px;
+    margin: 0px 0px 15px 0px;
+}
+
+.parameterToggleController, .parameterToggleUpload {
+    display: inline-block;
+    background: none;
+    cursor: pointer;
+    padding: 7px 9px 6px 9px;
+    font-size: 11px;
+    /* border: 1.5px solid #4178BE; */
+    background-color: #E3EBF6;
+    color: #4178BE;
+    /*width: 200px;*/
+    /* for button to remain in its original size rather than expanding to fit the translated text */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+    letter-spacing: 1.2px;
+    border: 0;
+}
+
+/* Only applies to the filter that is not selected */
+.parameterToggleController:hover, .parameterToggleUpload:hover, .parameterToggleController:focus, .parameterToggleUpload:focus {
+    background-color: #BACEE7;
+}
+
+.parameterToggle .parameterToggleUpload:hover, .parameterToggle .parameterToggleController:hover {
+    box-shadow: #7CC7FF 0 0 2px 2px;
+}
+
+.parameterToggle .parameterToggleUpload:focus, .parameterToggle .parameterToggleController:focus {
+    box-shadow: #5AAAFA 0 0 2px 2px;
+}
+
+.parameterToggleController {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    width: 320px;
+}
+
+.parameterToggleUpload {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  width: 120px;
+}
+
+.parameterToggle .searchFilterSelected {
+    background-color: #4178BE;
+    color: #FFFFFF;
+    outline: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.parameters label, #security label {
+    font-size: 16px;
+    display: block;
+    color: #000000;
+    margin-bottom: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 406px;
+    /* a width is required for security label to not expanding the table cell
+                      if the label is longer than the width */
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+}
+
+.parameters label {
+    margin-top: 35px;
+}
+
+.parameters .labelWithInputError, #security .labelWithInputError {
+    margin-top: 10px;
+}
+
+.parameters .warningLabel, #security .warningLabel {
+    color: #AD1625;
+}
+
+.parameters input {
+  width: inherit;
+  border: none;
+  background-color: inherit;
+  padding-right: 30px;
+  margin-bottom: 5px;
+}
+
+.parameters .inputdiv {
+  border-bottom: 2px solid #E0E0E0;
+  margin-bottom: 10px;
+  width: 406px;
+  position: relative;
+}
+
+.parameters .inputWithError {
+    margin-bottom: 35px;
+}
+
+.parameters .errorWithNoDescription {
+    margin-bottom: -14px;
+}
+
+.parameterClearFieldButton {
+    text-decoration: none !important;
+    cursor: pointer;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: block;
+    width: 22px;
+    height: 22px;
+    line-height: 34px;
+    text-align: center;
+}
+
+.parameters .inputDiv:hover, #security .inputDiv:hover {
+    border-bottom: 2px solid #4178BE;
+    box-shadow: none;
+    outline: none;
+    /* if needs more accessibility, remove box-shadow and outline property here */
+}
+
+.parameters .inputDiv:focus, #security .inputDiv:focus {
+    border-bottom: 2px solid #4178BE;
+    box-shadow: none;
+    outline: none;
+    /* if needs more accessibility, remove box-shadow and outline property here */
+}
+
+.parametersInputDescription {
+    color: #777677;
+    margin: 0px 0px 35px 0px;
+    font-size: 12px;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+#security .parametersInputDescription {
+    margin-top: -25px;
+    margin-bottom: 40px;
+}
+
+.parametersInputDescriptionWithError {
+    margin-bottom: -24px;
+}
+
+.inputVariablesContainer p, #security p {
+    font-size: 12px;
+    color: rgb(167, 18, 18);
+    margin-top: -25px;
+    margin-bottom: 10px;
+}
+
+.parametersRightPane {
+    width: 410px;
+    vertical-align: top;
+    padding: 57px 45px 20px 40px;
+    float: right;
+}
+
+.inputError {
+    border-bottom: 2px solid rgb(167, 18, 18) !important;
+}

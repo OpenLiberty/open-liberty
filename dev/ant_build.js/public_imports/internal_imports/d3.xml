@@ -1,0 +1,30 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="d3" default="get-d3-lib">
+	
+	<property name="d3.project.destination" location="${basedir}/lib/d3-release/d3" />
+	<property name="d3.version" value="3.5.8" />
+	<property name="d3.home" location="${basedir}/../ant_build.js/lib/d3/d3-${d3.version}" />
+	
+	<!-- Common 'd3 build' process-->
+	<target name="get-d3-lib">
+		<echo>Building D3!</echo>
+		<echo>d3.project.destination: ${d3.project.destination}</echo>
+		<echo>d3.home: ${d3.home}</echo>
+	    <delete dir="${d3.project.destination}" failonerror="false" />
+        <mkdir dir="${d3.project.destination}" />
+		<copy todir="${d3.project.destination}">
+			<fileset dir="${d3.home}">
+				<include name="d3.min.js" />
+			</fileset>
+		</copy>
+	</target>
+</project>

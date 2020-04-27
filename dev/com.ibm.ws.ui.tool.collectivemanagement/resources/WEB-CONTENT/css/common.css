@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ 
+/**
+ * All CSS starts here. This is the set of common CSS for the entire tool.
+ * Platform specific overrides can be found in phone.css, tablet.css and desktop.css respectively.
+ *
+ * CSS - tips and tricks
+ * Select by element: p { ... }
+ * Select by class: .clz { ... }
+ * Select by element and class: p.clz { ... }
+ * Select by id: #myId { ... }
+ * See also:
+ * http://www.w3schools.com/css/css_attribute_selectors.asp
+ *
+ * http://www.w3.org/TR/css3-mediaqueries/#media1
+ * Background documentation: http://www.w3schools.com/css/css_background.asp
+ * Setting a background image: { background-image:url("images/background.gif"); background-repeat: no-repeat; background-size:80px 60px;}
+ */
+
+
+.button {
+  color: blue; background-repeat: no-repeat;
+}

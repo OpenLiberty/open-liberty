@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="jquery" default="get-jquery-lib">
+    
+    <property name="jquery.project.destination" location="${basedir}/lib/jquery" />
+    <property name="jquery.version" value="3.4.1" />
+    <property name="jquery.home" location="${basedir}/../ant_build.js/lib/jquery" />
+    
+    <!-- Common 'jquery build' process-->
+    <target name="get-jquery-lib">
+        <echo>Getting JQuery!</echo>
+        <echo>jquery.project.destination: ${jquery.project.destination}</echo>
+        <echo>jquery.home: ${jquery.home}</echo>
+        <delete dir="${jquery.project.destination}" failonerror="false" />
+        <mkdir dir="${jquery.project.destination}" />
+        <copy file="${jquery.home}/jquery-${jquery.version}/jquery.min.js" tofile="${jquery.project.destination}/jquery.min.js" />
+    </target>
+</project>
