@@ -13,10 +13,12 @@ package com.ibm.ws.security.acme.fat;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AcmeClientTest.class, AcmeSimpleTest.class, AcmeURISimpleTest.class, AcmeBoulderSimpleTest.class, AcmeConfigBringUp.class, AcmeCaRestHandlerTest.class
+@SuiteClasses({ AcmeClientTest.class, AcmeSimpleTest.class, AcmeURISimpleTest.class, AcmeBoulderSimpleTest.class,
+		AcmeCaRestHandlerTest.class
 	 })
 public class FATSuite {
 
